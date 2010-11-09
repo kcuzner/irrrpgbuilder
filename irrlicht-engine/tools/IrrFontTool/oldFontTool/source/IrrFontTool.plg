@@ -1,0 +1,44 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: IrrFontTool - Win32 Release--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Creating command line "rc.exe /l 0xc07 /fo"Release/recources.res" /d "NDEBUG" "C:\Development\IrrFontTool\recources.rc"" 
+Erstellen der temporären Datei  "C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP65.tmp" mit Inhalten
+[
+/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/IrrFontTool.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Development\IrrFontTool\IrrFontTool.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP65.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP66.tmp" mit Inhalten
+[
+/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/IrrFontTool.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Development\IrrFontTool\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP66.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP67.tmp" mit Inhalten
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/IrrFontTool.pdb" /machine:I386 /out:"Release/IrrFontTool.exe" 
+.\Release\IrrFontTool.obj
+.\Release\StdAfx.obj
+.\Release\recources.res
+]
+Erstellen der Befehlzeile "link.exe @C:\DOKUME~1\Niko\LOKALE~1\Temp\RSP67.tmp"
+<h3>Ausgabefenster</h3>
+Ressourcen werden kompiliert...
+Kompilierung läuft...
+StdAfx.cpp
+Kompilierung läuft...
+IrrFontTool.cpp
+Linker-Vorgang läuft...
+
+
+
+<h3>Ergebnisse</h3>
+IrrFontTool.exe - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>

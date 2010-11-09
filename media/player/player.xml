@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<IrrRPG_Builder_Player version="1.0">
+      <player_model name="player_normal" mesh="player_02.b3d" idlemesh="player_idle.b3d" scale="1.0" idle_start="1" idle_end="100" walk_start="1" walk_end="25" run_start="1" attack_start="27" attack_end="47" injured_start="48" injured_end="52" die_start="48" die_end="68"/>
+</IrrRPG_Builder_Player>

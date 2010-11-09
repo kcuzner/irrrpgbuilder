@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Win32 - Debug - dll" />
+	<File name="..\..\changes.txt" open="0" top="0" tabpos="0">
+		<Cursor position="195138" topLine="4110" />
+	</File>
+	<File name="..\..\include\IMaterialRendererServices.h" open="0" top="0" tabpos="0">
+		<Cursor position="1878" topLine="41" />
+	</File>
+	<File name="CGUIContextMenu.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="7631" topLine="346" />
+	</File>
+	<File name="CImageLoaderPPM.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="5143" topLine="210" />
+	</File>
+	<File name="os.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="5974" topLine="216" />
+	</File>
+	<File name="os.h" open="0" top="0" tabpos="0">
+		<Cursor position="1522" topLine="57" />
+	</File>
+</CodeBlocks_layout_file>

@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<IrrRPG_Builder_Project version="1.0">
+    <terrain segments="1">
+        <terrainSegment x="0" z="0">
+            <vertex id="51" y="-0.011656" v="0" />
+            <vertex id="52" y="-0.051112" v="0" />
+            <vertex id="53" y="-0.250000" v="0" />
+            <vertex id="54" y="-0.250000" v="0" />
+            <vertex id="57" y="-0.039732" v="0" />
+            <vertex id="60" y="-0.097059" v="0" />
+            <vertex id="61" y="-0.250000" v="0" />
+            <vertex id="62" y="-0.250000" v="0" />
+            <vertex id="63" y="-0.250000" v="0" />
+            <vertex id="64" y="-0.250000" v="0" />
+            <vertex id="67" y="-0.080683" v="0" />
+            <vertex id="73" y="-0.090737" v="0" />
+            <vertex id="75" y="-0.102205" v="0" />
+            <vertex id="127" y="0.039189" v="0" />
+            <vertex id="128" y="0.086623" v="0" />
+            <vertex id="133" y="0.358796" v="0" />
+            <vertex id="134" y="0.606576" v="0" />
+            <vertex id="135" y="0.596827" v="0" />
+            <vertex id="136" y="1.000000" v="0" />
+            <vertex id="145" y="0.136309" v="0" />
+            <vertex id="147" y="0.335685" v="0" />
+            <vertex id="155" y="-0.171881" v="0" />
+            <vertex id="158" y="-0.184320" v="0" />
+            <vertex id="159" y="-0.250000" v="0" />
+            <vertex id="160" y="-0.250000" v="0" />
+            <vertex id="161" y="-0.250000" v="0" />
+            <vertex id="162" y="-0.250000" v="0" />
+            <vertex id="165" y="-0.132792" v="0" />
+            <vertex id="168" y="-0.067587" v="0" />
+            <vertex id="169" y="-0.250000" v="0" />
+            <vertex id="170" y="-0.250000" v="0" />
+            <vertex id="171" y="-0.250000" v="0" />
+            <vertex id="172" y="-0.250000" v="0" />
+            <vertex id="173" y="-0.250000" v="0" />
+            <vertex id="174" y="-0.040502" v="0" />
+            <vertex id="175" y="-0.250000" v="0" />
+            <vertex id="176" y="-0.250000" v="0" />
+            <vertex id="179" y="-0.225456" v="0" />
+            <vertex id="180" y="-0.059838" v="0" />
+            <vertex id="181" y="-0.250000" v="0" />
+            <vertex id="182" y="-0.250000" v="0" />
+            <vertex id="183" y="-0.250000" v="0" />
+            <vertex id="184" y="-0.220706" v="0" />
+            <vertex id="185" y="-0.250000" v="0" />
+            <vertex id="186" y="-0.229994" v="0" />
+            <vertex id="187" y="-0.243262" v="0" />
+            <vertex id="188" y="-0.125582" v="0" />
+            <vertex id="195" y="-0.048980" v="0" />
+            <vertex id="196" y="-0.033279" v="0" />
+            <vertex id="209" y="0.000000" v="1" />
+            <vertex id="210" y="0.000000" v="1" />
+            <vertex id="213" y="0.000000" v="1" />
+            <vertex id="214" y="0.000000" v="1" />
+            <vertex id="225" y="0.000000" v="1" />
+            <vertex id="226" y="0.026419" v="0" />
+            <vertex id="227" y="0.006383" v="0" />
+            <vertex id="228" y="0.417747" v="0" />
+            <vertex id="229" y="0.754560" v="0" />
+            <vertex id="230" y="1.000000" v="0" />
+            <vertex id="231" y="1.000000" v="0" />
+            <vertex id="232" y="0.790602" v="0" />
+            <vertex id="233" y="-0.001369" v="0" />
+            <vertex id="234" y="0.311834" v="0" />
+            <vertex id="236" y="0.008847" v="1" />
+            <vertex id="237" y="0.582286" v="0" />
+            <vertex id="238" y="0.237051" v="0" />
+            <vertex id="239" y="0.011041" v="0" />
+            <vertex id="240" y="0.000000" v="1" />
+            <vertex id="241" y="0.266321" v="0" />
+            <vertex id="243" y="0.077215" v="0" />
+            <vertex id="244" y="0.000000" v="1" />
+            <vertex id="252" y="0.000000" v="1" />
+            <vertex id="257" y="0.000000" v="1" />
+            <vertex id="258" y="0.000000" v="1" />
+            <vertex id="262" y="0.000000" v="1" />
+            <vertex id="273" y="0.000000" v="1" />
+        </terrainSegment>
+    </terrain>
+    <dynamic_objects>
+        <obj x="0.033600" y="0.000000" z="-2.301771" r="0.000000" template="frog" script='function step()&#x0A;  if(distanceFrom(&quot;player&quot;) &lt; 2) then&#x0A;    if(distanceFrom(&quot;player&quot;) &lt; 0.75) then&#x0A;      decreasePlayerLife(1)&#x0A;    else&#x0A;      chaseObject(&quot;player&quot;)&#x0A;    end&#x0A;  else&#x0A;    walkRandomly()&#x0A;  end&#x0A;end&#x0A;&#x0A;function onClicked()&#x0A;  life = life - 1&#x0A;  &#x0A;  if (life == 0) then&#x0A;    setEnabled(false)&#x0A;  end&#x0A;  &#x0A;end&#x0A;&#x0A;function onLoad()&#x0A;  setAnimation(&quot;walk&quot;)&#x0A;  life = 20&#x0A;  setEnemy()&#x0A;end' />
+    </dynamic_objects>
+    <player x="1.209247" z="-2.916833" script="function onLoad()&#x0A;  setPlayerLife(100)&#x0A;end" />
+    <global_script script="" />
+</IrrRPG_Builder_Project>

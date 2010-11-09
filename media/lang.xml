@@ -1,0 +1,149 @@
+<IrrRPG_Builder_LanguageFile version="1.0" default_language="en-us">
+    <language name="en-us">
+	<text id="bt_dynamic_objects_close_script" str="Close"/>
+	<text id="bt_dynamic_objects_script_noerror" str="No errors found"/>
+	<text id="bt_dynamic_objects_validate_script" str="Validate Script (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Load Script Template"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Move/Rotate"/>
+	<text id="bt_dynamic_objects_remove" str="Remove Object"/>
+	<text id="bt_dynamic_objects_edit_script" str="Edit Lua Script"/>
+	<text id="bt_dynamic_objects_cancel" str="Cancel"/>
+	<text id="bt_dynamic_objects_has_action" str="Has Action"/>
+	<text id="bt_dynamic_objects_mode" str="Dynamic Objects Mode"/>
+	<text id="bt_paint_vegetation" str="Paint Vegetation"/>
+	<text id="bt_new_project" str="New Project"/>
+	<text id="bt_save_project" str="Save Project"/>
+	<text id="bt_load_project" str="Load Project"/>
+	<text id="bt_show_playable_area" str="Show Playable Area"/>
+	<text id="bt_terrain_segments" str="Edit Terrain Segments"/>
+	<text id="bt_terrain_transform" str="Edit Terrain Elevation"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Brush Strength:"/>
+	<text id="bt_play_game" str="Play Game"/>
+	<text id="bt_stop_game" str="Stop Game"/>
+	<text id="bt_edit_character" str="Edit Character"/>
+	<text id="bt_player_edit_script" str="Edit Character Script"/>
+	<text id="bt_close_program" str="Close Program"/>
+	<text id="bt_about" str="About"/>
+	<text id="bt_help" str="Help"/>
+	<text id="bt_dialog_yes" str="Yes"/>
+	<text id="bt_dialog_no" str="No"/>
+	<text id="bt_view_items" str="View Items"/>
+	<text id="bt_use_item" str="Use Item"/>
+	<text id="bt_drop_item" str="Drop Item"/>
+	<text id="bt_close_items_window" str="Back To Game"/>
+	<text id="bt_edit_script_global" str="Edit Global Script"/>
+	
+	
+	<text id="txt_player_life" str="LIFE:"/>
+	<text id="txt_player_money" str="GOLD:"/>
+	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     by Andres Jesse Porfirio                                        check irrrpgbuilder.sourceforge.net and www.andresjesse.com           have fun!"/>
+
+	<text id="msg_error" str="Error"/>
+	<text id="msg_invalid_project_file" str="Invalid Project File"/>
+	<text id="msg_override_project" str="Save current project?"/>
+	<text id="msg_saved_ok" str="Saved successfully!"/>
+	<text id="msg_new_project_name" str="Input project name:"/>
+	<text id="msg_loaded_error" str="Loaded Error!"/>
+	<text id="msg_loaded_ok" str="Loaded successfully!"/>
+	<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
+	
+    </language>
+    <language name="pt-br">
+	<text id="bt_dynamic_objects_close_script" str="Fechar"/>
+	<text id="bt_dynamic_objects_script_noerror" str="Nao foram encontrados erros"/>
+	<text id="bt_dynamic_objects_validate_script" str="Validar Script (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Carregar Modelo de Script"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Mover/Rotacionar"/>
+	<text id="bt_dynamic_objects_remove" str="Remover Objeto"/>
+	<text id="bt_dynamic_objects_edit_script" str="Editar Script Lua"/>
+	<text id="bt_dynamic_objects_cancel" str="Cancelar"/>
+	<text id="bt_dynamic_objects_has_action" str="Tem Acao"/>
+	<text id="bt_dynamic_objects_mode" str="Modo de Objetos Dinamicos"/>
+	<text id="bt_paint_vegetation" str="Pintar Vegetacao"/>
+	<text id="bt_new_project" str="Novo Proje"/>
+	<text id="bt_save_project" str="Salvar Projeto"/>
+	<text id="bt_load_project" str="Carregar Projeto"/>
+	<text id="bt_show_playable_area" str="Mostrar Area Jogavel"/>
+	<text id="bt_terrain_segments" str="Editar Segmentos do Terreno"/>
+	<text id="bt_terrain_transform" str="Editar Elevacao do Terreno"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Forca do Pincel:"/>
+	<text id="bt_play_game" str="Executar o Jogo"/>
+	<text id="bt_stop_game" str="Parar o Jogo"/>
+	<text id="bt_edit_character" str="Editar Personagem"/>
+	<text id="bt_player_edit_script" str="Editar Script do Personagem"/>
+	<text id="bt_close_program" str="Fechar Programa"/>
+	<text id="bt_about" str="Sobre o IrrRPG Builder"/>
+	<text id="bt_help" str="Ajuda"/>
+	<text id="bt_dialog_yes" str="Sim"/>
+	<text id="bt_dialog_no" str="Não"/>
+	<text id="bt_view_items" str="Ver Itens"/>
+	<text id="bt_use_item" str="Usar Item"/>
+	<text id="bt_drop_item" str="Jogar Fora o Item Atual"/>
+	<text id="bt_close_items_window" str="Voltar ao Jogo"/>
+	<text id="bt_edit_script_global" str="Editar Script Global"/>
+	
+	<text id="txt_player_life" str="VIDA:"/>
+	<text id="txt_player_money" str="DINHEIRO:"/>
+	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     by Andres Jesse Porfirio                                        confira irrrpgbuilder.sourceforge.net e www.andresjesse.com           divirta-se!"/>
+
+	<text id="msg_error" str="Erro"/>
+	<text id="msg_invalid_project_file" str="Arquivo de Projeto Invalido"/>
+	<text id="msg_override_project" str="Salvar o projeto atual antes de prosseguir?"/>
+	<text id="msg_saved_ok" str="Salvo com sucesso!"/>
+	<text id="msg_new_project_name" str="Insira o nome do Projeto:"/>
+	<text id="msg_loaded_error" str="Erro ao Carregar!"/>
+	<text id="msg_loaded_ok" str="Carregado com sucesso!"/>
+	<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
+	
+	
+    </language>
+	 <language name="fr">
+	<text id="bt_dynamic_objects_close_script" str="Fermer"/>
+	<text id="bt_dynamic_objects_script_noerror" str="Aucune erreur trouvee"/>
+	<text id="bt_dynamic_objects_validate_script" str="Valider le script (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Charger template script"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Bouger/Tourner"/>
+	<text id="bt_dynamic_objects_remove" str="Enlever Objet"/>
+	<text id="bt_dynamic_objects_edit_script" str="Editer script Lua"/>
+	<text id="bt_dynamic_objects_cancel" str="Abandon"/>
+	<text id="bt_dynamic_objects_has_action" str="Has Action"/>
+	<text id="bt_dynamic_objects_mode" str="Mode objet dynamique"/>
+	<text id="bt_paint_vegetation" str="Peindre la vegetation"/>
+	<text id="bt_new_project" str="Nouveau projet"/>
+	<text id="bt_save_project" str="Sauver le projet"/>
+	<text id="bt_load_project" str="Charger le projet"/>
+	<text id="bt_show_playable_area" str="Montrer la zone jouable"/>
+	<text id="bt_terrain_segments" str="Editer les segments du terrain"/>
+	<text id="bt_terrain_transform" str="Editer l'elevation du terrain"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Force de la brosse:"/>
+	<text id="bt_play_game" str="Jouer"/>
+	<text id="bt_stop_game" str="Arreter le jeu"/>
+	<text id="bt_edit_character" str="Editer le personage"/>
+	<text id="bt_player_edit_script" str="Editer le script du personage"/>
+	<text id="bt_close_program" str="Fermer l'application"/>
+	<text id="bt_about" str="A Propos"/>
+	<text id="bt_help" str="Aide"/>
+	<text id="bt_dialog_yes" str="Oui"/>
+	<text id="bt_dialog_no" str="Non"/>
+	<text id="bt_view_items" str="Voir les items"/>
+	<text id="bt_use_item" str="Utiliser l'item"/>
+	<text id="bt_drop_item" str="Jeter l'item"/>
+	<text id="bt_close_items_window" str="Retour au jeu"/>
+	<text id="bt_edit_script_global" str="Editer script global"/>
+	
+	
+	<text id="txt_player_life" str="VIE:"/>
+	<text id="txt_player_money" str="OR:"/>
+	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     par Andres Jesse Porfirio                                        check irrrpgbuilder.sourceforge.net and www.andresjesse.com           amusez-vous!"/>
+
+	<text id="msg_error" str="Erreur"/>
+	<text id="msg_invalid_project_file" str="Fichier projet invalide"/>
+	<text id="msg_override_project" str="Sauver le projet actuel?"/>
+	<text id="msg_saved_ok" str="Sauvegarde reussie!"/>
+	<text id="msg_new_project_name" str="Entrez le nom du projet:"/>
+	<text id="msg_loaded_error" str="Erreur chargement!"/>
+	<text id="msg_loaded_ok" str="Chargement reussi!"/>
+	<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
+	
+    </language>
+</IrrRPG_Builder_LanguageFile> 
