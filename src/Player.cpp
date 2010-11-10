@@ -81,8 +81,6 @@ Player::Player()
 					}
 					fileScript.close();
 				}
-				//printf("Here is the currently written script:\n\n%s",newScript.c_str());
-				//GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
 				script = newScript;
 			} else 
 				script = "";
@@ -166,6 +164,8 @@ Player::Player()
 					else
 						newModel.attackmesh = NULL;
 
+					if (currAnim.attackevent>1) 
+						newModel.attackevent = currAnim.attackevent;
 					newModel.attack_start = currAnim.startFrame;
 					newModel.attack_end = currAnim.endFrame;
 				}
@@ -440,7 +440,7 @@ bool Player::CheckAnimationEvent()
 	// Temporary, until the combat system is created
 	// The frame "event" can't be determined, so we have to monitor the frames.
 	// Current amimation checked for event is the attack 
-	if((currentAnimation == PLAYER_ANIMATION_ATTACK) && (currentModel.node->getFrameNr() > currentModel.attack_start+10) && (currentModel.node->getFrameNr() < currentModel.attack_start+11))
+	if((currentAnimation == PLAYER_ANIMATION_ATTACK) && (currentModel.node->getFrameNr() > currentModel.attackevent)&& (currentModel.node->getFrameNr() < currentModel.attackevent+1))
 	{
 		currentime = timer->getRealTime();
 		u32 delay = currentime - oldtime;

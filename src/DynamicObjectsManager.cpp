@@ -144,6 +144,8 @@ DynamicObjectsManager::DynamicObjectsManager()
 
             // -- Create Dynamic Object --
             DynamicObject* newObj = new DynamicObject(name, mesh, animations);
+
+			// Load the script if it was defined in the XML
 		    if (scriptname.size()>1)
 			{
 				stringc newScript = "";
@@ -162,8 +164,6 @@ DynamicObjectsManager::DynamicObjectsManager()
 					}
 					fileScript.close();
 				}
-				//printf("Here is the currently written script:\n\n%s",newScript.c_str());
-				//GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
 				newObj->setScript(newScript);
 			}
 
@@ -361,7 +361,7 @@ void DynamicObjectsManager::initializeCollisions()
     {
         ISceneNodeAnimatorCollisionResponse* anim = App::getInstance()->getDevice()->getSceneManager()->createCollisionResponseAnimator(((DynamicObject*)objects[i])->getTriangleSelector(),
                                                                                             Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-
+		// set the collisions for the player
         Player::getInstance()->getNode()->addAnimator(anim);
 
         collisionResponseAnimators.push_back(anim);

@@ -121,6 +121,7 @@ class Player
 			s32 run_end;
 
 			IAnimatedMesh* attackmesh;
+			s32 attackevent;
             s32 attack_start;
             s32 attack_end;
 
