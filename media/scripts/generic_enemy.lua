@@ -7,8 +7,11 @@ function hitplayer()
 end
 
 function step()
+  life = getObjectLife(objName);
+  if (life == 0) then setEnabled(false) end
   local x,y,z = getObjectPosition("player")
-  if(distanceFrom(x,y,z) < 1.5) then
+  if(distanceFrom(x,y,z) < 1.5) then 
+    setObjectLabel("Enemy life:"..life.."/100")
     showObjectLabel()
     if(distanceFrom(x,y,z) < 0.6) then
         if (a==0)then
@@ -32,17 +35,10 @@ end
 
 function onLoad()
   setEnemy()
-  life = 50
-  setAnimation("walk")
-  setObjectLabel("Enemy life:"..life.."/50")
+  setObjectLife(objName,100);
+  setAnimation("walk")  
 end
 
 function onClicked()
-  if (life > 0) then
-    life = life - 1
-    setObjectLabel("Enemy life:"..life.."/50")
-  elseif (life == 0) then
-    setEnabled(false)
-  end
 end
 
