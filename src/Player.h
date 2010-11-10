@@ -26,6 +26,17 @@ enum PLAYER_ANIMATION
 	PLAYER_ANIMATION_RUN = 5
 };
 
+typedef struct{
+    stringc name;
+	stringc mesh;
+	stringc sound;
+    s32 startFrame;
+    s32 endFrame;
+	s32 attackevent;
+	s32 soundevent;
+    f32 speed;
+}PlayerObject_Animation;
+
 class Player
 {
     public:
@@ -141,6 +152,7 @@ class Player
         DynamicObject* enemyUnderAttack;
 
         PLAYER_ANIMATION currentAnimation;
+		vector<PlayerObject_Animation> animations;
 
         int life;
         int money;

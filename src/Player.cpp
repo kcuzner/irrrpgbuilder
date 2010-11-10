@@ -43,109 +43,141 @@ Player::Player()
         while( playerModelXML != NULL )
         {
 
-
+			stringc pathFile = "../media/player/";
             playerModel newModel;
+
+			// Init the file check for optional animation meshes
+			newModel.idle = false;
+			newModel.walk = false;
+			newModel.attack = false;
+			newModel.die = false;
+			newModel.injured = false;
+			newModel.run = false;
 
             newModel.name = playerModelXML->ToElement()->Attribute("name");
 
-            stringc pathFile = "../media/player/";
+            
 			// Animation meshes -- main mesh
             stringc meshFile = playerModelXML->ToElement()->Attribute("mesh");
+			// Set the meshes for the animations.
+			newModel.mesh = smgr->getMesh(pathFile+meshFile);
+
+			stringc s_scale = playerModelXML->ToElement()->Attribute("scale");
+			if (s_scale.size()>1) newModel.scale = (f32)atof(s_scale.c_str()); else newModel.scale = 1;
 			// Animation meshes -- Skinned options
-			stringc idleFile = playerModelXML->ToElement()->Attribute("idlemesh");
-			stringc walkFile = playerModelXML->ToElement()->Attribute("walkmesh");
-			stringc runFile = playerModelXML->ToElement()->Attribute("walkmesh");
-			stringc attackFile = playerModelXML->ToElement()->Attribute("attackmesh");
-			stringc injuredFile = playerModelXML->ToElement()->Attribute("injuredmesh");
-			stringc dieFile = playerModelXML->ToElement()->Attribute("diemesh");
+			//-----------------------------------------------------------------------------
+			TiXmlNode* currentAnimXML = playerModelXML->FirstChild( "animation" );
 
-            newModel.scale = (f32)atof(playerModelXML->ToElement()->Attribute("scale"));
-					
-			newModel.idle_start = atoi(playerModelXML->ToElement()->Attribute("idle_start"));
-			newModel.idle_end = atoi(playerModelXML->ToElement()->Attribute("idle_end"));
-
-            newModel.walk_start = atoi(playerModelXML->ToElement()->Attribute("walk_start"));
-            newModel.walk_end = atoi(playerModelXML->ToElement()->Attribute("walk_end"));
-			printf("Loading the walk end info: frame is %d\n",newModel.walk_end);
+            vector<PlayerObject_Animation> animations;
 			
-			stringc s_run_start = playerModelXML->ToElement()->Attribute("run_start");
-			if (s_run_start.size()>1) newModel.run_start = atoi(s_run_start.c_str());
-            
-			stringc s_run_end = playerModelXML->ToElement()->Attribute("run_end");
-			if (s_run_end.size()>1) newModel.run_end = atoi(s_run_end.c_str());
-			
-            newModel.attack_start = atoi(playerModelXML->ToElement()->Attribute("attack_start"));
-            newModel.attack_end = atoi(playerModelXML->ToElement()->Attribute("attack_end"));
+            //Iterate animations
+            while( currentAnimXML != NULL )
+            {
+                PlayerObject_Animation currAnim;
+				// Get the infos from the animation	
+                currAnim.name = currentAnimXML->ToElement()->Attribute("name");
+				currAnim.mesh = currentAnimXML->ToElement()->Attribute("mesh");
 
-			newModel.injured_start = atoi(playerModelXML->ToElement()->Attribute("injured_start"));
-            newModel.injured_end = atoi(playerModelXML->ToElement()->Attribute("injured_end"));
+				// TODO: Not totally implemented
+				currAnim.sound = currentAnimXML->ToElement()->Attribute("sound");
 
-            newModel.die_start = atoi(playerModelXML->ToElement()->Attribute("die_start"));
-            newModel.die_end = atoi(playerModelXML->ToElement()->Attribute("die_end"));
-			
-			// Set the meshes for the animations. Will not set the other meshes if not present.
-            newModel.mesh = smgr->getMesh(pathFile+meshFile);
-			// Check for the presence of another animation file 
-			if (idleFile!="") 
-			{
-				newModel.idlemesh = smgr->getMesh(pathFile+idleFile);
-				newModel.idle=true;
-			}
-			else
-			{
-				printf("The mesh is not present for the idle animations");
-				newModel.idle=false;
-			}
-			// Check for the presence of another animation file
-			if (walkFile!="")
-			{
-				newModel.walkmesh = smgr->getMesh(pathFile+walkFile);
-				newModel.walk = true;
-			}
-			else
-			{
-				newModel.walk = false;
-			}
-			// Check for the presence of another animation file
-			if (runFile!="") 
-			{
-				newModel.runmesh = smgr->getMesh(pathFile+runFile);
-				newModel.run = true;
-			}
-			else
-			{
-				newModel.run = false;
-			}
-			// Check for the presence of another animation file
-			if (attackFile!="") 
-			{
-				newModel.attackmesh = smgr->getMesh(pathFile+attackFile);
-				newModel.attack = true;
-			}
-			else
-			{	
-				newModel.attack = false;
-			}
-			// Check for the presence of another animation file
-			if (injuredFile!="") 
-			{
-				newModel.injuredmesh = smgr->getMesh(pathFile+injuredFile);
-				newModel.injured = true;
-			}
-			else
-			{
-				newModel.injured = false;
-			}
-			// Check for the presence of another animation file
-			if (dieFile!="") 
-			{
-				newModel.diemesh = smgr->getMesh(pathFile+dieFile);
-				newModel.die = true;
-			}
-			else
-			{
-				newModel.die = false;
-			}
+				stringc s_start = currentAnimXML->ToElement()->Attribute("start");
+				if (s_start.size()>1) 
+					currAnim.startFrame = atoi(s_start.c_str()); 
+				else 
+					currAnim.startFrame=1;
+				            
+				stringc s_end = currentAnimXML->ToElement()->Attribute("end");
+				if (s_end.size()>1) 
+					currAnim.endFrame = atoi(s_end.c_str()); 
+				else 
+					currAnim.endFrame=1;
+               
+				// TODO: Not totally implemented
+                stringc s_attack = currentAnimXML->ToElement()->Attribute("attackevent");
+				if (s_attack.size()>1) 
+					currAnim.attackevent = atoi(s_attack.c_str()); 
+				else 
+					currAnim.attackevent=currAnim.startFrame;
+				
+				// TODO: Not totally implemented
+				stringc s_sound = currentAnimXML->ToElement()->Attribute("soundevent");
+				if (s_sound.size()>1) 
+					currAnim.soundevent = atoi(s_sound.c_str());
+
+				// TODO: Not totally implemented
+				stringc s_speed = currentAnimXML->ToElement()->Attribute("speed");
+				if (s_speed.size()>1) 
+					currAnim.speed = (f32)atof(s_speed.c_str());
+
+				// Associate the animation infos
+				if (currAnim.name=="idle")
+				{
+					if (currAnim.mesh!="") 
+					{
+						newModel.idlemesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.idle=true;
+					}
+					newModel.idle_start = currAnim.startFrame;
+					newModel.idle_end = currAnim.endFrame;
+				}
+				else if (currAnim.name=="walk")
+				{
+					if (currAnim.mesh!="") 
+					{
+						newModel.walkmesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.walk=true;
+					}
+					newModel.walk_start = currAnim.startFrame;
+					newModel.walk_end = currAnim.endFrame;
+				}
+				else if (currAnim.name=="attack")
+				{
+					if (currAnim.mesh!="") 
+					{
+						newModel.attackmesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.attack=true;
+					}
+					newModel.attack_start = currAnim.startFrame;
+					newModel.attack_end = currAnim.endFrame;
+				}
+				else if (currAnim.name=="die")
+				{
+					if (currAnim.mesh!="") 
+					{
+						newModel.diemesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.die=true;
+					}
+					newModel.die_start = currAnim.startFrame;
+					newModel.die_end = currAnim.endFrame;
+				}
+				else if (currAnim.name=="injured")
+				{
+					if (currAnim.mesh!="")
+					{
+						newModel.injuredmesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.injured = true;
+					}
+					newModel.injured_start = currAnim.startFrame;
+					newModel.injured_end = currAnim.endFrame;
+				}
+				else if (currAnim.name=="run")
+				{
+					if (currAnim.mesh!="") 
+					{
+						newModel.runmesh = smgr->getMesh(pathFile+currAnim.mesh);
+						newModel.run=true;
+					}
+					newModel.run_start = currAnim.startFrame;
+					newModel.run_end = currAnim.endFrame;
+				}
+
+				// Iterate and store the animations infos
+                currentAnimXML = playerModelXML->IterateChildren( "animation", currentAnimXML );
+                animations.push_back(currAnim);
+            }
+			//---------------------------------------------------------------------------------
+			        
 			// Set the reference/main mesh
             newModel.node = smgr->addAnimatedMeshSceneNode(newModel.mesh,node);
             newModel.node->setScale(vector3df(newModel.scale,newModel.scale,newModel.scale));
