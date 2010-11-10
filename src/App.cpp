@@ -598,6 +598,9 @@ void App::run()
 			lastFPS = fps;
 		}
     }
+	// Stuff to do when the device is closed.
+	cleanWorkspace();
+	SoundManager::getInstance()->stopEngine();
 }
 
 void App::saveProjectToXML()
@@ -875,7 +878,7 @@ void App::createNewProject()
 
     EditorCamera::getInstance();
 
-    //TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+    TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
     smgr->setAmbientLight(SColorf(1,1,1,1));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,1000);
