@@ -46,7 +46,7 @@ Player::Player()
 			stringc pathFile = "../media/player/";
             playerModel newModel;
 
-			// Init the file check for optional animation meshes
+			// Init the file check for matched animation in the XML
 			newModel.idle = false;
 			newModel.walk = false;
 			newModel.attack = false;
@@ -61,6 +61,31 @@ Player::Player()
             stringc meshFile = playerModelXML->ToElement()->Attribute("mesh");
 			// Set the meshes for the animations.
 			newModel.mesh = smgr->getMesh(pathFile+meshFile);
+
+			stringc scriptname = playerModelXML->ToElement()->Attribute("script");
+			// Loading a predefined script from the XML
+			if (scriptname.size()>1)
+			{
+				stringc newScript = "";
+				stringc filename = "../media/scripts/";
+				filename += scriptname;
+				std::string line;
+				ifstream fileScript (filename.c_str());
+				if (fileScript.is_open())
+				{
+					while (! fileScript.eof() )
+					{
+						getline (fileScript,line);
+						newScript += line.c_str();
+						newScript += '\n';
+					}
+					fileScript.close();
+				}
+				//printf("Here is the currently written script:\n\n%s",newScript.c_str());
+				//GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
+				script = newScript;
+			} else 
+				script = "";
 
 			stringc s_scale = playerModelXML->ToElement()->Attribute("scale");
 			if (s_scale.size()>1) newModel.scale = (f32)atof(s_scale.c_str()); else newModel.scale = 1;
@@ -112,62 +137,68 @@ Player::Player()
 
 				// Associate the animation infos
 				if (currAnim.name=="idle")
-				{
+				{	
+					newModel.idle=true;
 					if (currAnim.mesh!="") 
-					{
 						newModel.idlemesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.idle=true;
-					}
+					else
+						newModel.idlemesh = NULL;
+
 					newModel.idle_start = currAnim.startFrame;
 					newModel.idle_end = currAnim.endFrame;
 				}
 				else if (currAnim.name=="walk")
 				{
+					newModel.walk=true;
 					if (currAnim.mesh!="") 
-					{
 						newModel.walkmesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.walk=true;
-					}
+					else
+						newModel.walkmesh = NULL;
+
 					newModel.walk_start = currAnim.startFrame;
 					newModel.walk_end = currAnim.endFrame;
 				}
 				else if (currAnim.name=="attack")
 				{
+					newModel.attack=true;
 					if (currAnim.mesh!="") 
-					{
 						newModel.attackmesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.attack=true;
-					}
+					else
+						newModel.attackmesh = NULL;
+
 					newModel.attack_start = currAnim.startFrame;
 					newModel.attack_end = currAnim.endFrame;
 				}
 				else if (currAnim.name=="die")
 				{
+					newModel.die=true;
 					if (currAnim.mesh!="") 
-					{
 						newModel.diemesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.die=true;
-					}
+					else
+						newModel.diemesh = NULL;
+
 					newModel.die_start = currAnim.startFrame;
 					newModel.die_end = currAnim.endFrame;
 				}
 				else if (currAnim.name=="injured")
 				{
+					newModel.injured = true;
 					if (currAnim.mesh!="")
-					{
 						newModel.injuredmesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.injured = true;
-					}
+					else
+						newModel.injuredmesh = NULL;
+
 					newModel.injured_start = currAnim.startFrame;
 					newModel.injured_end = currAnim.endFrame;
 				}
 				else if (currAnim.name=="run")
 				{
+					newModel.run=true;
 					if (currAnim.mesh!="") 
-					{
 						newModel.runmesh = smgr->getMesh(pathFile+currAnim.mesh);
-						newModel.run=true;
-					}
+					else 
+						newModel.runmesh = NULL;
+
 					newModel.run_start = currAnim.startFrame;
 					newModel.run_end = currAnim.endFrame;
 				}
@@ -210,8 +241,7 @@ Player::Player()
 
     life = 100;
     money = 0;
-
-    script = "";
+    
 	timer = App::getInstance()->getDevice()->getTimer();
 	currentime = timer->getRealTime();
 	oldtime = timer->getRealTime();
@@ -312,77 +342,87 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
     {
         case PLAYER_ANIMATION_IDLE:
 			// Use another animation mesh if it's defined
-			if (currentModel.idle)  
+			if (currentModel.idle)
 			{
-				ISkinnedMesh* skinidle = (ISkinnedMesh*)currentModel.idlemesh;
-				skin->useAnimationFrom(skinidle);
+				if (currentModel.idlemesh!=NULL)  
+				{
+					ISkinnedMesh* skinidle = (ISkinnedMesh*)currentModel.idlemesh;
+					skin->useAnimationFrom(skinidle);
+				}
+				else
+				{
+					skin->useAnimationFrom(skin);
+				}
+				currentModel.node->setFrameLoop(currentModel.idle_start,currentModel.idle_end);
+				currentModel.node->setLoopMode(true);
 			}
-			else
-			{
-				skin->useAnimationFrom(skin);
-			}
-			currentModel.node->setFrameLoop(currentModel.idle_start,currentModel.idle_end);
-			currentModel.node->setLoopMode(true);
-            currentAnimation = PLAYER_ANIMATION_IDLE;
+			currentAnimation = PLAYER_ANIMATION_IDLE;
             break;
         case PLAYER_ANIMATION_WALK:
-			if (currentModel.walk)  
+			if (currentModel.walk)
 			{
-				ISkinnedMesh* skinwalk = (ISkinnedMesh*)currentModel.walkmesh;
-				skin->useAnimationFrom(skinwalk);
+				if (currentModel.walkmesh!=NULL)  
+				{
+					ISkinnedMesh* skinwalk = (ISkinnedMesh*)currentModel.walkmesh;
+					skin->useAnimationFrom(skinwalk);
+				}
+				else
+				{
+					skin->useAnimationFrom(skin);
+				}
+				currentModel.node->setFrameLoop(currentModel.walk_start,currentModel.walk_end);
+				currentModel.node->setLoopMode(true);
 			}
-			else
-			{
-				skin->useAnimationFrom(skin);
-				
-			}
-            currentModel.node->setFrameLoop(currentModel.walk_start,currentModel.walk_end);
-			currentModel.node->setLoopMode(true);
-            currentAnimation = PLAYER_ANIMATION_WALK;
+			currentAnimation = PLAYER_ANIMATION_WALK;
             break;
         case PLAYER_ANIMATION_ATTACK:
-			if (currentModel.attack)  
+			if (currentModel.attack)
 			{
-				ISkinnedMesh* skinattack = (ISkinnedMesh*)currentModel.attackmesh;
-				skin->useAnimationFrom(skinattack);
+				if (currentModel.attackmesh!=NULL)  
+				{
+					ISkinnedMesh* skinattack = (ISkinnedMesh*)currentModel.attackmesh;
+					skin->useAnimationFrom(skinattack);
+				}
+				else
+				{
+					skin->useAnimationFrom(skin);	
+				}
+				currentModel.node->setFrameLoop(currentModel.attack_start,currentModel.attack_end);
+				currentModel.node->setLoopMode(true);
 			}
-			else
-			{
-				skin->useAnimationFrom(skin);
-				
-			}
-            currentModel.node->setFrameLoop(currentModel.attack_start,currentModel.attack_end);
-			currentModel.node->setLoopMode(true);
             currentAnimation = PLAYER_ANIMATION_ATTACK;
             break;
         case PLAYER_ANIMATION_DIE:
-			if (currentModel.die)  
-			{	
-				ISkinnedMesh* skindie = (ISkinnedMesh*)currentModel.diemesh;
-				skin->useAnimationFrom(skindie);
-			}
-			else
+			if (currentModel.die)
 			{
-				skin->useAnimationFrom(skin);
-				
+				if (currentModel.diemesh!=NULL)  
+				{	
+					ISkinnedMesh* skindie = (ISkinnedMesh*)currentModel.diemesh;
+					skin->useAnimationFrom(skindie);
+				}
+				else
+				{
+					skin->useAnimationFrom(skin);
+				}
+				currentModel.node->setFrameLoop(currentModel.die_start,currentModel.die_end);
 			}
-			currentModel.node->setFrameLoop(currentModel.die_start,currentModel.die_end);
-            currentAnimation = PLAYER_ANIMATION_DIE;
+			currentAnimation = PLAYER_ANIMATION_DIE;
 			printf("Doing the death animation");
             break;
 		case PLAYER_ANIMATION_INJURED:
-			if (currentModel.injured)  
+			if (currentModel.injured)
 			{
-				
-				ISkinnedMesh* skininjured = (ISkinnedMesh*)currentModel.injuredmesh;
-				skin->useAnimationFrom(skininjured);
+				if (currentModel.injuredmesh!=NULL)  
+				{
+					ISkinnedMesh* skininjured = (ISkinnedMesh*)currentModel.injuredmesh;
+					skin->useAnimationFrom(skininjured);
+				}
+				else
+				{
+					skin->useAnimationFrom(skin);
+				}
+				currentModel.node->setFrameLoop(currentModel.injured_start,currentModel.injured_end);
 			}
-			else
-			{
-				skin->useAnimationFrom(skin);
-				
-			}
-			currentModel.node->setFrameLoop(currentModel.injured_start,currentModel.injured_end);
             currentAnimation = PLAYER_ANIMATION_INJURED;
             break;
     }
