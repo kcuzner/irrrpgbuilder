@@ -85,13 +85,13 @@ Player::Player()
 				if (s_start.size()>1) 
 					currAnim.startFrame = atoi(s_start.c_str()); 
 				else 
-					currAnim.startFrame=1;
+					currAnim.startFrame=0;
 				            
 				stringc s_end = currentAnimXML->ToElement()->Attribute("end");
 				if (s_end.size()>1) 
 					currAnim.endFrame = atoi(s_end.c_str()); 
 				else 
-					currAnim.endFrame=1;
+					currAnim.endFrame=0;
                
 				// TODO: Not totally implemented
                 stringc s_attack = currentAnimXML->ToElement()->Attribute("attackevent");
