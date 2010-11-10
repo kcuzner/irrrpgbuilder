@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <IrrRPG_Builder_Player version="1.0">
-	  <player_model name="player_normal" mesh="player_02.b3d" scale="1.0">
+	  <player_model name="player_normal" mesh="player_02.b3d" script="generic_player.lua" scale="1.0">
 	  <animation name="idle" mesh="player_idle.b3d" start="1" end="100"/>
 	  <animation name="walk" start="1" end="25"/>
 	  <animation name="attack" start="27" end="47"/>
