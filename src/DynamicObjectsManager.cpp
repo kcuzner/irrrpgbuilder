@@ -117,7 +117,8 @@ DynamicObjectsManager::DynamicObjectsManager()
             //Get Dynamic Object Attributes
             stringc name = currentObjXML->ToElement()->Attribute("name");
             stringc mesh = currentObjXML->ToElement()->Attribute("mesh");
-            stringc script = currentObjXML->ToElement()->Attribute("script");
+            stringc scriptname = currentObjXML->ToElement()->Attribute("script");
+			stringc type = currentObjXML->ToElement()->Attribute("type");
             stringc scale = currentObjXML->ToElement()->Attribute("scale");
             stringc materialType = currentObjXML->ToElement()->Attribute("materialType");
 
@@ -143,6 +144,28 @@ DynamicObjectsManager::DynamicObjectsManager()
 
             // -- Create Dynamic Object --
             DynamicObject* newObj = new DynamicObject(name, mesh, animations);
+		    if (scriptname.size()>1)
+			{
+				stringc newScript = "";
+				stringc filename = "../media/scripts/";
+				filename += scriptname;
+				printf("There is a game object with a script! object name is %s and the script is:\n",filename.c_str());
+				std::string line;
+				ifstream fileScript (filename.c_str());
+				if (fileScript.is_open())
+				{
+					while (! fileScript.eof() )
+					{
+						getline (fileScript,line);
+						newScript += line.c_str();
+						newScript += '\n';
+					}
+					fileScript.close();
+				}
+				//printf("Here is the currently written script:\n\n%s",newScript.c_str());
+				//GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
+				newObj->setScript(newScript);
+			}
 
             //setup material
             E_MATERIAL_TYPE mat = EMT_SOLID;
@@ -189,7 +212,8 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
     //the unique name of an dynamic object contains his index at the objects vector
     newObj->setName(this->createUniqueName());
-
+	newObj->setScript(activeObject->getScript());
+	
     return newObj;
 }
 
@@ -282,6 +306,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
         this->setActiveObject(templateObj);
 
         DynamicObject* newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
+		// If a script is assigned to the mesh then load it.
         newObj->setScript(script);
         newObj->setRotation(vector3df(0,rot,0));
 

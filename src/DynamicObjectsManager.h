@@ -59,7 +59,6 @@ class DynamicObjectsManager
         vector<DynamicObject*> objectsTemplate;
 
         vector<DynamicObject*> objects;
-
         int objsCounter;
 
         vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;

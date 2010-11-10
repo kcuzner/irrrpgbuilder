@@ -145,6 +145,7 @@ class DynamicObject
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
         stringc name;
+				
         IMesh* mesh;
         ISceneNode* node;
 
