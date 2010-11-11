@@ -327,6 +327,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
             break;
         case BT_ID_PLAY_GAME:
+			EditorCamera::getInstance()->setCamera(1);
             this->setAppState(APP_GAMEPLAY_NORMAL);
             Player::getInstance()->doScript();
             LuaGlobalCaller::getInstance()->storeGlobalParams();
@@ -338,6 +339,8 @@ void App::eventGuiButton(s32 id)
             LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
             break;
         case BT_ID_STOP_GAME:
+			EditorCamera::getInstance()->setCamera(2);
+			EditorCamera::getInstance()->setPosition(Player::getInstance()->getNode()->getPosition());
             Player::getInstance()->clearScripts();
             DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
@@ -502,6 +505,11 @@ void App::eventMouseWheel(f32 value)
         vector3df oldRot = lastMousePick.pickedNode->getRotation();
         lastMousePick.pickedNode->setRotation(vector3df(0,value*10,0)+oldRot);
     }
+	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	{
+		printf("Here is the value of the mousewheel: %f\n",value);
+		EditorCamera::getInstance()->setCameraHeight(value);
+	}
 }
 
 App* App::getInstance()
