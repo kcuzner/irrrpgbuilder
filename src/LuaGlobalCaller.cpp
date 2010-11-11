@@ -751,7 +751,7 @@ int LuaGlobalCaller::setPlayerLife(lua_State *LS)
     lua_pop(LS, 1);
 
     Player::getInstance()->setLife(life);
-	
+
 	return 0;
 }
 
@@ -766,25 +766,33 @@ int LuaGlobalCaller::getPlayerLife(lua_State *LS)
 
 int LuaGlobalCaller::setObjectLife(lua_State *LS)
 {
-	stringc objName = lua_tostring(LS, 1);
-	//lua_pop(LS, 1);
+    // For an unknown reason, codeblock produce a illegal instruction here.
+    #if defined(_MSC_VER)
+	stringc objName = "";
+	int life = 100;
 
-	printf("Here is the current object name: %s\n",objName);
 
-    int life = (int)lua_tonumber(LS, 2);
-    //lua_pop(LS, 1);
-	printf("Here is the current object life: %d\n",life);
+    int top = lua_gettop(LS);
+    if (top==2)
+	{
+		life = (int)lua_tonumber(LS, -1);
+		lua_pop(LS,1);
+		objName = lua_tostring(LS, -1);
+		lua_pop(LS,1);
+	}
 
-	stringc dynamicObjName = "";
-	if( stringc( objName.subString(0,14)) == "dynamic_object" )
-        dynamicObjName = objName.c_str();
+    printf ("Life for object %s is changed to %i\n",objName,life);
+    stringc dynamicObjName = "";
+    if( stringc( objName.subString(0,14)) == "dynamic_object" )
+		dynamicObjName = objName.c_str();
     else
-        dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
+		dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
-	printf("Here is the current life for object %s: %d\n",objName,life);
-	tempObj->setLife(life);
-    	
+    printf("Here is the current life for object %s: %d\n",objName,life);
+    tempObj->setLife(life);
+
+    #endif
 	return 0;
 }
 
