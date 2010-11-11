@@ -86,7 +86,10 @@ Player::Player()
 				script = "";
 
 			stringc s_scale = playerModelXML->ToElement()->Attribute("scale");
-			if (s_scale.size()>1) newModel.scale = (f32)atof(s_scale.c_str()); else newModel.scale = 1;
+			if (s_scale.size()>0) newModel.scale = (f32)atof(s_scale.c_str()); else newModel.scale = 1;
+
+			stringc s_wspeed = playerModelXML->ToElement()->Attribute("walkspeed");
+			if (s_wspeed.size()>0) walkSpeed = (f32)atof(s_wspeed.c_str()); else walkSpeed = (f32)0.02;
 			// Animation meshes -- Skinned options
 			//-----------------------------------------------------------------------------
 			TiXmlNode* currentAnimXML = playerModelXML->FirstChild( "animation" );
@@ -105,32 +108,31 @@ Player::Player()
 				currAnim.sound = currentAnimXML->ToElement()->Attribute("sound");
 
 				stringc s_start = currentAnimXML->ToElement()->Attribute("start");
-				if (s_start.size()>1) 
+				if (s_start.size()>0) 
 					currAnim.startFrame = atoi(s_start.c_str()); 
 				else 
 					currAnim.startFrame=0;
 				            
 				stringc s_end = currentAnimXML->ToElement()->Attribute("end");
-				if (s_end.size()>1) 
+				if (s_end.size()>0) 
 					currAnim.endFrame = atoi(s_end.c_str()); 
 				else 
 					currAnim.endFrame=0;
-               
-				// TODO: Not totally implemented
+                // TODO: Partially implemented
                 stringc s_attack = currentAnimXML->ToElement()->Attribute("attackevent");
-				if (s_attack.size()>1) 
+				if (s_attack.size()>0) 
 					currAnim.attackevent = atoi(s_attack.c_str()); 
 				else 
 					currAnim.attackevent=currAnim.startFrame;
 				
 				// TODO: Not totally implemented
 				stringc s_sound = currentAnimXML->ToElement()->Attribute("soundevent");
-				if (s_sound.size()>1) 
+				if (s_sound.size()>0) 
 					currAnim.soundevent = atoi(s_sound.c_str());
 
 				// TODO: Not totally implemented
 				stringc s_speed = currentAnimXML->ToElement()->Attribute("speed");
-				if (s_speed.size()>1) 
+				if (s_speed.size()>0) 
 					currAnim.speed = (f32)atof(s_speed.c_str());
 
 				// Associate the animation infos
@@ -233,8 +235,6 @@ Player::Player()
     fakeShadow->setScale(vector3df(0.5,1,0.5));
     fakeShadow->setPosition(vector3df(0,(f32)0.03 ,0));
 
-	walkSpeed = (f32)0.02;
-
     this->setAnimation(PLAYER_ANIMATION_IDLE);
 
     enemyUnderAttack = NULL;
@@ -300,12 +300,24 @@ void Player::walkTo(vector3df targetPos, f32 speed)
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
-
-    if(TerrainManager::getInstance()->getHeightAt(pos) == 0)
-        this->setPosition(pos);
-    else
-        walkTarget = this->getPosition();
+    //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
+	if (height>-0.09f && height<0.05f)
+	{
+		pos.Y = height;
+		this->setPosition(pos);
+	}
+	else
+	{
+		walkTarget = this->getPosition();
+		setAnimation(PLAYER_ANIMATION_IDLE);
+	}
+	//printf ("Here is the current position of the player on Y: %f\n",pos.Y);
+	
+    //if(TerrainManager::getInstance()->getHeightAt(pos) == 0)
+    //    this->setPosition(pos);
+    //else
+      //  walkTarget = this->getPosition();
 }
 
 void Player::lookAt(vector3df pos)
@@ -332,8 +344,6 @@ void Player::setWalkSpeed(f32 newSpeed)
 
 void Player::setAnimation(PLAYER_ANIMATION anim)
 {
-	if (anim==PLAYER_ANIMATION_DIE)
-		printf("The player was asked to die!");
 	// When injured, don't do anything until the animation is completed.
 	if((anim != PLAYER_ANIMATION_DIE) && (currentAnimation == PLAYER_ANIMATION_INJURED) && (currentModel.node->getFrameNr()<currentModel.injured_end)) return;
 	if(anim == currentAnimation) return;
@@ -344,6 +354,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 			// Use another animation mesh if it's defined
 			if (currentModel.idle)
 			{
+				printf("switched to idle\n");
 				if (currentModel.idlemesh!=NULL)  
 				{
 					ISkinnedMesh* skinidle = (ISkinnedMesh*)currentModel.idlemesh;
@@ -361,6 +372,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
         case PLAYER_ANIMATION_WALK:
 			if (currentModel.walk)
 			{
+				printf("switched to walk\n");
 				if (currentModel.walkmesh!=NULL)  
 				{
 					ISkinnedMesh* skinwalk = (ISkinnedMesh*)currentModel.walkmesh;
@@ -371,6 +383,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 					skin->useAnimationFrom(skin);
 				}
 				currentModel.node->setFrameLoop(currentModel.walk_start,currentModel.walk_end);
+				printf ("Walk frame start: %i, end: %i\n",currentModel.walk_start, currentModel.walk_end);
 				currentModel.node->setLoopMode(true);
 			}
 			currentAnimation = PLAYER_ANIMATION_WALK;
@@ -378,6 +391,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
         case PLAYER_ANIMATION_ATTACK:
 			if (currentModel.attack)
 			{
+				printf("switched to attack\n");
 				if (currentModel.attackmesh!=NULL)  
 				{
 					ISkinnedMesh* skinattack = (ISkinnedMesh*)currentModel.attackmesh;
@@ -395,6 +409,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
         case PLAYER_ANIMATION_DIE:
 			if (currentModel.die)
 			{
+				printf("switched to die\n");
 				if (currentModel.diemesh!=NULL)  
 				{	
 					ISkinnedMesh* skindie = (ISkinnedMesh*)currentModel.diemesh;
@@ -412,6 +427,7 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 		case PLAYER_ANIMATION_INJURED:
 			if (currentModel.injured)
 			{
+				printf("switched to injured\n");
 				if (currentModel.injuredmesh!=NULL)  
 				{
 					ISkinnedMesh* skininjured = (ISkinnedMesh*)currentModel.injuredmesh;
@@ -467,6 +483,8 @@ void Player::update()
 	if (currentAnimation!=PLAYER_ANIMATION_DIE)
 	{
 		CheckAnimationEvent();
+
+		// If a target position is set then move to that position, call the walk animation
 		if( (this->getPosition().getDistanceFrom(walkTarget) > 0.2) &&  (this->getLife()!=0))
 		{
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
@@ -475,19 +493,21 @@ void Player::update()
 		
 			this->walkTo(walkTarget, walkSpeed);
 		}
+		// If there is a enemy selected and the attack is occuring do the animations (align to enemy, stop the attack when it's dead)
 		else if( enemyUnderAttack && this->getAnimation() == PLAYER_ANIMATION_ATTACK)
 		{
 			this->lookAt(enemyUnderAttack->getPosition());
-
+			walkTarget = this->getPosition();
 			if(( this->getPosition().getDistanceFrom(enemyUnderAttack->getPosition()) > 1 ) || (enemyUnderAttack->getLife()==0))
 			{
 				this->setAnimation(PLAYER_ANIMATION_IDLE);
 				enemyUnderAttack = NULL;
 			}
 		}
-		else if((this->getLife()!=this->getInstance()->oldlife) && (this->getLife()!=0))
+		// The player is being injured in combat
+		else if((this->getLife()!=this->oldlife) && (this->getLife()!=0))
 			{
-				//printf("The player is being injured in combat!\n");
+				
 				this->setAnimation(PLAYER_ANIMATION_INJURED);
 				currentModel.node->setLoopMode(false);
 			}
@@ -633,16 +653,16 @@ bool Player::loadFromXML(TiXmlElement* parentElement)
 	
 	// Failsafe method to load the field, will not crash if the attribute is not there.
 	stringc s_x = parentElement->ToElement()->Attribute("x");
-	if (s_x.size()>1) x = (f32)atoi(s_x.c_str());
+	if (s_x.size()>0) x = (f32)atoi(s_x.c_str());
 	
 	stringc s_y = parentElement->ToElement()->Attribute("y");
-	if (s_y.size()>1) y = (f32)atoi(s_y.c_str());
+	if (s_y.size()>0) y = (f32)atoi(s_y.c_str());
 
     stringc s_z = parentElement->ToElement()->Attribute("z"); 
-	if (s_z.size()>1) z = (f32)atoi(s_z.c_str());
+	if (s_z.size()>0) z = (f32)atoi(s_z.c_str());
 
     stringc s_script = parentElement->ToElement()->Attribute("script");
-	if (s_script.size()>1) script = s_script.c_str();
+	if (s_script.size()>0) script = s_script.c_str();
 
     this->setPosition(vector3df(x,y,z));
 	return true;

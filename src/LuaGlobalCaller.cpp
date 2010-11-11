@@ -770,9 +770,7 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
     #if defined(_MSC_VER)
 	stringc objName = "";
 	int life = 100;
-
-
-    int top = lua_gettop(LS);
+	int top = lua_gettop(LS);
     if (top==2)
 	{
 		life = (int)lua_tonumber(LS, -1);
