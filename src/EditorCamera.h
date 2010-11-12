@@ -24,6 +24,8 @@ class EditorCamera
 
         void moveCamera(vector3df pos);
         void setPosition(vector3df pos);
+		
+		ICameraSceneNode* getNode();
 
         vector3df getPosition();
         vector3df getTarget();
@@ -39,6 +41,9 @@ class EditorCamera
 		int camera;
 		int minCamera;
 		int maxCamera;
+
+		f32 fov;
+		f32 distance;
 };
 
 #endif // EDITORCAMERA_H

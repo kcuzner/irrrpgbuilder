@@ -340,7 +340,6 @@ void App::eventGuiButton(s32 id)
             break;
         case BT_ID_STOP_GAME:
 			EditorCamera::getInstance()->setCamera(2);
-			EditorCamera::getInstance()->setPosition(Player::getInstance()->getNode()->getPosition());
             Player::getInstance()->clearScripts();
             DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
