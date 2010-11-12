@@ -358,7 +358,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 void DynamicObjectsManager::initializeCollisions()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-	IMetaTriangleSelector* meta=smgr->createMetaTriangleSelector();
+	meta=smgr->createMetaTriangleSelector();
 	ITriangleSelector* triangle=0;
 
 	// Put all the triangle selector into one meta selector.
@@ -374,17 +374,23 @@ void DynamicObjectsManager::initializeCollisions()
 		printf ("There is about %i triangles in this metaselector.\n",number2);
 		printf("Collisions: added object %i\n",i);
     }
+
 	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
 	// set the collisions for the player
   	Player::getInstance()->setAnimator(anim);
-	meta->drop();
 	//collisionResponseAnimators.push_back(anim);
 	//((DynamicObject*)objects[i])->setCollisionAnimator(anim);
+	for(int i=0;i<(int)objects.size();i++)
+    {
+		ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+		objects[i]->getNode()->addAnimator(coll);
+	}
 	
 }
 
 void DynamicObjectsManager::clearCollisions()
 {
+	meta->drop();
 	Player::getInstance()->getNode()->removeAnimator(anim);
 	
 	/*for(int i=0;i<(int)collisionResponseAnimators.size();i++)
@@ -395,6 +401,28 @@ void DynamicObjectsManager::clearCollisions()
     }
 
     collisionResponseAnimators.clear();*/
+}
+
+void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool remove)
+{
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	if (tris && remove)
+	{
+		s32 info1 = 0;
+		info1 = meta->getTriangleCount();
+		s32 info2 = tris->getTriangleCount();
+		printf ("Selectors infos: Metaselector has %i polygons, current selector has %i polygons.\n",info1,info2);
+		meta->removeTriangleSelector(tris);
+		Player::getInstance()->getNode()->removeAnimator(anim);
+		anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+		Player::getInstance()->setAnimator(anim);
+		return;
+	}
+	if (tris && !remove)
+	{ // TODO: Need a new function add/remove collision inside the dynamic object class
+	}
+
+
 }
 
 void DynamicObjectsManager::clean()

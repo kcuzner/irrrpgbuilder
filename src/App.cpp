@@ -511,8 +511,13 @@ void App::eventMouseWheel(f32 value)
 		Player::getInstance()->setRotation(vector3df(0,value*10,0)+oldRot);
 	}
 	// This will allow zoom in/out in editor mode
-	if(app_state != APP_EDIT_CHARACTER &&
-       app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+	if	(app_state != APP_EDIT_CHARACTER &&
+		app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE &&
+		app_state != APP_EDIT_ABOUT &&
+		app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT &&
+		app_state != APP_EDIT_SCRIPT_GLOBAL &&
+		app_state != APP_EDIT_PLAYER_SCRIPT &&
+		cursorIsInEditArea())
     {
 		EditorCamera::getInstance()->setCameraHeight(value);
 	}

@@ -367,6 +367,8 @@ void DynamicObject::setEnabled(bool enabled)
     }
 */
     this->node->setVisible(enabled);
+	if (!enabled)
+		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
 }
 
 void DynamicObject::setAnimation(stringc animName)

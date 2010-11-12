@@ -41,6 +41,8 @@ class DynamicObjectsManager
 
         void initializeCollisions();
         void clearCollisions();
+		
+		void updateMetaSelector(ITriangleSelector* tris, bool remove);
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
@@ -62,6 +64,7 @@ class DynamicObjectsManager
         int objsCounter;
 
         vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
+		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;
 
         stringc createUniqueName();
