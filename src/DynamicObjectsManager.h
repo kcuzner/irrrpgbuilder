@@ -62,6 +62,7 @@ class DynamicObjectsManager
         int objsCounter;
 
         vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
+		ISceneNodeAnimatorCollisionResponse* anim;
 
         stringc createUniqueName();
 };

@@ -350,6 +350,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
             GlobalMap::getInstance()->clearGlobals();
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
             break;
         case BT_ID_EDIT_CHARACTER:
             this->setAppState(APP_EDIT_CHARACTER);
@@ -504,9 +505,15 @@ void App::eventMouseWheel(f32 value)
         vector3df oldRot = lastMousePick.pickedNode->getRotation();
         lastMousePick.pickedNode->setRotation(vector3df(0,value*10,0)+oldRot);
     }
-	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	if(app_state == APP_EDIT_CHARACTER)
 	{
-		printf("Here is the value of the mousewheel: %f\n",value);
+		vector3df oldRot = Player::getInstance()->getRotation();
+		Player::getInstance()->setRotation(vector3df(0,value*10,0)+oldRot);
+	}
+	// This will allow zoom in/out in editor mode
+	if(app_state != APP_EDIT_CHARACTER &&
+       app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+    {
 		EditorCamera::getInstance()->setCameraHeight(value);
 	}
 }
@@ -647,7 +654,7 @@ bool App::loadProjectFromXML(stringc filename)
     #ifdef APP_DEBUG
     cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
     #endif
-
+	
     TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
 
     if ( root )

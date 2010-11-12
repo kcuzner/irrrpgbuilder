@@ -68,11 +68,22 @@ int EditorCamera::getCamera()
 
 void EditorCamera::setCameraHeight(irr::f32 increments)
 {
+	int max = 0;
+	int min = 0;
 	cameraHeight-=(increments/10);
-	if (cameraHeight>10) 
-		cameraHeight=10;
-	if (cameraHeight<2)
-		cameraHeight=2;
+	switch (camera)
+	{
+		case 1: max = 6;
+				min = 2;	
+				break;
+		case 2: max = 12;
+				min = 2;
+				break;
+	}
+	if (cameraHeight>max) 
+		cameraHeight=max;
+	if (cameraHeight<min)
+		cameraHeight=min;
 	cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z));
     cam->setFarValue(cameraHeight*3.0f);
 	

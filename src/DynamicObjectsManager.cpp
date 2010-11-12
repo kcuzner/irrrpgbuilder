@@ -357,29 +357,44 @@ void DynamicObjectsManager::showDebugData(bool show)
 
 void DynamicObjectsManager::initializeCollisions()
 {
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	IMetaTriangleSelector* meta=smgr->createMetaTriangleSelector();
+	ITriangleSelector* triangle=0;
+
+	// Put all the triangle selector into one meta selector.
     for(int i=0;i<(int)objects.size();i++)
     {
-        ISceneNodeAnimatorCollisionResponse* anim = App::getInstance()->getDevice()->getSceneManager()->createCollisionResponseAnimator(((DynamicObject*)objects[i])->getTriangleSelector(),
-                                                                                            Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-		// set the collisions for the player
-        Player::getInstance()->getNode()->addAnimator(anim);
-
-        collisionResponseAnimators.push_back(anim);
-
-        ((DynamicObject*)objects[i])->setCollisionAnimator(anim);
+		//triangle = ((DynamicObject*)objects[i])->getTriangleSelector();
+		triangle = objects[i]->getNode()->getTriangleSelector();
+		s32 number = triangle->getTriangleCount();
+		printf ("There is about %i triangles in this selector.\n",number);
+		
+		meta->addTriangleSelector(triangle);
+		s32 number2  = meta->getTriangleCount();
+		printf ("There is about %i triangles in this metaselector.\n",number2);
+		printf("Collisions: added object %i\n",i);
     }
+	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+	// set the collisions for the player
+  	Player::getInstance()->setAnimator(anim);
+	meta->drop();
+	//collisionResponseAnimators.push_back(anim);
+	//((DynamicObject*)objects[i])->setCollisionAnimator(anim);
+	
 }
 
 void DynamicObjectsManager::clearCollisions()
 {
-    for(int i=0;i<(int)collisionResponseAnimators.size();i++)
+	Player::getInstance()->getNode()->removeAnimator(anim);
+	
+	/*for(int i=0;i<(int)collisionResponseAnimators.size();i++)
     {
         Player::getInstance()->getNode()->removeAnimator(((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i]));
 
         ((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i])->drop();
     }
 
-    collisionResponseAnimators.clear();
+    collisionResponseAnimators.clear();*/
 }
 
 void DynamicObjectsManager::clean()

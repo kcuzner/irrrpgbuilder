@@ -87,6 +87,9 @@ class Player
         int getItemCount(stringc itemName);//returns the total of items of type "itemName"
         bool hasItem(stringc itemName);
         void removeAllItems();
+		
+		void setAnimator(ISceneNodeAnimatorCollisionResponse* coll);
+		
 
         ISceneNode* getNode() { return node; };
 
@@ -154,6 +157,7 @@ class Player
 
         PLAYER_ANIMATION currentAnimation;
 		vector<PlayerObject_Animation> animations;
+		ISceneNodeAnimatorCollisionResponse* anim;
 
         int life;
         int money;

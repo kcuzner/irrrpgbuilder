@@ -295,6 +295,11 @@ void Player::setScript(stringc script)
 
 void Player::walkTo(vector3df targetPos, f32 speed)
 {
+	// Will have the player walk to the targetposition at the current speed.
+	// Walk can be interrupted by:
+	// - A collision with another object
+	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
+
     lookAt(targetPos);
 
     vector3df pos=this->getPosition();
@@ -302,7 +307,10 @@ void Player::walkTo(vector3df targetPos, f32 speed)
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	if (height>-0.09f && height<0.05f)
+	if (anim->collisionOccurred())
+		printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+	
+	if (height>-0.09f && height<0.05f && anim->collisionOccurred()==false)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
@@ -312,12 +320,6 @@ void Player::walkTo(vector3df targetPos, f32 speed)
 		walkTarget = this->getPosition();
 		setAnimation(PLAYER_ANIMATION_IDLE);
 	}
-	//printf ("Here is the current position of the player on Y: %f\n",pos.Y);
-	
-    //if(TerrainManager::getInstance()->getHeightAt(pos) == 0)
-    //    this->setPosition(pos);
-    //else
-      //  walkTarget = this->getPosition();
 }
 
 void Player::lookAt(vector3df pos)
@@ -344,7 +346,6 @@ void Player::setWalkSpeed(f32 newSpeed)
 
 void Player::setAnimation(PLAYER_ANIMATION anim)
 {
-	// When injured, don't do anything until the animation is completed.
 	if((anim != PLAYER_ANIMATION_DIE) && (currentAnimation == PLAYER_ANIMATION_INJURED) && (currentModel.node->getFrameNr()<currentModel.injured_end)) return;
 	if(anim == currentAnimation) return;
 	ISkinnedMesh* skin = (ISkinnedMesh*)currentModel.mesh;
@@ -354,7 +355,9 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 			// Use another animation mesh if it's defined
 			if (currentModel.idle)
 			{
-				printf("switched to idle\n");
+				#ifdef DEBUG
+				printf("Animation states: switched to idle\n");
+				#endif
 				if (currentModel.idlemesh!=NULL)  
 				{
 					ISkinnedMesh* skinidle = (ISkinnedMesh*)currentModel.idlemesh;
@@ -372,7 +375,9 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
         case PLAYER_ANIMATION_WALK:
 			if (currentModel.walk)
 			{
-				printf("switched to walk\n");
+				#ifdef DEBUG
+				printf("Animation states: switched to walk\n");
+				#endif
 				if (currentModel.walkmesh!=NULL)  
 				{
 					ISkinnedMesh* skinwalk = (ISkinnedMesh*)currentModel.walkmesh;
@@ -383,7 +388,6 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 					skin->useAnimationFrom(skin);
 				}
 				currentModel.node->setFrameLoop(currentModel.walk_start,currentModel.walk_end);
-				printf ("Walk frame start: %i, end: %i\n",currentModel.walk_start, currentModel.walk_end);
 				currentModel.node->setLoopMode(true);
 			}
 			currentAnimation = PLAYER_ANIMATION_WALK;
@@ -391,7 +395,9 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
         case PLAYER_ANIMATION_ATTACK:
 			if (currentModel.attack)
 			{
-				printf("switched to attack\n");
+				#ifdef DEBUG
+				printf("Animation states: switched to attack\n");
+				#endif
 				if (currentModel.attackmesh!=NULL)  
 				{
 					ISkinnedMesh* skinattack = (ISkinnedMesh*)currentModel.attackmesh;
@@ -408,8 +414,10 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
             break;
         case PLAYER_ANIMATION_DIE:
 			if (currentModel.die)
-			{
-				printf("switched to die\n");
+			{	
+				#ifdef DEBUG
+				printf("Animation states: switched to die\n");
+				#endif
 				if (currentModel.diemesh!=NULL)  
 				{	
 					ISkinnedMesh* skindie = (ISkinnedMesh*)currentModel.diemesh;
@@ -422,12 +430,13 @@ void Player::setAnimation(PLAYER_ANIMATION anim)
 				currentModel.node->setFrameLoop(currentModel.die_start,currentModel.die_end);
 			}
 			currentAnimation = PLAYER_ANIMATION_DIE;
-			printf("Doing the death animation");
             break;
 		case PLAYER_ANIMATION_INJURED:
 			if (currentModel.injured)
 			{
-				printf("switched to injured\n");
+				#ifdef DEBUG
+				printf("Animation states: switched to injured\n");
+				#endif
 				if (currentModel.injuredmesh!=NULL)  
 				{
 					ISkinnedMesh* skininjured = (ISkinnedMesh*)currentModel.injuredmesh;
@@ -474,8 +483,9 @@ bool Player::CheckAnimationEvent()
 			oldtime = timer->getRealTime();
 			return true;
 		}
+		
 	}
-	else return false;
+	return false;
 }
 
 void Player::update()
@@ -747,4 +757,10 @@ bool Player::hasItem(stringc itemName)
 void Player::removeAllItems()
 {
     items.clear();
+}
+
+void Player::setAnimator(irr::scene::ISceneNodeAnimatorCollisionResponse *coll)
+{
+	this->getNode()->addAnimator(coll);
+	anim = coll;
 }
