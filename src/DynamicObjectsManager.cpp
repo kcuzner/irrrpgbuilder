@@ -393,14 +393,24 @@ void DynamicObjectsManager::clearCollisions()
 	meta->drop();
 	Player::getInstance()->getNode()->removeAnimator(anim);
 	
-	/*for(int i=0;i<(int)collisionResponseAnimators.size();i++)
+	// Remove the collision animators from the objects
+	for(int i=0;i<(int)objects.size();i++)
     {
-        Player::getInstance()->getNode()->removeAnimator(((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i]));
+		core::list<ISceneNodeAnimator*>::ConstIterator begin = objects[i]->getNode()->getAnimators().begin(); 
+		core::list<ISceneNodeAnimator*>::ConstIterator end = objects[i]->getNode()->getAnimators().end(); 
 
-        ((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i])->drop();
-    }
-
-    collisionResponseAnimators.clear();*/
+		for(int it=0; begin != end; ++it ) 
+		{ 
+			ISceneNodeAnimator* pAnim = *begin; 
+			if( pAnim->getType() == ESNAT_COLLISION_RESPONSE ) 
+			{ 
+				objects[i]->getNode()->removeAnimator(*begin); 
+				break; 
+			} 
+		} 
+	}
+	//((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i])->drop();
+    //collisionResponseAnimators.clear();
 }
 
 void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool remove)

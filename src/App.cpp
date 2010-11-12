@@ -591,6 +591,7 @@ void App::run()
 
     while(device->run())
     {
+		device->yield();
         driver->beginScene(true, true, SColor(0,200,200,200));
         if(app_state < APP_STATE_CONTROL)
             updateEditMode();//editMode
