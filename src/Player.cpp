@@ -239,8 +239,15 @@ Player::Player()
 
     enemyUnderAttack = NULL;
 
-    life = 100;
-    money = 0;
+    properties.money=0;
+	properties.life=100;
+	properties.level=1;
+	prop_base.mindamage=1;
+	prop_level.mindamage=1;
+	prop_base.maxdamage=3;
+	prop_level.maxdamage=2;
+	prop_base.experience=0;
+	prop_level.experience=10;
     
 	timer = App::getInstance()->getDevice()->getTimer();
 	currentime = timer->getRealTime();
@@ -474,8 +481,19 @@ bool Player::CheckAnimationEvent()
 		if (delay>200)
 		{
 			int en_life = enemyUnderAttack->getLife();
-			en_life -= 1;
-			if (en_life<0) en_life=0;
+			
+			// Basic rule that evaluate only the damage (and evaluation per level)
+			properties.maxdamage = prop_base.maxdamage+(prop_level.maxdamage*properties.level);
+			properties.mindamage = prop_base.mindamage+(prop_level.mindamage*properties.level);
+			en_life -= rand() % (properties.maxdamage-properties.mindamage) + properties.mindamage; // temporary.
+
+			if (en_life<0) 
+			{
+				en_life=0;
+				properties.experience += 10; 
+				// Give 10 points of experience per kill
+				// TODO: This need to be read from the NPC experience info. Not implemented
+			}
 			// Set the new life value and call the update so the display is sure to be refreshed when attack.
 			// I want also to have a "on_attack" event sent to the LUA
 			enemyUnderAttack->setLife(en_life);
@@ -532,7 +550,7 @@ void Player::update()
 	lua_getglobal(L,"step");
 	if(lua_isfunction(L, -1)) lua_call(L,0,0);
 	lua_pop( L, -1 );
-	this->oldlife = this->life;
+	this->oldlife = this->properties.life;
 	
 }
 
@@ -570,10 +588,6 @@ void Player::doScript()
 
     items.clear();
 
-    life = 100;
-	oldlife = 100;
-    money = 0;
-
     lua_getglobal(L,"onLoad");
     if(lua_isfunction(L, -1)) lua_call(L,0,0);
     lua_pop( L, -1 );
@@ -598,7 +612,7 @@ void Player::clearScripts()
 
 void Player::setLife(int life)
 {
-    this->life = life;
+    this->properties.life = life;
 	
 	// Update the GUI display
 	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
@@ -615,17 +629,17 @@ void Player::setLife(int life)
 
 int Player::getLife()
 {
-    return this->life;
+    return this->properties.life;
 }
 
 void Player::setMoney(int money)
 {
-    this->money = money;
+    this->properties.money = money;
 }
 
 int Player::getMoney()
 {
-    return this->money;
+    return this->properties.money;
 }
 
 void Player::setHighLight(bool highlight)

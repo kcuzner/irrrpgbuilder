@@ -159,8 +159,23 @@ class Player
 		vector<PlayerObject_Animation> animations;
 		ISceneNodeAnimatorCollisionResponse* anim;
 
-        int life;
-        int money;
+        struct property{
+			int life;
+			int maxlife;
+			int regen;
+			int money;
+			int level;
+			int skill_level;
+			int experience;
+			int mindamage;
+			int maxdamage;
+			int hurtresist;
+			int dotduration;
+		};
+
+		property prop_base;
+		property prop_level;
+		property properties;
 
 		int oldlife;
 
