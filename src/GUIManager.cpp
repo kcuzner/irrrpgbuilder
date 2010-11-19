@@ -461,11 +461,11 @@ void GUIManager::setupGameplayGUI()
     fader=guienv->addInOutFader();
     fader->setVisible(false);
 
-    guiPlayerLife_Shadow=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(20,50,200,50),false,false,0,-1,false);
+    guiPlayerLife_Shadow=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(20,50,600,50),false,false,0,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
 
-    guiPlayerLife=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(21,51,200,50),false,false,0,-1,false);
+    guiPlayerLife=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(21,51,600,50),false,false,0,-1,false);
     guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
     guiPlayerLife->setOverrideFont(guiFontLarge28);
 
@@ -702,9 +702,8 @@ void GUIManager::showBlackScreen(stringc text)
     fader->setVisible(true);
     fader->fadeOut(1000);
 
-    while(!fader->isReady())
+    while(!fader->isReady() && App::getInstance()->getDevice()->run())
     {
-        App::getInstance()->getDevice()->run();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
 
@@ -724,9 +723,8 @@ void GUIManager::hideBlackScreen()
 {
     fader->fadeIn(1000);
 
-    while(!fader->isReady())
+    while(!fader->isReady() && App::getInstance()->getDevice()->run())
     {
-        App::getInstance()->getDevice()->run();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         guienv->drawAll();
@@ -776,9 +774,8 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
 
-    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false)
+    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
-        App::getInstance()->getDevice()->run();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         //guienv->drawAll();
@@ -841,9 +838,8 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
 
-    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false)
+	while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
-        App::getInstance()->getDevice()->run();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         //guienv->drawAll();
@@ -934,9 +930,8 @@ stringc GUIManager::showInputQuestion(std::string text)
 
     bool mouseExit = false;
 
-    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false)
+    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
-        App::getInstance()->getDevice()->run();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         //guienv->drawAll();
