@@ -14,12 +14,14 @@ Vegetation::Vegetation()
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     static IMesh* trunkMesh = smgr->getMesh("../media/vegetation/TreeHigh.obj");
-
+	trunkMesh->setHardwareMappingHint(EHM_STATIC);
     trunk = smgr->addMeshSceneNode(trunkMesh);
+
+	
     //trunk->setMaterialFlag(EMF_LIGHTING,false);
 
     IBillboardSceneNode* temp;
-
+	
     s32 texture = rand()%4;
     ITexture* itexture = NULL;
 
