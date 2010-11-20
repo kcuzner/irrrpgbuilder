@@ -55,14 +55,21 @@ end
 function chaseObject(name, speed, near, far)
   local x,y,z = getObjectPosition(name)
   if(speed == nil) then speed = 0.01 end
-  
-  lookToObject(name)
-  
+  y = 0;
+  --lookToObject(name)
+  lookAt(x,y,z)
+    
   if(far == nil) then far = 3 end
   if(near == nil) then near = 0.5 end
   
   if( (distanceFrom(x,y,z) < far) and (distanceFrom(x,y,z) > near) ) then
     move(speed)
+	animation = "walk"
+  end
+  
+  if ((distanceFrom(x,y,z) < near) and animation=="walk") then
+	setAnimation("idle")
+	animation = "idle"
   end
 
 end

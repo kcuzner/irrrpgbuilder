@@ -3,4 +3,5 @@
   <script file="sample_save_game.lua"/>
   <script file="generic_player.lua"/>
   <script file="generic_enemy.lua"/>
+  <script file="generic_follower.lua"/>
 </IrrRPG_Builder_TemplateScripts>  
