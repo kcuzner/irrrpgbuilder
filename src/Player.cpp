@@ -239,19 +239,31 @@ Player::Player()
 
     enemyUnderAttack = NULL;
 
-    properties.money=0;
-	properties.life=100;
-	properties.level=1;
+    // initialize the properties the player
 	prop_base.mindamage=1;
 	prop_level.mindamage=1;
 	prop_base.maxdamage=3;
 	prop_level.maxdamage=2;
 	prop_base.experience=0;
 	prop_level.experience=10;
+	prop_base.maxlife=95;
+	prop_level.maxlife=5;
+	
+	// Theses properties are fixed.
+	properties.level=1;
+	properties.money=0;
+	properties.experience = 0;
+
+	properties.maxlife = prop_base.maxlife+(prop_level.maxlife * properties.level);
+	properties.life=properties.maxlife;
+	
     
 	timer = App::getInstance()->getDevice()->getTimer();
 	currentime = timer->getRealTime();
 	oldtime = timer->getRealTime();
+	timer1 = oldtime;
+	timer2 = oldtime;
+	collided=false;
 }
 
 Player::~Player()
@@ -314,10 +326,8 @@ void Player::walkTo(vector3df targetPos, f32 speed)
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	if (anim->collisionOccurred())
-		printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
 	
-	if (height>-0.09f && height<0.05f && anim->collisionOccurred()==false)
+	if (height>-0.09f && height<0.05f && !collided)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
@@ -326,6 +336,7 @@ void Player::walkTo(vector3df targetPos, f32 speed)
 	{
 		walkTarget = this->getPosition();
 		setAnimation(PLAYER_ANIMATION_IDLE);
+		collided=false; // reset the collision flag
 	}
 }
 
@@ -490,7 +501,15 @@ bool Player::CheckAnimationEvent()
 			if (en_life<0) 
 			{
 				en_life=0;
-				properties.experience += 10; 
+				this->properties.experience += 10;
+				// This increase the level based on the experience increase. Will increase then the damage + others stuff.
+				if ((this->prop_base.experience+(this->prop_level.experience*this->properties.level))<this->properties.experience)
+					{
+						this->properties.level+=1; // increase level
+						this->prop_level.experience += (this->prop_level.experience); // increase required experience for next level
+						this->properties.maxlife = this->prop_base.maxlife + (this->prop_level.maxlife * this->properties.level); // increase the hp
+						this->properties.life = this->properties.maxlife; // give back the health at level change
+					}
 				// Give 10 points of experience per kill
 				// TODO: This need to be read from the NPC experience info. Not implemented
 			}
@@ -508,10 +527,19 @@ bool Player::CheckAnimationEvent()
 
 void Player::update()
 {
-	if (currentAnimation!=PLAYER_ANIMATION_DIE)
+	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	// Animations event check, done as fast as possible, the faster the more precise
+	CheckAnimationEvent();
+	if (anim->collisionOccurred())
 	{
-		CheckAnimationEvent();
-
+		printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+		collided=true;
+	}
+	// Standard player events
+	if (currentAnimation!=PLAYER_ANIMATION_DIE && (timercheck-timer1>17))
+	{
+		
+		timer1 = timercheck;
 		// If a target position is set then move to that position, call the walk animation
 		if( (this->getPosition().getDistanceFrom(walkTarget) > 0.2) &&  (this->getLife()!=0))
 		{
@@ -614,9 +642,18 @@ void Player::setLife(int life)
 {
     this->properties.life = life;
 	
+	
 	// Update the GUI display
 	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
 	playerLife += life;
+	playerLife += "/";
+	playerLife += this->properties.maxlife;
+	playerLife += " Exp:";
+	stringc playerxp = (stringc)this->properties.experience;
+	playerLife += playerxp;
+	playerLife += " Level:";
+	playerLife += this->properties.level;
+	//+(stringc)properties.experience;
 	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
 
 	// Trigger the death animation immediately.

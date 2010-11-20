@@ -92,6 +92,7 @@ class App
         ~App();
 
         bool cursorIsInEditArea();
+		
 
         void saveProjectToXML();
         bool loadProjectFromXML(stringc filename);
@@ -100,7 +101,10 @@ class App
         IVideoDriver* driver;
         ISceneManager* smgr;
         IGUIEnvironment* guienv;
-
+		
+		u32 timer;
+		u32 timer2;
+		
         APP_STATE app_state;
 
         stringc scriptGlobal;

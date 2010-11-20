@@ -23,11 +23,15 @@ using namespace std;
 
 App::App()
 {
+
 }
 
 App::~App()
 {
+	this->cleanWorkspace();
+	SoundManager::getInstance()->stopEngine();
     device->drop();
+	exit(0);
 }
 
 void App::draw2DImages()
@@ -362,7 +366,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
             break;
         case BT_ID_CLOSE_PROGRAM:
-            this->cleanWorkspace();
+			this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
             device->drop();
             exit(0);
@@ -562,7 +566,7 @@ MousePick App::getMousePosition3D(int id)
 
 void App::setupDevice(int screenW, int screenH, bool fullScreen)
 {
-    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, true, 0);
+    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
     device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
 
     driver = device->getVideoDriver();
@@ -570,6 +574,9 @@ void App::setupDevice(int screenW, int screenH, bool fullScreen)
     guienv = device->getGUIEnvironment();
 
     device->setEventReceiver(EventReceiver::getInstance());
+	timer = device->getTimer()->getRealTime();
+	timer2 = device->getTimer()->getRealTime();
+
 }
 
 IrrlichtDevice* App::getDevice()
@@ -588,15 +595,22 @@ void App::run()
     this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
     int lastFPS = -1;
-
+	u32 timer = device->getTimer()->getRealTime();
+	u32 timer2 = device->getTimer()->getRealTime();
+	
     while(device->run())
     {
-		device->yield();
+		
         driver->beginScene(true, true, SColor(0,200,200,200));
         if(app_state < APP_STATE_CONTROL)
+		{
+			device->yield();
             updateEditMode();//editMode
+		}
         else
-		{ updateGameplay();}
+		{ 		
+			updateGameplay();	
+		}
 		
         smgr->drawAll();
 
@@ -718,146 +732,156 @@ bool App::loadProjectFromXML(stringc filename)
 
 void App::updateEditMode()
 {
-    if(app_state < APP_STATE_CONTROL)
-    {
-        if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
-        {
-            if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
-            {
-                if(EventReceiver::getInstance()->isMousePressed(0))
-                {
-                    TerrainManager::getInstance()->transformSegmentsToZero(this->getMousePosition3D(100),
+	timer = device->getTimer()->getRealTime();
+	if ((timer-timer2)>17) // 1/60th second refresh interval
+	{
+		timer2 = device->getTimer()->getRealTime();
+		if(app_state < APP_STATE_CONTROL)
+		{
+			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
+			{
+				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
+				{
+					if(EventReceiver::getInstance()->isMousePressed(0))
+					{
+						TerrainManager::getInstance()->transformSegmentsToZero(this->getMousePosition3D(100),
                                                                            1.0f,
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
-                }
-            }
-            else
-            {
-                if(EventReceiver::getInstance()->isMousePressed(0))
-                {
-                    TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     1.0f,
-                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
-                }
-                else if(EventReceiver::getInstance()->isMousePressed(1) )
-                {
-                    TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     1.0f,
-                                                                     -GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
-                }
-            }
-        }
-
-
-        if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION && cursorIsInEditArea())
-        {
-            //Add vegetation to the terrain
-            if(EventReceiver::getInstance()->isMousePressed(0))
-            {
-                TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), false);
-            }
-            //Erase vegetation from the terrain
-            if(EventReceiver::getInstance()->isMousePressed(1))
-            {
-                TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), true);
-            }
-        }
-
-        if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
-        {
-            lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
-        }
-
-        if(app_state == APP_EDIT_CHARACTER)
-        {
-            if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
-                Player::getInstance()->setPosition(getMousePosition3D().pickedPos);
-        }
-
-
-        if(app_state == APP_EDIT_TERRAIN_SEGMENTS ||
-           app_state == APP_EDIT_TERRAIN_TRANSFORM ||
-           app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
-           app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
-           app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
-           app_state == APP_EDIT_CHARACTER)
-        {
-
-            //Update Editor Camera Position
-            if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
-            {
-                EditorCamera::getInstance()->moveCamera(vector3df(-0.1f,0,0));
-            }
-            else if (EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT))
-            {
-                EditorCamera::getInstance()->moveCamera(vector3df(0.1f,0,0));
-            }
-            if(EventReceiver::getInstance()->isKeyPressed(KEY_UP))
-            {
-                EditorCamera::getInstance()->moveCamera(vector3df(0,0,0.1f));
-            }
-            else if (EventReceiver::getInstance()->isKeyPressed(KEY_DOWN))
-            {
-                EditorCamera::getInstance()->moveCamera(vector3df(0,0,-0.1f));
-            }
-        }
-    }
-}
-
-void App::updateGameplay()
-{
-    DynamicObjectsManager::getInstance()->updateAll();
-    Player::getInstance()->update();
-
-    EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
-
-    if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
-    {
-        MousePick mousePick = getMousePosition3D();
-		stringc nodeName = "";
-		// Check for a node to prevent a crash (need to get the name of the node)
-		if (mousePick.pickedNode != NULL)
-		{
-			stringc nodeName = mousePick.pickedNode->getName();
-
-			//if you click on a Dynamic Object...
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
-			{
-				DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-
-				if(obj->getDistanceFrom(Player::getInstance()->getPosition()) < 1)
-				{
-					if(obj->getObjectType() == stringc("ENEMY"))
-					{
-						Player::getInstance()->attackEnemy(obj);
-						obj->notifyClick();
-					}
-					else
-					{
-						Player::getInstance()->lookAt(obj->getPosition());
-						obj->notifyClick();
 					}
 				}
 				else
 				{
-					Player::getInstance()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
+					if(EventReceiver::getInstance()->isMousePressed(0))
+					{
+						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
+                                                                     1.0f,
+                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+					}
+					else if(EventReceiver::getInstance()->isMousePressed(1) )
+					{
+						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
+                                                                     1.0f,
+                                                                     -GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+					}
 				}
 			}
-			else
+
+
+			if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION && cursorIsInEditArea())
 			{
-				Player::getInstance()->setWalkTarget(mousePick.pickedPos);
+				//Add vegetation to the terrain
+				if(EventReceiver::getInstance()->isMousePressed(0))
+				{
+					TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), false);
+				}
+				//Erase vegetation from the terrain
+				if(EventReceiver::getInstance()->isMousePressed(1))
+				{
+					TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), true);
+				}
+			}
+
+			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
+			{
+				lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+			}
+
+			if(app_state == APP_EDIT_CHARACTER)
+			{
+				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
+					Player::getInstance()->setPosition(getMousePosition3D().pickedPos);
+			}
+
+
+			if(app_state == APP_EDIT_TERRAIN_SEGMENTS ||
+			app_state == APP_EDIT_TERRAIN_TRANSFORM ||
+			app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
+			app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
+			app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
+			app_state == APP_EDIT_CHARACTER)
+			{
+
+				//Update Editor Camera Position
+				if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
+				{
+					EditorCamera::getInstance()->moveCamera(vector3df(-0.1f,0,0));
+				}
+				else if (EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT))
+				{
+					EditorCamera::getInstance()->moveCamera(vector3df(0.1f,0,0));
+				}
+				if(EventReceiver::getInstance()->isKeyPressed(KEY_UP))
+				{
+					EditorCamera::getInstance()->moveCamera(vector3df(0,0,0.1f));
+				}
+				else if (EventReceiver::getInstance()->isKeyPressed(KEY_DOWN))
+				{
+					EditorCamera::getInstance()->moveCamera(vector3df(0,0,-0.1f));
+				}
 			}
 		}
-		else//No action
-		{
-			if(Player::getInstance()->getAnimation() != PLAYER_ANIMATION_WALK) Player::getInstance()->setAnimation(PLAYER_ANIMATION_IDLE);
-		}
 	}
-	
+}
 
+void App::updateGameplay()
+{
+	timer = device->getTimer()->getRealTime();
+	//DynamicObjectsManager::getInstance()->updateAnimators();
+	DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
+	Player::getInstance()->update(); // This one is timed now.
+	EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
+
+	// This update the player events and controls at specific time intervals
+    if ((timer-timer2)>17) // 1/60 second
+	{
+		timer2 = device->getTimer()->getRealTime();
+		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+		{
+			MousePick mousePick = getMousePosition3D();
+			stringc nodeName = "";
+			// Check for a node to prevent a crash (need to get the name of the node)
+			if (mousePick.pickedNode != NULL)
+			{
+				stringc nodeName = mousePick.pickedNode->getName();
+
+				//if you click on a Dynamic Object...
+				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+				{
+					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
+
+					if(obj->getDistanceFrom(Player::getInstance()->getPosition()) < 1)
+					{
+						if(obj->getObjectType() == stringc("ENEMY"))
+						{
+							Player::getInstance()->attackEnemy(obj);
+							obj->notifyClick();
+						}
+						else
+						{
+							Player::getInstance()->lookAt(obj->getPosition());
+							obj->notifyClick();
+						}
+					}
+					else
+					{
+						Player::getInstance()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
+					}
+				}
+				else
+				{
+					Player::getInstance()->setWalkTarget(mousePick.pickedPos);
+				}
+			}
+			else//No action
+			{
+				if(Player::getInstance()->getAnimation() != PLAYER_ANIMATION_WALK) Player::getInstance()->setAnimation(PLAYER_ANIMATION_IDLE);
+			}
+		}
+	
 	stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 	playerMoney += Player::getInstance()->getMoney();
 	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
+	}
 }
 
 void App::cleanWorkspace()

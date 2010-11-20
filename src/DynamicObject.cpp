@@ -23,13 +23,16 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	mesh = smgr->getMesh(realFile);
 
+	mesh->setHardwareMappingHint(EHM_DYNAMIC);
     //meshName = meshFile;
 
     this->animations = animations;
 
     setupObj(name, mesh);
-	life = 100;
-    money = 0;
+	this->properties.life = 100;
+	this->properties.experience = 10;
+    this->properties.money = 0;
+	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -37,8 +40,11 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
     this->animations = animations;
 
     setupObj(name, mesh);
-	life = 100;
-    money = 0;
+	this->properties.life = 100;
+	this->properties.experience = 10;
+    this->properties.money = 0;
+	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timer2 = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
@@ -97,6 +103,15 @@ DynamicObject* DynamicObject::clone()
 
     return newObj;
 }
+void DynamicObject::setType(stringc name)
+{
+	if (name=="npc")
+		this->objectType=OBJECT_TYPE_NPC;
+	if (name=="interactive")
+		this->objectType=OBJECT_TYPE_INTERACTIVE;
+	if (name=="non-interactive")
+		this->objectType=OBJECT_TYPE_NON_INTERACTIVE;
+}
 
 void DynamicObject::setName(stringc name)
 {
@@ -116,12 +131,34 @@ ISceneNode* DynamicObject::getNode()
 
 void DynamicObject::setPosition(vector3df pos)
 {
-    node->setPosition(pos);
+	if (App::getInstance()->getAppState()>555)
+	{
+		core::list<ISceneNodeAnimator*>::ConstIterator begin = this->getNode()->getAnimators().begin(); 
+		core::list<ISceneNodeAnimator*>::ConstIterator end = this->getNode()->getAnimators().end(); 
+		for(int it=0; begin != end; ++it ) 
+		{ 
+			ISceneNodeAnimator* pAnim = *begin; 
+			if( pAnim->getType() == ESNAT_COLLISION_RESPONSE ) 
+			{ 
+				//printf("Here is the problem, is it called?\n");
+				//pAnim->animateNode(this->getNode(),200);
+				node->removeAnimator(pAnim);
+				node->setPosition(pos);
+				//node->updateAbsolutePosition();
+				node->addAnimator(pAnim);
+				break; 
+			} 
+		}
+	}
+	else
+		node->setPosition(pos);
+	
 }
 
 vector3df DynamicObject::getPosition()
 {
-    return node->getPosition();
+	return fakeShadow->getAbsolutePosition();
+    //return node->getPosition();
 }
 
 void DynamicObject::setRotation(vector3df rot)
@@ -261,29 +298,57 @@ void DynamicObject::doScript()
 
 void DynamicObject::update()
 {
-    if(enabled)
-    {
-		if (App::getInstance()->getAppState() > 100) 
-		{//app_state < APP_STATE_CONTROL
-			lua_getglobal(L,"step");
-			if(lua_isfunction(L, -1)) lua_call(L,0,0);
-			lua_pop( L, -1 );
+	// New optimisations (november 2010): Adding timed interface an culling check.
+	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
+	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
+	// Check for culling on a node and don't update it if it's culled.
+	
+	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	bool culled = false;
+	if((timerobject-timer>250) && enabled) // 1/4 second
+	{
+		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
+		if (!culled)
+		{
+			// Perhaps this is not needed is the node is really culled
+			if (!this->getNode()->isVisible())
+				this->getNode()->setVisible(true);
+			if (App::getInstance()->getAppState() > 100) 
+			{//app_state < APP_STATE_CONTROL
+				lua_getglobal(L,"step");
+				if(lua_isfunction(L, -1)) lua_call(L,0,0);
+				lua_pop( L, -1 );
 
-			//custom update function (updates walkTo for example..)
-			lua_getglobal(L,"CustomDynamicObjectUpdate");
+				//custom update function (updates walkTo for example..)
+				lua_getglobal(L,"CustomDynamicObjectUpdate");
+				if(lua_isfunction(L, -1)) lua_call(L,0,0);
+				lua_pop( L, -1 );
+			}
+			lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
 			if(lua_isfunction(L, -1)) lua_call(L,0,0);
 			lua_pop( L, -1 );
+			timer = timerobject;
 		}
-    }
-
-    lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
-    lua_pop( L, -1 );
+		// Perhaps this is not needed if the node is really culled
+		else if (this->getNode()->isVisible())
+			this->getNode()->setVisible(false);
+			
+	}
+	
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17)) // 1/60 second
+	{
+		currentObject->moveObject(currentSpeed);
+		timer2=timerobject;
+	}
 }
 
 void DynamicObject::clearScripts()
 {
-    if(hasAnimation()) this->setFrameLoop(0,0);
+    if(hasAnimation())
+	{
+		this->setFrameLoop(0,0);
+		this->setAnimation("idle");
+	}
 
     lua_close(L);
 }
@@ -324,22 +389,22 @@ void DynamicObject::restoreParams()
 
 void DynamicObject::setLife(int life)
 {
-    this->life = life;
+    this->properties.life = life;
 }
 
 int DynamicObject::getLife()
 {
-    return this->life;
+	return this->properties.life;
 }
 
 void DynamicObject::setMoney(int money)
 {
-    this->money = money;
+	this->properties.money = money;
 }
 
 int DynamicObject::getMoney()
 {
-    return this->money;
+	return this->properties.money;
 }
 
 void DynamicObject::setObjectLabel(stringc label)
@@ -371,23 +436,73 @@ void DynamicObject::setEnabled(bool enabled)
 		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
 }
 
+OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
+{
+	if (animName==NULL)
+		return OBJECT_ANIMATION_IDLE;
+	//printf("Asked animation name is: %s\n",animName);
+	OBJECT_ANIMATION Animation;
+	if (animName=="idle")
+		Animation=OBJECT_ANIMATION_IDLE;
+	if (animName=="walk")
+		Animation=OBJECT_ANIMATION_WALK;
+	if (animName=="run")
+		Animation=OBJECT_ANIMATION_RUN;
+	if (animName=="attack")
+		Animation=OBJECT_ANIMATION_ATTACK;
+	if (animName=="injured")
+		Animation=OBJECT_ANIMATION_INJURED;
+	if (animName=="knockback")
+		Animation=OBJECT_ANIMATION_KNOCKBACK;
+	if (animName=="die")
+		Animation=OBJECT_ANIMATION_DIE;
+	if (animName=="die_knockback")
+		Animation=OBJECT_ANIMATION_DIE_KNOCKBACK;
+	if (animName=="spawn")
+		Animation=OBJECT_ANIMATION_SPAWN;
+	if (animName=="despawn")
+		Animation=OBJECT_ANIMATION_DESPAWN;
+	if (animName=="despawn_knockback")
+		Animation=OBJECT_ANIMATION_DESPAWN_KNOCKBACK;
+	return Animation;
+}
+
 void DynamicObject::setAnimation(stringc animName)
 {
     for(int i=0;i < (int)animations.size();i++)
     {
         DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
-
+		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
         if( tempAnim.name == animName )
         {
-            this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
-            this->setAnimationSpeed(tempAnim.speed);
+			if (Animation!=this->currentAnimation)
+			{
+				this->currentAnimation=Animation;	
+				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
+				this->setAnimationSpeed(tempAnim.speed);
+			}
             return;
         }
     }
 
-    #ifdef APP_DEBUG
+	#ifdef APP_DEBUG
     cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
     #endif
+}
+
+void DynamicObject::moveObject(f32 speed)
+{
+	//DynamicObject* tempObj
+	//tempObj->setPosition(tempObj->getPosition() + vector3df(x,y,z));
+	
+	vector3df pos=this->getPosition();
+	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
+    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
+    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+
+	this->setPosition(pos);
+	currentObject=this;
+	currentSpeed=speed;
 }
 
 //LUA FUNCTIONS
@@ -425,7 +540,7 @@ int DynamicObject::setPosition(lua_State *LS)
 	lua_getglobal(LS,"objName");
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
-
+	DynamicObjectsManager::getInstance()->getObjectByName(objName)->getNode()->updateAbsolutePosition();
     DynamicObjectsManager::getInstance()->getObjectByName(objName)->setPosition(vector3df(x,y,z));
 
     return 0;
@@ -529,17 +644,13 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 	lua_pop(LS, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	
 
     if(tempObj)
     {
-        //tempObj->setPosition(tempObj->getPosition() + vector3df(x,y,z));
-
-        vector3df pos=tempObj->getPosition();
-        pos.Z -= cos((tempObj->getRotation().Y)*PI/180)*speed;
-        pos.X -= sin((tempObj->getRotation().Y)*PI/180)*speed;
-        pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
-
-        tempObj->setPosition(pos);
+		tempObj->setAnimation("walk");
+		
+        tempObj->moveObject(speed);
     }
 
     return 0;

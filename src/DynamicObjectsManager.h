@@ -41,7 +41,7 @@ class DynamicObjectsManager
 
         void initializeCollisions();
         void clearCollisions();
-		
+
 		void updateMetaSelector(ITriangleSelector* tris, bool remove);
 
         void saveToXML(TiXmlElement* parentElement);

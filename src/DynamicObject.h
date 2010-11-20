@@ -36,6 +36,12 @@ enum OBJECT_ANIMATION
 	OBJECT_ANIMATION_OPEN = 10,
 	OBJECT_ANIMATION_CLOSE = 11	
 };
+enum TYPE
+{
+	OBJECT_TYPE_NPC = 0,
+	OBJECT_TYPE_INTERACTIVE = 1,
+	OBJECT_TYPE_NON_INTERACTIVE = 2
+};
 
 typedef struct{
     stringc name;
@@ -50,6 +56,8 @@ class DynamicObject
         DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations);
 
         DynamicObject* clone();
+
+		void setType(stringc name);
 
         void setName(stringc name);
         stringc getName();
@@ -106,10 +114,12 @@ class DynamicObject
         bool hasAnimation(){ return animations.size() != 0; };
         //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
-
+		
+		OBJECT_ANIMATION getAnimationState(stringc animName);
         void setAnimation(stringc animName);
 
         void setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator);
+		void moveObject(f32 speed);
 
         virtual ~DynamicObject();
     protected:
@@ -155,9 +165,37 @@ class DynamicObject
 
         stringc script;
 
-		int life;
-        int money;
+		OBJECT_ANIMATION currentAnimation;
+		TYPE objectType;
+		
+		struct property{
+			int life;
+			int mana;
+			int maxlife;
+			int maxmana;
+			int regenlife;
+			int regenmana;
+			int money;
+			int level;
+			int skill_level;
+			int experience;
+			int mindamage;
+			int maxdamage;
+			int armor;
+			int magic_armor;
+			int hurt_resist;
+			int dotduration;
+		};
+		property prop_base;
+		property prop_level;
+		property properties;
 
+		int oldlife;
+		u32 timer;
+		u32 timer2;
+		DynamicObject* currentObject;
+		f32	currentSpeed;
+        
         lua_State *L;
 
         ITextSceneNode* objLabel;

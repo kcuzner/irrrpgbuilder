@@ -144,14 +144,14 @@ DynamicObjectsManager::DynamicObjectsManager()
 
             // -- Create Dynamic Object --
             DynamicObject* newObj = new DynamicObject(name, mesh, animations);
-
+			newObj->setType(type);
 			// Load the script if it was defined in the XML
 		    if (scriptname.size()>1)
 			{
 				stringc newScript = "";
 				stringc filename = "../media/scripts/";
 				filename += scriptname;
-				printf("There is a game object with a script! object name is %s and the script is:\n",filename.c_str());
+				//printf("There is a dynamic object with a script! object name is %s and the script is:\n",filename.c_str());
 				std::string line;
 				ifstream fileScript (filename.c_str());
 				if (fileScript.is_open())
@@ -176,6 +176,7 @@ DynamicObjectsManager::DynamicObjectsManager()
             newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str())));
             newObj->setTemplateObjectName(name);
             newObj->getNode()->setVisible(false);
+			
 
             //store the new object
             objectsTemplate.push_back(newObj);
@@ -380,11 +381,11 @@ void DynamicObjectsManager::initializeCollisions()
   	Player::getInstance()->setAnimator(anim);
 	//collisionResponseAnimators.push_back(anim);
 	//((DynamicObject*)objects[i])->setCollisionAnimator(anim);
-	for(int i=0;i<(int)objects.size();i++)
+	/*for(int i=0;i<(int)objects.size();i++)
     {
 		ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
 		objects[i]->getNode()->addAnimator(coll);
-	}
+	}*/
 	
 }
 

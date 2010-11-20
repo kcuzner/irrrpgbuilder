@@ -143,6 +143,9 @@ class Player
 		ITimer* timer;
 		u32 currentime;
 		u32 oldtime;
+		u32 timer1;
+		u32 timer2;
+		bool collided;
 
         ISceneNode* node;
 
@@ -161,15 +164,20 @@ class Player
 
         struct property{
 			int life;
+			int mana;
 			int maxlife;
-			int regen;
+			int maxmana;
+			int regenlife;
+			int regenmana;
 			int money;
 			int level;
 			int skill_level;
 			int experience;
 			int mindamage;
 			int maxdamage;
-			int hurtresist;
+			int armor;
+			int magic_armor;
+			int hurt_resist;
 			int dotduration;
 		};
 
@@ -177,6 +185,7 @@ class Player
 		property prop_level;
 		property properties;
 
+		
 		int oldlife;
 
         lua_State *L;

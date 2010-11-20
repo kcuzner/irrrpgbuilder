@@ -1071,7 +1071,7 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 			if (MouseMarking)
 			{
 				CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
-				setTextMarkers( MarkBegin, CursorPos );
+				//setTextMarkers( MarkBegin, CursorPos );
 				calculateScrollPos();
 				return true;
 			}

@@ -19,6 +19,8 @@ GUIManager::GUIManager()
     guienv = App::getInstance()->getDevice()->getGUIEnvironment();
     loadFonts();
     setupGameplayGUI();
+	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timer2 = timer;
 }
 
 GUIManager::~GUIManager()
@@ -828,15 +830,17 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 
     //Play question sound (optional voice)
     ISound* dialogSound = NULL;
-	int len = (int)sound.length();
+	
 	//int len = sound.length();
-	//printf ("Here is the dialog for the sound %s, %i\n",sound,len);
-    if(sound.c_str() != "")
+	printf ("Here is the dialog for the sound %s, %i\n",sound);
+	if(sound.c_str() != "")
     {
         stringc soundName = "../media/sound/";
         soundName += sound.c_str();
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
+	else
+		printf("The sound was null");
 
 	while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
@@ -924,14 +928,12 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 stringc GUIManager::showInputQuestion(std::string text)
 {
     std::string newtxt = "";
-    int changeTime = 0;
-
-    int cursor_char = 0;
 
     bool mouseExit = false;
 
     while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
+		u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime(); 
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         //guienv->drawAll();
@@ -945,12 +947,15 @@ stringc GUIManager::showInputQuestion(std::string text)
                                             App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
                                             App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10);
 
-        cursor_char = (cursor_char++) % 60;//cursor will turn on and off one time for second
-
         stringw realTxt = stringw(text.c_str());
         realTxt += stringw(newtxt.c_str());
-
-        if(cursor_char <= 30) realTxt += L'_';
+		// Flashing cursor, flash at 1/4 second interval (based on realtime)
+	    if((timercheck-timer2>250)) 
+		{
+			realTxt += L'_';
+			if (timercheck-timer2>500)
+				timer2=timercheck;
+		}
 
         guiFontDialog->draw(realTxt.c_str(),textRect,SColor(255,255,255,255),false,false,&textRect);
 
@@ -968,7 +973,8 @@ stringc GUIManager::showInputQuestion(std::string text)
 
 
         //verify pressed chars and add it to the string
-        if(changeTime == 10)
+		
+        if(timercheck-timer > 160)
         {
             //process all keycodes [0-9] and [A-Z]
             for(int i=0x30;i<0x5B;i++)
@@ -976,7 +982,7 @@ stringc GUIManager::showInputQuestion(std::string text)
                 if(EventReceiver::getInstance()->isKeyPressed(i))
                 {
                     newtxt += i;
-                    changeTime = 0;
+                    timer = timercheck;
                 }
             }
 
@@ -984,12 +990,9 @@ stringc GUIManager::showInputQuestion(std::string text)
             if(EventReceiver::getInstance()->isKeyPressed(KEY_BACK) || EventReceiver::getInstance()->isKeyPressed(KEY_DELETE))
             {
                 newtxt = newtxt.substr(0,newtxt.size()-1);
-                changeTime = 0;
+				timer = timercheck;
             }
         }
-
-        if(changeTime < 10) changeTime++;
-
         App::getInstance()->getDevice()->getVideoDriver()->endScene();
     }
 

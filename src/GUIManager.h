@@ -145,6 +145,9 @@ class GUIManager
         int mouseX;
         int mouseY;
 
+		u32 timer;
+		u32 timer2;
+
         position2di mainToolbarPos;
 
         IGUIFont* guiFontC12;//arial 10
