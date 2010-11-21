@@ -25,7 +25,7 @@ Vegetation::Vegetation()
     s32 texture = rand()%4;
     ITexture* itexture = NULL;
 
-    size = (f32)0.8;
+    size = 0.8f;
 
     switch(texture)
     {
