@@ -14,6 +14,7 @@ using namespace std;
 //
 const irr::f32 TerrainTile::vegetationRange = 0.45f;
 
+
 TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
 {
     this->smgr=smgr;
@@ -23,8 +24,11 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static IMesh* baseMesh = smgr->getMesh("../media/baseTerrain.obj");
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-
+	
+	newMesh->setHardwareMappingHint(EHM_STATIC);
+	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
     node=smgr->addMeshSceneNode(newMesh,parent,100);
+	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
 
     node->setScale(vector3df(scale,1,scale));
@@ -62,6 +66,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     //Assign GLSL Shader
     node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
+	
 
 
     //Create a Custom GLSL Material (Terrain Splatting)
@@ -69,6 +74,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         "../media/Shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/Shaders/ocean.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+		//ShaderCallBack::getInstance(), video::EMT_SOLID);
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
@@ -82,6 +88,8 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     node->setMaterialFlag(EMF_FOG_ENABLE,true);
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
+	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
+
 }
 
 TerrainTile::~TerrainTile()
@@ -269,7 +277,8 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                 Vegetation* v = new Vegetation();
 
                 v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/scale,realPos.Z + (rand()%5)*0.1f - 0.25f));
-                v->setScale(vector3df(0.6f,0.6f,0.6f));
+                f32 treesize = (f32)(rand() % 100 + 50)/100;
+				v->setScale(vector3df(treesize,treesize,treesize));
 
                 vegetationVector.push_back(v);
 
@@ -324,7 +333,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	        mb_vertices[j].Pos.Y += strength * ratio;
 	    }
 
-	    if(mb_vertices[j].Pos.Y > 1) mb_vertices[j].Pos.Y = 1;
+	    if(mb_vertices[j].Pos.Y > 5) mb_vertices[j].Pos.Y = 5;
 	    if(mb_vertices[j].Pos.Y < -0.25) mb_vertices[j].Pos.Y = -0.25;
 	}
 
