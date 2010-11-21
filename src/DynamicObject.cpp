@@ -60,29 +60,28 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
         this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
 	if (node)
 	{//this->selector = smgr->createTriangleSelector(mesh,node);
-    this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
-    this->node->setTriangleSelector(selector);
+		this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
+		this->node->setTriangleSelector(selector);
 
-    this->collisionAnimator = NULL;
+		this->collisionAnimator = NULL;
 
-    node->setDebugDataVisible(EDS_BBOX);
+		node->setDebugDataVisible(EDS_BBOX);
 
-    script = "";
+		script = "";
 
-    //Fake Shadow
-    fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
-    fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-    fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
+		//Fake Shadow
+		fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
+		fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+		fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 
-    node->setMaterialFlag(EMF_FOG_ENABLE,true);
-    fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
+		node->setMaterialFlag(EMF_FOG_ENABLE,true);
+		fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
-    objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,1,0));
-    objLabel->setVisible(false);
+		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,1,0));
+		objLabel->setVisible(false);
 
-    this->setEnabled(true);
-
-    if(hasAnimation()) this->setFrameLoop(0,0);
+		this->setEnabled(true);
+		if(hasAnimation()) this->setFrameLoop(0,0);
 	}
 }
 
@@ -98,7 +97,7 @@ DynamicObject* DynamicObject::clone()
 
     newObj->setScale(this->getScale());
     newObj->setMaterialType(this->getMaterialType());
-
+	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
 
     return newObj;
@@ -111,6 +110,12 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_INTERACTIVE;
 	if (name=="non-interactive")
 		this->objectType=OBJECT_TYPE_NON_INTERACTIVE;
+	this->typeText = name;
+}
+
+TYPE DynamicObject::getType()
+{
+	return objectType;
 }
 
 void DynamicObject::setName(stringc name)
@@ -131,28 +136,13 @@ ISceneNode* DynamicObject::getNode()
 
 void DynamicObject::setPosition(vector3df pos)
 {
-	if (App::getInstance()->getAppState()>555)
-	{
-		core::list<ISceneNodeAnimator*>::ConstIterator begin = this->getNode()->getAnimators().begin(); 
-		core::list<ISceneNodeAnimator*>::ConstIterator end = this->getNode()->getAnimators().end(); 
-		for(int it=0; begin != end; ++it ) 
-		{ 
-			ISceneNodeAnimator* pAnim = *begin; 
-			if( pAnim->getType() == ESNAT_COLLISION_RESPONSE ) 
-			{ 
-				//printf("Here is the problem, is it called?\n");
-				//pAnim->animateNode(this->getNode(),200);
-				node->removeAnimator(pAnim);
-				node->setPosition(pos);
-				//node->updateAbsolutePosition();
-				node->addAnimator(pAnim);
-				break; 
-			} 
-		}
-	}
-	else
-		node->setPosition(pos);
 	
+	node->setPosition(pos);
+	vector3df pos2 = node->getAbsolutePosition();
+	node->updateAbsolutePosition();
+	// Debug, for fixing the problem with positionning.
+	printf ("Position requested is: %f,%f,%f\nPosition final is %f,%f,%f\n",pos.X,pos.Y,pos.Z,pos2.X,pos2.Y,pos2.Z);
+
 }
 
 vector3df DynamicObject::getPosition()

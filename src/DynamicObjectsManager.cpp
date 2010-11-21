@@ -375,17 +375,19 @@ void DynamicObjectsManager::initializeCollisions()
 		printf ("There is about %i triangles in this metaselector.\n",number2);
 		printf("Collisions: added object %i\n",i);
     }
-
+	// Create the collision response animator for the player
 	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-	// set the collisions for the player
-  	Player::getInstance()->setAnimator(anim);
-	//collisionResponseAnimators.push_back(anim);
-	//((DynamicObject*)objects[i])->setCollisionAnimator(anim);
-	/*for(int i=0;i<(int)objects.size();i++)
+	Player::getInstance()->setAnimator(anim);
+	
+	// Create the collision response animator for each NPC.
+	for(int i=0;i<(int)objects.size();i++)
     {
-		ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-		objects[i]->getNode()->addAnimator(coll);
-	}*/
+		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		{
+			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+			objects[i]->getNode()->addAnimator(coll);
+		}
+	}
 	
 }
 
@@ -412,6 +414,10 @@ void DynamicObjectsManager::clearCollisions()
 	}
 	//((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i])->drop();
     //collisionResponseAnimators.clear();
+}
+IMetaTriangleSelector* DynamicObjectsManager::getMeta()
+{
+	return meta;
 }
 
 void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool remove)

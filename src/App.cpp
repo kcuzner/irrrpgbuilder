@@ -236,7 +236,7 @@ void App::setAppState(APP_STATE newAppState)
 void App::eventGuiButton(s32 id)
 {
     DynamicObject* selectedObject;
-
+	vector3df oldcampos = vector3df(0,0,0);
     switch (id)
     {
         case BT_ID_NEW_PROJECT:
@@ -331,6 +331,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
             break;
         case BT_ID_PLAY_GAME:
+			oldcampos = Player::getInstance()->getPosition();
 			EditorCamera::getInstance()->setCamera(1);
             this->setAppState(APP_GAMEPLAY_NORMAL);
             Player::getInstance()->doScript();
@@ -343,8 +344,8 @@ void App::eventGuiButton(s32 id)
             LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
             break;
         case BT_ID_STOP_GAME:
-			EditorCamera::getInstance()->setCamera(2);
-            Player::getInstance()->clearScripts();
+			
+			Player::getInstance()->clearScripts();
             DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
             DynamicObjectsManager::getInstance()->showDebugData(true);
@@ -354,7 +355,9 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
             GlobalMap::getInstance()->clearGlobals();
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-			EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
+			EditorCamera::getInstance()->setCamera(2);
+			EditorCamera::getInstance()->setPosition(vector3df(oldcampos));
+			
             break;
         case BT_ID_EDIT_CHARACTER:
             this->setAppState(APP_EDIT_CHARACTER);

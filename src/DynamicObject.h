@@ -58,6 +58,8 @@ class DynamicObject
         DynamicObject* clone();
 
 		void setType(stringc name);
+		TYPE getType();
+		stringc typeText;
 
         void setName(stringc name);
         stringc getName();
