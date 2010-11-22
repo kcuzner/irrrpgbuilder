@@ -356,7 +356,7 @@ void DynamicObjectsManager::showDebugData(bool show)
         ((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX : EDS_OFF );
 }
 
-void DynamicObjectsManager::initializeCollisions()
+IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	meta=smgr->createMetaTriangleSelector();
@@ -365,7 +365,6 @@ void DynamicObjectsManager::initializeCollisions()
 	// Put all the triangle selector into one meta selector.
     for(int i=0;i<(int)objects.size();i++)
     {
-		//triangle = ((DynamicObject*)objects[i])->getTriangleSelector();
 		triangle = objects[i]->getNode()->getTriangleSelector();
 		s32 number = triangle->getTriangleCount();
 		printf ("There is about %i triangles in this selector.\n",number);
@@ -375,17 +374,28 @@ void DynamicObjectsManager::initializeCollisions()
 		printf ("There is about %i triangles in this metaselector.\n",number2);
 		printf("Collisions: added object %i\n",i);
     }
+	return meta;
+}
+
+void DynamicObjectsManager::initializeCollisions()
+{
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	
+	createMeta();
 	// Create the collision response animator for the player
 	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
 	Player::getInstance()->setAnimator(anim);
-	
+	meta->drop();	
 	// Create the collision response animator for each NPC.
 	for(int i=0;i<(int)objects.size();i++)
     {
 		if (objects[i]->getType()==OBJECT_TYPE_NPC)
 		{
+			createMeta();
+			meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
 			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
 			objects[i]->getNode()->addAnimator(coll);
+			meta->drop();
 		}
 	}
 	
@@ -432,7 +442,7 @@ void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool rem
 		meta->removeTriangleSelector(tris);
 		Player::getInstance()->getNode()->removeAnimator(anim);
 		anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-		Player::getInstance()->setAnimator(anim);
+		Player::getInstance()->setAnimator(anim);		
 		return;
 	}
 	if (tris && !remove)

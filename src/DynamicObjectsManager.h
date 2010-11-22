@@ -41,9 +41,11 @@ class DynamicObjectsManager
 
         void initializeCollisions();
         void clearCollisions();
+		
 
 		void updateMetaSelector(ITriangleSelector* tris, bool remove);
 		IMetaTriangleSelector* getMeta();
+		IMetaTriangleSelector* createMeta();
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
@@ -65,6 +67,7 @@ class DynamicObjectsManager
         int objsCounter;
 
         vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
+		
 		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;
 

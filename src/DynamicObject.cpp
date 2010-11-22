@@ -54,10 +54,16 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     this->mesh = mesh;
     this->name = name;
 
-    if(hasAnimation())
+	if(hasAnimation())
+	{
+		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
         this->node = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+	}
     else
+	{
+		this->mesh->setHardwareMappingHint(EHM_STATIC);
         this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+	}
 	if (node)
 	{//this->selector = smgr->createTriangleSelector(mesh,node);
 		this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
@@ -82,6 +88,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		this->setEnabled(true);
 		if(hasAnimation()) this->setFrameLoop(0,0);
+		
+		
 	}
 }
 
@@ -141,7 +149,7 @@ void DynamicObject::setPosition(vector3df pos)
 	vector3df pos2 = node->getAbsolutePosition();
 	node->updateAbsolutePosition();
 	// Debug, for fixing the problem with positionning.
-	printf ("Position requested is: %f,%f,%f\nPosition final is %f,%f,%f\n",pos.X,pos.Y,pos.Z,pos2.X,pos2.Y,pos2.Z);
+	//printf ("Position requested is: %f,%f,%f\nPosition final is %f,%f,%f\n",pos.X,pos.Y,pos.Z,pos2.X,pos2.Y,pos2.Z);
 
 }
 
