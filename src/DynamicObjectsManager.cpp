@@ -353,7 +353,7 @@ void DynamicObjectsManager::clearAllScripts()
 void DynamicObjectsManager::showDebugData(bool show)
 {
     for(int i=0;i<(int)objects.size();i++)
-        ((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX : EDS_OFF );
+        ((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 }
 
 IMetaTriangleSelector* DynamicObjectsManager::createMeta()
@@ -383,7 +383,7 @@ void DynamicObjectsManager::initializeCollisions()
 	
 	createMeta();
 	// Create the collision response animator for the player
-	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
 	Player::getInstance()->setAnimator(anim);
 	meta->drop();	
 	// Create the collision response animator for each NPC.
@@ -393,7 +393,7 @@ void DynamicObjectsManager::initializeCollisions()
 		{
 			createMeta();
 			meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
-			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
+			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
 			objects[i]->getNode()->addAnimator(coll);
 			meta->drop();
 		}

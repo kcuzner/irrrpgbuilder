@@ -30,7 +30,9 @@ void NodePreview::draw(IVideoDriver* driver)
     matrix4 oldWorldMat = driver->getTransform(video::ETS_WORLD);
 
     matrix4 mat = core::IdentityMatrix;
-    mat.setScale(1.8f * node->getScale().X);
+    //mat.setScale(1.8f * node->getScale().X);
+	mat.setScale((node->getBoundingBox().getExtent().Y + node->getBoundingBox().getExtent().X )/3 );
+	//* node->getScale().X
 
     mat.setTranslation(vector3df(-node->getPosition().X * 1.8f,-node->getPosition().Y * 1.8f - 0.9f,-node->getPosition().Z * 1.8f));
 

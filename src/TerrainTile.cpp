@@ -22,16 +22,18 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     scale = TerrainManager::getInstance()->getScale();
 
     static IMesh* baseMesh = smgr->getMesh("../media/baseTerrain.obj");
+	//static IMesh* baseMesh = smgr->getMesh("../media/land.obj");
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 	
-	newMesh->setHardwareMappingHint(EHM_STATIC);
+	//newMesh->setHardwareMappingHint(EHM_STATIC);
 	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
     node=smgr->addMeshSceneNode(newMesh,parent,100);
+	nodescale = node->getBoundingBox().getExtent().X;
 	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
 
-    node->setScale(vector3df(scale,1,scale));
+    node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
 
     node->setPosition(pos*scale);
 
@@ -130,6 +132,10 @@ ISceneNode* TerrainTile::getNode()
     return node;
 }
 
+f32 TerrainTile::getNodeScale()
+{
+	return nodescale;
+}
 ITriangleSelector* TerrainTile::getTriangleSelector()
 {
     return selector;
@@ -164,8 +170,8 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
         {
             for (unsigned int i = 0; i < neighborBuffer->getVertexCount(); i += 1)
             {
-                vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
-                vector3df nRealPos = n_mb_vertices[i].Pos*scale + tile->getNode()->getPosition();
+                vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+                vector3df nRealPos = n_mb_vertices[i].Pos*(scale/nodescale) + tile->getNode()->getPosition();
 
                 if((realPos.X == nRealPos.X) && (realPos.Z == nRealPos.Z))
                 {
@@ -194,7 +200,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
     for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
 
         bool vegetation = false;
 
@@ -207,7 +213,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
         {
             TiXmlElement* vertexXML = new TiXmlElement("vertex");
             vertexXML->SetAttribute("id",j);
-            vertexXML->SetAttribute("y",stringc((realPos.Y/scale)).c_str());
+            vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
             vertexXML->SetAttribute("v",vegetation);
 
             segmentXML->LinkEndChild(vertexXML);
@@ -246,11 +252,11 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 	{
 	    if(erase)
         {
-            vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+            vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
             clickPos.Y = realPos.Y;
-            if(realPos.getDistanceFrom(clickPos) < vegetationRange && getVegetationAt(vector3df(realPos.X,realPos.Y/scale,realPos.Z)))
+            if(realPos.getDistanceFrom(clickPos) < vegetationRange && getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
             {
-                Vegetation* toRemove = getVegetationAt(vector3df(realPos.X,realPos.Y/scale,realPos.Z));
+                Vegetation* toRemove = getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z));
 
                 for (int i=0 ; i<(int)vegetationVector.size() ; i++)
                 {
@@ -260,7 +266,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                         delete toRemove;
 
                         #ifdef APP_DEBUG
-                        cout << "DEBUG : TERRAIN TILE : VEGETATION REMOVED: " << realPos.X << "," << realPos.X/scale << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
+                        cout << "DEBUG : TERRAIN TILE : VEGETATION REMOVED: " << realPos.X << "," << realPos.X/(scale/nodescale) << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
                         #endif
 
                         break;
@@ -270,20 +276,21 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
         }
         else
         {
-            vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+            vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
             clickPos.Y = realPos.Y;
-            if(realPos.getDistanceFrom(clickPos) < 0.5f && !getVegetationAt(vector3df(realPos.X,realPos.Y/scale,realPos.Z)))
+            if(realPos.getDistanceFrom(clickPos) < (scale/10) * 0.5f && !getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
             {
                 Vegetation* v = new Vegetation();
 
-                v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/scale,realPos.Z + (rand()%5)*0.1f - 0.25f));
+                //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
+				v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y,realPos.Z + (rand()%5)*0.1f - 0.25f));
                 f32 treesize = (f32)(rand() % 100 + 50)/100;
-				v->setScale(vector3df(treesize,treesize,treesize));
-
+				v->setScale(vector3df(treesize*(scale/7.5),treesize*(scale/7.5),treesize*(scale/7.5)));
+				printf("Attempting to place a tree with this size: %f\n",treesize);
                 vegetationVector.push_back(v);
 
                 #ifdef APP_DEBUG
-                cout << "DEBUG : TERRAIN TILE : VEGETATION CREATED: " << realPos.X << "," << realPos.X/scale << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
+                cout << "DEBUG : TERRAIN TILE : VEGETATION CREATED: " << realPos.X << "," << realPos.X/(scale/nodescale) << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
                 #endif
 	        }
 	    }
@@ -321,19 +328,21 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 	u16* mb_indices  = meshBuffer->getIndices();
 
-
+	
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
         clickPos.Y = realPos.Y;
+		
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
-            f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
-
-	        mb_vertices[j].Pos.Y += strength * ratio;
+            //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
+			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
+	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/nodescale));
+			printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
 
-	    if(mb_vertices[j].Pos.Y > 5) mb_vertices[j].Pos.Y = 5;
+	    if(mb_vertices[j].Pos.Y > scale/4) mb_vertices[j].Pos.Y = scale/4;
 	    if(mb_vertices[j].Pos.Y < -0.25) mb_vertices[j].Pos.Y = -0.25;
 	}
 
@@ -353,20 +362,21 @@ void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 streng
 
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
         clickPos.Y = realPos.Y;
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
-            f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
+            //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
+			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
 
             if(mb_vertices[j].Pos.Y > 0)
             {
-                mb_vertices[j].Pos.Y -= strength * ratio;
+                mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
                 if(mb_vertices[j].Pos.Y <= strength) mb_vertices[j].Pos.Y = 0;
             }
             if(mb_vertices[j].Pos.Y < 0)
             {
-                mb_vertices[j].Pos.Y += strength * ratio;
+                mb_vertices[j].Pos.Y += strength * ratio / (scale / nodescale);
                 if(mb_vertices[j].Pos.Y >= -strength) mb_vertices[j].Pos.Y = 0;
             }
 	    }
@@ -385,12 +395,13 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
         clickPos.Y = realPos.Y;
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
-            f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
-	        mb_vertices[j].Pos.Y -= strength * ratio;
+            //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
+			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
+	        mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
 	    }
 
 	    //if(mb_vertices[j].Pos.Y < 0 ) mb_vertices[j].Pos.Y = 0;
@@ -411,7 +422,7 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*scale + node->getPosition();
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
 
 	    if(pos.getDistanceFrom(vector3df(realPos.X,0,realPos.Z) ) < pos.getDistanceFrom( vector3df(nearestVertex.X,0,nearestVertex.Z) ))
 	    {

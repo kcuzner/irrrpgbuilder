@@ -42,8 +42,12 @@ void EditorCamera::setCamera(int tempCamera)
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
-		case 1: fov=0.65f;
+		/*case 1: fov=0.65f;
 				cameraHeight = 4.0f;
+				distance = 1;
+				break;*/
+		case 1: fov=0.65f;
+				cameraHeight = 250.0f;
 				distance = 1;
 				break;
 		// Camera 2 - Editing
@@ -51,8 +55,8 @@ void EditorCamera::setCamera(int tempCamera)
 				//fov=1.256637f;
 				//cameraHeight = 3.0f;
 				//distance = 1.0f;
-				cameraHeight = 7.0f;
-				distance = 0.8f;
+				cameraHeight = 1000.0f;
+				distance =1.0f;
 				break;
 	}
 	cam->setFOV(fov);
@@ -61,7 +65,7 @@ void EditorCamera::setCamera(int tempCamera)
 	cam->setPosition(vector3df(0,cameraHeight,0));
     cam->setFarValue(cameraHeight*3.0f);
 	
-    cam->setNearValue(0.1f);
+    cam->setNearValue(12.0f);
 }
 
 int EditorCamera::getCamera()
@@ -76,11 +80,14 @@ void EditorCamera::setCameraHeight(irr::f32 increments)
 	cameraHeight-=(increments/10);
 	switch (camera)
 	{
-		case 1: max = 6;
+		/*case 1: max = 6;
 				min = 2;	
+				break;*/
+		case 1: max = 800;
+				min = 72;	
 				break;
-		case 2: max = 12;
-				min = 2;
+		case 2: max = 2000;
+				min = 72;
 				break;
 	}
 	if (cameraHeight>max) 

@@ -71,7 +71,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		this->collisionAnimator = NULL;
 
-		node->setDebugDataVisible(EDS_BBOX);
+		node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 
 		script = "";
 

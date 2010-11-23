@@ -16,7 +16,7 @@ Vegetation::Vegetation()
     static IMesh* trunkMesh = smgr->getMesh("../media/vegetation/TreeHigh.obj");
 	trunkMesh->setHardwareMappingHint(EHM_STATIC);
     trunk = smgr->addMeshSceneNode(trunkMesh);
-
+	trunk->setAutomaticCulling(EAC_FRUSTUM_BOX);
 	
     //trunk->setMaterialFlag(EMF_LIGHTING,false);
 
@@ -25,7 +25,7 @@ Vegetation::Vegetation()
     s32 texture = rand()%4;
     ITexture* itexture = NULL;
 
-    size = 0.8f;
+    size = 72.0f;
 
     switch(texture)
     {
@@ -58,6 +58,8 @@ Vegetation::Vegetation()
         temp->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
         //temp->setMaterialFlag(EMF_LIGHTING,false);
         temp->setMaterialFlag(EMF_FOG_ENABLE,true);
+		temp->setAutomaticCulling(EAC_FRUSTUM_BOX);
+	
 
         leafs.push_back(temp);
     }
@@ -67,7 +69,7 @@ Vegetation::Vegetation()
     temp->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
     //temp->setMaterialFlag(EMF_LIGHTING,false);
     temp->setMaterialFlag(EMF_FOG_ENABLE,true);
-
+	temp->setAutomaticCulling(EAC_FRUSTUM_BOX);
     leafs.push_back(temp);
 
 
@@ -75,6 +77,7 @@ Vegetation::Vegetation()
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/vegetation/shadow.obj"),trunk);
     fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
     fakeShadow->setPosition(vector3df(0,(f32)0.03 + (rand()%10)*(f32)0.01 ,0));
+	fakeShadow->setAutomaticCulling(EAC_FRUSTUM_BOX);
 
 
     trunk->setMaterialFlag(EMF_FOG_ENABLE,true);

@@ -11,7 +11,7 @@ using namespace gui;
 
 using namespace std;
 
-const f32 TerrainManager::scale = 10;
+const f32 TerrainManager::scale = 750.0;
 
 TerrainManager::TerrainManager()
 {
@@ -115,7 +115,7 @@ void TerrainManager::createSegment(vector3df pos)
 TerrainTile* TerrainManager::getSegment(vector3df pos)
 {
     std::map<std::string, TerrainTile*>::iterator it;
-    it = terrainMap.find(getHashCode(pos));
+	it = terrainMap.find(getHashCode(pos).c_str());
 
     if(it==terrainMap.end())
         return 0;
@@ -172,6 +172,7 @@ std::string TerrainManager::getHashCode(vector3df pos)
     std::string s = ss.str();
 
     ss.clear();
+	printf ("Here is the HASHCODE: %s\n",s.c_str());
 
     return s;
 }
@@ -226,7 +227,6 @@ void TerrainManager::paintVegetation(MousePick mousePick, bool erase)
     if(mousePick.pickedNode != NULL && getSegment(mousePick.pickedNode->getName()))
     {
         TerrainTile* tempTile = getSegment(mousePick.pickedNode->getName());
-
         if(tempTile) tempTile->paintVegetation(mousePick.pickedPos, erase);
     }
 }
@@ -251,11 +251,16 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
         {
             for (int j=-1 ; j<2 ; j++)
             {
-                vector3df pos = vector3df((f32)round32(mousePick.pickedNode->getPosition().X/mousePick.pickedNode->getScale().X + i),
+				f32 nodescale = mousePick.pickedNode->getBoundingBox().getExtent().X;
+                vector3df pos = vector3df((f32)round32(mousePick.pickedNode->getPosition().X/(mousePick.pickedNode->getScale().X) + i),
                                           0,
-                                          (f32)round32(mousePick.pickedNode->getPosition().Z/mousePick.pickedNode->getScale().Z + j));
+                                          (f32)round32(mousePick.pickedNode->getPosition().Z/(mousePick.pickedNode->getScale().Z) + j));
 
+				pos.X = pos.X/nodescale;
+				pos.Y = pos.Y/nodescale;
+				pos.Z = pos.Z/nodescale;
                 TerrainTile* tempTile = getSegment(pos);
+				printf("Here is the POS: %f, %f, %f\n",pos.X/nodescale,pos.Y/nodescale,pos.Z/nodescale);
 
                 if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,strength);
             }

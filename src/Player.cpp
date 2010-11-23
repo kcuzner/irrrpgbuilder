@@ -232,7 +232,7 @@ Player::Player()
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
     fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
     fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
-    fakeShadow->setScale(vector3df(0.5,1,0.5));
+    fakeShadow->setScale(vector3df(32,72,32));
     fakeShadow->setPosition(vector3df(0,(f32)0.03 ,0));
 
     this->setAnimation(PLAYER_ANIMATION_IDLE);
@@ -319,6 +319,7 @@ void Player::walkTo(vector3df targetPos, f32 speed)
 	// - A collision with another object
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 
+	targetPos = vector3df(round32(targetPos.X),round32(targetPos.Y),round32(targetPos.Z));
     lookAt(targetPos);
 
     vector3df pos=this->getPosition();
@@ -541,7 +542,8 @@ void Player::update()
 		
 		timer1 = timercheck;
 		// If a target position is set then move to that position, call the walk animation
-		if( (this->getPosition().getDistanceFrom(walkTarget) > 0.2) &&  (this->getLife()!=0))
+		f32 sizePlayer = node->getBoundingBox().getExtent().X;
+		if( (this->getPosition().getDistanceFrom(walkTarget) > sizePlayer) &&  (this->getLife()!=0))
 		{
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
 
@@ -554,7 +556,7 @@ void Player::update()
 		{
 			this->lookAt(enemyUnderAttack->getPosition());
 			walkTarget = this->getPosition();
-			if(( this->getPosition().getDistanceFrom(enemyUnderAttack->getPosition()) > 1 ) || (enemyUnderAttack->getLife()==0))
+			if(( this->getPosition().getDistanceFrom(enemyUnderAttack->getPosition()) > 72.0f ) || (enemyUnderAttack->getLife()==0))
 			{
 				this->setAnimation(PLAYER_ANIMATION_IDLE);
 				enemyUnderAttack = NULL;

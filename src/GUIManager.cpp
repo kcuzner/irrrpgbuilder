@@ -75,6 +75,9 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
         case SC_ID_TERRAIN_BRUSH_STRENGTH :
             return (f32)guiTerrainBrushStrength->getPos();
             break;
+		case SC_ID_TERRAIN_BRUSH_RADIUS :
+			return (f32)guiTerrainBrushRadius->getPos();
+			break;
     }
     return 0;
 }
@@ -292,11 +295,20 @@ void GUIManager::setupEditorGUI()
 
 
     ///TERRAIN TOOLBAR
-    guiTerrainToolbar = guienv->addWindow(myRect(2,34,200,34));
+    guiTerrainToolbar = guienv->addWindow(myRect(2,34,200,54));
     guiTerrainToolbar->getCloseButton()->setVisible(false);
     guiTerrainToolbar->setDrawTitlebar(false);
     guiTerrainToolbar->setDraggable(false);
     guiTerrainToolbar->setVisible(false);
+
+	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
+                                                         myRect(2,mainToolbarPos.Y+32,98,16),
+                                                         false,true, guiTerrainToolbar);
+
+    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(100,mainToolbarPos.Y+32,100,16),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushRadius->setMin(50);
+    guiTerrainBrushRadius->setMax(150);
+    guiTerrainBrushRadius->setPos(100);
 
     guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
                                                          myRect(2,mainToolbarPos.Y+16,98,16),

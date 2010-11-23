@@ -33,7 +33,10 @@ class TerrainTile
 
         stringc getName();
         ISceneNode* getNode();
+		f32 getNodeScale();
+
         ITriangleSelector* getTriangleSelector();
+		
 
         void mergeToTile(TerrainTile* tile);
 
@@ -54,6 +57,7 @@ class TerrainTile
         ISceneNode* ocean;
 
         f32 scale;
+		f32 nodescale;
 
         ITriangleSelector* selector;
 

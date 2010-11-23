@@ -44,6 +44,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     layer=10;
     services->setPixelShaderConstant("terrainTextureScale",(float*)&layer,1);
+	//services->setPixelShaderConstant("terrainScale",(float*)&layer,1);
 
     //layer=100;
     //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);

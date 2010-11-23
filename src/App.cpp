@@ -70,7 +70,7 @@ bool App::cursorIsInEditArea()
     if(device->getCursorControl()->getPosition().Y < 36)   condition = false;
 
     //Is over terrain toolbar??
-    if(device->getCursorControl()->getPosition().Y < 80 && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
+    if(device->getCursorControl()->getPosition().Y < 90  && device->getCursorControl()->getPosition().X < 200 && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
         condition = false;
 
     //is over the dynamic objects chooser window??
@@ -463,7 +463,7 @@ void App::eventMousePressed(s32 mouse)
             {
                 if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
                 {
-                    TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos/TerrainManager::getInstance()->getScale());
+					TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
                 }
                 else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
                 {
@@ -526,7 +526,7 @@ void App::eventMouseWheel(f32 value)
 		app_state != APP_EDIT_PLAYER_SCRIPT &&
 		cursorIsInEditArea())
     {
-		EditorCamera::getInstance()->setCameraHeight(value);
+		EditorCamera::getInstance()->setCameraHeight(value * 50);
 	}
 }
 
@@ -741,6 +741,13 @@ void App::updateEditMode()
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{
+			if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
+			{
+				vector3df camPosition = this->getMousePosition3D(101).pickedPos;
+				EditorCamera::getInstance()->setPosition(camPosition);
+
+			}
+
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
@@ -748,7 +755,7 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegmentsToZero(this->getMousePosition3D(100),
-                                                                           1.0f,
+                                                                           GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 				}
@@ -757,13 +764,13 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     1.0f,
+                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                      GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 					else if(EventReceiver::getInstance()->isMousePressed(1) )
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     1.0f,
+                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                      -GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 				}
@@ -807,19 +814,19 @@ void App::updateEditMode()
 				//Update Editor Camera Position
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(-0.1f,0,0));
+					EditorCamera::getInstance()->moveCamera(vector3df(-10.0f,0,0));
 				}
 				else if (EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(0.1f,0,0));
+					EditorCamera::getInstance()->moveCamera(vector3df(10.0f,0,0));
 				}
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_UP))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(0,0,0.1f));
+					EditorCamera::getInstance()->moveCamera(vector3df(0,0,10.0f));
 				}
 				else if (EventReceiver::getInstance()->isKeyPressed(KEY_DOWN))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(0,0,-0.1f));
+					EditorCamera::getInstance()->moveCamera(vector3df(0,0,-10.0f));
 				}
 			}
 		}
@@ -852,7 +859,7 @@ void App::updateGameplay()
 				{
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 
-					if(obj->getDistanceFrom(Player::getInstance()->getPosition()) < 1)
+					if(obj->getDistanceFrom(Player::getInstance()->getPosition()) < 72.0f)
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
@@ -928,7 +935,7 @@ void App::createNewProject()
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
     smgr->setAmbientLight(SColorf(1,1,1,1));
-    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,1000);
+    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 
     Player::getInstance();
 
@@ -1011,9 +1018,10 @@ void App::initialize()
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
     smgr->setAmbientLight(SColorf(1,1,1,1));
-    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,1000);
+    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 
     Player::getInstance();
+	driver->setMinHardwareBufferVertexCount(0);
 
     this->currentProjectName = "irb_temp_project";
 }
