@@ -18,6 +18,7 @@
 	<text id="bt_terrain_segments" str="Edit Terrain Segments"/>
 	<text id="bt_terrain_transform" str="Edit Terrain Elevation"/>
 	<text id="bt_terrain_transform_brush_strength_label" str="Brush Strength:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Brush Radius:"/>
 	<text id="bt_play_game" str="Play Game"/>
 	<text id="bt_stop_game" str="Stop Game"/>
 	<text id="bt_edit_character" str="Edit Character"/>
@@ -67,6 +68,7 @@
 	<text id="bt_terrain_segments" str="Editar Segmentos do Terreno"/>
 	<text id="bt_terrain_transform" str="Editar Elevacao do Terreno"/>
 	<text id="bt_terrain_transform_brush_strength_label" str="Forca do Pincel:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Brush Radius:"/>
 	<text id="bt_play_game" str="Executar o Jogo"/>
 	<text id="bt_stop_game" str="Parar o Jogo"/>
 	<text id="bt_edit_character" str="Editar Personagem"/>
@@ -116,6 +118,7 @@
 	<text id="bt_terrain_segments" str="Editer les segments du terrain"/>
 	<text id="bt_terrain_transform" str="Editer l'elevation du terrain"/>
 	<text id="bt_terrain_transform_brush_strength_label" str="Force de la brosse:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Grandeur de la brosse:"/>
 	<text id="bt_play_game" str="Jouer"/>
 	<text id="bt_stop_game" str="Arreter le jeu"/>
 	<text id="bt_edit_character" str="Editer le personage"/>
