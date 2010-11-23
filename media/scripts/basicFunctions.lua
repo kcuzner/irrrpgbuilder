@@ -83,10 +83,10 @@ function walkRandomly(radius, speed)
     randomPointZ = IRBOriginalPositionZ
   end
   
-  if(radius == nil) then radius = 1 end
-  if(speed == nil) then speed = 0.01 end
+  if(radius == nil) then radius = 250 end
+  if(speed == nil) then speed = 0.8 end
 
-  if(distanceFrom(randomPointX,0,randomPointZ) < 0.1) then
+  if(distanceFrom(randomPointX,0,randomPointZ) < 32) then
     randomPointX = IRBOriginalPositionX + math.random(-radius,radius)
     randomPointZ = IRBOriginalPositionZ + math.random(-radius,radius)
   end
