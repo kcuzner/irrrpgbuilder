@@ -256,9 +256,9 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
                                           0,
                                           (f32)round32(mousePick.pickedNode->getPosition().Z/(mousePick.pickedNode->getScale().Z) + j));
 
-				pos.X = pos.X/nodescale;
-				pos.Y = pos.Y/nodescale;
-				pos.Z = pos.Z/nodescale;
+				pos.X = round32(pos.X/nodescale);
+				pos.Y = round32(pos.Y/nodescale);
+				pos.Z = round32(pos.Z/nodescale);
                 TerrainTile* tempTile = getSegment(pos);
 				printf("Here is the POS: %f, %f, %f\n",pos.X/nodescale,pos.Y/nodescale,pos.Z/nodescale);
 

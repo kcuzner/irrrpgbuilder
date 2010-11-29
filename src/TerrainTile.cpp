@@ -26,13 +26,13 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 	
-	//newMesh->setHardwareMappingHint(EHM_STATIC);
+	newMesh->setHardwareMappingHint(EHM_STATIC);
 	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
     node=smgr->addMeshSceneNode(newMesh,parent,100);
 	nodescale = node->getBoundingBox().getExtent().X;
 	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
-
+	
     node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
 
     node->setPosition(pos*scale);
@@ -59,7 +59,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         "../media/Shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/Shaders/splat.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_SOLID);
-
+	
     //Assign Textures
     node->setMaterialTexture(0,layer0);
     node->setMaterialTexture(1,layer1);
@@ -76,7 +76,6 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         "../media/Shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/Shaders/ocean.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-		//ShaderCallBack::getInstance(), video::EMT_SOLID);
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
@@ -181,6 +180,7 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
         }
 
         smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+		((IMeshSceneNode*)node)->getMesh()->setDirty();
     }
 }
 
@@ -348,6 +348,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
 void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 strength)
@@ -383,6 +384,7 @@ void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 streng
 	}
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
 void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength)
@@ -409,6 +411,7 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 	}
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
 f32 TerrainTile::getHeightAt(vector3df pos)

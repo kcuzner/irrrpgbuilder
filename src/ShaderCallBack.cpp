@@ -110,4 +110,3 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     f32 time=device->getTimer()->getTime()/10000.0f;
     services->setVertexShaderConstant("waterTime",&time,1);
 }
-

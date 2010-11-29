@@ -615,7 +615,7 @@ void App::run()
 			updateGameplay();	
 		}
 		
-        smgr->drawAll();
+		smgr->drawAll();
 
 		guienv->drawAll();
 
@@ -934,7 +934,7 @@ void App::createNewProject()
 
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
-    smgr->setAmbientLight(SColorf(1,1,1,1));
+    smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 
     Player::getInstance();
@@ -1017,8 +1017,8 @@ void App::initialize()
 
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
-    smgr->setAmbientLight(SColorf(1,1,1,1));
-    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
+    smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
+    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,300,9100);
 
     Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);

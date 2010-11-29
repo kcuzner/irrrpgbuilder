@@ -3,6 +3,8 @@
 
 #include <irrlicht.h>
 
+#include "HardwareSkinCallback.h"
+
 #include "tinyXML/tinyxml.h"
 
 #include "GUIManager.h"
@@ -160,6 +162,7 @@ class DynamicObject
 				
         IMesh* mesh;
         ISceneNode* node;
+		ISkinnedMesh* skinnedmesh;
 
         ISceneNode* fakeShadow;
 

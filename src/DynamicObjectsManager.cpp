@@ -173,7 +173,8 @@ DynamicObjectsManager::DynamicObjectsManager()
             if(materialType == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
 
             newObj->setMaterialType(mat);
-            newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str())));
+			newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+			newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str())));
             newObj->setTemplateObjectName(name);
             newObj->getNode()->setVisible(false);
 			

@@ -19,16 +19,14 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
     stringc realFile = "../media/dynamic_objects/";
     realFile += meshFile;
-	printf("Here is the object: %s \n",realFile.c_str());
+	//printf("Here is the object: %s \n",realFile.c_str());
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	mesh = smgr->getMesh(realFile);
-
-	mesh->setHardwareMappingHint(EHM_DYNAMIC);
-    //meshName = meshFile;
-
+	//meshName = meshFile;
     this->animations = animations;
 
-    setupObj(name, mesh);
+	setupObj(name, mesh);
+
 	this->properties.life = 100;
 	this->properties.experience = 10;
     this->properties.money = 0;
@@ -40,6 +38,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
     this->animations = animations;
 
     setupObj(name, mesh);
+
 	this->properties.life = 100;
 	this->properties.experience = 10;
     this->properties.money = 0;
@@ -50,6 +49,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     this->mesh = mesh;
     this->name = name;
@@ -57,7 +57,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	if(hasAnimation())
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
-        this->node = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+		
+        IAnimatedMeshSceneNode * NodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+		this->node = NodeAnim;
+			
 	}
     else
 	{
@@ -102,7 +105,7 @@ DynamicObject::~DynamicObject()
 DynamicObject* DynamicObject::clone()
 {
     DynamicObject* newObj = new DynamicObject(name,mesh,animations);
-
+	
     newObj->setScale(this->getScale());
     newObj->setMaterialType(this->getMaterialType());
 	newObj->setType(typeText);

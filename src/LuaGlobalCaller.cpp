@@ -124,7 +124,7 @@ bool GlobalMap::saveGlobalsToXML(stringc filename)
     vector<stringc> playerItems = Player::getInstance()->getItems();
 
     //save current player items
-    for(int i=0;i<playerItems.size();i++)
+    for(int i=0;i<(int)playerItems.size();i++)
     {
         TiXmlElement* playerItemXML = new TiXmlElement("item");
         playerItemXML->SetAttribute("name",  stringc(playerItems[i]).c_str() );
@@ -166,9 +166,9 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
 
         if(playerXML)
         {
-            f32 X = atof(playerXML->ToElement()->Attribute("x"));
-            f32 Y = atof(playerXML->ToElement()->Attribute("y"));
-            f32 Z = atof(playerXML->ToElement()->Attribute("z"));
+            f32 X = (f32)atof(playerXML->ToElement()->Attribute("x"));
+            f32 Y = (f32)atof(playerXML->ToElement()->Attribute("y"));
+            f32 Z = (f32)atof(playerXML->ToElement()->Attribute("z"));
             s32 life = atoi(playerXML->ToElement()->Attribute("life"));
             s32 money = atoi(playerXML->ToElement()->Attribute("money"));
 
@@ -543,7 +543,7 @@ int LuaGlobalCaller::setFogRange(lua_State *LS)
     printf("FOG RANGE (%d,%d)\n",start,end);
     #endif
     //set new Color
-    App::getInstance()->getDevice()->getVideoDriver()->setFog(color,fogType,start,end,density,pixelFog,rangeFog);
+    App::getInstance()->getDevice()->getVideoDriver()->setFog(color,fogType,(f32)start,(f32)end,density,pixelFog,rangeFog);
 
     return 0;
 }
