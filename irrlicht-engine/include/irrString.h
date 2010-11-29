@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2009 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine" and the "irrXML" project.
 // For conditions of distribution and use, see copyright notice in irrlicht.h and irrXML.h
 
@@ -854,11 +854,11 @@ public:
 
 	//! Appends a string representation of a number to this string
 	/** \param i Number to append. */
-	//string<T,TAlloc>& operator += (const unsigned long& i)
-	//{
-	//	append(string<T,TAlloc>(i));
-	//	return *this;
-	//}
+	string<T,TAlloc>& operator += (const unsigned long& i)
+	{
+		append(string<T,TAlloc>(i));
+		return *this;
+	}
 
 
 	//! Appends a string representation of a number to this string
@@ -907,7 +907,7 @@ public:
 			array[pos++] = array[i];
 		}
 		used -= found;
-		array[used] = 0;
+		array[used-1] = 0;
 	}
 
 
@@ -939,7 +939,7 @@ public:
 			array[pos++] = array[i];
 		}
 		used -= found;
-		array[used] = 0;
+		array[used-1] = 0;
 	}
 
 
@@ -969,7 +969,7 @@ public:
 			array[pos++] = array[i];
 		}
 		used -= found;
-		array[used] = 0;
+		array[used-1] = 0;
 	}
 
 
@@ -1019,8 +1019,8 @@ public:
 		// terminate
 		if ( allocated > 0 )
 		{
-			used = allocated - 1;
-			array[used] = 0;
+			used = allocated;
+			array[used-1] = 0;
 		}
 		else
 		{

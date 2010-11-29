@@ -1,4 +1,4 @@
-// Copyright (C) 2002-2009 Nikolaus Gebhardt
+// Copyright (C) 2002-2010 Nikolaus Gebhardt
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
@@ -187,6 +187,7 @@ public:
 	}
 
 
+	//! The alignment defines how the borders of this element will be positioned when the parent element is resized.
 	void setAlignment(EGUI_ALIGNMENT left, EGUI_ALIGNMENT right, EGUI_ALIGNMENT top, EGUI_ALIGNMENT bottom)
 	{
 		AlignLeft = left;
@@ -601,9 +602,6 @@ public:
 	bool getNextElement(s32 startOrder, bool reverse, bool group,
 		IGUIElement*& first, IGUIElement*& closest, bool includeInvisible=false) const
 	{
-		//I dont want this feature in IRB
-		return false;
-		
 		// we'll stop searching if we find this number
 		s32 wanted = startOrder + ( reverse ? -1 : 1 );
 		if (wanted==-2)
