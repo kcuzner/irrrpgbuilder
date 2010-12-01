@@ -147,6 +147,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_new_project")).c_str() );
 
     guiMainNewProject->setImage(driver->getTexture("../media/art/bt_new_project.png"));
+	guiMainNewProject->setPressedImage(driver->getTexture("../media/art/bt_new_project_ghost.png"));
 
     x+=42;
 
@@ -157,6 +158,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_load_project")).c_str() );
 
     guiMainLoadProject->setImage(driver->getTexture("../media/art/bt_load_project.png"));
+	guiMainLoadProject->setPressedImage(driver->getTexture("../media/art/bt_load_project_ghost.png"));
 
     x+=42;
 
@@ -174,6 +176,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
 
     guiAbout->setImage(driver->getTexture("../media/art/bt_about.png"));
+	guiAbout->setPressedImage(driver->getTexture("../media/art/bt_about_ghost.png"));
 
     guiHelpButton = guienv->addButton(myRect(driver->getScreenSize().Width - 36 - 84,mainToolbarPos.Y,32,32),
                                      guiMainWindow,
@@ -206,6 +209,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_save_project")).c_str() );
 
     guiMainSaveProject->setImage(driver->getTexture("../media/art/bt_save_project.png"));
+	guiMainSaveProject->setPressedImage(driver->getTexture("../media/art/bt_save_project_ghost.png"));
 
     x+=42;
 
@@ -217,6 +221,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str());
 
     guiTerrainTransform->setImage(driver->getTexture("../media/art/bt_terrain_up.png"));
+	guiTerrainTransform->setPressedImage(driver->getTexture("../media/art/bt_terrain_up_ghost.png"));
 
 
     x+= 42;
@@ -228,6 +233,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str());
 
     guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
 
     x+= 42;
 
@@ -238,6 +244,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str());
 
     guiTerrainPaintVegetation->setImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation.png"));
+	guiTerrainPaintVegetation->setPressedImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation_ghost.png"));
 
 
     x += 42;
@@ -249,6 +256,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str());
 
     guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_dynamic_objects_mode.png"));
+	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_dynamic_objects_mode_ghost.png"));
 
 
     x += 42;
@@ -260,6 +268,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str());
 
     guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
+	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
 
 
     x += 42;
@@ -271,6 +280,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str());
 
     guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
+	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
 
     x += 42;
 
@@ -641,33 +651,43 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
     {
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
+			guiDynamicObjects_Context_btEditScript->setPressed(!enable);
             break;
         case BT_ID_DYNAMIC_OBJECTS_MODE:
             guiDynamicObjectsMode->setEnabled(enable);
+			guiDynamicObjectsMode->setPressed(!enable);
             break;
         case BT_ID_TERRAIN_ADD_SEGMENT:
             guiTerrainAddSegment->setEnabled(enable);
+			guiTerrainAddSegment->setPressed(!enable);
             break;
         case BT_ID_TERRAIN_PAINT_VEGETATION:
             guiTerrainPaintVegetation->setEnabled(enable);
+			guiTerrainPaintVegetation->setPressed(!enable);
             break;
         case BT_ID_TERRAIN_TRANSFORM:
             guiTerrainTransform->setEnabled(enable);
+			guiTerrainTransform->setPressed(!enable);
             break;
         case BT_ID_SAVE_PROJECT:
             guiMainSaveProject->setEnabled(enable);
+			guiMainSaveProject->setPressed(!enable);
             break;
         case BT_ID_LOAD_PROJECT:
             guiMainLoadProject->setEnabled(enable);
+			guiMainLoadProject->setPressed(!enable);
             break;
         case BT_ID_EDIT_CHARACTER:
             guiEditCharacter->setEnabled(enable);
+			guiEditCharacter->setPressed(!enable);
             break;
         case BT_ID_EDIT_SCRIPT_GLOBAL:
             guiEditScriptGlobal->setEnabled(enable);
+			guiEditScriptGlobal->setPressed(!enable);
             break;
         case BT_ID_ABOUT:
             guiAbout->setEnabled(enable);
+			guiAbout->setPressed(!enable);
             break;
     }
 }
