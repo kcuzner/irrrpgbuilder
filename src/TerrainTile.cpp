@@ -21,8 +21,8 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     scale = TerrainManager::getInstance()->getScale();
 
-    static IMesh* baseMesh = smgr->getMesh("../media/baseTerrain.obj");
-	//static IMesh* baseMesh = smgr->getMesh("../media/land.obj");
+    //static IMesh* baseMesh = smgr->getMesh("../media/baseTerrain.obj");
+	static IMesh* baseMesh = smgr->getMesh("../media/land.obj");
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 	
@@ -339,11 +339,11 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
 	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/nodescale));
-			printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
+			//printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
 
 	    if(mb_vertices[j].Pos.Y > scale/4) mb_vertices[j].Pos.Y = scale/4;
-	    if(mb_vertices[j].Pos.Y < -0.25) mb_vertices[j].Pos.Y = -0.25;
+	    if(mb_vertices[j].Pos.Y < -(scale*0.1f)) mb_vertices[j].Pos.Y = -(scale*0.1f);
 	}
 
 
@@ -389,6 +389,8 @@ void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 streng
 
 void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength)
 {
+
+	printf ("this was called to down\n");
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
