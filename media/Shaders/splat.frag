@@ -6,6 +6,7 @@ uniform sampler2D terrainLayer4;
 
 
 uniform int terrainTextureScale;
+uniform int terrainScale;
 
 uniform bool editingTerrain;
 
@@ -19,6 +20,7 @@ varying float posY;
 
 void main() 
 {
+    int scale = terrainScale / 4;
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
 	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*terrainTextureScale );
@@ -34,13 +36,13 @@ void main()
 	
 	if(posY >= 0)
 	{
-	  tex10 = mix( tex1, tex3, posY );
-	  tex10 = mix( tex10, tex2, min(1-normalFace.y-0.2,1) );
+	  tex10 = mix( tex1, tex3, (posY/scale) );
+	  tex10 = mix( tex10, tex2, (min(1-normalFace.y-0.2,1)/scale) );
 	}
 	else
 	{
-	  tex10 = mix( tex1, tex2, min(1-normalFace.y-0.2,1) );
-	  tex10 = mix( tex10, tex0, min(1,-posY*10) );
+	  tex10 = mix( tex1, tex2, (min(1-(normalFace.y)-(0.2),1)) );
+	  tex10 = mix( tex10, tex0, min(1,-(posY/scale)*10));
 	}
 	
 	if(posY!=0 && editingTerrain) tex10*=vec4(1,0.6,0.4,1);

@@ -6,15 +6,17 @@ uniform float waterTime;
 uniform vec4 AmbientLight;
 
 varying float posY;
+uniform int terrainScale;
 
 void main()
 {
+	int scale = terrainScale * 0.1;
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
 	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*5 + waterTime,texCoord.y*3));
 	vec4 tex1    = texture2D( oceanReflection, texCoord.xy*2 + tex0.r*0.5 );
 	
-	tex1.a = (-posY-0.1)*3;
+	tex1.a = (-posY/scale)-(0.1)*3;
 	
  	vec4 finalColor = tex1 * AmbientLight;
 	float pAlpha = finalColor.a;

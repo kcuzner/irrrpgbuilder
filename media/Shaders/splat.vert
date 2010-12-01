@@ -27,8 +27,8 @@ void main(void)
 	float tmp2 = dot(-lightVector, normal);
 	
 	vec4 tmp = mLightColor * tmp2;
-	//gl_FrontColor = gl_BackColor = vec4(tmp.x, tmp.y, tmp.z, 1.0);
-	gl_FrontColor = gl_BackColor = vec4(1, 1, 1, 1.0);
+	gl_FrontColor = gl_BackColor = vec4(tmp.x, tmp.y, tmp.z, 1.0);
+	//gl_FrontColor = gl_BackColor = vec4(1, 1, 1, 1.0);
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
