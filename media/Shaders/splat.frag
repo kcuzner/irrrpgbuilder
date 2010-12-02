@@ -32,19 +32,19 @@ void main()
 	vec4 tex3    = texture2D( terrainLayer3, texCoord.xy*terrainTextureScale );
 	//vec4 tex4    = texture2D( terrainLayer4, texCoord.xy );//ShadowMap
 
-	//tex1 = mix( tex0, tex1, min(1-normalFace.y,1) );
-	//tex2 = mix( tex1, tex2, posY );//a1.g
+	tex1 = mix( tex1, tex0, min(1-normalFace.y,1) );
+	tex2 = mix( tex1, tex2, (posY/scale));//a1.g
 	
 	vec4 tex10;
 	
 	if(posY >= 0)
 	{
 	  tex10 = mix( tex1, tex3, (posY/scale));
-	  tex10 = mix( tex10, tex2, (min(1-normalFace.y-0.2,1)/scale) );
+	  tex10 = mix( tex10, tex2, (min(1-normalFace.y-0.2,1)) );
 	}
 	else
 	{
-	  tex10 = mix( tex1, tex2, (min(1-(normalFace.y)-(0.2),1)) );
+	  tex10 = mix( tex1, tex2, min(1-normalFace.y-0.2,1));
 	  tex10 = mix( tex10, tex0, min(1,-(posY/scale)*10));
 	}
 	
@@ -54,7 +54,7 @@ void main()
 	//tex2 = mix( tex3, tex2, 1-a1.b);
 	
 	tex10 *= gl_Color;
-
+	//  
   	vec4 finalColor = tex10 * AmbientLight;
 
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
