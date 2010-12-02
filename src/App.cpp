@@ -526,7 +526,13 @@ void App::eventMouseWheel(f32 value)
 		app_state != APP_EDIT_PLAYER_SCRIPT &&
 		cursorIsInEditArea())
     {
-		EditorCamera::getInstance()->setCameraHeight(value * 50);
+		if (app_state < 100)
+		{
+			f32 height = EditorCamera::getInstance()->getPosition().Y;
+			EditorCamera::getInstance()->setCameraHeight(value * (height*0.25));
+		}
+		else
+			EditorCamera::getInstance()->setCameraHeight(value * 50);
 	}
 }
 

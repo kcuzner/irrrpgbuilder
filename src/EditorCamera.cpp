@@ -85,8 +85,8 @@ void EditorCamera::setCameraHeight(irr::f32 increments)
 		case 1: max = 800;
 				min = 250;	
 				break;
-		case 2: max = 2000;
-				min = 270;
+		case 2: max = 10000;
+				min = 250;
 				break;
 	}
 	if (cameraHeight>max) 
