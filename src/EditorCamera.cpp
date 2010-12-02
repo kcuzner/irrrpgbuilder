@@ -48,7 +48,6 @@ void EditorCamera::setCamera(int tempCamera)
 				break;*/
 		case 1: fov=0.65f;
 				cameraHeight = 400.0f;
-				distance = 1;
 				break;
 		// Camera 2 - Editing
 		case 2: fov=0.45f;
@@ -56,12 +55,11 @@ void EditorCamera::setCamera(int tempCamera)
 				//cameraHeight = 3.0f;
 				//distance = 1.0f;
 				cameraHeight = 1000.0f;
-				distance =1.0f;
 				break;
 	}
 	cam->setFOV(fov);
     
-    cam->setTarget(vector3df(0,0,cameraHeight/2.0f));
+    cam->setTarget(vector3df(0,72,cameraHeight/2.0f));
 	cam->setPosition(vector3df(0,cameraHeight,0));
     cam->setFarValue(cameraHeight*3.0f);
 	
@@ -85,20 +83,25 @@ void EditorCamera::setCameraHeight(irr::f32 increments)
 				min = 2;	
 				break;*/
 		case 1: max = 800;
-				min = 72;	
+				min = 250;	
 				break;
 		case 2: max = 2000;
-				min = 72;
+				min = 270;
 				break;
 	}
 	if (cameraHeight>max) 
 		cameraHeight=max;
 	if (cameraHeight<min)
 		cameraHeight=min;
-	cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z));
+	if (camera==2 && cameraHeight!=min && cameraHeight!=max)
+		cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z+(increments*0.1f)));
+	else
+		cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z));
+
     cam->setFarValue(cameraHeight*3.0f);
-	
-	cam->setTarget(getTarget());
+	vector3df newtarget = this->getTarget();
+	newtarget.Y = newtarget.Y;
+	cam->setTarget(newtarget);
 }
 
 f32 EditorCamera::getCameraHeight()
@@ -109,13 +112,13 @@ f32 EditorCamera::getCameraHeight()
 void EditorCamera::moveCamera(vector3df pos)
 {
     cam->setPosition(cam->getPosition() + pos);
-	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y/distance));
+	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y));
 }
 
 void EditorCamera::setPosition(vector3df pos)
 {
-	cam->setPosition(vector3df(pos.X,cam->getPosition().Y,pos.Z-cameraHeight/distance));
-	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y/distance));
+	cam->setPosition(vector3df(pos.X,cam->getPosition().Y,pos.Z-cameraHeight));
+	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y));
 }
 
 ICameraSceneNode* EditorCamera::getNode()
@@ -125,6 +128,6 @@ ICameraSceneNode* EditorCamera::getNode()
 
 vector3df EditorCamera::getTarget()
 {
-	vector3df target = vector3df(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y/distance) );
+	vector3df target = vector3df(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y) );
 	return target;
 }

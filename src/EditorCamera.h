@@ -43,7 +43,6 @@ class EditorCamera
 		int maxCamera;
 
 		f32 fov;
-		f32 distance;
 };
 
 #endif // EDITORCAMERA_H
