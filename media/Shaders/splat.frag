@@ -21,6 +21,9 @@ varying float posY;
 void main() 
 {
     int scale = terrainScale / 4;
+	if (terrainScale==1)
+		scale = 1;
+		
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
 	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*terrainTextureScale );
@@ -36,7 +39,7 @@ void main()
 	
 	if(posY >= 0)
 	{
-	  tex10 = mix( tex1, tex3, (posY/scale) );
+	  tex10 = mix( tex1, tex3, (posY/scale));
 	  tex10 = mix( tex10, tex2, (min(1-normalFace.y-0.2,1)/scale) );
 	}
 	else
@@ -45,7 +48,8 @@ void main()
 	  tex10 = mix( tex10, tex0, min(1,-(posY/scale)*10));
 	}
 	
-	if(posY!=0 && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+	if(posY>(0.01 * scale) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+	if(posY<-(0.01 * scale) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
 	
 	//tex2 = mix( tex3, tex2, 1-a1.b);
 	
