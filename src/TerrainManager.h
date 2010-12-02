@@ -38,8 +38,8 @@ class TerrainManager
 		stringc getTerrainTexture(u32 layer);
 		void setTerrainTexture(u32 layer, stringc name);
 
-		int getTileMeshSize();
-		void setTileMeshSize(int newsize);
+		f32 getTileMeshSize();
+		void setTileMeshSize(f32 newsize);
 
         void clean();
 
@@ -55,7 +55,7 @@ class TerrainManager
         f32 transformSegmentsRadius;
         f32 transformSegmentsStrength;
 
-		int	tilemeshsize;
+		f32	tilemeshsize;
 		stringc tilemesh;
 		stringc terraintexture1;
 		stringc terraintexture2;

@@ -32,16 +32,16 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-	
+
 	newMesh->setHardwareMappingHint(EHM_STATIC);
 	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);  // Now work. Will be able to define octrees!
 	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
     node=smgr->addMeshSceneNode(newMesh,parent,100);
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
-	
+
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
-	
+
     node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
 
     node->setPosition(pos*scale);
@@ -73,7 +73,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         "../media/Shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/Shaders/splat.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_SOLID);
-	
+
     //Assign Textures
     node->setMaterialTexture(0,layer0);
     node->setMaterialTexture(1,layer1);
@@ -82,7 +82,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     //Assign GLSL Shader
     node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
-	
+
 
 
     //Create a Custom GLSL Material (Terrain Splatting)
@@ -200,8 +200,8 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 
 void TerrainTile::saveToXML(TiXmlElement* parentElement)
 {
-    int x = node->getPosition().X/node->getScale().X;
-    int z = node->getPosition().Z/node->getScale().Z;
+    int x = (int)node->getPosition().X/(int)node->getScale().X;
+    int z = (int)node->getPosition().Z/(int)node->getScale().Z;
 
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
     segmentXML->SetAttribute("x",x);
@@ -245,7 +245,11 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
     {
         s32 id = atoi(vertex->ToElement()->Attribute("id"));
         f32 y = (f32)atof(vertex->ToElement()->Attribute("y"));
-        bool addVegetation = atoi(vertex->ToElement()->Attribute("v"));
+
+		int vegetation = atoi(vertex->ToElement()->Attribute("v"));
+		bool addVegetation = false;
+		if (vegetation==1)
+			addVegetation=true;
 
         this->transformMeshByVertex(id,y,addVegetation);
 
@@ -299,7 +303,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
 				v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y,realPos.Z + (rand()%5)*0.1f - 0.25f));
                 f32 treesize = (f32)(rand() % 100 + 50)/100;
-				v->setScale(vector3df(treesize*(scale/7.5),treesize*(scale/7.5),treesize*(scale/7.5)));
+				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 				printf("Attempting to place a tree with this size: %f\n",treesize);
                 vegetationVector.push_back(v);
 
@@ -341,23 +345,22 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 
 	u16* mb_indices  = meshBuffer->getIndices();
-	int meshscale = TerrainManager::getInstance()->getTileMeshSize();
-	
+
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
 	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
         clickPos.Y = realPos.Y;
-		
+
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
-	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/meshscale));
+	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/nodescale));
 			//printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
-		
-		if(mb_vertices[j].Pos.Y > meshscale/4) mb_vertices[j].Pos.Y = meshscale/4;
-	    if(mb_vertices[j].Pos.Y < -(meshscale*0.1f)) mb_vertices[j].Pos.Y = -(meshscale*0.1f);
+
+		if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
+	    if(mb_vertices[j].Pos.Y < -(nodescale*0.1f)) mb_vertices[j].Pos.Y = -(nodescale*0.1f);
 	}
 
 

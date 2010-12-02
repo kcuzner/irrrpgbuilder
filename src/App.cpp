@@ -644,7 +644,10 @@ void App::setupDevice()
 {
 
 	loadConfig();
-    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
+	bool full = false;
+	if (fullScreen==1)
+		full=true;
+    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, full, false, false, 0);
     device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
 
     driver = device->getVideoDriver();

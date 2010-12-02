@@ -920,7 +920,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 
         if((EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT) || EventReceiver::getInstance()->isKeyPressed(KEY_LEFT)) && changeTime == 20)
         {
-            result = 1-result;
+            result = !result;
             changeTime = 0;
         }
 

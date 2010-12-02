@@ -76,8 +76,8 @@ int EditorCamera::getCamera()
 
 void EditorCamera::setCameraHeight(irr::f32 increments)
 {
-	int max = 0;
-	int min = 0;
+	f32 max = 0;
+	f32 min = 0;
 	cameraHeight-=(increments/10);
 	switch (camera)
 	{

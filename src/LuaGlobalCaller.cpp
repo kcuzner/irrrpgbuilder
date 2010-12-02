@@ -680,8 +680,13 @@ int LuaGlobalCaller::playSound2D(lua_State *LS)
 {
     stringc soundName = "../media/sound/";
 
-    bool looped = lua_toboolean(LS, -1);
-    lua_pop(LS, 1);
+    int LUAlooped = lua_toboolean(LS, -1);
+	
+	bool looped = false;
+	if (LUAlooped==1)
+		looped = true;
+    
+	lua_pop(LS, 1);
 
     soundName += (char*)lua_tostring(LS, -1);
 	lua_pop(LS, 1);
@@ -704,7 +709,10 @@ int LuaGlobalCaller::playSound3D(lua_State *LS)
     float x = (float)lua_tonumber(LS, -1);
     lua_pop(LS, 1);
 
-    bool looped = lua_toboolean(LS, -1);
+    int LUAlooped = lua_toboolean(LS, -1);
+	bool looped = false;
+	if (LUAlooped==1)
+		looped=true;
     lua_pop(LS, 1);
 
     soundName += (char*)lua_tostring(LS, -1);

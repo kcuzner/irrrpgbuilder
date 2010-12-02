@@ -510,7 +510,12 @@ void DynamicObject::moveObject(f32 speed)
 
 int DynamicObject::setEnabled(lua_State *LS)
 {
-    bool enabled = lua_toboolean(LS, -1);
+    int LUAenabled = lua_toboolean(LS, -1);
+	
+	bool enabled = false;
+	if (LUAenabled==1) 
+		enabled=true;
+
 	lua_pop(LS, 1);
 
 	///TODO: create getObjectByName() as static to avoid code duplication!

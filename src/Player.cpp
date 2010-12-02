@@ -319,7 +319,7 @@ void Player::walkTo(vector3df targetPos, f32 speed)
 	// - A collision with another object
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 
-	targetPos = vector3df(round32(targetPos.X),round32(targetPos.Y),round32(targetPos.Z));
+	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
     lookAt(targetPos);
 
     vector3df pos=this->getPosition();

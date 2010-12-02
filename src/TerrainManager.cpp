@@ -336,12 +336,12 @@ void TerrainManager::setTerrainTexture(u32 layer, stringc name)
 		terraintexture4=name;
 }
 
-int TerrainManager::getTileMeshSize()
+f32 TerrainManager::getTileMeshSize()
 {
 	return tilemeshsize;
 }
 
-void TerrainManager::setTileMeshSize(int newsize)
+void TerrainManager::setTileMeshSize(f32 newsize)
 {
 	tilemeshsize=newsize;
 }
