@@ -47,7 +47,7 @@ void EditorCamera::setCamera(int tempCamera)
 				distance = 1;
 				break;*/
 		case 1: fov=0.65f;
-				cameraHeight = 250.0f;
+				cameraHeight = 400.0f;
 				distance = 1;
 				break;
 		// Camera 2 - Editing

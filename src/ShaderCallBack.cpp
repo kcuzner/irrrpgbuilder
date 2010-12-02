@@ -66,12 +66,12 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
 //services->setPixelShaderConstant("ambientGlobal",(float*)&SColorf(1,1,1,1),4);
 
-/*
-    core::matrix4 invWorld = device->getVideoDriver()->getTransform(video::ETS_WORLD);
+
+/*    core::matrix4 invWorld = device->getVideoDriver()->getTransform(video::ETS_WORLD);
     invWorld.makeInverse();
 
     services->setVertexShaderConstant("mInvWorld", invWorld.pointer(), 16);
-
+*/
     // set clip matrix
     core::matrix4 worldViewProj;
     worldViewProj = device->getVideoDriver()->getTransform(video::ETS_PROJECTION);
@@ -80,7 +80,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     services->setVertexShaderConstant("mWorldViewProj", worldViewProj.pointer(), 16);
     services->setVertexShaderConstant("mWorldViewProj2", worldViewProj.pointer(), 16);
-*/
+
 /*
     layer=4;
     services->setPixelShaderConstant("ShadowMapSampler",(float*)&layer,1);
@@ -90,11 +90,12 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     layer=10;
     services->setPixelShaderConstant("MAPRES",(float*)&layer,1);
+*/
 
-    core::vector3df pos = vector3df(0,30,0);
+    core::vector3df pos = vector3df(0,250,0);
 
-    services->setVertexShaderConstant("LightPos", reinterpret_cast<f32*>(&pos), 3);
-
+    services->setVertexShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
+/*
 
     // set camera position
     pos = device->getSceneManager()->getActiveCamera()->getPosition();
@@ -104,7 +105,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     video::SColorf col(2.0f,2.0f,2.0f,2.0f);
 
-    services->setVertexShaderConstant("LightColuor",reinterpret_cast<f32*>(&col), 4);
+    services->setVertexShaderConstant("LightColor",reinterpret_cast<f32*>(&col), 4);
 
     // set transposed world matrix
 

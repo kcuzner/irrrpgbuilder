@@ -243,7 +243,6 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 
 void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 strength)
 {
-	f32 nodescale = mousePick.pickedNode->getBoundingBox().getExtent().X;
     if(mousePick.pickedNode != NULL)
     {
         for (int i=-1 ; i<2 ; i++)
@@ -251,13 +250,13 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
             for (int j=-1 ; j<2 ; j++)
             {
 				
-                vector3df pos = vector3df((f32)(mousePick.pickedNode->getPosition().X/(mousePick.pickedNode->getScale().X) + (i*nodescale)),
+                vector3df pos = vector3df((f32)(mousePick.pickedNode->getPosition().X/(mousePick.pickedNode->getScale().X) + (i*tilemeshsize)),
                                           0,
-                                          (f32)(mousePick.pickedNode->getPosition().Z/(mousePick.pickedNode->getScale().Z) + (j*nodescale)));
+                                          (f32)(mousePick.pickedNode->getPosition().Z/(mousePick.pickedNode->getScale().Z) + (j*tilemeshsize)));
 
-				pos.X = pos.X/nodescale;
-				pos.Y = pos.Y/nodescale;
-				pos.Z = pos.Z/nodescale;
+				pos.X = pos.X/tilemeshsize;
+				pos.Y = pos.Y/tilemeshsize;
+				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
                 if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,strength);
             }
@@ -267,20 +266,19 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
 
 void TerrainManager::transformSegmentsToZero(MousePick mousePick, f32 radius, f32 strength)
 {
-	f32 nodescale = mousePick.pickedNode->getBoundingBox().getExtent().X;
     if(mousePick.pickedNode != NULL)
     {
         for (int i=-1 ; i<2 ; i++)
         {
             for (int j=-1 ; j<2 ; j++)
             {
-                vector3df pos = vector3df((f32)round32(mousePick.pickedNode->getPosition().X/mousePick.pickedNode->getScale().X + (i * nodescale)),
+                vector3df pos = vector3df((f32)round32(mousePick.pickedNode->getPosition().X/mousePick.pickedNode->getScale().X + (i * tilemeshsize)),
                                           0,
-                                          (f32)round32(mousePick.pickedNode->getPosition().Z/mousePick.pickedNode->getScale().Z + (j * nodescale)));
+                                          (f32)round32(mousePick.pickedNode->getPosition().Z/mousePick.pickedNode->getScale().Z + (j * tilemeshsize)));
 
-				pos.X = pos.X/nodescale;
-				pos.Y = pos.Y/nodescale;
-				pos.Z = pos.Z/nodescale;
+				pos.X = pos.X/tilemeshsize;
+				pos.Y = pos.Y/tilemeshsize;
+				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
 
                 if(tempTile) tempTile->transformMeshToZero(mousePick.pickedPos,radius,strength);
