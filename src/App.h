@@ -70,13 +70,14 @@ class App
 
         void run();
 
-        void setupDevice(int screenW, int screenH, bool fullScreen);
+		void setupDevice();
 
         void updateEditMode();
         void updateGameplay();
 
         void cleanWorkspace();
         void createNewProject();
+
         void loadProject();
         void loadProject(stringc filename);
         void saveProject();
@@ -96,7 +97,7 @@ class App
 
         void saveProjectToXML();
         bool loadProjectFromXML(stringc filename);
-
+		
         IrrlichtDevice *device;
         IVideoDriver* driver;
         ISceneManager* smgr;
@@ -104,6 +105,8 @@ class App
 		
 		u32 timer;
 		u32 timer2;
+		int screenW,screenH,fullScreen;
+		bool loadConfig();
 		
         APP_STATE app_state;
 

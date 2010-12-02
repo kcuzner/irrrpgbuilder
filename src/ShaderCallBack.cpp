@@ -46,7 +46,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     layer=10;
     services->setPixelShaderConstant("terrainTextureScale",(float*)&layer,1);
 	// Retrieve the scale of the terrain
-	layer=TerrainManager::getInstance()->getScale();
+	layer=TerrainManager::getInstance()->getTileMeshSize();
 	services->setPixelShaderConstant("terrainScale",(float*)&layer,1);
 		
 	//services->setPixelShaderConstant("terrainScale",(float*)&layer,1);

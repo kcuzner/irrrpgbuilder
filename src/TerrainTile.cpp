@@ -21,16 +21,25 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     scale = TerrainManager::getInstance()->getScale();
 
-    //static IMesh* baseMesh = smgr->getMesh("../media/baseTerrain.obj");
-	static IMesh* baseMesh = smgr->getMesh("../media/land.obj");
+    stringc tilename = TerrainManager::getInstance()->getTileMesh();
+	#ifdef APP_DEBUG
+       printf("DEBUG : TERRAIN MANAGER : Here is the tile name: %s\n",tilename);
+    #endif
+
+	if (tilename=="")
+		tilename="../media/baseTerrain.obj";
+
+	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
 
     SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 	
 	newMesh->setHardwareMappingHint(EHM_STATIC);
+	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);  // Now work. Will be able to define octrees!
 	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
     node=smgr->addMeshSceneNode(newMesh,parent,100);
 	nodescale = node->getBoundingBox().getExtent().X;
-	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);
+	TerrainManager::getInstance()->setTileMeshSize(nodescale);
+	
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
 	
     node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
@@ -40,7 +49,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);
 
-    node->setMaterialTexture(0,smgr->getVideoDriver()->getTexture("../0.jpg"));
+    //node->setMaterialTexture(0,smgr->getVideoDriver()->getTexture("../0.jpg"));
 
     int tileX = round32(pos.X);
     int tileZ = round32(pos.Z);
@@ -49,10 +58,15 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     node->setName(name);
 
-    static ITexture* layer0 = smgr->getVideoDriver()->getTexture("../media/L1.jpg");
-    static ITexture* layer1 = smgr->getVideoDriver()->getTexture("../media/L2.jpg");
-    static ITexture* layer2 = smgr->getVideoDriver()->getTexture("../media/L3.jpg");
-    static ITexture* layer3 = smgr->getVideoDriver()->getTexture("../media/L4.jpg");
+	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
+	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
+	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
+	stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
+
+	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture1.c_str());
+	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture2.c_str());
+	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture3.c_str());
+    static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture4.c_str());
 
     //Create a Custom GLSL Material (Terrain Splatting)
     static s32 materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
@@ -327,7 +341,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 
 	u16* mb_indices  = meshBuffer->getIndices();
-
+	int meshscale = TerrainManager::getInstance()->getTileMeshSize();
 	
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
@@ -338,12 +352,12 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	    {
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
-	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/nodescale));
+	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/meshscale));
 			//printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
-
-	    if(mb_vertices[j].Pos.Y > scale/4) mb_vertices[j].Pos.Y = scale/4;
-	    if(mb_vertices[j].Pos.Y < -(scale*0.1f)) mb_vertices[j].Pos.Y = -(scale*0.1f);
+		
+		if(mb_vertices[j].Pos.Y > meshscale/4) mb_vertices[j].Pos.Y = meshscale/4;
+	    if(mb_vertices[j].Pos.Y < -(meshscale*0.1f)) mb_vertices[j].Pos.Y = -(meshscale*0.1f);
 	}
 
 

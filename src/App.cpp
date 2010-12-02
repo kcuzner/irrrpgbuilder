@@ -567,8 +567,83 @@ MousePick App::getMousePosition3D(int id)
     }
 }
 
-void App::setupDevice(int screenW, int screenH, bool fullScreen)
+bool App::loadConfig()
 {
+	screenW = 1024;
+	screenH = 768;
+	fullScreen = 0;
+	TerrainManager::getInstance()->setTileMesh("../media/baseTerrain.obj");
+	TerrainManager::getInstance()->setTerrainTexture(1,"../media/L1.jpg");
+	TerrainManager::getInstance()->setTerrainTexture(2,"../media/L2.jpg");
+	TerrainManager::getInstance()->setTerrainTexture(3,"../media/L3.jpg");
+	TerrainManager::getInstance()->setTerrainTexture(4,"../media/L4.jpg");
+
+	TiXmlDocument doc("config.xml");
+	if (!doc.LoadFile()) return false;
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
+    #endif
+	
+    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
+
+    if ( root )
+	{
+        if( atof(root->Attribute("version"))!=APP_VERSION )
+        {
+            #ifdef APP_DEBUG
+            cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
+            #endif
+
+            return false;
+        }
+
+        TiXmlElement* resXML = root->FirstChildElement( "Screen" );
+        if ( resXML )
+        {
+            screenW = atoi(resXML->ToElement()->Attribute("ScreenWide"));
+			screenH = atoi(resXML->ToElement()->Attribute("ScreenHeight"));
+			fullScreen = atoi(resXML->ToElement()->Attribute("Fullscreen"));
+        }
+		TiXmlElement* groundXML = root->FirstChildElement( "Terrain" );
+        if ( groundXML )
+        {
+            stringc meshname = groundXML->ToElement()->Attribute("Mesh");
+			TerrainManager::getInstance()->setTileMesh(meshname);
+			stringc layer1 = groundXML->ToElement()->Attribute("layer1");
+			stringc layer2 = groundXML->ToElement()->Attribute("layer2");
+			stringc layer3 = groundXML->ToElement()->Attribute("layer3");
+			stringc layer4 = groundXML->ToElement()->Attribute("layer4");
+			TerrainManager::getInstance()->setTerrainTexture(1,layer1);
+			TerrainManager::getInstance()->setTerrainTexture(2,layer2);
+			TerrainManager::getInstance()->setTerrainTexture(3,layer3);
+			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
+
+        }
+
+    }
+    else
+    {
+        #ifdef APP_DEBUG
+        cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
+        #endif
+
+        return false;
+    }
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
+    #endif
+
+    ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
+
+    return true;
+}
+
+void App::setupDevice()
+{
+
+	loadConfig();
     device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
     device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
 

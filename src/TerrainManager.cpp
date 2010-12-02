@@ -301,6 +301,51 @@ f32 TerrainManager::getHeightAt(vector3df pos)
         return -1000;
 }
 
+stringc TerrainManager::getTileMesh()
+{
+	return tilemesh;
+}
+
+void TerrainManager::setTileMesh(stringc name)
+{
+	tilemesh = name;
+}
+
+stringc TerrainManager::getTerrainTexture(u32 layer)
+{
+	if (layer==1)
+		return terraintexture1;
+	if (layer==2)
+		return terraintexture2;
+	if (layer==3)
+		return terraintexture3;
+	if (layer==4)
+		return terraintexture4;
+	return terraintexture1;
+}
+
+void TerrainManager::setTerrainTexture(u32 layer, stringc name)
+{
+	if (layer==1)
+		terraintexture1=name;
+	if (layer==2)
+		terraintexture2=name;
+	if (layer==3)
+		terraintexture3=name;
+	if (layer==4)
+		terraintexture4=name;
+}
+
+int TerrainManager::getTileMeshSize()
+{
+	return tilemeshsize;
+}
+
+void TerrainManager::setTileMeshSize(int newsize)
+{
+	tilemeshsize=newsize;
+}
+
 void TerrainManager::clean()
 {
     std::map<std::string, TerrainTile*>::iterator it = terrainMap.begin();

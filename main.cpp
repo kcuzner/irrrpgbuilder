@@ -12,21 +12,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
     ///TODO: Create a Window to choose resolution
-    int w = 1024;
-    int h = 768;
-    int f = 0;
-
-    std::string line;
-    ifstream myfile ("config.txt");
-    if (myfile.is_open())
-    {
-        myfile >> w;
-        myfile >> h;
-        myfile >> f;
-        myfile.close();
-    }
-
-    App::getInstance()->setupDevice(w,h,f);
+    
+    App::getInstance()->setupDevice();
     App::getInstance()->initialize();
     App::getInstance()->run();
 

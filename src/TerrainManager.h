@@ -32,6 +32,15 @@ class TerrainManager
         void transformSegments(MousePick mousePick, f32 radius, f32 strength);
         void transformSegmentsToZero(MousePick mousePick, f32 radius, f32 strength);
 
+		stringc getTileMesh();
+		void setTileMesh(stringc name);
+
+		stringc getTerrainTexture(u32 layer);
+		void setTerrainTexture(u32 layer, stringc name);
+
+		int getTileMeshSize();
+		void setTileMeshSize(int newsize);
+
         void clean();
 
         void showDebugData(bool show);
@@ -45,6 +54,13 @@ class TerrainManager
 
         f32 transformSegmentsRadius;
         f32 transformSegmentsStrength;
+
+		int	tilemeshsize;
+		stringc tilemesh;
+		stringc terraintexture1;
+		stringc terraintexture2;
+		stringc terraintexture3;
+		stringc terraintexture4;
 
         TerrainManager();
         TerrainTile* getSegment(vector3df pos);
