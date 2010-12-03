@@ -12,7 +12,7 @@ using namespace gui;
 using namespace std;
 
 //
-const irr::f32 TerrainTile::vegetationRange = 0.45f;
+const irr::f32 TerrainTile::vegetationRange = 0.45f * TerrainManager::getInstance()->getScale();
 
 
 TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
@@ -296,12 +296,12 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
         {
             vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
             clickPos.Y = realPos.Y;
-            if(realPos.getDistanceFrom(clickPos) < (scale/10) * 0.5f && !getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
+            if(realPos.getDistanceFrom(clickPos) < (scale/10) && !getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
             {
                 Vegetation* v = new Vegetation();
 
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
-				v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y,realPos.Z + (rand()%5)*0.1f - 0.25f));
+				v->setPosition(vector3df(realPos.X + (rand()%5)*scale,realPos.Y,realPos.Z + (rand()%5)*scale));
                 f32 treesize = (f32)(rand() % 100 + 50)/100;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 				printf("Attempting to place a tree with this size: %f\n",treesize);
@@ -368,7 +368,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
-void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 strength)
+void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value)
 {
     if(strength<0) strength = -strength;
 
@@ -387,12 +387,12 @@ void TerrainTile::transformMeshToZero(vector3df clickPos, f32 radius, f32 streng
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
 
-            if(mb_vertices[j].Pos.Y > 0)
+            if(mb_vertices[j].Pos.Y > value)
             {
                 mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
                 if(mb_vertices[j].Pos.Y <= strength) mb_vertices[j].Pos.Y = 0;
             }
-            if(mb_vertices[j].Pos.Y < 0)
+            if(mb_vertices[j].Pos.Y < value)
             {
                 mb_vertices[j].Pos.Y += strength * ratio / (scale / nodescale);
                 if(mb_vertices[j].Pos.Y >= -strength) mb_vertices[j].Pos.Y = 0;

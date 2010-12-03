@@ -317,8 +317,8 @@ void GUIManager::setupEditorGUI()
 
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(100,mainToolbarPos.Y+32,100,16),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushRadius->setMin(50);
-    guiTerrainBrushRadius->setMax(150);
-    guiTerrainBrushRadius->setPos(100);
+    guiTerrainBrushRadius->setMax(300);
+    guiTerrainBrushRadius->setPos(175);
 
     guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
                                                          myRect(2,mainToolbarPos.Y+16,98,16),
@@ -326,8 +326,8 @@ void GUIManager::setupEditorGUI()
 
     guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(100,mainToolbarPos.Y+16,100,16),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushStrength->setMin(0);
-    guiTerrainBrushStrength->setMax(100);
-    guiTerrainBrushStrength->setPos(50);
+    guiTerrainBrushStrength->setMax(300);
+    guiTerrainBrushStrength->setPos(175);
 
     //Show Playable Area (areas with no Y == 0 will be red)
     guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(0,mainToolbarPos.Y,200,16),

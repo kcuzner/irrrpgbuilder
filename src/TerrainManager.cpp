@@ -264,7 +264,7 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
     }
 }
 
-void TerrainManager::transformSegmentsToZero(MousePick mousePick, f32 radius, f32 strength)
+void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 strength, f32 value)
 {
     if(mousePick.pickedNode != NULL)
     {
@@ -281,7 +281,7 @@ void TerrainManager::transformSegmentsToZero(MousePick mousePick, f32 radius, f3
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
 
-                if(tempTile) tempTile->transformMeshToZero(mousePick.pickedPos,radius,strength);
+                if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,strength,value);
             }
         }
     }

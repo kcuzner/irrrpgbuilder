@@ -28,7 +28,7 @@ class TerrainTile
         void paintVegetation(vector3df clickPos, bool erase);
 
         void transformMesh(vector3df clickPos, f32 radius, f32 strength);
-        void transformMeshToZero(vector3df clickPos, f32 radius, f32 strength);
+		void transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value);
         void transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength);
 
         stringc getName();
