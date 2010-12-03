@@ -12,7 +12,7 @@ using namespace gui;
 using namespace std;
 
 //
-const irr::f32 TerrainTile::vegetationRange = 0.45f * TerrainManager::getInstance()->getScale();
+const irr::f32 TerrainTile::vegetationRange = 60;
 
 
 TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
@@ -130,7 +130,7 @@ Vegetation* TerrainTile::getVegetationAt(vector3df pos)
     for (int i=0 ; i<(int)vegetationVector.size() ; i++)
     {
     	Vegetation* temp = (Vegetation*)vegetationVector[i];
-    	if(temp->getPosition().getDistanceFrom(pos) < 0.5) return temp;
+    	if(temp->getPosition().getDistanceFrom(pos) < vegetationRange) return temp;
     }
     return 0;
 }
@@ -272,9 +272,9 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
         {
             vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
             clickPos.Y = realPos.Y;
-            if(realPos.getDistanceFrom(clickPos) < vegetationRange && getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
+            if(realPos.getDistanceFrom(clickPos) < vegetationRange/2 && getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {
-                Vegetation* toRemove = getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z));
+                Vegetation* toRemove = getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z));
 
                 for (int i=0 ; i<(int)vegetationVector.size() ; i++)
                 {
@@ -296,19 +296,19 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
         {
             vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
             clickPos.Y = realPos.Y;
-            if(realPos.getDistanceFrom(clickPos) < (scale/10) && !getVegetationAt(vector3df(realPos.X,realPos.Y/(scale/nodescale),realPos.Z)))
+            if(realPos.getDistanceFrom(clickPos) < (vegetationRange/2) && !getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {
                 Vegetation* v = new Vegetation();
 
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
-				v->setPosition(vector3df(realPos.X + (rand()%5)*scale,realPos.Y,realPos.Z + (rand()%5)*scale));
+				v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
                 f32 treesize = (f32)(rand() % 100 + 50)/100;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 				printf("Attempting to place a tree with this size: %f\n",treesize);
                 vegetationVector.push_back(v);
 
                 #ifdef APP_DEBUG
-                cout << "DEBUG : TERRAIN TILE : VEGETATION CREATED: " << realPos.X << "," << realPos.X/(scale/nodescale) << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
+                cout << "DEBUG : TERRAIN TILE : VEGETATION CREATED: " << realPos.X << "," << realPos.Y << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
                 #endif
 	        }
 	    }
