@@ -529,7 +529,7 @@ void App::eventMouseWheel(f32 value)
 		if (app_state < 100)
 		{
 			f32 height = EditorCamera::getInstance()->getPosition().Y;
-			EditorCamera::getInstance()->setCameraHeight(value * (height*0.25));
+			EditorCamera::getInstance()->setCameraHeight(value * (height*0.25f));
 		}
 		else
 			EditorCamera::getInstance()->setCameraHeight(value * 50);
@@ -838,9 +838,10 @@ void App::updateEditMode()
 				{
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
-						TerrainManager::getInstance()->transformSegmentsToZero(this->getMousePosition3D(100),
+						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-                                                                           GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+                                                                           GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
+																		   0);
 					}
 				}
 				else
