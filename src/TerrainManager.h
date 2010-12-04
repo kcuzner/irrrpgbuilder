@@ -18,8 +18,7 @@ class TerrainManager
         virtual ~TerrainManager();
 
         void createSegment(vector3df pos);
-        f32 getScale();
-
+ 
         std::string getHashCode(vector3df pos);
 
         f32 getHeightAt(vector3df pos);
@@ -32,14 +31,16 @@ class TerrainManager
         void transformSegments(MousePick mousePick, f32 radius, f32 strength);
         void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 strength, f32 value);
 
-		stringc getTileMesh();
-		void setTileMesh(stringc name);
+		stringc getTileMeshName();
+		void setTileMeshName(stringc name);
+		f32 getTileMeshSize();
+		void setTileMeshSize(f32 newsize);
+
+		f32 getScale();
+		void setScale(f32 newsize);
 
 		stringc getTerrainTexture(u32 layer);
 		void setTerrainTexture(u32 layer, stringc name);
-
-		f32 getTileMeshSize();
-		void setTileMeshSize(f32 newsize);
 
         void clean();
 
@@ -47,7 +48,7 @@ class TerrainManager
 
     protected:
     private:
-        static const f32 scale;
+        f32 scale;
 
         TerrainMap terrainMap;
         TerrainEmptySegmentsMap terrainEmptySegmentsMap;

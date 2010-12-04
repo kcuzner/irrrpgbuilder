@@ -21,7 +21,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     scale = TerrainManager::getInstance()->getScale();
 
-    stringc tilename = TerrainManager::getInstance()->getTileMesh();
+    stringc tilename = TerrainManager::getInstance()->getTileMeshName();
 	#ifdef APP_DEBUG
        printf("DEBUG : TERRAIN MANAGER : Here is the tile name: %s\n",tilename);
     #endif

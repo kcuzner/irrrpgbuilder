@@ -137,6 +137,8 @@ class GUIManager
 
         void updateItemsList();
 
+		void addAboutTextItem(stringc text);
+
         void flush();
 
         virtual ~GUIManager();
@@ -157,6 +159,7 @@ class GUIManager
         IGUIFont* guiFontDialog;
 
         ///Main Functions
+		IGUIImage*  guiBackImage;
         IGUIButton* guiMainNewProject;
         IGUIButton* guiMainSaveProject;
         IGUIButton* guiMainLoadProject;
@@ -169,6 +172,7 @@ class GUIManager
         IGUIWindow* guiAboutWindow;
         IGUIButton* guiAboutClose;
         IGUIButton* guiCloseProgram;
+		IGUIListBox* guiAboutText;
 
         IGUIButton* guiHelpButton;
 

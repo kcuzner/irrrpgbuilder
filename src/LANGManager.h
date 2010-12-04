@@ -2,6 +2,7 @@
 #define LANGMANAGER_H
 
 #include <irrlicht.h>
+#include "GUIManager.h"
 #include "App.h"
 
 using namespace irr;
@@ -17,6 +18,7 @@ class LANGManager
         static LANGManager* getInstance();
 
         stringc getText(stringc node);
+		void setDefaultLanguage(stringc language);
 
         virtual ~LANGManager();
     protected:
@@ -24,6 +26,7 @@ class LANGManager
         LANGManager();
 
         stringc defaultLanguage;
+		stringc description;
 };
 
 #endif // LANGMANAGER_H

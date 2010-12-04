@@ -125,7 +125,8 @@ void GUIManager::setupEditorGUI()
     IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
-    guienv->getSkin()->setFont(guiFontC12);
+    //guienv->getSkin()->setFont(guiFontC12);
+	guienv->getSkin()->setFont(guiFontCourier12);
 
 
     mainToolbarPos = position2di(2,2);
@@ -133,8 +134,16 @@ void GUIManager::setupEditorGUI()
     guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width,36),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
+	
     guiMainWindow->getCloseButton()->setVisible(false);
-
+	
+	ITexture* backtexture = driver->getTexture("../media/art/back.png");
+	
+	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
+	guiBackImage->setScaleImage(true);
+	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,36)); 
+	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,36));
+	
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
     s32 x = 0;
@@ -192,15 +201,23 @@ void GUIManager::setupEditorGUI()
     guiAboutWindow->getCloseButton()->setVisible(false);
     guiAboutWindow->setVisible(false);
 
-    guienv->addImage(driver->getTexture("../media/art/about_image.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,30),true,guiAboutWindow);
+    guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
 
     guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
 
     guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
-    IGUIStaticText* aboutText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_about")).c_str(),myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,260,500,120),true,true,guiAboutWindow);
-    aboutText->setOverrideFont(guiFontCourier12);
-    aboutText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
+    //IGUIStaticText* aboutText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_about")).c_str(),myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,140,500,400),true,true,guiAboutWindow);
+	//aboutText->setOverrideFont(guiFontCourier12);
+	
+    //aboutText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+	guiAboutText->setSubElement(true);
+	
+	LANGManager::getInstance()->getText("txt_about");
+	guiAboutText->setEnabled(false);
+	
+	//aboutText->addItem(stringw(LANGManager::getInstance()->getText("txt_about")).c_str());
 
     //Save Project
     guiMainSaveProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -377,21 +394,25 @@ void GUIManager::setupEditorGUI()
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
+	guiDynamicObjects_Context_btEditScript->setOverrideFont(guiFontC12);
 
     guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,30,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_move_rotate")).c_str() );
+	guiDynamicObjects_Context_btMoveRotate->setOverrideFont(guiFontC12);
 
     guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,55,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
+	guiDynamicObjects_Context_btRemove->setOverrideFont(guiFontC12);
 
     guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,80,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_CANCEL,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
+	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 
     ///Edit scripts window
     guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-150),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
@@ -411,20 +432,23 @@ void GUIManager::setupEditorGUI()
                       guiDynamicObjectsWindowEditAction,
                       BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_load_script_template")).c_str() );
+	guiDynamicObjects_LoadScriptTemplateBT->setOverrideFont(guiFontC12);
 
     X_ScriptToolbar+=160;
 
-    guienv->addButton(myRect(X_ScriptToolbar,10,150,20),
+    IGUIButton* validate = guienv->addButton(myRect(X_ScriptToolbar,10,150,20),
                       guiDynamicObjectsWindowEditAction,
                       BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_validate_script")).c_str() );
+	validate->setOverrideFont(guiFontC12);
 
     X_ScriptToolbar+=160;
 
-    guiDynamicObjects_Script_Close = guienv->addButton(myRect(X_ScriptToolbar,10,82,20),
+    IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(X_ScriptToolbar,10,82,20),
                       guiDynamicObjectsWindowEditAction,
                       BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_close_script")).c_str() );
+	close->setOverrideFont(guiFontC12);
 
     //scripts editor
     guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
@@ -461,6 +485,7 @@ void GUIManager::setupEditorGUI()
                                                            L"",
                                                            stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str() );
 
+	guiPlayerEditScript->setOverrideFont(guiFontC12);
     guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
 
     guiPlayerEditScript->setVisible(false);
@@ -1046,6 +1071,15 @@ void GUIManager::updateItemsList()
     vector<stringc> items = Player::getInstance()->getItems();
 
     for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
+}
+
+void GUIManager::addAboutTextItem(stringc text)
+{
+	if (guiAboutText)
+	{
+		this->guiAboutText->addItem(stringw(text).c_str());
+	}
+	
 }
 
 void GUIManager::flush()

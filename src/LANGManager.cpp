@@ -30,8 +30,6 @@ LANGManager::LANGManager()
                         exit(0);
                     }
 
-                    defaultLanguage = xml->getAttributeValue("default_language");
-
                     break;
                 }
                 break;
@@ -68,9 +66,10 @@ stringc LANGManager::getText(stringc node)
         switch (xml->getNodeType())
         {
             case irr::io::EXN_ELEMENT:
-
-                if (core::stringw("language") == xml->getNodeName() && stringc(xml->getAttributeValue("name")) == defaultLanguage)
-                {
+				
+                if ((core::stringw("language") == xml->getNodeName()) && (stringc(xml->getAttributeValue("name")) == defaultLanguage))
+                {	
+					description = stringc(xml->getAttributeValue("description"));
                     //read the default language
                     while(xml->read())
                     {
@@ -81,17 +80,42 @@ stringc LANGManager::getText(stringc node)
                                 {
                                     if( stringc(xml->getAttributeValue("id")) == stringc(node.c_str()) )
                                     {
-                                        return stringc(xml->getAttributeValue("str"));
+										if (stringc(node.c_str())!="txt_about")
+											return stringc(xml->getAttributeValue("str"));
+										else
+										{
+											
+											int aa = atoi(stringc(xml->getAttributeValue("str")).c_str());
+											printf("------------->WARNING WARNING About text is here!! %i \n",aa);
+											stringc item = "str";
+											for(int a=1; a<=aa; a++)
+											{
+												item = "str";
+												item.append(stringc(a).c_str());
+												printf("----------------> Here is the item name %s\n",item);
+
+												GUIManager::getInstance()->addAboutTextItem(stringc(xml->getAttributeValue(item.c_str())));
+												
+											}
+											return " ";
+										}
                                     }
                                 }
-                                break;
-                        }
-                    }
-                }
-                break;
+								break;
+
+                        } 
+						
+                    } 
+					break;
+                } 
         }
     }
 
     delete xml;
 	return "";
+}
+
+void LANGManager::setDefaultLanguage(stringc language)
+{
+	defaultLanguage = language.c_str();
 }

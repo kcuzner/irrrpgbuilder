@@ -577,8 +577,10 @@ bool App::loadConfig()
 {
 	screenW = 1024;
 	screenH = 768;
-	fullScreen = 0;
-	TerrainManager::getInstance()->setTileMesh("../media/baseTerrain.obj");
+	fullScreen = false;
+	resizable = false;
+	language = "en-us";
+	TerrainManager::getInstance()->setTileMeshName("../media/baseTerrain.obj");
 	TerrainManager::getInstance()->setTerrainTexture(1,"../media/L1.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(2,"../media/L2.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(3,"../media/L3.jpg");
@@ -609,23 +611,45 @@ bool App::loadConfig()
         {
             screenW = atoi(resXML->ToElement()->Attribute("ScreenWide"));
 			screenH = atoi(resXML->ToElement()->Attribute("ScreenHeight"));
-			fullScreen = atoi(resXML->ToElement()->Attribute("Fullscreen"));
+			stringc full = resXML->ToElement()->Attribute("Fullscreen");
+			if (full=="true")
+				fullScreen=true;
+			stringc resize = resXML->ToElement()->Attribute("Resizeable");
+			if (resize=="true")
+				resizable=true;
+			
+        }
+		//Language
+		TiXmlElement* langXML = root->FirstChildElement( "Language" );
+        if ( resXML )
+        {
+			language=stringc(langXML->ToElement()->Attribute("type")).c_str();
+						
         }
 		TiXmlElement* groundXML = root->FirstChildElement( "Terrain" );
         if ( groundXML )
         {
             stringc meshname = groundXML->ToElement()->Attribute("Mesh");
-			TerrainManager::getInstance()->setTileMesh(meshname);
+			TerrainManager::getInstance()->setTileMeshName(meshname);
 			stringc layer1 = groundXML->ToElement()->Attribute("layer1");
 			stringc layer2 = groundXML->ToElement()->Attribute("layer2");
 			stringc layer3 = groundXML->ToElement()->Attribute("layer3");
 			stringc layer4 = groundXML->ToElement()->Attribute("layer4");
+			f32 scale = (f32)atof(groundXML->ToElement()->Attribute("scale"));
 			TerrainManager::getInstance()->setTerrainTexture(1,layer1);
 			TerrainManager::getInstance()->setTerrainTexture(2,layer2);
 			TerrainManager::getInstance()->setTerrainTexture(3,layer3);
 			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
+			TerrainManager::getInstance()->setScale(scale);
 
         }
+		TiXmlElement* waterXML = root->FirstChildElement( "Ocean" );
+        if ( groundXML )
+        {
+            stringc meshname = waterXML->ToElement()->Attribute("Mesh");
+			stringc layer1 = waterXML->ToElement()->Attribute("layer1");
+			stringc layer2 = waterXML->ToElement()->Attribute("layer2");
+		}
 
     }
     else
@@ -650,11 +674,11 @@ void App::setupDevice()
 {
 
 	loadConfig();
-	bool full = false;
-	if (fullScreen==1)
-		full=true;
-    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, full, false, false, 0);
+		
+    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
+	this->device->setResizable(resizable);
     device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
+	
 
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
@@ -663,6 +687,7 @@ void App::setupDevice()
     device->setEventReceiver(EventReceiver::getInstance());
 	timer = device->getTimer()->getRealTime();
 	timer2 = device->getTimer()->getRealTime();
+	LANGManager::getInstance()->setDefaultLanguage(language);
 
 }
 

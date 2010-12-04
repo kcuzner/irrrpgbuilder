@@ -11,8 +11,6 @@ using namespace gui;
 
 using namespace std;
 
-const f32 TerrainManager::scale = 750.0;
-
 TerrainManager::TerrainManager()
 {
     terrainEmptySegmentsMap.clear();
@@ -175,11 +173,6 @@ std::string TerrainManager::getHashCode(vector3df pos)
     return s;
 }
 
-f32 TerrainManager::getScale()
-{
-    return scale;
-}
-
 void TerrainManager::saveToXML(TiXmlElement* parentElement)
 {
     //write header and number of segments
@@ -299,49 +292,59 @@ f32 TerrainManager::getHeightAt(vector3df pos)
         return -1000;
 }
 
-stringc TerrainManager::getTileMesh()
+stringc TerrainManager::getTileMeshName()
 {
-	return tilemesh;
+	return this->tilemesh;
 }
 
-void TerrainManager::setTileMesh(stringc name)
+void TerrainManager::setTileMeshName(stringc name)
 {
-	tilemesh = name;
+	this->tilemesh = name;
 }
 
 stringc TerrainManager::getTerrainTexture(u32 layer)
 {
 	if (layer==1)
-		return terraintexture1;
+		return this->terraintexture1;
 	if (layer==2)
-		return terraintexture2;
+		return this->terraintexture2;
 	if (layer==3)
-		return terraintexture3;
+		return this->terraintexture3;
 	if (layer==4)
-		return terraintexture4;
+		return this->terraintexture4;
 	return terraintexture1;
 }
 
 void TerrainManager::setTerrainTexture(u32 layer, stringc name)
 {
 	if (layer==1)
-		terraintexture1=name;
+		this->terraintexture1=name;
 	if (layer==2)
-		terraintexture2=name;
+		this->terraintexture2=name;
 	if (layer==3)
-		terraintexture3=name;
+		this->terraintexture3=name;
 	if (layer==4)
-		terraintexture4=name;
+		this->terraintexture4=name;
 }
 
 f32 TerrainManager::getTileMeshSize()
 {
-	return tilemeshsize;
+	return this->tilemeshsize;
 }
 
 void TerrainManager::setTileMeshSize(f32 newsize)
 {
-	tilemeshsize=newsize;
+	this->tilemeshsize=newsize;
+}
+
+f32 TerrainManager::getScale()
+{
+    return this->scale;
+}
+
+void TerrainManager::setScale(f32 newsize)
+{
+	this->scale = newsize;
 }
 
 void TerrainManager::clean()

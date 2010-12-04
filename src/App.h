@@ -105,7 +105,10 @@ class App
 		
 		u32 timer;
 		u32 timer2;
-		int screenW,screenH,fullScreen;
+		int screenW,screenH;
+		bool fullScreen;
+		bool resizable;
+		stringc language;
 		bool loadConfig();
 		
         APP_STATE app_state;
