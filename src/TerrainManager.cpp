@@ -193,15 +193,16 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 {
-    TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
-
-    while( tSegment != NULL )
+    clean();
+	
+	TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
+	while( tSegment != NULL )
     {
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
-        TerrainManager::getInstance()->createSegment(vector3df( x ,0, z ));
-        TerrainTile* tempTile = TerrainManager::getInstance()->getSegment( vector3df( x ,0, z ) );
+        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ));
+        TerrainTile* tempTile = TerrainManager::getInstance()->getSegment( vector3df( x/scale ,0, z/scale ) );
 
         if(tempTile)
         {
