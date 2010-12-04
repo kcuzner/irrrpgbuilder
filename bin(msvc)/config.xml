@@ -1,5 +1,6 @@
 <IrrRPG_Builder_Config version="1.0">
-    <Screen ScreenWide="1024" ScreenHeight="768" Fullscreen="0"/>
-	<Terrain Mesh="../media/land.obj" layer1="../media/L1.jpg" layer2="../media/L2.jpg" layer3="../media/L3.jpg" layer4="../media/L4.jpg"/>
-	<Ocean Mesh="" layer1="" layer2=""/>
+    <Screen ScreenWide="1024" ScreenHeight="768" Fullscreen="false" Resizeable="false"/>
+	<Language type="en-us"/>
+	<Terrain Mesh="../media/land.obj" layer1="../media/L1.jpg" layer2="../media/L2.jpg" layer3="../media/L3.jpg" layer4="../media/L4.jpg" scale="1024"/>
+	<Ocean Mesh="../media/land.obj" layer1="../media/waveNM.png" layer2="../media/sky.jpg"/>
 </IrrRPG_Builder_Config> 
