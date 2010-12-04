@@ -1,5 +1,5 @@
-<IrrRPG_Builder_LanguageFile version="1.0" default_language="en-us">
-    <language name="en-us">
+<IrrRPG_Builder_LanguageFile version="1.0">
+    <language name="en-us" description="English, United States">
 	<text id="bt_dynamic_objects_close_script" str="Close"/>
 	<text id="bt_dynamic_objects_script_noerror" str="No errors found"/>
 	<text id="bt_dynamic_objects_validate_script" str="Validate Script (F5)"/>
@@ -33,12 +33,9 @@
 	<text id="bt_drop_item" str="Drop Item"/>
 	<text id="bt_close_items_window" str="Back To Game"/>
 	<text id="bt_edit_script_global" str="Edit Global Script"/>
-	
-	
 	<text id="txt_player_life" str="LIFE:"/>
 	<text id="txt_player_money" str="GOLD:"/>
-	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     by Andres Jesse Porfirio                                        check irrrpgbuilder.sourceforge.net and www.andresjesse.com           have fun!"/>
-
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		by Andres Jesse Porfirio" str3=" " str4="Programming & scripting by:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Your name here" str8=" " str9="Interface design:" str10="		Andres Jesse Porfirio" str11="		Your name here" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Models by:" str17="		Your name here" str18="		Your name here" str19=" " str20="Animations:" str21="		Your name here" str22="		Your name here" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Your name here" str27="		Your name here" str28=" " str29="check irrrpgbuilder.sourceforge.net" str30="have fun!"/>
 	<text id="msg_error" str="Error"/>
 	<text id="msg_invalid_project_file" str="Invalid Project File"/>
 	<text id="msg_override_project" str="Save current project?"/>
@@ -47,9 +44,9 @@
 	<text id="msg_loaded_error" str="Loaded Error!"/>
 	<text id="msg_loaded_ok" str="Loaded successfully!"/>
 	<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
-	
     </language>
-    <language name="pt-br">
+	
+    <language name="pt-br" description="Portugues, Brasil">
 	<text id="bt_dynamic_objects_close_script" str="Fechar"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Nao foram encontrados erros"/>
 	<text id="bt_dynamic_objects_validate_script" str="Validar Script (F5)"/>
@@ -77,17 +74,17 @@
 	<text id="bt_about" str="Sobre o IrrRPG Builder"/>
 	<text id="bt_help" str="Ajuda"/>
 	<text id="bt_dialog_yes" str="Sim"/>
-	<text id="bt_dialog_no" str="Não"/>
+	<text id="bt_dialog_no" str="Nao"/>
 	<text id="bt_view_items" str="Ver Itens"/>
 	<text id="bt_use_item" str="Usar Item"/>
 	<text id="bt_drop_item" str="Jogar Fora o Item Atual"/>
 	<text id="bt_close_items_window" str="Voltar ao Jogo"/>
 	<text id="bt_edit_script_global" str="Editar Script Global"/>
-	
 	<text id="txt_player_life" str="VIDA:"/>
 	<text id="txt_player_money" str="DINHEIRO:"/>
-	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     by Andres Jesse Porfirio                                        confira irrrpgbuilder.sourceforge.net e www.andresjesse.com           divirta-se!"/>
-
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		por Andres Jesse Porfirio" str3=" " str4="Programacao e scripts de:
+" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Seu nome aqui" str8=" " str9="Design de interface:" str10="		Andres Jesse Porfirio" str11="		Seu nome aqui" str12=" " str13="O projeto do logotipo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modelos de:" str17="		Seu nome aqui
+" str18="		Seu nome aqui" str19=" " str20="Animacoes:" str21="		Seu nome aqui" str22="		Seu nome aqui" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Seu nome aqui" str27="		Seu nome aqui" str28=" " str29="confira irrrpgbuilder.sourceforge.net" str30="diverta-se!"/>
 	<text id="msg_error" str="Erro"/>
 	<text id="msg_invalid_project_file" str="Arquivo de Projeto Invalido"/>
 	<text id="msg_override_project" str="Salvar o projeto atual antes de prosseguir?"/>
@@ -96,10 +93,9 @@
 	<text id="msg_loaded_error" str="Erro ao Carregar!"/>
 	<text id="msg_loaded_ok" str="Carregado com sucesso!"/>
 	<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
-	
-	
     </language>
-	 <language name="fr">
+	
+	<language name="fr-ca" description="Francais, Canada">
 	<text id="bt_dynamic_objects_close_script" str="Fermer"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Aucune erreur trouvee"/>
 	<text id="bt_dynamic_objects_validate_script" str="Valider le script (F5)"/>
@@ -133,12 +129,9 @@
 	<text id="bt_drop_item" str="Jeter l'item"/>
 	<text id="bt_close_items_window" str="Retour au jeu"/>
 	<text id="bt_edit_script_global" str="Editer script global"/>
-	
-	
 	<text id="txt_player_life" str="VIE:"/>
 	<text id="txt_player_money" str="OR:"/>
-	<text id="txt_about" str="IrrRPG Builder v0.1 ['Feijoada'] Alpha                                     par Andres Jesse Porfirio                                        check irrrpgbuilder.sourceforge.net and www.andresjesse.com           amusez-vous!"/>
-
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		par Andres Jesse Porfirio" str3=" " str4="Programmation & scripts par:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Votre nom ici" str8=" " str9="Design de l'interface:" str10="		Andres Jesse Porfirio" str11="		Votre nom ici" str12=" " str13="Design du logo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modeles par:" str17="		Votre nom ici" str18="		Votre nom ici" str19=" " str20="Animations:" str21="		Votre nom ici" str22="		Votre nom ici" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Votre nom ici" str27="		Votre nom ici" str28=" " str29="Consultez irrrpgbuilder.sourceforge.net" str30="Amusez-vous!"/>
 	<text id="msg_error" str="Erreur"/>
 	<text id="msg_invalid_project_file" str="Fichier projet invalide"/>
 	<text id="msg_override_project" str="Sauver le projet actuel?"/>
@@ -147,6 +140,5 @@
 	<text id="msg_loaded_error" str="Erreur chargement!"/>
 	<text id="msg_loaded_ok" str="Chargement reussi!"/>
 	<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
-	
     </language>
 </IrrRPG_Builder_LanguageFile> 
