@@ -5,7 +5,7 @@ function onClicked()
   answer = showDialogQuestion("Do you wanna walk to me?") 
   
   --now let's check if the user answered yes or no (true or false in Lua)
-  if(answer == true) then
+  if (answer == true) then
     --if the answer is yes good, let's talk to the user!
     showDialogMessage("Ok, let's talk!")
   else
