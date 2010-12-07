@@ -1,0 +1,81 @@
+Changes since AlphaRelease 1
+
+
+- Updated to IRRlicht 1.7.2 with no patch. You can use the official release now.
+
+- Fixed the closing of IRRKlang device that caused a crash/memory leak when closing the application 
+
+- Application use a config.xml file (display, terrain and other things can be set from there)
+
+- Now IRB use a defined scale. 1 unit in the game represent 1 inches. (As in many game engines, ex: Source SDK (Half Life, Left4Dead, Portal, Team Fortress, etc))
+
+- Support external animation files for the player and the dynamic objects. A meshes using the same skeleton structure can share animation using this method. 
+
+- Collisions Using a single collision response animator on player & dynamic objects with a meta selector
+
+- Collisions, the meta selector is updated when a NPC (Dynamic object) is killed. Collision trianges are removed from the meta selector.
+
+- Collisions, the dynamic objects have their own collision response animator
+
+- (Player, Dynamic objects) Properties have been added to the player and the dynamic object to be used later with combat formulas.
+
+- (Player, dynamic objects) External animations can be defined in their XML file
+
+- (player, dynamic objects) preloading of scripts, from the XML
+
+- Player, can define the walking speed from the XML file
+
+- Player, collision detection for obstacles trigger idle animation state
+
+- Player, when life propertie are decreased the hurt animation state is triggered
+
+- Player, when the life propertie is depleted, the death animation state is triggered
+
+- Player, dynamically attack the NPC when the user click on the enemy and is in range. Remove HP on enemy based on simple rules. 
+
+- Combat formulas: Prototype in the player class that use Levels, Experience, HP, and other properties to calculate the damage done to the opponent.
+
+- Cameras: Defined 2 cameras (gameplay and editing). Each camera has their range and FOV.
+
+- Cameras: Mouse in/out in edit mode and run mode. Panning with the mouse is there but still buggy.
+
+- Cameras: Zoom in/out disabled when editing scripts or over a window tool.
+
+- LUA: Dynamic object (NPC) that use the LUA "ChaseObject" will trigger the animation "idle" when it reach a far or near position (parameters)
+
+- LUA: Template script Enemy
+
+- LUA: Template script Follower
+
+- Animation states have been implemented for the AI. A specific animation will be called depending of the event that occur (Going to idle when colliding with an obstacle, so it will not "Moonwalk".)
+
+- Npc have their own Collision Response Animator. So they should not overlap over each other. Still need tweak to define the radius of the collision sphere.
+
+- Performance: Added timers inside the application, so the application should run about the same and is not tied to hardware.
+
+- Performance: Timed the LUA callback to 1/4 second, Animation states 1/60 second refresh
+
+- Performance: Added a yield() to be used in editing mode to give more CPU for other tasks 
+
+- Performance: Implemented VBO hinting on all objects
+
+- Performance: Dynamic objects that are outside view will not refresh (culled detection). Need to add an exception for special cases.
+
+- Terrain edition, GUI for brush radius parameter added.
+
+- Terrain tile size can be defined in a XML file (config.xml)
+
+- Terrain height is now 1/4 of the terrain tile size 
+
+- Terrain Shader updates on the mesh size
+
+- Terrain mesh can be changed (higher or lower mesh density can be used now).
+
+- Terrain tree size randomized when painting
+
+- GUI: added icons for disabled states, as that was patched before 1.7.1
+
+- French language added (IRB can operate now in English, Portugese and French)
+
+
+
