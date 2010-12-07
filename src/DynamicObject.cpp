@@ -441,7 +441,7 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 {
 	if (animName==NULL)
 		return OBJECT_ANIMATION_IDLE;
-	//printf("Asked animation name is: %s\n",animName);
+	//printf("Asked animation name is: %s\n",animName.c_str());
 	OBJECT_ANIMATION Animation;
 	if (animName=="idle")
 		Animation=OBJECT_ANIMATION_IDLE;

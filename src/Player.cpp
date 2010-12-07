@@ -533,7 +533,7 @@ void Player::update()
 	CheckAnimationEvent();
 	if (anim->collisionOccurred())
 	{
-		printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
 		collided=true;
 	}
 	// Standard player events

@@ -92,7 +92,7 @@ stringc LANGManager::getText(stringc node)
 											{
 												item = "str";
 												item.append(stringc(a).c_str());
-												printf("----------------> Here is the item name %s\n",item);
+												printf("----------------> Here is the item name %s\n",item.c_str());
 
 												GUIManager::getInstance()->addAboutTextItem(stringc(xml->getAttributeValue(item.c_str())));
 												

@@ -795,7 +795,7 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
 		dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
-    printf("Here is the current life for object %s: %d\n",objName,life);
+	printf("Here is the current life for object %s: %d\n",objName.c_str(),life);
     tempObj->setLife(life);
 
     #endif

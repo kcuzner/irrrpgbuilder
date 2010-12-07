@@ -889,7 +889,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
     ISound* dialogSound = NULL;
 	
 	//int len = sound.length();
-	printf ("Here is the dialog for the sound %s, %i\n",sound);
+	printf ("Here is the dialog for the sound %s, \n",sound.c_str());
 	if(sound.c_str() != "")
     {
         stringc soundName = "../media/sound/";
