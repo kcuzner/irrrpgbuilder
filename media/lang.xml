@@ -141,4 +141,50 @@
 	<text id="msg_loaded_ok" str="Chargement reussi!"/>
 	<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
     </language>
+	<language name="de-ge" description="Deutsch, Germany">
+	<text id="bt_dynamic_objects_close_script" str="Schließen"/>
+	<text id="bt_dynamic_objects_script_noerror" str="Keine Fehler gefunden"/>
+	<text id="bt_dynamic_objects_validate_script" str="Script überprüfen (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Script Template laden"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Bewegen/Drehen"/>
+	<text id="bt_dynamic_objects_remove" str="Objekt entfernen"/>
+	<text id="bt_dynamic_objects_edit_script" str="Lua Script bearbeiten"/>
+	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
+	<text id="bt_dynamic_objects_has_action" str="wird benutzt"/>
+	<text id="bt_dynamic_objects_mode" str="Dynamisches Objekt Modus"/>
+	<text id="bt_paint_vegetation" str="Vegetation einfügen"/>
+	<text id="bt_new_project" str="Neues Projekt"/>
+	<text id="bt_save_project" str="Projekt speichern"/>
+	<text id="bt_load_project" str="Projekt laden"/>
+	<text id="bt_show_playable_area" str="Bereich anzeigen"/>
+	<text id="bt_terrain_segments" str="Gelände bearbeiten"/>
+	<text id="bt_terrain_transform" str="Geländehöhen editieren"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Pinselstärke:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Pinselradius:"/>
+	<text id="bt_play_game" str="Spielen"/>
+	<text id="bt_stop_game" str="Stoppen"/>
+	<text id="bt_edit_character" str="Character bearbeiten"/>
+	<text id="bt_player_edit_script" str="Charakter Script bearbeiten"/>
+	<text id="bt_close_program" str="Anwendung schließen"/>
+	<text id="bt_about" str="Über"/>
+	<text id="bt_help" str="Hilfe"/>
+	<text id="bt_dialog_yes" str="Ja"/>
+	<text id="bt_dialog_no" str="Nein"/>
+	<text id="bt_view_items" str="Zeige Items "/>
+	<text id="bt_use_item" str="Gegenstand benutzen"/>
+	<text id="bt_drop_item" str="Gegenstand fallen lassen"/>
+	<text id="bt_close_items_window" str="Zurück zum Spiel"/>
+	<text id="bt_edit_script_global" str="Globalen Script bearbeiten"/>
+	<text id="txt_player_life" str="LEBENSPUNKTE:"/>
+	<text id="txt_player_money" str="Geld:"/>
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		von Andres Jesse Porfirio" str3=" " str4="Programmierung & Scripte von:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Ihren Namen hier einfügen str8=" " str9="Oberflächendesign:" str10="		Andres Jesse Porfirio" str11="		Ihren Namen hier einfügen" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modele von:" str17="		Ihren Namen hier einfügen" str18="		Your name here" str19=" " str20="Animationen:" str21="		Ihren Namen hier einfügen" str22="		Ihren Namen hier einfügen" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Ihren Namen hier einfügen" str27="		Ihren Namen hier einfügen" str28=" " str29="besuchen Sie irrrpgbuilder.sourceforge.net" str30="Viel Spaß!"/>
+	<text id="msg_error" str="Fehler"/>
+	<text id="msg_invalid_project_file" str="Ungültige Projektdatei"/>
+	<text id="msg_override_project" str="Das aktuelle Projekt speichern?"/>
+	<text id="msg_saved_ok" str="Speichern erfolgreich!"/>
+	<text id="msg_new_project_name" str="Geben Sie den Projektnamen ein:"/>
+	<text id="msg_loaded_error" str="Fehler beim Laden"/>
+	<text id="msg_loaded_ok" str="Laden erfolgreich!"/>
+	<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, möchten Sie fortfahren?"/>
+    </language>
 </IrrRPG_Builder_LanguageFile> 
