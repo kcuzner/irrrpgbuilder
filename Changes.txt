@@ -75,7 +75,10 @@ Changes since AlphaRelease 1
 
 - GUI: added icons for disabled states, as that was patched before 1.7.1
 
-- French language added (IRB can operate now in English, Portugese and French)
+- French language added 
+
+- German language added (Bot1q) (IRB can operate now in English, Portugese, French and German)
+
 
 
 
