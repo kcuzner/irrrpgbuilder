@@ -1,0 +1,289 @@
+Lua functions: (* = not registered yet)
+
+--------------------------------------
+Global LUA pre-defined functions (basicFunctions.lua)
+--------------------------------------
+
+---- internals
+IRBSaveParams()
+IRBRestoreParams()
+IRBStoreGlobalParams()
+IRBRestorGlobalParams()
+IRBStorePlayerParams()
+IRBRestorPlayerParams()
+
+---- Global functions
+setObjectName(string 'name')
+	set the global name of the current object
+
+chaseObject(string 'name', float speed, float near, float far)
+	chase the specified object
+	speed = move speed
+	near = stop when reaching this distance (also IDLE state is triggered)
+	far = start walking from this position (also WALK state is triggered)
+
+walkRandomly(float radius, float speed)
+	Walk randomly in a specified radius
+	radius = random point to get there specified from a radius around the object
+	speed = move speed
+
+walkToObject(otherObj)
+	WAlk to an object
+
+CustomDynamicObjectUpdate()
+	update the dynamic objects, work with the 'walkToObject' command
+	Should be placed in the 'step' callback
+
+programAction(time, action, parameter...)
+	Call a specified custom function at the specified time interval.
+	time = time interval in second
+	action = function name to call
+	parameters = parameter (up to 10 parameters)
+	Ex: 	programAction(10, print, 'hello world')
+		Will call: print "hello world" after 10 seconds.
+
+CustomDynamicObjectUpdateProgrammedAction()
+	Update programmed action if it exist
+
+action = hasActionProgrammed()
+	Will return the name of the action that is programmed. if any.
+
+enableObject()
+	will enable the current object
+
+disableObject()
+	Will disable the current object
+
+decreasePlayerLife(points)
+	Remove 'point' from the current life of the player
+
+increasePlayerLife(points)
+	Increase the current player life with 'points'
+
+decreasePLayerMoney(points)
+	Remove 'points' from the current player money
+
+increasePlayerMoney(points)
+	Increase the current money of the player with 'point'
+
+playSound(soundName, looped)
+	Play a 2D sound
+
+emitSound(soundName, looped)
+	Play a sound from the current position of the object (3D Sound)
+
+sleep(time)
+	Will 'sleep' until the time is reached. 'time' is in seconds.
+
+
+	
+
+
+--------------------------------------
+Global Functions
+--------------------------------------
+setGlobal(string 'name', value)
+	Create a global unique name
+
+value = getGlobal(string 'name')
+	Retrieve the value of the global
+
+deleteGlobal(string 'name')
+	Delete the specified global
+
+setTimeOfDay(int time)
+	set the time of day
+
+setAmbientLight(int r,int g, int b)
+	Set the ambient light to the specified RGB colors
+
+r,g,b = getAmbientColor()
+	Give back the ambient color
+
+setFogColor(int r, int g, int b)
+	Set the color of the fog to the specified RGB color
+
+r,g,b = getFogColor()
+	Retrieve the current fog color in RGB color
+
+setFogRange (float near, float far)
+	Define the range of the fog
+
+near, far = getFogRange()
+	Retrieve the range of fog
+
+showBlackScreen(string 'optional text')
+	Show a black screen with an optional text (mostly used when player is dead)
+
+hideBlackScreen()
+	Remove the black screen
+
+setCameraTarget(float x, float y, float z)
+	Set a new position for the camera, use the specified coordinates
+
+setCameraTarget(string 'objectname')
+	Set a new position for the camera, use the object name as reference
+
+x,y,z = getCameraTarget()
+	Get the current camera target
+
+x,y,z = getObjectPosition(string 'objectname')
+	Retrieve the position of the specified object
+
+playSound2D(string 'filename', boolean looped)
+	PLay the specified 2D sound, 'looped' is optionnal.
+
+playSound3D(string 'filename',bool looped, float x, float y, float z)
+	Play the specified sound, at the specified coordinates. Looped is for a looping sound
+
+setSoundListenerPosition(float x, int y, int z)
+	Define the position of the listener for a 3D sound
+
+setSoundVolume (float volume)
+	Set the volume to a specified level
+
+stopSounds()
+	Stop all sounds
+
+setPlayerLife(int life)
+	Set the player life to the specified value.
+	A change in the value will rise a "injured state" on the player
+	A value of 0 will set the "die" state on the player
+
+life = getPlayerLife()
+	Get the current player life
+
+setPlayerMoney(int money)
+	Set the amount of money the player will have
+
+money = getPlayerMoney()
+	Retrieve the current amount of money the player have
+
+addPlayerItem(string 'item')
+	Set a custom global callback and define a new object to use in the inventory GUI
+
+removePlayerItem(string 'item)
+	Remove the custom callback, and remove the name from the inventory GUI
+
+usePlayerItem(string 'item')
+	use the specified defined item (global)
+	'item' is a custom defined callback (global)
+
+count = getItemCount()
+	return the item count
+
+showDialogMessage(string 'message')
+	Show the specified message
+
+answer = showDialogQuestion(string 'question')
+	Show the specified question, return the answer
+
+saveGame()
+	save the game
+
+loadGame()
+	load back the game
+
+--------------------------------------
+CAllbacks:
+IRBStoreGlobalParams
+IRBRestoreGlobalParams
+
+
+--------------------------------------
+Dynamic objects:
+--------------------------------------
+setPosition(float x,float y,float z)
+	Move the object to this specified position
+
+x,y,z = getPosition()
+	Give back the position of the object (x,y,z)
+
+setRotation(float x,float y,float z)
+	Rotate the object to the specified angle
+
+x,y,z = getRotation()
+	Give back the angles of the object (x,y,z)
+
+*turn(float degrees)
+	Turn relative of a specified degree angle
+
+move(float speed)
+	Set the walk speed of the object
+	Also activate the "walk" animation state
+
+lookAt(float x,float y,float z)
+	The object turn to face the specified coordinates
+
+lookToObject(string 'objectname')
+	The object turn to face the specified object name
+	
+
+distance = distanceFrom(float x, float y, float z)
+	Give back the specified distance from the specified coordinates to the object.
+
+distance = distanceFrom(string 'object')
+	Give back the specified distance from the the object to the specified object.
+
+setFrameLoop(int start, int end)
+	Set the animation frameloop for the object
+
+setAnimationSpeed(float speed)
+	set the animation speed to the specified value
+
+setAnimation(string 'animation name')
+	Set the current animation of the object to the specified animation name
+
+  Here are the default animation names for the specific animation states. 
+  Usign theses names will trigger the proper animation state for the AI.
+	idle, set the state to OBJECT_ANIMATION_IDLE
+	walk, set the state to OBJECT_ANIMATION_WALK
+	run, set the state to OBJECT_ANIMATION_RUN
+	attack, set the state to OBJECT_ANIMATION_ATTACK
+	injured, set the state to OBJECT_ANIMATION_INJURED
+	knockback, set the state to OBJECT_ANIMATION_KNOCKBACK
+	die, set the state to OBJECT_ANIMATION_DIE
+	die_knockback, set the state to OBJECT_ANIMATION_DIE_KNOCKBACK
+	spawn, set the state to OBJECT_ANIMATION_SPAWN
+	despawn, set the state to OBJECT_ANIMATION_DESPAWN
+	despawn_knockback, set the state to OBJECT_ANIMATION_DESPAWN_KNOCKBACK
+
+showObjectLabel()
+	Display the object label
+
+hideObjectLabel()
+	Hide the object label
+
+setObjectLabel(string 'newlabel')
+	Define the new object label
+
+setEnabled(boolean)
+	Set the state of the dynamic object (enabled/disabled)
+
+setEnemy()
+	This object will become an enemy of the player
+
+setObject()
+	This object will become an object (default)
+---------------------------------------
+Special Variables
+ObjName = NAME OF THE OBJECT
+objType = ENEMY or OBJECT
+---------------------------------------
+Callbacks:
+
+IRBSaveParams()
+IRBRestoreParams()
+	
+
+onLoad()
+	Called when the object is loading in the game
+step()
+	Called at each interval (default interval is 1/4 sec)
+
+onClicked()
+	Called when the object as been clicked with the mouse
+
+CustomDynamicObjectUpdate()
+
+CustomDynamicObjectProgrammedAction()
