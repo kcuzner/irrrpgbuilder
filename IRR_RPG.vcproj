@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory=".\obj\MSVC_Debug"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -100,7 +100,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory=".\obj\MSVC_Release"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
