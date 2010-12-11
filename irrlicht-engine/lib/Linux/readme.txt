@@ -1,0 +1,1 @@
+ This folder contains a pre-compiled version of x86 Irrlicht Engine 1.7.2 (not patched)
