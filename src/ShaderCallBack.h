@@ -2,7 +2,7 @@
 #define _SHADERCB_
 
 #include <irrlicht.h>
-#include "HardwareSkinCallback.h"
+//#include "HardwareSkinCallback.h"
 
 
 using namespace irr;
@@ -27,7 +27,7 @@ public:
     static ShaderCallBack* getInstance();
 
     void setFlagEditingTerrain(bool edit);
-	
+
 	virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData);
 };
 

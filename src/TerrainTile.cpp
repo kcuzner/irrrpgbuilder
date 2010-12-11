@@ -70,8 +70,8 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     //Create a Custom GLSL Material (Terrain Splatting)
     static s32 materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/Shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/Shaders/splat.frag", "pixelMain", video::EPST_PS_1_1,
+        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/splat.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_SOLID);
 
     //Assign Textures
@@ -87,8 +87,8 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     //Create a Custom GLSL Material (Terrain Splatting)
     static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/Shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/Shaders/ocean.frag", "pixelMain", video::EPST_PS_1_1,
+        "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");

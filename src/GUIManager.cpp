@@ -134,16 +134,16 @@ void GUIManager::setupEditorGUI()
     guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width,36),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
-	
+
     guiMainWindow->getCloseButton()->setVisible(false);
-	
+
 	ITexture* backtexture = driver->getTexture("../media/art/back.png");
-	
+
 	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
 	guiBackImage->setScaleImage(true);
-	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,36)); 
+	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,36));
 	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,36));
-	
+
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
     s32 x = 0;
@@ -193,6 +193,7 @@ void GUIManager::setupEditorGUI()
                                      stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
 
     guiHelpButton->setImage(driver->getTexture("../media/art/bt_help.png"));
+    guiHelpButton->setPressedImage(driver->getTexture("../media/art/bt_help_ghost.png"));
 
     //ABOUT WINDOW
     guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
@@ -210,13 +211,13 @@ void GUIManager::setupEditorGUI()
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
     //IGUIStaticText* aboutText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_about")).c_str(),myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,140,500,400),true,true,guiAboutWindow);
 	//aboutText->setOverrideFont(guiFontCourier12);
-	
+
     //aboutText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 	guiAboutText->setSubElement(true);
-	
+
 	LANGManager::getInstance()->getText("txt_about");
 	guiAboutText->setEnabled(false);
-	
+
 	//aboutText->addItem(stringw(LANGManager::getInstance()->getText("txt_about")).c_str());
 
     //Save Project
@@ -714,6 +715,14 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiAbout->setEnabled(enable);
 			guiAbout->setPressed(!enable);
             break;
+        case BT_ID_NEW_PROJECT:
+            guiMainNewProject->setEnabled(enable);
+            guiMainNewProject->setPressed(!enable);
+            break;
+        case BT_ID_HELP:
+            guiHelpButton->setEnabled(enable);
+            guiHelpButton->setPressed(!enable);
+            break;
     }
 }
 
@@ -887,7 +896,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 
     //Play question sound (optional voice)
     ISound* dialogSound = NULL;
-	
+
 	//int len = sound.length();
 	printf ("Here is the dialog for the sound %s, \n",sound.c_str());
 	if(sound.c_str() != "")
@@ -990,7 +999,7 @@ stringc GUIManager::showInputQuestion(std::string text)
 
     while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
-		u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime(); 
+		u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
         App::getInstance()->getDevice()->getSceneManager()->drawAll();
         //guienv->drawAll();
@@ -1007,7 +1016,7 @@ stringc GUIManager::showInputQuestion(std::string text)
         stringw realTxt = stringw(text.c_str());
         realTxt += stringw(newtxt.c_str());
 		// Flashing cursor, flash at 1/4 second interval (based on realtime)
-	    if((timercheck-timer2>250)) 
+	    if((timercheck-timer2>250))
 		{
 			realTxt += L'_';
 			if (timercheck-timer2>500)
@@ -1030,7 +1039,7 @@ stringc GUIManager::showInputQuestion(std::string text)
 
 
         //verify pressed chars and add it to the string
-		
+
         if(timercheck-timer > 160)
         {
             //process all keycodes [0-9] and [A-Z]
@@ -1079,7 +1088,7 @@ void GUIManager::addAboutTextItem(stringc text)
 	{
 		this->guiAboutText->addItem(stringw(text).c_str());
 	}
-	
+
 }
 
 void GUIManager::flush()

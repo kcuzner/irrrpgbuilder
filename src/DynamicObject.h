@@ -3,7 +3,7 @@
 
 #include <irrlicht.h>
 
-#include "HardwareSkinCallback.h"
+//#include "HardwareSkinCallback.h"
 
 #include "tinyXML/tinyxml.h"
 
@@ -36,7 +36,7 @@ enum OBJECT_ANIMATION
 	OBJECT_ANIMATION_DESPAWN = 8,
 	OBJECT_ANIMATION_DESPAWN_KNOCKBACK = 9,
 	OBJECT_ANIMATION_OPEN = 10,
-	OBJECT_ANIMATION_CLOSE = 11	
+	OBJECT_ANIMATION_CLOSE = 11
 };
 enum TYPE
 {
@@ -118,7 +118,7 @@ class DynamicObject
         bool hasAnimation(){ return animations.size() != 0; };
         //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
-		
+
 		OBJECT_ANIMATION getAnimationState(stringc animName);
         void setAnimation(stringc animName);
 
@@ -159,7 +159,7 @@ class DynamicObject
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
         stringc name;
-				
+
         IMesh* mesh;
         ISceneNode* node;
 		ISkinnedMesh* skinnedmesh;
@@ -172,7 +172,7 @@ class DynamicObject
 
 		OBJECT_ANIMATION currentAnimation;
 		TYPE objectType;
-		
+
 		struct property{
 			int life;
 			int mana;
@@ -200,7 +200,7 @@ class DynamicObject
 		u32 timer2;
 		DynamicObject* currentObject;
 		f32	currentSpeed;
-        
+
         lua_State *L;
 
         ITextSceneNode* objLabel;

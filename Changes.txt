@@ -75,10 +75,12 @@ Changes since AlphaRelease 1
 
 - GUI: added icons for disabled states, as that was patched before 1.7.1
 
+- GUI: New project and Help buttons are disabled during gameplay
+
 - French language added 
 
 - German language added (Bot1q) (IRB can operate now in English, Portugese, French and German)
 
-
+- Shaders folder renamed to lowercase such as the other folders (linux filesystem is case sensitive)
 
 

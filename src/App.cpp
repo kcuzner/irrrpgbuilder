@@ -101,7 +101,7 @@ APP_STATE App::getAppState()
 
 void App::setAppState(APP_STATE newAppState)
 {
-	
+
     //just record the state before changing..
     APP_STATE old_app_state = app_state;
 
@@ -217,17 +217,20 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
+        GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
+        GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
     }
     else
     {
-		
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
         GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,true);
+        GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,true);
+        GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
 
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
     }
@@ -344,7 +347,7 @@ void App::eventGuiButton(s32 id)
             LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
             break;
         case BT_ID_STOP_GAME:
-			
+
 			Player::getInstance()->clearScripts();
             DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
@@ -357,7 +360,7 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 			EditorCamera::getInstance()->setCamera(2);
 			EditorCamera::getInstance()->setPosition(vector3df(oldcampos));
-			
+
             break;
         case BT_ID_EDIT_CHARACTER:
             this->setAppState(APP_EDIT_CHARACTER);
@@ -469,13 +472,13 @@ void App::eventMousePressed(s32 mouse)
                 {
                     MousePick mousePick = getMousePosition3D();
 
-					lastMousePick = mousePick; 
+					lastMousePick = mousePick;
 					stringc nodeName = "";
 					// Check for a node to prevent a crash (need to get the name of the node)
 					if (mousePick.pickedNode != NULL)
 					{
 						nodeName = mousePick.pickedNode->getName();
-					
+
 						//if you click on a Dynamic Object then open his properties
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 						{
@@ -592,7 +595,7 @@ bool App::loadConfig()
     #ifdef APP_DEBUG
     cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
     #endif
-	
+
     TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
 
     if ( root )
@@ -617,14 +620,14 @@ bool App::loadConfig()
 			stringc resize = resXML->ToElement()->Attribute("Resizeable");
 			if (resize=="true")
 				resizable=true;
-			
+
         }
 		//Language
 		TiXmlElement* langXML = root->FirstChildElement( "Language" );
         if ( resXML )
         {
 			language=stringc(langXML->ToElement()->Attribute("type")).c_str();
-						
+
         }
 		TiXmlElement* groundXML = root->FirstChildElement( "Terrain" );
         if ( groundXML )
@@ -674,11 +677,11 @@ void App::setupDevice()
 {
 
 	loadConfig();
-		
+
     device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
 	this->device->setResizable(resizable);
     device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
-	
+
 
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
@@ -709,10 +712,10 @@ void App::run()
     int lastFPS = -1;
 	u32 timer = device->getTimer()->getRealTime();
 	u32 timer2 = device->getTimer()->getRealTime();
-	
+
     while(device->run())
     {
-		
+
         driver->beginScene(true, true, SColor(0,200,200,200));
         if(app_state < APP_STATE_CONTROL)
 		{
@@ -720,10 +723,10 @@ void App::run()
             updateEditMode();//editMode
 		}
         else
-		{ 		
-			updateGameplay();	
+		{
+			updateGameplay();
 		}
-		
+
 		smgr->drawAll();
 
 		guienv->drawAll();
@@ -786,7 +789,7 @@ bool App::loadProjectFromXML(stringc filename)
     #ifdef APP_DEBUG
     cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
     #endif
-	
+
     TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
 
     if ( root )
@@ -997,7 +1000,7 @@ void App::updateGameplay()
 				if(Player::getInstance()->getAnimation() != PLAYER_ANIMATION_WALK) Player::getInstance()->setAnimation(PLAYER_ANIMATION_IDLE);
 			}
 		}
-	
+
 	stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 	playerMoney += Player::getInstance()->getMoney();
 	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
