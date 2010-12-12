@@ -474,6 +474,7 @@ void DynamicObject::setAnimation(stringc animName)
     {
         DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
+
         if( tempAnim.name == animName )
         {
 			if (Animation!=this->currentAnimation)

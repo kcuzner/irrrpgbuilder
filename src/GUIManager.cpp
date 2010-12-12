@@ -73,10 +73,20 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
     switch(id)
     {
         case SC_ID_TERRAIN_BRUSH_STRENGTH :
-            return (f32)guiTerrainBrushStrength->getPos();
+			{
+				stringw text = stringw(guiTerrainBrushStrength->getPos()).c_str();
+				text=text+L"\"";
+				guiTerrainBrushStrengthValue->setText(text.c_str());
+				return (f32)guiTerrainBrushStrength->getPos();
+			}
             break;
 		case SC_ID_TERRAIN_BRUSH_RADIUS :
-			return (f32)guiTerrainBrushRadius->getPos();
+			{
+				stringw text = stringw(guiTerrainBrushRadius->getPos()).c_str();
+				text=text+L"\"";
+				guiTerrainBrushRadiusValue->setText(text.c_str());
+				return (f32)guiTerrainBrushRadius->getPos();
+			}
 			break;
     }
     return 0;
@@ -323,29 +333,35 @@ void GUIManager::setupEditorGUI()
 
 
     ///TERRAIN TOOLBAR
-    guiTerrainToolbar = guienv->addWindow(myRect(2,34,200,54));
+    guiTerrainToolbar = guienv->addWindow(myRect(2,34,400,54));
     guiTerrainToolbar->getCloseButton()->setVisible(false);
     guiTerrainToolbar->setDrawTitlebar(false);
     guiTerrainToolbar->setDraggable(false);
     guiTerrainToolbar->setVisible(false);
 
 	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
-                                                         myRect(2,mainToolbarPos.Y+32,98,16),
+                                                         myRect(2,mainToolbarPos.Y+32,148,16),
+                                                         false,true, guiTerrainToolbar);
+	guiTerrainBrushRadiusValue = guienv->addStaticText(L"175",
+                                                         myRect(355,mainToolbarPos.Y+32,45,16),
                                                          false,true, guiTerrainToolbar);
 
-    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(100,mainToolbarPos.Y+32,100,16),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
-    guiTerrainBrushRadius->setMin(50);
-    guiTerrainBrushRadius->setMax(300);
-    guiTerrainBrushRadius->setPos(175);
+    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(150,mainToolbarPos.Y+34,200,12),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushRadius->setMin(0);
+    guiTerrainBrushRadius->setMax(200);
+    guiTerrainBrushRadius->setPos(100);
 
     guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
-                                                         myRect(2,mainToolbarPos.Y+16,98,16),
+                                                         myRect(2,mainToolbarPos.Y+16,148,16),
+                                                         false,true, guiTerrainToolbar);
+	guiTerrainBrushStrengthValue = guienv->addStaticText(L"175",
+                                                         myRect(355,mainToolbarPos.Y+16,45,16),
                                                          false,true, guiTerrainToolbar);
 
-    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(100,mainToolbarPos.Y+16,100,16),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(150,mainToolbarPos.Y+18,200,12),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushStrength->setMin(0);
-    guiTerrainBrushStrength->setMax(300);
-    guiTerrainBrushStrength->setPos(175);
+    guiTerrainBrushStrength->setMax(200);
+    guiTerrainBrushStrength->setPos(100);
 
     //Show Playable Area (areas with no Y == 0 will be red)
     guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(0,mainToolbarPos.Y,200,16),

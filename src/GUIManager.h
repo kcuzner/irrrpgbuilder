@@ -193,6 +193,8 @@ class GUIManager
         IGUIStaticText* guiTerrainBrushStrengthLabel;
 		IGUIScrollBar* guiTerrainBrushRadius;
         IGUIStaticText* guiTerrainBrushRadiusLabel;
+		IGUIStaticText* guiTerrainBrushStrengthValue;
+        IGUIStaticText* guiTerrainBrushRadiusValue;
 
         IGUIButton* guiTerrainPaintVegetation;
         ITexture* helpVegetationPaint;

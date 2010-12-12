@@ -70,8 +70,12 @@ bool App::cursorIsInEditArea()
     if(device->getCursorControl()->getPosition().Y < 36)   condition = false;
 
     //Is over terrain toolbar??
-    if(device->getCursorControl()->getPosition().Y < 90  && device->getCursorControl()->getPosition().X < 200 && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
-        condition = false;
+    if(device->getCursorControl()->getPosition().Y < 95  && device->getCursorControl()->getPosition().X < 420 && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
+	{
+		condition = false;
+		GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+        GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
+	}
 
     //is over the dynamic objects chooser window??
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
