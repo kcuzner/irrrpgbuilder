@@ -21,6 +21,13 @@ GUIManager::GUIManager()
     setupGameplayGUI();
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
+
+	for (s32 i=0; i<irr::gui::EGDC_COUNT ; ++i)
+    {
+            video::SColor col = guienv->getSkin()->getColor((EGUI_DEFAULT_COLOR)i);
+            col.setAlpha(230);
+            guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
+    }
 }
 
 GUIManager::~GUIManager()
@@ -204,6 +211,15 @@ void GUIManager::setupEditorGUI()
 
     guiHelpButton->setImage(driver->getTexture("../media/art/bt_help.png"));
     guiHelpButton->setPressedImage(driver->getTexture("../media/art/bt_help_ghost.png"));
+
+    //CONFIG BUTTON
+    guiConfigButton = guienv->addButton(myRect(driver->getScreenSize().Width - 36 - 126,mainToolbarPos.Y,32,32),
+                                     guiMainWindow,
+                                     BT_ID_CONFIG,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_config")).c_str() );
+
+    guiConfigButton->setImage(driver->getTexture("../media/art/bt_config.png"));
+	guiConfigButton->setPressedImage(driver->getTexture("../media/art/bt_config_ghost.png"));
 
     //ABOUT WINDOW
     guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
@@ -518,6 +534,7 @@ void GUIManager::setupEditorGUI()
 
     logo1 = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/logo1.png");
 
+    configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
 }
 
 void GUIManager::setupGameplayGUI()
@@ -1114,4 +1131,12 @@ void GUIManager::flush()
     guiMainNewProject->setPressed(false);
     guiDynamicObjects_LoadScriptTemplateBT->setPressed(false);
     guiBtViewItems->setPressed(false);
+}
+
+void GUIManager::showConfigWindow()
+{
+    APP_STATE old_State = App::getInstance()->getAppState();
+    App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+    configWindow->showWindow();
+    App::getInstance()->setAppState(old_State);
 }

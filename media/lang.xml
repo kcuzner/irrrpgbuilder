@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <IrrRPG_Builder_LanguageFile version="1.0">
     <language name="en-us" description="English, United States">
 	<text id="bt_dynamic_objects_close_script" str="Close"/>
@@ -33,9 +34,28 @@
 	<text id="bt_drop_item" str="Drop Item"/>
 	<text id="bt_close_items_window" str="Back To Game"/>
 	<text id="bt_edit_script_global" str="Edit Global Script"/>
+	
+	<text id="bt_cfg_window_ok" str="OK"/>
+	<text id="bt_cfg_window_cancel" str="Cancel"/>
+	<text id="bt_config" str="Seetings"/>
+	<text id="txt_cfg_window_changes_msg" str="Changes will take effect next time you run the program"/>
+	<text id="txt_cfg_window_caption" str="Seetings"/>
+	<text id="txt_cfg_window_resolution" str="Screen Resolution"/>
+	<text id="txt_cfg_window_language" str="Language"/>
+	<text id="txt_cfg_window_tab_system" str="System"/>
+	<text id="txt_cfg_window_tab_scenary" str="Scenary"/>
+	<text id="txt_cfg_window_fullscreen" str="Fullscreen"/>
+	<text id="txt_cfg_window_resizeable" str="Resizeable"/>
+	<text id="txt_cfg_window_terrain_mesh" str="Terrain Mesh"/>
+	<text id="txt_cfg_window_terrain_scale" str="Scale"/>
+	<text id="txt_cfg_window_terrain_layers" str="Terrain Texture Layers"/>
+	<text id="txt_cfg_window_ocean_mesh" str="Ocean Mesh"/>
+	<text id="txt_cfg_window_ocean_normalmap" str="Ocean Normal Map"/>
+	<text id="txt_cfg_window_ocean_reflection" str="Ocean Reflection"/>
+	
 	<text id="txt_player_life" str="LIFE:"/>
 	<text id="txt_player_money" str="GOLD:"/>
-	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		by Andres Jesse Porfirio" str3=" " str4="Programming & scripting by:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Your name here" str8=" " str9="Interface design:" str10="		Andres Jesse Porfirio" str11="		Your name here" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Models by:" str17="		Your name here" str18="		Your name here" str19=" " str20="Animations:" str21="		Your name here" str22="		Your name here" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Your name here" str27="		Your name here" str28=" " str29="check irrrpgbuilder.sourceforge.net" str30="have fun!"/>
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		by Andres Jesse Porfirio" str3=" " str4="Programming and scripting by:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Your name here" str8=" " str9="Interface design:" str10="		Andres Jesse Porfirio" str11="		Your name here" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Models by:" str17="		Your name here" str18="		Your name here" str19=" " str20="Animations:" str21="		Your name here" str22="		Your name here" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Your name here" str27="		Your name here" str28=" " str29="check irrrpgbuilder.sourceforge.net" str30="have fun!"/>
 	<text id="msg_error" str="Error"/>
 	<text id="msg_invalid_project_file" str="Invalid Project File"/>
 	<text id="msg_override_project" str="Save current project?"/>
@@ -80,6 +100,25 @@
 	<text id="bt_drop_item" str="Jogar Fora o Item Atual"/>
 	<text id="bt_close_items_window" str="Voltar ao Jogo"/>
 	<text id="bt_edit_script_global" str="Editar Script Global"/>
+	
+	<text id="bt_cfg_window_ok" str="OK"/>
+	<text id="bt_cfg_window_cancel" str="Cancelar"/>
+	<text id="bt_config" str="Preferencias"/>
+	<text id="txt_cfg_window_changes_msg" str="As alteracoes terao efeito depois que voce reiniciar o programa"/>
+	<text id="txt_cfg_window_caption" str="Preferencias"/>
+	<text id="txt_cfg_window_resolution" str="Resolucao de Tela"/>
+	<text id="txt_cfg_window_language" str="Idioma"/>
+	<text id="txt_cfg_window_tab_system" str="Sistema"/>
+	<text id="txt_cfg_window_tab_scenary" str="Cenario"/>
+	<text id="txt_cfg_window_fullscreen" str="Tela Cheia"/>
+	<text id="txt_cfg_window_resizeable" str="Redimensionavel"/>
+	<text id="txt_cfg_window_terrain_mesh" str="Mesh do terreno"/>
+	<text id="txt_cfg_window_terrain_scale" str="Escala"/>
+	<text id="txt_cfg_window_terrain_layers" str="Camadas de textura do terreno"/>
+	<text id="txt_cfg_window_ocean_mesh" str="Mesh do oceano"/>
+	<text id="txt_cfg_window_ocean_normalmap" str="Normal Map do Oceano"/>
+	<text id="txt_cfg_window_ocean_reflection" str="Reflexao do Oceano"/>
+	
 	<text id="txt_player_life" str="VIDA:"/>
 	<text id="txt_player_money" str="DINHEIRO:"/>
 	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		por Andres Jesse Porfirio" str3=" " str4="Programacao e scripts de:
@@ -131,7 +170,7 @@
 	<text id="bt_edit_script_global" str="Editer script global"/>
 	<text id="txt_player_life" str="VIE:"/>
 	<text id="txt_player_money" str="OR:"/>
-	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		par Andres Jesse Porfirio" str3=" " str4="Programmation & scripts par:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Votre nom ici" str8=" " str9="Design de l'interface:" str10="		Andres Jesse Porfirio" str11="		Votre nom ici" str12=" " str13="Design du logo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modeles par:" str17="		Votre nom ici" str18="		Votre nom ici" str19=" " str20="Animations:" str21="		Votre nom ici" str22="		Votre nom ici" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Votre nom ici" str27="		Votre nom ici" str28=" " str29="Consultez irrrpgbuilder.sourceforge.net" str30="Amusez-vous!"/>
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		par Andres Jesse Porfirio" str3=" " str4="Programmation und scripts par:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Votre nom ici" str8=" " str9="Design de l'interface:" str10="		Andres Jesse Porfirio" str11="		Votre nom ici" str12=" " str13="Design du logo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modeles par:" str17="		Votre nom ici" str18="		Votre nom ici" str19=" " str20="Animations:" str21="		Votre nom ici" str22="		Votre nom ici" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Votre nom ici" str27="		Votre nom ici" str28=" " str29="Consultez irrrpgbuilder.sourceforge.net" str30="Amusez-vous!"/>
 	<text id="msg_error" str="Erreur"/>
 	<text id="msg_invalid_project_file" str="Fichier projet invalide"/>
 	<text id="msg_override_project" str="Sauver le projet actuel?"/>
@@ -142,9 +181,9 @@
 	<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
     </language>
 	<language name="de-ge" description="Deutsch, Germany">
-	<text id="bt_dynamic_objects_close_script" str="Schließen"/>
+	<text id="bt_dynamic_objects_close_script" str="Schlieï¿½en"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Keine Fehler gefunden"/>
-	<text id="bt_dynamic_objects_validate_script" str="Script überprüfen (F5)"/>
+	<text id="bt_dynamic_objects_validate_script" str="Script ï¿½berprï¿½fen (F5)"/>
 	<text id="bt_dynamic_objects_load_script_template" str="Script Template laden"/>
 	<text id="bt_dynamic_objects_move_rotate" str="Bewegen/Drehen"/>
 	<text id="bt_dynamic_objects_remove" str="Objekt entfernen"/>
@@ -152,39 +191,39 @@
 	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
 	<text id="bt_dynamic_objects_has_action" str="wird benutzt"/>
 	<text id="bt_dynamic_objects_mode" str="Dynamisches Objekt Modus"/>
-	<text id="bt_paint_vegetation" str="Vegetation einfügen"/>
+	<text id="bt_paint_vegetation" str="Vegetation einfï¿½gen"/>
 	<text id="bt_new_project" str="Neues Projekt"/>
 	<text id="bt_save_project" str="Projekt speichern"/>
 	<text id="bt_load_project" str="Projekt laden"/>
 	<text id="bt_show_playable_area" str="Bereich anzeigen"/>
-	<text id="bt_terrain_segments" str="Gelände bearbeiten"/>
-	<text id="bt_terrain_transform" str="Geländehöhen editieren"/>
-	<text id="bt_terrain_transform_brush_strength_label" str="Pinselstärke:"/>
+	<text id="bt_terrain_segments" str="Gelï¿½nde bearbeiten"/>
+	<text id="bt_terrain_transform" str="Gelï¿½ndehï¿½hen editieren"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Pinselstï¿½rke:"/>
 	<text id="bt_terrain_transform_brush_radius_label" str="Pinselradius:"/>
 	<text id="bt_play_game" str="Spielen"/>
 	<text id="bt_stop_game" str="Stoppen"/>
 	<text id="bt_edit_character" str="Character bearbeiten"/>
 	<text id="bt_player_edit_script" str="Charakter Script bearbeiten"/>
-	<text id="bt_close_program" str="Anwendung schließen"/>
-	<text id="bt_about" str="Über"/>
+	<text id="bt_close_program" str="Anwendung schlieï¿½en"/>
+	<text id="bt_about" str="ï¿½ber"/>
 	<text id="bt_help" str="Hilfe"/>
 	<text id="bt_dialog_yes" str="Ja"/>
 	<text id="bt_dialog_no" str="Nein"/>
 	<text id="bt_view_items" str="Zeige Items "/>
 	<text id="bt_use_item" str="Gegenstand benutzen"/>
 	<text id="bt_drop_item" str="Gegenstand fallen lassen"/>
-	<text id="bt_close_items_window" str="Zurück zum Spiel"/>
+	<text id="bt_close_items_window" str="Zurï¿½ck zum Spiel"/>
 	<text id="bt_edit_script_global" str="Globalen Script bearbeiten"/>
 	<text id="txt_player_life" str="LEBENSPUNKTE:"/>
 	<text id="txt_player_money" str="Geld:"/>
-	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		von Andres Jesse Porfirio" str3=" " str4="Programmierung & Scripte von:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Ihren Namen hier einfügen str8=" " str9="Oberflächendesign:" str10="		Andres Jesse Porfirio" str11="		Ihren Namen hier einfügen" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modele von:" str17="		Ihren Namen hier einfügen" str18="		Your name here" str19=" " str20="Animationen:" str21="		Ihren Namen hier einfügen" str22="		Ihren Namen hier einfügen" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Ihren Namen hier einfügen" str27="		Ihren Namen hier einfügen" str28=" " str29="besuchen Sie irrrpgbuilder.sourceforge.net" str30="Viel Spaß!"/>
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		von Andres Jesse Porfirio" str3=" " str4="Programmierung et Scripte von:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Ihren Namen hier einfï¿½gen str8=" str9="Oberflï¿½chendesign:" str10="		Andres Jesse Porfirio" str11="		Ihren Namen hier einfï¿½gen" str12=" " str13="Logo design:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modele von:" str17="		Ihren Namen hier einfï¿½gen" str18="		Your name here" str19=" " str20="Animationen:" str21="		Ihren Namen hier einfï¿½gen" str22="		Ihren Namen hier einfï¿½gen" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Ihren Namen hier einfï¿½gen" str27="		Ihren Namen hier einfï¿½gen" str28=" " str29="besuchen Sie irrrpgbuilder.sourceforge.net" str30="Viel Spaï¿½!"/>
 	<text id="msg_error" str="Fehler"/>
-	<text id="msg_invalid_project_file" str="Ungültige Projektdatei"/>
+	<text id="msg_invalid_project_file" str="Ungï¿½ltige Projektdatei"/>
 	<text id="msg_override_project" str="Das aktuelle Projekt speichern?"/>
 	<text id="msg_saved_ok" str="Speichern erfolgreich!"/>
 	<text id="msg_new_project_name" str="Geben Sie den Projektnamen ein:"/>
 	<text id="msg_loaded_error" str="Fehler beim Laden"/>
 	<text id="msg_loaded_ok" str="Laden erfolgreich!"/>
-	<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, möchten Sie fortfahren?"/>
+	<text id="msg_override_script" str="Diese Operation wird das aktuelle Script ï¿½berschreiben, mï¿½chten Sie fortfahren?"/>
     </language>
 </IrrRPG_Builder_LanguageFile> 

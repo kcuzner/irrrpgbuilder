@@ -411,6 +411,9 @@ void App::eventGuiButton(s32 id)
             setAppState(APP_GAMEPLAY_NORMAL);
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
             break;
+        case BT_ID_CONFIG:
+            GUIManager::getInstance()->showConfigWindow();
+            break;
     }
 }
 
@@ -594,7 +597,7 @@ bool App::loadConfig()
 	TerrainManager::getInstance()->setTerrainTexture(4,"../media/L4.jpg");
 
 	TiXmlDocument doc("config.xml");
-	if (!doc.LoadFile()) return false;
+	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
 
     #ifdef APP_DEBUG
     cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
@@ -613,51 +616,51 @@ bool App::loadConfig()
             return false;
         }
 
-        TiXmlElement* resXML = root->FirstChildElement( "Screen" );
+        TiXmlElement* resXML = root->FirstChildElement( "screen" );
         if ( resXML )
         {
-            screenW = atoi(resXML->ToElement()->Attribute("ScreenWide"));
-			screenH = atoi(resXML->ToElement()->Attribute("ScreenHeight"));
-			stringc full = resXML->ToElement()->Attribute("Fullscreen");
+            screenW = atoi(resXML->ToElement()->Attribute("screen_width"));
+			screenH = atoi(resXML->ToElement()->Attribute("screen_height"));
+			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 				fullScreen=true;
-			stringc resize = resXML->ToElement()->Attribute("Resizeable");
+			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
 
         }
 		//Language
-		TiXmlElement* langXML = root->FirstChildElement( "Language" );
+		TiXmlElement* langXML = root->FirstChildElement( "language" );
         if ( resXML )
         {
 			language=stringc(langXML->ToElement()->Attribute("type")).c_str();
 
         }
-		TiXmlElement* groundXML = root->FirstChildElement( "Terrain" );
+		TiXmlElement* groundXML = root->FirstChildElement( "terrain" );
         if ( groundXML )
         {
-            stringc meshname = groundXML->ToElement()->Attribute("Mesh");
+            stringc meshname = groundXML->ToElement()->Attribute("mesh");
 			TerrainManager::getInstance()->setTileMeshName(meshname);
+			stringc layer0 = groundXML->ToElement()->Attribute("layer0");
 			stringc layer1 = groundXML->ToElement()->Attribute("layer1");
 			stringc layer2 = groundXML->ToElement()->Attribute("layer2");
 			stringc layer3 = groundXML->ToElement()->Attribute("layer3");
-			stringc layer4 = groundXML->ToElement()->Attribute("layer4");
 			f32 scale = (f32)atof(groundXML->ToElement()->Attribute("scale"));
-			TerrainManager::getInstance()->setTerrainTexture(1,layer1);
-			TerrainManager::getInstance()->setTerrainTexture(2,layer2);
-			TerrainManager::getInstance()->setTerrainTexture(3,layer3);
-			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
+			TerrainManager::getInstance()->setTerrainTexture(1,layer0);
+			TerrainManager::getInstance()->setTerrainTexture(2,layer1);
+			TerrainManager::getInstance()->setTerrainTexture(3,layer2);
+			TerrainManager::getInstance()->setTerrainTexture(4,layer3);
 			TerrainManager::getInstance()->setScale(scale);
 
         }
-		TiXmlElement* waterXML = root->FirstChildElement( "Ocean" );
-        if ( groundXML )
+		TiXmlElement* waterXML = root->FirstChildElement( "ocean" );
+        if ( waterXML )
         {
-            stringc meshname = waterXML->ToElement()->Attribute("Mesh");
-			stringc layer1 = waterXML->ToElement()->Attribute("layer1");
-			stringc layer2 = waterXML->ToElement()->Attribute("layer2");
+            stringc meshname = waterXML->ToElement()->Attribute("mesh");
+			stringc normalmap = waterXML->ToElement()->Attribute("normalmap");
+			stringc reflection = waterXML->ToElement()->Attribute("reflection");
+            ///TODO: we are just loading ocean seetings, we need to set it!
 		}
-
     }
     else
     {

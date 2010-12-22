@@ -6,8 +6,8 @@
 #include <vector>
 
 #include "NodePreview.h"
-
 #include "CGUIEditBoxIRB.h"
+#include "GUIConfigWindow.h"
 
 using namespace irr;
 using namespace core;
@@ -58,6 +58,7 @@ enum GUI_ID
     ST_ID_PLAYER_MONEY = 44,
     BT_ID_NEW_PROJECT = 45,
     BT_ID_HELP = 46,
+    BT_ID_CONFIG = 47,
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -141,6 +142,8 @@ class GUIManager
 
         void flush();
 
+        void showConfigWindow();
+
         virtual ~GUIManager();
     private:
         IGUIEnvironment* guienv;
@@ -175,6 +178,8 @@ class GUIManager
 		IGUIListBox* guiAboutText;
 
         IGUIButton* guiHelpButton;
+        IGUIButton* guiConfigButton;
+        GUIConfigWindow* configWindow;
 
         ///Main window (like a toolbar on the top...)
         IGUIWindow* guiMainWindow;
