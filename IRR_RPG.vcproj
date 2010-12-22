@@ -248,6 +248,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\GUIConfigWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\GUIConfigWindow.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\GUIManager.cpp"
 					>
 				</File>
