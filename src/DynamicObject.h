@@ -36,7 +36,8 @@ enum OBJECT_ANIMATION
 	OBJECT_ANIMATION_DESPAWN = 8,
 	OBJECT_ANIMATION_DESPAWN_KNOCKBACK = 9,
 	OBJECT_ANIMATION_OPEN = 10,
-	OBJECT_ANIMATION_CLOSE = 11
+	OBJECT_ANIMATION_CLOSE = 11,
+	OBJECT_ANIMATION_CUSTOM = 99
 };
 enum TYPE
 {
@@ -49,9 +50,14 @@ enum TYPE
 
 typedef struct{
     stringc name;
-    s32 startFrame;
+	stringc mesh;
+	stringc sound;
+	s32 startFrame;
     s32 endFrame;
+	s32 attackevent;
+	s32 soundevent;
     f32 speed;
+
 }DynamicObject_Animation;
 
 class DynamicObject

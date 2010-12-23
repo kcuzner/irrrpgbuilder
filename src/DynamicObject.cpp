@@ -121,6 +121,10 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_INTERACTIVE;
 	if (name=="non-interactive")
 		this->objectType=OBJECT_TYPE_NON_INTERACTIVE;
+	if (name=="player")
+		this->objectType=OBJECT_TYPE_PLAYER;
+	if (name=="editor-object")
+		this->objectType=OBJECT_TYPE_EDITOR_OBJ;
 	this->typeText = name;
 }
 
@@ -440,9 +444,11 @@ void DynamicObject::setEnabled(bool enabled)
 OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 {
 	if (animName==NULL)
-		return OBJECT_ANIMATION_IDLE;
+		return OBJECT_ANIMATION_CUSTOM;
 	//printf("Asked animation name is: %s\n",animName.c_str());
 	OBJECT_ANIMATION Animation;
+	// Preset the animation type as "custom", but can be overwritten if standard types are discovered.
+	Animation=OBJECT_ANIMATION_CUSTOM;
 	if (animName=="idle")
 		Animation=OBJECT_ANIMATION_IDLE;
 	if (animName=="walk")
