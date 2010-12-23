@@ -9,6 +9,8 @@ using namespace gui;
 
 DynamicObjectsManager::DynamicObjectsManager()
 {
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	stringc pathFile = "../media/dynamic_objects/";
     //Load all objects from xml file
     TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
 
@@ -65,9 +67,15 @@ DynamicObjectsManager::DynamicObjectsManager()
 
                 currAnim.name = currentAnimXML->ToElement()->Attribute("name");
 				// Load the name of the animation mesh (if there is any)
-				currAnim.mesh = currentAnimXML->ToElement()->Attribute("mesh");
-				if (currAnim.mesh.size()==0)
-					currAnim.mesh = L"undefined";
+				currAnim.meshname = currentAnimXML->ToElement()->Attribute("mesh");
+				if (currAnim.meshname.size()==0)
+				{
+					currAnim.meshname = L"undefined";
+					currAnim.mesh = NULL;
+				}
+				else
+					currAnim.mesh = smgr->getMesh(pathFile+currAnim.meshname);
+				
 				// load the startframe for the current animation name
                 stringc s_start = currentAnimXML->ToElement()->Attribute("start");
 				if (s_start.size()>0) 

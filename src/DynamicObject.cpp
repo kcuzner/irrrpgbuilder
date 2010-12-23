@@ -76,6 +76,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 
+		// Setup the animations
 		script = "";
 
 		//Fake Shadow
@@ -476,18 +477,29 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 
 void DynamicObject::setAnimation(stringc animName)
 {
+	// Setup the animation skinning of the meshes (Allow external animation to be used)
+	ISkinnedMesh* skin = NULL;
+	ISkinnedMesh* defaultskin = (ISkinnedMesh*)this->mesh; 
+	
+	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
-        DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
+		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
-
-        if( tempAnim.name == animName )
+		if( tempAnim.name == animName )
         {
 			if (Animation!=this->currentAnimation)
 			{
 				this->currentAnimation=Animation;	
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
+
+				// Setup the skinned mesh animation. Check if the meshname is present
+				if (tempAnim.meshname!=L"undefined")
+					defaultskin->useAnimationFrom(skin);
+				else
+					defaultskin->useAnimationFrom(defaultskin);
+
 			}
             return;
         }

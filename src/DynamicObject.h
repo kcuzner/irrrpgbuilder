@@ -50,7 +50,8 @@ enum TYPE
 
 typedef struct{
     stringc name;
-	stringc mesh;
+	stringc meshname;
+	IAnimatedMesh* mesh;
 	stringc sound;
 	s32 startFrame;
     s32 endFrame;
