@@ -169,6 +169,8 @@
 	<text id="bt_close_items_window" str="Retour au jeu"/>
 	<text id="bt_edit_script_global" str="Editer script global"/>
 	<text id="bt_config" str="Configuration"/>
+	<text id="bt_cfg_window_ok" str="OK"/>
+	<text id="bt_cfg_window_cancel" str="Annuler"/>
 	<text id="txt_cfg_window_changes_msg" str="Les changements s'activeronts la prochaine fois que vous demarrerez le programme"/>
 	<text id="txt_cfg_window_caption" str="Configuration"/>
 	<text id="txt_cfg_window_resolution" str="Resolution d'affichage"/>
@@ -185,7 +187,7 @@
 	<text id="txt_cfg_window_ocean_reflection" str="Reflection ocean"/>
 	<text id="txt_player_life" str="VIE:"/>
 	<text id="txt_player_money" str="OR:"/>
-	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		par Andres Jesse Porfirio" str3=" " str4="Programmation und scripts par:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Votre nom ici" str8=" " str9="Design de l'interface:" str10="		Andres Jesse Porfirio" str11="		Votre nom ici" str12=" " str13="Design du logo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modeles par:" str17="		Votre nom ici" str18="		Votre nom ici" str19=" " str20="Animations:" str21="		Votre nom ici" str22="		Votre nom ici" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Votre nom ici" str27="		Votre nom ici" str28=" " str29="Consultez irrrpgbuilder.sourceforge.net" str30="Amusez-vous!"/>
+	<text id="txt_about" str="30" str1="IrrRPG Builder v0.1 ['Feijoada'] Alpha" str2="		par Andres Jesse Porfirio" str3=" " str4="Programmation et scripts par:" str5="		Andres Jesse Porfirio (www.andresjesse.com)" str6="		Christian Clavet (www.clavet.org)" str7="		Votre nom ici" str8=" " str9="Design de l'interface:" str10="		Andres Jesse Porfirio" str11="		Votre nom ici" str12=" " str13="Design du logo:" str14="		Borges (www.vhborges.tk)" str15=" " str16="Modeles par:" str17="		Votre nom ici" str18="		Votre nom ici" str19=" " str20="Animations:" str21="		Votre nom ici" str22="		Votre nom ici" str23=" " str24="Shaders:" str25="		Andres Jesse Porfirio" str26="		Votre nom ici" str27="		Votre nom ici" str28=" " str29="Consultez irrrpgbuilder.sourceforge.net" str30="Amusez-vous!"/>
 	<text id="msg_error" str="Erreur"/>
 	<text id="msg_invalid_project_file" str="Fichier projet invalide"/>
 	<text id="msg_override_project" str="Sauver le projet actuel?"/>
