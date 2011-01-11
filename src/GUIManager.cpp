@@ -778,6 +778,10 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             break;
         case BT_ID_VIEW_ITEMS:
             guiBtViewItems->setVisible(visible);
+			// Update the gold items
+			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
+			playerMoney += Player::getInstance()->getObject()->getMoney();
+			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
     }
 }
@@ -1110,7 +1114,7 @@ stringc GUIManager::getActivePlayerItem()
 void GUIManager::updateItemsList()
 {
     guiPlayerItems->clear();
-    vector<stringc> items = Player::getInstance()->getItems();
+    vector<stringc> items = Player::getInstance()->getObject()->getItems();
 
     for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
 }

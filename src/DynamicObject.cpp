@@ -27,9 +27,18 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	setupObj(name, mesh);
 
+	// Setup default properties for all dynamic objects
 	this->properties.life = 100;
+	this->properties.maxlife = 100;
 	this->properties.experience = 10;
+	this->properties.level = 1;
     this->properties.money = 0;
+
+	// Tries out animation blending
+	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
+	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
+	//nodeBlend->setTransitionTime(0.5);
+
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
@@ -38,6 +47,11 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
     this->animations = animations;
 
     setupObj(name, mesh);
+
+	// Tries out animation blending
+	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
+	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
+	//nodeBlend->setTransitionTime(0.5f);
 
 	this->properties.life = 100;
 	this->properties.experience = 10;
@@ -58,8 +72,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
 		
-        IAnimatedMeshSceneNode * NodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
-		this->node = NodeAnim;
+        nodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL); 
+	    //nodeAnim->setTransitionTime(0.5f);
+		this->node = nodeAnim;
 			
 	}
     else
@@ -156,9 +172,6 @@ void DynamicObject::setPosition(vector3df pos)
 	node->setPosition(pos);
 	vector3df pos2 = node->getAbsolutePosition();
 	node->updateAbsolutePosition();
-	// Debug, for fixing the problem with positionning.
-	//printf ("Position requested is: %f,%f,%f\nPosition final is %f,%f,%f\n",pos.X,pos.Y,pos.Z,pos2.X,pos2.Y,pos2.Z);
-
 }
 
 vector3df DynamicObject::getPosition()
@@ -311,6 +324,9 @@ void DynamicObject::update()
 	
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	bool culled = false;
+	// TRies out animation blending.
+	//nodeAnim->animateJoints();
+
 	if((timerobject-timer>250) && enabled) // 1/4 second
 	{
 		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
@@ -353,7 +369,7 @@ void DynamicObject::clearScripts()
     if(hasAnimation())
 	{
 		this->setFrameLoop(0,0);
-		this->setAnimation("idle");
+		this->setAnimation("idle", true);
 	}
 
     lua_close(L);
@@ -396,6 +412,27 @@ void DynamicObject::restoreParams()
 void DynamicObject::setLife(int life)
 {
     this->properties.life = life;
+	if (objectType == OBJECT_TYPE_PLAYER)
+	{
+		// Update the GUI display
+	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
+	playerLife += life;
+	playerLife += "/";
+	playerLife += this->properties.maxlife;
+	playerLife += " Exp:";
+	stringc playerxp = (stringc)this->properties.experience;
+	playerLife += playerxp;
+	playerLife += " Level:";
+	playerLife += this->properties.level;
+	//+(stringc)properties.experience;
+	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
+	}
+
+	// Trigger the death animation immediately.
+	if (life==0)
+	{
+		this->setAnimation("die", false);
+	}
 }
 
 int DynamicObject::getLife()
@@ -475,7 +512,12 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 	return Animation;
 }
 
-void DynamicObject::setAnimation(stringc animName)
+OBJECT_ANIMATION DynamicObject::getAnimation(void)
+{
+	return currentAnimation;
+}
+
+void DynamicObject::setAnimation(stringc animName, bool loop)
 {
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
@@ -490,16 +532,20 @@ void DynamicObject::setAnimation(stringc animName)
         {
 			if (Animation!=this->currentAnimation)
 			{
-				this->currentAnimation=Animation;	
-				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
-				this->setAnimationSpeed(tempAnim.speed);
-
 				// Setup the skinned mesh animation. Check if the meshname is present
-				if (tempAnim.meshname!=L"undefined")
+				if (tempAnim.meshname!=L"undefined") 
+				{
+					skin = (ISkinnedMesh*)tempAnim.mesh;
 					defaultskin->useAnimationFrom(skin);
+				}
 				else
 					defaultskin->useAnimationFrom(defaultskin);
 
+				// Set the frameloop, the current animation and the speed
+				this->currentAnimation=Animation;	
+				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
+				this->setAnimationSpeed(tempAnim.speed);
+				this->nodeAnim->setLoopMode(loop);
 			}
             return;
         }
@@ -524,6 +570,117 @@ void DynamicObject::moveObject(f32 speed)
 	currentObject=this;
 	currentSpeed=speed;
 }
+
+void DynamicObject::walkTo(vector3df targetPos, f32 speed)
+{
+	// Will have the object walk to the targetposition at the current speed.
+	// Walk can be interrupted by:
+	// - A collision with another object
+	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
+
+	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
+	this->lookAt(targetPos);
+
+    vector3df pos=this->getPosition();
+    pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
+    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
+    //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
+	
+	if (height>-0.09f && height<0.05f && !collided)
+	{
+		pos.Y = height;
+		this->setPosition(pos);
+	}
+	else
+	{
+		walkTarget = this->getPosition();
+		this->setAnimation("idle", true);
+		collided=false; // reset the collision flag
+	}
+}
+
+void DynamicObject::setWalkTarget(vector3df newTarget)
+{
+    walkTarget = newTarget;
+}
+
+vector3df DynamicObject::getWalkTarget()
+{
+	return walkTarget;
+}
+
+// Main attack feature (Player + NPC)
+void DynamicObject::attackEnemy(DynamicObject* obj)
+{
+    enemyUnderAttack = obj;
+
+    if(obj)
+    {
+        this->lookAt(obj->getPosition());
+        this->setAnimation("attack", true);
+		obj->notifyClick();
+    }
+	printf("Attack for this enemy asked %s\n",obj->getName());
+}
+
+
+// INVENTORY features
+void DynamicObject::addItem(stringc itemName)
+{
+    items.push_back(itemName);
+}
+
+void DynamicObject::removeItem(stringc itemName)
+{
+    for(int i=0;i<(int)items.size();i++)
+    {
+        if(items[i] == itemName)
+        {
+            items.erase(items.begin() + i);
+            return;//remove only one item
+        }
+    }
+}
+
+vector<stringc> DynamicObject::getItems()
+{
+    return items;
+}
+
+int DynamicObject::getItemCount(stringc itemName)
+{
+    int total = 0;
+
+    for(int i=0;i<(int)items.size();i++)
+    {
+        if(items[i] == itemName)
+        {
+            total++;
+        }
+    }
+
+    return total;
+}
+
+bool DynamicObject::hasItem(stringc itemName)
+{
+    for(int i=0;i<(int)items.size();i++)
+    {
+        if(items[i] == itemName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void DynamicObject::removeAllItems()
+{
+    items.clear();
+}
+
 
 //LUA FUNCTIONS
 
@@ -599,7 +756,7 @@ int DynamicObject::getPosition(lua_State* LS)
 	lua_pop(LS, 1);
 	if(objName.c_str() == "player")
         {
-            vector3df pos = Player::getInstance()->getPosition();
+            vector3df pos = Player::getInstance()->getObject()->getPosition();
 			lua_pushnumber(LS,pos.X);
 			lua_pushnumber(LS,pos.Y);
 			lua_pushnumber(LS,pos.Z);
@@ -673,7 +830,7 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 
     if(tempObj)
     {
-		tempObj->setAnimation("walk");
+		tempObj->setAnimation("walk", true);
 		
         tempObj->moveObject(speed);
     }
@@ -722,7 +879,7 @@ int DynamicObject::lookToObject(lua_State *LS)
 
     if(otherObjName == "player")
     {
-        otherObjPosition = Player::getInstance()->getPosition();
+		otherObjPosition = Player::getInstance()->getObject()->getPosition();
     }
     else
     {
@@ -763,7 +920,7 @@ int DynamicObject::setAnimation(lua_State *LS)
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
-    DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimation(animName);
+    DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimation(animName, true);
 	return true;
 }
 
@@ -804,7 +961,7 @@ int DynamicObject::distanceFrom(lua_State *LS)
 
 		if(otherName.c_str() == "player")
         {
-            otherPos = Player::getInstance()->getPosition();
+            otherPos = Player::getInstance()->getObject()->getPosition();
 			printf("Asked the distance from the player: %f,%f,%f\n",otherPos.X,otherPos.Y,otherPos.Z);
         }
         else
@@ -883,6 +1040,13 @@ void DynamicObject::notifyClick()
     lua_pop( L, -1 );
 }
 
+void DynamicObject::notifyAttackRange()
+{
+    lua_getglobal(L,"onAttackRange");
+    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    lua_pop( L, -1 );
+}
+
 stringc DynamicObject::getObjectType()
 {
     lua_getglobal(L,"objType");
@@ -895,4 +1059,9 @@ stringc DynamicObject::getObjectType()
 void DynamicObject::setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator)
 {
     this->collisionAnimator = collisionAnimator;
+}
+
+ISceneNode* DynamicObject::getShadow()
+{
+	return fakeShadow;
 }

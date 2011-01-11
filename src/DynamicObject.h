@@ -6,7 +6,7 @@
 //#include "HardwareSkinCallback.h"
 
 #include "tinyXML/tinyxml.h"
-
+#include "TerrainManager.h"
 #include "GUIManager.h"
 
 using namespace irr;
@@ -92,7 +92,7 @@ class DynamicObject
         E_MATERIAL_TYPE getMaterialType();
 
         void setScale(vector3df scale);
-        vector3df getScale();
+		vector3df getScale();
 
         ITriangleSelector* getTriangleSelector();
 
@@ -116,6 +116,7 @@ class DynamicObject
         int getMoney();
 
         void notifyClick();
+		void notifyAttackRange();
 
         void setObjectLabel(stringc label);
         void objectLabelSetVisible(bool visible);
@@ -129,10 +130,25 @@ class DynamicObject
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
 
 		OBJECT_ANIMATION getAnimationState(stringc animName);
-        void setAnimation(stringc animName);
+		OBJECT_ANIMATION getAnimation(void);
+        void setAnimation(stringc animName, bool loop);
 
         void setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator);
 		void moveObject(f32 speed);
+		void walkTo(vector3df targetPos, f32 speed);
+		void setWalkTarget(vector3df newTarget);
+		vector3df getWalkTarget();
+		void attackEnemy(DynamicObject* obj);
+		
+		// item management
+        void addItem(stringc itemName);
+        void removeItem(stringc itemName);
+        vector<stringc> getItems();
+        int getItemCount(stringc itemName);//returns the total of items of type "itemName"
+        bool hasItem(stringc itemName);
+        void removeAllItems();
+
+		ISceneNode* getShadow();
 
         virtual ~DynamicObject();
     protected:
@@ -169,10 +185,12 @@ class DynamicObject
 
         stringc name;
 
+		
         IMesh* mesh;
         ISceneNode* node;
+		IAnimatedMeshSceneNode * nodeAnim;
 		ISkinnedMesh* skinnedmesh;
-
+		
         ISceneNode* fakeShadow;
 
         ITriangleSelector* selector;
@@ -207,8 +225,15 @@ class DynamicObject
 		int oldlife;
 		u32 timer;
 		u32 timer2;
+
+		DynamicObject* enemyUnderAttack;
 		DynamicObject* currentObject;
 		f32	currentSpeed;
+
+		// Imported from the player class, add walktarget, collision events, and inventory features
+		bool collided;
+		vector3df walkTarget;
+		vector<stringc> items;
 
         lua_State *L;
 

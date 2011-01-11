@@ -115,13 +115,13 @@ bool GlobalMap::saveGlobalsToXML(stringc filename)
     TiXmlElement* playerXML = new TiXmlElement("player_info");
     irb_save_ingame->LinkEndChild(playerXML);
 
-    playerXML->SetAttribute("x",  stringc(Player::getInstance()->getPosition().X).c_str() );
-    playerXML->SetAttribute("y",  stringc(Player::getInstance()->getPosition().Y).c_str() );
-    playerXML->SetAttribute("z",  stringc(Player::getInstance()->getPosition().Z).c_str() );
-    playerXML->SetAttribute("life",  stringc(Player::getInstance()->getLife()).c_str() );
-    playerXML->SetAttribute("money",  stringc(Player::getInstance()->getMoney()).c_str() );
+    playerXML->SetAttribute("x",  stringc(Player::getInstance()->getObject()->getPosition().X).c_str() );
+    playerXML->SetAttribute("y",  stringc(Player::getInstance()->getObject()->getPosition().Y).c_str() );
+    playerXML->SetAttribute("z",  stringc(Player::getInstance()->getObject()->getPosition().Z).c_str() );
+    playerXML->SetAttribute("life",  stringc(Player::getInstance()->getObject()->getLife()).c_str() );
+    playerXML->SetAttribute("money",  stringc(Player::getInstance()->getObject()->getMoney()).c_str() );
 
-    vector<stringc> playerItems = Player::getInstance()->getItems();
+    vector<stringc> playerItems = Player::getInstance()->getObject()->getItems();
 
     //save current player items
     for(int i=0;i<(int)playerItems.size();i++)
@@ -172,12 +172,12 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
             s32 life = atoi(playerXML->ToElement()->Attribute("life"));
             s32 money = atoi(playerXML->ToElement()->Attribute("money"));
 
-            Player::getInstance()->setPosition(vector3df(X,Y,Z));
-            Player::getInstance()->setWalkTarget(vector3df(X,Y,Z));
-            Player::getInstance()->setLife(life);
-            Player::getInstance()->setMoney(money);
+            Player::getInstance()->getObject()->setPosition(vector3df(X,Y,Z));
+            Player::getInstance()->getObject()->setWalkTarget(vector3df(X,Y,Z));
+            Player::getInstance()->getObject()->setLife(life);
+            Player::getInstance()->getObject()->setMoney(money);
 
-            Player::getInstance()->removeAllItems();
+            Player::getInstance()->getObject()->removeAllItems();
 
 
             //load player items
@@ -185,7 +185,7 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
 
             while(playerItemXML)
             {
-                Player::getInstance()->addItem(playerItemXML->ToElement()->Attribute("name"));
+                Player::getInstance()->getObject()->addItem(playerItemXML->ToElement()->Attribute("name"));
                 playerItemXML = playerXML->IterateChildren( "item", playerItemXML );
             }
         }
@@ -331,7 +331,7 @@ int LuaGlobalCaller::getItemCount(lua_State *LS)
         lua_pop(LS,1);
     }
 
-    lua_pushnumber(LS,Player::getInstance()->getItemCount(itemName));
+    lua_pushnumber(LS,Player::getInstance()->getObject()->getItemCount(itemName));
 
     return 1;
 }
@@ -642,7 +642,7 @@ int LuaGlobalCaller::getObjectPosition(lua_State *LS)
 
 	if(objName == "player")
 	{
-        vector3df pos = Player::getInstance()->getPosition();
+        vector3df pos = Player::getInstance()->getObject()->getPosition();
 
         lua_pushnumber(LS,pos.X);
         lua_pushnumber(LS,pos.Y);
@@ -758,14 +758,14 @@ int LuaGlobalCaller::setPlayerLife(lua_State *LS)
     int life = (int)lua_tonumber(LS, -1);
     lua_pop(LS, 1);
 
-    Player::getInstance()->setLife(life);
+    Player::getInstance()->getObject()->setLife(life);
 
 	return 0;
 }
 
 int LuaGlobalCaller::getPlayerLife(lua_State *LS)
 {
-    int life = Player::getInstance()->getLife();
+    int life = Player::getInstance()->getObject()->getLife();
 
     lua_pushnumber(LS,life);
 
@@ -826,13 +826,13 @@ int LuaGlobalCaller::setPlayerMoney(lua_State *LS)
     int money = (int)lua_tonumber(LS, -1);
     lua_pop(LS, 1);
 
-    Player::getInstance()->setMoney(money);
+    Player::getInstance()->getObject()->setMoney(money);
 	return 0;
 }
 
 int LuaGlobalCaller::getPlayerMoney(lua_State *LS)
 {
-    int money = Player::getInstance()->getMoney();
+    int money = Player::getInstance()->getObject()->getMoney();
 
     lua_pushnumber(LS,money);
 
@@ -846,7 +846,7 @@ int LuaGlobalCaller::addPlayerItem(lua_State *LS)
         stringc item = lua_tostring(LS, -1);
         lua_pop(LS, 1);
 
-        Player::getInstance()->addItem(item);
+        Player::getInstance()->getObject()->addItem(item);
     }
     else
     {
@@ -864,7 +864,7 @@ int LuaGlobalCaller::removePlayerItem(lua_State *LS)
         stringc item = lua_tostring(LS, -1);
         lua_pop(LS, 1);
 
-        Player::getInstance()->removeItem(item);
+        Player::getInstance()->getObject()->removeItem(item);
     }
     else
     {

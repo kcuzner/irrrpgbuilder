@@ -27,6 +27,7 @@ class DynamicObjectsManager
     public:
         static DynamicObjectsManager* getInstance();
 
+		bool processFile(stringc filename);
         DynamicObject* createActiveObjectAt(vector3df pos);
         void removeObject(stringc uniqueName);
 
@@ -34,6 +35,7 @@ class DynamicObjectsManager
         void setActiveObject(stringc name);
 
         DynamicObject* getObjectByName(stringc name);
+		DynamicObject* getPlayer();
 
         vector<stringc> getObjectsList();
 
@@ -61,6 +63,8 @@ class DynamicObjectsManager
         DynamicObjectsManager();
 
         DynamicObject* activeObject;
+		DynamicObject* playerObject;
+
         vector<DynamicObject*> objectsTemplate;
 
         vector<DynamicObject*> objects;

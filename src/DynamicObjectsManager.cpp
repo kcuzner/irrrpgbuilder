@@ -9,10 +9,75 @@ using namespace gui;
 
 DynamicObjectsManager::DynamicObjectsManager()
 {
+	// Load the definition for all dynamic objects
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
     //Load all objects from xml file
     TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
+	
+    //try to parse the XML
+	if (!doc.LoadFile())
+    {
+        cout << "ERROR LOADING DYNAMIC_OBJECTS.XML" << endl;
+        exit(0);
+    }
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : LOADING DYNAMIC_OBJECTS.XML" << endl;
+    #endif
+
+    //locate root node
+    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_DynamicObjects" );
+
+    if ( root )
+    {
+        //check file version
+        if( atof(root->Attribute("version"))!= APP_VERSION )
+        {
+            #ifdef APP_DEBUG
+            cout << "DEBUG : XML : INCORRECT DYNAMIC_OBJECTS.XML VERSION!" << endl;
+            #endif
+
+            exit(0);
+        }
+
+        vector<stringc> objsIDs;
+
+        TiXmlNode* currentObjXML = root->FirstChild( "dynamic_object" );
+
+        //Iterate dynamic_objects
+        while( currentObjXML != NULL )
+        {
+            //Get Dynamic Object Attributes
+            stringc set = currentObjXML->ToElement()->Attribute("set");
+			currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
+			processFile(set.c_str());
+		}
+	}
+		
+	
+	
+    //set the initial active object - the list must be 1 or more objs!
+    activeObject = objectsTemplate[0];
+
+    //just initialize var
+    objsCounter = 0;
+	 cout << "DEBUG : XML : finished!" << endl;
+}
+
+DynamicObjectsManager::~DynamicObjectsManager()
+{
+    //dtor
+}
+
+
+bool DynamicObjectsManager::processFile(stringc filename)
+{
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	stringc pathFile = "../media/dynamic_objects/";
+    //Load all objects from xml file
+    //TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
+	TiXmlDocument doc(filename.c_str());
 
     //try to parse the XML
 	if (!doc.LoadFile())
@@ -102,6 +167,8 @@ DynamicObjectsManager::DynamicObjectsManager()
             // -- Create Dynamic Object --
             DynamicObject* newObj = new DynamicObject(name, mesh, animations);
 			newObj->setType(type);
+			
+
 			// Load the script if it was defined in the XML
 		    if (scriptname.size()>1)
 			{
@@ -141,22 +208,14 @@ DynamicObjectsManager::DynamicObjectsManager()
             objsIDs.push_back(name);
 
             currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
+			// For the player class
+			if (type=="player")
+				playerObject=newObj;
 
         }//while
 
     }//root
-
-    //set the initial active object - the list must be 1 or more objs!
-    activeObject = objectsTemplate[0];
-
-    //just initialize var
-    objsCounter = 0;
-	 cout << "DEBUG : XML : finished!" << endl;
-}
-
-DynamicObjectsManager::~DynamicObjectsManager()
-{
-    //dtor
+	return true;
 }
 
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
@@ -233,6 +292,11 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
     }
 
     return NULL;
+}
+
+DynamicObject* DynamicObjectsManager::getPlayer()
+{
+	return playerObject;
 }
 
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
@@ -315,6 +379,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 }
 
 IMetaTriangleSelector* DynamicObjectsManager::createMeta()
+// Create a meta selector for the collision response animation
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	meta=smgr->createMetaTriangleSelector();
@@ -342,7 +407,7 @@ void DynamicObjectsManager::initializeCollisions()
 	createMeta();
 	// Create the collision response animator for the player
 	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-	Player::getInstance()->setAnimator(anim);
+	//Player::getInstance()->setAnimator(anim);
 	meta->drop();	
 	// Create the collision response animator for each NPC.
 	for(int i=0;i<(int)objects.size();i++)
@@ -400,7 +465,7 @@ void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool rem
 		meta->removeTriangleSelector(tris);
 		Player::getInstance()->getNode()->removeAnimator(anim);
 		anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-		Player::getInstance()->setAnimator(anim);		
+		//Player::getInstance()->setAnimator(anim);		
 		return;
 	}
 	if (tris && !remove)
@@ -422,20 +487,17 @@ void DynamicObjectsManager::clean()
         sc->drop();
     }*/
     collisionResponseAnimators.clear();
-
-    /*
     activeObject = NULL;
-
+	 /*
     for(int i=0;i<objectsTemplate.size();i++)
     {
         DynamicObject* d = objectsTemplate[i];
 
         delete d;
-    }
-    objectsTemplate.clear();
-    */
-
-
+    }*/
+    
+	objectsTemplate.clear();
+    
     for(int i=0;i<(int)objects.size();i++)
     {
         DynamicObject* d = objects[i];

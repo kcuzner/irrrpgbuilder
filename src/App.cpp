@@ -190,7 +190,7 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
         Player::getInstance()->setHighLight(true);
-        EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
+        EditorCamera::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
     }
     else
     {
@@ -327,7 +327,7 @@ void App::eventGuiButton(s32 id)
             }
             else if(app_state == APP_EDIT_PLAYER_SCRIPT)
             {
-                Player::getInstance()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+                Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
                 setAppState(APP_EDIT_CHARACTER);
             }
             else if(app_state == APP_EDIT_SCRIPT_GLOBAL)
@@ -338,10 +338,10 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
             break;
         case BT_ID_PLAY_GAME:
-			oldcampos = Player::getInstance()->getPosition();
+			oldcampos = Player::getInstance()->getObject()->getPosition();
 			EditorCamera::getInstance()->setCamera(1);
             this->setAppState(APP_GAMEPLAY_NORMAL);
-            Player::getInstance()->doScript();
+            Player::getInstance()->getObject()->doScript();
             LuaGlobalCaller::getInstance()->storeGlobalParams();
             DynamicObjectsManager::getInstance()->initializeAllScripts();
             DynamicObjectsManager::getInstance()->showDebugData(false);
@@ -352,7 +352,7 @@ void App::eventGuiButton(s32 id)
             break;
         case BT_ID_STOP_GAME:
 
-			Player::getInstance()->clearScripts();
+			Player::getInstance()->getObject()->clearScripts();
             DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
             DynamicObjectsManager::getInstance()->showDebugData(true);
@@ -370,7 +370,7 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_CHARACTER);
             break;
         case BT_ID_PLAYER_EDIT_SCRIPT:
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getScript());
+            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
             GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
             setAppState(APP_EDIT_PLAYER_SCRIPT);
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
@@ -398,7 +398,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->updateItemsList();
             break;
         case BT_ID_DROP_ITEM:
-            Player::getInstance()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
+			Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
             GUIManager::getInstance()->updateItemsList();
             break;
         case BT_ID_EDIT_SCRIPT_GLOBAL:
@@ -524,8 +524,8 @@ void App::eventMouseWheel(f32 value)
     }
 	if(app_state == APP_EDIT_CHARACTER)
 	{
-		vector3df oldRot = Player::getInstance()->getRotation();
-		Player::getInstance()->setRotation(vector3df(0,value*10,0)+oldRot);
+		vector3df oldRot = Player::getInstance()->getObject()->getRotation();
+		Player::getInstance()->getObject()->setRotation(vector3df(0,value*10,0)+oldRot);
 	}
 	// This will allow zoom in/out in editor mode
 	if	(app_state != APP_EDIT_CHARACTER &&
@@ -772,7 +772,7 @@ void App::saveProjectToXML()
 
     TerrainManager::getInstance()->saveToXML(irb_project);
     DynamicObjectsManager::getInstance()->saveToXML(irb_project);
-    Player::getInstance()->saveToXML(irb_project);
+    Player::getInstance()->getObject()->saveToXML(irb_project);
 
     TiXmlElement* globalScript = new TiXmlElement("global_script");
     globalScript->SetAttribute("script",scriptGlobal.c_str());
@@ -831,7 +831,9 @@ bool App::loadProjectFromXML(stringc filename)
         TiXmlElement* playerXML = root->FirstChildElement( "player" );
         if(playerXML)
         {
-            Player::getInstance()->loadFromXML(playerXML);
+			// Temporary down since the player is a dynamic object now.
+			// Will need to fix this.
+            //Player::getInstance()->getObject()->loadFromXML(playerXML);
         }
     }
     else
@@ -919,7 +921,7 @@ void App::updateEditMode()
 			if(app_state == APP_EDIT_CHARACTER)
 			{
 				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
-					Player::getInstance()->setPosition(getMousePosition3D().pickedPos);
+					Player::getInstance()->getObject()->setPosition(getMousePosition3D(100).pickedPos);
 			}
 
 
@@ -958,13 +960,16 @@ void App::updateGameplay()
 	timer = device->getTimer()->getRealTime();
 	//DynamicObjectsManager::getInstance()->updateAnimators();
 	DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
+
+	// the update for the player. It's a dynamic object now.
 	Player::getInstance()->update(); // This one is timed now.
-	EditorCamera::getInstance()->setPosition(Player::getInstance()->getPosition());
+	EditorCamera::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 	// This update the player events and controls at specific time intervals
     if ((timer-timer2)>17) // 1/60 second
 	{
 		timer2 = device->getTimer()->getRealTime();
+		
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
 			MousePick mousePick = getMousePosition3D();
@@ -979,38 +984,32 @@ void App::updateGameplay()
 				{
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 
-					if(obj->getDistanceFrom(Player::getInstance()->getPosition()) < 72.0f)
+					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
-							Player::getInstance()->attackEnemy(obj);
-							obj->notifyClick();
+							Player::getInstance()->getObject()->attackEnemy(obj);							
 						}
 						else
 						{
-							Player::getInstance()->lookAt(obj->getPosition());
-							obj->notifyClick();
+							Player::getInstance()->getObject()->lookAt(obj->getPosition());
 						}
 					}
 					else
 					{
-						Player::getInstance()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
+						Player::getInstance()->getObject()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
 					}
 				}
 				else
 				{
-					Player::getInstance()->setWalkTarget(mousePick.pickedPos);
+					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
 				}
 			}
 			else//No action
 			{
-				if(Player::getInstance()->getAnimation() != PLAYER_ANIMATION_WALK) Player::getInstance()->setAnimation(PLAYER_ANIMATION_IDLE);
+				//if(Player::getInstance()->getObject()->getAnimation() != OBJECT_ANIMATION_WALK) Player::getInstance()->getObject()->setAnimation("idle");
 			}
 		}
-
-	stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
-	playerMoney += Player::getInstance()->getMoney();
-	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
 	}
 }
 
@@ -1022,9 +1021,9 @@ void App::cleanWorkspace()
 
     DynamicObjectsManager::getInstance()->clean();
 
-    Player::getInstance()->setPosition(vector3df(0,0,0));
-    Player::getInstance()->setRotation(vector3df(0,0,0));
-    Player::getInstance()->setScript("");
+    Player::getInstance()->getObject()->setPosition(vector3df(0,0,0));
+    Player::getInstance()->getObject()->setRotation(vector3df(0,0,0));
+    Player::getInstance()->getObject()->setScript("");
 
     scriptGlobal="";
 }
