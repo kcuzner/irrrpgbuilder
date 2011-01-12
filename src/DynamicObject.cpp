@@ -369,7 +369,7 @@ void DynamicObject::clearScripts()
     if(hasAnimation())
 	{
 		this->setFrameLoop(0,0);
-		this->setAnimation("idle", true);
+		this->setAnimation("idle");
 	}
 
     lua_close(L);
@@ -394,6 +394,7 @@ void DynamicObject::setFrameLoop(s32 start, s32 end)
 
 void DynamicObject::setAnimationSpeed(f32 speed)
 {
+	printf("Try to change the animation speed: %f fps.\n",speed);
     if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setAnimationSpeed(speed);
 }
 
@@ -415,23 +416,23 @@ void DynamicObject::setLife(int life)
 	if (objectType == OBJECT_TYPE_PLAYER)
 	{
 		// Update the GUI display
-	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
-	playerLife += life;
-	playerLife += "/";
-	playerLife += this->properties.maxlife;
-	playerLife += " Exp:";
-	stringc playerxp = (stringc)this->properties.experience;
-	playerLife += playerxp;
-	playerLife += " Level:";
-	playerLife += this->properties.level;
-	//+(stringc)properties.experience;
-	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
+		stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
+		playerLife += life;
+		playerLife += "/";
+		playerLife += this->properties.maxlife;
+		playerLife += " Exp:";
+		stringc playerxp = (stringc)this->properties.experience;
+		playerLife += playerxp;
+		playerLife += " Level:";
+		playerLife += this->properties.level;
+		//+(stringc)properties.experience;
+		GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
 	}
 
 	// Trigger the death animation immediately.
 	if (life==0)
 	{
-		this->setAnimation("die", false);
+		this->setAnimation("die");
 	}
 }
 
@@ -517,7 +518,7 @@ OBJECT_ANIMATION DynamicObject::getAnimation(void)
 	return currentAnimation;
 }
 
-void DynamicObject::setAnimation(stringc animName, bool loop)
+void DynamicObject::setAnimation(stringc animName)
 {
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
@@ -542,10 +543,11 @@ void DynamicObject::setAnimation(stringc animName, bool loop)
 					defaultskin->useAnimationFrom(defaultskin);
 
 				// Set the frameloop, the current animation and the speed
-				this->currentAnimation=Animation;	
+				this->currentAnimation=Animation;
+			
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
-				this->nodeAnim->setLoopMode(loop);
+				this->nodeAnim->setLoopMode(tempAnim.loop);
 			}
             return;
         }
@@ -571,7 +573,7 @@ void DynamicObject::moveObject(f32 speed)
 	currentSpeed=speed;
 }
 
-void DynamicObject::walkTo(vector3df targetPos, f32 speed)
+void DynamicObject::walkTo(vector3df targetPos)
 {
 	// Will have the object walk to the targetposition at the current speed.
 	// Walk can be interrupted by:
@@ -581,6 +583,8 @@ void DynamicObject::walkTo(vector3df targetPos, f32 speed)
 	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
 	this->lookAt(targetPos);
 
+	f32 speed = animations[getAnimationState("walk")].walkspeed;
+	printf("here is the speed in the walk speed set: %f\n",speed);
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
@@ -591,11 +595,12 @@ void DynamicObject::walkTo(vector3df targetPos, f32 speed)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
+	
 	}
 	else
 	{
 		walkTarget = this->getPosition();
-		this->setAnimation("idle", true);
+		this->setAnimation("idle");
 		collided=false; // reset the collision flag
 	}
 }
@@ -618,7 +623,7 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
     if(obj)
     {
         this->lookAt(obj->getPosition());
-        this->setAnimation("attack", true);
+        this->setAnimation("attack");
 		obj->notifyClick();
     }
 	printf("Attack for this enemy asked %s\n",obj->getName());
@@ -830,7 +835,7 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 
     if(tempObj)
     {
-		tempObj->setAnimation("walk", true);
+		tempObj->setAnimation("walk");
 		
         tempObj->moveObject(speed);
     }
@@ -920,7 +925,7 @@ int DynamicObject::setAnimation(lua_State *LS)
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
-    DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimation(animName, true);
+    DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimation(animName);
 	return true;
 }
 

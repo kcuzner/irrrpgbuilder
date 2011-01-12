@@ -58,6 +58,8 @@ typedef struct{
 	s32 attackevent;
 	s32 soundevent;
     f32 speed;
+	f32 walkspeed;
+	bool loop;
 
 }DynamicObject_Animation;
 
@@ -131,13 +133,14 @@ class DynamicObject
 
 		OBJECT_ANIMATION getAnimationState(stringc animName);
 		OBJECT_ANIMATION getAnimation(void);
-        void setAnimation(stringc animName, bool loop);
+        void setAnimation(stringc animName);
 
         void setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator);
 		void moveObject(f32 speed);
-		void walkTo(vector3df targetPos, f32 speed);
+		void walkTo(vector3df targetPos);
 		void setWalkTarget(vector3df newTarget);
 		vector3df getWalkTarget();
+		
 		void attackEnemy(DynamicObject* obj);
 		
 		// item management

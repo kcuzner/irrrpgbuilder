@@ -55,11 +55,11 @@ void Player::update()
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
 		{
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			this->playerObject->setAnimation("walk", true);
+			this->playerObject->setAnimation("walk");
 			
 			printf("Hey the player specificalled for a walk loop!\n");
 
-			this->playerObject->walkTo(walkTarget, 1); // walkspeed is undefined, set temporary a fixed value =1;
+			this->playerObject->walkTo(walkTarget); 
 			return;
 		}
 
@@ -67,7 +67,7 @@ void Player::update()
 		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer))
 		{
 			printf("Hey the player specificalled for a idle loop!\n");
-			this->playerObject->setAnimation("idle", true);
+			this->playerObject->setAnimation("idle");
 			
 			walkTarget = this->playerObject->getPosition();
 			return;

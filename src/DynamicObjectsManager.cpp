@@ -51,12 +51,13 @@ DynamicObjectsManager::DynamicObjectsManager()
             //Get Dynamic Object Attributes
             stringc set = currentObjXML->ToElement()->Attribute("set");
 			currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
-			processFile(set.c_str());
+			
+			//Process and parse the files if the set are found into the XML  
+			if (set.size()>0)
+				processFile(set.c_str());
 		}
 	}
-		
-	
-	
+
     //set the initial active object - the list must be 1 or more objs!
     activeObject = objectsTemplate[0];
 
@@ -76,8 +77,7 @@ bool DynamicObjectsManager::processFile(stringc filename)
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
     //Load all objects from xml file
-    //TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
-	TiXmlDocument doc(filename.c_str());
+    TiXmlDocument doc(filename.c_str());
 
     //try to parse the XML
 	if (!doc.LoadFile())
@@ -120,7 +120,7 @@ bool DynamicObjectsManager::processFile(stringc filename)
             stringc scale = currentObjXML->ToElement()->Attribute("scale");
             stringc materialType = currentObjXML->ToElement()->Attribute("materialType");
 
-            //Read Object Animations
+			//Read Object Animations
             TiXmlNode* currentAnimXML = currentObjXML->FirstChild( "animation" );
 
             vector<DynamicObject_Animation> animations;
@@ -131,7 +131,9 @@ bool DynamicObjectsManager::processFile(stringc filename)
                 DynamicObject_Animation currAnim;
 
                 currAnim.name = currentAnimXML->ToElement()->Attribute("name");
+				
 				// Load the name of the animation mesh (if there is any)
+				// If there is no mesh name, then will be "undefined"
 				currAnim.meshname = currentAnimXML->ToElement()->Attribute("mesh");
 				if (currAnim.meshname.size()==0)
 				{
@@ -142,32 +144,74 @@ bool DynamicObjectsManager::processFile(stringc filename)
 					currAnim.mesh = smgr->getMesh(pathFile+currAnim.meshname);
 				
 				// load the startframe for the current animation name
+				// Default value is 0 as the first frame of animation
                 stringc s_start = currentAnimXML->ToElement()->Attribute("start");
 				if (s_start.size()>0) 
 					currAnim.startFrame = atoi(s_start.c_str()); 
 				else 
 					currAnim.startFrame=0;
+
 				// load the endframe for the current animation name
+				// Default value is the start frame 
                 stringc s_end = currentAnimXML->ToElement()->Attribute("end");
 				if (s_end.size()>0) 
 					currAnim.endFrame = atoi(s_end.c_str()); 
 				else 
-					currAnim.endFrame=0;
+					currAnim.endFrame=currAnim.startFrame;
 				
-				// TODO: Not totally implemented
+				// TODO: Not totally implemented,
+				// Sound file name to play when the animation event start
 				currAnim.sound = currentAnimXML->ToElement()->Attribute("sound");
 
-                currAnim.speed = (f32)atof(currentAnimXML->ToElement()->Attribute("speed"));
+				// TODO: Not totally implemented
+				// Specify at what frame the audio will start on the animation
+				// the default value will be the first frame of animation
+				// The audio string will determine is there sound to be played back
+				stringc s_sound = currentAnimXML->ToElement()->Attribute("soundevent");
+				if (s_sound.size()>0) 
+					currAnim.soundevent = atoi(s_sound.c_str());
+				else 
+					currAnim.soundevent = currAnim.startFrame;
+
+				// TODO: Not totally implemented, need to be redone in the dynamic object check
+				// Specify at what frame the attack will occur (causing damage/impact)
+				// -1 is the default value (not defined)
+				// A value will trigger the combat system to cause damage
+				stringc s_attack = currentAnimXML->ToElement()->Attribute("attackevent");
+				if (s_attack.size()>0) 
+					currAnim.attackevent = atoi(s_attack.c_str()); 
+				else 
+					currAnim.attackevent= -1;
+             
+				// Retrieve the speed of the animation, default to 30fps			
+				stringc a_speed = currentAnimXML->ToElement()->Attribute("speed");
+				if (a_speed.size()>0) 
+					currAnim.speed = (f32)atof(a_speed.c_str()); 
+				else 
+					currAnim.speed = 30.0f;
+
+				// Load the walking speed of the NPC or Player (unit by 1/60th of a second)
+				// Current default will move 60 inches (default unit) per second.
+				stringc s_wspeed = currentAnimXML->ToElement()->Attribute("walkspeed");
+				if (s_wspeed.size()>0) 
+					currAnim.walkspeed = (f32)atof(s_wspeed.c_str()); 
+				else 
+					currAnim.walkspeed = 1.0f;
+
+				// Check for an defined animation loop mode. Default is set to true (looping)
+				stringc s_loop = currentAnimXML->ToElement()->Attribute("loop");
+				if (s_loop.size()>0 && s_loop==L"false") 
+					currAnim.loop = false; 
+				else 
+					currAnim.loop = true;
 
                 currentAnimXML = currentObjXML->IterateChildren( "animation", currentAnimXML );
-
                 animations.push_back(currAnim);
             }
 
             // -- Create Dynamic Object --
             DynamicObject* newObj = new DynamicObject(name, mesh, animations);
-			newObj->setType(type);
-			
+			newObj->setType(type);		
 
 			// Load the script if it was defined in the XML
 		    if (scriptname.size()>1)
@@ -175,7 +219,6 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				stringc newScript = "";
 				stringc filename = "../media/scripts/";
 				filename += scriptname;
-				//printf("There is a dynamic object with a script! object name is %s and the script is:\n",filename.c_str());
 				std::string line;
 				ifstream fileScript (filename.c_str());
 				if (fileScript.is_open())
@@ -198,16 +241,20 @@ bool DynamicObjectsManager::processFile(stringc filename)
 
             newObj->setMaterialType(mat);
 			newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
-			newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str())));
+
+			// Set the scale only if it was written
+			if (scale.size()>0) 
+					newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str()))); 
+			
             newObj->setTemplateObjectName(name);
             newObj->getNode()->setVisible(false);
-			
 
             //store the new object
             objectsTemplate.push_back(newObj);
             objsIDs.push_back(name);
 
             currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
+
 			// For the player class
 			if (type=="player")
 				playerObject=newObj;
