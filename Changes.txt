@@ -1,6 +1,6 @@
 Changes since AlphaRelease 1
 
-
+November/December 2010
 - Updated to IRRlicht 1.7.2 with no patch. You can use the official release now.
 
 - Fixed the closing of IRRKlang device that caused a crash/memory leak when closing the application 
@@ -83,4 +83,12 @@ Changes since AlphaRelease 1
 
 - Shaders folder renamed to lowercase such as the other folders (linux filesystem is case sensitive)
 
+January 2011
+- Removed most of the functions in the player class, the player is now referencing a dynamic object
+
+- the dynamic object class has been improved with the new functions the player class had, so most of the new feature introduced to the player should be available to all dynamic objects.
+
+- The item inventory feature is now available to all dynamic objects.
+
+- the XML loading of the dynamic object is now configurable as a "set" as it could get bigger as a single file. The main XML, can load separate XML configuration "sets" of dynamic objects. This is needed since the player and lot of other types of objects will be loaded as dynamic objects. 
 
