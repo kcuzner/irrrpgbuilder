@@ -43,12 +43,13 @@ class DynamicObjectsManager
 
         void initializeCollisions();
         void clearCollisions();
+
 		
 
 		void updateMetaSelector(ITriangleSelector* tris, bool remove);
 		IMetaTriangleSelector* getMeta();
 		IMetaTriangleSelector* createMeta();
-
+	
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 

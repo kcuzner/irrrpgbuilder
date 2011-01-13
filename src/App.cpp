@@ -733,7 +733,7 @@ void App::run()
 		{
 			updateGameplay();
 		}
-
+		
 		smgr->drawAll();
 
 		guienv->drawAll();
@@ -983,8 +983,9 @@ void App::updateGameplay()
 				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 				{
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-
-					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
+					
+					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
+					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 140.0f)
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
@@ -1020,11 +1021,7 @@ void App::cleanWorkspace()
     TerrainManager::getInstance()->clean();
 
     DynamicObjectsManager::getInstance()->clean();
-
-    Player::getInstance()->getObject()->setPosition(vector3df(0,0,0));
-    Player::getInstance()->getObject()->setRotation(vector3df(0,0,0));
-    Player::getInstance()->getObject()->setScript("");
-
+  
     scriptGlobal="";
 }
 

@@ -134,6 +134,9 @@ class DynamicObject
 		OBJECT_ANIMATION getAnimationState(stringc animName);
 		OBJECT_ANIMATION getAnimation(void);
         void setAnimation(stringc animName);
+		void checkAnimationEvent();
+		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
+		ISceneNodeAnimatorCollisionResponse* getAnimator();
 
         void setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator);
 		void moveObject(f32 speed);
@@ -193,6 +196,7 @@ class DynamicObject
         ISceneNode* node;
 		IAnimatedMeshSceneNode * nodeAnim;
 		ISkinnedMesh* skinnedmesh;
+		ISceneNodeAnimatorCollisionResponse* animator;
 		
         ISceneNode* fakeShadow;
 
@@ -243,6 +247,7 @@ class DynamicObject
         ITextSceneNode* objLabel;
 
         vector<DynamicObject_Animation> animations;
+		DynamicObject_Animation currentAnim;
 
         ISceneNodeAnimatorCollisionResponse* collisionAnimator;
 };

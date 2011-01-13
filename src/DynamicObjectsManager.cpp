@@ -246,18 +246,24 @@ bool DynamicObjectsManager::processFile(stringc filename)
 			if (scale.size()>0) 
 					newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str()))); 
 			
-            newObj->setTemplateObjectName(name);
-            newObj->getNode()->setVisible(false);
-
-            //store the new object
-            objectsTemplate.push_back(newObj);
-            objsIDs.push_back(name);
+			// For the player class. The player is not a template. Could be used for other non template objects (editor objects)
+			if (type=="player")
+			{
+				playerObject=newObj; // Shortcut for directly accessing the player dynamic object
+				objects.push_back(newObj);  // The player object is added to the list of the active dynamic objects (refresh)
+			}
+			else
+			{	// other objects that are used as templates 
+				newObj->setTemplateObjectName(name);
+				newObj->getNode()->setVisible(false);
+				//store the new object
+				objectsTemplate.push_back(newObj);
+				objsIDs.push_back(name);
+			}
 
             currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
 
-			// For the player class
-			if (type=="player")
-				playerObject=newObj;
+			
 
         }//while
 
@@ -272,8 +278,11 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
     cout << "TEMPLATE NAME:" << activeObject->getName().c_str() << endl;
 
     newObj->setPosition(pos);
-
-    objects.push_back(newObj);
+	
+	// Non interactive objects will not be refreshed (update callback)
+	// Should help with performance and allow for more NPC/Interactive objects.
+	if (newObj->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+		objects.push_back(newObj);
 
     //the unique name of an dynamic object contains his index at the objects vector
     newObj->setName(this->createUniqueName());
@@ -459,12 +468,13 @@ void DynamicObjectsManager::initializeCollisions()
 	// Create the collision response animator for each NPC.
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
 		{
 			createMeta();
 			meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
 			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
 			objects[i]->getNode()->addAnimator(coll);
+			objects[i]->setAnimator(coll);
 			meta->drop();
 		}
 	}

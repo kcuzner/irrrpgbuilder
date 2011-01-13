@@ -199,7 +199,7 @@ void GUIConfigWindow::populateResolutionList()
         bool vModeAlreadyExist = false;
 
         //check if the video mode is unique (16 or 32 bits and refresh rate does not matters)
-        for(int j=0;j<vModes.size();j++)
+		for(irr::u16 j=0;j<vModes.size();j++)
         {
             if( vModes[j].X == w && vModes[j].Y == h ) vModeAlreadyExist = true;
         }
@@ -239,7 +239,7 @@ void GUIConfigWindow::loadActualSeetings()
             bool sFullscreen =  (screenXML->ToElement()->Attribute("fullscreen") == std::string("true") ? true : false);
             bool sResizeable =  (screenXML->ToElement()->Attribute("resizeable") == std::string("true") ? true : false);
 
-            for(int i=0;i<vModes.size();i++)
+			for(irr::u16 i=0;i<vModes.size();i++)
             {
                 if(vModes[i].X == sw && vModes[i].Y == sh) resolutionList->setSelected(i);
             }
@@ -252,7 +252,7 @@ void GUIConfigWindow::loadActualSeetings()
 
         if(languageXML)
         {
-            for(int i=0;i<languageListVector.size();i++)
+			for(irr::u16 i=0;i<languageListVector.size();i++)
                 if(languageListVector[i] == stringc(languageXML->ToElement()->Attribute("type"))) languageList->setSelected(i);
         }
 

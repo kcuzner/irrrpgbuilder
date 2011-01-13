@@ -17,7 +17,9 @@ Player::Player()
 {
   playerObject = DynamicObjectsManager::getInstance()->getPlayer();
   playerObject->getNode()->setVisible(true);
+  playerObject->setEnabled(true);
   playerObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
+  playerObject->setAnimation("idle");
 }
 
 Player::~Player()
@@ -45,6 +47,7 @@ void Player::update()
 	if (timercheck-timer1>17)
 	{
 		timer1 = timercheck;
+		//playerObject->update();
 		printf("current state of animation is %i\n",playerObject->getAnimation());
 		// Calculate the size of the mesh, and multiplicate it with the scale
 		// Will give the real size on the map

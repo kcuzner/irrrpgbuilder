@@ -176,7 +176,10 @@ void DynamicObject::setPosition(vector3df pos)
 
 vector3df DynamicObject::getPosition()
 {
-	return fakeShadow->getAbsolutePosition();
+	if (fakeShadow)
+		return fakeShadow->getAbsolutePosition();
+	else 
+		return vector3df(0,0,0);
     //return node->getPosition();
 }
 
@@ -317,6 +320,15 @@ void DynamicObject::doScript()
 
 void DynamicObject::update()
 {
+
+	// Check for an event in the current animation.
+	checkAnimationEvent();
+	if (animator->collisionOccurred())
+	{
+		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+		collided=true;
+	}
+
 	// New optimisations (november 2010): Adding timed interface an culling check.
 	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
 	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
@@ -324,22 +336,23 @@ void DynamicObject::update()
 	
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	bool culled = false;
-	// TRies out animation blending.
+	// Tries out animation blending.
 	//nodeAnim->animateJoints();
-
 	if((timerobject-timer>250) && enabled) // 1/4 second
 	{
 		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
 		if (!culled)
 		{
-			// Perhaps this is not needed is the node is really culled
-			if (!this->getNode()->isVisible())
-				this->getNode()->setVisible(true);
 			if (App::getInstance()->getAppState() > 100) 
 			{//app_state < APP_STATE_CONTROL
 				lua_getglobal(L,"step");
 				if(lua_isfunction(L, -1)) lua_call(L,0,0);
 				lua_pop( L, -1 );
+
+				if (objectType==OBJECT_TYPE_PLAYER)
+					printf("This is the player refresh!\n");
+				else
+					printf("This is a dynamic object refresh!\n");
 
 				//custom update function (updates walkTo for example..)
 				lua_getglobal(L,"CustomDynamicObjectUpdate");
@@ -357,7 +370,7 @@ void DynamicObject::update()
 			
 	}
 	
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17)) // 1/60 second
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
 	{
 		currentObject->moveObject(currentSpeed);
 		timer2=timerobject;
@@ -371,8 +384,8 @@ void DynamicObject::clearScripts()
 		this->setFrameLoop(0,0);
 		this->setAnimation("idle");
 	}
-
-    lua_close(L);
+	if (objectType != OBJECT_TYPE_PLAYER)
+		lua_close(L);
 }
 
 void DynamicObject::lookAt(vector3df pos)
@@ -405,9 +418,12 @@ f32 DynamicObject::getDistanceFrom(vector3df pos)
 
 void DynamicObject::restoreParams()
 {
-    lua_getglobal(L,"IRBRestoreParams");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
-    lua_pop( L, -1 );
+    if (objectType != OBJECT_TYPE_PLAYER)
+	{
+		lua_getglobal(L,"IRBRestoreParams");
+		if(lua_isfunction(L, -1)) lua_call(L,0,0);
+		lua_pop( L, -1 );
+	}
 }
 
 void DynamicObject::setLife(int life)
@@ -544,6 +560,7 @@ void DynamicObject::setAnimation(stringc animName)
 
 				// Set the frameloop, the current animation and the speed
 				this->currentAnimation=Animation;
+				this->currentAnim=tempAnim;
 			
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
@@ -558,11 +575,39 @@ void DynamicObject::setAnimation(stringc animName)
     #endif
 }
 
+// To do, this will trigger the combat damage and the sound when it reach the proper frame
+// It is checking the current animation (does care what animation)
+// Called at each refresh (1/60 th sec)
+void DynamicObject::checkAnimationEvent()
+{
+	// Check if the current animation have an attack event
+	if ((nodeAnim->getFrameNr() > currentAnim.attackevent) &&
+		(nodeAnim->getFrameNr() < currentAnim.attackevent+1))
+	{
+		printf("Should trigger the attack now...");
+	}
+
+	// Check if the current animation have an sound event
+	if ((currentAnim.sound.size() > 0) && 
+		(nodeAnim->getFrameNr() > currentAnim.soundevent) &&
+		(nodeAnim->getFrameNr() < currentAnim.soundevent+1))
+	{
+		printf("Should trigger the sound now...");
+	}
+}
+
+void DynamicObject::setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node)
+{
+	animator=animator_node;
+}
+
+ISceneNodeAnimatorCollisionResponse* DynamicObject::getAnimator()
+{
+	return animator;
+}
+
 void DynamicObject::moveObject(f32 speed)
 {
-	//DynamicObject* tempObj
-	//tempObj->setPosition(tempObj->getPosition() + vector3df(x,y,z));
-	
 	vector3df pos=this->getPosition();
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
@@ -583,8 +628,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
 	this->lookAt(targetPos);
 
-	f32 speed = animations[getAnimationState("walk")].walkspeed;
-	printf("here is the speed in the walk speed set: %f\n",speed);
+	f32 speed = currentAnim.walkspeed;
+	
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
