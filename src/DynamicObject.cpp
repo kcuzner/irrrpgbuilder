@@ -60,6 +60,12 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	timer2 = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
+DynamicObject::~DynamicObject()
+{
+    selector->drop();
+    node->remove();
+}
+
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -88,7 +94,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 		this->node->setTriangleSelector(selector);
 
-		this->collisionAnimator = NULL;
+		this->animator = NULL;
 
 		node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 
@@ -113,12 +119,6 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	}
 }
 
-DynamicObject::~DynamicObject()
-{
-    selector->drop();
-    node->remove();
-}
-
 DynamicObject* DynamicObject::clone()
 {
     DynamicObject* newObj = new DynamicObject(name,mesh,animations);
@@ -130,6 +130,153 @@ DynamicObject* DynamicObject::clone()
 
     return newObj;
 }
+//-----------------------------------------------------------------------
+// Return node info
+//-----------------------------------------------------------------------
+ISceneNode* DynamicObject::getNode()
+{
+    return node;
+}
+
+ISceneNode* DynamicObject::getShadow()
+{
+	return fakeShadow;
+}
+
+stringc DynamicObject::getTemplateObjectName()
+{
+    return templateObjectName;
+}
+
+void DynamicObject::setTemplateObjectName(stringc newName)
+{
+    templateObjectName = newName;
+}
+
+//-----------------------------------------------------------------------
+// Character Movement
+//-----------------------------------------------------------------------
+void DynamicObject::lookAt(vector3df pos)
+{
+    vector3df offsetVector = pos - node->getPosition();
+
+    vector3df rot = (-offsetVector).getHorizontalAngle();
+
+    rot.X=0;
+    rot.Z=0;
+
+    node->setRotation(rot);
+}
+
+void DynamicObject::setPosition(vector3df pos)
+{
+	
+	node->setPosition(pos);
+	vector3df pos2 = node->getAbsolutePosition();
+	node->updateAbsolutePosition();
+}
+
+vector3df DynamicObject::getPosition()
+{
+	if (fakeShadow)
+		return fakeShadow->getAbsolutePosition();
+	else 
+		return vector3df(0,0,0);
+    //return node->getPosition();
+}
+
+void DynamicObject::setRotation(vector3df rot)
+{
+    node->setRotation(rot);
+}
+
+vector3df DynamicObject::getRotation()
+{
+    return node->getRotation();
+}
+
+void DynamicObject::moveObject(f32 speed)
+{
+	vector3df pos=this->getPosition();
+	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
+    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
+    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+
+	this->setPosition(pos);
+	currentObject=this;
+	currentSpeed=speed;
+}
+
+void DynamicObject::walkTo(vector3df targetPos)
+{
+	// Will have the object walk to the targetposition at the current speed.
+	// Walk can be interrupted by:
+	// - A collision with another object
+	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
+
+	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
+	this->lookAt(targetPos);
+
+	f32 speed = currentAnim.walkspeed;
+	
+    vector3df pos=this->getPosition();
+    pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
+    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
+    //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
+	
+	if (height>-0.09f && height<0.05f && !collided)
+	{
+		pos.Y = height;
+		this->setPosition(pos);
+	
+	}
+	else
+	{
+		walkTarget = this->getPosition();
+		this->setAnimation("idle");
+		collided=false; // reset the collision flag
+	}
+}
+
+void DynamicObject::setWalkTarget(vector3df newTarget)
+{
+    walkTarget = newTarget;
+}
+
+vector3df DynamicObject::getWalkTarget()
+{
+	return walkTarget;
+}
+
+
+f32 DynamicObject::getDistanceFrom(vector3df pos)
+{
+    return node->getPosition().getDistanceFrom(pos);
+}
+
+//-----------------------------------------------------------------------
+// Properties 
+//-----------------------------------------------------------------------
+void DynamicObject::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
+/*
+    if(enabled && collisionAnimator)
+    {
+        Player::getInstance()->getNode()->addAnimator(collisionAnimator);
+    }
+    else
+    {
+        Player::getInstance()->getNode()->removeAnimator(collisionAnimator);
+        Player::getInstance()->attackEnemy(NULL);///TODO: find a better way to broke the link between player and dead DO
+    }
+*/
+    this->node->setVisible(enabled);
+	if (!enabled)
+		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
+}
+
 void DynamicObject::setType(stringc name)
 {
 	if (name=="npc")
@@ -161,72 +308,6 @@ stringc DynamicObject::getName()
     return name;
 }
 
-ISceneNode* DynamicObject::getNode()
-{
-    return node;
-}
-
-void DynamicObject::setPosition(vector3df pos)
-{
-	
-	node->setPosition(pos);
-	vector3df pos2 = node->getAbsolutePosition();
-	node->updateAbsolutePosition();
-}
-
-vector3df DynamicObject::getPosition()
-{
-	if (fakeShadow)
-		return fakeShadow->getAbsolutePosition();
-	else 
-		return vector3df(0,0,0);
-    //return node->getPosition();
-}
-
-void DynamicObject::setRotation(vector3df rot)
-{
-    node->setRotation(rot);
-}
-
-vector3df DynamicObject::getRotation()
-{
-    return node->getRotation();
-}
-
-ITriangleSelector* DynamicObject::getTriangleSelector()
-{
-    return selector;
-}
-
-stringc DynamicObject::getScript()
-{
-    return script;
-}
-
-void DynamicObject::setScript(stringc script)
-{
-    this->script = script;
-}
-
-void DynamicObject::saveToXML(TiXmlElement* parentElement)
-{
-    TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
-    //dynamicObjectXML->SetAttribute("name",name.c_str());
-
-    dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
-    dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
-    dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
-
-    //dynamicObjectXML->SetAttribute("s",stringc(this->getScale().X).c_str());
-
-    dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
-
-    dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
-    dynamicObjectXML->SetAttribute("script",getScript().c_str());
-
-    parentElement->LinkEndChild(dynamicObjectXML);
-}
-
 void DynamicObject::setMaterialType(E_MATERIAL_TYPE mType)
 {
     node->setMaterialType(mType);
@@ -245,185 +326,6 @@ void DynamicObject::setScale(vector3df scale)
 vector3df DynamicObject::getScale()
 {
     return node->getScale();
-}
-
-stringc DynamicObject::getTemplateObjectName()
-{
-    return templateObjectName;
-}
-
-void DynamicObject::setTemplateObjectName(stringc newName)
-{
-    templateObjectName = newName;
-}
-
-//Initialize Dynamic Object for gameplay
-void DynamicObject::doScript()
-{
-    // create an Lua pointer instance
-    L = lua_open();
-
-    // load the libs
-    luaL_openlibs(L);
-
-    // register dynamic object functions
-    lua_register(L,"setPosition",setPosition);
-    lua_register(L,"getPosition",getPosition);
-    lua_register(L,"setRotation",setRotation);
-    lua_register(L,"getRotation",getRotation);
-    lua_register(L,"lookAt",lookAt);
-    lua_register(L,"lookToObject",lookToObject);
-    lua_register(L,"move",move);
-    lua_register(L,"distanceFrom",distanceFrom);
-
-    lua_register(L,"setFrameLoop",setFrameLoop);
-    lua_register(L,"setAnimationSpeed",setAnimationSpeed);
-    lua_register(L,"setAnimation",setAnimation);
-
-    lua_register(L,"showObjectLabel",showObjectLabel);
-    lua_register(L,"hideObjectLabel",hideObjectLabel);
-    lua_register(L,"setObjectLabel",setObjectLabel);
-
-    lua_register(L,"setEnabled",setEnabled);
-
-    //register basic functions
-    LuaGlobalCaller::getInstance()->registerBasicFunctions(L);
-
-    //associate the "objName" keyword to the dynamic object name
-    stringc scriptTemp = "objName = '";
-    scriptTemp += this->getNode()->getName();
-    scriptTemp += "'";
-    luaL_dostring(L,scriptTemp.c_str());
-
-
-    luaL_dostring(L,script.c_str());
-
-    //set default object type
-    luaL_dostring(L,"objType = 'OBJECT'");
-    //set enemy (when you click an enemy you attack it)
-    luaL_dostring(L,"function setEnemy() objType = 'ENEMY' end");
-    //set object (when you click an object you interact with it)
-    luaL_dostring(L,"function setObject() objType = 'OBJECT' end");
-
-
-    //store the original position and rotation before start the gameplay (restore it with "IRBRestoreParams")
-    lua_getglobal(L,"IRBSaveParams");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
-    lua_pop( L, -1 );
-
-    //run onLoad() function if it exists
-    lua_getglobal(L,"onLoad");
-    //if top of stack is not a function then onLoad does not exist
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
-    lua_pop( L, -1 );
-}
-
-void DynamicObject::update()
-{
-
-	// Check for an event in the current animation.
-	checkAnimationEvent();
-	if (animator->collisionOccurred())
-	{
-		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
-		collided=true;
-	}
-
-	// New optimisations (november 2010): Adding timed interface an culling check.
-	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
-	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
-	// Check for culling on a node and don't update it if it's culled.
-	
-	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	bool culled = false;
-	// Tries out animation blending.
-	//nodeAnim->animateJoints();
-	if((timerobject-timer>250) && enabled) // 1/4 second
-	{
-		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-		if (!culled)
-		{
-			if (App::getInstance()->getAppState() > 100) 
-			{//app_state < APP_STATE_CONTROL
-				lua_getglobal(L,"step");
-				if(lua_isfunction(L, -1)) lua_call(L,0,0);
-				lua_pop( L, -1 );
-
-				if (objectType==OBJECT_TYPE_PLAYER)
-					printf("This is the player refresh!\n");
-				else
-					printf("This is a dynamic object refresh!\n");
-
-				//custom update function (updates walkTo for example..)
-				lua_getglobal(L,"CustomDynamicObjectUpdate");
-				if(lua_isfunction(L, -1)) lua_call(L,0,0);
-				lua_pop( L, -1 );
-			}
-			lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
-			if(lua_isfunction(L, -1)) lua_call(L,0,0);
-			lua_pop( L, -1 );
-			timer = timerobject;
-		}
-		// Perhaps this is not needed if the node is really culled
-		else if (this->getNode()->isVisible())
-			this->getNode()->setVisible(false);
-			
-	}
-	
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-	{
-		currentObject->moveObject(currentSpeed);
-		timer2=timerobject;
-	}
-}
-
-void DynamicObject::clearScripts()
-{
-    if(hasAnimation())
-	{
-		this->setFrameLoop(0,0);
-		this->setAnimation("idle");
-	}
-	if (objectType != OBJECT_TYPE_PLAYER)
-		lua_close(L);
-}
-
-void DynamicObject::lookAt(vector3df pos)
-{
-    vector3df offsetVector = pos - node->getPosition();
-
-    vector3df rot = (-offsetVector).getHorizontalAngle();
-
-    rot.X=0;
-    rot.Z=0;
-
-    node->setRotation(rot);
-}
-
-void DynamicObject::setFrameLoop(s32 start, s32 end)
-{
-    if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setFrameLoop(start,end);
-}
-
-void DynamicObject::setAnimationSpeed(f32 speed)
-{
-	printf("Try to change the animation speed: %f fps.\n",speed);
-    if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setAnimationSpeed(speed);
-}
-
-f32 DynamicObject::getDistanceFrom(vector3df pos)
-{
-    return node->getPosition().getDistanceFrom(pos);
-}
-
-void DynamicObject::restoreParams()
-{
-    if (objectType != OBJECT_TYPE_PLAYER)
-	{
-		lua_getglobal(L,"IRBRestoreParams");
-		if(lua_isfunction(L, -1)) lua_call(L,0,0);
-		lua_pop( L, -1 );
-	}
 }
 
 void DynamicObject::setLife(int life)
@@ -467,6 +369,7 @@ int DynamicObject::getMoney()
 	return this->properties.money;
 }
 
+// Label
 void DynamicObject::setObjectLabel(stringc label)
 {
     objLabel->setText(stringw(label).c_str());
@@ -476,24 +379,18 @@ void DynamicObject::objectLabelSetVisible(bool visible)
 {
     objLabel->setVisible(visible);
 }
-
-void DynamicObject::setEnabled(bool enabled)
+//-----------------------------------------------------------------------
+// Animation system functions
+//-----------------------------------------------------------------------
+void DynamicObject::setFrameLoop(s32 start, s32 end)
 {
-    this->enabled = enabled;
-/*
-    if(enabled && collisionAnimator)
-    {
-        Player::getInstance()->getNode()->addAnimator(collisionAnimator);
-    }
-    else
-    {
-        Player::getInstance()->getNode()->removeAnimator(collisionAnimator);
-        Player::getInstance()->attackEnemy(NULL);///TODO: find a better way to broke the link between player and dead DO
-    }
-*/
-    this->node->setVisible(enabled);
-	if (!enabled)
-		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
+    if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setFrameLoop(start,end);
+}
+
+void DynamicObject::setAnimationSpeed(f32 speed)
+{
+	printf("Try to change the animation speed: %f fps.\n",speed);
+    if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setAnimationSpeed(speed);
 }
 
 OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
@@ -595,10 +492,12 @@ void DynamicObject::checkAnimationEvent()
 		printf("Should trigger the sound now...");
 	}
 }
-
+//-----------------------------------------------------------------------
+// Collision response
+//-----------------------------------------------------------------------
 void DynamicObject::setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node)
 {
-	animator=animator_node;
+	this->animator=animator_node;
 }
 
 ISceneNodeAnimatorCollisionResponse* DynamicObject::getAnimator()
@@ -606,59 +505,12 @@ ISceneNodeAnimatorCollisionResponse* DynamicObject::getAnimator()
 	return animator;
 }
 
-void DynamicObject::moveObject(f32 speed)
+ITriangleSelector* DynamicObject::getTriangleSelector()
 {
-	vector3df pos=this->getPosition();
-	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
-    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
-
-	this->setPosition(pos);
-	currentObject=this;
-	currentSpeed=speed;
+    return selector;
 }
 
-void DynamicObject::walkTo(vector3df targetPos)
-{
-	// Will have the object walk to the targetposition at the current speed.
-	// Walk can be interrupted by:
-	// - A collision with another object
-	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 
-	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
-	this->lookAt(targetPos);
-
-	f32 speed = currentAnim.walkspeed;
-	
-    vector3df pos=this->getPosition();
-    pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
-    pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-    //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
-	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	
-	if (height>-0.09f && height<0.05f && !collided)
-	{
-		pos.Y = height;
-		this->setPosition(pos);
-	
-	}
-	else
-	{
-		walkTarget = this->getPosition();
-		this->setAnimation("idle");
-		collided=false; // reset the collision flag
-	}
-}
-
-void DynamicObject::setWalkTarget(vector3df newTarget)
-{
-    walkTarget = newTarget;
-}
-
-vector3df DynamicObject::getWalkTarget()
-{
-	return walkTarget;
-}
 
 // Main attack feature (Player + NPC)
 void DynamicObject::attackEnemy(DynamicObject* obj)
@@ -674,8 +526,9 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 	printf("Attack for this enemy asked %s\n",obj->getName());
 }
 
-
+//-----------------------------------------------------------------------
 // INVENTORY features
+//-----------------------------------------------------------------------
 void DynamicObject::addItem(stringc itemName)
 {
     items.push_back(itemName);
@@ -730,7 +583,181 @@ void DynamicObject::removeAllItems()
 {
     items.clear();
 }
+//-----------------------------------------------------------------------
+//Script management
+//-----------------------------------------------------------------------
+stringc DynamicObject::getScript()
+{
+    return script;
+}
 
+void DynamicObject::setScript(stringc script)
+{
+    this->script = script;
+}
+
+void DynamicObject::clearScripts()
+{
+    if(hasAnimation())
+	{
+		this->setFrameLoop(0,0);
+		this->setAnimation("idle");
+	}
+	if (objectType != OBJECT_TYPE_PLAYER)
+		lua_close(L);
+}
+
+void DynamicObject::doScript()
+{
+    // create an Lua pointer instance
+    L = lua_open();
+
+    // load the libs
+    luaL_openlibs(L);
+
+    // register dynamic object functions
+    lua_register(L,"setPosition",setPosition);
+    lua_register(L,"getPosition",getPosition);
+    lua_register(L,"setRotation",setRotation);
+    lua_register(L,"getRotation",getRotation);
+    lua_register(L,"lookAt",lookAt);
+    lua_register(L,"lookToObject",lookToObject);
+    lua_register(L,"move",move);
+    lua_register(L,"distanceFrom",distanceFrom);
+
+    lua_register(L,"setFrameLoop",setFrameLoop);
+    lua_register(L,"setAnimationSpeed",setAnimationSpeed);
+    lua_register(L,"setAnimation",setAnimation);
+
+    lua_register(L,"showObjectLabel",showObjectLabel);
+    lua_register(L,"hideObjectLabel",hideObjectLabel);
+    lua_register(L,"setObjectLabel",setObjectLabel);
+
+    lua_register(L,"setEnabled",setEnabled);
+
+    //register basic functions
+    LuaGlobalCaller::getInstance()->registerBasicFunctions(L);
+
+    //associate the "objName" keyword to the dynamic object name
+    stringc scriptTemp = "objName = '";
+    scriptTemp += this->getNode()->getName();
+    scriptTemp += "'";
+    luaL_dostring(L,scriptTemp.c_str());
+
+
+    luaL_dostring(L,script.c_str());
+
+    //set default object type
+    luaL_dostring(L,"objType = 'OBJECT'");
+    //set enemy (when you click an enemy you attack it)
+    luaL_dostring(L,"function setEnemy() objType = 'ENEMY' end");
+    //set object (when you click an object you interact with it)
+    luaL_dostring(L,"function setObject() objType = 'OBJECT' end");
+
+
+    //store the original position and rotation before start the gameplay (restore it with "IRBRestoreParams")
+    lua_getglobal(L,"IRBSaveParams");
+    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    lua_pop( L, -1 );
+
+    //run onLoad() function if it exists
+    lua_getglobal(L,"onLoad");
+    //if top of stack is not a function then onLoad does not exist
+    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    lua_pop( L, -1 );
+}
+
+void DynamicObject::restoreParams()
+{
+    if (objectType != OBJECT_TYPE_PLAYER)
+	{
+		lua_getglobal(L,"IRBRestoreParams");
+		if(lua_isfunction(L, -1)) lua_call(L,0,0);
+		lua_pop( L, -1 );
+	}
+}
+
+void DynamicObject::saveToXML(TiXmlElement* parentElement)
+{
+    TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
+    //dynamicObjectXML->SetAttribute("name",name.c_str());
+
+    dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
+    dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
+    dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
+
+    //dynamicObjectXML->SetAttribute("s",stringc(this->getScale().X).c_str());
+
+    dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
+
+    dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
+    dynamicObjectXML->SetAttribute("script",getScript().c_str());
+
+    parentElement->LinkEndChild(dynamicObjectXML);
+}
+
+// Update the node, for animation event, collision check, lua refresh, etc.
+void DynamicObject::update()
+{
+
+	// Check for an event in the current animation.
+	checkAnimationEvent();
+
+	// Check for collision with another node
+	if (animator->collisionOccurred())
+	{
+		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+		collided=true;
+	}
+
+	// New optimisations (november 2010): Adding timed interface an culling check.
+	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
+	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
+	// Check for culling on a node and don't update it if it's culled.
+	
+	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	bool culled = false;
+	// Tries out animation blending.
+	//nodeAnim->animateJoints();
+	if((timerobject-timer>250) && enabled) // 1/4 second
+	{
+		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
+		if (!culled)
+		{
+			if (App::getInstance()->getAppState() > 100) 
+			{//app_state < APP_STATE_CONTROL
+				lua_getglobal(L,"step");
+				if(lua_isfunction(L, -1)) lua_call(L,0,0);
+				lua_pop( L, -1 );
+
+				/*if (objectType==OBJECT_TYPE_PLAYER)
+					printf("This is the player refresh!\n");
+				else
+					printf("This is a dynamic object refresh!\n");
+				*/
+
+				//custom update function (updates walkTo for example..)
+				lua_getglobal(L,"CustomDynamicObjectUpdate");
+				if(lua_isfunction(L, -1)) lua_call(L,0,0);
+				lua_pop( L, -1 );
+			}
+			lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
+			if(lua_isfunction(L, -1)) lua_call(L,0,0);
+			lua_pop( L, -1 );
+			timer = timerobject;
+		}
+		// Perhaps this is not needed if the node is really culled
+		else if (this->getNode()->isVisible())
+			this->getNode()->setVisible(false);
+			
+	}
+	
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+	{
+		currentObject->moveObject(currentSpeed);
+		timer2=timerobject;
+	}
+}
 
 //LUA FUNCTIONS
 
@@ -1104,14 +1131,4 @@ stringc DynamicObject::getObjectType()
 	lua_pop(L, 1);
 
 	return objType;
-}
-
-void DynamicObject::setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator)
-{
-    this->collisionAnimator = collisionAnimator;
-}
-
-ISceneNode* DynamicObject::getShadow()
-{
-	return fakeShadow;
 }

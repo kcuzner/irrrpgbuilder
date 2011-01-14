@@ -67,84 +67,59 @@ class DynamicObject
 {
     public:
         DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations);
+		virtual ~DynamicObject();
 
         DynamicObject* clone();
 
-		void setType(stringc name);
-		TYPE getType();
-		stringc typeText;
-
-        void setName(stringc name);
-        stringc getName();
-        ISceneNode* getNode();
-
-        void setPosition(vector3df pos);
-        vector3df getPosition();
-        void lookAt(vector3df pos);
-
-        f32 getDistanceFrom(vector3df pos);
-
-        void setFrameLoop(s32 start, s32 end);
-        void setAnimationSpeed(f32 speed);
-
-        void setRotation(vector3df rot);
-        vector3df getRotation();
-
-        void setMaterialType(E_MATERIAL_TYPE mType);
-        E_MATERIAL_TYPE getMaterialType();
-
-        void setScale(vector3df scale);
-		vector3df getScale();
-
-        ITriangleSelector* getTriangleSelector();
-
-        stringc getScript();
-        void setScript(stringc script);
-
-        stringc getTemplateObjectName();
+		ISceneNode* getNode();
+		ISceneNode* getShadow();
+		stringc getTemplateObjectName();
         void setTemplateObjectName(stringc newName);
 
-        void saveToXML(TiXmlElement* parentElement);
-
-        void doScript();//called when the game starts
-        void update();//run "step" lua function
-        void clearScripts();//delete lua_State
-        void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
-
-		void setLife(int life);
-        int getLife();
-
-        void setMoney(int money);
-        int getMoney();
-
-        void notifyClick();
-		void notifyAttackRange();
-
-        void setObjectLabel(stringc label);
-        void objectLabelSetVisible(bool visible);
-
-        void setEnabled(bool enabled);
-
-        stringc getObjectType();
-
-        bool hasAnimation(){ return animations.size() != 0; };
-        //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
-        //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
-
-		OBJECT_ANIMATION getAnimationState(stringc animName);
-		OBJECT_ANIMATION getAnimation(void);
-        void setAnimation(stringc animName);
-		void checkAnimationEvent();
-		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
-		ISceneNodeAnimatorCollisionResponse* getAnimator();
-
-        void setCollisionAnimator(ISceneNodeAnimatorCollisionResponse* collisionAnimator);
+		void lookAt(vector3df pos);
+		void setPosition(vector3df pos);
+        vector3df getPosition();
+		void setRotation(vector3df rot);
+        vector3df getRotation();
 		void moveObject(f32 speed);
 		void walkTo(vector3df targetPos);
 		void setWalkTarget(vector3df newTarget);
 		vector3df getWalkTarget();
+		f32 getDistanceFrom(vector3df pos);
+ 
+		void setEnabled(bool enabled);
+		void setType(stringc name);
+		TYPE getType();
 		
-		void attackEnemy(DynamicObject* obj);
+		void setName(stringc name);
+        stringc getName();
+
+		void setMaterialType(E_MATERIAL_TYPE mType);
+        E_MATERIAL_TYPE getMaterialType();
+
+		void setScale(vector3df scale);
+		vector3df getScale();
+		
+		void setLife(int life);
+        int getLife();
+        void setMoney(int money);
+        int getMoney();
+		void setObjectLabel(stringc label);
+        void objectLabelSetVisible(bool visible);
+        
+		 bool hasAnimation(){ return animations.size() != 0; };
+        //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
+        //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
+        void setFrameLoop(s32 start, s32 end);
+        void setAnimationSpeed(f32 speed);
+		OBJECT_ANIMATION getAnimationState(stringc animName);
+		OBJECT_ANIMATION getAnimation(void);
+        void setAnimation(stringc animName);
+		void checkAnimationEvent();
+        
+		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
+		ISceneNodeAnimatorCollisionResponse* getAnimator();
+		ITriangleSelector* getTriangleSelector();
 		
 		// item management
         void addItem(stringc itemName);
@@ -154,9 +129,21 @@ class DynamicObject
         bool hasItem(stringc itemName);
         void removeAllItems();
 
-		ISceneNode* getShadow();
+		stringc getScript();
+        void setScript(stringc script);
+		void clearScripts();//delete lua_State
+		void doScript();//called when the game starts
+		void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
+        void saveToXML(TiXmlElement* parentElement);    
+        void update();//run "step" lua function
 
-        virtual ~DynamicObject();
+        void notifyClick();
+		void notifyAttackRange();
+
+        stringc getObjectType();
+
+		void attackEnemy(DynamicObject* obj);
+      
     protected:
 
         bool enabled;//disabled objects aren't rendered and step() function isn't processed during gameplay
@@ -190,22 +177,35 @@ class DynamicObject
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
         stringc name;
-
-		
+	
         IMesh* mesh;
         ISceneNode* node;
 		IAnimatedMeshSceneNode * nodeAnim;
 		ISkinnedMesh* skinnedmesh;
+
+		ITriangleSelector* selector;
 		ISceneNodeAnimatorCollisionResponse* animator;
 		
         ISceneNode* fakeShadow;
-
-        ITriangleSelector* selector;
-
-        stringc script;
+		stringc script;
 
 		OBJECT_ANIMATION currentAnimation;
+		OBJECT_ANIMATION oldAnimation;
 		TYPE objectType;
+		stringc typeText;
+
+		DynamicObject* enemyUnderAttack;
+		DynamicObject* currentObject;
+		f32	currentSpeed;
+
+		// Imported from the player class, add walktarget, collision events, and inventory features
+		bool collided;
+		vector3df walkTarget;
+		vector<stringc> items;
+        ITextSceneNode* objLabel;
+
+        vector<DynamicObject_Animation> animations;
+		DynamicObject_Animation currentAnim;
 
 		struct property{
 			int life;
@@ -229,27 +229,11 @@ class DynamicObject
 		property prop_level;
 		property properties;
 
-		int oldlife;
 		u32 timer;
 		u32 timer2;
 
-		DynamicObject* enemyUnderAttack;
-		DynamicObject* currentObject;
-		f32	currentSpeed;
-
-		// Imported from the player class, add walktarget, collision events, and inventory features
-		bool collided;
-		vector3df walkTarget;
-		vector<stringc> items;
-
-        lua_State *L;
-
-        ITextSceneNode* objLabel;
-
-        vector<DynamicObject_Animation> animations;
-		DynamicObject_Animation currentAnim;
-
-        ISceneNodeAnimatorCollisionResponse* collisionAnimator;
+		lua_State *L;
+      
 };
 
 #endif // DYNAMICOBJECT_H
