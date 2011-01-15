@@ -279,10 +279,8 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
     newObj->setPosition(pos);
 	
-	// Non interactive objects will not be refreshed (update callback)
-	// Should help with performance and allow for more NPC/Interactive objects.
-	if (newObj->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
-		objects.push_back(newObj);
+	// Add to the dynamic object list.
+	objects.push_back(newObj);
 
     //the unique name of an dynamic object contains his index at the objects vector
     newObj->setName(this->createUniqueName());
@@ -415,7 +413,10 @@ void DynamicObjectsManager::updateAll()
 {
     for(int i=0;i<(int)objects.size();i++)
     {
-        ((DynamicObject*)objects[i])->update();
+		// Non interactive objects will not be refreshed (update callback)
+		// Should help with performance and allow for more NPC/Interactive objects.
+		if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+			((DynamicObject*)objects[i])->update();
     }
 }
 
@@ -460,25 +461,34 @@ void DynamicObjectsManager::initializeCollisions()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	
-	createMeta();
+	//createMeta();
 	// Create the collision response animator for the player
-	anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
+	//anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
 	//Player::getInstance()->setAnimator(anim);
-	meta->drop();	
+	//meta->drop();	
 	// Create the collision response animator for each NPC.
 	for(int i=0;i<(int)objects.size();i++)
     {
 		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
 		{
-			createMeta();
-			meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
-			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-			objects[i]->getNode()->addAnimator(coll);
-			objects[i]->setAnimator(coll);
-			meta->drop();
+			if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
+			{
+				createMeta();
+				meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
+				//if (!objects[i]->enabled())
+				//	meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
+
+				ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
+				objects[i]->getNode()->addAnimator(coll);
+				objects[i]->setAnimator(coll);
+
+				//meta->addTriangleSelector(objects[i]->getNode()->getTriangleSelector());
+			
+				meta->drop();
+			}
 		}
 	}
-	
+	//meta->drop();
 }
 
 void DynamicObjectsManager::clearCollisions()

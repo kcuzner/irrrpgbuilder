@@ -154,6 +154,7 @@ class DynamicObject
 
     private:
         void setupObj(stringc name, IMesh* mesh);
+		void luaRefresh();
 
         //lua funcs
         static int setPosition(lua_State *LS);//setPosition(x,y,z)
@@ -198,13 +199,14 @@ class DynamicObject
 		DynamicObject* currentObject;
 		f32	currentSpeed;
 
-		// Imported from the player class, add walktarget, collision events, and inventory features
 		bool collided;
+		bool nodeLuaCulling;
+		bool deadstate;
 		vector3df walkTarget;
 		vector<stringc> items;
         ITextSceneNode* objLabel;
 
-        vector<DynamicObject_Animation> animations;
+		vector<DynamicObject_Animation> animations;
 		DynamicObject_Animation currentAnim;
 
 		struct property{

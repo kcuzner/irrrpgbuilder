@@ -33,6 +33,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	this->properties.experience = 10;
 	this->properties.level = 1;
     this->properties.money = 0;
+	// When enabled, the LUA will update even if the node is culled.
+	this->nodeLuaCulling = false;
 
 	// Tries out animation blending
 	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
@@ -235,6 +237,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	{
 		walkTarget = this->getPosition();
 		this->setAnimation("idle");
+		printf("Stop because of a collision...\n");
 		collided=false; // reset the collision flag
 	}
 }
@@ -261,17 +264,37 @@ f32 DynamicObject::getDistanceFrom(vector3df pos)
 void DynamicObject::setEnabled(bool enabled)
 {
     this->enabled = enabled;
-/*
-    if(enabled && collisionAnimator)
+
+   /* if (!enabled && deadstate)
+	{
+		ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+		DynamicObject* player = DynamicObjectsManager::getInstance()->getPlayer();
+		player->getNode()->removeAnimator(player->animator);
+
+		DynamicObjectsManager::getInstance()->createMeta();
+		IMetaTriangleSelector* meta = DynamicObjectsManager::getInstance()->getMeta();
+		meta->removeTriangleSelector(this->selector);
+		
+		ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,player->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
+		player->getNode()->addAnimator(coll);
+		player->setAnimator(coll);
+		player->attackEnemy(NULL);
+		player->setAnimation("idle");
+		player->collided=false;
+		meta->drop();
+		printf("The NPC: %s is dead now!\n",name.c_str());
+		deadstate=true;
+	}*/
+	if(enabled && animator)
     {
-        Player::getInstance()->getNode()->addAnimator(collisionAnimator);
+        //playerObject->getNode()->addAnimator(animator);
     }
     else
     {
-        Player::getInstance()->getNode()->removeAnimator(collisionAnimator);
-        Player::getInstance()->attackEnemy(NULL);///TODO: find a better way to broke the link between player and dead DO
+		//
+        //DynamicObjectsManager::getInstance()->getPlayer()->attackEnemy(NULL);///TODO: find a better way to broke the link between player and dead DO
     }
-*/
+
     this->node->setVisible(enabled);
 	if (!enabled)
 		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
@@ -389,7 +412,6 @@ void DynamicObject::setFrameLoop(s32 start, s32 end)
 
 void DynamicObject::setAnimationSpeed(f32 speed)
 {
-	printf("Try to change the animation speed: %f fps.\n",speed);
     if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setAnimationSpeed(speed);
 }
 
@@ -435,7 +457,9 @@ void DynamicObject::setAnimation(stringc animName)
 {
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
-	ISkinnedMesh* defaultskin = (ISkinnedMesh*)this->mesh; 
+	ISkinnedMesh* defaultskin = NULL;
+	if (this->mesh)
+		defaultskin = (ISkinnedMesh*)this->mesh; 
 	
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
@@ -447,12 +471,12 @@ void DynamicObject::setAnimation(stringc animName)
 			if (Animation!=this->currentAnimation)
 			{
 				// Setup the skinned mesh animation. Check if the meshname is present
-				if (tempAnim.meshname!=L"undefined") 
+				if (tempAnim.meshname!=L"undefined" && defaultskin) 
 				{
 					skin = (ISkinnedMesh*)tempAnim.mesh;
 					defaultskin->useAnimationFrom(skin);
 				}
-				else
+				else if (defaultskin)
 					defaultskin->useAnimationFrom(defaultskin);
 
 				// Set the frameloop, the current animation and the speed
@@ -482,6 +506,17 @@ void DynamicObject::checkAnimationEvent()
 		(nodeAnim->getFrameNr() < currentAnim.attackevent+1))
 	{
 		printf("Should trigger the attack now...");
+		if (enemyUnderAttack)
+		{
+			int life=enemyUnderAttack->getLife()-1;
+			if (life<0) 
+			{
+				life=0;
+				setAnimation("idle");
+			}
+			enemyUnderAttack->setLife(life);
+			
+		}
 	}
 
 	// Check if the current animation have an sound event
@@ -515,15 +550,17 @@ ITriangleSelector* DynamicObject::getTriangleSelector()
 // Main attack feature (Player + NPC)
 void DynamicObject::attackEnemy(DynamicObject* obj)
 {
+	
     enemyUnderAttack = obj;
 
     if(obj)
     {
+		printf("Attack for this enemy asked %s\n",obj->getName());
         this->lookAt(obj->getPosition());
         this->setAnimation("attack");
 		obj->notifyClick();
     }
-	printf("Attack for this enemy asked %s\n",obj->getName());
+	
 }
 
 //-----------------------------------------------------------------------
@@ -602,6 +639,7 @@ void DynamicObject::clearScripts()
 	{
 		this->setFrameLoop(0,0);
 		this->setAnimation("idle");
+		printf("Script had been cleared... idle.\n");
 	}
 	if (objectType != OBJECT_TYPE_PLAYER)
 		lua_close(L);
@@ -717,47 +755,59 @@ void DynamicObject::update()
 	
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	bool culled = false;
-	// Tries out animation blending.
-	//nodeAnim->animateJoints();
-	if((timerobject-timer>250) && enabled) // 1/4 second
-	{
-		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-		if (!culled)
-		{
-			if (App::getInstance()->getAppState() > 100) 
-			{//app_state < APP_STATE_CONTROL
-				lua_getglobal(L,"step");
-				if(lua_isfunction(L, -1)) lua_call(L,0,0);
-				lua_pop( L, -1 );
-
-				/*if (objectType==OBJECT_TYPE_PLAYER)
-					printf("This is the player refresh!\n");
-				else
-					printf("This is a dynamic object refresh!\n");
-				*/
-
-				//custom update function (updates walkTo for example..)
-				lua_getglobal(L,"CustomDynamicObjectUpdate");
-				if(lua_isfunction(L, -1)) lua_call(L,0,0);
-				lua_pop( L, -1 );
-			}
-			lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
-			if(lua_isfunction(L, -1)) lua_call(L,0,0);
-			lua_pop( L, -1 );
-			timer = timerobject;
-		}
-		// Perhaps this is not needed if the node is really culled
-		else if (this->getNode()->isVisible())
-			this->getNode()->setVisible(false);
-			
-	}
+	//check if the node is culled
+	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
 	
+	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
 	{
-		currentObject->moveObject(currentSpeed);
+		if (currentSpeed!=0)
+			currentObject->moveObject(currentSpeed);
 		timer2=timerobject;
 	}
+	// Tries out animation blending.
+	//nodeAnim->animateJoints();
+	if((timerobject-timer>250) && enabled) // Lua UPdate to 1/4 second
+	{
+		
+		if (!nodeLuaCulling)
+		{// Special abilitie of the object. this will overide the culling refresh
+			if (!culled)
+			{
+				luaRefresh();
+				timer = timerobject;
+			}
+		} else 
+		{// if not then check if the node is culled to refresh
+			luaRefresh();
+			timer = timerobject;
+		}
+	}
 }
+
+void DynamicObject::luaRefresh()
+{
+	if (App::getInstance()->getAppState() > 100) 
+	{//app_state < APP_STATE_CONTROL
+		lua_getglobal(L,"step");
+		
+		if(lua_isfunction(L, -1)) 
+			lua_call(L,0,0);
+		lua_pop( L, -1 );
+		
+		//custom update function (updates walkTo for example..)
+		lua_getglobal(L,"CustomDynamicObjectUpdate");
+		
+		if(lua_isfunction(L, -1)) 
+			lua_call(L,0,0);
+		lua_pop( L, -1 );
+	}
+	lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
+	if(lua_isfunction(L, -1)) 
+		lua_call(L,0,0);
+	lua_pop( L, -1 );
+}
+
 
 //LUA FUNCTIONS
 
@@ -908,8 +958,8 @@ int DynamicObject::move(lua_State *LS)//move(speed)
     if(tempObj)
     {
 		tempObj->setAnimation("walk");
-		
-        tempObj->moveObject(speed);
+		printf ("Lua call the walk animation.\n");
+		tempObj->moveObject(speed);
     }
 
     return 0;
