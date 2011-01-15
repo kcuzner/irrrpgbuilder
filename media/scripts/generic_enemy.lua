@@ -1,10 +1,24 @@
 local a = 0
 
 function hitplayer()
+  -- Does random damage from 1-4 point of health on the player
   decreasePlayerLife(math.random(1,4))
   a = 0
 end
 
+-- "onClicked" will trigger is the dynamic object is being clicked on by the user
+function onClicked()
+	print("Lua character is being clicked on!")
+end
+
+-- new game function
+-- "onCollision" will trigger if the dynamic object got a collision with something
+function onCollision()
+	print("Lua character had a collision");
+	blocked=true;
+end
+
+-- "step" will trigger at each time interval (around 1/4 second)
 function step()
   life = getObjectLife(objName);
   if (life == 0) then setEnabled(false) end
@@ -12,12 +26,15 @@ function step()
   if(distanceFrom(x,y,z) < 144) then 
     setObjectLabel("Enemy life:"..life.."/50")
     showObjectLabel()
-    if(distanceFrom(x,y,z) < 60) then
-		--chaseObject("player",0.8,54,600)
+    if(distanceFrom(x,y,z) < 60 or blocked) then
 		setAnimation("idle")
 		setFrameLoop(0,0);
-		--move(0);
-        if (a==0)then
+		-- reset the collision
+		if (blocked) then
+			blocked=false;
+			a=1
+		end
+		  if (a==0)then
           programAction(0.5, hitplayer)
           a = 1
         end  
@@ -30,11 +47,11 @@ function step()
   end
 end
 
+-- "onLoad" will trigger when the dynamic object is initialized (once)
 function onLoad()
   setEnemy()
   setObjectLife(objName,50);
+  blocked = false;
 end
 
-function onClicked()
-end
 

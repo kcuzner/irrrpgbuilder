@@ -5,18 +5,6 @@ dofile("../media/scripts/colors.lua")
 
 --================================================IRRRPG BUILER INTERNAL USE ONLY
 
---store original dynamic object params (position, rotation, ..) before start gameplay
-function IRBSaveParams()
-  IRBOriginalPositionX,IRBOriginalPositionY,IRBOriginalPositionZ = getPosition()
-  IRBOriginalRotationX,IRBOriginalRotationY,IRBOriginalRotationZ = getRotation()
-end
---restore original dynamic object params after gameplay (used when you click Stop in Editor)
-function IRBRestoreParams()
-  setPosition(IRBOriginalPositionX,IRBOriginalPositionY,IRBOriginalPositionZ)
-  setRotation(IRBOriginalRotationX,IRBOriginalRotationY,IRBOriginalRotationZ)
-  hideObjectLabel()
-  setEnabled(true)
-end
 --store original global params (ambient light, fog, ..) before start gameplay
 function IRBStoreGlobalParams()
   IRBOriginalAmbientLightR,IRBOriginalAmbientLightG,IRBOriginalAmbientLightB = getAmbientLight()
@@ -31,14 +19,7 @@ function IRBRestoreGlobalParams()
   setFogRange(IRBOriginalFogStart,IRBOriginalFogEnd)
   setCameraTarget(IRBOriginalCameraPosX,IRBOriginalCameraPosY,IRBOriginalCameraPosZ)
 end
---store player params
-function IRBStorePlayerParams()
-  IRBPlayerOriginalPositionX,IRBPlayerOriginalPositionY,IRBPlayerOriginalPositionZ = getPosition()
-end
---restore player params
-function IRBRestorePlayerParams()
-  setPosition(IRBPlayerOriginalPositionX,IRBPlayerOriginalPositionY,IRBPlayerOriginalPositionZ)
-end
+
 
 --================================================DYNAMIC OBJECT FUNCTIONS
 
