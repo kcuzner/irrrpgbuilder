@@ -47,8 +47,7 @@ void Player::update()
 	if (timercheck-timer1>17)
 	{
 		timer1 = timercheck;
-		//playerObject->update();
-		printf("current state of animation is %i\n",playerObject->getAnimation());
+		//printf("current state of animation is %i\n",playerObject->getAnimation());
 		// Calculate the size of the mesh, and multiplicate it with the scale
 		// Will give the real size on the map
 		f32 sizePlayer = playerObject->getNode()->getBoundingBox().getExtent().X;
@@ -58,9 +57,11 @@ void Player::update()
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
 		{
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			this->playerObject->setAnimation("walk");
-			
-			printf("Hey the player specificalled for a walk loop!\n");
+			if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
+			{
+				this->playerObject->setAnimation("walk");
+				printf("Hey the player specificalled for a walk state!\n");
+			}
 
 			this->playerObject->walkTo(walkTarget); 
 			return;
@@ -69,17 +70,16 @@ void Player::update()
 		// Stop the walk when in range
 		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer))
 		{
-			printf("Hey the player specificalled for a idle loop!\n");
+			printf("Hey the player specificalled for a idle state!\n");
+			this->playerObject->setWalkTarget(playerObject->getPosition());
 			this->playerObject->setAnimation("idle");
-			
-			walkTarget = this->playerObject->getPosition();
 			return;
 		}
 
 		// Cancel the move if another animation is triggered
 		if (playerObject->getAnimation()!=OBJECT_ANIMATION_WALK || playerObject->getAnimation()==OBJECT_ANIMATION_IDLE)
 		{
-			walkTarget = this->playerObject->getPosition();
+			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
 	}
 }
