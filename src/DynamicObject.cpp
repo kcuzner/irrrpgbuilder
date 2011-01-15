@@ -265,41 +265,15 @@ void DynamicObject::setEnabled(bool enabled)
 {
     this->enabled = enabled;
 
-   /* if (!enabled && deadstate)
-	{
-		ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-		DynamicObject* player = DynamicObjectsManager::getInstance()->getPlayer();
-		player->getNode()->removeAnimator(player->animator);
-
-		DynamicObjectsManager::getInstance()->createMeta();
-		IMetaTriangleSelector* meta = DynamicObjectsManager::getInstance()->getMeta();
-		meta->removeTriangleSelector(this->selector);
-		
-		ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,player->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-		player->getNode()->addAnimator(coll);
-		player->setAnimator(coll);
-		player->attackEnemy(NULL);
-		player->setAnimation("idle");
-		player->collided=false;
-		meta->drop();
-		printf("The NPC: %s is dead now!\n",name.c_str());
-		deadstate=true;
-	}*/
-	if(enabled && animator)
-    {
-        //playerObject->getNode()->addAnimator(animator);
-    }
-    else
-    {
-		//
-        //DynamicObjectsManager::getInstance()->getPlayer()->attackEnemy(NULL);///TODO: find a better way to broke the link between player and dead DO
-    }
-
     this->node->setVisible(enabled);
 	if (!enabled)
-		DynamicObjectsManager::getInstance()->updateMetaSelector(this->getNode()->getTriangleSelector(),true);
+		DynamicObjectsManager::getInstance()->updateMetaSelector();
 }
 
+bool DynamicObject::isEnabled()
+{
+	return enabled;
+}
 void DynamicObject::setType(stringc name)
 {
 	if (name=="npc")
@@ -641,8 +615,18 @@ void DynamicObject::clearScripts()
 		this->setAnimation("idle");
 		printf("Script had been cleared... idle.\n");
 	}
-	if (objectType != OBJECT_TYPE_PLAYER)
+	/*if (objectType == OBJECT_TYPE_PLAYER)
+	{
+		printf("Player restore the original position \n");
+		lua_getglobal(L,"IRBRestorePlayerParams");
+		if(lua_isfunction(L, -1)) lua_call(L,0,0);
+		lua_pop( L, -1 );
 		lua_close(L);
+	}*/
+	if (objectType != OBJECT_TYPE_PLAYER)
+	{
+		lua_close(L);
+	}
 }
 
 void DynamicObject::doScript()
@@ -693,26 +677,30 @@ void DynamicObject::doScript()
     luaL_dostring(L,"function setObject() objType = 'OBJECT' end");
 
 
-    //store the original position and rotation before start the gameplay (restore it with "IRBRestoreParams")
-    lua_getglobal(L,"IRBSaveParams");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
-    lua_pop( L, -1 );
-
-    //run onLoad() function if it exists
+	//run onLoad() function if it exists
     lua_getglobal(L,"onLoad");
     //if top of stack is not a function then onLoad does not exist
     if(lua_isfunction(L, -1)) lua_call(L,0,0);
     lua_pop( L, -1 );
+	storeParams();
+	
+}
+
+void DynamicObject::storeParams()
+{
+	// store in memory the current position and rotation of the object for later retrieval.
+	this->originalPosition=this->getPosition();
+	this->originalRotation=this->getRotation();
 }
 
 void DynamicObject::restoreParams()
 {
-    if (objectType != OBJECT_TYPE_PLAYER)
-	{
-		lua_getglobal(L,"IRBRestoreParams");
-		if(lua_isfunction(L, -1)) lua_call(L,0,0);
-		lua_pop( L, -1 );
-	}
+    // Restore the initial parameters of the dynamic object.
+	this->setPosition(this->originalPosition);
+	this->setRotation(this->originalRotation);
+	this->setEnabled(true);
+	this->objLabel->setVisible(false);
+	this->deadstate=false;
 }
 
 void DynamicObject::saveToXML(TiXmlElement* parentElement)
@@ -742,10 +730,11 @@ void DynamicObject::update()
 	checkAnimationEvent();
 
 	// Check for collision with another node
-	if (animator->collisionOccurred())
+	if (animator && animator->collisionOccurred())
 	{
 		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
 		collided=true;
+		notifyCollision();
 	}
 
 	// New optimisations (november 2010): Adding timed interface an culling check.
@@ -1173,6 +1162,14 @@ void DynamicObject::notifyAttackRange()
     if(lua_isfunction(L, -1)) lua_call(L,0,0);
     lua_pop( L, -1 );
 }
+
+void DynamicObject::notifyCollision()
+{
+    lua_getglobal(L,"onCollision");
+    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    lua_pop( L, -1 );
+}
+
 
 stringc DynamicObject::getObjectType()
 {

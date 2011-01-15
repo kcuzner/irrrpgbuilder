@@ -190,7 +190,7 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
             }
         }
 
-        DynamicObjectsManager::getInstance()->initializeCollisions();
+        //DynamicObjectsManager::getInstance()->initializeCollisions();
 
         return true;
     }

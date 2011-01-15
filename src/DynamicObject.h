@@ -88,6 +88,7 @@ class DynamicObject
 		f32 getDistanceFrom(vector3df pos);
  
 		void setEnabled(bool enabled);
+		bool isEnabled();
 		void setType(stringc name);
 		TYPE getType();
 		
@@ -133,12 +134,14 @@ class DynamicObject
         void setScript(stringc script);
 		void clearScripts();//delete lua_State
 		void doScript();//called when the game starts
+		void storeParams(); // Store the original position and rotation before gameplay (used when you start the game)
 		void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
         void saveToXML(TiXmlElement* parentElement);    
         void update();//run "step" lua function
 
         void notifyClick();
 		void notifyAttackRange();
+		void notifyCollision();
 
         stringc getObjectType();
 
@@ -203,6 +206,8 @@ class DynamicObject
 		bool nodeLuaCulling;
 		bool deadstate;
 		vector3df walkTarget;
+		vector3df originalPosition;
+		vector3df originalRotation;
 		vector<stringc> items;
         ITextSceneNode* objLabel;
 

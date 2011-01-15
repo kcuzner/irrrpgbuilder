@@ -41,12 +41,12 @@ class DynamicObjectsManager
 
         void showDebugData(bool show);
 
-        void initializeCollisions();
+		void startCollisions();
         void clearCollisions();
 
 		
 
-		void updateMetaSelector(ITriangleSelector* tris, bool remove);
+		void updateMetaSelector();
 		IMetaTriangleSelector* getMeta();
 		IMetaTriangleSelector* createMeta();
 	
@@ -60,8 +60,13 @@ class DynamicObjectsManager
         void clean();
 
         virtual ~DynamicObjectsManager();
+
+	protected:
+		void initializeCollisions();
+
     private:
         DynamicObjectsManager();
+		
 
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
@@ -70,6 +75,8 @@ class DynamicObjectsManager
 
         vector<DynamicObject*> objects;
         int objsCounter;
+		int collisionCounter;
+		bool createcollisions;
 
         vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
 		

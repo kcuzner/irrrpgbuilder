@@ -341,19 +341,19 @@ void App::eventGuiButton(s32 id)
 			oldcampos = Player::getInstance()->getObject()->getPosition();
 			EditorCamera::getInstance()->setCamera(1);
             this->setAppState(APP_GAMEPLAY_NORMAL);
-            Player::getInstance()->getObject()->doScript();
+            //Player::getInstance()->getObject()->doScript();
             LuaGlobalCaller::getInstance()->storeGlobalParams();
             DynamicObjectsManager::getInstance()->initializeAllScripts();
             DynamicObjectsManager::getInstance()->showDebugData(false);
-            DynamicObjectsManager::getInstance()->initializeCollisions();
+			DynamicObjectsManager::getInstance()->startCollisions();
+            //DynamicObjectsManager::getInstance()->initializeCollisions();
             TerrainManager::getInstance()->showDebugData(false);
             GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
             LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
             break;
         case BT_ID_STOP_GAME:
 
-			Player::getInstance()->getObject()->clearScripts();
-            DynamicObjectsManager::getInstance()->clearAllScripts();
+			DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
             DynamicObjectsManager::getInstance()->showDebugData(true);
             TerrainManager::getInstance()->showDebugData(true);

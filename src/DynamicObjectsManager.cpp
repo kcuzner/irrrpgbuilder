@@ -63,6 +63,10 @@ DynamicObjectsManager::DynamicObjectsManager()
 
     //just initialize var
     objsCounter = 0;
+	
+	// Collision creation (in steps)
+	collisionCounter = 0;
+	createcollisions=true;
 	 cout << "DEBUG : XML : finished!" << endl;
 }
 
@@ -418,6 +422,8 @@ void DynamicObjectsManager::updateAll()
 		if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
 			((DynamicObject*)objects[i])->update();
     }
+	if (createcollisions)
+		initializeCollisions();
 }
 
 void DynamicObjectsManager::clearAllScripts()
@@ -432,7 +438,9 @@ void DynamicObjectsManager::clearAllScripts()
 void DynamicObjectsManager::showDebugData(bool show)
 {
     for(int i=0;i<(int)objects.size();i++)
-        ((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
+		// We don't need to have bounding box and other data over the player
+		if (objects[i]->getType()!=OBJECT_TYPE_PLAYER)
+			((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 }
 
 IMetaTriangleSelector* DynamicObjectsManager::createMeta()
@@ -441,60 +449,63 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	meta=smgr->createMetaTriangleSelector();
 	ITriangleSelector* triangle=0;
-
+	
 	// Put all the triangle selector into one meta selector.
-    for(int i=0;i<(int)objects.size();i++)
-    {
-		triangle = objects[i]->getNode()->getTriangleSelector();
-		s32 number = triangle->getTriangleCount();
-		printf ("There is about %i triangles in this selector.\n",number);
+	for(int i=0;i<(int)objects.size();i++)
+	{
+		if (objects[i]->isEnabled())
+		{
+			triangle = objects[i]->getNode()->getTriangleSelector();
+			s32 number = triangle->getTriangleCount();
+			printf ("There is about %i triangles in this selector.\n",number);
 		
-		meta->addTriangleSelector(triangle);
-		s32 number2  = meta->getTriangleCount();
-		printf ("There is about %i triangles in this metaselector.\n",number2);
-		printf("Collisions: added object %i\n",i);
-    }
+			meta->addTriangleSelector(triangle);
+			s32 number2  = meta->getTriangleCount();
+			printf ("There is about %i triangles in this metaselector.\n",number2);
+			printf("Collisions: added object %i\n",i);
+		}
+	}
 	return meta;
+}
+
+void DynamicObjectsManager::startCollisions()
+{
+	collisionCounter=0;
+	createcollisions=true;
 }
 
 void DynamicObjectsManager::initializeCollisions()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	
-	//createMeta();
-	// Create the collision response animator for the player
-	//anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-	//Player::getInstance()->setAnimator(anim);
-	//meta->drop();	
-	// Create the collision response animator for each NPC.
-	for(int i=0;i<(int)objects.size();i++)
-    {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
+	// Create the collision response animator for each NPC & Player.
+	//for(int i=0;i<(int)objects.size();i++)
+	if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
+	{
+		if (objects[collisionCounter]->isEnabled())
 		{
-			if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
-			{
-				createMeta();
-				meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
-				//if (!objects[i]->enabled())
-				//	meta->removeTriangleSelector(objects[i]->getNode()->getTriangleSelector());
-
-				ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[i]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-				objects[i]->getNode()->addAnimator(coll);
-				objects[i]->setAnimator(coll);
-
-				//meta->addTriangleSelector(objects[i]->getNode()->getTriangleSelector());
+			createMeta();
+			meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
 			
-				meta->drop();
-			}
+			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
+			objects[collisionCounter]->getNode()->addAnimator(coll);
+			objects[collisionCounter]->setAnimator(coll);
+
+			meta->drop();
 		}
 	}
-	//meta->drop();
+	collisionCounter++;
+	if (collisionCounter>=objects.size())
+	{
+		collisionCounter=0;
+		createcollisions=false;
+	}
 }
 
 void DynamicObjectsManager::clearCollisions()
 {
-	meta->drop();
-	Player::getInstance()->getNode()->removeAnimator(anim);
+	//meta->drop();
+	//Player::getInstance()->getNode()->removeAnimator(anim);
 	
 	// Remove the collision animators from the objects
 	for(int i=0;i<(int)objects.size();i++)
@@ -520,26 +531,12 @@ IMetaTriangleSelector* DynamicObjectsManager::getMeta()
 	return meta;
 }
 
-void DynamicObjectsManager::updateMetaSelector(ITriangleSelector* tris, bool remove)
+void DynamicObjectsManager::updateMetaSelector()
 {
-	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-	if (tris && remove)
-	{
-		s32 info1 = 0;
-		info1 = meta->getTriangleCount();
-		s32 info2 = tris->getTriangleCount();
-		printf ("Selectors infos: Metaselector has %i polygons, current selector has %i polygons.\n",info1,info2);
-		meta->removeTriangleSelector(tris);
-		Player::getInstance()->getNode()->removeAnimator(anim);
-		anim = smgr->createCollisionResponseAnimator(meta,Player::getInstance()->getNode(),vector3df(0.2f,0.5f,0.2f),vector3df(0,0,0));
-		//Player::getInstance()->setAnimator(anim);		
-		return;
-	}
-	if (tris && !remove)
-	{ // TODO: Need a new function add/remove collision inside the dynamic object class
-	}
-
-
+	// Update all the collision object (Mostly caused by an object being removed
+	clearCollisions();
+	createcollisions=true;
+	collisionCounter=0;
 }
 
 void DynamicObjectsManager::clean()
