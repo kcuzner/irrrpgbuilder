@@ -255,6 +255,11 @@ bool DynamicObjectsManager::processFile(stringc filename)
 			{
 				playerObject=newObj; // Shortcut for directly accessing the player dynamic object
 				objects.push_back(newObj);  // The player object is added to the list of the active dynamic objects (refresh)
+			} else if(type=="editor" && name=="target")
+			{
+				targetObject=newObj;
+				targetObject->getNode()->setVisible(false);
+				targetObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 			}
 			else
 			{	// other objects that are used as templates 
@@ -355,6 +360,11 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 DynamicObject* DynamicObjectsManager::getPlayer()
 {
 	return playerObject;
+}
+
+DynamicObject* DynamicObjectsManager::getTarget()
+{
+	return targetObject;
 }
 
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
@@ -479,12 +489,15 @@ void DynamicObjectsManager::initializeCollisions()
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	
 	// Create the collision response animator for each NPC & Player.
-	//for(int i=0;i<(int)objects.size();i++)
+	// Done at each update until the list is completed. Should give some time for other tasks.
+
+	// Could perhaps do the meta the same way (Meta creation and this take the longest time)
 	if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
 	{
 		if (objects[collisionCounter]->isEnabled())
 		{
 			createMeta();
+			
 			meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
 			
 			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
@@ -495,7 +508,7 @@ void DynamicObjectsManager::initializeCollisions()
 		}
 	}
 	collisionCounter++;
-	if (collisionCounter>=objects.size())
+	if (collisionCounter>=(int)objects.size())
 	{
 		collisionCounter=0;
 		createcollisions=false;
@@ -504,8 +517,6 @@ void DynamicObjectsManager::initializeCollisions()
 
 void DynamicObjectsManager::clearCollisions()
 {
-	//meta->drop();
-	//Player::getInstance()->getNode()->removeAnimator(anim);
 	
 	// Remove the collision animators from the objects
 	for(int i=0;i<(int)objects.size();i++)
@@ -523,8 +534,6 @@ void DynamicObjectsManager::clearCollisions()
 			} 
 		} 
 	}
-	//((ISceneNodeAnimatorCollisionResponse*)collisionResponseAnimators[i])->drop();
-    //collisionResponseAnimators.clear();
 }
 IMetaTriangleSelector* DynamicObjectsManager::getMeta()
 {

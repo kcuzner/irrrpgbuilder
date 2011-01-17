@@ -36,6 +36,7 @@ class DynamicObjectsManager
 
         DynamicObject* getObjectByName(stringc name);
 		DynamicObject* getPlayer();
+		DynamicObject* getTarget();
 
         vector<stringc> getObjectsList();
 
@@ -70,6 +71,7 @@ class DynamicObjectsManager
 
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
+		DynamicObject* targetObject;
 
         vector<DynamicObject*> objectsTemplate;
 

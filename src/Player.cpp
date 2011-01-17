@@ -73,6 +73,7 @@ void Player::update()
 			printf("Hey the player specificalled for a idle state!\n");
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 			this->playerObject->setAnimation("idle");
+			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			return;
 		}
 

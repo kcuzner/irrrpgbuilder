@@ -356,6 +356,7 @@ void App::eventGuiButton(s32 id)
 			DynamicObjectsManager::getInstance()->clearAllScripts();
             DynamicObjectsManager::getInstance()->clearCollisions();
             DynamicObjectsManager::getInstance()->showDebugData(true);
+			 DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
             TerrainManager::getInstance()->showDebugData(true);
             LuaGlobalCaller::getInstance()->restoreGlobalParams();
             SoundManager::getInstance()->stopSounds();
@@ -989,7 +990,9 @@ void App::updateGameplay()
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
-							Player::getInstance()->getObject()->attackEnemy(obj);							
+							Player::getInstance()->getObject()->attackEnemy(obj);	
+							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
+							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 						}
 						else
 						{
@@ -999,11 +1002,15 @@ void App::updateGameplay()
 					else
 					{
 						Player::getInstance()->getObject()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
+						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 					}
 				}
 				else
 				{
 					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
+					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 				}
 			}
 			else//No action

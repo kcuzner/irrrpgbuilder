@@ -45,7 +45,7 @@ enum TYPE
 	OBJECT_TYPE_INTERACTIVE = 1,
 	OBJECT_TYPE_NON_INTERACTIVE = 2,
 	OBJECT_TYPE_PLAYER	= 3,
-	OBJECT_TYPE_EDITOR_OBJ	= 4
+	OBJECT_TYPE_EDITOR	= 4
 };
 
 typedef struct{
@@ -201,6 +201,7 @@ class DynamicObject
 		DynamicObject* enemyUnderAttack;
 		DynamicObject* currentObject;
 		f32	currentSpeed;
+		s32 lastframe;
 
 		bool collided;
 		bool nodeLuaCulling;

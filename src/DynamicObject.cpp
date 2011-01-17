@@ -35,6 +35,10 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     this->properties.money = 0;
 	// When enabled, the LUA will update even if the node is culled.
 	this->nodeLuaCulling = false;
+	lastframe=0;
+	enabled=true;
+	enemyUnderAttack=NULL;
+	setAnimation("idle");
 
 	// Tries out animation blending
 	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
@@ -97,27 +101,28 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->node->setTriangleSelector(selector);
 
 		this->animator = NULL;
+		if (objectType != OBJECT_TYPE_EDITOR)
+		{
+			node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
+			//Fake Shadow
+			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
+			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 
-		node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
+			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
+
+			if(hasAnimation()) this->setFrameLoop(0,0);
+		}
+		else
+			setAnimation("idle");
 
 		// Setup the animations
 		script = "";
-
-		//Fake Shadow
-		fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
-		fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-		fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
-
+		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
-		fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
-
 		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,1,0));
 		objLabel->setVisible(false);
 
-		this->setEnabled(true);
-		if(hasAnimation()) this->setFrameLoop(0,0);
-		
-		
 	}
 }
 
@@ -235,6 +240,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 	{
+		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		walkTarget = this->getPosition();
 		this->setAnimation("idle");
 		printf("Stop because of a collision...\n");
@@ -284,8 +290,8 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_NON_INTERACTIVE;
 	if (name=="player")
 		this->objectType=OBJECT_TYPE_PLAYER;
-	if (name=="editor-object")
-		this->objectType=OBJECT_TYPE_EDITOR_OBJ;
+	if (name=="editor")
+		this->objectType=OBJECT_TYPE_EDITOR;
 	this->typeText = name;
 }
 
@@ -353,7 +359,10 @@ void DynamicObject::setLife(int life)
 
 int DynamicObject::getLife()
 {
-	return this->properties.life;
+	if (properties.life)
+		return this->properties.life;
+	else
+		return 0;
 }
 
 void DynamicObject::setMoney(int money)
@@ -476,21 +485,26 @@ void DynamicObject::setAnimation(stringc animName)
 void DynamicObject::checkAnimationEvent()
 {
 	// Check if the current animation have an attack event
-	if ((nodeAnim->getFrameNr() > currentAnim.attackevent) &&
-		(nodeAnim->getFrameNr() < currentAnim.attackevent+1))
-	{
-		printf("Should trigger the attack now...");
-		if (enemyUnderAttack)
+	if (enemyUnderAttack && (s32)nodeAnim->getFrameNr()!=lastframe)
+	{			
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
+		
 		{
+			printf("Should trigger the attack now...\n");
 			int life=enemyUnderAttack->getLife()-1;
 			if (life<0) 
-			{
 				life=0;
-				setAnimation("idle");
-			}
+	
 			enemyUnderAttack->setLife(life);
-			
+			DynamicObjectsManager::getInstance()->getTarget()->setPosition(enemyUnderAttack->getPosition()+vector3df(0,0.1f,0));
+			if (life==0)
+				{
+					enemyUnderAttack=NULL;
+					setAnimation("idle");
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+				}
 		}
+		printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
 	}
 
 	// Check if the current animation have an sound event
@@ -498,8 +512,10 @@ void DynamicObject::checkAnimationEvent()
 		(nodeAnim->getFrameNr() > currentAnim.soundevent) &&
 		(nodeAnim->getFrameNr() < currentAnim.soundevent+1))
 	{
-		printf("Should trigger the sound now...");
+		printf("Should trigger the sound now...\n");
 	}
+	lastframe=(s32)nodeAnim->getFrameNr();
+	
 }
 //-----------------------------------------------------------------------
 // Collision response
