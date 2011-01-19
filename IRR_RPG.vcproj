@@ -305,6 +305,14 @@
 			Name="DynamicObjects"
 			>
 			<File
+				RelativePath=".\src\combat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\combat.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\DynamicObject.cpp"
 				>
 			</File>
