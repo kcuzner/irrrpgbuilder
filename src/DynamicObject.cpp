@@ -2,6 +2,7 @@
 
 #include "App.h"
 #include "DynamicObjectsManager.h"
+#include "combat.h"
 #include "LuaGlobalCaller.h"
 #include "Player.h"
 
@@ -26,13 +27,10 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     this->animations = animations;
 
 	setupObj(name, mesh);
-
 	// Setup default properties for all dynamic objects
-	this->properties.life = 100;
-	this->properties.maxlife = 100;
-	this->properties.experience = 10;
-	this->properties.level = 1;
-    this->properties.money = 0;
+	initProperties();
+	
+
 	// When enabled, the LUA will update even if the node is culled.
 	this->nodeLuaCulling = false;
 	lastframe=0;
@@ -59,9 +57,8 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
 	//nodeBlend->setTransitionTime(0.5f);
 
-	this->properties.life = 100;
-	this->properties.experience = 10;
-    this->properties.money = 0;
+	initProperties();
+
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
@@ -70,6 +67,92 @@ DynamicObject::~DynamicObject()
 {
     selector->drop();
     node->remove();
+}
+
+void DynamicObject::initProperties()
+{
+	// Initialize the properties
+	this->properties.armor=0;
+	this->prop_base.armor=0;
+	this->prop_level.armor=0;
+
+	this->properties.dotduration=0;
+	this->prop_base.dotduration=0;
+	this->prop_level.dotduration=0;
+
+	this->properties.experience=0;
+	this->prop_base.experience=0;
+	this->prop_level.experience=0;
+
+	this->properties.hurt_resist=0;
+	this->prop_base.hurt_resist=0;
+	this->prop_level.hurt_resist=0;
+
+	this->properties.level=0;
+	this->prop_base.level=0;
+	this->prop_level.level=0;
+
+	this->properties.life=0;
+	this->prop_base.life=0;
+	this->prop_level.life=0;
+
+	this->properties.magic_armor=0;
+	this->prop_base.magic_armor=0;
+	this->prop_level.magic_armor=0;
+
+	this->properties.mana=0;
+	this->prop_base.mana=0;
+	this->prop_level.mana=0;
+
+	this->properties.maxdamage=0;
+	this->prop_base.maxdamage=0;
+	this->prop_level.maxdamage=0;
+
+	this->properties.maxlife=0;
+	this->prop_base.maxlife=0;
+	this->prop_level.maxlife=0;
+
+	this->properties.maxmana=0;
+	this->prop_base.maxmana=0;
+	this->prop_level.maxmana=0;
+
+	this->properties.mindamage=0;
+	this->prop_base.mindamage=0;
+	this->prop_level.mindamage=0;
+
+	this->properties.money=0;
+	this->prop_base.money=0;
+	this->prop_level.money=0;
+
+	this->properties.regenlife=0;
+	this->prop_base.regenlife=0;
+	this->prop_level.regenlife=0;
+
+	this->properties.regenmana=0;
+	this->prop_base.regenmana=0;
+	this->prop_level.regenmana=0;
+
+	this->properties.skill_level=0;
+	this->prop_base.skill_level=0;
+	this->prop_level.skill_level=0;
+	// end
+
+	//Default values
+	this->properties.life = 100;
+	this->properties.experience = 10;
+    this->properties.money = 0;
+
+	this->prop_base.mindamage=1;
+	this->prop_level.mindamage=1;
+	this->prop_base.maxdamage=3;
+	this->prop_level.maxdamage=2;
+	this->prop_base.experience=0;
+	this->prop_level.experience=10;
+	this->properties.maxlife=100;
+	this->properties.maxmana=100;
+
+	this->prop_base.maxlife=95;
+	this->prop_level.maxlife=5;
 }
 
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
@@ -267,6 +350,37 @@ f32 DynamicObject::getDistanceFrom(vector3df pos)
 //-----------------------------------------------------------------------
 // Properties 
 //-----------------------------------------------------------------------
+property DynamicObject::getProperties()
+{
+	return this->properties;
+}
+
+void DynamicObject::setProperties(property prop)
+{
+	properties = prop;
+}
+
+
+property DynamicObject::getProp_base()
+{
+	return this->prop_base;
+}
+
+void DynamicObject::setProp_base(property prop)
+{
+	prop_base=prop;
+}
+
+property DynamicObject::getProp_level()
+{
+	return this->prop_level;
+}
+
+void DynamicObject::setProp_level(property prop)
+{
+	prop_level=prop;
+}
+
 void DynamicObject::setEnabled(bool enabled)
 {
     this->enabled = enabled;
@@ -491,20 +605,16 @@ void DynamicObject::checkAnimationEvent()
 		
 		{
 			printf("Should trigger the attack now...\n");
-			int life=enemyUnderAttack->getLife()-1;
-			if (life<0) 
-				life=0;
-	
-			enemyUnderAttack->setLife(life);
-			DynamicObjectsManager::getInstance()->getTarget()->setPosition(enemyUnderAttack->getPosition()+vector3df(0,0.1f,0));
-			if (life==0)
-				{
-					enemyUnderAttack=NULL;
-					setAnimation("idle");
-					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-				}
+
+			// Init the combat
+			Combat* combat = new Combat();
+
+			combat->attack(this,enemyUnderAttack);
+
+			// get rid of the combat once the hit damage has been done.
+			delete combat;
 		}
-		printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
+		//printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
 	}
 
 	// Check if the current animation have an sound event

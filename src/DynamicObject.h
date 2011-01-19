@@ -63,6 +63,25 @@ typedef struct{
 
 }DynamicObject_Animation;
 
+typedef struct {
+	int life;
+	int mana;
+	int maxlife;
+	int maxmana;
+	int regenlife;
+	int regenmana;
+	int money;
+	int level;
+	int skill_level;
+	int experience;
+	int mindamage;
+	int maxdamage;
+	int armor;
+	int magic_armor;
+	int hurt_resist;
+	int dotduration;
+}property;
+
 class DynamicObject
 {
     public:
@@ -101,6 +120,15 @@ class DynamicObject
 		void setScale(vector3df scale);
 		vector3df getScale();
 		
+		property getProperties();
+		void setProperties(property prop);
+
+		property getProp_base();
+		void setProp_base(property prop);
+
+		property getProp_level();
+		void setProp_level(property prop);
+
 		void setLife(int life);
         int getLife();
         void setMoney(int money);
@@ -157,6 +185,7 @@ class DynamicObject
 
     private:
         void setupObj(stringc name, IMesh* mesh);
+		void initProperties();
 		void luaRefresh();
 
         //lua funcs
@@ -215,24 +244,6 @@ class DynamicObject
 		vector<DynamicObject_Animation> animations;
 		DynamicObject_Animation currentAnim;
 
-		struct property{
-			int life;
-			int mana;
-			int maxlife;
-			int maxmana;
-			int regenlife;
-			int regenmana;
-			int money;
-			int level;
-			int skill_level;
-			int experience;
-			int mindamage;
-			int maxdamage;
-			int armor;
-			int magic_armor;
-			int hurt_resist;
-			int dotduration;
-		};
 		property prop_base;
 		property prop_level;
 		property properties;
