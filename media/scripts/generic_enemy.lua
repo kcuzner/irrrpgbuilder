@@ -2,7 +2,11 @@ local a = 0
 
 function hitplayer()
   -- Does random damage from 1-4 point of health on the player
-  decreasePlayerLife(math.random(1,4))
+  --decreasePlayerLife(math.random(1,4))
+  -- New command to use the combat system instead (use the default hardcoded properties for now)
+  -- New lua commands will add the possibilities to setup the NPC properties
+  -- Or load a defined set
+  attack("player")
   a = 0
 end
 

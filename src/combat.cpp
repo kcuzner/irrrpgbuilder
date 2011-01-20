@@ -57,7 +57,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 			life=0;
 	
 	defender->setLife(life);
-	DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
+	// Position the target to the defender (Apply only on the player
+	if (attacker->getName()==Player::getInstance()->getObject()->getName())
+		DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
 	printf("Combat was initiated between: %s and %s!!!\n",attacker->getName().c_str(),defender->getName().c_str());
 	printf("%s lost %i point of life!!\n",defender->getName().c_str(),damage);
 	if (life==0)

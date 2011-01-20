@@ -745,6 +745,7 @@ void DynamicObject::doScript()
     lua_register(L,"getRotation",getRotation);
     lua_register(L,"lookAt",lookAt);
     lua_register(L,"lookToObject",lookToObject);
+	lua_register(L,"attack",attackObj);
     lua_register(L,"move",move);
     lua_register(L,"distanceFrom",distanceFrom);
 
@@ -1109,6 +1110,33 @@ int DynamicObject::lookToObject(lua_State *LS)
     tempObj->lookAt(otherObjPosition);
 
     return 0;
+}
+
+int DynamicObject::attackObj(lua_State *LS)
+{
+	stringc otherObjName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = NULL;
+	if(otherObjName != "player")
+    {
+		tempObj = DynamicObjectsManager::getInstance()->getObjectByName(otherObjName);
+	}
+	else
+	{
+		tempObj = Player::getInstance()->getObject();
+	}
+	if (tempObj)
+	{
+		printf("The LUA use attack with that target: %s\n",tempObj->getName().c_str());
+		Combat::getInstance()->attack(DynamicObjectsManager::getInstance()->getObjectByName(objName),tempObj);
+	}
+
+	return 0;
 }
 
 int DynamicObject::setFrameLoop(lua_State *LS)

@@ -196,6 +196,7 @@ class DynamicObject
         static int move(lua_State *LS);//move(x,y,z)
         static int lookAt(lua_State *LS);//lookAt(x,y,z)
         static int lookToObject(lua_State *LS);//lookToObject(otherObjectName)
+		static int attackObj(lua_State *LS);//attackObj(otherObjectName)
         static int distanceFrom(lua_State *LS);
 
         static int setFrameLoop(lua_State *LS);//setFrameLoop(start,end);
