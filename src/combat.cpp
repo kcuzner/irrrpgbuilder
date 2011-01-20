@@ -19,6 +19,8 @@ Combat::Combat()
 	dotvictim.clear();
 	dotduration.clear();
 	dotdamage.clear();
+	freepoints = 0;
+	skillspoints = 0 ;
 	dotenabled=false;
 }
 
@@ -38,28 +40,19 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 {
 	
 	property attacker_prop = attacker->getProperties();
-	property attacker_base = attacker->getProp_base();
-	property attacker_level = attacker->getProp_level();
 	
+	// Retrieve the current life meter on the defender
 	int life=defender->getLife();
-	//attacker->setProp_base(attacker_base);
-	//attacker->setProp_level(attacker_level);
-	
+
 	dumpProperties(attacker);
 	dumpProperties(defender);
-	// Basic rules that evaluate only the damage (and evaluation per level)
-	// TODO: Need to be changed. The "current" properties is the only one to be evaluated.
-	// The 2 others are needed only at level change to set the "current" properties.
-	// Documentation will have to be written so users could those adequately.
-	int maxdamage = attacker_base.maxdamage+(attacker_level.maxdamage*attacker->getProperties().level);
-	int mindamage = attacker_base.mindamage+(attacker_level.mindamage*attacker->getProperties().level);
-	if (maxdamage<1)
-		maxdamage=1;
-	if (mindamage<0) 
-		mindamage=0;
-	int damage = chances(mindamage,maxdamage);
+	
+	// TODO: Documentation will have to be written so users could the properties adequately.
+	
+	int damage = chances(attacker_prop.mindamage,attacker_prop.maxdamage);
 	life -= damage;
 	
+	// limit the damage to the life of the defender.
 	if (life<0) 
 			life=0;
 	
@@ -71,8 +64,16 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		{
 			// get the experience of the defender
 			attacker_prop.experience += defender->getProperties().experience;
-			// Set the properties of the attacker back
+			// Set the properties of the attacker back since the experience increased
 			attacker->setProperties(attacker_prop);
+
+			// Determine if a level raise is needed
+			int baseXP = attacker->getProp_base().experience;
+			int levelXP = attacker->getProp_level().experience;
+			int level = attacker_prop.level;
+			if (attacker_prop.experience>(baseXP+(levelXP*(level*level))))
+				updateLevel(attacker);
+
 			defender=NULL;
 			attacker->setAnimation("idle");
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
@@ -81,11 +82,52 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	Player::getInstance()->updateDisplay();
 }
 
+void Combat::updateLevel(DynamicObject* object)
+{
+	property object_prop = object->getProperties();
+	property object_base = object->getProp_base();
+	property object_level = object->getProp_level();
+
+	// NPC cannot have attribution points
+	//
+	// TODO: Player class will need an interface for this 
+	// Also a GUI need to be created to assign theses points.
+
+	freepoints+=2;
+	skillspoints+=1;
+
+
+	// Properties that are not changed by this:
+	// level in "base" and "level", only used in "properties"
+	// experience, dotduration, skillevel
+	object_prop.level += 1;
+	object_prop.maxdamage = object_base.maxdamage+(object_level.maxdamage*object_prop.level);
+	object_prop.mindamage = object_base.mindamage+(object_level.mindamage*object_prop.level);
+	object_prop.armor = object_base.armor+(object_level.armor*object_prop.level);
+	object_prop.magic_armor = object_base.magic_armor+(object_level.magic_armor*object_prop.level);
+	object_prop.maxlife = object_base.maxlife+(object_level.maxlife*object_prop.level);
+	object_prop.maxmana = object_base.maxmana+(object_level.maxmana*object_prop.level);
+	object_prop.hurt_resist = object_base.hurt_resist+(object_level.hurt_resist*object_prop.level);
+	object_prop.regenlife = object_base.regenlife+(object_level.regenlife*object_prop.level);
+	object_prop.regenmana = object_base.regenmana+(object_level.regenmana*object_prop.level);
+
+	// if the level increased put the health back at max life (should have a way to activate or deactivate it on the need
+	object_prop.life = object_prop.maxlife;
+
+	// put the stuff back into the dynamic object
+	object->setProperties(object_prop);
+	
+}
+
 int Combat::chances(int min, int max)
 // Use a random value to determinate the result
 // Example damage done ranging from 10 to 100 points min=10, max=100
 {
-	return rand() % (max-min) + min;
+	int result = (max-min) + min;
+	if (result<1)
+		return 0;
+	else
+		return rand() % result;
 }
 
 void Combat::dumpProperties(DynamicObject* object)

@@ -140,20 +140,13 @@ void DynamicObject::initProperties()
 
 	//Default values
 	this->properties.life = 100;
-	this->properties.experience = 10;
+	this->properties.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
     this->properties.money = 0;
-
-	this->prop_base.mindamage=1;
-	this->prop_level.mindamage=1;
-	this->prop_base.maxdamage=3;
-	this->prop_level.maxdamage=2;
-	this->prop_base.experience=0;
-	this->prop_level.experience=10;
+	this->properties.mindamage=1;
+	this->properties.maxdamage=3;
 	this->properties.maxlife=100;
 	this->properties.maxmana=100;
 
-	this->prop_base.maxlife=95;
-	this->prop_level.maxlife=5;
 }
 
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
@@ -449,7 +442,8 @@ vector3df DynamicObject::getScale()
 void DynamicObject::setLife(int life)
 {
     this->properties.life = life;
-	Player::getInstance()->updateDisplay();
+	if (objectType==OBJECT_TYPE_PLAYER)
+		Player::getInstance()->updateDisplay();
 	// Trigger the death animation immediately.
 	if (life==0)
 	{
@@ -592,7 +586,7 @@ void DynamicObject::checkAnimationEvent()
 		{
 			printf("Should trigger the attack now...\n");
 			// Init the combat
-			DynamicObjectsManager::getInstance()->getCombat()->attack(this,enemyUnderAttack);
+			Combat::getInstance()->attack(this,enemyUnderAttack);
 
 		}
 		//printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
@@ -844,10 +838,7 @@ void DynamicObject::update()
 		notifyCollision();
 	}
 
-	// Update the combat
-	
-	DynamicObjectsManager::getInstance()->getCombat()->update();
-	// New optimisations (november 2010): Adding timed interface an culling check.
+	// timed interface an culling check.
 	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
 	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
 	// Check for culling on a node and don't update it if it's culled.

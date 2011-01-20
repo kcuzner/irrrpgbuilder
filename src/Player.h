@@ -6,6 +6,7 @@
 #include "LuaGlobalCaller.h"
 #include "LANGManager.h"
 #include "DynamicObject.h"
+#include "combat.h"
 
 using namespace irr;
 using namespace core;

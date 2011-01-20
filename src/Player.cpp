@@ -4,6 +4,7 @@
 #include "tinyXML/tinyxml.h"
 #include "DynamicObjectsManager.h"
 
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -15,11 +16,41 @@ using namespace std;
 
 Player::Player()
 {
-  playerObject = DynamicObjectsManager::getInstance()->getPlayer();
-  playerObject->getNode()->setVisible(true);
-  playerObject->setEnabled(true);
-  playerObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
-  playerObject->setAnimation("idle");
+	playerObject = DynamicObjectsManager::getInstance()->getPlayer();
+	playerObject->getNode()->setVisible(true);
+	playerObject->setEnabled(true);
+	playerObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
+	playerObject->setAnimation("idle");
+
+	// Specific properties for the player (hardcoded for now)
+	property playerprop = playerObject->getProperties();
+	property player_base = playerObject->getProp_base();
+	property player_level = playerObject->getProp_level();
+
+	playerprop.experience = 0;
+	playerprop.mindamage = 3;
+	playerprop.maxdamage = 10;
+	playerprop.level = 1;
+	
+	// Set the upgradable properties (properties that will increase automatically at each level)
+	player_base.maxlife=95; // Starting at level 0 with 95 hp
+	player_level.maxlife=5; // each level add 5 hp more (level 1=100hp, level 2=105hp, level 3=110hp)
+
+	player_base.mindamage = 1; // Starting at level 0 with 1 point of damage (min)
+	player_level.mindamage = 2; // each level add 2 more points to the min damage (level 1=3pts, level 2=4pts, level 3=7pts)
+	
+	player_base.maxdamage = 5;
+	player_level.maxdamage = 5;
+
+	player_base.experience = 50;
+	player_level.experience = 20;
+	
+	
+
+
+	playerObject->setProperties(playerprop);
+	playerObject->setProp_base(player_base);
+	playerObject->setProp_level(player_level);
 }
 
 Player::~Player()
@@ -46,6 +77,8 @@ void Player::update()
 	vector3df walkTarget = playerObject->getWalkTarget();
 	if (timercheck-timer1>17)
 	{
+		// Update the combat system (mostly for damage over time management (dot))
+		Combat::getInstance()->update();
 		timer1 = timercheck;
 		//printf("current state of animation is %i\n",playerObject->getAnimation());
 		// Calculate the size of the mesh, and multiplicate it with the scale

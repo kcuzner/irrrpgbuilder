@@ -6,7 +6,6 @@
 #include "App.h"
 
 #include "DynamicObject.h"
-#include "combat.h"
 
 #include "Player.h"
 
@@ -38,7 +37,6 @@ class DynamicObjectsManager
         DynamicObject* getObjectByName(stringc name);
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
-		Combat* getCombat();
 
         vector<stringc> getObjectsList();
 
@@ -74,7 +72,6 @@ class DynamicObjectsManager
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
-		Combat*	combat;
 
         vector<DynamicObject*> objectsTemplate;
 

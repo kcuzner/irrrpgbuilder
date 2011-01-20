@@ -33,6 +33,7 @@ class Combat
 
 	static Combat* getInstance();
 	void attack(DynamicObject* attacker, DynamicObject* defender);
+	void updateLevel(DynamicObject* object);
 	void dot(DynamicObject* victim, int duration, int damage);
 	void dumpProperties (DynamicObject* object);
 	void update();
@@ -51,6 +52,9 @@ class Combat
 		vector<int> dotdamage;
 		vector<u32> dottimer;
 		bool dotenabled;
+
+		u32 freepoints;
+		u32 skillspoints;
       
 };
 
