@@ -43,6 +43,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
 	//nodeBlend->setTransitionTime(0.5);
 
+
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
@@ -448,22 +449,7 @@ vector3df DynamicObject::getScale()
 void DynamicObject::setLife(int life)
 {
     this->properties.life = life;
-	if (objectType == OBJECT_TYPE_PLAYER)
-	{
-		// Update the GUI display
-		stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
-		playerLife += life;
-		playerLife += "/";
-		playerLife += this->properties.maxlife;
-		playerLife += " Exp:";
-		stringc playerxp = (stringc)this->properties.experience;
-		playerLife += playerxp;
-		playerLife += " Level:";
-		playerLife += this->properties.level;
-		//+(stringc)properties.experience;
-		GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
-	}
-
+	Player::getInstance()->updateDisplay();
 	// Trigger the death animation immediately.
 	if (life==0)
 	{
@@ -605,14 +591,9 @@ void DynamicObject::checkAnimationEvent()
 		
 		{
 			printf("Should trigger the attack now...\n");
-
 			// Init the combat
-			Combat* combat = new Combat();
+			DynamicObjectsManager::getInstance()->getCombat()->attack(this,enemyUnderAttack);
 
-			combat->attack(this,enemyUnderAttack);
-
-			// get rid of the combat once the hit damage has been done.
-			delete combat;
 		}
 		//printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
 	}
@@ -863,6 +844,9 @@ void DynamicObject::update()
 		notifyCollision();
 	}
 
+	// Update the combat
+	
+	DynamicObjectsManager::getInstance()->getCombat()->update();
 	// New optimisations (november 2010): Adding timed interface an culling check.
 	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
 	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)

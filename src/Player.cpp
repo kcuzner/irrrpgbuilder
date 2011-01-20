@@ -82,7 +82,25 @@ void Player::update()
 		{
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
+		//updateDisplay();
 	}
+}
+
+void Player::updateDisplay()
+{
+	// Update the GUI display
+	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
+	playerLife += playerObject->getProperties().life;
+	playerLife += "/";
+	playerLife += playerObject->getProperties().maxlife;
+	playerLife += " Exp:";
+	stringc playerxp = (stringc)playerObject->getProperties().experience;
+	playerLife += playerxp;
+	playerLife += " Level:";
+	playerLife += playerObject->getProperties().level;
+	//+(stringc)properties.experience;
+	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
+	
 }
 
 void Player::setHighLight(bool highlight)

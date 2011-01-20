@@ -3,9 +3,8 @@
 
 #include <irrlicht.h>
 
-//#include "HardwareSkinCallback.h"
-
 #include "tinyXML/tinyxml.h"
+
 #include "TerrainManager.h"
 #include "GUIManager.h"
 

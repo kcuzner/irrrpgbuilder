@@ -27,6 +27,7 @@ class Player
 		DynamicObject* getObject();
 
 		void update();
+		void updateDisplay();
 		
 		
 		// Other player specific functions

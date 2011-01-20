@@ -68,6 +68,9 @@ DynamicObjectsManager::DynamicObjectsManager()
 	collisionCounter = 0;
 	createcollisions=true;
 	 cout << "DEBUG : XML : finished!" << endl;
+
+	 // Initialize the combat system
+	 combat->getInstance();
 }
 
 DynamicObjectsManager::~DynamicObjectsManager()
@@ -365,6 +368,11 @@ DynamicObject* DynamicObjectsManager::getPlayer()
 DynamicObject* DynamicObjectsManager::getTarget()
 {
 	return targetObject;
+}
+
+Combat* DynamicObjectsManager::getCombat()
+{
+	return combat;
 }
 
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
