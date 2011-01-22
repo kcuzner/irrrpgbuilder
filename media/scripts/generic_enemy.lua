@@ -1,11 +1,17 @@
 local a = 0
 
+function setProperties()
+-- Using the new properties attributes, can set the NPC combat attributes
+	setEnemy() -- this is an ennemy
+	setPropertie("life",50) -- current life of the NPC
+	setPropertie("maxlife",50) -- current Maximum life of this NPC
+	setPropertie("experience",10) -- given experience to attacker if killed
+	setPropertie("mindamage",2) -- minimum damage inflicted
+	setPropertie("maxdamage",5) -- maximum damage inflicted
+	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
+end
+
 function hitplayer()
-  -- Does random damage from 1-4 point of health on the player
-  --decreasePlayerLife(math.random(1,4))
-  -- New command to use the combat system instead (use the default hardcoded properties for now)
-  -- New lua commands will add the possibilities to setup the NPC properties
-  -- Or load a defined set
   attack("player")
   a = 0
 end
@@ -24,11 +30,11 @@ end
 
 -- "step" will trigger at each time interval (around 1/4 second)
 function step()
-  life = getObjectLife(objName);
-  if (life == 0) then setEnabled(false) end
+  name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
+  if (getPropertie("life") == 0) then setEnabled(false) end
   local x,y,z = getObjectPosition("player")
-  if(distanceFrom(x,y,z) < 144) then 
-    setObjectLabel("Enemy life:"..life.."/50")
+  if(distanceFrom(x,y,z) < 288) then 
+    setObjectLabel(name)
     showObjectLabel()
     if(distanceFrom(x,y,z) < 60 or blocked) then
 		setAnimation("idle")
@@ -39,11 +45,12 @@ function step()
 			a=1
 		end
 		  if (a==0)then
+		  -- wait 0.5 second then do the attack (the animation is not present for the attack)
           programAction(0.5, hitplayer)
-          a = 1
+          a = 1 -- this will "block the next attacks until it has been really done"
         end  
       else
-        chaseObject("player",0.8,60,600)
+        chaseObject("player",0.8,60,800)
       end
   else
     hideObjectLabel()
@@ -51,11 +58,10 @@ function step()
   end
 end
 
--- "onLoad" will trigger when the dynamic object is initialized (once)
+-- "onLoad" will trigger when the dynamic object is initialized (only once)
 function onLoad()
-  setEnemy()
-  setObjectLife(objName,50);
-  blocked = false;
-end
+	setProperties();
+	blocked = false;
+ end
 
 

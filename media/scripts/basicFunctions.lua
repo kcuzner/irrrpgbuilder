@@ -38,13 +38,15 @@ function chaseObject(name, speed, near, far)
   if(speed == nil) then speed = 0.8 end
   y = 0;
   --lookToObject(name)
+  -- Alway look at it target even if it's not moving.
   lookAt(x,y,z)
     
   if(far == nil) then far = 600 end
   if(near == nil) then near = 36 end
   
   if( (distanceFrom(x,y,z) < far) and (distanceFrom(x,y,z) > near) ) then
-    move(speed)
+    walkTo(x,y,z);
+	--move(speed)
 	animation = "walk"
   end
   
@@ -60,6 +62,8 @@ end
 --@param speed defines the walk speed. default 0.01
 function walkRandomly(radius, speed)
   if( randomPointX == nil or randomPointZ == nil ) then
+	IRBOriginalPositionX,IRBOriginalPositionY,IRBOriginalPositionZ = getPosition()
+	IRBOriginalRotationX,IRBOriginalRotationY,IRBOriginalRotationZ = getRotation()
     randomPointX = IRBOriginalPositionX
     randomPointZ = IRBOriginalPositionZ
   end
@@ -77,8 +81,10 @@ function walkRandomly(radius, speed)
     randomPointZ = IRBOriginalPositionZ
   end
   
-  lookAt(randomPointX,0,randomPointZ)
-  move(speed)
+  walkTo(randomPointX,0,randomPointZ)
+  
+  --lookAt(randomPointX,0,randomPointZ)
+  --move(speed)
 end
 
 --with this function you can schedule an function call, for example:
