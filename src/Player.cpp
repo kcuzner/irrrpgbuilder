@@ -89,11 +89,12 @@ void Player::update()
 		// Walk until in range
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
 		{
+			SoundManager::getInstance()->setListenerPosition(this->getObject()->getPosition(),this->getObject()->getRotation());
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
 			if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
 			{
 				this->playerObject->setAnimation("walk");
-				printf("Hey the player specificalled for a walk state!\n");
+				printf("Hey the player specifically asked for a walk state!\n");
 			}
 
 			this->playerObject->walkTo(walkTarget); 
@@ -103,7 +104,7 @@ void Player::update()
 		// Stop the walk when in range
 		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer))
 		{
-			printf("Hey the player specificalled for a idle state!\n");
+			printf("Hey the player specifically asked for a idle state!\n");
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 			this->playerObject->setAnimation("idle");
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);

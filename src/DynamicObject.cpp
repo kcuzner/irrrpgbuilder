@@ -262,11 +262,9 @@ void DynamicObject::setPosition(vector3df pos)
 
 vector3df DynamicObject::getPosition()
 {
-	if (fakeShadow)
-		return fakeShadow->getAbsolutePosition();
-	else 
-		return vector3df(0,0,0);
-    //return node->getPosition();
+	vector3df pos = fakeShadow->getAbsolutePosition();
+	return pos; 
+	//return node->getPosition();
 }
 
 void DynamicObject::setRotation(vector3df rot)
@@ -281,6 +279,7 @@ vector3df DynamicObject::getRotation()
 
 void DynamicObject::moveObject(f32 speed)
 {
+
 	vector3df pos=this->getPosition();
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
@@ -306,7 +305,7 @@ void DynamicObject::walkTo(vector3df targetPos)
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-    //pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
 	
 	if (height>-0.09f && height<0.05f && !collided)
@@ -317,7 +316,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 	{
-		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		if (objectType==OBJECT_TYPE_PLAYER)
+			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		walkTarget = this->getPosition();
 		this->setAnimation("idle");
 		printf("Stop because of a collision...\n");
@@ -745,9 +745,14 @@ void DynamicObject::doScript()
     lua_register(L,"getRotation",getRotation);
     lua_register(L,"lookAt",lookAt);
     lua_register(L,"lookToObject",lookToObject);
+
 	lua_register(L,"attack",attackObj);
+	lua_register(L,"setPropertie",setPropertie);
+	lua_register(L,"getPropertie",getPropertie);
     lua_register(L,"move",move);
+	lua_register(L,"walkTo",walkToLUA);
     lua_register(L,"distanceFrom",distanceFrom);
+	lua_register(L,"getName",getNameLUA);
 
     lua_register(L,"setFrameLoop",setFrameLoop);
     lua_register(L,"setAnimationSpeed",setAnimationSpeed);
@@ -830,7 +835,7 @@ void DynamicObject::update()
 
 	// Check for an event in the current animation.
 	checkAnimationEvent();
-
+	
 	// Check for collision with another node
 	if (animator && animator->collisionOccurred())
 	{
@@ -852,8 +857,9 @@ void DynamicObject::update()
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
 	{
+		updateWalk();
 		if (currentSpeed!=0)
-			currentObject->moveObject(currentSpeed);
+			//currentObject->moveObject(currentSpeed);
 		timer2=timerobject;
 	}
 	// Tries out animation blending.
@@ -874,6 +880,44 @@ void DynamicObject::update()
 			timer = timerobject;
 		}
 	}
+}
+
+void DynamicObject::updateWalk()
+{
+	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
+	f32 meshScale = this->getScale().X;
+		
+		// Walk until in range
+		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
+		{
+			TerrainManager::getInstance()->getHeightAt(walkTarget);
+			if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+			{
+				this->setAnimation("walk");
+				printf("Hey the object specifically asked for a walk state!\n");
+			}
+
+			this->walkTo(walkTarget); 
+			return;
+		}
+
+		// Stop the walk when in range
+		if (this->getAnimation()==OBJECT_ANIMATION_WALK && this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
+		{
+			printf("Hey the object specifically asked  for a idle state!\n");
+			this->setWalkTarget(this->getPosition());
+			this->setAnimation("idle");
+			if (objectType==OBJECT_TYPE_PLAYER)
+				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+			return;
+		}
+
+		// Cancel the move if another animation is triggered
+		if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_IDLE)
+		{
+			this->setWalkTarget(this->getPosition());
+		}
+
 }
 
 void DynamicObject::luaRefresh()
@@ -1048,9 +1092,38 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 
     if(tempObj)
     {
-		tempObj->setAnimation("walk");
+		if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
+			tempObj->setAnimation("walk");
 		printf ("Lua call the walk animation.\n");
 		tempObj->moveObject(speed);
+    }
+
+    return 0;
+}
+
+int DynamicObject::walkToLUA(lua_State *LS)
+{
+	float z = (float)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	float y = (float)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+    float x = (float)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+    lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+
+    if(tempObj)
+    {
+		if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
+			tempObj->setAnimation("walk");
+		tempObj->setWalkTarget(vector3df(x,y,z));
     }
 
     return 0;
@@ -1108,6 +1181,7 @@ int DynamicObject::lookToObject(lua_State *LS)
 
 
     tempObj->lookAt(otherObjPosition);
+	
 
     return 0;
 }
@@ -1139,6 +1213,82 @@ int DynamicObject::attackObj(lua_State *LS)
 	return 0;
 }
 
+int DynamicObject::setPropertie(lua_State *LS)
+{
+	int value = (int)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+	
+	stringc propertieName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	// I would like to specify the object name so lua could set the properies of another object (another command?)
+	//stringc otherObjName = lua_tostring(LS, -1);
+	//lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	if (propertieName=="life")
+		Obj->properties.life = value;
+	if (propertieName=="maxlife")
+		Obj->properties.maxlife = value;
+	if (propertieName=="mindamage")
+		Obj->properties.mindamage = value;
+	if (propertieName=="maxdamage")
+		Obj->properties.maxdamage = value;
+	if (propertieName=="hurt_resist")
+		Obj->properties.hurt_resist = value;
+	if (propertieName=="experience")
+		Obj->properties.experience = value;
+		
+	//if (otherObjName=="me")
+	
+	return 0;
+}
+
+int DynamicObject::getPropertie(lua_State *LS)
+{
+	stringc propertieName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	//stringc otherObjName = lua_tostring(LS, -1);
+	//lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+	int value = 0;
+	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	if (propertieName=="life")
+		value = Obj->properties.life;
+	if (propertieName=="maxlife")
+		value = Obj->properties.maxlife;
+	if (propertieName=="mindamage")
+		value = Obj->properties.mindamage;
+	if (propertieName=="maxdamage")
+		value = Obj->properties.maxdamage;
+	if (propertieName=="hurt_resist")
+		value = Obj->properties.hurt_resist;
+	if (propertieName=="experience")
+		value = Obj->properties.experience;
+
+	lua_pushnumber(LS,value);
+
+	return 1;
+}
+int DynamicObject::getNameLUA(lua_State *LS)
+{
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	stringc value = Obj->getTemplateObjectName();
+	lua_pushstring(LS,value.c_str()); 
+
+	return 1;
+}
 int DynamicObject::setFrameLoop(lua_State *LS)
 {
     int start = (int)lua_tonumber(LS, -1);

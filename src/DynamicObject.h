@@ -185,6 +185,7 @@ class DynamicObject
     private:
         void setupObj(stringc name, IMesh* mesh);
 		void initProperties();
+		void updateWalk();
 		void luaRefresh();
 
         //lua funcs
@@ -194,10 +195,14 @@ class DynamicObject
         static int getRotation(lua_State *LS);//x,y,z = getPosition()
         static int turn(lua_State *LS);//turn(degrees)
         static int move(lua_State *LS);//move(x,y,z)
+		static int walkToLUA(lua_State *LS); // walkToLua("objectName")
         static int lookAt(lua_State *LS);//lookAt(x,y,z)
         static int lookToObject(lua_State *LS);//lookToObject(otherObjectName)
 		static int attackObj(lua_State *LS);//attackObj(otherObjectName)
+		static int setPropertie(lua_State *LS); // setPropertie("objectName","propertie",value)
+		static int getPropertie(lua_State *LS); // value getPropertie("objectName","propertie")
         static int distanceFrom(lua_State *LS);
+		static int getNameLUA(lua_State *LS); // value getNameLUA()
 
         static int setFrameLoop(lua_State *LS);//setFrameLoop(start,end);
         static int setAnimation(lua_State *LS);//setAnimation(anim_name);

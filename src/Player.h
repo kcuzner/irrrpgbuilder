@@ -7,6 +7,7 @@
 #include "LANGManager.h"
 #include "DynamicObject.h"
 #include "combat.h"
+#include "SoundManager.h"
 
 using namespace irr;
 using namespace core;

@@ -43,7 +43,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	
 	// Retrieve the current life meter on the defender
 	int life=defender->getLife();
-
+	printf ("\n----------------------------------------------------------\n");
+	printf("COMBAT: AT: %s and DEF:%s!!!\n",attacker->getName().c_str(),defender->getName().c_str());
+	printf ("----------------------------------------------------------\n");
 	dumpProperties(attacker);
 	dumpProperties(defender);
 	
@@ -60,8 +62,8 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Position the target to the defender (Apply only on the player
 	if (attacker->getName()==Player::getInstance()->getObject()->getName())
 		DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
-	printf("Combat was initiated between: %s and %s!!!\n",attacker->getName().c_str(),defender->getName().c_str());
-	printf("%s lost %i point of life!!\n",defender->getName().c_str(),damage);
+	
+	printf("%s lost %i point of life!!\n\n",defender->getName().c_str(),damage);
 	if (life==0)
 		{
 			// get the experience of the defender
@@ -134,7 +136,7 @@ int Combat::chances(int min, int max)
 
 void Combat::dumpProperties(DynamicObject* object)
 {
-	printf ("\nHere are the stats for NPC: %s\n\n",object->getName().c_str());
+	printf ("\nObject: %s\n",object->getName().c_str());
 	printf ("----------------------------------------------------------\n");
 	printf ("PROPERTIE NAME            |  Current |  Base   |  Level   |\n");
 	printf ("----------------------------------------------------------\n");
@@ -150,7 +152,7 @@ void Combat::dumpProperties(DynamicObject* object)
 	printf ("Regen life points per tick|  %i      |   %i    |   %i     |\n",object->getProperties().regenlife,object->getProp_base().regenlife,object->getProp_level().regenlife);
 	printf ("Regen mana points per tick|  %i      |   %i    |   %i     |\n",object->getProperties().regenmana,object->getProp_base().regenmana,object->getProp_level().regenmana);
 	printf ("Dot(poison) duration      |  %i      |   %i    |   %i     |\n",object->getProperties().dotduration,object->getProp_base().dotduration,object->getProp_level().dotduration);
-	printf ("---------------------------------------------------------\n\n");
+	printf ("---------------------------------------------------------\n");
 }
 
 void Combat::dot(DynamicObject *victim, int duration, int damage)
