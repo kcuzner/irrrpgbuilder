@@ -44,6 +44,12 @@ Player::Player()
 
 	player_base.experience = 50;
 	player_level.experience = 20;
+
+	player_base.hit_prob = 70;
+	player_level.hit_prob = 0.5f;
+
+	player_base.dodge_prop = 12;
+	player_level.dodge_prop = 0.5f;
 	
 	
 

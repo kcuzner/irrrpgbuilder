@@ -79,6 +79,10 @@ typedef struct {
 	int magic_armor;
 	int hurt_resist;
 	int dotduration;
+	f32 hit_prob;
+	f32 dodge_prop;
+	int mindefense;
+	int maxdefense;
 }property;
 
 class DynamicObject

@@ -136,6 +136,14 @@ void DynamicObject::initProperties()
 	this->properties.skill_level=0;
 	this->prop_base.skill_level=0;
 	this->prop_level.skill_level=0;
+
+	this->properties.dodge_prop=0;
+	this->prop_base.dodge_prop=0;
+	this->prop_level.dodge_prop=0;
+
+	this->properties.hit_prob=0;
+	this->prop_base.hit_prob=0;
+	this->prop_level.hit_prob=0;
 	// end
 
 	//Default values
@@ -146,6 +154,8 @@ void DynamicObject::initProperties()
 	this->properties.maxdamage=3;
 	this->properties.maxlife=100;
 	this->properties.maxmana=100;
+	this->properties.dodge_prop=12;
+	this->properties.hit_prob=70;
 
 }
 
@@ -924,6 +934,11 @@ void DynamicObject::luaRefresh()
 {
 	if (App::getInstance()->getAppState() > 100) 
 	{//app_state < APP_STATE_CONTROL
+		lua_getglobal(L,"onUpdate");
+		if(lua_isfunction(L, -1)) 
+			lua_call(L,0,0);
+		lua_pop( L, -1 );
+
 		lua_getglobal(L,"step");
 		
 		if(lua_isfunction(L, -1)) 

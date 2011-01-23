@@ -31,15 +31,16 @@ class Combat
         Combat();
 		~Combat();
 
-	static Combat* getInstance();
-	void attack(DynamicObject* attacker, DynamicObject* defender);
-	void updateLevel(DynamicObject* object);
-	void dot(DynamicObject* victim, int duration, int damage);
-	void dumpProperties (DynamicObject* object);
-	void update();
+		static Combat* getInstance();
+		void attack(DynamicObject* attacker, DynamicObject* defender);
+		void updateLevel(DynamicObject* object);
+		void dot(DynamicObject* victim, int duration, int damage);
+		void dumpProperties (DynamicObject* object);
+		void update();
 
 	protected:
-	int chances(int min, int max);
+		bool percent(f32 percent);
+		int chances(int min, int max);
 
 	private:
 
