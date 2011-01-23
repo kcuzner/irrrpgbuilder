@@ -29,7 +29,7 @@ function onCollision()
 end
 
 -- "step" will trigger at each time interval (around 1/4 second)
-function step()
+function onUpdate()
   name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
   if (getPropertie("life") == 0) then setEnabled(false) end
   local x,y,z = getObjectPosition("player")

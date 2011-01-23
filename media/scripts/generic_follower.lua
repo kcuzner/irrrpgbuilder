@@ -9,7 +9,7 @@ function setProperties()
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 end
 
-function step()
+function onUpdate()
 	name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
 	local x,y,z = getObjectPosition("player")
 	if (getPropertie("life") == 0) then setEnabled(false) end
