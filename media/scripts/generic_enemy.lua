@@ -36,7 +36,7 @@ function onUpdate()
   if(distanceFrom(x,y,z) < 288) then 
     setObjectLabel(name)
     showObjectLabel()
-    if(distanceFrom(x,y,z) < 60 or blocked) then
+    if(distanceFrom(x,y,z) < 66 or blocked) then
 		setAnimation("idle")
 		setFrameLoop(0,0);
 		-- reset the collision
@@ -50,7 +50,7 @@ function onUpdate()
           a = 1 -- this will "block the next attacks until it has been really done"
         end  
       else
-        chaseObject("player",0.8,60,800)
+        chaseObject("player",0.8,66,800)
       end
   else
     hideObjectLabel()
