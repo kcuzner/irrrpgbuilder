@@ -212,11 +212,18 @@ move(float speed)
 	Set the walk speed of the object
 	Also activate the "walk" animation state
 
+walkTo(float x,float y,float z)
+	Set the destination of the object and the object will walk there
+	with the current speed defined in the XML file 
+
 lookAt(float x,float y,float z)
 	The object turn to face the specified coordinates
 
 lookToObject(string 'objectname')
 	The object turn to face the specified object name
+
+string 'objectname' = getName()
+	Return the defined name of the template used
 	
 
 distance = distanceFrom(float x, float y, float z)
@@ -236,10 +243,14 @@ setAnimation(string 'animation name')
 
   Here are the default animation names for the specific animation states. 
   Usign theses names will trigger the proper animation state for the AI.
-	idle, set the state to OBJECT_ANIMATION_IDLE
+	idle, set the state to OBJECT_ANIMATION_IDLE	
+		|--> Special, must be there (xml) as this is the strict minimum for a NPC
+	
 	walk, set the state to OBJECT_ANIMATION_WALK
 	run, set the state to OBJECT_ANIMATION_RUN
-	attack, set the state to OBJECT_ANIMATION_ATTACK
+	attack, set the state to OBJECT_ANIMATION_ATTACK 
+		|--> Special, will trigger the attack if an attack event has been defined in the XML file
+	
 	injured, set the state to OBJECT_ANIMATION_INJURED
 	knockback, set the state to OBJECT_ANIMATION_KNOCKBACK
 	die, set the state to OBJECT_ANIMATION_DIE
@@ -260,11 +271,58 @@ setObjectLabel(string 'newlabel')
 setEnabled(boolean)
 	Set the state of the dynamic object (enabled/disabled)
 
+
+--------------------------------------
+Dynamic objects: (properties and combat)
+--------------------------------------
+Current properties names:
+
+Propertie name		Description
+-----------------------------------------------------------------------
+life		-->	Current life points 
+mana		-->	Current mana points
+maxlife 	--> 	Maximum life points
+regenlife	-->	Points of life regeneration		
+regenmana	-->	Points of mana regeneration
+money		-->	Current money
+level		-->	Current level
+experience	--> 	Current experience (or given experience if NPC)
+mindamage	-->	minimum damage per hit
+maxdamage	-->	maximum damage per hit 
+armor		-->	armor point
+magic_armor	-->	magic armor point
+hurt_resist	-->	hurt resistance probability
+dotduration	-->	duration for the dot (damage over time, poison)
+hit_prob	-->	probability of hitting the target
+dodge_prob	-->	probability of dodging the hit from the attacker
+mindefense 	-->	minimum defense points
+maxdefense 	-->	maximum defense points
+
+
+Current properties and combat commands:
+
 setEnemy()
 	This object will become an enemy of the player
 
 setObject()
-	This object will become an object (default)
+	This object will become an object (non-aggressive) (default)
+
+setPropertie (string 'propertie name', float value)
+	This will set the named propertie to the value entered
+	Ex: setPropertie("life",100)
+
+float value getPropertie(string 'propertie name')
+	Give back the entered value from the named propertie entered
+	Ex: value = getPropertie("life")
+
+attack(string 'ennemy name')
+	This will trigger the combat system to do a battle with the current object and the object entered
+	The combat system will check the properties of each opponent and do damages on the defender
+	This will not check of the faction, nor the distance
+	Ex: attack("player")
+
+
+
 ---------------------------------------
 Special Variables
 ObjName = NAME OF THE OBJECT
@@ -272,17 +330,22 @@ objType = ENEMY or OBJECT
 ---------------------------------------
 Callbacks:
 
-IRBSaveParams()
-IRBRestoreParams()
+IRBSaveParams() -- removed (done directly in the engine now)
+IRBRestoreParams() -- removed (done directly in the engine now)
 	
 
 onLoad()
 	Called when the object is loading in the game
-step()
+
+onRefresh()
+step() -- old name
 	Called at each interval (default interval is 1/4 sec)
 
 onClicked()
 	Called when the object as been clicked with the mouse
+
+onCollision()
+	Called when a collision occur with the object
 
 CustomDynamicObjectUpdate()
 
