@@ -1,8 +1,8 @@
 <IrrRPG_Builder_DynamicObjects version="1.0">
-  	<dynamic_object name="player_normal" mesh="../player/player_02.b3d" script="generic_player.lua" type="player" scale="72.0">
-		<animation name="idle" mesh="../player/player_idle.b3d" start="1" end="100" />
-		<animation name="walk" start="1" end="25" speed="25.0" walkspeed="1.0"/>
-	 	<animation name="attack" attackevent="37" start="27" end="47" />
+  	<dynamic_object name="player_normal" mesh="../player/warrior_ref.x" script="generic_player.lua" type="player" scale="1.0">
+		<animation name="idle" start="1" end="30" />
+		<animation name="walk" mesh="../player/warrior_walk.x" start="1" end="35" speed="25.0" walkspeed="1.0"/>
+	 	<animation name="attack" mesh="../player/warrior_attack.x" attackevent="20" start="0" end="30" />
 	 	<animation name="injured" start="48" end="52" />
 		<animation name="die" start="48" end="68" loop="false"/>
 	</dynamic_object>
