@@ -133,10 +133,6 @@ void DynamicObject::initProperties()
 	this->prop_base.regenmana=0;
 	this->prop_level.regenmana=0;
 
-	this->properties.skill_level=0;
-	this->prop_base.skill_level=0;
-	this->prop_level.skill_level=0;
-
 	this->properties.dodge_prop=0;
 	this->prop_base.dodge_prop=0;
 	this->prop_level.dodge_prop=0;
@@ -195,7 +191,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
-
+			// Temporary fix. Need to have a shadow scaled to the size of the object.
+			
+			if (name=="player_normal")
+				fakeShadow->setScale(vector3df(32,32,32));
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 			if(hasAnimation()) this->setFrameLoop(0,0);
@@ -1230,7 +1229,7 @@ int DynamicObject::attackObj(lua_State *LS)
 
 int DynamicObject::setPropertie(lua_State *LS)
 {
-	int value = (int)lua_tonumber(LS, -1);
+	float value = (float)lua_tonumber(LS, -1);
 	lua_pop(LS, 1);
 	
 	stringc propertieName = lua_tostring(LS, -1);
@@ -1245,17 +1244,37 @@ int DynamicObject::setPropertie(lua_State *LS)
 	lua_pop(LS, 1);
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 	if (propertieName=="life")
-		Obj->properties.life = value;
+		Obj->properties.life = (int)value;
 	if (propertieName=="maxlife")
-		Obj->properties.maxlife = value;
+		Obj->properties.maxlife = (int)value;
 	if (propertieName=="mindamage")
-		Obj->properties.mindamage = value;
+		Obj->properties.mindamage = (int)value;
 	if (propertieName=="maxdamage")
-		Obj->properties.maxdamage = value;
+		Obj->properties.maxdamage = (int)value;
 	if (propertieName=="hurt_resist")
-		Obj->properties.hurt_resist = value;
+		Obj->properties.hurt_resist = (int)value;
 	if (propertieName=="experience")
-		Obj->properties.experience = value;
+		Obj->properties.experience = (int)value;
+	if (propertieName=="dodge_prob")
+		Obj->properties.dodge_prop = (f32)value;
+	if (propertieName=="hit_prob")
+		Obj->properties.hit_prob = (f32)value;
+	if (propertieName=="mana")
+		Obj->properties.mana = (int)value;
+	if (propertieName=="maxmana")
+		Obj->properties.maxmana = (int)value;
+	if (propertieName=="money")
+		Obj->properties.money = (int)value;
+	if (propertieName=="dotduration")
+		Obj->properties.dotduration = (int)value;
+	if (propertieName=="armor")
+		Obj->properties.armor = (int)value;
+	if (propertieName=="magic_armor")
+		Obj->properties.magic_armor = (int)value;
+	if (propertieName=="regenlife")
+		Obj->properties.regenlife = (int)value;
+	if (propertieName=="regenmana")
+		Obj->properties.regenmana = (int)value;
 		
 	//if (otherObjName=="me")
 	

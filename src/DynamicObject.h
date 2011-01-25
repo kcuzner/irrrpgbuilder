@@ -71,7 +71,6 @@ typedef struct {
 	int regenmana;
 	int money;
 	int level;
-	int skill_level;
 	int experience;
 	int mindamage;
 	int maxdamage;
