@@ -863,12 +863,33 @@ void App::updateEditMode()
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{
-			if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
+			// --- Drag the view when the spacebar is pressed
+			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && 
+				app_state != APP_EDIT_WAIT_GUI &&
+				app_state != APP_EDIT_PLAYER_SCRIPT &&
+				app_state != APP_EDIT_SCRIPT_GLOBAL &&
+				app_state != APP_EDIT_CHARACTER &&
+				app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
-				vector3df camPosition = this->getMousePosition3D(101).pickedPos;
-				EditorCamera::getInstance()->setPosition(camPosition);
-
+				if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
+				{
+					if (app_state != APP_EDIT_VIEWDRAG)
+						old_state = app_state;
+				
+					app_state = APP_EDIT_VIEWDRAG;
+					if(EventReceiver::getInstance()->isMousePressed(0))
+					{// TODO: Move the cam based on the cursor position. Current method is buggy.
+						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
+						EditorCamera::getInstance()->setPosition(camPosition);
+					}
+				
+					return;
+				}
 			}
+			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
+			if (app_state == APP_EDIT_VIEWDRAG)
+				app_state = old_state;
+			// --- End of code for drag of view
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
@@ -1001,6 +1022,7 @@ void App::updateGameplay()
 					}
 					else
 					{
+						mousePick = getMousePosition3D(100);
 						Player::getInstance()->getObject()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
 						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
 						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
@@ -1008,6 +1030,7 @@ void App::updateGameplay()
 				}
 				else
 				{
+					mousePick = getMousePosition3D(100);
 					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
 					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);

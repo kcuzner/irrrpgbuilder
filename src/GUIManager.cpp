@@ -448,29 +448,53 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 
     ///Edit scripts window
-    guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-150),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
+
+    guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
     guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowEditAction->setDrawTitlebar(false);
     guiDynamicObjectsWindowEditAction->setDraggable(false);
 
+	//scripts editor box
+    guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
+                       true,
+                       guienv,
+                       guiDynamicObjectsWindowEditAction,
+                       EB_ID_DYNAMIC_OBJECT_SCRIPT,
+                       myRect(60,40,driver->getScreenSize().Width-300,driver->getScreenSize().Height-260),
+					   App::getInstance()->getDevice());
+
+    guiDynamicObjects_Script->setMultiLine(true);
+    guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+    guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
+    guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
+
+	//guiDynamicObject_Script_Scrollbar = guienv->addScrollBar(false,myRect(driver->getScreenSize().Width-240,40,20,driver->getScreenSize().Height-260),guiDynamicObjectsWindowEditAction);
+	guiDynamicObject_Script_lines = guienv->addStaticText(L"1",myRect(10,40,48,driver->getScreenSize().Height-260),true,true,guiDynamicObjectsWindowEditAction);
+	guiDynamicObject_Script_lines->setTextAlignment(EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT);
+
+	// Bottom tabcontrol
+	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	IGUITab * tab1 = tabctrl1->addTab(L"Debug panel");
+	IGUITab * tab2 = tabctrl1->addTab(L"Templates");
+
     s32 X_ScriptToolbar = 10;
 
-    guiDynamicObjects_LoadScriptTemplateCB = guienv->addComboBox(myRect(X_ScriptToolbar,10,400,20),guiDynamicObjectsWindowEditAction,CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
+    guiDynamicObjects_LoadScriptTemplateCB = guienv->addComboBox(myRect(X_ScriptToolbar,10,400,20),tab2,CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
 
     this->loadScriptTemplates();
 
     X_ScriptToolbar+=400;
 
     guiDynamicObjects_LoadScriptTemplateBT = guienv->addButton(myRect(X_ScriptToolbar,10,150,20),
-                      guiDynamicObjectsWindowEditAction,
+                      tab2,
                       BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_load_script_template")).c_str() );
 	guiDynamicObjects_LoadScriptTemplateBT->setOverrideFont(guiFontC12);
 
     X_ScriptToolbar+=160;
 
-    IGUIButton* validate = guienv->addButton(myRect(X_ScriptToolbar,10,150,20),
-                      guiDynamicObjectsWindowEditAction,
+    IGUIButton* validate = guienv->addButton(myRect(driver->getScreenSize().Width-375,5,150,20),
+                      tab1,
                       BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_validate_script")).c_str() );
 	validate->setOverrideFont(guiFontC12);
@@ -483,33 +507,22 @@ void GUIManager::setupEditorGUI()
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_close_script")).c_str() );
 	close->setOverrideFont(guiFontC12);
 
-    //scripts editor
-    guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
-                       true,
-                       guienv,
-                       guiDynamicObjectsWindowEditAction,
-                       EB_ID_DYNAMIC_OBJECT_SCRIPT,
-                       myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
-					   App::getInstance()->getDevice());
-
-    guiDynamicObjects_Script->setMultiLine(true);
-    guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-
-    guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
-
-    guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
-
-
+    
+	// Console window
     guiDynamicObjects_Script_Console = guienv->addEditBox(L"",
-                                                          myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,60),
+                                                          myRect(2,5,driver->getScreenSize().Width-380,70),
                                                           true,
-                                                          guiDynamicObjectsWindowEditAction,
+                                                          tab1,
                                                           EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE);
 
     guiDynamicObjects_Script_Console->setOverrideColor(SColor(255,255,0,0));
     guiDynamicObjects_Script_Console->setEnabled(false);
 
-    guiDynamicObjectsWindowEditAction->setVisible(false);
+    
+	
+	
+	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
+	guiDynamicObjectsWindowEditAction->setVisible(false);
 
     ///EDIT CHARACTER
     guiPlayerEditScript = guienv->addButton(myRect(guiEditCharacter->getAbsoluteClippingRect().UpperLeftCorner.X,38,32,32),

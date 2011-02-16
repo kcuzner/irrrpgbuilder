@@ -10,6 +10,7 @@
 #include "IGUIEditBox.h"
 #include "irrArray.h"
 #include "IOSOperator.h"
+#include "IGUIScrollBar.h"
 
 namespace irr
 {
@@ -135,10 +136,13 @@ namespace gui
 		gui::IGUIFont *OverrideFont, *LastBreakFont;
 		IOSOperator* Operator;
 		IrrlichtDevice* IRRdevice;
+
+		IGUIScrollBar * Scrollbar;
 		
 		u32 BlinkStartTime;
 		s32 CursorPos;
 		s32 HScrollPos, VScrollPos; // scroll position in characters
+		s32 lineCount;
 		u32 Max;
 
 		bool WordWrap, MultiLine, AutoScroll, PasswordBox;

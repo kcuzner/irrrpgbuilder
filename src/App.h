@@ -33,6 +33,7 @@ enum APP_STATE
     APP_EDIT_PLAYER_SCRIPT = 19,
     APP_EDIT_SCRIPT_GLOBAL = 20,
     APP_EDIT_ABOUT = 21,
+	APP_EDIT_VIEWDRAG = 50,
 
 
     APP_STATE_CONTROL = 100,
@@ -112,6 +113,7 @@ class App
 		bool loadConfig();
 		
         APP_STATE app_state;
+		APP_STATE old_state;
 
         stringc scriptGlobal;
 

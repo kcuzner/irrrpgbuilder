@@ -34,7 +34,6 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return split(s, delim, elems);
 }
 
-
 /*
 	todo:
 	optional scrollbars
@@ -87,6 +86,14 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border,
 		FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 	}
+	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+	Scrollbar = Environment->addScrollBar(false, myRect(FrameRect.LowerRightCorner.X-32, FrameRect.UpperLeftCorner.Y,200,FrameRect.getHeight()), this);
+	Scrollbar->grab();
+	Scrollbar->setSubElement(true);
+	Scrollbar->setTabStop(false);
+	Scrollbar->setVisible(true);
+	
+
 	IRRdevice = device;
 	breakText();
 
@@ -227,8 +234,18 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 			{
 				if (event.GUIEvent.Caller == this)
 				{
+					printf("focus is lost");
 					MouseMarking = false;
 					setTextMarkers(0,0);
+					Environment->setFocus(this);
+
+				}
+			}
+			if (event.GUIEvent.EventType == EGET_EDITBOX_ENTER)
+			{
+				if (event.GUIEvent.Caller == this)
+				{
+					printf("Editbox was changed");
 				}
 			}
 			break;
@@ -462,6 +479,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 	case KEY_RETURN:
 		if (MultiLine)
 		{
+			sendGuiEvent( EGET_EDITBOX_ENTER );
             s32 lineStart = getLineFromPos(CursorPos);
 			lineStart = BrokenTextPositions[lineStart];
 
@@ -478,7 +496,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
                 else
                     break;
             }
-
+			
 			return true;
 		}
 		else
@@ -673,8 +691,9 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 		}
 		break;
 	case KEY_TAB:
+		Environment->setFocus(this);
         inputChar(L' ');
-        inputChar(L' ');
+        //inputChar(L' ');
         break;
 	case KEY_ESCAPE:
 	case KEY_SHIFT:
@@ -741,22 +760,28 @@ void CGUIEditBoxIRB::draw()
 	IGUISkin* skin = Environment->getSkin();
 	if (!skin)
 		return;
-
+	
+	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+	skin->draw3DSunkenPane(this, skin->getColor(EGDC_SCROLLBAR),false, false, myRect(FrameRect.LowerRightCorner.X-28, FrameRect.UpperLeftCorner.Y,30,FrameRect.getHeight()));
+	Scrollbar->draw();
 	FrameRect = AbsoluteRect;
 
 	// draw the border
 
 	if (Border)
 	{
+		irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+
 		skin->draw3DSunkenPane(this, skin->getColor(EGDC_WINDOW),
-			false, true, FrameRect, &AbsoluteClippingRect);
+			false, true, myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-30,FrameRect.getHeight()), &AbsoluteClippingRect);
 
 		FrameRect.UpperLeftCorner.X += skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.UpperLeftCorner.Y += skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 		FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 	}
-	core::rect<s32> localClipRect = FrameRect;
+	core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-30,FrameRect.getHeight());
+	
 	localClipRect.clipAgainst(AbsoluteClippingRect);
 
 	// draw the text
@@ -788,7 +813,8 @@ void CGUIEditBoxIRB::draw()
 		const s32 realmend = MarkBegin < MarkEnd ? MarkEnd : MarkBegin;
 		const s32 hlineStart = ml ? getLineFromPos(realmbgn) : 0;
 		const s32 hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
-		const s32 lineCount = ml ? BrokenText.size() : 1;
+		//const s32 lineCount = ml ? BrokenText.size() : 1;
+		lineCount = ml ? BrokenText.size() : 1;
 
 		// Save the override color information.
 		// Then, alter it if the edit box is disabled.
@@ -838,6 +864,21 @@ void CGUIEditBoxIRB::draw()
 					startPos = ml ? BrokenTextPositions[i] : 0;
 				}
 
+
+				// Parse the TAB character
+				std::string txt_main = core::stringc(txtLine->c_str()).c_str();
+				for(int chart = 0; chart < (int)txt_main.size(); chart++)
+                {
+					
+                    if(txt_main[chart] == static_cast<char>( 9 ))
+					{
+						txt_main.erase(chart,1);
+						txt_main.insert(chart," ");
+					}
+                }
+
+				
+
                 //separate and draw keywords in blue
                 // sample:
                 // txt         = if a>10 then print "hello" end
@@ -845,7 +886,8 @@ void CGUIEditBoxIRB::draw()
                 // just draw txtKeywords in blue over txt :)
 
                 std::vector<std::string> tokens;
-                std::string txt = core::stringc(txtLine->c_str()).c_str();
+                //std::string txt = core::stringc(txtLine->c_str()).c_str();
+				std::string txt = txt_main;
                 std::string txtKeywods = "";
 
                 tokens = split(txt,' ');
@@ -882,23 +924,141 @@ void CGUIEditBoxIRB::draw()
 
                 tokens.clear();
 
-                //re-insert original spaces
+				// Add specific IRB token in another tint of blue
+				
+				std::string txt2 = txt_main;
+				tokens = split(txt2,' ');
+
+				std::string txtKeywodsIRB = "";
+
+				for(int tokenCount = 0; tokenCount < (int)tokens.size(); tokenCount++)
+                {
+					std::string tokenIRB = tokens[tokenCount];
+					int end = tokenIRB.find("(");
+					std::string tIRB = tokenIRB.substr(0,end);
+					int begin = tokenIRB.find(")..");
+					tokenIRB = tIRB;
+					if	(tokenIRB == "setObjectName" ||
+						tokenIRB == "chaseObject" ||
+						tokenIRB == "walkRandomly" ||
+						tokenIRB == "walkToObject" ||
+						tokenIRB == "CustomDynamicObjectUpdate" ||
+						tokenIRB == "programAction" ||
+						tokenIRB == "CustomDynamicObjectUpdateProgrammedAction" ||
+						tokenIRB == "hasActionProgrammed" ||
+						tokenIRB == "enableObject" ||
+						tokenIRB == "disableObject" ||
+						tokenIRB == "increasePlayerLife" ||
+						tokenIRB == "decreasePlayerLife" ||
+						tokenIRB == "decreasePLayerMoney" ||
+						tokenIRB == "increasePlayerMoney" ||
+						tokenIRB == "playSound" ||
+						tokenIRB == "emitSound" ||
+						tokenIRB == "sleep" ||
+						tokenIRB == "setGlobal" ||
+						tokenIRB == "getGlobal" ||
+						tokenIRB == "setGlobal" ||
+						tokenIRB == "deleteGlobal" ||
+						tokenIRB == "setTimeOfDay" ||
+						tokenIRB == "setAmbientLight" ||
+						tokenIRB == "getAmbientColor" ||
+						tokenIRB == "setFogColor" ||
+						tokenIRB == "getFogColor" ||
+						tokenIRB == "setFogRange" ||
+						tokenIRB == "getFogRange" ||
+						tokenIRB == "setCameraTarget" ||
+						tokenIRB == "getCameraTarget" ||
+						tokenIRB == "getObjectPosition" ||
+						tokenIRB == "playSound2D" ||
+						tokenIRB == "playSound3D" ||
+						tokenIRB == "setSoundListenerPosition" ||
+						tokenIRB == "setSoundVolume" ||
+						tokenIRB == "stopSounds" ||
+						tokenIRB == "setPlayerLife" ||
+						tokenIRB == "getPlayerLife" ||
+						tokenIRB == "setPlayerMoney" ||
+						tokenIRB == "getPlayerMoney" ||
+						tokenIRB == "addPlayerItem" ||
+						tokenIRB == "removePlayerItem" ||
+						tokenIRB == "usePlayerItem" ||
+						tokenIRB == "getItemCount" ||
+						tokenIRB == "showBlackScreen" ||
+						tokenIRB == "hideBlackScreen" ||
+						tokenIRB == "showDialogMessage" ||
+						tokenIRB == "showDialogQuestion" ||
+						tokenIRB == "saveGame" ||
+						tokenIRB == "loadGame" ||
+						tokenIRB == "showObjectLabel" ||
+						tokenIRB == "hideObjectLabel" ||
+						tokenIRB == "setObjectLabel" ||
+						tokenIRB == "setPosition" ||
+						tokenIRB == "getPosition" ||
+						tokenIRB == "setRotation" ||
+						tokenIRB == "getRotation" ||
+						tokenIRB == "turn" ||
+						tokenIRB == "move" ||
+						tokenIRB == "walkTo" ||
+						tokenIRB == "lookAt" ||
+						tokenIRB == "lookToObject" ||
+						tokenIRB == "getName" ||
+						tokenIRB == "distanceFrom" ||
+						tokenIRB == "setEnabled" ||
+						tokenIRB == "setFrameLoop" ||
+						tokenIRB == "setAnimationSpeed" ||
+						tokenIRB == "setAnimation" ||
+						tokenIRB == "setEnemy" ||
+						tokenIRB == "setObject" ||
+						tokenIRB == "setPropertie" ||
+						tokenIRB == "getPropertie" ||
+						tokenIRB == "attack" ||
+						tokenIRB == "onLoad" ||
+						tokenIRB == "onRefresh" ||
+						tokenIRB == "step" ||
+						tokenIRB == "onClicked" ||
+						tokenIRB == "onCollision")
+                    {
+                        txtKeywodsIRB.append(tokens[tokenCount]);
+                    }
+                    else
+                    {
+                        txtKeywodsIRB.append(std::string(tokens[tokenCount].size(),' '));
+                    }
+                }
+				tokens.clear();
+
+
+				//re-insert original spaces
                 for(int chart = 0; chart < (int)txt.size(); chart++)
                 {
-                    if(txt[chart] == ' ') txtKeywods.insert(chart," ");
+                    if(txt_main[chart] == ' ') txtKeywods.insert(chart," ");
+                }
+
+				//re-insert original spaces
+                for(int chart = 0; chart < (int)txt.size(); chart++)
+                {
+                    if(txt_main[chart] == ' ') txtKeywodsIRB.insert(chart," ");
                 }
 
 				// draw normal text
-				font->draw(txtLine->c_str(), CurrentTextRect,
+				font->draw(txt_main.c_str(), //CurrentTextRect,
+					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
 					OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
                     //video::SColor(255,255,0,0),
 					false, true, &localClipRect);
 
 
                 //draw keywords
-                font->draw(txtKeywods.c_str(), CurrentTextRect,
+                font->draw(txtKeywods.c_str(), // CurrentTextRect,
+					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
 					//OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
                     video::SColor(200,0,0,255),
+					false, true, &localClipRect);
+
+				//draw IRB keywords
+                font->draw(txtKeywodsIRB.c_str(), // CurrentTextRect,
+					//OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
+					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
+                    video::SColor(255,128,0,255),
 					false, true, &localClipRect);
 
 				// draw mark and marked text
@@ -962,8 +1122,12 @@ void CGUIEditBoxIRB::draw()
 			startPos = BrokenTextPositions[cursorLine];
 		}
 		s = txtLine->subString(0,CursorPos-startPos);
-		charcursorpos = font->getDimension(s.c_str()).Width +
-			font->getKerningWidth(L"_", CursorPos-startPos > 0 ? &((*txtLine)[CursorPos-startPos-1]) : 0);
+		// Ugly fix to a bug when the mouse was going outside the limit of the text in selections.
+		// Checking that the "txtline" size is bigger than 5 to redefine the position of the cursor
+		// Was crashing for a position NOT allocated in the line.
+		if (txtLine->size()>5)
+			charcursorpos = font->getDimension(s.c_str()).Width +
+				font->getKerningWidth(L"_", CursorPos-startPos > 0 ? &((*txtLine)[CursorPos-startPos-1]) : 0);
 
 		//if (focus && (os::Timer::getTime() - BlinkStartTime) % 700 < 350)
 		if (focus && (IRRdevice->getTimer()->getRealTime() - BlinkStartTime) % 700 < 350)
@@ -1051,8 +1215,36 @@ u32 CGUIEditBoxIRB::getMax() const
 
 bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 {
+	s32 value = 0;
 	switch(event.MouseInput.Event)
 	{
+	case irr::EMIE_MOUSE_WHEEL:
+		value = (s32)-event.MouseInput.Wheel;
+		printf ("Mouse wheel used in the window with this value: %i, Total lines: %i, Current top:%i\n",value, lineCount,getLineFromPos(CursorPos));
+		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
+		{
+			s32 lineNo = getLineFromPos(CursorPos);
+			if (lineNo > 0)
+			{
+				s32 cp = CursorPos - BrokenTextPositions[lineNo];
+				
+				if ((lineNo+value)>=lineCount-1)
+					value=0;
+
+				if ((s32)BrokenText[lineNo-1].size() < cp)
+					CursorPos = BrokenTextPositions[lineNo+value] + (s32)BrokenText[lineNo+value].size()+value;
+				else
+					CursorPos = BrokenTextPositions[lineNo+value] + cp;
+			}
+			calculateScrollPos();
+
+		}
+		else
+		{
+			return false;
+		}	
+
+		break;
 	case irr::EMIE_LMOUSE_LEFT_UP:
 		if (Environment->hasFocus(this))
 		{

@@ -225,6 +225,9 @@ class GUIManager
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;
         IGUIButton* guiDynamicObjects_Script_Close;
+		IGUIStaticText* guiDynamicObject_Script_lines;
+		IGUIScrollBar* guiDynamicObject_Script_Scrollbar; 
+
 
         ///IrrRPG Builder LOGO
         ITexture* logo1;
