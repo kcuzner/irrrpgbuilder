@@ -460,17 +460,13 @@ void GUIManager::setupEditorGUI()
                        guienv,
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
-                       myRect(60,40,driver->getScreenSize().Width-300,driver->getScreenSize().Height-260),
+                       myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
 					   App::getInstance()->getDevice());
 
     guiDynamicObjects_Script->setMultiLine(true);
     guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
     guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
-
-	//guiDynamicObject_Script_Scrollbar = guienv->addScrollBar(false,myRect(driver->getScreenSize().Width-240,40,20,driver->getScreenSize().Height-260),guiDynamicObjectsWindowEditAction);
-	guiDynamicObject_Script_lines = guienv->addStaticText(L"1",myRect(10,40,48,driver->getScreenSize().Height-260),true,true,guiDynamicObjectsWindowEditAction);
-	guiDynamicObject_Script_lines->setTextAlignment(EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT);
 
 	// Bottom tabcontrol
 	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
