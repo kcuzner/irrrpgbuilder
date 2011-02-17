@@ -457,6 +457,7 @@ void GUIManager::setupEditorGUI()
 	//scripts editor box
     guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
                        true,
+					   true,
                        guienv,
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,

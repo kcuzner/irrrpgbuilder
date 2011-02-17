@@ -12,6 +12,7 @@
 #include "IOSOperator.h"
 #include "IGUIScrollBar.h"
 #include "IGUIStaticText.h"
+#include "IGUIButton.h"
 
 namespace irr
 {
@@ -22,7 +23,7 @@ namespace gui
 	public:
 
 		//! constructor
-		CGUIEditBoxIRB(const wchar_t* text, bool border, IGUIEnvironment* environment,
+		CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines, IGUIEnvironment* environment,
 			IGUIElement* parent, s32 id, const core::rect<s32>& rectangle, IrrlichtDevice* device);
 
 		//! destructor
@@ -130,6 +131,8 @@ namespace gui
 		bool MouseMarking;
 		bool Border;
 		bool OverrideColorEnabled;
+		bool LineNumbering;
+
 		s32 MarkBegin;
 		s32 MarkEnd;
 
@@ -140,11 +143,10 @@ namespace gui
 
 		IGUIScrollBar * Scrollbar;
 		IGUIScrollBar * ScrollbarH;
-		IGUIStaticText * Linecounter;
-		core::stringw  linenumber;
-
-		s32 oldScrollPos;
+		IGUIButton *	LineToggle;
 		
+		core::stringw  linenumber; //contain the line numbering
+
 		u32 BlinkStartTime;
 		s32 CursorPos;
 		s32 HScrollPos, VScrollPos; // scroll position in characters
