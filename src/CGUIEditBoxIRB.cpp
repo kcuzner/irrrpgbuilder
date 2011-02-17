@@ -2,9 +2,10 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-///TODO: Fix Me : Windows compilatio only : All "os::Timer::getTime();" in this file are commented, beacause of undefinid reference.
+// This component was modified to support LUA Script editing in IRB
 
 #include "CGUIEditBoxIRB.h"
+#include "IGUIScrollBar.h"
 
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
@@ -79,6 +80,13 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border,
 	IGUISkin *skin = 0;
 	if (Environment)
 		skin = Environment->getSkin();
+
+	// Init the text spacing for adding GUI elements
+	LeftSpace = 60; // for the line counter
+	RightSpace = 25; // scrollbar
+	UpperSpace = 0;
+	LowerSpace = 0; // scrollbar
+
 	if (Border && skin)
 	{
 		FrameRect.UpperLeftCorner.X += skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
@@ -87,16 +95,25 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border,
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 	}
 	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-	Scrollbar = Environment->addScrollBar(false, myRect(FrameRect.LowerRightCorner.X-32, FrameRect.UpperLeftCorner.Y,200,FrameRect.getHeight()), this);
-	Scrollbar->grab();
-	Scrollbar->setSubElement(true);
-	Scrollbar->setTabStop(false);
-	Scrollbar->setVisible(true);
 	
-
+	//Environment->addButton(myRect(10,10,50,50),this,-1,L"TEST",L"This is a button test");
+	ScrollbarH = Environment->addScrollBar(true,myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
+	Scrollbar = Environment->addScrollBar(false,myRect(FrameRect.getWidth()-15,2,20,FrameRect.getHeight()-22),this,-1);
+	Environment->addButton(myRect(FrameRect.getWidth()-15,FrameRect.getHeight()-20,20,20),this,-1,L"",L"");
+	//Linecounter = Environment->addStaticText(L"1",myRect(2,2,55,FrameRect.getHeight()-22),false,false,this,-1,true);
+	
+	//Linecounter->setTextAlignment(EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT);
 	IRRdevice = device;
-	breakText();
 
+	Scrollbar->setSubElement(true);
+	//Linecounter->setSubElement(true);
+	Scrollbar->setTabStop(false);
+	Scrollbar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	Scrollbar->setPos(0);
+	Scrollbar->setSmallStep(3);
+	ScrollbarH->setVisible(false);
+
+	breakText();
 	calculateScrollPos();
 }
 
@@ -249,14 +266,26 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 				}
 			}
 			break;
+			if (event.GUIEvent.EventType == EGET_SCROLL_BAR_CHANGED)
+			{
+				printf("Scrollbar was changed");
+				if (event.GUIEvent.Caller == this)
+				{
+					printf("Scrollbar was changed");
+				}
+			}
+			break;
+
 		case EET_KEY_INPUT_EVENT:
 			if (processKey(event))
 				return true;
 			break;
+		
 		case EET_MOUSE_INPUT_EVENT:
 			if (processMouse(event))
 				return true;
 			break;
+		
 		default:
 			break;
 		}
@@ -522,8 +551,8 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (CursorPos > 0) CursorPos--;
-		//BlinkStartTime = os::Timer::getTime(); // To be fixed
+		if (CursorPos > 0) 
+			CursorPos--;
 		BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 		break;
 
@@ -544,10 +573,11 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (Text.size() > (u32)CursorPos) CursorPos++;
-		// BlinkStartTime = os::Timer::getTime(); // To be fixed
+		if (Text.size() > (u32)CursorPos) 
+			CursorPos++;
 		BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 		break;
+
 	case KEY_UP:
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
@@ -572,6 +602,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 				newMarkBegin = 0;
 				newMarkEnd = 0;
 			}
+			Scrollbar->setPos(getLineFromPos(CursorPos));
 
 		}
 		else
@@ -579,6 +610,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			return false;
 		}
 		break;
+
 	case KEY_DOWN:
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
@@ -603,6 +635,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 				newMarkBegin = 0;
 				newMarkEnd = 0;
 			}
+			Scrollbar->setPos(getLineFromPos(CursorPos));
 
 		}
 		else
@@ -652,6 +685,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			textChanged = true;
 		}
 		break;
+
 	case KEY_DELETE:
 		if ( !this->IsEnabled )
 			break;
@@ -690,6 +724,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			textChanged = true;
 		}
 		break;
+
 	case KEY_TAB:
 		Environment->setFocus(this);
         inputChar(L' ');
@@ -762,25 +797,28 @@ void CGUIEditBoxIRB::draw()
 		return;
 	
 	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-	skin->draw3DSunkenPane(this, skin->getColor(EGDC_SCROLLBAR),false, false, myRect(FrameRect.LowerRightCorner.X-28, FrameRect.UpperLeftCorner.Y,30,FrameRect.getHeight()));
-	Scrollbar->draw();
-	FrameRect = AbsoluteRect;
 
+	FrameRect = AbsoluteRect;
 	// draw the border
 
 	if (Border)
 	{
 		irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-
+		
 		skin->draw3DSunkenPane(this, skin->getColor(EGDC_WINDOW),
-			false, true, myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-30,FrameRect.getHeight()), &AbsoluteClippingRect);
+			false, true, myRect(FrameRect.UpperLeftCorner.X-1,FrameRect.UpperLeftCorner.Y-2,FrameRect.getWidth(),FrameRect.getHeight()), &AbsoluteClippingRect);
 
 		FrameRect.UpperLeftCorner.X += skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.UpperLeftCorner.Y += skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 		FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
+
+		// Line count background
+		skin->draw2DRectangle(this,video::SColor(255,220,220,220),myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,50,FrameRect.getHeight()),&AbsoluteClippingRect);
+		skin->draw2DRectangle(this,video::SColor(255,192,192,192),myRect(FrameRect.UpperLeftCorner.X+45,FrameRect.UpperLeftCorner.Y,5,FrameRect.getHeight()),&AbsoluteClippingRect);
+		
 	}
-	core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-30,FrameRect.getHeight());
+	core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X+60,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-30,FrameRect.getHeight());
 	
 	localClipRect.clipAgainst(AbsoluteClippingRect);
 
@@ -792,6 +830,18 @@ void CGUIEditBoxIRB::draw()
 
 	s32 cursorLine = 0;
 	s32 charcursorpos = 0;
+
+	// Determine if the scrollbar was changed (unable to get the event)
+	if (Scrollbar->getPos()!=oldScrollPos)
+	{
+		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
+		{
+			oldScrollPos = Scrollbar->getPos();
+			s32 scrollMove = font->getDimension(L"000000").Height;
+			VScrollPos = scrollMove/1.7f * Scrollbar->getPos();
+			//printf("Here is now the position of the scroll: %i\n",Scrollbar->getPos());
+		}
+	}
 
 	if (font)
 	{
@@ -1012,7 +1062,7 @@ void CGUIEditBoxIRB::draw()
 						tokenIRB == "getPropertie" ||
 						tokenIRB == "attack" ||
 						tokenIRB == "onLoad" ||
-						tokenIRB == "onRefresh" ||
+						tokenIRB == "onUpdate" ||
 						tokenIRB == "step" ||
 						tokenIRB == "onClicked" ||
 						tokenIRB == "onCollision")
@@ -1038,27 +1088,36 @@ void CGUIEditBoxIRB::draw()
                 {
                     if(txt_main[chart] == ' ') txtKeywodsIRB.insert(chart," ");
                 }
+				// Draw line numbering
+				
+				s32 right = FrameRect.UpperLeftCorner.X+20 - font->getDimension(linenumber.c_str()).Width;
+				s32 base = (font->getDimension(L"000000").Height * lineCount)/2;
+				//core::dimension2du dim = getTextDimension()/2;
+				//printf("Here is the dimension of the text %i\n",dim.Height);
+				font->draw(linenumber.c_str(), 
+				//font->draw(L"--\n", //CurrentTextRect,
+				myRect(right,base+FrameRect.UpperLeftCorner.Y-VScrollPos,50,CurrentTextRect.getHeight()),
+					video::SColor(255,0,128,192),
+					false, true, &AbsoluteClippingRect);
+				//printf("input is: %s, %i\n",linenumber.c_str(),linenumber.size());
 
 				// draw normal text
-				font->draw(txt_main.c_str(), //CurrentTextRect,
-					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
+				font->draw(txt_main.c_str(), CurrentTextRect,
 					OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
                     //video::SColor(255,255,0,0),
 					false, true, &localClipRect);
 
 
                 //draw keywords
-                font->draw(txtKeywods.c_str(), // CurrentTextRect,
-					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
+                font->draw(txtKeywods.c_str(), CurrentTextRect,
 					//OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
                     video::SColor(200,0,0,255),
 					false, true, &localClipRect);
 
 				//draw IRB keywords
-                font->draw(txtKeywodsIRB.c_str(), // CurrentTextRect,
+                font->draw(txtKeywodsIRB.c_str(), CurrentTextRect,
 					//OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
-					myRect(CurrentTextRect.UpperLeftCorner.X,CurrentTextRect.UpperLeftCorner.Y,CurrentTextRect.getWidth()-30,CurrentTextRect.getHeight()),
-                    video::SColor(255,128,0,255),
+					video::SColor(255,128,0,255),
 					false, true, &localClipRect);
 
 				// draw mark and marked text
@@ -1095,7 +1154,7 @@ void CGUIEditBoxIRB::draw()
 					CurrentTextRect.LowerRightCorner.X = CurrentTextRect.UpperLeftCorner.X + mend - mbegin;
 
 					// draw mark
-					skin->draw2DRectangle(this, video::SColor(255,100,100,100), CurrentTextRect, &localClipRect);
+					skin->draw2DRectangle(this, video::SColor(255,100,100,255), CurrentTextRect, &localClipRect);
 
 					// draw marked text
 					s = txtLine->subString(lineStartPos, lineEndPos - lineStartPos);
@@ -1125,7 +1184,7 @@ void CGUIEditBoxIRB::draw()
 		// Ugly fix to a bug when the mouse was going outside the limit of the text in selections.
 		// Checking that the "txtline" size is bigger than 5 to redefine the position of the cursor
 		// Was crashing for a position NOT allocated in the line.
-		if (txtLine->size()>5)
+		if (txtLine->size()>0)
 			charcursorpos = font->getDimension(s.c_str()).Width +
 				font->getKerningWidth(L"_", CursorPos-startPos > 0 ? &((*txtLine)[CursorPos-startPos-1]) : 0);
 
@@ -1138,7 +1197,7 @@ void CGUIEditBoxIRB::draw()
 			font->draw(L"_", CurrentTextRect,
 				OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
 				false, true, &localClipRect);
-		}  // To be fixed
+		}  // To be fixed 
 	}
 
 	// draw children
@@ -1230,31 +1289,40 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 				
 				if ((lineNo+value)>=lineCount-1)
 					value=0;
-
-				if ((s32)BrokenText[lineNo-1].size() < cp)
-					CursorPos = BrokenTextPositions[lineNo+value] + (s32)BrokenText[lineNo+value].size()+value;
-				else
-					CursorPos = BrokenTextPositions[lineNo+value] + cp;
+				
+				if ((lineNo+value)<0)
+					value=0;
+				
+				if (value!=0)
+				{
+					if ((s32)BrokenText[lineNo-1].size() < cp)
+						CursorPos = BrokenTextPositions[lineNo+value] + (s32)BrokenText[lineNo+value].size()+value;
+					else
+						CursorPos = BrokenTextPositions[lineNo+value] + cp;
+				}
 			}
-			calculateScrollPos();
+			if (value!=0)
+				// Update the scrollbar
+				Scrollbar->setPos(getLineFromPos(CursorPos));
+				calculateScrollPos();
+			return true;
 
 		}
-		else
-		{
-			return false;
-		}	
+		
 
 		break;
 	case irr::EMIE_LMOUSE_LEFT_UP:
 		if (Environment->hasFocus(this))
 		{
 			CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
+			printf("Here is the final position %i, line: %i\n",CursorPos,getLineFromPos(CursorPos));
 			if (MouseMarking)
 			{
-			    setTextMarkers( MarkBegin, CursorPos );
+			    //setTextMarkers( MarkBegin, CursorPos );
 			}
 			MouseMarking = false;
-			calculateScrollPos();
+			Scrollbar->setPos(getLineFromPos(CursorPos));
+			//calculateScrollPos();
 			return true;
 		}
 		break;
@@ -1263,8 +1331,10 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 			if (MouseMarking)
 			{
 				CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
-				//setTextMarkers( MarkBegin, CursorPos );
-				calculateScrollPos();
+				setTextMarkers( MarkBegin, CursorPos );
+				//TODO: calculateScrollPos seem to have bugs
+				//if (MarkBegin!=CursorPos)
+				//	calculateScrollPos();
 				return true;
 			}
 		}
@@ -1272,10 +1342,10 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 	case EMIE_LMOUSE_PRESSED_DOWN:
 		if (!Environment->hasFocus(this))
 		{
-//			BlinkStartTime = os::Timer::getTime();
 			BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 			MouseMarking = true;
 			CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
+			printf("Starting position of text: %i\n",CursorPos);
 			setTextMarkers(CursorPos, CursorPos );
 			calculateScrollPos();
 			return true;
@@ -1298,7 +1368,8 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 
 				MouseMarking = true;
 				setTextMarkers( newMarkBegin, CursorPos);
-				calculateScrollPos();
+				printf("Starting position of text: %i, line: %i\n",CursorPos,getLineFromPos(CursorPos) );
+				//calculateScrollPos();
 				return true;
 			}
 		}
@@ -1344,20 +1415,25 @@ s32 CGUIEditBoxIRB::getCursorPos(s32 x, s32 y)
 	if (x < CurrentTextRect.UpperLeftCorner.X)
 		x = CurrentTextRect.UpperLeftCorner.X;
 
-	s32 idx = font->getCharacterFromPos(Text.c_str(), x - CurrentTextRect.UpperLeftCorner.X);
+	//s32 idx = font->getCharacterFromPos(Text.c_str(), x - CurrentTextRect.UpperLeftCorner.X);
+	s32 idx = txtLine ? font->getCharacterFromPos(txtLine->c_str(), x - CurrentTextRect.UpperLeftCorner.X) : -1;
 
 	// click was on or left of the line
 	if (idx != -1)
 		return idx + startPos;
 
 	// click was off the right edge of the line, go to end.
-	return txtLine->size() + startPos;
+	if (txtLine)
+		return txtLine->size() + startPos;
+	else
+		return startPos;
 }
 
 
 //! Breaks the single text line.
 void CGUIEditBoxIRB::breakText()
 {
+	linenumber="";
 	IGUISkin* skin = Environment->getSkin();
 
 	if ((!WordWrap && !MultiLine) || !skin)
@@ -1378,6 +1454,7 @@ void CGUIEditBoxIRB::breakText()
 	core::stringw line;
 	core::stringw word;
 	core::stringw whitespace;
+
 	s32 lastLineStart = 0;
 	s32 size = Text.size();
 	s32 length = 0;
@@ -1446,7 +1523,9 @@ void CGUIEditBoxIRB::breakText()
 			{
 				line += whitespace;
 				line += word;
+				
 				BrokenText.push_back(line);
+				linenumber += (core::stringw)BrokenText.size() + L"\n";
 				BrokenTextPositions.push_back(lastLineStart);
 				lastLineStart = i+1;
 				line = L"";
@@ -1461,11 +1540,16 @@ void CGUIEditBoxIRB::breakText()
 			word += c;
 		}
 	}
-
+	
 	line += whitespace;
 	line += word;
 	BrokenText.push_back(line);
 	BrokenTextPositions.push_back(lastLineStart);
+	Scrollbar->setMax(BrokenText.size()-1);
+	linenumber += (core::stringw)BrokenText.size() + L"\n";
+	//Linecounter->setText(linenumber.c_str());
+	//Linecounter->move(core::vector2di(0,10));
+	
 }
 
 
@@ -1539,6 +1623,11 @@ void CGUIEditBoxIRB::setTextRect(s32 line)
 	CurrentTextRect.LowerRightCorner.Y = CurrentTextRect.UpperLeftCorner.Y + d.Height;
 
 	CurrentTextRect += FrameRect.UpperLeftCorner;
+	// Space
+	CurrentTextRect.UpperLeftCorner.X+=LeftSpace;
+	CurrentTextRect.UpperLeftCorner.Y+=UpperSpace;
+	CurrentTextRect.LowerRightCorner.X-=RightSpace;
+	CurrentTextRect.LowerRightCorner.Y-=LowerSpace;
 
 }
 
@@ -1555,6 +1644,7 @@ s32 CGUIEditBoxIRB::getLineFromPos(s32 pos)
 			return i-1;
 		++i;
 	}
+	
 	return (s32)BrokenTextPositions.size() - 1;
 }
 
@@ -1592,9 +1682,7 @@ void CGUIEditBoxIRB::inputChar(wchar_t c)
 				++CursorPos;
 			}
 
-//			BlinkStartTime = os::Timer::getTime();
 			BlinkStartTime = IRRdevice->getTimer()->getRealTime();
-
 			setTextMarkers(0, 0);
 		}
 	}
@@ -1612,7 +1700,7 @@ void CGUIEditBoxIRB::calculateScrollPos()
 	// calculate horizontal scroll position
 	s32 cursLine = getLineFromPos(CursorPos);
 	setTextRect(cursLine);
-
+	
 	// don't do horizontal scrolling when wordwrap is enabled.
 	if (!WordWrap)
 	{
@@ -1652,6 +1740,7 @@ void CGUIEditBoxIRB::calculateScrollPos()
 		VScrollPos = 0;
 
 	// todo: adjust scrollbar
+	//Scrollbar->setMax(BrokenText.size());
 }
 
 //! set text markers

@@ -11,6 +11,7 @@
 #include "irrArray.h"
 #include "IOSOperator.h"
 #include "IGUIScrollBar.h"
+#include "IGUIStaticText.h"
 
 namespace irr
 {
@@ -138,12 +139,21 @@ namespace gui
 		IrrlichtDevice* IRRdevice;
 
 		IGUIScrollBar * Scrollbar;
+		IGUIScrollBar * ScrollbarH;
+		IGUIStaticText * Linecounter;
+		core::stringw  linenumber;
+
+		s32 oldScrollPos;
 		
 		u32 BlinkStartTime;
 		s32 CursorPos;
 		s32 HScrollPos, VScrollPos; // scroll position in characters
 		s32 lineCount;
 		u32 Max;
+		s32 RightSpace;
+		s32 LeftSpace;
+		s32 UpperSpace;
+		s32 LowerSpace;
 
 		bool WordWrap, MultiLine, AutoScroll, PasswordBox;
 		wchar_t PasswordChar;
