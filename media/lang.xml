@@ -15,11 +15,11 @@
 	<text id="bt_new_project" str="New Project"/>
 	<text id="bt_save_project" str="Save Project"/>
 	<text id="bt_load_project" str="Load Project"/>
-	<text id="bt_show_playable_area" str="Show Playable Area"/>
+	<text id="bt_show_playable_area" str="Playable Area"/>
 	<text id="bt_terrain_segments" str="Edit Terrain Segments"/>
 	<text id="bt_terrain_transform" str="Edit Terrain Elevation"/>
-	<text id="bt_terrain_transform_brush_strength_label" str="Brush Strength:"/>
-	<text id="bt_terrain_transform_brush_radius_label" str="Brush Radius:"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Strength:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Radius:"/>
 	<text id="bt_play_game" str="Play Game"/>
 	<text id="bt_stop_game" str="Stop Game"/>
 	<text id="bt_edit_character" str="Edit Character"/>
@@ -149,11 +149,11 @@
 	<text id="bt_new_project" str="Nouveau projet"/>
 	<text id="bt_save_project" str="Sauver le projet"/>
 	<text id="bt_load_project" str="Charger le projet"/>
-	<text id="bt_show_playable_area" str="Montrer la zone jouable"/>
+	<text id="bt_show_playable_area" str="Zone jouable"/>
 	<text id="bt_terrain_segments" str="Editer les segments du terrain"/>
 	<text id="bt_terrain_transform" str="Editer l'elevation du terrain"/>
-	<text id="bt_terrain_transform_brush_strength_label" str="Force de la brosse:"/>
-	<text id="bt_terrain_transform_brush_radius_label" str="Grandeur de la brosse:"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Force:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Grandeur:"/>
 	<text id="bt_play_game" str="Jouer"/>
 	<text id="bt_stop_game" str="Arreter le jeu"/>
 	<text id="bt_edit_character" str="Editer le personage"/>
