@@ -62,15 +62,16 @@ void App::draw2DImages()
 }
 
 ///TODO: mover isso para GUIManager
+// Would be nice to only check the tools windows we have opened and check their position / scale 
 bool App::cursorIsInEditArea()
 {
     bool condition = true;
 
     //is over the main toolbar??
-    if(device->getCursorControl()->getPosition().Y < 36)   condition = false;
+    if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 
     //Is over terrain toolbar??
-    if(device->getCursorControl()->getPosition().Y < 95  && device->getCursorControl()->getPosition().X < 420 && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
+    if(device->getCursorControl()->getPosition().X > (driver->getScreenSize().Width - 170.0) && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
 	{
 		condition = false;
 		GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
@@ -80,7 +81,7 @@ bool App::cursorIsInEditArea()
     //is over the dynamic objects chooser window??
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
     {
-        if( device->getCursorControl()->getPosition().X > driver->getScreenSize().Width - 160.0 )
+        if( device->getCursorControl()->getPosition().X > driver->getScreenSize().Width - 170.0 )
         {
             condition = false;
         }
@@ -89,7 +90,8 @@ bool App::cursorIsInEditArea()
     //gameplay has a toolbar in bottom of the screen (items)
     if(app_state == APP_GAMEPLAY_NORMAL)
     {
-        if( device->getCursorControl()->getPosition().Y > driver->getScreenSize().Height - 50.0 )
+		if(device->getCursorControl()->getPosition().Y < 46 && device->getCursorControl()->getPosition().X > driver->getScreenSize().Width - 170.0)  condition = false;
+        if(device->getCursorControl()->getPosition().Y > driver->getScreenSize().Height - 46.0 )
         {
             condition = false;
         }
@@ -688,7 +690,7 @@ void App::setupDevice()
 
     device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
 	this->device->setResizable(resizable);
-    device->setWindowCaption(L"IrrRPG Builder - By Andres Jesse Porfirio - www.andresjesse.com");
+    device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (feb 2011)");
 
 
     driver = device->getVideoDriver();
@@ -699,6 +701,7 @@ void App::setupDevice()
 	timer = device->getTimer()->getRealTime();
 	timer2 = device->getTimer()->getRealTime();
 	LANGManager::getInstance()->setDefaultLanguage(language);
+	quickUpdate();
 
 }
 
@@ -712,10 +715,18 @@ IrrlichtDevice* App::getDevice()
     return device;
 }
 
+void App::quickUpdate()
+{
+	driver->beginScene(true, true, SColor(0,200,200,200));
+	smgr->drawAll();
+	guienv->drawAll();
+	driver->endScene();
+}
 
 void App::run()
 {
     this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
     int lastFPS = -1;
 	u32 timer = device->getTimer()->getRealTime();
@@ -747,7 +758,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"Irr RPG Builder - By Andres Jesse Porfirio - www.andresjesse.com";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (feb 2011)";
 			str += " FPS:";
 			str += fps;
 
@@ -1160,12 +1171,14 @@ void App::initialize()
     GUIManager::getInstance()->setupEditorGUI();
 
     EditorCamera::getInstance()->setPosition(vector3df(0,0,0));
-
+	quickUpdate();
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+	
 
     smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,300,9100);
-
+	quickUpdate();
+	
     Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
 

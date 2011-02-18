@@ -32,6 +32,9 @@ GUIManager::GUIManager()
 
 GUIManager::~GUIManager()
 {
+	delete guiDynamicObjects_NodePreview;
+	delete guiDynamicObjects_Script;
+	delete configWindow;
     //dtor
 }
 
@@ -139,89 +142,245 @@ rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
 
 void GUIManager::setupEditorGUI()
 {
-    IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     //guienv->getSkin()->setFont(guiFontC12);
 	guienv->getSkin()->setFont(guiFontCourier12);
+	// Load textures
+	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+
+	//LOADER WINDOW
+	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
+	guiLoaderWindow->setDrawTitlebar(false);
+	guiLoaderWindow->getCloseButton()->setVisible(false);
+	
+	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
+	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	printf("The GUI should display from here...\n");
+	// quick update
+	App::getInstance()->quickUpdate();
+
+	// loading others
+	ITexture* backtexture = driver->getTexture("../media/art/back.png");
+	ITexture* imgNewProject = driver->getTexture("../media/art/bt_new_project.png");
+	ITexture* imgNewProject1 = driver->getTexture("../media/art/bt_new_project_ghost.png");
+	ITexture* imgLoadProject = driver->getTexture("../media/art/bt_load_project.png");
+	ITexture* imgLoadProject1 = driver->getTexture("../media/art/bt_load_project_ghost.png");
+	ITexture* imgSaveProject = driver->getTexture("../media/art/bt_save_project.png");
+	ITexture* imgSaveProject1 = driver->getTexture("../media/art/bt_save_project_ghost.png");
+	ITexture* imgCloseProgram = driver->getTexture("../media/art/bt_close_program.png");
+	ITexture* imgAbout = driver->getTexture("../media/art/bt_about.png");
+	ITexture* imgAbout1 = driver->getTexture("../media/art/bt_about_ghost.png");
+	ITexture* imgHelp = driver->getTexture("../media/art/bt_help.png");
+	ITexture* imgHelp1 = driver->getTexture("../media/art/bt_help_ghost.png");
+	ITexture* imgConfig = driver->getTexture("../media/art/bt_config.png");
+	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
 
 
     mainToolbarPos = position2di(2,2);
 
-    guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width,36),false);
+    guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
+	guiMainWindow->getCloseButton()->setVisible(false);
 
-    guiMainWindow->getCloseButton()->setVisible(false);
+	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
+	guiMainToolWindow->setDraggable(false);  
+	guiMainToolWindow->setDrawTitlebar(false);
+	guiMainToolWindow->getCloseButton()->setVisible(false);
 
-	ITexture* backtexture = driver->getTexture("../media/art/back.png");
+    
 
 	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
 	guiBackImage->setScaleImage(true);
-	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,36));
-	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,36));
+	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,92));
+	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,92));
+	
 
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
     s32 x = 0;
 
     ///MAIN FUNCTIONS
+	mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,72),guiMainWindow,false,false);
+	IGUITab * tabProject = mainTabCtrl->addTab(L"Project");
+	IGUITab * tabEnv = mainTabCtrl->addTab(L"Environment");
+	IGUITab * tabObject = mainTabCtrl->addTab(L"Objects");
+	IGUITab * tabTools = mainTabCtrl->addTab(L"Tools");
+	IGUITab * tabConfig = mainTabCtrl->addTab(L"Setup");
+	mainTabCtrl->setTabExtraWidth(100);
+	mainTabCtrl->setActiveTab(2);
+	
+
+	mainToolbarPos.Y=10;
     //New Project
     guiMainNewProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
+                                     tabProject,
                                      BT_ID_NEW_PROJECT,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_new_project")).c_str() );
 
-    guiMainNewProject->setImage(driver->getTexture("../media/art/bt_new_project.png"));
-	guiMainNewProject->setPressedImage(driver->getTexture("../media/art/bt_new_project_ghost.png"));
-
-    x+=42;
+    guiMainNewProject->setImage(imgNewProject);
+	guiMainNewProject->setPressedImage(imgNewProject1);
+ 
 
     //Load Project
+	x+=42;
     guiMainLoadProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
+                                     tabProject,
                                      BT_ID_LOAD_PROJECT,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_load_project")).c_str() );
 
-    guiMainLoadProject->setImage(driver->getTexture("../media/art/bt_load_project.png"));
-	guiMainLoadProject->setPressedImage(driver->getTexture("../media/art/bt_load_project_ghost.png"));
+    guiMainLoadProject->setImage(imgLoadProject);
+	guiMainLoadProject->setPressedImage(imgLoadProject1);
+	//Save Project
+	x+=42;
+    guiMainSaveProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabProject,
+                                     BT_ID_SAVE_PROJECT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_save_project")).c_str() );
 
-    x+=42;
+    guiMainSaveProject->setImage(imgSaveProject);
+	guiMainSaveProject->setPressedImage(imgSaveProject1);
 
-    guiCloseProgram = guienv->addButton(myRect(driver->getScreenSize().Width - 36,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_CLOSE_PROGRAM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
 
-    guiCloseProgram->setImage(driver->getTexture("../media/art/bt_close_program.png"));
+    //Transform Terrain
+	x=0;
+    guiTerrainTransform = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_TRANSFORM,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str());
 
-    //ABOUT BUTTON
-    guiAbout = guienv->addButton(myRect(driver->getScreenSize().Width - 36 - 42,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_ABOUT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
+    guiTerrainTransform->setImage(driver->getTexture("../media/art/bt_terrain_up.png"));
+	guiTerrainTransform->setPressedImage(driver->getTexture("../media/art/bt_terrain_up_ghost.png"));
 
-    guiAbout->setImage(driver->getTexture("../media/art/bt_about.png"));
-	guiAbout->setPressedImage(driver->getTexture("../media/art/bt_about_ghost.png"));
 
-    guiHelpButton = guienv->addButton(myRect(driver->getScreenSize().Width - 36 - 84,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_HELP,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
+    x+= 42;
 
-    guiHelpButton->setImage(driver->getTexture("../media/art/bt_help.png"));
-    guiHelpButton->setPressedImage(driver->getTexture("../media/art/bt_help_ghost.png"));
+    //Terrain Add Segment
+    guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_ADD_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str());
 
-    //CONFIG BUTTON
-    guiConfigButton = guienv->addButton(myRect(driver->getScreenSize().Width - 36 - 126,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
+    guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+    x+= 42;
+
+    //Terrain Add Segment
+    guiTerrainPaintVegetation = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_PAINT_VEGETATION,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str());
+
+    guiTerrainPaintVegetation->setImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation.png"));
+	guiTerrainPaintVegetation->setPressedImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation_ghost.png"));
+
+
+    
+
+    //Dynamic Objects
+	x = 0;
+    guiDynamicObjectsMode= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_DYNAMIC_OBJECTS_MODE,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str());
+
+    guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_dynamic_objects_mode.png"));
+	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_dynamic_objects_mode_ghost.png"));
+
+
+    x += 42;
+
+    //Edit Character
+    guiEditCharacter = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_EDIT_CHARACTER,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str());
+
+    guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
+	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
+
+
+    x += 42;
+
+    //Edit Items Script
+    guiEditScriptGlobal = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_EDIT_SCRIPT_GLOBAL,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str());
+
+    guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
+	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
+
+     //CONFIG BUTTON
+	x=0;
+    guiConfigButton = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabConfig,
                                      BT_ID_CONFIG,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_config")).c_str() );
 
-    guiConfigButton->setImage(driver->getTexture("../media/art/bt_config.png"));
-	guiConfigButton->setPressedImage(driver->getTexture("../media/art/bt_config_ghost.png"));
+    guiConfigButton->setImage(imgConfig);
+	guiConfigButton->setPressedImage(imgConfig1);
 
-    //ABOUT WINDOW
+    //Play Game
+	x = 0;
+	mainToolbarPos.Y=5;
+    guiPlayGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_PLAY_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
+
+    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
+
+
+    //Stop Game
+    guiStopGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_STOP_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
+
+    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
+    guiStopGame->setVisible(false);
+
+	
+
+    //ABOUT BUTTON
+	x += 42;
+    guiAbout = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_ABOUT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
+
+    guiAbout->setImage(imgAbout);
+	guiAbout->setPressedImage(imgAbout1);
+
+	// Help Button
+	x += 42;
+    guiHelpButton = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_HELP,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
+
+    guiHelpButton->setImage(imgHelp);
+    guiHelpButton->setPressedImage(imgHelp1);
+
+	// Close program
+	x += 42;
+	guiCloseProgram = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_CLOSE_PROGRAM,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
+
+    guiCloseProgram->setImage(imgCloseProgram);
+
+
+   
+	// Update the display
+	App::getInstance()->quickUpdate();
+
+	//ABOUT WINDOW
     guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
     guiAboutWindow->setDraggable(false);
     guiAboutWindow->setDrawTitlebar(false);
@@ -246,148 +405,62 @@ void GUIManager::setupEditorGUI()
 
 	//aboutText->addItem(stringw(LANGManager::getInstance()->getText("txt_about")).c_str());
 
-    //Save Project
-    guiMainSaveProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_SAVE_PROJECT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_save_project")).c_str() );
-
-    guiMainSaveProject->setImage(driver->getTexture("../media/art/bt_save_project.png"));
-	guiMainSaveProject->setPressedImage(driver->getTexture("../media/art/bt_save_project_ghost.png"));
-
-    x+=42;
-
-
-    //Transform Terrain
-    guiTerrainTransform = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_TERRAIN_TRANSFORM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str());
-
-    guiTerrainTransform->setImage(driver->getTexture("../media/art/bt_terrain_up.png"));
-	guiTerrainTransform->setPressedImage(driver->getTexture("../media/art/bt_terrain_up_ghost.png"));
-
-
-    x+= 42;
-
-    //Terrain Add Segment
-    guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_TERRAIN_ADD_SEGMENT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str());
-
-    guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
-	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
-
-    x+= 42;
-
-    //Terrain Add Segment
-    guiTerrainPaintVegetation = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_TERRAIN_PAINT_VEGETATION,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str());
-
-    guiTerrainPaintVegetation->setImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation.png"));
-	guiTerrainPaintVegetation->setPressedImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation_ghost.png"));
-
-
-    x += 42;
-
-    //Dynamic Objects
-    guiDynamicObjectsMode= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_DYNAMIC_OBJECTS_MODE,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str());
-
-    guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_dynamic_objects_mode.png"));
-	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_dynamic_objects_mode_ghost.png"));
-
-
-    x += 42;
-
-    //Edit Character
-    guiEditCharacter = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_EDIT_CHARACTER,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str());
-
-    guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
-	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
-
-
-    x += 42;
-
-    //Edit Items Script
-    guiEditScriptGlobal = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_EDIT_SCRIPT_GLOBAL,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str());
-
-    guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
-	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
-
-    x += 42;
-
-    //Play Game
-    guiPlayGame= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_PLAY_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
-
-    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
-
-
-    //Stop Game
-    guiStopGame= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     guiMainWindow,
-                                     BT_ID_STOP_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
-
-    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
-    guiStopGame->setVisible(false);
-
-
-
     ///TERRAIN TOOLBAR
-    guiTerrainToolbar = guienv->addWindow(myRect(2,34,400,54));
+    guiTerrainToolbar = guienv->addWindow(
+		myRect(driver->getScreenSize().Width - 170,
+		guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		170,
+		driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		false,L"Brush tool");
+
     guiTerrainToolbar->getCloseButton()->setVisible(false);
-    guiTerrainToolbar->setDrawTitlebar(false);
+    
     guiTerrainToolbar->setDraggable(false);
     guiTerrainToolbar->setVisible(false);
+	guiTerrainToolbar->setNotClipped(true);
 
-	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
-                                                         myRect(2,mainToolbarPos.Y+32,148,16),
-                                                         false,true, guiTerrainToolbar);
-	guiTerrainBrushRadiusValue = guienv->addStaticText(L"175",
-                                                         myRect(355,mainToolbarPos.Y+32,45,16),
-                                                         false,true, guiTerrainToolbar);
-
-    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(150,mainToolbarPos.Y+34,200,12),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
-    guiTerrainBrushRadius->setMin(0);
-    guiTerrainBrushRadius->setMax(200);
-    guiTerrainBrushRadius->setPos(100);
-
-    guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
-                                                         myRect(2,mainToolbarPos.Y+16,148,16),
-                                                         false,true, guiTerrainToolbar);
-	guiTerrainBrushStrengthValue = guienv->addStaticText(L"175",
-                                                         myRect(355,mainToolbarPos.Y+16,45,16),
-                                                         false,true, guiTerrainToolbar);
-
-    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(150,mainToolbarPos.Y+18,200,12),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
-    guiTerrainBrushStrength->setMin(0);
-    guiTerrainBrushStrength->setMax(200);
-    guiTerrainBrushStrength->setPos(100);
-
-    //Show Playable Area (areas with no Y == 0 will be red)
-    guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(0,mainToolbarPos.Y,200,16),
+	
+	//Show Playable Area (areas with no Y == 0 will be red)
+	mainToolbarPos.Y=20;
+    guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(10,mainToolbarPos.Y,160,20),
                                                      guiTerrainToolbar,
                                                      CB_ID_TERRAIN_SHOW_PLAYABLE_AREA,
                                                      stringw(LANGManager::getInstance()->getText("bt_show_playable_area")).c_str());
 
+	// Display the brush strength
+	guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+30,150,20),
+                                                         false,true, guiTerrainToolbar);
+	guiTerrainBrushStrengthValue = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+70,150,20),
+                                                         false,true, guiTerrainToolbar);
 
-    ///Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
-    rect<s32> windowRect = myRect(driver->getScreenSize().Width - 160,guiMainWindow->getAbsoluteClippingRect().getHeight(),160,driver->getScreenSize().Height);
+    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushStrength->setMin(0);
+    guiTerrainBrushStrength->setMax(200);
+    guiTerrainBrushStrength->setPos(100);
+
+	// Display the brush radius
+	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+90,150,20),
+                                                         false,true, guiTerrainToolbar);
+	guiTerrainBrushRadiusValue = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+130,150,20),
+                                                         false,true, guiTerrainToolbar);
+
+    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushRadius->setMin(0);
+    guiTerrainBrushRadius->setMax(200);
+    guiTerrainBrushRadius->setPos(100);
+
+      
+
+    // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
+    rect<s32> windowRect = 
+		myRect(driver->getScreenSize().Width - 170,
+		guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		170,
+		driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight());
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
@@ -396,7 +469,7 @@ void GUIManager::setupEditorGUI()
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
 
-    rect<s32> nodePreviewPos = myRect(5 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.X,
+    rect<s32> nodePreviewPos = myRect(10 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.X,
                                       guiDynamicObjectsWindowChooser_Y + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.Y,
                                       150,150);
 
@@ -406,7 +479,7 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjectsWindowChooser_Y += 155;
 
 
-    guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(5,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
+    guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
 
     vector<stringc> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList();
 
@@ -417,6 +490,8 @@ void GUIManager::setupEditorGUI()
 
     guiDynamicObjectsWindowChooser_Y += 25;
 
+
+	// --- Contextual menu for the dynamic objects
     guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(100,100,200,105),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
     guiDynamicObjects_Context_Menu_Window->getCloseButton()->setVisible(false);
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
@@ -447,7 +522,9 @@ void GUIManager::setupEditorGUI()
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 
-    ///Edit scripts window
+ 
+	
+	// --- Edit scripts window
 
     guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
     guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
@@ -547,18 +624,25 @@ void GUIManager::setupEditorGUI()
     configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
 }
 
+void GUIManager::setTextLoader(stringw text)
+{
+	guiLoaderDescription->setText(text.c_str());
+	App::getInstance()->quickUpdate();
+}
+
 void GUIManager::setupGameplayGUI()
 {
+	
     IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     fader=guienv->addInOutFader();
     fader->setVisible(false);
-
-    guiPlayerLife_Shadow=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(20,50,600,50),false,false,0,-1,false);
+	
+    guiPlayerLife_Shadow=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(20,driver->getScreenSize().Height-30,600,30),false,false,0,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
 
-    guiPlayerLife=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(21,51,600,50),false,false,0,-1,false);
+    guiPlayerLife=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(21,driver->getScreenSize().Height-31,600,30),false,false,0,-1,false);
     guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
     guiPlayerLife->setOverrideFont(guiFontLarge28);
 
@@ -573,7 +657,7 @@ void GUIManager::setupGameplayGUI()
 
 
     //view items
-    guiBtViewItems = guienv->addButton(myRect(driver->getScreenSize().Width - 50,driver->getScreenSize().Height - 50,48,48),
+    guiBtViewItems = guienv->addButton(myRect(driver->getScreenSize().Width/2 - 24,driver->getScreenSize().Height - 50,48,48),
                                      0,
                                      BT_ID_VIEW_ITEMS,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_view_items")).c_str() );
@@ -588,9 +672,7 @@ void GUIManager::setupGameplayGUI()
     guiWindowItems->setDraggable(false);
     guiWindowItems->setVisible(false);
 
-    guiPlayerItems = guienv->addListBox(myRect(10,10,driver->getScreenSize().Width-220,driver->getScreenSize().Height-170 - 32),guiWindowItems,LB_ID_PLAYER_ITEMS);
-
-
+    guiPlayerItems = guienv->addListBox(myRect(10,30,200,driver->getScreenSize().Height-170 - 64),guiWindowItems,LB_ID_PLAYER_ITEMS,true);
 
     guiBtUseItem = guienv->addButton(myRect(10,driver->getScreenSize().Height-160 - 32,32,32),
                                          guiWindowItems,
@@ -651,7 +733,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 
 void GUIManager::loadScriptTemplates()
 {
-    TiXmlDocument doc("../media/scripts/template_scripts.xml");
+	TiXmlDocument doc("../media/scripts/template_scripts.xml");
 
 	if (!doc.LoadFile())
 	{
@@ -775,9 +857,11 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
     {
         case BT_ID_PLAY_GAME:
             guiPlayGame->setVisible(visible);
+			
             break;
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
+			guiMainWindow->setVisible(!visible);
             break;
         case ST_ID_PLAYER_LIFE:
             guiPlayerLife->setVisible(visible);
@@ -851,7 +935,7 @@ void GUIManager::hideBlackScreen()
 
 void GUIManager::loadFonts()
 {
-    ///Load Fonts
+	///Load Fonts
     guiFontCourier12 = guienv->getFont("../media/fonts/courier12.xml");
     guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
     guiFontLarge28 = guienv->getFont("../media/fonts/large28.xml");

@@ -84,6 +84,7 @@ class App
         void saveProject();
 
         void initialize();
+		void quickUpdate();
 
         void setAppState(APP_STATE newAppState);
         APP_STATE getAppState();

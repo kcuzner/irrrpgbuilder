@@ -68,6 +68,7 @@ class DynamicObjectsManager
     private:
         DynamicObjectsManager();
 		
+		IrrlichtDevice *device;
 
         DynamicObject* activeObject;
 		DynamicObject* playerObject;

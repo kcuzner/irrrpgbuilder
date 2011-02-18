@@ -9,6 +9,7 @@ using namespace gui;
 
 DynamicObjectsManager::DynamicObjectsManager()
 {
+	device = App::getInstance()->getDevice();
 	// Load the definition for all dynamic objects
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
@@ -46,6 +47,7 @@ DynamicObjectsManager::DynamicObjectsManager()
         TiXmlNode* currentObjXML = root->FirstChild( "dynamic_object" );
 
         //Iterate dynamic_objects
+		GUIManager::getInstance()->setTextLoader(L"Loading Dynamic objects lists...");
         while( currentObjXML != NULL )
         {
             //Get Dynamic Object Attributes
@@ -55,6 +57,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 			//Process and parse the files if the set are found into the XML  
 			if (set.size()>0)
 				processFile(set.c_str());
+
 		}
 	}
 
@@ -115,6 +118,7 @@ bool DynamicObjectsManager::processFile(stringc filename)
         TiXmlNode* currentObjXML = root->FirstChild( "dynamic_object" );
 
         //Iterate dynamic_objects
+		
         while( currentObjXML != NULL )
         {
             //Get Dynamic Object Attributes
@@ -124,18 +128,30 @@ bool DynamicObjectsManager::processFile(stringc filename)
 			stringc type = currentObjXML->ToElement()->Attribute("type");
             stringc scale = currentObjXML->ToElement()->Attribute("scale");
             stringc materialType = currentObjXML->ToElement()->Attribute("materialType");
+			
+			// Update the GUI with a description of the current loading task
+			stringw nametext="Loading Dynamic object: ";
+			nametext.append(name.c_str());
+			GUIManager::getInstance()->setTextLoader(nametext);
 
+			
 			//Read Object Animations
             TiXmlNode* currentAnimXML = currentObjXML->FirstChild( "animation" );
 
             vector<DynamicObject_Animation> animations;
-
+		
             //Iterate animations
             while( currentAnimXML != NULL )
             {
                 DynamicObject_Animation currAnim;
 
                 currAnim.name = currentAnimXML->ToElement()->Attribute("name");
+				stringw nametextanim = nametext;
+				nametextanim.append(L", adding animation:");
+				nametextanim.append(currAnim.name.c_str());
+				GUIManager::getInstance()->setTextLoader(nametextanim);
+
+				//GUIManager::getInstance()->setTextLoader(L"Loading Dynamic objects animation...");
 				
 				// Load the name of the animation mesh (if there is any)
 				// If there is no mesh name, then will be "undefined"
@@ -212,6 +228,9 @@ bool DynamicObjectsManager::processFile(stringc filename)
 
                 currentAnimXML = currentObjXML->IterateChildren( "animation", currentAnimXML );
                 animations.push_back(currAnim);
+
+				// Update the gui while loading
+				
             }
 
             // -- Create Dynamic Object --
@@ -273,7 +292,7 @@ bool DynamicObjectsManager::processFile(stringc filename)
 
             currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
 
-			
+			device->getGUIEnvironment()->drawAll();
 
         }//while
 

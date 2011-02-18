@@ -97,6 +97,7 @@ class GUIManager
 
         void setupEditorGUI();
         void setupGameplayGUI();
+		void setTextLoader(stringw text);
 
         void drawHelpImage(GUI_HELP_IMAGE img);
         void drawNodePreview();
@@ -143,6 +144,9 @@ class GUIManager
         void flush();
 
         void showConfigWindow();
+		// Accessing the loader window directly
+		IGUIWindow* guiLoaderWindow;
+		
 
         virtual ~GUIManager();
     private:
@@ -155,6 +159,7 @@ class GUIManager
 		u32 timer2;
 
         position2di mainToolbarPos;
+		IGUITabControl * mainTabCtrl;
 
         IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
@@ -180,9 +185,15 @@ class GUIManager
         IGUIButton* guiHelpButton;
         IGUIButton* guiConfigButton;
         GUIConfigWindow* configWindow;
+		
+		// Loader window
+		
+		IGUIStaticText* guiLoaderDescription;
+		
 
         ///Main window (like a toolbar on the top...)
         IGUIWindow* guiMainWindow;
+		IGUIWindow* guiMainToolWindow;
 
         ///TerrainEditor
         IGUIButton* guiTerrainTransform;
