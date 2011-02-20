@@ -51,12 +51,10 @@ Player::Player()
 	player_base.dodge_prop = 12;
 	player_level.dodge_prop = 0.5f;
 	
-	
-
-
 	playerObject->setProperties(playerprop);
 	playerObject->setProp_base(player_base);
 	playerObject->setProp_level(player_level);
+	playerObject->getNode()->setID(0);
 }
 
 Player::~Player()
@@ -122,24 +120,22 @@ void Player::update()
 		{
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
+
+		if (playerObject->getCurrentEnemy())
+		{
+			printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
+			if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
+			{
+				playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
+				playerObject->setAnimation("attack");
+			}
+		}
 		//updateDisplay();
 	}
 }
 
 void Player::updateDisplay()
 {
-	// Update the GUI display
-	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
-	playerLife += playerObject->getProperties().life;
-	playerLife += "/";
-	playerLife += playerObject->getProperties().maxlife;
-	playerLife += " Exp:";
-	stringc playerxp = (stringc)playerObject->getProperties().experience;
-	playerLife += playerxp;
-	playerLife += " Level:";
-	playerLife += playerObject->getProperties().level;
-	//+(stringc)properties.experience;
-	GUIManager::getInstance()->setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
 	
 }
 

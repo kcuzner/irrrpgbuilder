@@ -6,6 +6,7 @@
 #include "tinyXML/tinyxml.h"
 
 #include "TerrainManager.h"
+#include "HealthSceneNode.h"
 #include "GUIManager.h"
 
 using namespace irr;
@@ -121,6 +122,9 @@ class DynamicObject
 
 		void setScale(vector3df scale);
 		vector3df getScale();
+
+		DynamicObject * getCurrentEnemy();
+		void clearEnemy();
 		
 		property getProperties();
 		void setProperties(property prop);
@@ -228,6 +232,7 @@ class DynamicObject
 		ISceneNodeAnimatorCollisionResponse* animator;
 		
         ISceneNode* fakeShadow;
+		scene::HealthSceneNode* Healthbar;
 		stringc script;
 
 		OBJECT_ANIMATION currentAnimation;

@@ -67,6 +67,45 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
     }
 }
 
+void GUIManager::drawPlayerStats()
+{
+	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
+	// Text display
+	// Update the GUI display
+	DynamicObject* playerObject = Player::getInstance()->getObject();
+	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
+	playerLife += playerObject->getProperties().life;
+	playerLife += "/";
+	playerLife += playerObject->getProperties().maxlife;
+	playerLife += " Exp:";
+	stringc playerxp = (stringc)playerObject->getProperties().experience;
+	playerLife += playerxp;
+	playerLife += " Level:";
+	playerLife += playerObject->getProperties().level;
+	//+(stringc)properties.experience;
+	setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
+
+
+	// Experimenting with a life bar
+	s32 x = 21;
+	s32 y = driver->getScreenSize().Height-71;
+	s32 w = 200;
+	s32 h = 40;
+	core::rect<s32> box = core::rect<s32>(x,y,x+w,y+h);
+
+	s32 hp = Player::getInstance()->getObject()->getProperties().life;
+	s32 max = Player::getInstance()->getObject()->getProperties().maxlife;
+
+	s32 base = (hp * 100);
+	s32 base2 = base / max;
+	f32 width = (f32)w / 100.0f;
+
+	driver->draw2DRectangle(video::SColor(255,0,0,0),box);
+	box.LowerRightCorner.X=(s32)(x+(base2*width));
+	driver->draw2DRectangle(box,video::SColor(255,192,0,0),video::SColor(255,100,0,0),video::SColor(255,192,0,0),video::SColor(255,100,0,0));
+
+}
+
 bool GUIManager::getCheckboxState(GUI_ID id)
 {
     switch(id)

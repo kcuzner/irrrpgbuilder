@@ -107,7 +107,8 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	ScrollbarH->setSmallStep(3);
 	ScrollbarH->setMax(0);
 	ScrollbarH->setPos(0);
-
+	ScrollbarH->setVisible(false);
+	
 	if (MultiLine)
 	{
 		LineToggle->setVisible(false);
@@ -214,7 +215,7 @@ void CGUIEditBoxIRB::setMultiLine(bool enable)
 	MultiLine = enable;
 	LineToggle->setVisible(enable);
 	Scrollbar->setVisible(enable);
-	ScrollbarH->setVisible(enable);
+	//ScrollbarH->setVisible(enable);
 	LineNumbering = enable;
 }
 

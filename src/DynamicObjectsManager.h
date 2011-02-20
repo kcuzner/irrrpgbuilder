@@ -38,14 +38,15 @@ class DynamicObjectsManager
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
 
+		void setTaggedTarget(DynamicObject* object);
+		DynamicObject* getTaggedTarget();
+
         vector<stringc> getObjectsList();
 
         void showDebugData(bool show);
 
 		void startCollisions();
         void clearCollisions();
-
-		
 
 		void updateMetaSelector();
 		IMetaTriangleSelector* getMeta();
@@ -73,6 +74,7 @@ class DynamicObjectsManager
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
+		DynamicObject* taggedObject;
 
         vector<DynamicObject*> objectsTemplate;
 

@@ -10,6 +10,7 @@ using namespace gui;
 DynamicObjectsManager::DynamicObjectsManager()
 {
 	device = App::getInstance()->getDevice();
+	taggedObject=NULL;
 	// Load the definition for all dynamic objects
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
@@ -387,6 +388,16 @@ DynamicObject* DynamicObjectsManager::getTarget()
 	return targetObject;
 }
 
+void DynamicObjectsManager::setTaggedTarget(DynamicObject* object)
+{
+	taggedObject = object;
+}
+
+DynamicObject* DynamicObjectsManager::getTaggedTarget()
+{
+	return taggedObject;
+}
+
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 {
     //write header
@@ -450,10 +461,18 @@ void DynamicObjectsManager::updateAll()
 		// Non interactive objects will not be refreshed (update callback)
 		// Should help with performance and allow for more NPC/Interactive objects.
 		if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+		{
 			((DynamicObject*)objects[i])->update();
+		}
     }
 	if (createcollisions)
 		initializeCollisions();
+
+	// With this the target reticle will follow the target that has been selected (app.cpp)
+	if (taggedObject)
+	{
+		targetObject->setPosition(taggedObject->getPosition()+vector3df(0,0.1f,0));
+	}
 }
 
 void DynamicObjectsManager::clearAllScripts()
@@ -463,6 +482,7 @@ void DynamicObjectsManager::clearAllScripts()
         ((DynamicObject*)objects[i])->restoreParams();
         ((DynamicObject*)objects[i])->clearScripts();
     }
+	taggedObject=NULL;
 }
 
 void DynamicObjectsManager::showDebugData(bool show)

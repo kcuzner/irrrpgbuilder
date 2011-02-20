@@ -2,9 +2,11 @@
 
 #include "App.h"
 #include "DynamicObjectsManager.h"
+#include "HealthSceneNode.h"
 #include "combat.h"
 #include "LuaGlobalCaller.h"
 #include "Player.h"
+
 
 using namespace irr;
 using namespace core;
@@ -68,6 +70,7 @@ DynamicObject::~DynamicObject()
 {
     selector->drop();
     node->remove();
+	Healthbar->remove();
 }
 
 void DynamicObject::initProperties()
@@ -206,8 +209,11 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
-		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,1,0));
+		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,2.2f*this->node->getScale().Y,0));
 		objLabel->setVisible(false);
+		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
+		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,2*this->node->getScale().Y,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
+		Healthbar->setVisible(false);
 
 	}
 }
@@ -350,6 +356,16 @@ f32 DynamicObject::getDistanceFrom(vector3df pos)
     return node->getPosition().getDistanceFrom(pos);
 }
 
+DynamicObject * DynamicObject::getCurrentEnemy()
+{
+	return enemyUnderAttack;
+}
+
+void DynamicObject::clearEnemy()
+{
+	enemyUnderAttack=NULL;
+}
+
 //-----------------------------------------------------------------------
 // Properties 
 //-----------------------------------------------------------------------
@@ -391,6 +407,11 @@ void DynamicObject::setEnabled(bool enabled)
     this->node->setVisible(enabled);
 	if (!enabled)
 		DynamicObjectsManager::getInstance()->updateMetaSelector();
+	if (this->getNode()->isVisible()==false && this==Player::getInstance()->getObject()->getCurrentEnemy())
+	{
+		Player::getInstance()->getObject()->clearEnemy();
+		Player::getInstance()->getObject()->setAnimation("idle");
+	}
 }
 
 bool DynamicObject::isEnabled()
@@ -482,11 +503,18 @@ int DynamicObject::getMoney()
 void DynamicObject::setObjectLabel(stringc label)
 {
     objLabel->setText(stringw(label).c_str());
+	s32 percent = (properties.life * 100);
+	s32 p2 = percent / 100;
+	if (properties.maxlife>0)
+		p2 = percent / properties.maxlife;
+
+	Healthbar->setProgress(p2);
 }
 
 void DynamicObject::objectLabelSetVisible(bool visible)
 {
     objLabel->setVisible(visible);
+	Healthbar->setVisible(visible);
 }
 //-----------------------------------------------------------------------
 // Animation system functions
@@ -634,7 +662,9 @@ ITriangleSelector* DynamicObject::getTriangleSelector()
 // Main attack feature (Player + NPC)
 void DynamicObject::attackEnemy(DynamicObject* obj)
 {
-	
+	if (enemyUnderAttack==obj)
+		return;
+
     enemyUnderAttack = obj;
 
     if(obj)

@@ -101,6 +101,7 @@ class GUIManager
 
         void drawHelpImage(GUI_HELP_IMAGE img);
         void drawNodePreview();
+		void drawPlayerStats();
 
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);

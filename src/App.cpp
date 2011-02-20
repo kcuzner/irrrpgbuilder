@@ -56,8 +56,12 @@ void App::draw2DImages()
         GUIManager::getInstance()->drawNodePreview();
     }
 
+	if (app_state > APP_STATE_CONTROL)
+	{
+		GUIManager::getInstance()->drawPlayerStats();
+	}
     #ifdef APP_DEBUG
-    //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
+      //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
     #endif
 }
 
@@ -743,14 +747,14 @@ void App::run()
 		}
         else
 		{
+			
 			updateGameplay();
 		}
 		
 		smgr->drawAll();
-
 		guienv->drawAll();
-
-        draw2DImages();
+		
+		draw2DImages();
 
         driver->endScene();
 
@@ -1018,33 +1022,45 @@ void App::updateGameplay()
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 					
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
-					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 140.0f)
+					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
 							Player::getInstance()->getObject()->attackEnemy(obj);	
 							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
 							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+							DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
+							return;
 						}
 						else
 						{
+							obj->notifyClick();
+							Player::getInstance()->getObject()->clearEnemy();
+							DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
 							Player::getInstance()->getObject()->lookAt(obj->getPosition());
+							return;
 						}
 					}
 					else
 					{
 						mousePick = getMousePosition3D(100);
 						Player::getInstance()->getObject()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
-						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+						DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
 						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+						DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
+						Player::getInstance()->getObject()->clearEnemy();
+						return;
 					}
 				}
 				else
 				{
 					mousePick = getMousePosition3D(100);
 					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
+					Player::getInstance()->getObject()->clearEnemy();
+					DynamicObjectsManager::getInstance()->setTaggedTarget(NULL);
 					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+					return;
 				}
 			}
 			else//No action

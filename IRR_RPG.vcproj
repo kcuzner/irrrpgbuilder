@@ -263,6 +263,14 @@
 					RelativePath=".\src\GUIManager.h"
 					>
 				</File>
+				<File
+					RelativePath=".\src\HealthSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\HealthSceneNode.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="tinyxml"
