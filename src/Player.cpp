@@ -31,6 +31,8 @@ Player::Player()
 	playerprop.mindamage = 3;
 	playerprop.maxdamage = 10;
 	playerprop.level = 1;
+	playerprop.mana=100;
+	playerprop.maxmana=100;
 	
 	// Set the upgradable properties (properties that will increase automatically at each level)
 	player_base.maxlife=95; // Starting at level 0 with 95 hp
@@ -136,7 +138,7 @@ void Player::update()
 
 void Player::updateDisplay()
 {
-	
+	GUIManager::getInstance()->drawPlayerStats();
 }
 
 void Player::setHighLight(bool highlight)

@@ -13,7 +13,7 @@ LANGManager::LANGManager()
 
     ///TODO:remove all IrrXML... TinyXML must be default
 
-    irr::io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/lang.xml");
+    xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/lang.xml");
 
     if(!xml) exit(0);
 
@@ -35,12 +35,13 @@ LANGManager::LANGManager()
                 break;
         }
     }
-
-    delete xml;
+	xml->drop();
+    //delete xml;
 }
 
 LANGManager::~LANGManager()
 {
+	delete xml;
     //dtor
 }
 
@@ -53,8 +54,8 @@ LANGManager* LANGManager::getInstance()
 
 stringc LANGManager::getText(stringc node)
 {
-    irr::io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/lang.xml");
 
+	xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/lang.xml");
     if(!xml)
     {
         printf("ERROR: lang.xml not found!");
@@ -86,13 +87,12 @@ stringc LANGManager::getText(stringc node)
 										{
 											
 											int aa = atoi(stringc(xml->getAttributeValue("str")).c_str());
-											printf("------------->WARNING WARNING About text is here!! %i \n",aa);
+					
 											stringc item = "str";
 											for(int a=1; a<=aa; a++)
 											{
 												item = "str";
 												item.append(stringc(a).c_str());
-												printf("----------------> Here is the item name %s\n",item.c_str());
 
 												GUIManager::getInstance()->addAboutTextItem(stringc(xml->getAttributeValue(item.c_str())));
 												
@@ -110,8 +110,7 @@ stringc LANGManager::getText(stringc node)
                 } 
         }
     }
-
-    delete xml;
+	xml->drop();
 	return "";
 }
 

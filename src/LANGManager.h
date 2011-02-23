@@ -24,7 +24,7 @@ class LANGManager
     protected:
     private:
         LANGManager();
-
+		irr::io::IXMLReaderUTF8* xml;
         stringc defaultLanguage;
 		stringc description;
 };

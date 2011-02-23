@@ -32,9 +32,13 @@ GUIManager::GUIManager()
 
 GUIManager::~GUIManager()
 {
+	
+	delete managauge;
+	delete lifegauge;
 	delete guiDynamicObjects_NodePreview;
 	delete guiDynamicObjects_Script;
 	delete configWindow;
+
     //dtor
 }
 
@@ -73,7 +77,8 @@ void GUIManager::drawPlayerStats()
 	// Text display
 	// Update the GUI display
 	DynamicObject* playerObject = Player::getInstance()->getObject();
-	stringc playerLife = LANGManager::getInstance()->getText("txt_player_life");
+	
+	stringc playerLife=playerLifeText;
 	playerLife += playerObject->getProperties().life;
 	playerLife += "/";
 	playerLife += playerObject->getProperties().maxlife;
@@ -85,25 +90,15 @@ void GUIManager::drawPlayerStats()
 	//+(stringc)properties.experience;
 	setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
 
-
-	// Experimenting with a life bar
-	s32 x = 21;
-	s32 y = driver->getScreenSize().Height-71;
-	s32 w = 200;
-	s32 h = 40;
-	core::rect<s32> box = core::rect<s32>(x,y,x+w,y+h);
-
 	s32 hp = Player::getInstance()->getObject()->getProperties().life;
 	s32 max = Player::getInstance()->getObject()->getProperties().maxlife;
+	lifegauge->setCurrentValue(hp);
+	lifegauge->setMaxValue(max);
 
-	s32 base = (hp * 100);
-	s32 base2 = base / max;
-	f32 width = (f32)w / 100.0f;
-
-	driver->draw2DRectangle(video::SColor(255,0,0,0),box);
-	box.LowerRightCorner.X=(s32)(x+(base2*width));
-	driver->draw2DRectangle(box,video::SColor(255,192,0,0),video::SColor(255,100,0,0),video::SColor(255,192,0,0),video::SColor(255,100,0,0));
-
+	s32 mana = Player::getInstance()->getObject()->getProperties().mana;
+	s32 maxmana = Player::getInstance()->getObject()->getProperties().maxmana;
+	managauge->setCurrentValue(mana);
+	managauge->setMaxValue(maxmana);
 }
 
 bool GUIManager::getCheckboxState(GUI_ID id)
@@ -242,7 +237,7 @@ void GUIManager::setupEditorGUI()
     s32 x = 0;
 
     ///MAIN FUNCTIONS
-	mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,72),guiMainWindow,false,false);
+	mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
 	IGUITab * tabProject = mainTabCtrl->addTab(L"Project");
 	IGUITab * tabEnv = mainTabCtrl->addTab(L"Environment");
 	IGUITab * tabObject = mainTabCtrl->addTab(L"Objects");
@@ -341,6 +336,18 @@ void GUIManager::setupEditorGUI()
     guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
 	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
 
+	///EDIT CHARACTER
+    guiPlayerEditScript = guienv->addButton(myRect(guiEditCharacter->getAbsoluteClippingRect().UpperLeftCorner.X,mainToolbarPos.Y+33,32,32),
+                                                           tabObject,
+                                                           BT_ID_PLAYER_EDIT_SCRIPT,
+                                                           L"",
+                                                           stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str() );
+
+	guiPlayerEditScript->setOverrideFont(guiFontC12);
+    guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
+
+    guiPlayerEditScript->setVisible(false);
+
 
     x += 42;
 
@@ -434,7 +441,7 @@ void GUIManager::setupEditorGUI()
 
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
     //IGUIStaticText* aboutText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_about")).c_str(),myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,140,500,400),true,true,guiAboutWindow);
-	//aboutText->setOverrideFont(guiFontCourier12);
+	//guiAboutText->setOverrideFont(guiFontC12);
 
     //aboutText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 	guiAboutText->setSubElement(true);
@@ -637,19 +644,7 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
 	guiDynamicObjectsWindowEditAction->setVisible(false);
 
-    ///EDIT CHARACTER
-    guiPlayerEditScript = guienv->addButton(myRect(guiEditCharacter->getAbsoluteClippingRect().UpperLeftCorner.X,38,32,32),
-                                                           0,
-                                                           BT_ID_PLAYER_EDIT_SCRIPT,
-                                                           L"",
-                                                           stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str() );
-
-	guiPlayerEditScript->setOverrideFont(guiFontC12);
-    guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
-
-    guiPlayerEditScript->setVisible(false);
-
-
+    
 
     ///LOAD HELP IMAGES
     helpTerrainTransform = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_transform.png");
@@ -676,16 +671,47 @@ void GUIManager::setupGameplayGUI()
 
     fader=guienv->addInOutFader();
     fader->setVisible(false);
+
 	
-    guiPlayerLife_Shadow=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(20,driver->getScreenSize().Height-30,600,30),false,false,0,-1,false);
+
+	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
+	
+    guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(20,driver->getScreenSize().Height-30,600,30),false,false,0,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
 
-    guiPlayerLife=guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_player_life")).c_str(),myRect(21,driver->getScreenSize().Height-31,600,30),false,false,0,-1,false);
+    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(21,driver->getScreenSize().Height-31,600,30),false,false,0,-1,false);
     guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
     guiPlayerLife->setOverrideFont(guiFontLarge28);
 
-    this->setElementVisible(ST_ID_PLAYER_LIFE, false);
+	this->setElementVisible(ST_ID_PLAYER_LIFE, false);
+
+	// --- Active game menu during play
+	ITexture* gameplay_bar = driver->getTexture("../media/art/gameplay_bar.png");
+	ITexture* circle = driver->getTexture("../media/art/circle.png");
+	ITexture* circleMana = driver->getTexture("../media/art/circlemana.png");
+	ITexture* topCircle = driver->getTexture("../media/art/circle_top.png");
+
+	// The bottom image of the interface 
+	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((driver->getScreenSize().Width/2)-(gameplay_bar->getSize().Width/2),driver->getScreenSize().Height-gameplay_bar->getSize().Height),true);
+	
+	// The life gauge
+	lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
+	lifegauge->setImage(circle);
+	lifegauge->ViewHalfLeft();
+
+	// The mana gauge
+	managauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
+	managauge->setImage(circleMana);
+	managauge->ViewHalfRight();
+
+	// The image over the circle
+	IGUIImage* circle_overlay = 
+		guienv->addImage(topCircle,vector2d<s32>((gameplay_bar->getSize().Width/2)-64,gameplay_bar->getSize().Height-128),true,gameplay_bar_image);
+	
+	gameplay_bar_image->setVisible(false);
+	
+	
 
 
     ///DIALOG
@@ -696,7 +722,7 @@ void GUIManager::setupGameplayGUI()
 
 
     //view items
-    guiBtViewItems = guienv->addButton(myRect(driver->getScreenSize().Width/2 - 24,driver->getScreenSize().Height - 50,48,48),
+    guiBtViewItems = guienv->addButton(myRect(driver->getScreenSize().Width/2 + 80,driver->getScreenSize().Height - 57,48,48),
                                      0,
                                      BT_ID_VIEW_ITEMS,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_view_items")).c_str() );
@@ -739,6 +765,7 @@ void GUIManager::setupGameplayGUI()
     guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(52+42,driver->getScreenSize().Height-160 - 32,300,32),false,false,guiWindowItems);
     guiPlayerMoney->setOverrideFont(guiFontLarge28);
     guiPlayerMoney->setOverrideColor(SColor(255,255,255,255));
+
 }
 
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
@@ -901,6 +928,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
 			guiMainWindow->setVisible(!visible);
+			gameplay_bar_image->setVisible(visible);
             break;
         case ST_ID_PLAYER_LIFE:
             guiPlayerLife->setVisible(visible);

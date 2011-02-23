@@ -7,6 +7,7 @@
 
 #include "NodePreview.h"
 #include "CGUIEditBoxIRB.h"
+#include "CGUIGfxStatus.h"
 #include "GUIConfigWindow.h"
 
 using namespace irr;
@@ -244,14 +245,23 @@ class GUIManager
         ///Player
         IGUIButton* guiPlayerEditScript;
 
+		// Gameplay bar
+		IGUIImage* gameplay_bar_image;
+		CGUIGfxStatus * lifegauge;
+		CGUIGfxStatus * managauge;
+
+
 
         ///GAMEPLAY
+		stringc playerLifeText;
+		
+
         IGUIInOutFader* fader;
         IGUIStaticText* guiPlayerLife;
         IGUIStaticText* guiPlayerLife_Shadow;
         IGUIStaticText* guiPlayerMoney;
 
-        ITexture* guiDialogImgYes;
+		ITexture* guiDialogImgYes;
         ITexture* guiDialogImgYes_s;
         ITexture* guiDialogImgNo;
         ITexture* guiDialogImgNo_s;

@@ -58,7 +58,7 @@ void App::draw2DImages()
 
 	if (app_state > APP_STATE_CONTROL)
 	{
-		GUIManager::getInstance()->drawPlayerStats();
+		//GUIManager::getInstance()->drawPlayerStats();
 	}
     #ifdef APP_DEBUG
       //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
