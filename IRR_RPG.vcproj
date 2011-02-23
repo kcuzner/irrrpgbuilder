@@ -248,6 +248,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\CGUIGfxStatus.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\CGUIGfxStatus.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\GUIConfigWindow.cpp"
 					>
 				</File>
@@ -413,6 +421,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\src\Ressource.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
