@@ -400,7 +400,7 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p, TiXmlEncoding encoding )
 //
 const char* TiXmlBase::ReadName( const char* p, TIXML_STRING * name, TiXmlEncoding encoding )
 {
-	// Oddly, not supported on some comilers,
+	// Oddly, not supported on some compilers,
 	//name->clear();
 	// So use this:
 	*name = "";

@@ -39,6 +39,8 @@ distribution.
 #include <string.h>
 #include <assert.h>
 #include <string>
+// Addon to convert accents from UTF8
+#include "convert.h"
 
 // Help out windows:
 #if defined( _DEBUG ) && !defined( DEBUG )
