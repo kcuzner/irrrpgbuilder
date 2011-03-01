@@ -125,7 +125,8 @@ void Combat::updateLevel(DynamicObject* object)
 	object_prop.armor = object_base.armor+(object_level.armor*object_prop.level);
 	object_prop.magic_armor = object_base.magic_armor+(object_level.magic_armor*object_prop.level);
 	object_prop.maxlife = object_base.maxlife+(object_level.maxlife*object_prop.level);
-	object_prop.maxmana = object_base.maxmana+(object_level.maxmana*object_prop.level);
+	// There no mana to use right now (no skills yet)
+	//object_prop.maxmana = object_base.maxmana+(object_level.maxmana*object_prop.level);
 	object_prop.hurt_resist = object_base.hurt_resist+(object_level.hurt_resist*object_prop.level);
 	object_prop.regenlife = object_base.regenlife+(object_level.regenlife*object_prop.level);
 	object_prop.regenmana = object_base.regenmana+(object_level.regenmana*object_prop.level);

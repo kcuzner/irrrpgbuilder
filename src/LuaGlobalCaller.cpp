@@ -289,8 +289,11 @@ void LuaGlobalCaller::doScript(stringc script)
     if(error)
         GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,lua_tostring(L, -1));
     else
-        GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
+	{
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
                                                   LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror"));
+		printf("%s",LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror"));
+	}
 }
 
 

@@ -31,7 +31,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	setupObj(name, mesh);
 	// Setup default properties for all dynamic objects
 	initProperties();
-	
+
 
 	// When enabled, the LUA will update even if the node is culled.
 	this->nodeLuaCulling = false;
@@ -42,7 +42,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	// Tries out animation blending
 	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
-	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
+	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL);
 	//nodeBlend->setTransitionTime(0.5);
 
 
@@ -57,7 +57,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 
 	// Tries out animation blending
 	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
-	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL); 
+	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL);
 	//nodeBlend->setTransitionTime(0.5f);
 
 	initProperties();
@@ -161,7 +161,7 @@ void DynamicObject::initProperties()
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+//	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     this->mesh = mesh;
     this->name = name;
@@ -169,12 +169,12 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	if(hasAnimation())
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
-		
+
         nodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
-		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL); 
+		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL);
 	    //nodeAnim->setTransitionTime(0.5f);
 		this->node = nodeAnim;
-			
+
 	}
     else
 	{
@@ -195,7 +195,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 			// Temporary fix. Need to have a shadow scaled to the size of the object.
-			
+
 			if (name=="player_normal")
 				fakeShadow->setScale(vector3df(32,32,32));
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
@@ -221,7 +221,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 DynamicObject* DynamicObject::clone()
 {
     DynamicObject* newObj = new DynamicObject(name,mesh,animations);
-	
+
     newObj->setScale(this->getScale());
     newObj->setMaterialType(this->getMaterialType());
 	newObj->setType(typeText);
@@ -269,7 +269,7 @@ void DynamicObject::lookAt(vector3df pos)
 
 void DynamicObject::setPosition(vector3df pos)
 {
-	
+
 	node->setPosition(pos);
 	vector3df pos2 = node->getAbsolutePosition();
 	node->updateAbsolutePosition();
@@ -278,7 +278,7 @@ void DynamicObject::setPosition(vector3df pos)
 vector3df DynamicObject::getPosition()
 {
 	vector3df pos = fakeShadow->getAbsolutePosition();
-	return pos; 
+	return pos;
 	//return node->getPosition();
 }
 
@@ -316,18 +316,18 @@ void DynamicObject::walkTo(vector3df targetPos)
 	this->lookAt(targetPos);
 
 	f32 speed = currentAnim.walkspeed;
-	
+
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	
+
 	if (height>-0.09f && height<0.05f && !collided)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
-	
+
 	}
 	else
 	{
@@ -367,7 +367,7 @@ void DynamicObject::clearEnemy()
 }
 
 //-----------------------------------------------------------------------
-// Properties 
+// Properties
 //-----------------------------------------------------------------------
 property DynamicObject::getProperties()
 {
@@ -573,8 +573,8 @@ void DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
 	if (this->mesh)
-		defaultskin = (ISkinnedMesh*)this->mesh; 
-	
+		defaultskin = (ISkinnedMesh*)this->mesh;
+
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
@@ -585,7 +585,7 @@ void DynamicObject::setAnimation(stringc animName)
 			if (Animation!=this->currentAnimation)
 			{
 				// Setup the skinned mesh animation. Check if the meshname is present
-				if (tempAnim.meshname!=L"undefined" && defaultskin) 
+				if (tempAnim.meshname!=L"undefined" && defaultskin)
 				{
 					skin = (ISkinnedMesh*)tempAnim.mesh;
 					defaultskin->useAnimationFrom(skin);
@@ -596,7 +596,7 @@ void DynamicObject::setAnimation(stringc animName)
 				// Set the frameloop, the current animation and the speed
 				this->currentAnimation=Animation;
 				this->currentAnim=tempAnim;
-			
+
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
@@ -617,9 +617,9 @@ void DynamicObject::checkAnimationEvent()
 {
 	// Check if the current animation have an attack event
 	if (enemyUnderAttack && (s32)nodeAnim->getFrameNr()!=lastframe)
-	{			
+	{
 		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
-		
+
 		{
 			printf("Should trigger the attack now...\n");
 			// Init the combat
@@ -630,14 +630,14 @@ void DynamicObject::checkAnimationEvent()
 	}
 
 	// Check if the current animation have an sound event
-	if ((currentAnim.sound.size() > 0) && 
+	if ((currentAnim.sound.size() > 0) &&
 		(nodeAnim->getFrameNr() > currentAnim.soundevent) &&
 		(nodeAnim->getFrameNr() < currentAnim.soundevent+1))
 	{
 		printf("Should trigger the sound now...\n");
 	}
 	lastframe=(s32)nodeAnim->getFrameNr();
-	
+
 }
 //-----------------------------------------------------------------------
 // Collision response
@@ -669,12 +669,12 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 
     if(obj)
     {
-		printf("Attack for this enemy asked %s\n",obj->getName());
+		printf("Attack for this enemy asked %s\n",obj->getName().c_str());
         this->lookAt(obj->getPosition());
         this->setAnimation("attack");
 		obj->notifyClick();
     }
-	
+
 }
 
 //-----------------------------------------------------------------------
@@ -829,7 +829,7 @@ void DynamicObject::doScript()
     if(lua_isfunction(L, -1)) lua_call(L,0,0);
     lua_pop( L, -1 );
 	storeParams();
-	
+
 }
 
 void DynamicObject::storeParams()
@@ -874,7 +874,7 @@ void DynamicObject::update()
 
 	// Check for an event in the current animation.
 	checkAnimationEvent();
-	
+
 	// Check for collision with another node
 	if (animator && animator->collisionOccurred())
 	{
@@ -887,12 +887,12 @@ void DynamicObject::update()
 	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
 	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
 	// Check for culling on a node and don't update it if it's culled.
-	
+
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	bool culled = false;
 	//check if the node is culled
 	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-	
+
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
 	{
@@ -905,7 +905,7 @@ void DynamicObject::update()
 	//nodeAnim->animateJoints();
 	if((timerobject-timer>250) && enabled) // Lua UPdate to 1/4 second
 	{
-		
+
 		if (!nodeLuaCulling)
 		{// Special abilitie of the object. this will overide the culling refresh
 			if (!culled)
@@ -913,7 +913,7 @@ void DynamicObject::update()
 				luaRefresh();
 				timer = timerobject;
 			}
-		} else 
+		} else
 		{// if not then check if the node is culled to refresh
 			luaRefresh();
 			timer = timerobject;
@@ -925,7 +925,7 @@ void DynamicObject::updateWalk()
 {
 	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
 	f32 meshScale = this->getScale().X;
-		
+
 		// Walk until in range
 		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
 		{
@@ -936,7 +936,7 @@ void DynamicObject::updateWalk()
 				printf("Hey the object specifically asked for a walk state!\n");
 			}
 
-			this->walkTo(walkTarget); 
+			this->walkTo(walkTarget);
 			return;
 		}
 
@@ -961,28 +961,28 @@ void DynamicObject::updateWalk()
 
 void DynamicObject::luaRefresh()
 {
-	if (App::getInstance()->getAppState() > 100) 
+	if (App::getInstance()->getAppState() > 100)
 	{//app_state < APP_STATE_CONTROL
 		lua_getglobal(L,"onUpdate");
-		if(lua_isfunction(L, -1)) 
+		if(lua_isfunction(L, -1))
 			lua_call(L,0,0);
 		lua_pop( L, -1 );
 
 		lua_getglobal(L,"step");
-		
-		if(lua_isfunction(L, -1)) 
+
+		if(lua_isfunction(L, -1))
 			lua_call(L,0,0);
 		lua_pop( L, -1 );
-		
+
 		//custom update function (updates walkTo for example..)
 		lua_getglobal(L,"CustomDynamicObjectUpdate");
-		
-		if(lua_isfunction(L, -1)) 
+
+		if(lua_isfunction(L, -1))
 			lua_call(L,0,0);
 		lua_pop( L, -1 );
 	}
 	lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
-	if(lua_isfunction(L, -1)) 
+	if(lua_isfunction(L, -1))
 		lua_call(L,0,0);
 	lua_pop( L, -1 );
 }
@@ -993,9 +993,9 @@ void DynamicObject::luaRefresh()
 int DynamicObject::setEnabled(lua_State *LS)
 {
     int LUAenabled = lua_toboolean(LS, -1);
-	
+
 	bool enabled = false;
-	if (LUAenabled==1) 
+	if (LUAenabled==1)
 		enabled=true;
 
 	lua_pop(LS, 1);
@@ -1132,7 +1132,7 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 	lua_pop(LS, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
-	
+
 
     if(tempObj)
     {
@@ -1225,7 +1225,7 @@ int DynamicObject::lookToObject(lua_State *LS)
 
 
     tempObj->lookAt(otherObjPosition);
-	
+
 
     return 0;
 }
@@ -1261,7 +1261,7 @@ int DynamicObject::setPropertie(lua_State *LS)
 {
 	float value = (float)lua_tonumber(LS, -1);
 	lua_pop(LS, 1);
-	
+
 	stringc propertieName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
@@ -1305,9 +1305,9 @@ int DynamicObject::setPropertie(lua_State *LS)
 		Obj->properties.regenlife = (int)value;
 	if (propertieName=="regenmana")
 		Obj->properties.regenmana = (int)value;
-		
+
 	//if (otherObjName=="me")
-	
+
 	return 0;
 }
 
@@ -1349,7 +1349,7 @@ int DynamicObject::getNameLUA(lua_State *LS)
 
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 	stringc value = Obj->getTemplateObjectName();
-	lua_pushstring(LS,value.c_str()); 
+	lua_pushstring(LS,value.c_str());
 
 	return 1;
 }

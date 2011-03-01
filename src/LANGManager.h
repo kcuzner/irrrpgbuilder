@@ -1,32 +1,29 @@
 #ifndef LANGMANAGER_H
 #define LANGMANAGER_H
 
-#include <irrlicht.h>
 #include "GUIManager.h"
-#include "App.h"
+#include "tinyXML/tinyxml.h"
 
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
+typedef struct{
+	irr::core::stringc name;
+	irr::core::stringc text;
+}Lang;
 
 class LANGManager
 {
     public:
         static LANGManager* getInstance();
-
-        stringc getText(stringc node);
-		void setDefaultLanguage(stringc language);
-
+		irr::core::stringc getText(irr::core::stringc node);
+		bool Load();
+		void setDefaultLanguage(irr::core::stringc language);
         virtual ~LANGManager();
+
     protected:
+
     private:
         LANGManager();
-		irr::io::IXMLReaderUTF8* xml;
-        stringc defaultLanguage;
-		stringc description;
+		irr::core::stringc defaultLanguage;
+		vector<Lang> language;
 };
 
 #endif // LANGMANAGER_H

@@ -32,7 +32,7 @@ GUIManager::GUIManager()
 
 GUIManager::~GUIManager()
 {
-	
+
 	delete managauge;
 	delete lifegauge;
 	delete guiDynamicObjects_NodePreview;
@@ -73,11 +73,11 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 
 void GUIManager::drawPlayerStats()
 {
-	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
+//	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
 	// Text display
 	// Update the GUI display
 	DynamicObject* playerObject = Player::getInstance()->getObject();
-	
+
 	stringc playerLife=playerLifeText;
 	playerLife += playerObject->getProperties().life;
 	playerLife += "/";
@@ -177,7 +177,7 @@ rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
 void GUIManager::setupEditorGUI()
 {
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
-    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+//    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     //guienv->getSkin()->setFont(guiFontC12);
 	guienv->getSkin()->setFont(guiFontCourier12);
@@ -188,7 +188,7 @@ void GUIManager::setupEditorGUI()
 	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
-	
+
 	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
 	printf("The GUI should display from here...\n");
@@ -220,17 +220,17 @@ void GUIManager::setupEditorGUI()
 	guiMainWindow->getCloseButton()->setVisible(false);
 
 	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
-	guiMainToolWindow->setDraggable(false);  
+	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 
-    
+
 
 	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
 	guiBackImage->setScaleImage(true);
 	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,92));
 	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,92));
-	
+
 
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
@@ -245,7 +245,7 @@ void GUIManager::setupEditorGUI()
 	IGUITab * tabConfig = mainTabCtrl->addTab(L"Setup");
 	mainTabCtrl->setTabExtraWidth(100);
 	mainTabCtrl->setActiveTab(2);
-	
+
 
 	mainToolbarPos.Y=10;
     //New Project
@@ -256,7 +256,7 @@ void GUIManager::setupEditorGUI()
 
     guiMainNewProject->setImage(imgNewProject);
 	guiMainNewProject->setPressedImage(imgNewProject1);
- 
+
 
     //Load Project
 	x+=42;
@@ -312,7 +312,7 @@ void GUIManager::setupEditorGUI()
 	guiTerrainPaintVegetation->setPressedImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation_ghost.png"));
 
 
-    
+
 
     //Dynamic Objects
 	x = 0;
@@ -390,7 +390,7 @@ void GUIManager::setupEditorGUI()
     guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
     guiStopGame->setVisible(false);
 
-	
+
 
     //ABOUT BUTTON
 	x += 42;
@@ -422,7 +422,7 @@ void GUIManager::setupEditorGUI()
     guiCloseProgram->setImage(imgCloseProgram);
 
 
-   
+
 	// Update the display
 	App::getInstance()->quickUpdate();
 
@@ -460,12 +460,12 @@ void GUIManager::setupEditorGUI()
 		false,L"Brush tool");
 
     guiTerrainToolbar->getCloseButton()->setVisible(false);
-    
+
     guiTerrainToolbar->setDraggable(false);
     guiTerrainToolbar->setVisible(false);
 	guiTerrainToolbar->setNotClipped(true);
 
-	
+
 	//Show Playable Area (areas with no Y == 0 will be red)
 	mainToolbarPos.Y=20;
     guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(10,mainToolbarPos.Y,160,20),
@@ -499,10 +499,10 @@ void GUIManager::setupEditorGUI()
     guiTerrainBrushRadius->setMax(200);
     guiTerrainBrushRadius->setPos(100);
 
-      
+
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
-    rect<s32> windowRect = 
+    rect<s32> windowRect =
 		myRect(driver->getScreenSize().Width - 170,
 		guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
 		170,
@@ -568,8 +568,8 @@ void GUIManager::setupEditorGUI()
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 
- 
-	
+
+
 	// --- Edit scripts window
 
     guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
@@ -627,7 +627,7 @@ void GUIManager::setupEditorGUI()
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_close_script")).c_str() );
 	close->setOverrideFont(guiFontC12);
 
-    
+
 	// Console window
     guiDynamicObjects_Script_Console = guienv->addEditBox(L"",
                                                           myRect(2,5,driver->getScreenSize().Width-380,70),
@@ -638,13 +638,13 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_Script_Console->setOverrideColor(SColor(255,255,0,0));
     guiDynamicObjects_Script_Console->setEnabled(false);
 
-    
-	
-	
+
+
+
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
 	guiDynamicObjectsWindowEditAction->setVisible(false);
 
-    
+
 
     ///LOAD HELP IMAGES
     helpTerrainTransform = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_transform.png");
@@ -666,16 +666,16 @@ void GUIManager::setTextLoader(stringw text)
 
 void GUIManager::setupGameplayGUI()
 {
-	
+
     IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     fader=guienv->addInOutFader();
     fader->setVisible(false);
 
-	
+
 
 	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
-	
+
     guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(20,driver->getScreenSize().Height-30,600,30),false,false,0,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
@@ -692,9 +692,9 @@ void GUIManager::setupGameplayGUI()
 	ITexture* circleMana = driver->getTexture("../media/art/circlemana.png");
 	ITexture* topCircle = driver->getTexture("../media/art/circle_top.png");
 
-	// The bottom image of the interface 
+	// The bottom image of the interface
 	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((driver->getScreenSize().Width/2)-(gameplay_bar->getSize().Width/2),driver->getScreenSize().Height-gameplay_bar->getSize().Height),true);
-	
+
 	// The life gauge
 	lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
 	lifegauge->setImage(circle);
@@ -706,12 +706,12 @@ void GUIManager::setupGameplayGUI()
 	managauge->ViewHalfRight();
 
 	// The image over the circle
-	IGUIImage* circle_overlay = 
+	IGUIImage* circle_overlay =
 		guienv->addImage(topCircle,vector2d<s32>((gameplay_bar->getSize().Width/2)-64,gameplay_bar->getSize().Height-128),true,gameplay_bar_image);
-	
+
 	gameplay_bar_image->setVisible(false);
-	
-	
+
+
 
 
     ///DIALOG
@@ -923,7 +923,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
     {
         case BT_ID_PLAY_GAME:
             guiPlayGame->setVisible(visible);
-			
+
             break;
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
