@@ -244,7 +244,8 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				stringc newScript = "";
 				stringc filename = "../media/scripts/";
 				filename += scriptname;
-				std::string line;
+				
+				std::string line;				
 				ifstream fileScript (filename.c_str());
 				if (fileScript.is_open())
 				{

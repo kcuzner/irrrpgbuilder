@@ -191,7 +191,7 @@ void GUIManager::setupEditorGUI()
 
 	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
-	printf("The GUI should display from here...\n");
+	//printf("The GUI should display from here...\n");
 	// quick update
 	App::getInstance()->quickUpdate();
 
@@ -369,7 +369,7 @@ void GUIManager::setupEditorGUI()
 
     guiConfigButton->setImage(imgConfig);
 	guiConfigButton->setPressedImage(imgConfig1);
-
+	
     //Play Game
 	x = 0;
 	mainToolbarPos.Y=5;
@@ -637,9 +637,7 @@ void GUIManager::setupEditorGUI()
 
     guiDynamicObjects_Script_Console->setOverrideColor(SColor(255,255,0,0));
     guiDynamicObjects_Script_Console->setEnabled(false);
-
-
-
+	
 
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
 	guiDynamicObjectsWindowEditAction->setVisible(false);

@@ -5,15 +5,15 @@
 #include "tinyXML/tinyxml.h"
 
 typedef struct{
-	irr::core::stringc name;
-	irr::core::stringc text;
+	irr::core::stringw name;
+	irr::core::stringw text;
 }Lang;
 
 class LANGManager
 {
     public:
         static LANGManager* getInstance();
-		irr::core::stringc getText(irr::core::stringc node);
+		irr::core::stringw getText(irr::core::stringc node);
 		bool Load();
 		void setDefaultLanguage(irr::core::stringc language);
         virtual ~LANGManager();

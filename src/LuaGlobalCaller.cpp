@@ -291,8 +291,7 @@ void LuaGlobalCaller::doScript(stringc script)
     else
 	{
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
-                                                  LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror"));
-		printf("%s",LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror"));
+			LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror").c_str());
 	}
 }
 

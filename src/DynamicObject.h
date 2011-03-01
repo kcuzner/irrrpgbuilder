@@ -165,7 +165,7 @@ class DynamicObject
         void removeAllItems();
 
 		stringc getScript();
-        void setScript(stringc script);
+        void setScript(stringw script);
 		void clearScripts();//delete lua_State
 		void doScript();//called when the game starts
 		void storeParams(); // Store the original position and rotation before gameplay (used when you start the game)
@@ -233,7 +233,7 @@ class DynamicObject
 		
         ISceneNode* fakeShadow;
 		scene::HealthSceneNode* Healthbar;
-		stringc script;
+		stringw script;
 
 		OBJECT_ANIMATION currentAnimation;
 		OBJECT_ANIMATION oldAnimation;

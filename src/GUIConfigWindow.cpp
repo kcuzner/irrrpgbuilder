@@ -38,7 +38,7 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
     int YPos = 10;
 
     //resolution
-    guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_resolution")).c_str(),myRect(10,YPos,150,25),false,false,tabSystem);
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_resolution")).c_str(),myRect(10,YPos,tabSystem->getAbsoluteClippingRect().getWidth()-20,25),false,false,tabSystem);
 
     YPos += 15;
 
@@ -175,7 +175,7 @@ void GUIConfigWindow::populateLanguageList()
 
         while( languageXML != NULL )
         {
-            languageList->addItem(stringw(languageXML->ToElement()->Attribute("description")).c_str());
+            languageList->addItem(convert(languageXML->ToElement()->Attribute("description")).c_str());
             languageListVector.push_back(stringw(languageXML->ToElement()->Attribute("name")));
 
             languageXML = root->ToElement()->IterateChildren( "language", languageXML );

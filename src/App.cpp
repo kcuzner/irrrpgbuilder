@@ -288,7 +288,7 @@ void App::eventGuiButton(s32 id)
             setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
             break;
         case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
-            if(GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_override_script").c_str()))
+            if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
             {
                 stringc newScript = "";
 
@@ -1087,12 +1087,12 @@ void App::createNewProject()
     APP_STATE old_state = getAppState();
     setAppState(APP_EDIT_WAIT_GUI);
 
-    stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
+    stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
     GUIManager::getInstance()->flush();
 
     while(name == stringc(""))
     {
-        name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
+        name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
         GUIManager::getInstance()->flush();
     }
 
@@ -1124,16 +1124,16 @@ void App::loadProject()
     APP_STATE old_state = getAppState();
     setAppState(APP_EDIT_WAIT_GUI);
 
-    bool ansSave = GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_override_project").c_str());
+    bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
     GUIManager::getInstance()->flush();
     if(ansSave)
     {
         saveProjectToXML();
-        GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
+        GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
         GUIManager::getInstance()->flush();
     }
 
-    stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
+    stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
     GUIManager::getInstance()->flush();
 
     stringc filename = "../projects/";
@@ -1144,9 +1144,9 @@ void App::loadProject()
     currentProjectName += ".XML";
 
     if(this->loadProjectFromXML(filename))
-        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_ok").c_str());
+        GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_loaded_ok")).c_str());
     else
-        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_error").c_str());
+        GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_loaded_error")).c_str());
 
     GUIManager::getInstance()->flush();
 
@@ -1169,14 +1169,14 @@ void App::saveProject()
 
     if(currentProjectName == stringc("irb_temp_project"))
     {
-        currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
+        currentProjectName = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
         GUIManager::getInstance()->flush();
         EventReceiver::getInstance()->flushKeys();
         currentProjectName += ".XML";
     }
 
     this->saveProjectToXML();
-    GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
+    GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
     GUIManager::getInstance()->flush();
 
     setAppState(old_state);

@@ -4,6 +4,7 @@
 LANGManager::LANGManager()
 {
     defaultLanguage = "";
+	language.clear();
 }
 
 LANGManager::~LANGManager()
@@ -21,6 +22,7 @@ LANGManager* LANGManager::getInstance()
 // -- Put the active language in memory for later retrieval 
 bool LANGManager::Load()
 {
+
 	TiXmlDocument doc("../media/lang.xml");
 	Lang CurrentLang;
 
@@ -59,8 +61,8 @@ bool LANGManager::Load()
         while( currentObjXML != NULL )
         {
 			
-			irr::core::stringc name = currentObjXML->ToElement()->Attribute("name");
-			irr::core::stringc description = currentObjXML->ToElement()->Attribute("description");
+			irr::core::stringw name = currentObjXML->ToElement()->Attribute("name");
+			irr::core::stringw description = convert(currentObjXML->ToElement()->Attribute("description"));
             //Get Dynamic Object Attributes
 			//printf("LANG: %s, %s\n",name.c_str(),description.c_str());
 
@@ -73,7 +75,8 @@ bool LANGManager::Load()
 					irr::core::stringc id = currentLanguageXML->ToElement()->Attribute("id");
 					irr::core::stringc str = currentLanguageXML->ToElement()->Attribute("str");
 					CurrentLang.name=id.c_str();
-					CurrentLang.text=str.c_str();
+					// This must be used to convert the accented characters
+					CurrentLang.text=convert(str.c_str());
 					language.push_back(CurrentLang);
 				
 					/*if (id.size()>0)
@@ -91,22 +94,23 @@ bool LANGManager::Load()
 }
 
 // - Retrieve the proper string from stored memory.
-stringc LANGManager::getText(irr::core::stringc node)
+irr::core::stringw LANGManager::getText(irr::core::stringc node)
 {
 
 	for (int i=0 ; i<(int)language.size() ; i++)
     {
 		if( language[i].name == node )
         {
-			return language[i].text;
+			return language[i].text;			
         }
     }
 	
 	return "";
 }
 
-void LANGManager::setDefaultLanguage(irr::core::stringc language)
+void LANGManager::setDefaultLanguage(irr::core::stringc languagetext)
 {
-	defaultLanguage = language.c_str();
+	defaultLanguage = languagetext.c_str();
+	language.clear();
 	Load();
 }

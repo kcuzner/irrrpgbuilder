@@ -742,7 +742,7 @@ stringc DynamicObject::getScript()
     return script;
 }
 
-void DynamicObject::setScript(stringc script)
+void DynamicObject::setScript(stringw script)
 {
     this->script = script;
 }
@@ -813,7 +813,7 @@ void DynamicObject::doScript()
     luaL_dostring(L,scriptTemp.c_str());
 
 
-    luaL_dostring(L,script.c_str());
+    luaL_dostring(L,stringc(script).c_str());
 
     //set default object type
     luaL_dostring(L,"objType = 'OBJECT'");
