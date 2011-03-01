@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Release_Linux32" />
+	<File name="main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="81" topLine="0" />
+	</File>
+	<File name="src/App.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="135" topLine="0" />
+	</File>
+	<File name="src/App.h" open="1" top="0" tabpos="2">
+		<Cursor position="44" topLine="0" />
+	</File>
+	<File name="src/CGUIFileSelector.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="5676" topLine="93" />
+	</File>
+	<File name="src/CGUIFileSelector.h" open="1" top="0" tabpos="4">
+		<Cursor position="567" topLine="12" />
+	</File>
+</CodeBlocks_layout_file>

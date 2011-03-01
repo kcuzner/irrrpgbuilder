@@ -1,0 +1,4057 @@
+# depslib dependency file v1.0
+1295881704 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/main.cpp
+	<iostream>
+	"src/App.h"
+
+1295878104 "
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrlicht.h
+	"IrrCompileConfig.h"
+	"aabbox3d.h"
+	"CDynamicMeshBuffer.h"
+	"CIndexBuffer.h"
+	"CMeshBuffer.h"
+	"coreutil.h"
+	"CVertexBuffer.h"
+	"dimension2d.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"EDriverFeatures.h"
+	"EDriverTypes.h"
+	"EGUIAlignment.h"
+	"EGUIElementTypes.h"
+	"EHardwareBufferFlags.h"
+	"EMaterialFlags.h"
+	"EMaterialTypes.h"
+	"EMeshWriterEnums.h"
+	"EMessageBoxFlags.h"
+	"ESceneNodeAnimatorTypes.h"
+	"ESceneNodeTypes.h"
+	"ETerrainElements.h"
+	"fast_atof.h"
+	"heapsort.h"
+	"IAnimatedMesh.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+	"IAnimatedMeshSceneNode.h"
+	"IAttributeExchangingObject.h"
+	"IAttributes.h"
+	"IBillboardSceneNode.h"
+	"IBillboardTextSceneNode.h"
+	"IBoneSceneNode.h"
+	"ICameraSceneNode.h"
+	"ICursorControl.h"
+	"IDummyTransformationSceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"IEventReceiver.h"
+	"IFileList.h"
+	"IFileSystem.h"
+	"IGeometryCreator.h"
+	"IGPUProgrammingServices.h"
+	"IGUIButton.h"
+	"IGUICheckBox.h"
+	"IGUIColorSelectDialog.h"
+	"IGUIComboBox.h"
+	"IGUIContextMenu.h"
+	"IGUIEditBox.h"
+	"IGUIElement.h"
+	"IGUIElementFactory.h"
+	"IGUIEnvironment.h"
+	"IGUIFileOpenDialog.h"
+	"IGUIFont.h"
+	"IGUIFontBitmap.h"
+	"IGUIImage.h"
+	"IGUIInOutFader.h"
+	"IGUIListBox.h"
+	"IGUIMeshViewer.h"
+	"IGUIScrollBar.h"
+	"IGUISkin.h"
+	"IGUISpinBox.h"
+	"IGUISpriteBank.h"
+	"IGUIStaticText.h"
+	"IGUITabControl.h"
+	"IGUITable.h"
+	"IGUIToolbar.h"
+	"IGUIWindow.h"
+	"IGUITreeView.h"
+	"IImage.h"
+	"IImageLoader.h"
+	"IImageWriter.h"
+	"IIndexBuffer.h"
+	"ILightSceneNode.h"
+	"ILogger.h"
+	"IMaterialRenderer.h"
+	"IMaterialRendererServices.h"
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"IMeshCache.h"
+	"IMeshLoader.h"
+	"IMeshManipulator.h"
+	"IMeshSceneNode.h"
+	"IMeshWriter.h"
+	"IMetaTriangleSelector.h"
+	"IOSOperator.h"
+	"IParticleSystemSceneNode.h"
+	"IQ3LevelMesh.h"
+	"IQ3Shader.h"
+	"IReadFile.h"
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"IrrlichtDevice.h"
+	"irrList.h"
+	"irrMap.h"
+	"irrMath.h"
+	"irrString.h"
+	"irrTypes.h"
+	"path.h"
+	"irrXML.h"
+	"ISceneCollisionManager.h"
+	"ISceneManager.h"
+	"ISceneNode.h"
+	"ISceneNodeAnimator.h"
+	"ISceneNodeAnimatorCameraFPS.h"
+	"ISceneNodeAnimatorCameraMaya.h"
+	"ISceneNodeAnimatorCollisionResponse.h"
+	"ISceneNodeAnimatorFactory.h"
+	"ISceneNodeFactory.h"
+	"ISceneUserDataSerializer.h"
+	"IShaderConstantSetCallBack.h"
+	"IShadowVolumeSceneNode.h"
+	"ISkinnedMesh.h"
+	"ITerrainSceneNode.h"
+	"ITextSceneNode.h"
+	"ITexture.h"
+	"ITimer.h"
+	"ITriangleSelector.h"
+	"IVertexBuffer.h"
+	"IVideoDriver.h"
+	"IVideoModeList.h"
+	"IVolumeLightSceneNode.h"
+	"IWriteFile.h"
+	"IXMLReader.h"
+	"IXMLWriter.h"
+	"ILightManager.h"
+	"Keycodes.h"
+	"line2d.h"
+	"line3d.h"
+	"matrix4.h"
+	"plane3d.h"
+	"position2d.h"
+	"quaternion.h"
+	"rect.h"
+	"S3DVertex.h"
+	"SAnimatedMesh.h"
+	"SceneParameters.h"
+	"SColor.h"
+	"SExposedVideoData.h"
+	"SIrrCreationParameters.h"
+	"SKeyMap.h"
+	"SLight.h"
+	"SMaterial.h"
+	"SMesh.h"
+	"SMeshBuffer.h"
+	"SMeshBufferLightMap.h"
+	"SMeshBufferTangents.h"
+	"SParticle.h"
+	"SSharedMeshBuffer.h"
+	"SSkinMeshBuffer.h"
+	"SVertexIndex.h"
+	"SViewFrustum.h"
+	"triangle3d.h"
+	"vector2d.h"
+	"vector3d.h"
+	"SIrrCreationParameters.h"
+
+1298935710 ionParameters.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IrrCompileConfig.h
+	<stdio.h>
+	<xtl.h>
+
+1298888500 
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/aabbox3d.h
+	"irrMath.h"
+	"plane3d.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrMath.h
+	"IrrCompileConfig.h"
+	"irrTypes.h"
+	<math.h>
+	<float.h>
+	<stdlib.h>
+	<limits.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrTypes.h
+	"IrrCompileConfig.h"
+	<wchar.h>
+	<crtdbg.h>
+	"assert.h"
+	<stdlib.h>
+	<crtdbg.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/plane3d.h
+	"irrMath.h"
+	"vector3d.h"
+
+1298935711 h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/vector3d.h
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/line3d.h
+	"irrTypes.h"
+	"vector3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CDynamicMeshBuffer.h
+	"IDynamicMeshBuffer.h"
+	"CVertexBuffer.h"
+	"CIndexBuffer.h"
+
+1298935709 fer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IDynamicMeshBuffer.h
+	"IMeshBuffer.h"
+	"IVertexBuffer.h"
+	"IIndexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshBuffer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"aabbox3d.h"
+	"S3DVertex.h"
+	"SVertexIndex.h"
+	"EHardwareBufferFlags.h"
+	"EPrimitiveTypes.h"
+
+1298935711 eTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IReferenceCounted.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMaterial.h
+	"SColor.h"
+	"matrix4.h"
+	"irrArray.h"
+	"irrMath.h"
+	"EMaterialTypes.h"
+	"EMaterialFlags.h"
+	"SMaterialLayer.h"
+
+1298935711 Layer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SColor.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/matrix4.h
+	"irrMath.h"
+	"vector3d.h"
+	"vector2d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+	"rect.h"
+	"irrString.h"
+	<windows.h>
+
+1298935711 >
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/vector2d.h
+	"irrMath.h"
+	"dimension2d.h"
+
+1298935711 2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/dimension2d.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/rect.h
+	"irrTypes.h"
+	"dimension2d.h"
+	"position2d.h"
+
+1298935711 d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/position2d.h
+	"vector2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrString.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrAllocator.h
+	"irrTypes.h"
+	<new>
+	<memory.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrArray.h
+	"irrTypes.h"
+	"heapsort.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/heapsort.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMaterialTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMaterialFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMaterialLayer.h
+	"matrix4.h"
+	"irrAllocator.h"
+
+1298935711 tor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/S3DVertex.h
+	"vector3d.h"
+	"vector2d.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SVertexIndex.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EHardwareBufferFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EPrimitiveTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVertexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"S3DVertex.h"
+
+1298935711 .h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IIndexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SVertexIndex.h"
+
+1298935710 dex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CVertexBuffer.h
+	"IVertexBuffer.h"
+
+1298935709 ffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CIndexBuffer.h
+	"IIndexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1298935711 er.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/coreutil.h
+	"irrString.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/path.h
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ECullingTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDebugSceneTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDriverFeatures.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDriverTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EGUIAlignment.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EGUIElementTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMeshWriterEnums.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMessageBoxFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ESceneNodeTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ETerrainElements.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/fast_atof.h
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMesh.h
+	"aabbox3d.h"
+	"IMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMesh.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"EHardwareBufferFlags.h"
+
+1298935710 BufferFlags.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshMD2.h
+	"IAnimatedMesh.h"
+
+1298935709 Mesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshMD3.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+	"quaternion.h"
+
+1298935709 n.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IQ3Shader.h
+	"irrArray.h"
+	"fast_atof.h"
+	"IFileSystem.h"
+	"IVideoDriver.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileSystem.h
+	"IReferenceCounted.h"
+	"IXMLReader.h"
+	"IFileArchive.h"
+
+1298935709 ive.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IXMLReader.h
+	"IReferenceCounted.h"
+	"irrXML.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrXML.h
+	<stdio.h>
+	"IrrCompileConfig.h"
+	<irrXML.h>
+	<string>
+	<irrXML.h>
+	<irrXML.h>
+	<irrXML.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileArchive.h
+	"IReadFile.h"
+	"IFileList.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IReadFile.h
+	"IReferenceCounted.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileList.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVideoDriver.h
+	"rect.h"
+	"SColor.h"
+	"ITexture.h"
+	"irrArray.h"
+	"matrix4.h"
+	"plane3d.h"
+	"dimension2d.h"
+	"position2d.h"
+	"SMaterial.h"
+	"IMeshBuffer.h"
+	"triangle3d.h"
+	"EDriverTypes.h"
+	"EDriverFeatures.h"
+	"SExposedVideoData.h"
+
+1298935711 ideoData.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITexture.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"dimension2d.h"
+	"EDriverTypes.h"
+	"path.h"
+	"matrix4.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImage.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/triangle3d.h
+	"vector3d.h"
+	"line3d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SExposedVideoData.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/quaternion.h
+	"irrTypes.h"
+	"irrMath.h"
+	"matrix4.h"
+	"vector3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshSceneNode.h
+	"ISceneNode.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+
+1298935709 MeshMD3.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNode.h
+	"IAttributeExchangingObject.h"
+	"ESceneNodeTypes.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"ISceneNodeAnimator.h"
+	"ITriangleSelector.h"
+	"SMaterial.h"
+	"irrString.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"irrList.h"
+	"IAttributes.h"
+
+1298935710 es.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAttributeExchangingObject.h
+	"IReferenceCounted.h"
+
+1298935711 eCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"ESceneNodeAnimatorTypes.h"
+	"IAttributeExchangingObject.h"
+	"IEventReceiver.h"
+
+1298935711 eiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IEventReceiver.h
+	"ILogger.h"
+	"Keycodes.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILogger.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/Keycodes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITriangleSelector.h
+	"IReferenceCounted.h"
+	"triangle3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrList.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAttributes.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"vector3d.h"
+	"vector2d.h"
+	"line2d.h"
+	"line3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"rect.h"
+	"matrix4.h"
+	"quaternion.h"
+	"plane3d.h"
+	"triangle3d.h"
+	"line2d.h"
+	"line3d.h"
+	"irrString.h"
+	"irrArray.h"
+	"IXMLReader.h"
+	"EAttributes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/line2d.h
+	"irrTypes.h"
+	"vector2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EAttributes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBoneSceneNode.h
+	"ISceneNode.h"
+
+1298935711 e.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBillboardSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBillboardTextSceneNode.h
+	"IBillboardSceneNode.h"
+
+1298935709 dSceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ICameraSceneNode.h
+	"ISceneNode.h"
+	"IEventReceiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ICursorControl.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IDummyTransformationSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGeometryCreator.h
+	"IReferenceCounted.h"
+	"IMesh.h"
+	"IImage.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGPUProgrammingServices.h
+	"EShaderTypes.h"
+	"EMaterialTypes.h"
+	"EPrimitiveTypes.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EShaderTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIButton.h
+	"IGUIElement.h"
+
+1298935710 nt.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIElement.h
+	"IAttributeExchangingObject.h"
+	"irrList.h"
+	"rect.h"
+	"irrString.h"
+	"IEventReceiver.h"
+	"EGUIElementTypes.h"
+	"EGUIAlignment.h"
+	"IAttributes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUICheckBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIColorSelectDialog.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIComboBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIContextMenu.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIEditBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIElementFactory.h
+	"IReferenceCounted.h"
+	"EGUIElementTypes.h"
+
+1298935710 ntTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIEnvironment.h
+	"IReferenceCounted.h"
+	"IGUISkin.h"
+	"rect.h"
+	"EMessageBoxFlags.h"
+	"IEventReceiver.h"
+	"IXMLReader.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISkin.h
+	"IAttributeExchangingObject.h"
+	"EGUIAlignment.h"
+	"SColor.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFileOpenDialog.h
+	"IGUIElement.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFont.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"rect.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFontBitmap.h
+	"IGUIFont.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIImage.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIInOutFader.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIListBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIMeshViewer.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIScrollBar.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISpinBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISpriteBank.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SColor.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIStaticText.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITabControl.h
+	"IGUIElement.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITable.h
+	"IGUIElement.h"
+	"irrTypes.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIToolbar.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIWindow.h
+	"IGUIElement.h"
+	"EMessageBoxFlags.h"
+
+1298935710 oxFlags.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITreeView.h
+	"IGUIElement.h"
+	"IGUIImageList.h"
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIImageList.h
+	"IGUIElement.h"
+	"rect.h"
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImageLoader.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImageWriter.h
+	"IReferenceCounted.h"
+	"irrString.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILightSceneNode.h
+	"ISceneNode.h"
+	"SLight.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SLight.h
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMaterialRenderer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMaterialRendererServices.h
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshCache.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshLoader.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshManipulator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IAnimatedMesh.h"
+	"IMeshBuffer.h"
+	"SVertexManipulator.h"
+
+1298935710 nipulator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SVertexManipulator.h
+	"S3DVertex.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshWriter.h
+	"IReferenceCounted.h"
+	"EMeshWriterEnums.h"
+
+1298935710 erEnums.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMetaTriangleSelector.h
+	"ITriangleSelector.h"
+
+1298935710 Selector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IOSOperator.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleSystemSceneNode.h
+	"ISceneNode.h"
+	"IParticleAnimatedMeshSceneNodeEmitter.h"
+	"IParticleBoxEmitter.h"
+	"IParticleCylinderEmitter.h"
+	"IParticleMeshEmitter.h"
+	"IParticleRingEmitter.h"
+	"IParticleSphereEmitter.h"
+	"IParticleAttractionAffector.h"
+	"IParticleFadeOutAffector.h"
+	"IParticleGravityAffector.h"
+	"IParticleRotationAffector.h"
+	"dimension2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
+	"IParticleEmitter.h"
+	"IAnimatedMeshSceneNode.h"
+
+1298935710 MeshSceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleEmitter.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SParticle.h
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleBoxEmitter.h
+	"IParticleEmitter.h"
+	"aabbox3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleCylinderEmitter.h
+	"IParticleEmitter.h"
+
+1298935710 Emitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleMeshEmitter.h
+	"IParticleEmitter.h"
+	"IMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleRingEmitter.h
+	"IParticleEmitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleSphereEmitter.h
+	"IParticleEmitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAttractionAffector.h
+	"IParticleAffector.h"
+
+1298935710 Affector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAffector.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleFadeOutAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleGravityAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleRotationAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IQ3LevelMesh.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IrrlichtDevice.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+	"IVideoDriver.h"
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"IEventReceiver.h"
+	"ICursorControl.h"
+	"IVideoModeList.h"
+	"ITimer.h"
+	"IOSOperator.h"
+
+1298935710 or.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDeviceTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVideoModeList.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITimer.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrMap.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneCollisionManager.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+	"path.h"
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+	"ETerrainElements.h"
+	"ESceneNodeTypes.h"
+	"ESceneNodeAnimatorTypes.h"
+	"EMeshWriterEnums.h"
+	"SceneParameters.h"
+	"IGeometryCreator.h"
+	"ISkinnedMesh.h"
+
+1298935711 esh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SceneParameters.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISkinnedMesh.h
+	"irrArray.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMesh.h"
+	"SSkinMeshBuffer.h"
+
+1298935711 Buffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SSkinMeshBuffer.h
+	"IMeshBuffer.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
+	"ISceneNodeAnimator.h"
+	"IEventReceiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
+	"ISceneNodeAnimator.h"
+
+1298935711 eAnimator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeAnimatorTypes.h"
+
+1298935711 eAnimatorTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneUserDataSerializer.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IShaderConstantSetCallBack.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IShadowVolumeSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITerrainSceneNode.h
+	"ETerrainElements.h"
+	"ISceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITextSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVolumeLightSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IWriteFile.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IXMLWriter.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILightManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SAnimatedMesh.h
+	"IAnimatedMesh.h"
+	"IMesh.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SIrrCreationParameters.h
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"dimension2d.h"
+	"ILogger.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SKeyMap.h
+	"Keycodes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMesh.h
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBuffer.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBufferLightMap.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBufferTangents.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SSharedMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SViewFrustum.h
+	"plane3d.h"
+	"vector3d.h"
+	"line3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IVideoDriver.h"
+
+1298935711 ver.h"
+
+1298889914 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/App.cpp
+	"App.h"
+	<sys/stat.h>
+
+1298889914 h>
+
+1298722237 /home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/App.h
+	<irrlicht.h>
+	"CGUIFileSelector.h"
+	<iostream>
+	<vector>
+
+1298888500 /home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/CGUIFileSelector.h
+	<irrlicht.h>
+	<windows.h>
+	<iostream>
+
+1298888500 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/CGUIFileSelector.cpp
+	"CGUIFileSelector.h"
+	<iostream>
+
+1298885776 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/IRBFileSelector.cpp
+	"IRBFileSelector.h"
+
+1298885776 lector.h"
+
+1298885776 /home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/IRBFileSelector.h
+
+1298889914 source:c:\users\andres\desktop\pkmaker\src\app.cpp
+	"App.h"
+	<sys/stat.h>
+
+1298722237 c:\users\andres\desktop\pkmaker\src\app.h
+	<irrlicht.h>
+	"CGUIFileSelector.h"
+	<iostream>
+	<vector>
+
+1298888500 c:\users\andres\desktop\pkmaker\src\cguifileselector.h
+	<irrlicht.h>
+	<windows.h>
+	<iostream>
+
+1298888500 source:c:\users\andres\desktop\pkmaker\src\cguifileselector.cpp
+	"CGUIFileSelector.h"
+	<iostream>
+
+1295878104 source:c:\users\andres\desktop\pkmaker\main.cpp
+	<iostream>
+	"src/App.h"
+
+1298889914 source:c:\users\andres\desktop\pkmaker\irbpack_make\src\app.cpp
+	"App.h"
+	<sys/stat.h>
+
+1298722237 c:\users\andres\desktop\pkmaker\irbpack_make\src\app.h
+	<irrlicht.h>
+	"CGUIFileSelector.h"
+	<iostream>
+	<vector>
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrlicht.h
+	"IrrCompileConfig.h"
+	"aabbox3d.h"
+	"CDynamicMeshBuffer.h"
+	"CIndexBuffer.h"
+	"CMeshBuffer.h"
+	"coreutil.h"
+	"CVertexBuffer.h"
+	"dimension2d.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"EDriverFeatures.h"
+	"EDriverTypes.h"
+	"EGUIAlignment.h"
+	"EGUIElementTypes.h"
+	"EHardwareBufferFlags.h"
+	"EMaterialFlags.h"
+	"EMaterialTypes.h"
+	"EMeshWriterEnums.h"
+	"EMessageBoxFlags.h"
+	"ESceneNodeAnimatorTypes.h"
+	"ESceneNodeTypes.h"
+	"ETerrainElements.h"
+	"fast_atof.h"
+	"heapsort.h"
+	"IAnimatedMesh.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+	"IAnimatedMeshSceneNode.h"
+	"IAttributeExchangingObject.h"
+	"IAttributes.h"
+	"IBillboardSceneNode.h"
+	"IBillboardTextSceneNode.h"
+	"IBoneSceneNode.h"
+	"ICameraSceneNode.h"
+	"ICursorControl.h"
+	"IDummyTransformationSceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"IEventReceiver.h"
+	"IFileList.h"
+	"IFileSystem.h"
+	"IGeometryCreator.h"
+	"IGPUProgrammingServices.h"
+	"IGUIButton.h"
+	"IGUICheckBox.h"
+	"IGUIColorSelectDialog.h"
+	"IGUIComboBox.h"
+	"IGUIContextMenu.h"
+	"IGUIEditBox.h"
+	"IGUIElement.h"
+	"IGUIElementFactory.h"
+	"IGUIEnvironment.h"
+	"IGUIFileOpenDialog.h"
+	"IGUIFont.h"
+	"IGUIFontBitmap.h"
+	"IGUIImage.h"
+	"IGUIInOutFader.h"
+	"IGUIListBox.h"
+	"IGUIMeshViewer.h"
+	"IGUIScrollBar.h"
+	"IGUISkin.h"
+	"IGUISpinBox.h"
+	"IGUISpriteBank.h"
+	"IGUIStaticText.h"
+	"IGUITabControl.h"
+	"IGUITable.h"
+	"IGUIToolbar.h"
+	"IGUIWindow.h"
+	"IGUITreeView.h"
+	"IImage.h"
+	"IImageLoader.h"
+	"IImageWriter.h"
+	"IIndexBuffer.h"
+	"ILightSceneNode.h"
+	"ILogger.h"
+	"IMaterialRenderer.h"
+	"IMaterialRendererServices.h"
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"IMeshCache.h"
+	"IMeshLoader.h"
+	"IMeshManipulator.h"
+	"IMeshSceneNode.h"
+	"IMeshWriter.h"
+	"IMetaTriangleSelector.h"
+	"IOSOperator.h"
+	"IParticleSystemSceneNode.h"
+	"IQ3LevelMesh.h"
+	"IQ3Shader.h"
+	"IReadFile.h"
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"IrrlichtDevice.h"
+	"irrList.h"
+	"irrMap.h"
+	"irrMath.h"
+	"irrString.h"
+	"irrTypes.h"
+	"path.h"
+	"irrXML.h"
+	"ISceneCollisionManager.h"
+	"ISceneManager.h"
+	"ISceneNode.h"
+	"ISceneNodeAnimator.h"
+	"ISceneNodeAnimatorCameraFPS.h"
+	"ISceneNodeAnimatorCameraMaya.h"
+	"ISceneNodeAnimatorCollisionResponse.h"
+	"ISceneNodeAnimatorFactory.h"
+	"ISceneNodeFactory.h"
+	"ISceneUserDataSerializer.h"
+	"IShaderConstantSetCallBack.h"
+	"IShadowVolumeSceneNode.h"
+	"ISkinnedMesh.h"
+	"ITerrainSceneNode.h"
+	"ITextSceneNode.h"
+	"ITexture.h"
+	"ITimer.h"
+	"ITriangleSelector.h"
+	"IVertexBuffer.h"
+	"IVideoDriver.h"
+	"IVideoModeList.h"
+	"IVolumeLightSceneNode.h"
+	"IWriteFile.h"
+	"IXMLReader.h"
+	"IXMLWriter.h"
+	"ILightManager.h"
+	"Keycodes.h"
+	"line2d.h"
+	"line3d.h"
+	"matrix4.h"
+	"plane3d.h"
+	"position2d.h"
+	"quaternion.h"
+	"rect.h"
+	"S3DVertex.h"
+	"SAnimatedMesh.h"
+	"SceneParameters.h"
+	"SColor.h"
+	"SExposedVideoData.h"
+	"SIrrCreationParameters.h"
+	"SKeyMap.h"
+	"SLight.h"
+	"SMaterial.h"
+	"SMesh.h"
+	"SMeshBuffer.h"
+	"SMeshBufferLightMap.h"
+	"SMeshBufferTangents.h"
+	"SParticle.h"
+	"SSharedMeshBuffer.h"
+	"SSkinMeshBuffer.h"
+	"SVertexIndex.h"
+	"SViewFrustum.h"
+	"triangle3d.h"
+	"vector2d.h"
+	"vector3d.h"
+	"SIrrCreationParameters.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrcompileconfig.h
+	<stdio.h>
+	<xtl.h>
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\aabbox3d.h
+	"irrMath.h"
+	"plane3d.h"
+	"line3d.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrmath.h
+	"IrrCompileConfig.h"
+	"irrTypes.h"
+	<math.h>
+	<float.h>
+	<stdlib.h>
+	<limits.h>
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrtypes.h
+	"IrrCompileConfig.h"
+	<wchar.h>
+	<crtdbg.h>
+	"assert.h"
+	<stdlib.h>
+	<crtdbg.h>
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\plane3d.h
+	"irrMath.h"
+	"vector3d.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\vector3d.h
+	"irrMath.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\line3d.h
+	"irrTypes.h"
+	"vector3d.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\cdynamicmeshbuffer.h
+	"IDynamicMeshBuffer.h"
+	"CVertexBuffer.h"
+	"CIndexBuffer.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\idynamicmeshbuffer.h
+	"IMeshBuffer.h"
+	"IVertexBuffer.h"
+	"IIndexBuffer.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshbuffer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"aabbox3d.h"
+	"S3DVertex.h"
+	"SVertexIndex.h"
+	"EHardwareBufferFlags.h"
+	"EPrimitiveTypes.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ireferencecounted.h
+	"irrTypes.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smaterial.h
+	"SColor.h"
+	"matrix4.h"
+	"irrArray.h"
+	"irrMath.h"
+	"EMaterialTypes.h"
+	"EMaterialFlags.h"
+	"SMaterialLayer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\scolor.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\matrix4.h
+	"irrMath.h"
+	"vector3d.h"
+	"vector2d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+	"rect.h"
+	"irrString.h"
+	<windows.h>
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\vector2d.h
+	"irrMath.h"
+	"dimension2d.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\dimension2d.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\rect.h
+	"irrTypes.h"
+	"dimension2d.h"
+	"position2d.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\position2d.h
+	"vector2d.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrstring.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrallocator.h
+	"irrTypes.h"
+	<new>
+	<memory.h>
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrarray.h
+	"irrTypes.h"
+	"heapsort.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\heapsort.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ematerialtypes.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ematerialflags.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smateriallayer.h
+	"matrix4.h"
+	"irrAllocator.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\s3dvertex.h
+	"vector3d.h"
+	"vector2d.h"
+	"SColor.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\svertexindex.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ehardwarebufferflags.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eprimitivetypes.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ivertexbuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"S3DVertex.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iindexbuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SVertexIndex.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\cvertexbuffer.h
+	"IVertexBuffer.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\cindexbuffer.h
+	"IIndexBuffer.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\cmeshbuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\coreutil.h
+	"irrString.h"
+	"path.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\path.h
+	"irrString.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ecullingtypes.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\edebugscenetypes.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\edriverfeatures.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\edrivertypes.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eguialignment.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eguielementtypes.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\emeshwriterenums.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\emessageboxflags.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\escenenodeanimatortypes.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\escenenodetypes.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eterrainelements.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\fast_atof.h
+	"irrMath.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ianimatedmesh.h
+	"aabbox3d.h"
+	"IMesh.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imesh.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"EHardwareBufferFlags.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ianimatedmeshmd2.h
+	"IAnimatedMesh.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ianimatedmeshmd3.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+	"quaternion.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iq3shader.h
+	"irrArray.h"
+	"fast_atof.h"
+	"IFileSystem.h"
+	"IVideoDriver.h"
+	"coreutil.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ifilesystem.h
+	"IReferenceCounted.h"
+	"IXMLReader.h"
+	"IFileArchive.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ixmlreader.h
+	"IReferenceCounted.h"
+	"irrXML.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrxml.h
+	<stdio.h>
+	"IrrCompileConfig.h"
+	<irrXML.h>
+	<string>
+	<irrXML.h>
+	<irrXML.h>
+	<irrXML.h>
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ifilearchive.h
+	"IReadFile.h"
+	"IFileList.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ireadfile.h
+	"IReferenceCounted.h"
+	"coreutil.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ifilelist.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ivideodriver.h
+	"rect.h"
+	"SColor.h"
+	"ITexture.h"
+	"irrArray.h"
+	"matrix4.h"
+	"plane3d.h"
+	"dimension2d.h"
+	"position2d.h"
+	"SMaterial.h"
+	"IMeshBuffer.h"
+	"triangle3d.h"
+	"EDriverTypes.h"
+	"EDriverFeatures.h"
+	"SExposedVideoData.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\itexture.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"dimension2d.h"
+	"EDriverTypes.h"
+	"path.h"
+	"matrix4.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iimage.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+	"SColor.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\triangle3d.h
+	"vector3d.h"
+	"line3d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sexposedvideodata.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\quaternion.h
+	"irrTypes.h"
+	"irrMath.h"
+	"matrix4.h"
+	"vector3d.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ianimatedmeshscenenode.h
+	"ISceneNode.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenode.h
+	"IAttributeExchangingObject.h"
+	"ESceneNodeTypes.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"ISceneNodeAnimator.h"
+	"ITriangleSelector.h"
+	"SMaterial.h"
+	"irrString.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"irrList.h"
+	"IAttributes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iattributeexchangingobject.h
+	"IReferenceCounted.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodeanimator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"ESceneNodeAnimatorTypes.h"
+	"IAttributeExchangingObject.h"
+	"IEventReceiver.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ieventreceiver.h
+	"ILogger.h"
+	"Keycodes.h"
+	"irrString.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ilogger.h
+	"IReferenceCounted.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\keycodes.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\itriangleselector.h
+	"IReferenceCounted.h"
+	"triangle3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"line3d.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrlist.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iattributes.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"vector3d.h"
+	"vector2d.h"
+	"line2d.h"
+	"line3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"rect.h"
+	"matrix4.h"
+	"quaternion.h"
+	"plane3d.h"
+	"triangle3d.h"
+	"line2d.h"
+	"line3d.h"
+	"irrString.h"
+	"irrArray.h"
+	"IXMLReader.h"
+	"EAttributes.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\line2d.h
+	"irrTypes.h"
+	"vector2d.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eattributes.h
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ibonescenenode.h
+	"ISceneNode.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ibillboardscenenode.h
+	"ISceneNode.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ibillboardtextscenenode.h
+	"IBillboardSceneNode.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\icamerascenenode.h
+	"ISceneNode.h"
+	"IEventReceiver.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\icursorcontrol.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\idummytransformationscenenode.h
+	"ISceneNode.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\igeometrycreator.h
+	"IReferenceCounted.h"
+	"IMesh.h"
+	"IImage.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\igpuprogrammingservices.h
+	"EShaderTypes.h"
+	"EMaterialTypes.h"
+	"EPrimitiveTypes.h"
+	"path.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\eshadertypes.h
+	"irrTypes.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguibutton.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguielement.h
+	"IAttributeExchangingObject.h"
+	"irrList.h"
+	"rect.h"
+	"irrString.h"
+	"IEventReceiver.h"
+	"EGUIElementTypes.h"
+	"EGUIAlignment.h"
+	"IAttributes.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguicheckbox.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguicolorselectdialog.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguicombobox.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguicontextmenu.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguieditbox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguielementfactory.h
+	"IReferenceCounted.h"
+	"EGUIElementTypes.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguienvironment.h
+	"IReferenceCounted.h"
+	"IGUISkin.h"
+	"rect.h"
+	"EMessageBoxFlags.h"
+	"IEventReceiver.h"
+	"IXMLReader.h"
+	"path.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiskin.h
+	"IAttributeExchangingObject.h"
+	"EGUIAlignment.h"
+	"SColor.h"
+	"rect.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguifileopendialog.h
+	"IGUIElement.h"
+	"path.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguifont.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"rect.h"
+	"irrString.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguifontbitmap.h
+	"IGUIFont.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiimage.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiinoutfader.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguilistbox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguimeshviewer.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiscrollbar.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguispinbox.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguispritebank.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SColor.h"
+	"rect.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguistatictext.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguitabcontrol.h
+	"IGUIElement.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguitable.h
+	"IGUIElement.h"
+	"irrTypes.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguitoolbar.h
+	"IGUIElement.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiwindow.h
+	"IGUIElement.h"
+	"EMessageBoxFlags.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguitreeview.h
+	"IGUIElement.h"
+	"IGUIImageList.h"
+	"irrTypes.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iguiimagelist.h
+	"IGUIElement.h"
+	"rect.h"
+	"irrTypes.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iimageloader.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"path.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iimagewriter.h
+	"IReferenceCounted.h"
+	"irrString.h"
+	"coreutil.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ilightscenenode.h
+	"ISceneNode.h"
+	"SLight.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\slight.h
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imaterialrenderer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imaterialrendererservices.h
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshcache.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshloader.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshmanipulator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IAnimatedMesh.h"
+	"IMeshBuffer.h"
+	"SVertexManipulator.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\svertexmanipulator.h
+	"S3DVertex.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshscenenode.h
+	"ISceneNode.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imeshwriter.h
+	"IReferenceCounted.h"
+	"EMeshWriterEnums.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\imetatriangleselector.h
+	"ITriangleSelector.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iosoperator.h
+	"IReferenceCounted.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlesystemscenenode.h
+	"ISceneNode.h"
+	"IParticleAnimatedMeshSceneNodeEmitter.h"
+	"IParticleBoxEmitter.h"
+	"IParticleCylinderEmitter.h"
+	"IParticleMeshEmitter.h"
+	"IParticleRingEmitter.h"
+	"IParticleSphereEmitter.h"
+	"IParticleAttractionAffector.h"
+	"IParticleFadeOutAffector.h"
+	"IParticleGravityAffector.h"
+	"IParticleRotationAffector.h"
+	"dimension2d.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleanimatedmeshscenenodeemitter.h
+	"IParticleEmitter.h"
+	"IAnimatedMeshSceneNode.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleemitter.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sparticle.h
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleboxemitter.h
+	"IParticleEmitter.h"
+	"aabbox3d.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlecylinderemitter.h
+	"IParticleEmitter.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlemeshemitter.h
+	"IParticleEmitter.h"
+	"IMesh.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleringemitter.h
+	"IParticleEmitter.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlesphereemitter.h
+	"IParticleEmitter.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleattractionaffector.h
+	"IParticleAffector.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticleaffector.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlefadeoutaffector.h
+	"IParticleAffector.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlegravityaffector.h
+	"IParticleAffector.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iparticlerotationaffector.h
+	"IParticleAffector.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iq3levelmesh.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrlichtdevice.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+	"IVideoDriver.h"
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"IEventReceiver.h"
+	"ICursorControl.h"
+	"IVideoModeList.h"
+	"ITimer.h"
+	"IOSOperator.h"
+
+1298935709 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\edevicetypes.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ivideomodelist.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\itimer.h
+	"IReferenceCounted.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\irrmap.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenecollisionmanager.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"line3d.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenemanager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+	"path.h"
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+	"ETerrainElements.h"
+	"ESceneNodeTypes.h"
+	"ESceneNodeAnimatorTypes.h"
+	"EMeshWriterEnums.h"
+	"SceneParameters.h"
+	"IGeometryCreator.h"
+	"ISkinnedMesh.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sceneparameters.h
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iskinnedmesh.h
+	"irrArray.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMesh.h"
+	"SSkinMeshBuffer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sskinmeshbuffer.h
+	"IMeshBuffer.h"
+	"S3DVertex.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodeanimatorcamerafps.h
+	"ISceneNodeAnimator.h"
+	"IEventReceiver.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodeanimatorcameramaya.h
+	"ISceneNodeAnimator.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodeanimatorcollisionresponse.h
+	"ISceneNode.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodeanimatorfactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeAnimatorTypes.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iscenenodefactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeTypes.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\isceneuserdataserializer.h
+	"IReferenceCounted.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ishaderconstantsetcallback.h
+	"IReferenceCounted.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ishadowvolumescenenode.h
+	"ISceneNode.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iterrainscenenode.h
+	"ETerrainElements.h"
+	"ISceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"irrArray.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\itextscenenode.h
+	"ISceneNode.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ivolumelightscenenode.h
+	"ISceneNode.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\iwritefile.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ixmlwriter.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+
+1298935710 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ilightmanager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sanimatedmesh.h
+	"IAnimatedMesh.h"
+	"IMesh.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sirrcreationparameters.h
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"dimension2d.h"
+	"ILogger.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\skeymap.h
+	"Keycodes.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smesh.h
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smeshbuffer.h
+	"CMeshBuffer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smeshbufferlightmap.h
+	"CMeshBuffer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\smeshbuffertangents.h
+	"CMeshBuffer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\ssharedmeshbuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1298935711 c:\users\andres\desktop\pkmaker\irrlicht-engine\include\sviewfrustum.h
+	"plane3d.h"
+	"vector3d.h"
+	"line3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IVideoDriver.h"
+
+1298888500 c:\users\andres\desktop\pkmaker\irbpack_make\src\cguifileselector.h
+	<irrlicht.h>
+	<windows.h>
+	<iostream>
+
+1298888500 source:c:\users\andres\desktop\pkmaker\irbpack_make\src\cguifileselector.cpp
+	"CGUIFileSelector.h"
+	<iostream>
+
+1295878104 source:c:\users\andres\desktop\pkmaker\irbpack_make\main.cpp
+	<iostream>
+	"src/App.h"
+
+1298909567 source:/windows/D/Programacao/IrrRPG_Builder/IRBPackMaker/main.cpp
+	<iostream>
+	"src/App.h"
+
+1298909567 /windows/D/Programacao/IrrRPG_Builder/IRBPackMaker/src/App.h
+	<irrlicht.h>
+	"CGUIFileSelector.h"
+	<iostream>
+	<vector>
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrlicht.h
+	"IrrCompileConfig.h"
+	"aabbox3d.h"
+	"CDynamicMeshBuffer.h"
+	"CIndexBuffer.h"
+	"CMeshBuffer.h"
+	"coreutil.h"
+	"CVertexBuffer.h"
+	"dimension2d.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"EDriverFeatures.h"
+	"EDriverTypes.h"
+	"EGUIAlignment.h"
+	"EGUIElementTypes.h"
+	"EHardwareBufferFlags.h"
+	"EMaterialFlags.h"
+	"EMaterialTypes.h"
+	"EMeshWriterEnums.h"
+	"EMessageBoxFlags.h"
+	"ESceneNodeAnimatorTypes.h"
+	"ESceneNodeTypes.h"
+	"ETerrainElements.h"
+	"fast_atof.h"
+	"heapsort.h"
+	"IAnimatedMesh.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+	"IAnimatedMeshSceneNode.h"
+	"IAttributeExchangingObject.h"
+	"IAttributes.h"
+	"IBillboardSceneNode.h"
+	"IBillboardTextSceneNode.h"
+	"IBoneSceneNode.h"
+	"ICameraSceneNode.h"
+	"ICursorControl.h"
+	"IDummyTransformationSceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"IEventReceiver.h"
+	"IFileList.h"
+	"IFileSystem.h"
+	"IGeometryCreator.h"
+	"IGPUProgrammingServices.h"
+	"IGUIButton.h"
+	"IGUICheckBox.h"
+	"IGUIColorSelectDialog.h"
+	"IGUIComboBox.h"
+	"IGUIContextMenu.h"
+	"IGUIEditBox.h"
+	"IGUIElement.h"
+	"IGUIElementFactory.h"
+	"IGUIEnvironment.h"
+	"IGUIFileOpenDialog.h"
+	"IGUIFont.h"
+	"IGUIFontBitmap.h"
+	"IGUIImage.h"
+	"IGUIInOutFader.h"
+	"IGUIListBox.h"
+	"IGUIMeshViewer.h"
+	"IGUIScrollBar.h"
+	"IGUISkin.h"
+	"IGUISpinBox.h"
+	"IGUISpriteBank.h"
+	"IGUIStaticText.h"
+	"IGUITabControl.h"
+	"IGUITable.h"
+	"IGUIToolbar.h"
+	"IGUIWindow.h"
+	"IGUITreeView.h"
+	"IImage.h"
+	"IImageLoader.h"
+	"IImageWriter.h"
+	"IIndexBuffer.h"
+	"ILightSceneNode.h"
+	"ILogger.h"
+	"IMaterialRenderer.h"
+	"IMaterialRendererServices.h"
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"IMeshCache.h"
+	"IMeshLoader.h"
+	"IMeshManipulator.h"
+	"IMeshSceneNode.h"
+	"IMeshWriter.h"
+	"IMetaTriangleSelector.h"
+	"IOSOperator.h"
+	"IParticleSystemSceneNode.h"
+	"IQ3LevelMesh.h"
+	"IQ3Shader.h"
+	"IReadFile.h"
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"IrrlichtDevice.h"
+	"irrList.h"
+	"irrMap.h"
+	"irrMath.h"
+	"irrString.h"
+	"irrTypes.h"
+	"path.h"
+	"irrXML.h"
+	"ISceneCollisionManager.h"
+	"ISceneManager.h"
+	"ISceneNode.h"
+	"ISceneNodeAnimator.h"
+	"ISceneNodeAnimatorCameraFPS.h"
+	"ISceneNodeAnimatorCameraMaya.h"
+	"ISceneNodeAnimatorCollisionResponse.h"
+	"ISceneNodeAnimatorFactory.h"
+	"ISceneNodeFactory.h"
+	"ISceneUserDataSerializer.h"
+	"IShaderConstantSetCallBack.h"
+	"IShadowVolumeSceneNode.h"
+	"ISkinnedMesh.h"
+	"ITerrainSceneNode.h"
+	"ITextSceneNode.h"
+	"ITexture.h"
+	"ITimer.h"
+	"ITriangleSelector.h"
+	"IVertexBuffer.h"
+	"IVideoDriver.h"
+	"IVideoModeList.h"
+	"IVolumeLightSceneNode.h"
+	"IWriteFile.h"
+	"IXMLReader.h"
+	"IXMLWriter.h"
+	"ILightManager.h"
+	"Keycodes.h"
+	"line2d.h"
+	"line3d.h"
+	"matrix4.h"
+	"plane3d.h"
+	"position2d.h"
+	"quaternion.h"
+	"rect.h"
+	"S3DVertex.h"
+	"SAnimatedMesh.h"
+	"SceneParameters.h"
+	"SColor.h"
+	"SExposedVideoData.h"
+	"SIrrCreationParameters.h"
+	"SKeyMap.h"
+	"SLight.h"
+	"SMaterial.h"
+	"SMesh.h"
+	"SMeshBuffer.h"
+	"SMeshBufferLightMap.h"
+	"SMeshBufferTangents.h"
+	"SParticle.h"
+	"SSharedMeshBuffer.h"
+	"SSkinMeshBuffer.h"
+	"SVertexIndex.h"
+	"SViewFrustum.h"
+	"triangle3d.h"
+	"vector2d.h"
+	"vector3d.h"
+	"SIrrCreationParameters.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IrrCompileConfig.h
+	<stdio.h>
+	<xtl.h>
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/aabbox3d.h
+	"irrMath.h"
+	"plane3d.h"
+	"line3d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrMath.h
+	"IrrCompileConfig.h"
+	"irrTypes.h"
+	<math.h>
+	<float.h>
+	<stdlib.h>
+	<limits.h>
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrTypes.h
+	"IrrCompileConfig.h"
+	<wchar.h>
+	<crtdbg.h>
+	"assert.h"
+	<stdlib.h>
+	<crtdbg.h>
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/plane3d.h
+	"irrMath.h"
+	"vector3d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/vector3d.h
+	"irrMath.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/line3d.h
+	"irrTypes.h"
+	"vector3d.h"
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/CDynamicMeshBuffer.h
+	"IDynamicMeshBuffer.h"
+	"CVertexBuffer.h"
+	"CIndexBuffer.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IDynamicMeshBuffer.h
+	"IMeshBuffer.h"
+	"IVertexBuffer.h"
+	"IIndexBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshBuffer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"aabbox3d.h"
+	"S3DVertex.h"
+	"SVertexIndex.h"
+	"EHardwareBufferFlags.h"
+	"EPrimitiveTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IReferenceCounted.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMaterial.h
+	"SColor.h"
+	"matrix4.h"
+	"irrArray.h"
+	"irrMath.h"
+	"EMaterialTypes.h"
+	"EMaterialFlags.h"
+	"SMaterialLayer.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SColor.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/matrix4.h
+	"irrMath.h"
+	"vector3d.h"
+	"vector2d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+	"rect.h"
+	"irrString.h"
+	<windows.h>
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/vector2d.h
+	"irrMath.h"
+	"dimension2d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/dimension2d.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/rect.h
+	"irrTypes.h"
+	"dimension2d.h"
+	"position2d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/position2d.h
+	"vector2d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrString.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrAllocator.h
+	"irrTypes.h"
+	<new>
+	<memory.h>
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrArray.h
+	"irrTypes.h"
+	"heapsort.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/heapsort.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EMaterialTypes.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EMaterialFlags.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMaterialLayer.h
+	"matrix4.h"
+	"irrAllocator.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/S3DVertex.h
+	"vector3d.h"
+	"vector2d.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SVertexIndex.h
+	"irrTypes.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EHardwareBufferFlags.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EPrimitiveTypes.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IVertexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"S3DVertex.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IIndexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SVertexIndex.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/CVertexBuffer.h
+	"IVertexBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/CIndexBuffer.h
+	"IIndexBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/CMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/coreutil.h
+	"irrString.h"
+	"path.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/path.h
+	"irrString.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ECullingTypes.h
+	"irrTypes.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EDebugSceneTypes.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EDriverFeatures.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EDriverTypes.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EGUIAlignment.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EGUIElementTypes.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EMeshWriterEnums.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EMessageBoxFlags.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ESceneNodeTypes.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ETerrainElements.h
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/fast_atof.h
+	"irrMath.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAnimatedMesh.h
+	"aabbox3d.h"
+	"IMesh.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMesh.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"EHardwareBufferFlags.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAnimatedMeshMD2.h
+	"IAnimatedMesh.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAnimatedMeshMD3.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+	"quaternion.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IQ3Shader.h
+	"irrArray.h"
+	"fast_atof.h"
+	"IFileSystem.h"
+	"IVideoDriver.h"
+	"coreutil.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IFileSystem.h
+	"IReferenceCounted.h"
+	"IXMLReader.h"
+	"IFileArchive.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IXMLReader.h
+	"IReferenceCounted.h"
+	"irrXML.h"
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrXML.h
+	<stdio.h>
+	"IrrCompileConfig.h"
+	<irrXML.h>
+	<string>
+	<irrXML.h>
+	<irrXML.h>
+	<irrXML.h>
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IFileArchive.h
+	"IReadFile.h"
+	"IFileList.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IReadFile.h
+	"IReferenceCounted.h"
+	"coreutil.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IFileList.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IVideoDriver.h
+	"rect.h"
+	"SColor.h"
+	"ITexture.h"
+	"irrArray.h"
+	"matrix4.h"
+	"plane3d.h"
+	"dimension2d.h"
+	"position2d.h"
+	"SMaterial.h"
+	"IMeshBuffer.h"
+	"triangle3d.h"
+	"EDriverTypes.h"
+	"EDriverFeatures.h"
+	"SExposedVideoData.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ITexture.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"dimension2d.h"
+	"EDriverTypes.h"
+	"path.h"
+	"matrix4.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IImage.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/triangle3d.h
+	"vector3d.h"
+	"line3d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SExposedVideoData.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/quaternion.h
+	"irrTypes.h"
+	"irrMath.h"
+	"matrix4.h"
+	"vector3d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAnimatedMeshSceneNode.h
+	"ISceneNode.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNode.h
+	"IAttributeExchangingObject.h"
+	"ESceneNodeTypes.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"ISceneNodeAnimator.h"
+	"ITriangleSelector.h"
+	"SMaterial.h"
+	"irrString.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"irrList.h"
+	"IAttributes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAttributeExchangingObject.h
+	"IReferenceCounted.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeAnimator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"ESceneNodeAnimatorTypes.h"
+	"IAttributeExchangingObject.h"
+	"IEventReceiver.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IEventReceiver.h
+	"ILogger.h"
+	"Keycodes.h"
+	"irrString.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ILogger.h
+	"IReferenceCounted.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/Keycodes.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ITriangleSelector.h
+	"IReferenceCounted.h"
+	"triangle3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"line3d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrList.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IAttributes.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"vector3d.h"
+	"vector2d.h"
+	"line2d.h"
+	"line3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"rect.h"
+	"matrix4.h"
+	"quaternion.h"
+	"plane3d.h"
+	"triangle3d.h"
+	"line2d.h"
+	"line3d.h"
+	"irrString.h"
+	"irrArray.h"
+	"IXMLReader.h"
+	"EAttributes.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/line2d.h
+	"irrTypes.h"
+	"vector2d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EAttributes.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IBoneSceneNode.h
+	"ISceneNode.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IBillboardSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IBillboardTextSceneNode.h
+	"IBillboardSceneNode.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ICameraSceneNode.h
+	"ISceneNode.h"
+	"IEventReceiver.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ICursorControl.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IDummyTransformationSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGeometryCreator.h
+	"IReferenceCounted.h"
+	"IMesh.h"
+	"IImage.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGPUProgrammingServices.h
+	"EShaderTypes.h"
+	"EMaterialTypes.h"
+	"EPrimitiveTypes.h"
+	"path.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EShaderTypes.h
+	"irrTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIButton.h
+	"IGUIElement.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIElement.h
+	"IAttributeExchangingObject.h"
+	"irrList.h"
+	"rect.h"
+	"irrString.h"
+	"IEventReceiver.h"
+	"EGUIElementTypes.h"
+	"EGUIAlignment.h"
+	"IAttributes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUICheckBox.h
+	"IGUIElement.h"
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIColorSelectDialog.h
+	"IGUIElement.h"
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIComboBox.h
+	"IGUIElement.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIContextMenu.h
+	"IGUIElement.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIEditBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIElementFactory.h
+	"IReferenceCounted.h"
+	"EGUIElementTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIEnvironment.h
+	"IReferenceCounted.h"
+	"IGUISkin.h"
+	"rect.h"
+	"EMessageBoxFlags.h"
+	"IEventReceiver.h"
+	"IXMLReader.h"
+	"path.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUISkin.h
+	"IAttributeExchangingObject.h"
+	"EGUIAlignment.h"
+	"SColor.h"
+	"rect.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIFileOpenDialog.h
+	"IGUIElement.h"
+	"path.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIFont.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"rect.h"
+	"irrString.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIFontBitmap.h
+	"IGUIFont.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIImage.h
+	"IGUIElement.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIInOutFader.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIListBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIMeshViewer.h
+	"IGUIElement.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIScrollBar.h
+	"IGUIElement.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUISpinBox.h
+	"IGUIElement.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUISpriteBank.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SColor.h"
+	"rect.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIStaticText.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUITabControl.h
+	"IGUIElement.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUITable.h
+	"IGUIElement.h"
+	"irrTypes.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIToolbar.h
+	"IGUIElement.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIWindow.h
+	"IGUIElement.h"
+	"EMessageBoxFlags.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUITreeView.h
+	"IGUIElement.h"
+	"IGUIImageList.h"
+	"irrTypes.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IGUIImageList.h
+	"IGUIElement.h"
+	"rect.h"
+	"irrTypes.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IImageLoader.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"path.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IImageWriter.h
+	"IReferenceCounted.h"
+	"irrString.h"
+	"coreutil.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ILightSceneNode.h
+	"ISceneNode.h"
+	"SLight.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SLight.h
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMaterialRenderer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMaterialRendererServices.h
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshCache.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshLoader.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshManipulator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IAnimatedMesh.h"
+	"IMeshBuffer.h"
+	"SVertexManipulator.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SVertexManipulator.h
+	"S3DVertex.h"
+	"SColor.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMeshWriter.h
+	"IReferenceCounted.h"
+	"EMeshWriterEnums.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IMetaTriangleSelector.h
+	"ITriangleSelector.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IOSOperator.h
+	"IReferenceCounted.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleSystemSceneNode.h
+	"ISceneNode.h"
+	"IParticleAnimatedMeshSceneNodeEmitter.h"
+	"IParticleBoxEmitter.h"
+	"IParticleCylinderEmitter.h"
+	"IParticleMeshEmitter.h"
+	"IParticleRingEmitter.h"
+	"IParticleSphereEmitter.h"
+	"IParticleAttractionAffector.h"
+	"IParticleFadeOutAffector.h"
+	"IParticleGravityAffector.h"
+	"IParticleRotationAffector.h"
+	"dimension2d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
+	"IParticleEmitter.h"
+	"IAnimatedMeshSceneNode.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleEmitter.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SParticle.h
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleBoxEmitter.h
+	"IParticleEmitter.h"
+	"aabbox3d.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleCylinderEmitter.h
+	"IParticleEmitter.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleMeshEmitter.h
+	"IParticleEmitter.h"
+	"IMesh.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleRingEmitter.h
+	"IParticleEmitter.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleSphereEmitter.h
+	"IParticleEmitter.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleAttractionAffector.h
+	"IParticleAffector.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleAffector.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleFadeOutAffector.h
+	"IParticleAffector.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleGravityAffector.h
+	"IParticleAffector.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IParticleRotationAffector.h
+	"IParticleAffector.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IQ3LevelMesh.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IrrlichtDevice.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+	"IVideoDriver.h"
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"IEventReceiver.h"
+	"ICursorControl.h"
+	"IVideoModeList.h"
+	"ITimer.h"
+	"IOSOperator.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/EDeviceTypes.h
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IVideoModeList.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ITimer.h
+	"IReferenceCounted.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/irrMap.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneCollisionManager.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"line3d.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+	"path.h"
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+	"ETerrainElements.h"
+	"ESceneNodeTypes.h"
+	"ESceneNodeAnimatorTypes.h"
+	"EMeshWriterEnums.h"
+	"SceneParameters.h"
+	"IGeometryCreator.h"
+	"ISkinnedMesh.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SceneParameters.h
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISkinnedMesh.h
+	"irrArray.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMesh.h"
+	"SSkinMeshBuffer.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SSkinMeshBuffer.h
+	"IMeshBuffer.h"
+	"S3DVertex.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
+	"ISceneNodeAnimator.h"
+	"IEventReceiver.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
+	"ISceneNodeAnimator.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeAnimatorTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneNodeFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeTypes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ISceneUserDataSerializer.h
+	"IReferenceCounted.h"
+
+1298909586 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IShaderConstantSetCallBack.h
+	"IReferenceCounted.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IShadowVolumeSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ITerrainSceneNode.h
+	"ETerrainElements.h"
+	"ISceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"irrArray.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ITextSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IVolumeLightSceneNode.h
+	"ISceneNode.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IWriteFile.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/IXMLWriter.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/ILightManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SAnimatedMesh.h
+	"IAnimatedMesh.h"
+	"IMesh.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SIrrCreationParameters.h
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"dimension2d.h"
+	"ILogger.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SKeyMap.h
+	"Keycodes.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMesh.h
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMeshBuffer.h
+	"CMeshBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMeshBufferLightMap.h
+	"CMeshBuffer.h"
+
+1298909587 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SMeshBufferTangents.h
+	"CMeshBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SSharedMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1298909588 /windows/D/Programacao/IrrRPG_Builder/irrlicht-engine/include/SViewFrustum.h
+	"plane3d.h"
+	"vector3d.h"
+	"line3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IVideoDriver.h"
+
+1298909567 /windows/D/Programacao/IrrRPG_Builder/IRBPackMaker/src/CGUIFileSelector.h
+	<irrlicht.h>
+	<windows.h>
+	<iostream>
+
+1298909567 source:/windows/D/Programacao/IrrRPG_Builder/IRBPackMaker/src/App.cpp
+	"App.h"
+	<sys/stat.h>
+	<sys/types.h>
+	<time.h>
+	<direct.h>
+
+1298909567 source:/windows/D/Programacao/IrrRPG_Builder/IRBPackMaker/src/CGUIFileSelector.cpp
+	"CGUIFileSelector.h"
+	<iostream>
+
+1298909567 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/main.cpp
+	<iostream>
+	"src/App.h"
+
+1298909567 /home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/App.h
+	<irrlicht.h>
+	"CGUIFileSelector.h"
+	<iostream>
+	<vector>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrlicht.h
+	"IrrCompileConfig.h"
+	"aabbox3d.h"
+	"CDynamicMeshBuffer.h"
+	"CIndexBuffer.h"
+	"CMeshBuffer.h"
+	"coreutil.h"
+	"CVertexBuffer.h"
+	"dimension2d.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"EDriverFeatures.h"
+	"EDriverTypes.h"
+	"EGUIAlignment.h"
+	"EGUIElementTypes.h"
+	"EHardwareBufferFlags.h"
+	"EMaterialFlags.h"
+	"EMaterialTypes.h"
+	"EMeshWriterEnums.h"
+	"EMessageBoxFlags.h"
+	"ESceneNodeAnimatorTypes.h"
+	"ESceneNodeTypes.h"
+	"ETerrainElements.h"
+	"fast_atof.h"
+	"heapsort.h"
+	"IAnimatedMesh.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+	"IAnimatedMeshSceneNode.h"
+	"IAttributeExchangingObject.h"
+	"IAttributes.h"
+	"IBillboardSceneNode.h"
+	"IBillboardTextSceneNode.h"
+	"IBoneSceneNode.h"
+	"ICameraSceneNode.h"
+	"ICursorControl.h"
+	"IDummyTransformationSceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"IEventReceiver.h"
+	"IFileList.h"
+	"IFileSystem.h"
+	"IGeometryCreator.h"
+	"IGPUProgrammingServices.h"
+	"IGUIButton.h"
+	"IGUICheckBox.h"
+	"IGUIColorSelectDialog.h"
+	"IGUIComboBox.h"
+	"IGUIContextMenu.h"
+	"IGUIEditBox.h"
+	"IGUIElement.h"
+	"IGUIElementFactory.h"
+	"IGUIEnvironment.h"
+	"IGUIFileOpenDialog.h"
+	"IGUIFont.h"
+	"IGUIFontBitmap.h"
+	"IGUIImage.h"
+	"IGUIInOutFader.h"
+	"IGUIListBox.h"
+	"IGUIMeshViewer.h"
+	"IGUIScrollBar.h"
+	"IGUISkin.h"
+	"IGUISpinBox.h"
+	"IGUISpriteBank.h"
+	"IGUIStaticText.h"
+	"IGUITabControl.h"
+	"IGUITable.h"
+	"IGUIToolbar.h"
+	"IGUIWindow.h"
+	"IGUITreeView.h"
+	"IImage.h"
+	"IImageLoader.h"
+	"IImageWriter.h"
+	"IIndexBuffer.h"
+	"ILightSceneNode.h"
+	"ILogger.h"
+	"IMaterialRenderer.h"
+	"IMaterialRendererServices.h"
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"IMeshCache.h"
+	"IMeshLoader.h"
+	"IMeshManipulator.h"
+	"IMeshSceneNode.h"
+	"IMeshWriter.h"
+	"IMetaTriangleSelector.h"
+	"IOSOperator.h"
+	"IParticleSystemSceneNode.h"
+	"IQ3LevelMesh.h"
+	"IQ3Shader.h"
+	"IReadFile.h"
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"IrrlichtDevice.h"
+	"irrList.h"
+	"irrMap.h"
+	"irrMath.h"
+	"irrString.h"
+	"irrTypes.h"
+	"path.h"
+	"irrXML.h"
+	"ISceneCollisionManager.h"
+	"ISceneManager.h"
+	"ISceneNode.h"
+	"ISceneNodeAnimator.h"
+	"ISceneNodeAnimatorCameraFPS.h"
+	"ISceneNodeAnimatorCameraMaya.h"
+	"ISceneNodeAnimatorCollisionResponse.h"
+	"ISceneNodeAnimatorFactory.h"
+	"ISceneNodeFactory.h"
+	"ISceneUserDataSerializer.h"
+	"IShaderConstantSetCallBack.h"
+	"IShadowVolumeSceneNode.h"
+	"ISkinnedMesh.h"
+	"ITerrainSceneNode.h"
+	"ITextSceneNode.h"
+	"ITexture.h"
+	"ITimer.h"
+	"ITriangleSelector.h"
+	"IVertexBuffer.h"
+	"IVideoDriver.h"
+	"IVideoModeList.h"
+	"IVolumeLightSceneNode.h"
+	"IWriteFile.h"
+	"IXMLReader.h"
+	"IXMLWriter.h"
+	"ILightManager.h"
+	"Keycodes.h"
+	"line2d.h"
+	"line3d.h"
+	"matrix4.h"
+	"plane3d.h"
+	"position2d.h"
+	"quaternion.h"
+	"rect.h"
+	"S3DVertex.h"
+	"SAnimatedMesh.h"
+	"SceneParameters.h"
+	"SColor.h"
+	"SExposedVideoData.h"
+	"SIrrCreationParameters.h"
+	"SKeyMap.h"
+	"SLight.h"
+	"SMaterial.h"
+	"SMesh.h"
+	"SMeshBuffer.h"
+	"SMeshBufferLightMap.h"
+	"SMeshBufferTangents.h"
+	"SParticle.h"
+	"SSharedMeshBuffer.h"
+	"SSkinMeshBuffer.h"
+	"SVertexIndex.h"
+	"SViewFrustum.h"
+	"triangle3d.h"
+	"vector2d.h"
+	"vector3d.h"
+	"SIrrCreationParameters.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IrrCompileConfig.h
+	<stdio.h>
+	<xtl.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/aabbox3d.h
+	"irrMath.h"
+	"plane3d.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrMath.h
+	"IrrCompileConfig.h"
+	"irrTypes.h"
+	<math.h>
+	<float.h>
+	<stdlib.h>
+	<limits.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrTypes.h
+	"IrrCompileConfig.h"
+	<wchar.h>
+	<crtdbg.h>
+	"assert.h"
+	<stdlib.h>
+	<crtdbg.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/plane3d.h
+	"irrMath.h"
+	"vector3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/vector3d.h
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/line3d.h
+	"irrTypes.h"
+	"vector3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CDynamicMeshBuffer.h
+	"IDynamicMeshBuffer.h"
+	"CVertexBuffer.h"
+	"CIndexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IDynamicMeshBuffer.h
+	"IMeshBuffer.h"
+	"IVertexBuffer.h"
+	"IIndexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshBuffer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"aabbox3d.h"
+	"S3DVertex.h"
+	"SVertexIndex.h"
+	"EHardwareBufferFlags.h"
+	"EPrimitiveTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IReferenceCounted.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMaterial.h
+	"SColor.h"
+	"matrix4.h"
+	"irrArray.h"
+	"irrMath.h"
+	"EMaterialTypes.h"
+	"EMaterialFlags.h"
+	"SMaterialLayer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SColor.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/matrix4.h
+	"irrMath.h"
+	"vector3d.h"
+	"vector2d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+	"rect.h"
+	"irrString.h"
+	<windows.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/vector2d.h
+	"irrMath.h"
+	"dimension2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/dimension2d.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/rect.h
+	"irrTypes.h"
+	"dimension2d.h"
+	"position2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/position2d.h
+	"vector2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrString.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrAllocator.h
+	"irrTypes.h"
+	<new>
+	<memory.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrArray.h
+	"irrTypes.h"
+	"heapsort.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/heapsort.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMaterialTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMaterialFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMaterialLayer.h
+	"matrix4.h"
+	"irrAllocator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/S3DVertex.h
+	"vector3d.h"
+	"vector2d.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SVertexIndex.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EHardwareBufferFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EPrimitiveTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVertexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IIndexBuffer.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SVertexIndex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CVertexBuffer.h
+	"IVertexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CIndexBuffer.h
+	"IIndexBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/CMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/coreutil.h
+	"irrString.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/path.h
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ECullingTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDebugSceneTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDriverFeatures.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDriverTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EGUIAlignment.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EGUIElementTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMeshWriterEnums.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EMessageBoxFlags.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ESceneNodeTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ETerrainElements.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/fast_atof.h
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMesh.h
+	"aabbox3d.h"
+	"IMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMesh.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"EHardwareBufferFlags.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshMD2.h
+	"IAnimatedMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshMD3.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+	"quaternion.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IQ3Shader.h
+	"irrArray.h"
+	"fast_atof.h"
+	"IFileSystem.h"
+	"IVideoDriver.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileSystem.h
+	"IReferenceCounted.h"
+	"IXMLReader.h"
+	"IFileArchive.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IXMLReader.h
+	"IReferenceCounted.h"
+	"irrXML.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrXML.h
+	<stdio.h>
+	"IrrCompileConfig.h"
+	<irrXML.h>
+	<string>
+	<irrXML.h>
+	<irrXML.h>
+	<irrXML.h>
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileArchive.h
+	"IReadFile.h"
+	"IFileList.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IReadFile.h
+	"IReferenceCounted.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IFileList.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVideoDriver.h
+	"rect.h"
+	"SColor.h"
+	"ITexture.h"
+	"irrArray.h"
+	"matrix4.h"
+	"plane3d.h"
+	"dimension2d.h"
+	"position2d.h"
+	"SMaterial.h"
+	"IMeshBuffer.h"
+	"triangle3d.h"
+	"EDriverTypes.h"
+	"EDriverFeatures.h"
+	"SExposedVideoData.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITexture.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"dimension2d.h"
+	"EDriverTypes.h"
+	"path.h"
+	"matrix4.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImage.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/triangle3d.h
+	"vector3d.h"
+	"line3d.h"
+	"plane3d.h"
+	"aabbox3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SExposedVideoData.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/quaternion.h
+	"irrTypes.h"
+	"irrMath.h"
+	"matrix4.h"
+	"vector3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAnimatedMeshSceneNode.h
+	"ISceneNode.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMeshMD2.h"
+	"IAnimatedMeshMD3.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNode.h
+	"IAttributeExchangingObject.h"
+	"ESceneNodeTypes.h"
+	"ECullingTypes.h"
+	"EDebugSceneTypes.h"
+	"ISceneNodeAnimator.h"
+	"ITriangleSelector.h"
+	"SMaterial.h"
+	"irrString.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"irrList.h"
+	"IAttributes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAttributeExchangingObject.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"ESceneNodeAnimatorTypes.h"
+	"IAttributeExchangingObject.h"
+	"IEventReceiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IEventReceiver.h
+	"ILogger.h"
+	"Keycodes.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILogger.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/Keycodes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITriangleSelector.h
+	"IReferenceCounted.h"
+	"triangle3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrList.h
+	"irrTypes.h"
+	"irrAllocator.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IAttributes.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"vector3d.h"
+	"vector2d.h"
+	"line2d.h"
+	"line3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"rect.h"
+	"matrix4.h"
+	"quaternion.h"
+	"plane3d.h"
+	"triangle3d.h"
+	"line2d.h"
+	"line3d.h"
+	"irrString.h"
+	"irrArray.h"
+	"IXMLReader.h"
+	"EAttributes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/line2d.h
+	"irrTypes.h"
+	"vector2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EAttributes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBoneSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBillboardSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IBillboardTextSceneNode.h
+	"IBillboardSceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ICameraSceneNode.h
+	"ISceneNode.h"
+	"IEventReceiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ICursorControl.h
+	"IReferenceCounted.h"
+	"position2d.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IDummyTransformationSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGeometryCreator.h
+	"IReferenceCounted.h"
+	"IMesh.h"
+	"IImage.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGPUProgrammingServices.h
+	"EShaderTypes.h"
+	"EMaterialTypes.h"
+	"EPrimitiveTypes.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EShaderTypes.h
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIButton.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIElement.h
+	"IAttributeExchangingObject.h"
+	"irrList.h"
+	"rect.h"
+	"irrString.h"
+	"IEventReceiver.h"
+	"EGUIElementTypes.h"
+	"EGUIAlignment.h"
+	"IAttributes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUICheckBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIColorSelectDialog.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIComboBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIContextMenu.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIEditBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIElementFactory.h
+	"IReferenceCounted.h"
+	"EGUIElementTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIEnvironment.h
+	"IReferenceCounted.h"
+	"IGUISkin.h"
+	"rect.h"
+	"EMessageBoxFlags.h"
+	"IEventReceiver.h"
+	"IXMLReader.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISkin.h
+	"IAttributeExchangingObject.h"
+	"EGUIAlignment.h"
+	"SColor.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFileOpenDialog.h
+	"IGUIElement.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFont.h
+	"IReferenceCounted.h"
+	"SColor.h"
+	"rect.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIFontBitmap.h
+	"IGUIFont.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIImage.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIInOutFader.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIListBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIMeshViewer.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIScrollBar.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISpinBox.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUISpriteBank.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"SColor.h"
+	"rect.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIStaticText.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITabControl.h
+	"IGUIElement.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITable.h
+	"IGUIElement.h"
+	"irrTypes.h"
+	"SColor.h"
+	"IGUISkin.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIToolbar.h
+	"IGUIElement.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIWindow.h
+	"IGUIElement.h"
+	"EMessageBoxFlags.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUITreeView.h
+	"IGUIElement.h"
+	"IGUIImageList.h"
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IGUIImageList.h
+	"IGUIElement.h"
+	"rect.h"
+	"irrTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImageLoader.h
+	"IReferenceCounted.h"
+	"IImage.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IImageWriter.h
+	"IReferenceCounted.h"
+	"irrString.h"
+	"coreutil.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILightSceneNode.h
+	"ISceneNode.h"
+	"SLight.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SLight.h
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMaterialRenderer.h
+	"IReferenceCounted.h"
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMaterialRendererServices.h
+	"SMaterial.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshCache.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshLoader.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshManipulator.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IAnimatedMesh.h"
+	"IMeshBuffer.h"
+	"SVertexManipulator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SVertexManipulator.h
+	"S3DVertex.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMeshWriter.h
+	"IReferenceCounted.h"
+	"EMeshWriterEnums.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IMetaTriangleSelector.h
+	"ITriangleSelector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IOSOperator.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleSystemSceneNode.h
+	"ISceneNode.h"
+	"IParticleAnimatedMeshSceneNodeEmitter.h"
+	"IParticleBoxEmitter.h"
+	"IParticleCylinderEmitter.h"
+	"IParticleMeshEmitter.h"
+	"IParticleRingEmitter.h"
+	"IParticleSphereEmitter.h"
+	"IParticleAttractionAffector.h"
+	"IParticleFadeOutAffector.h"
+	"IParticleGravityAffector.h"
+	"IParticleRotationAffector.h"
+	"dimension2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
+	"IParticleEmitter.h"
+	"IAnimatedMeshSceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleEmitter.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SParticle.h
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleBoxEmitter.h
+	"IParticleEmitter.h"
+	"aabbox3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleCylinderEmitter.h
+	"IParticleEmitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleMeshEmitter.h
+	"IParticleEmitter.h"
+	"IMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleRingEmitter.h
+	"IParticleEmitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleSphereEmitter.h
+	"IParticleEmitter.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAttractionAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleAffector.h
+	"IAttributeExchangingObject.h"
+	"SParticle.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleFadeOutAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleGravityAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IParticleRotationAffector.h
+	"IParticleAffector.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IQ3LevelMesh.h
+	"IAnimatedMesh.h"
+	"IQ3Shader.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IrrlichtDevice.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+	"IVideoDriver.h"
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"IEventReceiver.h"
+	"ICursorControl.h"
+	"IVideoModeList.h"
+	"ITimer.h"
+	"IOSOperator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/EDeviceTypes.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVideoModeList.h
+	"IReferenceCounted.h"
+	"dimension2d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITimer.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/irrMap.h
+	"irrTypes.h"
+	"irrMath.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneCollisionManager.h
+	"IReferenceCounted.h"
+	"vector3d.h"
+	"triangle3d.h"
+	"position2d.h"
+	"line3d.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+	"path.h"
+	"vector3d.h"
+	"dimension2d.h"
+	"SColor.h"
+	"ETerrainElements.h"
+	"ESceneNodeTypes.h"
+	"ESceneNodeAnimatorTypes.h"
+	"EMeshWriterEnums.h"
+	"SceneParameters.h"
+	"IGeometryCreator.h"
+	"ISkinnedMesh.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SceneParameters.h
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISkinnedMesh.h
+	"irrArray.h"
+	"IBoneSceneNode.h"
+	"IAnimatedMesh.h"
+	"SSkinMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SSkinMeshBuffer.h
+	"IMeshBuffer.h"
+	"S3DVertex.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
+	"ISceneNodeAnimator.h"
+	"IEventReceiver.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
+	"ISceneNodeAnimator.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeAnimatorTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneNodeFactory.h
+	"IReferenceCounted.h"
+	"ESceneNodeTypes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ISceneUserDataSerializer.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IShaderConstantSetCallBack.h
+	"IReferenceCounted.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IShadowVolumeSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITerrainSceneNode.h
+	"ETerrainElements.h"
+	"ISceneNode.h"
+	"IDynamicMeshBuffer.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ITextSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IVolumeLightSceneNode.h
+	"ISceneNode.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IWriteFile.h
+	"IReferenceCounted.h"
+	"path.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/IXMLWriter.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+	"irrString.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/ILightManager.h
+	"IReferenceCounted.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SAnimatedMesh.h
+	"IAnimatedMesh.h"
+	"IMesh.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SIrrCreationParameters.h
+	"EDriverTypes.h"
+	"EDeviceTypes.h"
+	"dimension2d.h"
+	"ILogger.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SKeyMap.h
+	"Keycodes.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMesh.h
+	"IMesh.h"
+	"IMeshBuffer.h"
+	"aabbox3d.h"
+	"irrArray.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBuffer.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBufferLightMap.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SMeshBufferTangents.h
+	"CMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SSharedMeshBuffer.h
+	"irrArray.h"
+	"IMeshBuffer.h"
+
+1293018080 /home/andres/Programacao/IRBPackMaker/irrlicht-engine/include/SViewFrustum.h
+	"plane3d.h"
+	"vector3d.h"
+	"line3d.h"
+	"aabbox3d.h"
+	"matrix4.h"
+	"IVideoDriver.h"
+
+1298909567 /home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/CGUIFileSelector.h
+	<irrlicht.h>
+	<windows.h>
+	<iostream>
+
+1298909719 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/App.cpp
+	"App.h"
+	<sys/stat.h>
+	<sys/types.h>
+	<time.h>
+	<direct.h>
+
+1298909567 source:/home/andres/Programacao/IRBPackMaker/IRBPackMaker/src/CGUIFileSelector.cpp
+	"CGUIFileSelector.h"
+	<iostream>
+
