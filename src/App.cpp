@@ -66,7 +66,7 @@ void App::draw2DImages()
 }
 
 ///TODO: mover isso para GUIManager
-// Would be nice to only check the tools windows we have opened and check their position / scale 
+// Would be nice to only check the tools windows we have opened and check their position / scale
 bool App::cursorIsInEditArea()
 {
     bool condition = true;
@@ -733,8 +733,8 @@ void App::run()
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
     int lastFPS = -1;
-	u32 timer = device->getTimer()->getRealTime();
-	u32 timer2 = device->getTimer()->getRealTime();
+//	u32 timer = device->getTimer()->getRealTime();
+//	u32 timer2 = device->getTimer()->getRealTime();
 
     while(device->run())
     {
@@ -747,13 +747,13 @@ void App::run()
 		}
         else
 		{
-			
+
 			updateGameplay();
 		}
-		
+
 		smgr->drawAll();
 		guienv->drawAll();
-		
+
 		draw2DImages();
 
         driver->endScene();
@@ -879,7 +879,7 @@ void App::updateEditMode()
 		if(app_state < APP_STATE_CONTROL)
 		{
 			// --- Drag the view when the spacebar is pressed
-			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && 
+			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT &&
 				app_state != APP_EDIT_WAIT_GUI &&
 				app_state != APP_EDIT_PLAYER_SCRIPT &&
 				app_state != APP_EDIT_SCRIPT_GLOBAL &&
@@ -890,14 +890,14 @@ void App::updateEditMode()
 				{
 					if (app_state != APP_EDIT_VIEWDRAG)
 						old_state = app_state;
-				
+
 					app_state = APP_EDIT_VIEWDRAG;
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
 						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
 						EditorCamera::getInstance()->setPosition(camPosition);
 					}
-				
+
 					return;
 				}
 			}
@@ -1006,7 +1006,7 @@ void App::updateGameplay()
     if ((timer-timer2)>17) // 1/60 second
 	{
 		timer2 = device->getTimer()->getRealTime();
-		
+
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
 			MousePick mousePick = getMousePosition3D();
@@ -1020,13 +1020,13 @@ void App::updateGameplay()
 				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 				{
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-					
+
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
 					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 					{
 						if(obj->getObjectType() == stringc("ENEMY"))
 						{
-							Player::getInstance()->getObject()->attackEnemy(obj);	
+							Player::getInstance()->getObject()->attackEnemy(obj);
 							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
 							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 							DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
@@ -1078,7 +1078,7 @@ void App::cleanWorkspace()
     TerrainManager::getInstance()->clean();
 
     DynamicObjectsManager::getInstance()->clean();
-  
+
     scriptGlobal="";
 }
 
@@ -1189,12 +1189,12 @@ void App::initialize()
     EditorCamera::getInstance()->setPosition(vector3df(0,0,0));
 	quickUpdate();
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
-	
+
 
     smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,300,9100);
 	quickUpdate();
-	
+
     Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
 

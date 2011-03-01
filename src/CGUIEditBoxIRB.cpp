@@ -814,6 +814,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
             inputChar(L'"');
         else
             inputChar(event.KeyInput.Char);
+		printf("%s",(core::stringc)event.KeyInput.Char);
 		return true;
 	}
 
@@ -956,6 +957,7 @@ void CGUIEditBoxIRB::draw()
 
 				// Parse the TAB character
 				std::string txt_main = core::stringc(txtLine->c_str()).c_str();
+
 				for(int chart = 0; chart < (int)txt_main.size(); chart++)
                 {
 					
@@ -1146,10 +1148,13 @@ void CGUIEditBoxIRB::draw()
 					
 				}
 				// draw normal text
-				font->draw(txt_main.c_str(), CurrentTextRect,
-					OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
+				//font->draw(core::stringw(txt_main.c_str()), CurrentTextRect,
+				//	OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
                     //video::SColor(255,255,0,0),
-					false, true, &localClipRect);
+				//	false, true, &localClipRect);
+				font->draw(txtLine->c_str(), CurrentTextRect,
+							OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
+							false, true, &localClipRect);
 
 
                 //draw keywords
