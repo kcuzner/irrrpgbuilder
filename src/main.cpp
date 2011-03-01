@@ -1,4 +1,4 @@
-#include "src/App.h"
+#include "App.h"
 
 #include <iostream>
 #include <fstream>
@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char** argv)
 {
     ///TODO: Create a Window to choose resolution
-    
+
     App::getInstance()->setupDevice();
     App::getInstance()->initialize();
     App::getInstance()->run();
