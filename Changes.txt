@@ -1,4 +1,11 @@
 Changes since AlphaRelease 1
+January/February 2011
+- Improved the Script EDITOR gui, added the scrollbar and more control with the mouse
+- Script EDITOR has now line count ability
+- The application now use TABS GUI to categorize tools
+- Added "Health" bar for NPC's as a new node
+- Added a new graphic GUI Health bar using textures
+- Improved the accented character handling via XML (Using TINY XML), characters with accented characters are now converted.
 
 November/December 2010
 - Updated to IRRlicht 1.7.2 with no patch. You can use the official release now.
