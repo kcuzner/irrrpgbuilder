@@ -291,12 +291,8 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				objectsTemplate.push_back(newObj);
 				objsIDs.push_back(name);
 			}
-
             currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
-
-			device->getGUIEnvironment()->drawAll();
-
-        }//while
+		}//while
 
     }//root
 	return true;

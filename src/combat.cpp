@@ -22,6 +22,8 @@ Combat::Combat()
 	freepoints = 0;
 	skillspoints = 0 ;
 	dotenabled=false;
+	tempObject=NULL;
+	dotvictim.clear();
 }
 
 Combat::~Combat()

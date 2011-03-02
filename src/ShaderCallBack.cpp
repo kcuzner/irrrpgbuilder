@@ -14,6 +14,7 @@ ShaderCallBack::ShaderCallBack()
 {
     this->device=App::getInstance()->getDevice();
     editingTerrain = 0;
+	layer = 0;
 }
 
 ShaderCallBack* ShaderCallBack::getInstance()
