@@ -16,11 +16,6 @@ function hitplayer()
   a = 0
 end
 
-function unblock()
-	print("Lua character had a collision, unblocking now")
-	blocked=false
-end
-
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user
 function onClicked()
 	print("Lua character is being clicked on!")
@@ -29,8 +24,6 @@ end
 -- new game function
 -- "onCollision" will trigger if the dynamic object got a collision with something
 function onCollision()
-	blocked=true
-	programAction(3, unblock)
 end
 
 -- "step" will trigger at each time interval (around 1/4 second)
@@ -38,7 +31,7 @@ function onUpdate()
   name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
   if (getPropertie("life") == 0) then setEnabled(false) end
   local x,y,z = getObjectPosition("player")
-  if(distanceFrom(x,y,z) < 288 or not blocked) then 
+  if(distanceFrom(x,y,z) < 288) then 
     setObjectLabel(name)
     showObjectLabel()
     if(distanceFrom(x,y,z) < 66) then
