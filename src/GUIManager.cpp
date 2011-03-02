@@ -238,12 +238,12 @@ void GUIManager::setupEditorGUI()
 
     ///MAIN FUNCTIONS
 	mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
-	IGUITab * tabProject = mainTabCtrl->addTab(L"Project");
-	IGUITab * tabEnv = mainTabCtrl->addTab(L"Environment");
-	IGUITab * tabObject = mainTabCtrl->addTab(L"Objects");
-	IGUITab * tabTools = mainTabCtrl->addTab(L"Tools");
-	IGUITab * tabConfig = mainTabCtrl->addTab(L"Setup");
-	mainTabCtrl->setTabExtraWidth(100);
+	IGUITab * tabProject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
+	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
+	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
+	IGUITab * tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
+	IGUITab * tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
+	mainTabCtrl->setTabExtraWidth(75);
 	mainTabCtrl->setActiveTab(2);
 
 
@@ -440,17 +440,10 @@ void GUIManager::setupEditorGUI()
     guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
-    //IGUIStaticText* aboutText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_about")).c_str(),myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,140,500,400),true,true,guiAboutWindow);
-	//guiAboutText->setOverrideFont(guiFontC12);
-
-    //aboutText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-	guiAboutText->setSubElement(true);
-
-	LANGManager::getInstance()->getText("txt_about");
-	guiAboutText->setEnabled(false);
-
-	//aboutText->addItem(stringw(LANGManager::getInstance()->getText("txt_about")).c_str());
-
+  
+	// Ask the LANGManager to fill the box with the proper Language of the about text.
+	LANGManager::getInstance()->setAboutText(guiAboutText);
+	
     ///TERRAIN TOOLBAR
     guiTerrainToolbar = guienv->addWindow(
 		myRect(driver->getScreenSize().Width - 170,
@@ -591,11 +584,13 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
     guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
+	guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
+
 
 	// Bottom tabcontrol
 	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
-	IGUITab * tab1 = tabctrl1->addTab(L"Debug panel");
-	IGUITab * tab2 = tabctrl1->addTab(L"Templates");
+	IGUITab * tab1 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_debug").c_str());
+	IGUITab * tab2 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_templates").c_str());
 
     s32 X_ScriptToolbar = 10;
 
@@ -605,7 +600,7 @@ void GUIManager::setupEditorGUI()
 
     X_ScriptToolbar+=400;
 
-    guiDynamicObjects_LoadScriptTemplateBT = guienv->addButton(myRect(X_ScriptToolbar,10,150,20),
+    guiDynamicObjects_LoadScriptTemplateBT = guienv->addButton(myRect(X_ScriptToolbar,10,200,20),
                       tab2,
                       BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_load_script_template")).c_str() );
@@ -847,15 +842,15 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
 	return "";
 }
 
-void GUIManager::setEditBoxText(GUI_ID id, stringc text)
+void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
     switch(id)
     {
         case EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE:
-            guiDynamicObjects_Script_Console->setText(stringw(text).c_str());
+            guiDynamicObjects_Script_Console->setText(text.c_str());
             break;
         case EB_ID_DYNAMIC_OBJECT_SCRIPT:
-            guiDynamicObjects_Script->setText(stringw(text).c_str());
+            guiDynamicObjects_Script->setText(text.c_str());
             break;
     }
 }
@@ -1276,15 +1271,6 @@ void GUIManager::updateItemsList()
     vector<stringc> items = Player::getInstance()->getObject()->getItems();
 
     for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
-}
-
-void GUIManager::addAboutTextItem(stringc text)
-{
-	if (guiAboutText)
-	{
-		this->guiAboutText->addItem(stringw(text).c_str());
-	}
-
 }
 
 void GUIManager::flush()

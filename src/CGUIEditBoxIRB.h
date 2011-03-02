@@ -108,6 +108,8 @@ namespace gui
 		//! Reads attributes of the element
 		virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options);
 
+		void setLineCountButtonText(core::stringw text);
+
 		protected:
 		//! Breaks the single text line.
 		void breakText();
@@ -146,6 +148,7 @@ namespace gui
 		IGUIButton *	LineToggle;
 		
 		core::stringw  linenumber; //contain the line numbering
+		core::stringw linecount_text;
 
 		u32 BlinkStartTime;
 		s32 CursorPos;

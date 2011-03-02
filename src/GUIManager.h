@@ -110,7 +110,7 @@ class GUIManager
 
         IGUIFont* getFont(FONT_NAME fontName);
 
-        void setEditBoxText(GUI_ID id, stringc text);
+        void setEditBoxText(GUI_ID id, stringw text);
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
@@ -140,8 +140,6 @@ class GUIManager
         stringc showInputQuestion(std::string text);
 
         void updateItemsList();
-
-		void addAboutTextItem(stringc text);
 
         void flush();
 

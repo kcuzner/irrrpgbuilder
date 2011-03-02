@@ -30,6 +30,7 @@ irr::core::stringw convert(irr::core::stringc text)
 		{
 			// Extended character set
 			//printf("\nAccent found: 1:-61, 2:%d\n",(int)text[a+1]);
+			//printf ("\nAccent found: 1:-61, 2:%x",(int)text[a+1]);
 			if ((int)text[a+1]==-65)	line+=L"ÿ";
 			if ((int)text[a+1]==-68)	line+=L"ü";
 			if ((int)text[a+1]==-69)	line+=L"û";

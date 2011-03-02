@@ -4,6 +4,7 @@
 LANGManager::LANGManager()
 {
     defaultLanguage = "";
+	aboutext.clear();
 	language.clear();
 }
 
@@ -30,7 +31,8 @@ bool LANGManager::Load()
 	if (!doc.LoadFile())
     {
         cout << "ERROR LOADING LANG.XML" << endl;
-        exit(0);
+        //exit(0);
+		return false;
     }
 
     #ifdef APP_DEBUG
@@ -56,19 +58,17 @@ bool LANGManager::Load()
 		
 
         //Iterate language file
-		//GUIManager::getInstance()->setTextLoader(L"Loading language...");
 		TiXmlNode* currentObjXML = root->FirstChild( "language" );
         while( currentObjXML != NULL )
         {
 			
 			irr::core::stringw name = currentObjXML->ToElement()->Attribute("name");
 			irr::core::stringw description = convert(currentObjXML->ToElement()->Attribute("description"));
-            //Get Dynamic Object Attributes
-			//printf("LANG: %s, %s\n",name.c_str(),description.c_str());
-
+            
+			
+			// Load the translated text for the current language
 			TiXmlNode* currentLanguageXML = currentObjXML->FirstChild( "text" );
 			while( currentLanguageXML != NULL )
-
 			{
 				if (name==defaultLanguage)
 				{
@@ -79,11 +79,23 @@ bool LANGManager::Load()
 					CurrentLang.text=convert(str.c_str());
 					language.push_back(CurrentLang);
 				
-					/*if (id.size()>0)
-						printf ("%s,%s\n",id.c_str(),str.c_str());*/
 				}
-			
 				currentLanguageXML = currentObjXML->IterateChildren( "text", currentLanguageXML );
+			}
+
+			// Load the about text (multiple lines)
+			TiXmlNode* currentAboutXML = currentObjXML->FirstChild( "about" );
+			CurrentLang.text=L"";
+			while( currentAboutXML != NULL )
+			{
+				if (name==defaultLanguage)
+				{
+					irr::core::stringc str = currentAboutXML->ToElement()->Attribute("str");
+					CurrentLang.name=L"txt_about";
+					CurrentLang.text=convert(str);
+					aboutext.push_back(CurrentLang);
+				}
+				currentAboutXML = currentObjXML->IterateChildren( "about", currentAboutXML );
 			}
 			currentObjXML = root->IterateChildren( "language", currentObjXML );
 
@@ -94,6 +106,19 @@ bool LANGManager::Load()
 }
 
 // - Retrieve the proper string from stored memory.
+// And put the content in the GUI Item directly (AboutText GUI)
+void LANGManager::setAboutText(IGUIListBox* guiAboutText)
+{
+	for (int i=0 ; i<(int)aboutext.size() ; i++)
+    {		
+		guiAboutText->addItem(aboutext[i].text.c_str());        
+    }
+	// Clear the memory since it should not be used again
+	aboutext.clear();
+}
+
+// - Retrieve the proper string from stored memory.
+// And return the resulting string to the caller
 irr::core::stringw LANGManager::getText(irr::core::stringc node)
 {
 
@@ -104,7 +129,6 @@ irr::core::stringw LANGManager::getText(irr::core::stringc node)
 			return language[i].text;			
         }
     }
-	
 	return "";
 }
 
