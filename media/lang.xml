@@ -7,7 +7,7 @@
 	<text id="tab_tools" str="Tools"/>
 	<text id="tab_setup" str="Settings"/>
 	<text id="tab_script_debug" str="Debug Panel"/>
-	<text id="tab_script_templates" str="Templates"/>
+	<text id="tab_script_templates" str="Script Templates"/>
 	<text id="bt_script_editor_linecount" str="Toggle linecount"/>
 	<text id="bt_dynamic_objects_close_script" str="Close"/>
 	<text id="bt_dynamic_objects_script_noerror" str="No errors found"/>
@@ -79,7 +79,7 @@
 	<about str=" " />
 	<about str="Interface design:" />
 	<about str="		Andres Jesse Porfirio" />
-	<about str="		Your name here" />
+	<about str="		Christian Clavet" />
 	<about str=" " />
 	<about str="Logo design:" />
 	<about str="		Borges (www.vhborges.tk)" />
@@ -107,7 +107,7 @@
 	<text id="tab_tools" str="Ferramentas"/>
 	<text id="tab_setup" str="Configurações"/>
 	<text id="tab_script_debug" str="Painel debug"/>
-	<text id="tab_script_templates" str="Modelos"/>
+	<text id="tab_script_templates" str="Modelos Script"/>
 	<text id="bt_script_editor_linecount" str="Alterna números de linha"/>
 	<text id="bt_dynamic_objects_close_script" str="Fechar"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Não foram encontrados erros"/>
@@ -179,7 +179,7 @@
 	<about str=" " />
 	<about str="Design de interface:" />
 	<about str="		Andres Jesse Porfirio" />
-	<about str="		Seu nome aqui" />
+	<about str="		Christian Clavet" />
 	<about str=" " />
 	<about str="O projeto do logotipo:" />
 	<about str="		Borges (www.vhborges.tk)" />
@@ -208,7 +208,7 @@
 	<text id="tab_setup" str="Réglages" />
 	<text id="tab_script_debug" str="Panneau de débogage"/>
 	<text id="tab_script_templates" str="Modèles de script"/>
-	<text id="bt_script_editor_linecount" str="Basculer la nuérotation des lignes"/>
+	<text id="bt_script_editor_linecount" str="Basculer la numérotation des lignes"/>
 	<text id="bt_dynamic_objects_close_script" str="Fermer"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Aucune erreur trouvée"/>
 	<text id="bt_dynamic_objects_validate_script" str="Valider le script (F5)"/>
@@ -262,7 +262,7 @@
 	<text id="txt_player_life" str="VIE:"/>
 	<text id="txt_player_money" str="OR:"/>
 	<text id="msg_error" str="Erreur"/>
-	<text id="msg_invalid_project_file" str="Fichier projet invalide"/>
+	<text id="msg_invalid_project_file" str="Fichier projet invalide!"/>
 	<text id="msg_override_project" str="Sauver le projet actuel?"/>
 	<text id="msg_saved_ok" str="Sauvegarde réussie!"/>
 	<text id="msg_new_project_name" str="Entrez le nom du projet:"/>
@@ -279,7 +279,7 @@
 	<about str=" " />
 	<about str="Désign de l'interface:" />
 	<about str="		Andres Jesse Porfirio" />
-	<about str="		Votre nom ici" />
+	<about str="		Christian Clavet" />
 	<about str=" " />
 	<about str="Désign du logo:" />
 	<about str="		Borges (www.vhborges.tk)" />
@@ -307,7 +307,7 @@
 	<text id="tab_tools" str="Werkzeuge"/>
 	<text id="tab_setup" str="Einstellungen"/>
 	<text id="tab_script_debug" str="Debug Panel"/>
-	<text id="tab_script_templates" str="Vorlagen"/>
+	<text id="tab_script_templates" str="Script Vorlagen"/>
 	<text id="bt_script_editor_linecount" str="Sehen Zeilennummern"/>
 	<text id="bt_dynamic_objects_close_script" str="Schliessen"/>
 	<text id="bt_dynamic_objects_script_noerror" str="Keine Fehler gefunden"/>
@@ -379,7 +379,7 @@
 	<about str=" " />
 	<about str="Oberflachendesign:" />
 	<about str="		Andres Jesse Porfirio" />
-	<about str="		Ihren Namen hier einfugen" />
+	<about str="		Christian Clavet" />
 	<about str=" " />
 	<about str="Logo design:" />
 	<about str="		Borges (www.vhborges.tk)" />
