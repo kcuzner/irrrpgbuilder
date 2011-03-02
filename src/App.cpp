@@ -694,7 +694,7 @@ void App::setupDevice()
 
     device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
 	this->device->setResizable(resizable);
-    device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (feb 2011)");
+    device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (mar 2011)");
 
 
     driver = device->getVideoDriver();
@@ -762,7 +762,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (feb 2011)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (mar 2011)";
 			str += " FPS:";
 			str += fps;
 
