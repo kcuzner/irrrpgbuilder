@@ -285,7 +285,8 @@ LuaGlobalCaller* LuaGlobalCaller::getInstance()
 void LuaGlobalCaller::doScript(stringc script)
 {
     int error = luaL_dostring(L,script.c_str());
-
+// Only available in the editor
+#ifdef EDITOR
     if(error)
         GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,lua_tostring(L, -1));
     else
@@ -293,6 +294,7 @@ void LuaGlobalCaller::doScript(stringc script)
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
 			LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror").c_str());
 	}
+#endif
 }
 
 

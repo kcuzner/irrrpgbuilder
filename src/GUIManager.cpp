@@ -671,6 +671,111 @@ void GUIManager::setupGameplayGUI()
     fader=guienv->addInOutFader();
     fader->setVisible(false);
 
+	// This is called only in the PLAYER application
+	#ifndef EDITOR
+	// ----------------------------------------
+    //guienv->getSkin()->setFont(guiFontC12);
+	guienv->getSkin()->setFont(guiFontCourier12);
+	// Load textures
+	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+
+	//LOADER WINDOW
+	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
+	guiLoaderWindow->setDrawTitlebar(false);
+	guiLoaderWindow->getCloseButton()->setVisible(false);
+
+	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
+	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	//printf("The GUI should display from here...\n");
+	// quick update
+	App::getInstance()->quickUpdate();
+
+	// Buttons
+	ITexture* imgCloseProgram = driver->getTexture("../media/art/bt_close_program.png");
+	ITexture* imgAbout = driver->getTexture("../media/art/bt_about.png");
+	ITexture* imgAbout1 = driver->getTexture("../media/art/bt_about_ghost.png");
+	ITexture* imgHelp = driver->getTexture("../media/art/bt_help.png");
+	ITexture* imgHelp1 = driver->getTexture("../media/art/bt_help_ghost.png");
+	ITexture* imgConfig = driver->getTexture("../media/art/bt_config.png");
+	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
+
+	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
+	guiMainToolWindow->setDraggable(false);
+	guiMainToolWindow->setDrawTitlebar(false);
+	guiMainToolWindow->getCloseButton()->setVisible(false);
+
+	
+	//Play Game
+	int x = 0;
+	mainToolbarPos.Y=5;
+    guiPlayGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_PLAY_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
+
+    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
+
+
+    //Stop Game
+    guiStopGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_STOP_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
+
+    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
+    guiStopGame->setVisible(false);
+
+
+
+    //ABOUT BUTTON
+	x += 42;
+    guiAbout = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_ABOUT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
+
+    guiAbout->setImage(imgAbout);
+	guiAbout->setPressedImage(imgAbout1);
+
+	// Help Button
+	x += 42;
+    guiHelpButton = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_HELP,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
+
+    guiHelpButton->setImage(imgHelp);
+    guiHelpButton->setPressedImage(imgHelp1);
+
+	// Close program
+	x += 42;
+	guiCloseProgram = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
+                                     guiMainToolWindow,
+                                     BT_ID_CLOSE_PROGRAM,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
+
+    guiCloseProgram->setImage(imgCloseProgram);
+
+	//ABOUT WINDOW
+    guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
+    guiAboutWindow->setDraggable(false);
+    guiAboutWindow->setDrawTitlebar(false);
+    guiAboutWindow->getCloseButton()->setVisible(false);
+    guiAboutWindow->setVisible(false);
+
+    guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
+
+    guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
+
+    guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
+
+	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
+  
+	// Ask the LANGManager to fill the box with the proper Language of the about text.
+	LANGManager::getInstance()->setAboutText(guiAboutText);
+
+	// ---------------------------------------
+	#endif
 
 
 	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
@@ -848,9 +953,11 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
 	return "";
 }
 
+// Only in the editor
+#ifdef EDITOR
 void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
-    switch(id)
+	switch(id)
     {
         case EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE:
             guiDynamicObjects_Script_Console->setText(text.c_str());
@@ -860,11 +967,13 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
             break;
     }
 }
+#endif
 
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
     switch(id)///TODO: fazer metodo getElement by ID!!!
     {
+#ifdef EDITOR
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);
@@ -885,6 +994,10 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiTerrainTransform->setEnabled(enable);
 			guiTerrainTransform->setPressed(!enable);
             break;
+		case BT_ID_NEW_PROJECT:
+            guiMainNewProject->setEnabled(enable);
+            guiMainNewProject->setPressed(!enable);
+            break;
         case BT_ID_SAVE_PROJECT:
             guiMainSaveProject->setEnabled(enable);
 			guiMainSaveProject->setPressed(!enable);
@@ -901,14 +1014,12 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiEditScriptGlobal->setEnabled(enable);
 			guiEditScriptGlobal->setPressed(!enable);
             break;
+#endif
         case BT_ID_ABOUT:
             guiAbout->setEnabled(enable);
 			guiAbout->setPressed(!enable);
             break;
-        case BT_ID_NEW_PROJECT:
-            guiMainNewProject->setEnabled(enable);
-            guiMainNewProject->setPressed(!enable);
-            break;
+      
         case BT_ID_HELP:
             guiHelpButton->setEnabled(enable);
             guiHelpButton->setPressed(!enable);
@@ -926,7 +1037,9 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             break;
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
+#ifdef EDITOR
 			guiMainWindow->setVisible(!visible);
+#endif
 			gameplay_bar_image->setVisible(visible);
             break;
         case ST_ID_PLAYER_LIFE:

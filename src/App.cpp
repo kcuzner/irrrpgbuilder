@@ -75,7 +75,7 @@ bool App::cursorIsInEditArea()
 
     //is over the main toolbar??
     if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
-
+	#ifdef EDITOR
     //Is over terrain toolbar??
     if(device->getCursorControl()->getPosition().X > (driver->getScreenSize().Width - 170.0) && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
 	{
@@ -92,7 +92,7 @@ bool App::cursorIsInEditArea()
             condition = false;
         }
     }
-
+	#endif
     //gameplay has a toolbar in bottom of the screen (items)
     if(app_state == APP_GAMEPLAY_NORMAL)
     {
@@ -123,6 +123,7 @@ void App::setAppState(APP_STATE newAppState)
 
     app_state = newAppState;
 
+	#ifdef EDITOR
     if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
@@ -216,6 +217,8 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
     }
 
+	#endif
+
     if(app_state == APP_GAMEPLAY_NORMAL)
     {
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,false);
@@ -250,10 +253,18 @@ void App::setAppState(APP_STATE newAppState)
 
 void App::eventGuiButton(s32 id)
 {
+	#ifdef EDITOR
+
     DynamicObject* selectedObject;
+
+	#endif
+
 	vector3df oldcampos = vector3df(0,0,0);
     switch (id)
     {
+
+	#ifdef EDITOR
+
         case BT_ID_NEW_PROJECT:
             this->createNewProject();
             break;
@@ -345,6 +356,27 @@ void App::eventGuiButton(s32 id)
             }
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
             break;
+		case BT_ID_EDIT_CHARACTER:
+            this->setAppState(APP_EDIT_CHARACTER);
+            break;
+        case BT_ID_PLAYER_EDIT_SCRIPT:
+            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
+            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+            setAppState(APP_EDIT_PLAYER_SCRIPT);
+            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+            break;
+		case BT_ID_EDIT_SCRIPT_GLOBAL:
+            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
+            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+            setAppState(APP_EDIT_SCRIPT_GLOBAL);
+            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+            break;
+		case BT_ID_CONFIG:
+            GUIManager::getInstance()->showConfigWindow();
+            break;
+
+		#endif
+
         case BT_ID_PLAY_GAME:
 			oldcampos = Player::getInstance()->getObject()->getPosition();
 			CameraSystem::getInstance()->setCamera(1);
@@ -375,15 +407,7 @@ void App::eventGuiButton(s32 id)
 			CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
             break;
-        case BT_ID_EDIT_CHARACTER:
-            this->setAppState(APP_EDIT_CHARACTER);
-            break;
-        case BT_ID_PLAYER_EDIT_SCRIPT:
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-            setAppState(APP_EDIT_PLAYER_SCRIPT);
-            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
-            break;
+       
         case BT_ID_CLOSE_PROGRAM:
 			this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
@@ -410,21 +434,17 @@ void App::eventGuiButton(s32 id)
 			Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
             GUIManager::getInstance()->updateItemsList();
             break;
-        case BT_ID_EDIT_SCRIPT_GLOBAL:
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-            setAppState(APP_EDIT_SCRIPT_GLOBAL);
-            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
-            break;
+        
         case BT_ID_CLOSE_ITEMS_WINDOW:
             setAppState(APP_GAMEPLAY_NORMAL);
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
             break;
-        case BT_ID_CONFIG:
-            GUIManager::getInstance()->showConfigWindow();
-            break;
+        
     }
 }
+
+// Stuff in editor only
+#ifdef EDITOR
 
 void App::eventGuiCheckbox(s32 id)
 {
@@ -446,6 +466,8 @@ void App::eventGuiCombobox(s32 id)
             break;
     }
 }
+
+#endif
 
 void App::eventKeyPressed(s32 key)
 {
@@ -731,7 +753,12 @@ void App::quickUpdate()
 
 void App::run()
 {
+// Set the proper state if in the EDITOR or only the player application
+#ifdef EDITOR
     this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+#else
+	this->setAppState(APP_EDIT_WAIT_GUI);
+#endif
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
     int lastFPS = -1;
@@ -744,8 +771,12 @@ void App::run()
         driver->beginScene(true, true, SColor(0,200,200,200));
         if(app_state < APP_STATE_CONTROL)
 		{
+			#ifdef EDITOR
+
 			device->yield();
             updateEditMode();//editMode
+
+			#endif
 		}
         else
 		{
@@ -872,6 +903,9 @@ bool App::loadProjectFromXML(stringc filename)
     return true;
 }
 
+// Stuff needed only in the editor
+#ifdef EDITOR
+
 void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
@@ -993,6 +1027,9 @@ void App::updateEditMode()
 		}
 	}
 }
+
+#endif
+
 
 void App::updateGameplay()
 {
@@ -1186,7 +1223,11 @@ void App::saveProject()
 
 void App::initialize()
 {
-    GUIManager::getInstance()->setupEditorGUI();
+	#ifdef EDITOR
+
+		GUIManager::getInstance()->setupEditorGUI();
+
+	#endif
 
     CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 	quickUpdate();

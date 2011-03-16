@@ -52,13 +52,22 @@ typedef struct
 class App
 {
     public:
+
+		#ifdef EDITOR
+
+		void eventGuiCheckbox(s32 id);
+        void eventGuiCombobox(s32 id);
+		void updateEditMode();
+
+		#endif
+
         static App* getInstance();
 
         void draw2DImages();
 
+		
         void eventGuiButton(s32 id);
-        void eventGuiCheckbox(s32 id);
-        void eventGuiCombobox(s32 id);
+       
 
         void eventKeyPressed(s32 key);
 
@@ -73,7 +82,7 @@ class App
 
 		void setupDevice();
 
-        void updateEditMode();
+        
         void updateGameplay();
 
         void cleanWorkspace();

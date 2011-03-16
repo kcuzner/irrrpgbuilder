@@ -82,12 +82,14 @@ bool EventReceiver::OnEvent(const SEvent& event)
             case EGET_BUTTON_CLICKED:
                 App::getInstance()->eventGuiButton(id);
                 break;
+#ifdef EDITOR
             case EGET_CHECKBOX_CHANGED:
                 App::getInstance()->eventGuiCheckbox(id);
                 break;
             case EGET_COMBO_BOX_CHANGED:
                 App::getInstance()->eventGuiCombobox(id);
                 break;
+#endif
         }
     }
 

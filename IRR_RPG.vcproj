@@ -17,7 +17,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Full_Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory=".\obj\MSVC_Debug"
 			ConfigurationType="1"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE; EDITOR"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -98,7 +98,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Full_Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory=".\obj\MSVC_Release"
 			ConfigurationType="1"
@@ -126,7 +126,7 @@
 				EnableIntrinsicFunctions="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE; EDITOR"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -177,6 +177,167 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Player_Debug|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+				CallingConvention="0"
+				OmitDefaultLibName="false"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				LinkLibraryDependencies="false"
+				AdditionalOptions="/NODEFAULTLIB:libcmt.lib "
+				AdditionalDependencies="irrlicht.lib lua5.1.lib irrKlang.lib"
+				OutputFile="bin(msvc)\IrrRPG_Builder_win32_player_debug.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="src\lua;&quot;irrlicht-engine\lib\Win32-visualstudio&quot;;&quot;irrKlang-1.3.0\lib\Win32-visualStudio&quot;"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Player_Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				EnableFunctionLevelLinking="true"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkLibraryDependencies="true"
+				AdditionalOptions="&#x0D;&#x0A;"
+				AdditionalDependencies="irrlicht.lib lua5.1.lib irrKlang.lib"
+				OutputFile="bin(msvc)\IrrRPG_Builder_player_win32.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="src\lua;&quot;irrlicht-engine\lib\Win32-visualstudio&quot;;&quot;irrKlang-1.3.0\lib\Win32-visualStudio&quot;"
+				IgnoreDefaultLibraryNames=""
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -190,6 +351,14 @@
 			</File>
 			<File
 				RelativePath=".\src\App.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\CameraSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\CameraSystem.h"
 				>
 			</File>
 			<File
@@ -356,14 +525,6 @@
 		<Filter
 			Name="Editor"
 			>
-			<File
-				RelativePath=".\src\EditorCamera.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\EditorCamera.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="StaticObjects"

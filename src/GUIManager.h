@@ -96,21 +96,26 @@ class GUIManager
     public:
         static GUIManager* getInstance();
 
-        void setupEditorGUI();
+        
         void setupGameplayGUI();
 		void setTextLoader(stringw text);
-
-        void drawHelpImage(GUI_HELP_IMAGE img);
+		IGUIFont* getFont(FONT_NAME fontName);
+        
         void drawNodePreview();
 		void drawPlayerStats();
 
+		#ifdef EDITOR
+		void setupEditorGUI();
+		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
+		void setEditBoxText(GUI_ID id, stringw text);
 
-        IGUIFont* getFont(FONT_NAME fontName);
+		#endif
+        
 
-        void setEditBoxText(GUI_ID id, stringw text);
+        
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
