@@ -1,4 +1,4 @@
-#include "EditorCamera.h"
+#include "CameraSystem.h"
 
 #include "SoundManager.h"
 
@@ -9,34 +9,34 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-//const irr::f32 EditorCamera::cameraHeight = 3.0f;
-irr::f32 EditorCamera::cameraHeight = 4.0f;
+//const irr::f32 CameraSystem::cameraHeight = 3.0f;
+irr::f32 CameraSystem::cameraHeight = 4.0f;
 
-EditorCamera::EditorCamera()
+CameraSystem::CameraSystem()
 {
 	camera=2;
 	cam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
 	setCamera(camera);
 }
 
-EditorCamera::~EditorCamera()
+CameraSystem::~CameraSystem()
 {
     //dtor
 }
 
-EditorCamera* EditorCamera::getInstance()
+CameraSystem* CameraSystem::getInstance()
 {
-    static EditorCamera *instance = 0;
-    if (!instance) instance = new EditorCamera();
+    static CameraSystem *instance = 0;
+    if (!instance) instance = new CameraSystem();
     return instance;
 }
 
-vector3df EditorCamera::getPosition()
+vector3df CameraSystem::getPosition()
 {
     return cam->getPosition();
 }
 
-void EditorCamera::setCamera(int tempCamera)
+void CameraSystem::setCamera(int tempCamera)
 {
 	camera = tempCamera;
 	switch (camera)
@@ -67,12 +67,12 @@ void EditorCamera::setCamera(int tempCamera)
 	App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
 }
 
-int EditorCamera::getCamera()
+int CameraSystem::getCamera()
 {
 	return camera;
 }
 
-void EditorCamera::setCameraHeight(irr::f32 increments)
+void CameraSystem::setCameraHeight(irr::f32 increments)
 {
 	f32 max = 0;
 	f32 min = 0;
@@ -104,29 +104,29 @@ void EditorCamera::setCameraHeight(irr::f32 increments)
 	cam->setTarget(newtarget);
 }
 
-f32 EditorCamera::getCameraHeight()
+f32 CameraSystem::getCameraHeight()
 {
 	return cameraHeight;
 }
 
-void EditorCamera::moveCamera(vector3df pos)
+void CameraSystem::moveCamera(vector3df pos)
 {
     cam->setPosition(cam->getPosition() + pos);
 	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y));
 }
 
-void EditorCamera::setPosition(vector3df pos)
+void CameraSystem::setPosition(vector3df pos)
 {
 	cam->setPosition(vector3df(pos.X,cam->getPosition().Y,pos.Z-cameraHeight));
 	cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y));
 }
 
-ICameraSceneNode* EditorCamera::getNode()
+ICameraSceneNode* CameraSystem::getNode()
 {
 	return cam;
 }
 
-vector3df EditorCamera::getTarget()
+vector3df CameraSystem::getTarget()
 {
 	vector3df target = vector3df(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y) );
 	return target;

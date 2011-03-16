@@ -1,6 +1,6 @@
 #include "App.h"
 
-#include "EditorCamera.h"
+#include "CameraSystem.h"
 #include "EventReceiver.h"
 #include "GUIManager.h"
 #include "TerrainManager.h"
@@ -36,6 +36,7 @@ App::~App()
 
 void App::draw2DImages()
 {
+#ifdef EDITOR
     if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
     {
         GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
@@ -63,6 +64,7 @@ void App::draw2DImages()
     #ifdef APP_DEBUG
       //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
     #endif
+#endif
 }
 
 ///TODO: mover isso para GUIManager
@@ -196,7 +198,7 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
         Player::getInstance()->setHighLight(true);
-        EditorCamera::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+        CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
     }
     else
     {
@@ -345,7 +347,7 @@ void App::eventGuiButton(s32 id)
             break;
         case BT_ID_PLAY_GAME:
 			oldcampos = Player::getInstance()->getObject()->getPosition();
-			EditorCamera::getInstance()->setCamera(1);
+			CameraSystem::getInstance()->setCamera(1);
             this->setAppState(APP_GAMEPLAY_NORMAL);
             //Player::getInstance()->getObject()->doScript();
             LuaGlobalCaller::getInstance()->storeGlobalParams();
@@ -369,8 +371,8 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
             GlobalMap::getInstance()->clearGlobals();
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-			EditorCamera::getInstance()->setCamera(2);
-			EditorCamera::getInstance()->setPosition(vector3df(oldcampos));
+			CameraSystem::getInstance()->setCamera(2);
+			CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
             break;
         case BT_ID_EDIT_CHARACTER:
@@ -545,11 +547,11 @@ void App::eventMouseWheel(f32 value)
     {
 		if (app_state < 100)
 		{
-			f32 height = EditorCamera::getInstance()->getPosition().Y;
-			EditorCamera::getInstance()->setCameraHeight(value * (height*0.25f));
+			f32 height = CameraSystem::getInstance()->getPosition().Y;
+			CameraSystem::getInstance()->setCameraHeight(value * (height*0.25f));
 		}
 		else
-			EditorCamera::getInstance()->setCameraHeight(value * 50);
+			CameraSystem::getInstance()->setCameraHeight(value * 50);
 	}
 }
 
@@ -895,7 +897,7 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
 						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
-						EditorCamera::getInstance()->setPosition(camPosition);
+						CameraSystem::getInstance()->setPosition(camPosition);
 					}
 
 					return;
@@ -973,19 +975,19 @@ void App::updateEditMode()
 				//Update Editor Camera Position
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(-10.0f,0,0));
+					CameraSystem::getInstance()->moveCamera(vector3df(-10.0f,0,0));
 				}
 				else if (EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(10.0f,0,0));
+					CameraSystem::getInstance()->moveCamera(vector3df(10.0f,0,0));
 				}
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_UP))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(0,0,10.0f));
+					CameraSystem::getInstance()->moveCamera(vector3df(0,0,10.0f));
 				}
 				else if (EventReceiver::getInstance()->isKeyPressed(KEY_DOWN))
 				{
-					EditorCamera::getInstance()->moveCamera(vector3df(0,0,-10.0f));
+					CameraSystem::getInstance()->moveCamera(vector3df(0,0,-10.0f));
 				}
 			}
 		}
@@ -1000,7 +1002,7 @@ void App::updateGameplay()
 
 	// the update for the player. It's a dynamic object now.
 	Player::getInstance()->update(); // This one is timed now.
-	EditorCamera::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+	CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 	// This update the player events and controls at specific time intervals
     if ((timer-timer2)>17) // 1/60 second
@@ -1073,7 +1075,7 @@ void App::updateGameplay()
 
 void App::cleanWorkspace()
 {
-    EditorCamera::getInstance()->setPosition(vector3df(0,0,0));
+    CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 
     TerrainManager::getInstance()->clean();
 
@@ -1103,7 +1105,7 @@ void App::createNewProject()
 
     this->cleanWorkspace();
 
-    EditorCamera::getInstance();
+    CameraSystem::getInstance();
 
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
@@ -1186,7 +1188,7 @@ void App::initialize()
 {
     GUIManager::getInstance()->setupEditorGUI();
 
-    EditorCamera::getInstance()->setPosition(vector3df(0,0,0));
+    CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 	quickUpdate();
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 

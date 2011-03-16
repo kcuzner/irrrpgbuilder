@@ -42,35 +42,6 @@ GUIManager::~GUIManager()
     //dtor
 }
 
-void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
-{
-    IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
-
-    switch(img)
-    {
-        case HELP_TERRAIN_TRANSFORM:
-            driver->draw2DImage(helpTerrainTransform, position2di(0,driver->getScreenSize().Height - helpTerrainTransform->getSize().Height),
-				myRect(0,0,helpTerrainTransform->getSize().Width,helpTerrainTransform->getSize().Height), 0,
-				video::SColor(255,255,255,255), true);
-            break;
-        case HELP_TERRAIN_SEGMENTS:
-            driver->draw2DImage(helpTerrainSegments, position2di(0,driver->getScreenSize().Height - helpTerrainSegments->getSize().Height),
-				myRect(0,0,helpTerrainSegments->getSize().Width,helpTerrainSegments->getSize().Height), 0,
-				video::SColor(255,255,255,255), true);
-            break;
-        case HELP_VEGETATION_PAINT:
-            driver->draw2DImage(helpVegetationPaint, position2di(0,driver->getScreenSize().Height - helpVegetationPaint->getSize().Height),
-				myRect(0,0,helpVegetationPaint->getSize().Width,helpVegetationPaint->getSize().Height), 0,
-				video::SColor(255,255,255,255), true);
-            break;
-        case HELP_IRR_RPG_BUILDER_1:
-            driver->draw2DImage(logo1, position2di(driver->getScreenSize().Width - logo1->getSize().Width,driver->getScreenSize().Height - logo1->getSize().Height),
-				myRect(0,0,logo1->getSize().Width,logo1->getSize().Height), 0,
-				video::SColor(255,255,255,255), true);
-            break;
-    }
-}
-
 void GUIManager::drawPlayerStats()
 {
 //	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
@@ -99,6 +70,62 @@ void GUIManager::drawPlayerStats()
 	s32 maxmana = Player::getInstance()->getObject()->getProperties().maxmana;
 	managauge->setCurrentValue(mana);
 	managauge->setMaxValue(maxmana);
+}
+
+IGUIFont* GUIManager::getFont(FONT_NAME fontName)
+{
+    switch(fontName)
+    {
+        case FONT_ARIAL:
+            return guiFontC12;
+            break;
+    }
+
+    return NULL;
+}
+
+GUIManager* GUIManager::getInstance()
+{
+    static GUIManager *instance = 0;
+    if (!instance) instance = new GUIManager();
+    return instance;
+}
+
+rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
+{
+    return rect<s32>(x,y,x+w,y+h);
+}
+
+#ifdef EDITOR
+// Specific stuff related to the editor
+
+void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
+{
+    IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+
+    switch(img)
+    {
+        case HELP_TERRAIN_TRANSFORM:
+            driver->draw2DImage(helpTerrainTransform, position2di(0,driver->getScreenSize().Height - helpTerrainTransform->getSize().Height),
+				myRect(0,0,helpTerrainTransform->getSize().Width,helpTerrainTransform->getSize().Height), 0,
+				video::SColor(255,255,255,255), true);
+            break;
+        case HELP_TERRAIN_SEGMENTS:
+            driver->draw2DImage(helpTerrainSegments, position2di(0,driver->getScreenSize().Height - helpTerrainSegments->getSize().Height),
+				myRect(0,0,helpTerrainSegments->getSize().Width,helpTerrainSegments->getSize().Height), 0,
+				video::SColor(255,255,255,255), true);
+            break;
+        case HELP_VEGETATION_PAINT:
+            driver->draw2DImage(helpVegetationPaint, position2di(0,driver->getScreenSize().Height - helpVegetationPaint->getSize().Height),
+				myRect(0,0,helpVegetationPaint->getSize().Width,helpVegetationPaint->getSize().Height), 0,
+				video::SColor(255,255,255,255), true);
+            break;
+        case HELP_IRR_RPG_BUILDER_1:
+            driver->draw2DImage(logo1, position2di(driver->getScreenSize().Width - logo1->getSize().Width,driver->getScreenSize().Height - logo1->getSize().Height),
+				myRect(0,0,logo1->getSize().Width,logo1->getSize().Height), 0,
+				video::SColor(255,255,255,255), true);
+            break;
+    }
 }
 
 bool GUIManager::getCheckboxState(GUI_ID id)
@@ -148,30 +175,6 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
             break;
     }
     return "";
-}
-
-IGUIFont* GUIManager::getFont(FONT_NAME fontName)
-{
-    switch(fontName)
-    {
-        case FONT_ARIAL:
-            return guiFontC12;
-            break;
-    }
-
-    return NULL;
-}
-
-GUIManager* GUIManager::getInstance()
-{
-    static GUIManager *instance = 0;
-    if (!instance) instance = new GUIManager();
-    return instance;
-}
-
-rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
-{
-    return rect<s32>(x,y,x+w,y+h);
 }
 
 void GUIManager::setupEditorGUI()
@@ -345,6 +348,7 @@ void GUIManager::setupEditorGUI()
 
 	guiPlayerEditScript->setOverrideFont(guiFontC12);
     guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
+	guiPlayerEditScript->setNotClipped(true);
 
     guiPlayerEditScript->setVisible(false);
 
@@ -650,6 +654,8 @@ void GUIManager::setupEditorGUI()
 
     configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
 }
+
+#endif
 
 void GUIManager::setTextLoader(stringw text)
 {

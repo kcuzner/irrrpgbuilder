@@ -206,13 +206,16 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			setAnimation("idle");
 
 		// Setup the animations
+		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
+	    f32 meshScale = this->getNode()->getScale().Y;
+		printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
-		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,2.2f*this->node->getScale().Y,0));
+		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));
 		objLabel->setVisible(false);
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
-		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,2*this->node->getScale().Y,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
+		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
 
 	}
@@ -323,7 +326,8 @@ void DynamicObject::walkTo(vector3df targetPos)
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
 
-	if (height>-0.09f && height<0.05f && !collided)
+	//TODO: Fix the problem with custom scaling of the objects
+	if (height>-(0.09f*72) && height<(0.05f*72) && !collided)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
@@ -851,21 +855,35 @@ void DynamicObject::restoreParams()
 
 void DynamicObject::saveToXML(TiXmlElement* parentElement)
 {
-    TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
-    //dynamicObjectXML->SetAttribute("name",name.c_str());
+	if (this->getType()!=OBJECT_TYPE_PLAYER)
+	{
+		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
+		//dynamicObjectXML->SetAttribute("name",name.c_str());
 
-    dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
-    dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
-    dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
+		dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
+		dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
+		dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
 
-    //dynamicObjectXML->SetAttribute("s",stringc(this->getScale().X).c_str());
+		dynamicObjectXML->SetAttribute("s",stringc(this->getScale().X).c_str());
 
-    dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
+		dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
 
-    dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
-    dynamicObjectXML->SetAttribute("script",getScript().c_str());
+		dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
+		dynamicObjectXML->SetAttribute("script",getScript().c_str());
+		dynamicObjectXML->SetAttribute("life",this->properties.life);
+		dynamicObjectXML->SetAttribute("maxlife",this->properties.maxlife);
+		dynamicObjectXML->SetAttribute("mana",this->properties.mana);
+		dynamicObjectXML->SetAttribute("maxmana",this->properties.maxmana);
+		dynamicObjectXML->SetAttribute("level",this->properties.level);
+		dynamicObjectXML->SetAttribute("XP",this->properties.experience);
+		dynamicObjectXML->SetAttribute("mindamage",this->properties.mindamage);
+		dynamicObjectXML->SetAttribute("maxdamage",this->properties.maxdamage);
+		dynamicObjectXML->SetAttribute("hurtprob",this->properties.hurt_resist);
+		dynamicObjectXML->SetAttribute("dodgechance",stringc(this->properties.dodge_prop).c_str());
+		dynamicObjectXML->SetAttribute("hitchance",stringc(this->properties.hit_prob).c_str());
 
-    parentElement->LinkEndChild(dynamicObjectXML);
+		parentElement->LinkEndChild(dynamicObjectXML);
+	}
 }
 
 // Update the node, for animation event, collision check, lua refresh, etc.
@@ -881,6 +899,8 @@ void DynamicObject::update()
 		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
 		collided=true;
 		notifyCollision();
+		stringc namecollide = animator->getCollisionNode()->getName();
+		printf ("Collision occured with this: %s\n",namecollide.c_str());
 	}
 
 	// timed interface an culling check.
@@ -941,7 +961,8 @@ void DynamicObject::updateWalk()
 		}
 
 		// Stop the walk when in range
-		if (this->getAnimation()==OBJECT_ANIMATION_WALK && this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
+		if (this->getAnimation()==OBJECT_ANIMATION_WALK && this->getPosition().getDistanceFrom(walkTarget)==0)
+			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
 		{
 			printf("Hey the object specifically asked  for a idle state!\n");
 			this->setWalkTarget(this->getPosition());

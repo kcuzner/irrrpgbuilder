@@ -1,5 +1,5 @@
-#ifndef EDITORCAMERA_H
-#define EDITORCAMERA_H
+#ifndef CameraSystem_H
+#define CameraSystem_H
 
 #include "App.h"
 #include <irrlicht.h>
@@ -11,10 +11,10 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-class EditorCamera
+class CameraSystem
 {
     public:
-        static EditorCamera* getInstance();
+        static CameraSystem* getInstance();
 
 		void setCamera(int tempCamera);
 		int getCamera();
@@ -30,10 +30,10 @@ class EditorCamera
         vector3df getPosition();
         vector3df getTarget();
 
-        virtual ~EditorCamera();
+        virtual ~CameraSystem();
     protected:
     private:
-        EditorCamera();
+        CameraSystem();
 
         ICameraSceneNode* cam;
 		//static const irr::f32 cameraHeight;
@@ -45,4 +45,4 @@ class EditorCamera
 		f32 fov;
 };
 
-#endif // EDITORCAMERA_H
+#endif // CameraSystem_H

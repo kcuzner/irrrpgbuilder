@@ -1,4 +1,5 @@
 #include "DynamicObjectsManager.h"
+#include "dynamicObject.h"
 
 using namespace irr;
 using namespace core;
@@ -426,8 +427,16 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
         DynamicObject* newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		// If a script is assigned to the mesh then load it.
-        newObj->setScript(script);
+        newObj->setScript(convert(script));
         newObj->setRotation(vector3df(0,rot,0));
+		property a;
+		a.life = (int)atoi(dynamicObjectXML->ToElement()->Attribute("life"));
+		a.maxlife = (int)atoi(dynamicObjectXML->ToElement()->Attribute("maxlife"));
+		a.mana = (int)atoi(dynamicObjectXML->ToElement()->Attribute("mana"));
+		a.maxmana = (int)atoi(dynamicObjectXML->ToElement()->Attribute("maxmana"));
+		//a.experience = (int)atoi(dynamicObjectXML->ToElement()->Attribute("xp"));
+		a.level = (int)atoi(dynamicObjectXML->ToElement()->Attribute("level"));
+		newObj->setProperties(a);
 
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }

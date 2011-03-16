@@ -4,7 +4,7 @@
 #include "LANGManager.h"
 #include <time.h>
 #include "DynamicObjectsManager.h"
-#include "EditorCamera.h"
+#include "CameraSystem.h"
 #include "EffectsManager.h"
 #include "SoundManager.h"
 #include "Player.h"
@@ -620,14 +620,14 @@ int LuaGlobalCaller::setCameraTarget(lua_State *LS)
         }
     }
 
-    EditorCamera::getInstance()->setPosition(otherPos);
+    CameraSystem::getInstance()->setPosition(otherPos);
 
     return 0;
 }
 
 int LuaGlobalCaller::getCameraTarget(lua_State *LS)
 {
-    vector3df pos = EditorCamera::getInstance()->getTarget();
+    vector3df pos = CameraSystem::getInstance()->getTarget();
 
     lua_pushnumber(LS,pos.X);
     lua_pushnumber(LS,pos.Y);
