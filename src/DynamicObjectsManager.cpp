@@ -16,6 +16,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 	//ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
     //Load all objects from xml file
+
     TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
 
     //try to parse the XML
@@ -63,9 +64,10 @@ DynamicObjectsManager::DynamicObjectsManager()
 		}
 	}
 
-    //set the initial active object - the list must be 1 or more objs!
+	//set the initial active object - the list must be 1 or more objs!
     activeObject = objectsTemplate[0];
 
+    
     //just initialize var
     objsCounter = 0;
 
@@ -415,6 +417,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
     while( dynamicObjectXML != NULL )
     {
+
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
         stringc templateObj = dynamicObjectXML->ToElement()->Attribute("template");
 
@@ -430,6 +433,18 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
         newObj->setScript(convert(script));
         newObj->setRotation(vector3df(0,rot,0));
 		property a;
+		//Default values
+		a.life = 100;
+		a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
+		a.money = 0;
+		a.mindamage=1;
+		a.maxdamage=3;
+		a.maxlife=100;
+		a.maxmana=100;
+		a.dodge_prop=12;
+		a.hit_prob=70;
+
+		// Loading values
 		a.life = (int)atoi(dynamicObjectXML->ToElement()->Attribute("life"));
 		a.maxlife = (int)atoi(dynamicObjectXML->ToElement()->Attribute("maxlife"));
 		a.mana = (int)atoi(dynamicObjectXML->ToElement()->Attribute("mana"));
@@ -437,6 +452,11 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		//a.experience = (int)atoi(dynamicObjectXML->ToElement()->Attribute("xp"));
 		a.level = (int)atoi(dynamicObjectXML->ToElement()->Attribute("level"));
 		newObj->setProperties(a);
+
+		// Update the GUI with a description of the current loading task
+			stringw nametext="Loading Dynamic object: ";
+			nametext.append(newObj->getName().c_str());
+			GUIManager::getInstance()->setTextLoader(nametext);
 
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }

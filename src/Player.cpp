@@ -16,6 +16,7 @@ using namespace std;
 
 Player::Player()
 {
+
 	playerObject = DynamicObjectsManager::getInstance()->getPlayer();
 	playerObject->getNode()->setVisible(true);
 	playerObject->setEnabled(true);
@@ -57,6 +58,7 @@ Player::Player()
 	playerObject->setProp_base(player_base);
 	playerObject->setProp_level(player_level);
 	playerObject->getNode()->setID(0);
+
 }
 
 Player::~Player()

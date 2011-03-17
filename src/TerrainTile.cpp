@@ -27,11 +27,13 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     #endif
 
 	if (tilename=="")
-		tilename="../media/baseTerrain.obj";
+		tilename="../media/land.obj";
 
 	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
 
-    SMesh* newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
+	SMesh* newMesh = NULL;
+	
+	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 
 	newMesh->setHardwareMappingHint(EHM_STATIC);
 	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);  // Now work. Will be able to define octrees!
@@ -304,6 +306,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 				v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
                 f32 treesize = (f32)(rand() % 100 + 50)/100;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+				
 				printf("Attempting to place a tree with this size: %f\n",treesize);
                 vegetationVector.push_back(v);
 

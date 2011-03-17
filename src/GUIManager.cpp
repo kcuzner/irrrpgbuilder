@@ -1394,10 +1394,12 @@ void GUIManager::updateItemsList()
 
 void GUIManager::flush()
 {
+#ifdef EDITOR
     guiMainLoadProject->setPressed(false);
     guiMainSaveProject->setPressed(false);
     guiMainNewProject->setPressed(false);
     guiDynamicObjects_LoadScriptTemplateBT->setPressed(false);
+#endif
     guiBtViewItems->setPressed(false);
 }
 

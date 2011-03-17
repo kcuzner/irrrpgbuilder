@@ -83,7 +83,10 @@ Vegetation::Vegetation()
     trunk->setMaterialFlag(EMF_FOG_ENABLE,true);
     fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
+// Set the debug data in the editor application, not in the player
+#ifdef EDITOR
     trunk->setDebugDataVisible(true);
+#endif
 }
 
 Vegetation::~Vegetation()

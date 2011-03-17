@@ -626,8 +626,18 @@ bool App::loadConfig()
 	TerrainManager::getInstance()->setTerrainTexture(2,"../media/L2.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(3,"../media/L3.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(4,"../media/L4.jpg");
+// Define a default mapname only for the player application
+#ifndef EDITOR
+	mapname="";
+#endif
 
+#ifdef EDITOR
 	TiXmlDocument doc("config.xml");
+#else
+	TiXmlDocument doc("gameconfig.xml");
+	printf("Loaded gameconfig for the player app\n");
+#endif
+
 	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
 
     #ifdef APP_DEBUG
@@ -692,6 +702,16 @@ bool App::loadConfig()
 			stringc reflection = waterXML->ToElement()->Attribute("reflection");
             ///TODO: we are just loading ocean seetings, we need to set it!
 		}
+// Player app. Load the default map from "gameconfig.xml"
+#ifndef EDITOR
+		TiXmlElement* mapXML = root->FirstChildElement( "map" );
+        if ( mapXML )
+        {
+            mapname = mapXML->ToElement()->Attribute("name");
+			printf("The map name is: %s\n",mapname.c_str());
+            ///TODO: we are just loading ocean seetings, we need to set it!
+		}
+#endif
     }
     else
     {
@@ -757,13 +777,28 @@ void App::run()
 #ifdef EDITOR
     this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 #else
-	this->setAppState(APP_EDIT_WAIT_GUI);
+	//this->setAppState(APP_EDIT_WAIT_GUI);
+	this->loadProjectFromXML(mapname);
+	//oldcampos = Player::getInstance()->getObject()->getPosition();
+	CameraSystem::getInstance()->setCamera(1);
+    this->setAppState(APP_GAMEPLAY_NORMAL);
+    //Player::getInstance()->getObject()->doScript();
+    LuaGlobalCaller::getInstance()->storeGlobalParams();
+    DynamicObjectsManager::getInstance()->initializeAllScripts();
+    DynamicObjectsManager::getInstance()->showDebugData(false);
+	DynamicObjectsManager::getInstance()->startCollisions();
+    //DynamicObjectsManager::getInstance()->initializeCollisions();
+    TerrainManager::getInstance()->showDebugData(false);
+    GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+    LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+
 #endif
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
     int lastFPS = -1;
 //	u32 timer = device->getTimer()->getRealTime();
 //	u32 timer2 = device->getTimer()->getRealTime();
+	bool activated=false;
 
     while(device->run())
     {
@@ -780,7 +815,14 @@ void App::run()
 		}
         else
 		{
-
+// Load a map when the state is switching on the player app
+#ifndef EDITOR
+		if (mapname.size()>0 && !activated)
+		{
+			activated=true;
+			//this->loadProjectFromXML(mapname);
+		}
+#endif
 			updateGameplay();
 		}
 
@@ -839,6 +881,8 @@ void App::saveProjectToXML()
 
 bool App::loadProjectFromXML(stringc filename)
 {
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
+	printf ("Trying to load this map: %s \n",filename.c_str());
     TiXmlDocument doc(filename.c_str());
 	if (!doc.LoadFile()) return false;
 
@@ -862,18 +906,24 @@ bool App::loadProjectFromXML(stringc filename)
         TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
         if ( globalScriptXML )
         {
+			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
+			quickUpdate();
             scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
         }
 
         TiXmlElement* terrain = root->FirstChildElement( "terrain" );
         if ( terrain )
         {
+			GUIManager::getInstance()->setTextLoader(L"Loading the terrain");
+			quickUpdate();
             TerrainManager::getInstance()->loadFromXML(terrain);
         }
 
         TiXmlElement* dynamicObjs = root->FirstChildElement( "dynamic_objects" );
         if ( dynamicObjs )
         {
+			GUIManager::getInstance()->setTextLoader(L"Loading the dynamic objects");
+			quickUpdate();
             DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
         }
 
@@ -890,7 +940,7 @@ bool App::loadProjectFromXML(stringc filename)
         #ifdef APP_DEBUG
         cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
         #endif
-
+		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
         return false;
     }
 
@@ -899,7 +949,7 @@ bool App::loadProjectFromXML(stringc filename)
     #endif
 
     ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
-
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
     return true;
 }
 
@@ -1226,20 +1276,24 @@ void App::initialize()
 	#ifdef EDITOR
 
 		GUIManager::getInstance()->setupEditorGUI();
+		TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+		
 
 	#endif
 
     CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 	quickUpdate();
-    TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
 
     smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,300,9100);
 	quickUpdate();
 
+	
+
     Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
 
+	
     this->currentProjectName = "irb_temp_project";
 }

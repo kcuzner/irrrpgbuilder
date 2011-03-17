@@ -500,7 +500,9 @@ void DynamicObject::setMoney(int money)
 
 int DynamicObject::getMoney()
 {
+	
 	return this->properties.money;
+
 }
 
 // Label
@@ -935,7 +937,9 @@ void DynamicObject::update()
 			}
 		} else
 		{// if not then check if the node is culled to refresh
+
 			luaRefresh();
+
 			timer = timerobject;
 		}
 	}
