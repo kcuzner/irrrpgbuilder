@@ -19,6 +19,12 @@ GUIManager::GUIManager()
     guienv = App::getInstance()->getDevice()->getGUIEnvironment();
     loadFonts();
     setupGameplayGUI();
+
+	// init those because they will move on the display.
+	guiDynamicObjectsWindowChooser=NULL;
+	guiDynamicObjects_NodePreview=NULL;
+	guiTerrainToolbar=NULL;
+
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
 
@@ -546,7 +552,7 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_NodePreview = new NodePreview(nodePreviewPos);
     guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 
-    guiDynamicObjectsWindowChooser_Y += 155;
+    guiDynamicObjectsWindowChooser_Y += 160;
 
 
     guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
@@ -864,8 +870,9 @@ void GUIManager::setupGameplayGUI()
 
 
     //view items
-    guiBtViewItems = guienv->addButton(myRect(displaywidth/2 + 80,displayheight - 57,48,48),
-                                     0,
+    guiBtViewItems = guienv->addButton(myRect(465,85,48,48),
+		//displaywidth/2 + 80,displayheight - 57,48,48),
+                                     gameplay_bar_image,
                                      BT_ID_VIEW_ITEMS,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_view_items")).c_str() );
 
@@ -992,8 +999,27 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
 	return "";
 }
 
+void GUIManager::updateGuiPositions(dimension2d<u32> screensize)
+{
+	// replace the position of the terrain toolbar, the dynamic object chooser, and the gameplay bar
+	// TODO: Have to replace the position of the ITEM window (will contain much more stuff)
+	gameplay_bar_image ->setRelativePosition(position2di((screensize.Width/2)-400,screensize.Height-140));
+	if (guiDynamicObjectsWindowChooser)
+	{
+		guiDynamicObjectsWindowChooser ->setRelativePosition(position2di(screensize.Width-170,30));
+		// reposition the nodepreview
+	    rect<s32> nodePreviewPos = myRect(10 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.X,
+                                   15 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.Y,
+                                   150,150);
+		guiDynamicObjects_NodePreview->setViewport(nodePreviewPos);
+	}
+	if (guiTerrainToolbar)
+		guiTerrainToolbar->setRelativePosition(position2di(screensize.Width-170,30));
+
+}
 // Only in the editor
 #ifdef EDITOR
+
 void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
 	switch(id)

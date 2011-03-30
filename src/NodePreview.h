@@ -27,6 +27,7 @@ class NodePreview
     private:
         ISceneNode* node;
         rect<s32> viewPort;
+		f32 rotation;
 };
 
 #endif // NODEPREVIEW_H

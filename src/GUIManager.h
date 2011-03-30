@@ -115,6 +115,7 @@ class GUIManager
 		#endif
         
 
+		void updateGuiPositions(dimension2d<u32> screensize);
         
         stringc getEditBoxText(GUI_ID id);
 
@@ -253,7 +254,6 @@ class GUIManager
 		IGUIImage* gameplay_bar_image;
 		CGUIGfxStatus * lifegauge;
 		CGUIGfxStatus * managauge;
-
 
 
         ///GAMEPLAY

@@ -581,14 +581,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\src\NodePreview.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\NodePreview.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\SoundManager.cpp"
 				>
 			</File>
@@ -637,6 +629,14 @@
 				</File>
 				<File
 					RelativePath=".\src\HealthSceneNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\NodePreview.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\NodePreview.h"
 					>
 				</File>
 			</Filter>

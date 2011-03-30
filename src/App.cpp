@@ -484,6 +484,7 @@ void App::eventGuiCombobox(s32 id)
 
 void App::setScreenSize(dimension2d<u32> size)
 {
+	GUIManager::getInstance()->updateGuiPositions(size);
 	screensize = size;
 }
 
