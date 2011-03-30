@@ -9,6 +9,8 @@ Global
 		Full_Release|Win32 = Full_Release|Win32
 		Player_Debug|Win32 = Player_Debug|Win32
 		Player_Release|Win32 = Player_Release|Win32
+		wx_Full_Debug|Win32 = wx_Full_Debug|Win32
+		wx_Full_Release|Win32 = wx_Full_Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.Full_Debug|Win32.ActiveCfg = Full_Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.Player_Debug|Win32.Build.0 = Player_Debug|Win32
 		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.Player_Release|Win32.ActiveCfg = Player_Release|Win32
 		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.Player_Release|Win32.Build.0 = Player_Release|Win32
+		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.wx_Full_Debug|Win32.ActiveCfg = wx_Full_Debug|Win32
+		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.wx_Full_Debug|Win32.Build.0 = wx_Full_Debug|Win32
+		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.wx_Full_Release|Win32.ActiveCfg = wx_Full_Release|Win32
+		{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}.wx_Full_Release|Win32.Build.0 = wx_Full_Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -314,11 +314,16 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// Walk can be interrupted by:
 	// - A collision with another object
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
+	if (GUIManager::getInstance()->console->getItemCount()>100)
+		GUIManager::getInstance()->console->clear();
 
+	
 	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
 	this->lookAt(targetPos);
 
 	f32 speed = currentAnim.walkspeed;
+	if (speed == 0)
+		speed = 1.0;
 
     vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
@@ -331,6 +336,11 @@ void DynamicObject::walkTo(vector3df targetPos)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
+		stringw text=L"Walkto Called:";
+		text.append((stringw)speed);
+		GUIManager::getInstance()->console->addItem(text.c_str());
+		
+
 
 	}
 	else
@@ -339,6 +349,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		walkTarget = this->getPosition();
 		this->setAnimation("idle");
+		GUIManager::getInstance()->console->addItem(L"Stop because of a collision!");
 		printf("Stop because of a collision...\n");
 		collided=false; // reset the collision flag
 	}
@@ -917,7 +928,7 @@ void DynamicObject::update()
 
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-	{
+	{ // timer2=17
 		updateWalk();
 		if (currentSpeed!=0)
 			//currentObject->moveObject(currentSpeed);

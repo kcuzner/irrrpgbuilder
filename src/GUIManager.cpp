@@ -187,15 +187,23 @@ void GUIManager::setupEditorGUI()
 	// Load textures
 	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
 
+// NEW Create display size since IRRlicht return wrong values
+
+	// Check the current screen size (normally reported by wxWidget or the configuration)
+	dimension2d<u32> size = App::getInstance()->getScreenSize();
+	displayheight=size.Height;
+	displaywidth=size.Width;
+
 	//LOADER WINDOW
-	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
+	//guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
+	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 
 	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
-	//printf("The GUI should display from here...\n");
-	// quick update
+	
+	// quick update of the Irrlicht display while loading.
 	App::getInstance()->quickUpdate();
 
 	// loading others
@@ -217,12 +225,14 @@ void GUIManager::setupEditorGUI()
 
     mainToolbarPos = position2di(2,2);
 
-    guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
+    //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
+	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-170,92),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
 	guiMainWindow->getCloseButton()->setVisible(false);
 
-	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
+	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
+	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,46),false);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
@@ -231,8 +241,8 @@ void GUIManager::setupEditorGUI()
 
 	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
 	guiBackImage->setScaleImage(true);
-	guiBackImage->setMaxSize(dimension2du(driver->getScreenSize().Width,92));
-	guiBackImage->setMinSize(dimension2du(driver->getScreenSize().Width,92));
+	guiBackImage->setMaxSize(dimension2du(displaywidth,92));
+	guiBackImage->setMinSize(dimension2du(displaywidth,92));
 
 
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
@@ -240,7 +250,8 @@ void GUIManager::setupEditorGUI()
     s32 x = 0;
 
     ///MAIN FUNCTIONS
-	mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
+	//mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
+	mainTabCtrl = guienv->addTabControl(myRect(0,0,displaywidth-160,92),guiMainWindow,false,false);
 	IGUITab * tabProject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
 	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
@@ -425,35 +436,47 @@ void GUIManager::setupEditorGUI()
 
     guiCloseProgram->setImage(imgCloseProgram);
 
+	if (App::getInstance()->wxSystem)
+	{
+		guiMainWindow->setVisible(false);
+		guiMainToolWindow->setVisible(false);
+	}
 
 
 	// Update the display
 	App::getInstance()->quickUpdate();
 
 	//ABOUT WINDOW
-    guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
+    //guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
+	guiAboutWindow = guienv->addWindow(myRect(displaywidth/2 - 300,displayheight/2 - 200,600,400),false);
     guiAboutWindow->setDraggable(false);
     guiAboutWindow->setDrawTitlebar(false);
     guiAboutWindow->getCloseButton()->setVisible(false);
     guiAboutWindow->setVisible(false);
 
-    guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
+    //guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
+	guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getClientRect().getWidth()/2-100,10),true,guiAboutWindow);
 
-    guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
+    //guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
+	guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getClientRect().getWidth() - 37,guiAboutWindow->getClientRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
 
     guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
-	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
+	//guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
+	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getClientRect().getWidth()/2-250,160,500,200),guiAboutWindow);
   
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 	
     ///TERRAIN TOOLBAR
     guiTerrainToolbar = guienv->addWindow(
-		myRect(driver->getScreenSize().Width - 170,
-		guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		//myRect(driver->getScreenSize().Width - 170,
+		myRect(displaywidth - 170,
+		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight(),
 		170,
-		driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()),
 		false,L"Brush tool");
 
     guiTerrainToolbar->getCloseButton()->setVisible(false);
@@ -500,10 +523,14 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-		myRect(driver->getScreenSize().Width - 170,
-		guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		//myRect(driver->getScreenSize().Width - 170,
+		myRect(displaywidth - 170,
+		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight(),
 		170,
-		driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight());
+		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight());
+		displayheight-guiMainToolWindow->getClientRect().getHeight());
+
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
@@ -569,7 +596,8 @@ void GUIManager::setupEditorGUI()
 
 	// --- Edit scripts window
 
-    guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
+    //guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
+	guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
     guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowEditAction->setDrawTitlebar(false);
     guiDynamicObjectsWindowEditAction->setDraggable(false);
@@ -581,7 +609,8 @@ void GUIManager::setupEditorGUI()
                        guienv,
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
-                       myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
+                       //myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
+					   myRect(10,40,displaywidth-220,displayheight-260),
 					   App::getInstance()->getDevice());
 
     guiDynamicObjects_Script->setMultiLine(true);
@@ -592,7 +621,8 @@ void GUIManager::setupEditorGUI()
 
 
 	// Bottom tabcontrol
-	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	//IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,displayheight-220,displaywidth-220,110),guiDynamicObjectsWindowEditAction,true,false);
 	IGUITab * tab1 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_debug").c_str());
 	IGUITab * tab2 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_templates").c_str());
 
@@ -612,7 +642,8 @@ void GUIManager::setupEditorGUI()
 
     X_ScriptToolbar+=160;
 
-    IGUIButton* validate = guienv->addButton(myRect(driver->getScreenSize().Width-375,5,150,20),
+    //IGUIButton* validate = guienv->addButton(myRect(driver->getScreenSize().Width-375,5,150,20),
+	IGUIButton* validate = guienv->addButton(myRect(displaywidth-375,5,150,20),
                       tab1,
                       BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_validate_script")).c_str() );
@@ -629,7 +660,8 @@ void GUIManager::setupEditorGUI()
 
 	// Console window
     guiDynamicObjects_Script_Console = guienv->addEditBox(L"",
-                                                          myRect(2,5,driver->getScreenSize().Width-380,70),
+                                                          //myRect(2,5,driver->getScreenSize().Width-380,70),
+														  myRect(2,5,displaywidth-380,70),
                                                           true,
                                                           tab1,
                                                           EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE);
@@ -670,6 +702,12 @@ void GUIManager::setupGameplayGUI()
 
     fader=guienv->addInOutFader();
     fader->setVisible(false);
+
+	// NEW Create display size since IRRlicht return wrong values
+	// Check the current screen size (normally reported by wxWidget or the configuration)
+	dimension2d<u32> size = App::getInstance()->getScreenSize();
+	displayheight=size.Height;
+	displaywidth=size.Width;
 
 	// This is called only in the PLAYER application
 	#ifndef EDITOR
@@ -776,15 +814,15 @@ void GUIManager::setupGameplayGUI()
 
 	// ---------------------------------------
 	#endif
-
+	console = guienv->addListBox(myRect(20,50,300,100),0,0,true);
 
 	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
 
-    guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(20,driver->getScreenSize().Height-30,600,30),false,false,0,-1,false);
+    guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(20,displayheight-30,600,30),false,false,0,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
 
-    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(21,driver->getScreenSize().Height-31,600,30),false,false,0,-1,false);
+    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(21,displayheight-31,600,30),false,false,0,-1,false);
     guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
     guiPlayerLife->setOverrideFont(guiFontLarge28);
 
@@ -797,7 +835,7 @@ void GUIManager::setupGameplayGUI()
 	ITexture* topCircle = driver->getTexture("../media/art/circle_top.png");
 
 	// The bottom image of the interface
-	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((driver->getScreenSize().Width/2)-(gameplay_bar->getSize().Width/2),driver->getScreenSize().Height-gameplay_bar->getSize().Height),true);
+	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((displaywidth/2)-(gameplay_bar->getSize().Width/2),displayheight-gameplay_bar->getSize().Height),true);
 
 	// The life gauge
 	lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
@@ -826,7 +864,7 @@ void GUIManager::setupGameplayGUI()
 
 
     //view items
-    guiBtViewItems = guienv->addButton(myRect(driver->getScreenSize().Width/2 + 80,driver->getScreenSize().Height - 57,48,48),
+    guiBtViewItems = guienv->addButton(myRect(displaywidth/2 + 80,displayheight - 57,48,48),
                                      0,
                                      BT_ID_VIEW_ITEMS,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_view_items")).c_str() );
@@ -835,22 +873,22 @@ void GUIManager::setupGameplayGUI()
     guiBtViewItems->setVisible(false);
 
     //Items window
-    guiWindowItems = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-150),false,L"",0,GCW_GAMEPLAY_ITEMS);
+    guiWindowItems = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-150),false,L"",0,GCW_GAMEPLAY_ITEMS);
     guiWindowItems->getCloseButton()->setVisible(false);
     guiWindowItems->setDrawTitlebar(false);
     guiWindowItems->setDraggable(false);
     guiWindowItems->setVisible(false);
 
-    guiPlayerItems = guienv->addListBox(myRect(10,30,200,driver->getScreenSize().Height-170 - 64),guiWindowItems,LB_ID_PLAYER_ITEMS,true);
+    guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-170 - 64),guiWindowItems,LB_ID_PLAYER_ITEMS,true);
 
-    guiBtUseItem = guienv->addButton(myRect(10,driver->getScreenSize().Height-160 - 32,32,32),
+    guiBtUseItem = guienv->addButton(myRect(10,displayheight-160 - 32,32,32),
                                          guiWindowItems,
                                          BT_ID_USE_ITEM,
                                          L"",
                                          stringw(LANGManager::getInstance()->getText("bt_use_item")).c_str());
     guiBtUseItem->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
-    guiBtDropItem = guienv->addButton(myRect(52,driver->getScreenSize().Height-192,32,32),
+    guiBtDropItem = guienv->addButton(myRect(52,displayheight-192,32,32),
                                          guiWindowItems,
                                          BT_ID_DROP_ITEM,
                                          L"",
@@ -858,7 +896,7 @@ void GUIManager::setupGameplayGUI()
     guiBtDropItem->setImage(driver->getTexture("../media/art/bt_no_32.png"));
 
 
-    guiBtCloseItemsWindow = guienv->addButton(myRect(driver->getScreenSize().Width-210-32,driver->getScreenSize().Height-160 - 32,32,32),
+    guiBtCloseItemsWindow = guienv->addButton(myRect(displaywidth-210-32,displayheight-160 - 32,32,32),
                                          guiWindowItems,
                                          BT_ID_CLOSE_ITEMS_WINDOW,
                                          L"",
@@ -866,9 +904,10 @@ void GUIManager::setupGameplayGUI()
     guiBtCloseItemsWindow->setImage(driver->getTexture("../media/art/bt_arrow_32.png"));
 
 
-    guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(52+42,driver->getScreenSize().Height-160 - 32,300,32),false,false,guiWindowItems);
+    guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(52+42,displayheight-160 - 32,300,32),false,false,guiWindowItems);
     guiPlayerMoney->setOverrideFont(guiFontLarge28);
     guiPlayerMoney->setOverrideColor(SColor(255,255,255,255));
+	
 
 }
 
@@ -971,9 +1010,10 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
-    switch(id)///TODO: fazer metodo getElement by ID!!!
+   /* switch(id)///TODO: fazer metodo getElement by ID!!!
     {
 #ifdef EDITOR
+		
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);
@@ -1024,7 +1064,8 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiHelpButton->setEnabled(enable);
             guiHelpButton->setPressed(!enable);
             break;
-    }
+			
+    }*/
 }
 
 void GUIManager::setElementVisible(GUI_ID id, bool visible)
@@ -1038,7 +1079,8 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
 #ifdef EDITOR
-			guiMainWindow->setVisible(!visible);
+			if (App::getInstance()->wxSystem==false)
+				guiMainWindow->setVisible(!visible);
 #endif
 			gameplay_bar_image->setVisible(visible);
             break;
@@ -1049,13 +1091,15 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_PLAYER_EDIT_SCRIPT:
             guiPlayerEditScript->setVisible(visible);
             break;
-        case BT_ID_VIEW_ITEMS:
+		case BT_ID_VIEW_ITEMS:
             guiBtViewItems->setVisible(visible);
 			// Update the gold items
 			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
+		
+
     }
 }
 

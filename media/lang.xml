@@ -18,20 +18,20 @@
 		<text id="bt_dynamic_objects_edit_script" str="Edit Lua Script"/>
 		<text id="bt_dynamic_objects_cancel" str="Cancel"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
-		<text id="bt_dynamic_objects_mode" str="Dynamic Objects Mode"/>
+		<text id="bt_dynamic_objects_mode" str="Edit Mode"/>
 		<text id="bt_paint_vegetation" str="Paint Vegetation"/>
 		<text id="bt_new_project" str="New Project"/>
 		<text id="bt_save_project" str="Save Project"/>
 		<text id="bt_load_project" str="Load Project"/>
 		<text id="bt_show_playable_area" str="Playable Area"/>
-		<text id="bt_terrain_segments" str="Edit Terrain Segments"/>
-		<text id="bt_terrain_transform" str="Edit Terrain Elevation"/>
+		<text id="bt_terrain_segments" str="Edit Segments"/>
+		<text id="bt_terrain_transform" str="Edit Elevation"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Strength:"/>
 		<text id="bt_terrain_transform_brush_radius_label" str="Radius:"/>
 		<text id="bt_play_game" str="Play Game"/>
 		<text id="bt_stop_game" str="Stop Game"/>
-		<text id="bt_edit_character" str="Edit Character"/>
-		<text id="bt_player_edit_script" str="Edit Character Script"/>
+		<text id="bt_edit_character" str="Edit Player"/>
+		<text id="bt_player_edit_script" str="Player Script"/>
 		<text id="bt_close_program" str="Close Program"/>
 		<text id="bt_about" str="About"/>
 		<text id="bt_help" str="Help"/>
@@ -41,10 +41,10 @@
 		<text id="bt_use_item" str="Use Item"/>
 		<text id="bt_drop_item" str="Drop Item"/>
 		<text id="bt_close_items_window" str="Back To Game"/>
-		<text id="bt_edit_script_global" str="Edit Global Script"/>
+		<text id="bt_edit_script_global" str="Global Script"/>
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Cancel"/>
-		<text id="bt_config" str="Application Settings"/>
+		<text id="bt_config" str="Editor Setup"/>
 		<text id="txt_cfg_window_changes_msg" str="Changes will take effect next time you run the program"/>
 		<text id="txt_cfg_window_caption" str="Application Settings"/>
 		<text id="txt_cfg_window_resolution" str="Screen Resolution"/>
@@ -218,7 +218,7 @@
 		<text id="bt_dynamic_objects_edit_script" str="Éditer le script Lua"/>
 		<text id="bt_dynamic_objects_cancel" str="Abandon"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
-		<text id="bt_dynamic_objects_mode" str="Mode objet dynamique"/>
+		<text id="bt_dynamic_objects_mode" str="Mode Édition"/>
 		<text id="bt_paint_vegetation" str="Peindre la végétation"/>
 		<text id="bt_new_project" str="Nouveau projet"/>
 		<text id="bt_save_project" str="Sauver le projet"/>

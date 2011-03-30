@@ -58,45 +58,51 @@ class App
 		void eventGuiCheckbox(s32 id);
         void eventGuiCombobox(s32 id);
 		void updateEditMode();
-
+		void hideEditGui();
 		#endif
+
+		void setScreenSize(dimension2d<u32> size);
+		dimension2d<u32> getScreenSize();
 
         static App* getInstance();
 
         void draw2DImages();
-
-		
+	
         void eventGuiButton(s32 id);
-       
-
         void eventKeyPressed(s32 key);
 
         void eventMousePressed(s32 mouse);
         void eventMouseWheel(f32 value);
 
         IrrlichtDevice* getDevice();
-
         MousePick getMousePosition3D(int id = 0);
+		
+		void playGame();
+		void stopGame();
 
-        void run();
+		void run();
+		void update();
+		void quickUpdate();
+		void shutdown();
 
-		void setupDevice();
-
-        
-        void updateGameplay();
-
+		stringw getLangText(stringc node);
+		void setupDevice(IrrlichtDevice* IRRdevice);
+	    void updateGameplay();
         void cleanWorkspace();
-        void createNewProject();
 
+		void createNewProject();
         void loadProject();
         void loadProject(stringc filename);
         void saveProject();
 
         void initialize();
-		void quickUpdate();
+		
+
 
         void setAppState(APP_STATE newAppState);
         APP_STATE getAppState();
+
+		bool wxSystem;
 
     private:
 
@@ -104,6 +110,7 @@ class App
         ~App();
 
         bool cursorIsInEditArea();
+		vector3df oldcampos;
 		
 
         void saveProjectToXML();
@@ -116,9 +123,11 @@ class App
 		
 		u32 timer;
 		u32 timer2;
-		int screenW,screenH;
+		
+		dimension2d<u32> screensize;
 		bool fullScreen;
 		bool resizable;
+		
 		stringc language;
 		bool loadConfig();
 		

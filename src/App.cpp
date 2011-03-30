@@ -12,6 +12,10 @@
 
 #include "tinyXML/tinyxml.h"
 
+#ifdef _WXMSW
+#include <wx/wx.h>
+#endif
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -23,7 +27,7 @@ using namespace std;
 
 App::App()
 {
-
+ wxSystem=false;
 }
 
 App::~App()
@@ -102,7 +106,6 @@ bool App::cursorIsInEditArea()
             condition = false;
         }
     }
-
     return condition;
 }
 
@@ -196,26 +199,61 @@ void App::setAppState(APP_STATE newAppState)
 
     if(app_state == APP_EDIT_CHARACTER)
     {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-        GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
+		if (!wxSystem)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
+			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
+		} 
         Player::getInstance()->setHighLight(true);
         CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
     }
     else
     {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
-        GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
+		if (!wxSystem)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
+			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
+		}
         Player::getInstance()->setHighLight(false);
     }
 
     if(app_state == APP_EDIT_SCRIPT_GLOBAL)
     {
+		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
-    }
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
+        GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+	}
     else
     {
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
+		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
+		
+		
     }
+
+	if (app_state == APP_EDIT_PLAYER_SCRIPT)
+	{
+		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		//setAppState(APP_EDIT_CHARACTER);
+	}
+	else 
+	{
+		// Find a way to set the script once the user change the mode
+		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+	}
+
+
 
 	#endif
 
@@ -259,7 +297,7 @@ void App::eventGuiButton(s32 id)
 
 	#endif
 
-	vector3df oldcampos = vector3df(0,0,0);
+	oldcampos = vector3df(0,0,0);
     switch (id)
     {
 
@@ -287,8 +325,7 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
-            GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-            setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
@@ -347,7 +384,7 @@ void App::eventGuiButton(s32 id)
             else if(app_state == APP_EDIT_PLAYER_SCRIPT)
             {
                 Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
-                setAppState(APP_EDIT_CHARACTER);
+				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             }
             else if(app_state == APP_EDIT_SCRIPT_GLOBAL)
             {
@@ -360,16 +397,10 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_CHARACTER);
             break;
         case BT_ID_PLAYER_EDIT_SCRIPT:
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-            setAppState(APP_EDIT_PLAYER_SCRIPT);
-            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+			this->setAppState(APP_EDIT_PLAYER_SCRIPT);
             break;
 		case BT_ID_EDIT_SCRIPT_GLOBAL:
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-            setAppState(APP_EDIT_SCRIPT_GLOBAL);
-            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+			this->setAppState(APP_EDIT_SCRIPT_GLOBAL);
             break;
 		case BT_ID_CONFIG:
             GUIManager::getInstance()->showConfigWindow();
@@ -378,41 +409,17 @@ void App::eventGuiButton(s32 id)
 		#endif
 
         case BT_ID_PLAY_GAME:
-			oldcampos = Player::getInstance()->getObject()->getPosition();
-			CameraSystem::getInstance()->setCamera(1);
-            this->setAppState(APP_GAMEPLAY_NORMAL);
-            //Player::getInstance()->getObject()->doScript();
-            LuaGlobalCaller::getInstance()->storeGlobalParams();
-            DynamicObjectsManager::getInstance()->initializeAllScripts();
-            DynamicObjectsManager::getInstance()->showDebugData(false);
-			DynamicObjectsManager::getInstance()->startCollisions();
-            //DynamicObjectsManager::getInstance()->initializeCollisions();
-            TerrainManager::getInstance()->showDebugData(false);
-            GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-            LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+			playGame();
             break;
         case BT_ID_STOP_GAME:
-
-			DynamicObjectsManager::getInstance()->clearAllScripts();
-            DynamicObjectsManager::getInstance()->clearCollisions();
-            DynamicObjectsManager::getInstance()->showDebugData(true);
-			 DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-            TerrainManager::getInstance()->showDebugData(true);
-            LuaGlobalCaller::getInstance()->restoreGlobalParams();
-            SoundManager::getInstance()->stopSounds();
-            GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
-            GlobalMap::getInstance()->clearGlobals();
-            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-			CameraSystem::getInstance()->setCamera(2);
-			CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
-
+			stopGame();
             break;
        
         case BT_ID_CLOSE_PROGRAM:
 			this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
             device->drop();
-            exit(0);
+		    exit(0);
             break;
         case BT_ID_ABOUT:
             GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
@@ -446,6 +453,12 @@ void App::eventGuiButton(s32 id)
 // Stuff in editor only
 #ifdef EDITOR
 
+void App::hideEditGui()
+{
+	wxSystem=true;
+	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
+}
+
 void App::eventGuiCheckbox(s32 id)
 {
     switch (id)
@@ -468,6 +481,16 @@ void App::eventGuiCombobox(s32 id)
 }
 
 #endif
+
+void App::setScreenSize(dimension2d<u32> size)
+{
+	screensize = size;
+}
+
+dimension2d<u32> App::getScreenSize()
+{
+	return screensize;
+}
 
 void App::eventKeyPressed(s32 key)
 {
@@ -587,6 +610,7 @@ App* App::getInstance()
 MousePick App::getMousePosition3D(int id)
 {
     position2d<s32> pos=device->getCursorControl()->getPosition();
+	pos.Y = pos.Y+26;
     line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
     core::vector3df intersection;
@@ -616,8 +640,8 @@ MousePick App::getMousePosition3D(int id)
 
 bool App::loadConfig()
 {
-	screenW = 1024;
-	screenH = 768;
+	screensize.Height = 768;
+	screensize.Width = 1024;
 	fullScreen = false;
 	resizable = false;
 	language = "en-us";
@@ -660,8 +684,8 @@ bool App::loadConfig()
         TiXmlElement* resXML = root->FirstChildElement( "screen" );
         if ( resXML )
         {
-            screenW = atoi(resXML->ToElement()->Attribute("screen_width"));
-			screenH = atoi(resXML->ToElement()->Attribute("screen_height"));
+			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
+			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 				fullScreen=true;
@@ -731,15 +755,19 @@ bool App::loadConfig()
     return true;
 }
 
-void App::setupDevice()
+void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
 
 	loadConfig();
 
-    device = createDevice(EDT_OPENGL, dimension2d<u32>(screenW, screenH), 32, fullScreen, false, false, 0);
-	this->device->setResizable(resizable);
-    device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (mar 2011)");
-
+	if (!IRRdevice)
+	{
+		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
+		this->device->setResizable(resizable);
+		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (mar 2011)");
+	} else
+		device = IRRdevice;
+	
 
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
@@ -763,6 +791,75 @@ IrrlichtDevice* App::getDevice()
     return device;
 }
 
+
+void App::playGame()
+{
+	oldcampos = Player::getInstance()->getObject()->getPosition();
+	CameraSystem::getInstance()->setCamera(1);
+    this->setAppState(APP_GAMEPLAY_NORMAL);
+    //Player::getInstance()->getObject()->doScript();
+    LuaGlobalCaller::getInstance()->storeGlobalParams();
+    DynamicObjectsManager::getInstance()->initializeAllScripts();
+    DynamicObjectsManager::getInstance()->showDebugData(false);
+	DynamicObjectsManager::getInstance()->startCollisions();
+    //DynamicObjectsManager::getInstance()->initializeCollisions();
+    TerrainManager::getInstance()->showDebugData(false);
+    GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+}
+
+void App::stopGame()
+{
+	DynamicObjectsManager::getInstance()->clearAllScripts();
+	DynamicObjectsManager::getInstance()->clearCollisions();
+	DynamicObjectsManager::getInstance()->showDebugData(true);
+	DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+	TerrainManager::getInstance()->showDebugData(true);
+	LuaGlobalCaller::getInstance()->restoreGlobalParams();
+	SoundManager::getInstance()->stopSounds();
+	GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
+	GlobalMap::getInstance()->clearGlobals();
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+}
+
+void App::update()
+{
+	//while (app_state<APP_STATE_CONTROL)
+	{
+		driver->beginScene(true, true, SColor(0,200,200,200));
+		if(app_state < APP_STATE_CONTROL)
+		{
+			device->yield();
+
+			// This is needed for wxWidget event management
+#ifdef _WXMSW
+			wxYield();
+#endif
+#ifdef EDITOR
+			updateEditMode();//editMode
+#endif
+		}
+		else
+		{
+			// This is needed for wxWidget event management
+#ifdef _WXMSW
+			wxYield();
+#endif
+
+    		updateGameplay();
+		}
+
+		smgr->drawAll();
+		guienv->drawAll();
+
+		draw2DImages();
+
+		driver->endScene();
+	}
+}
+
 void App::quickUpdate()
 {
 	driver->beginScene(true, true, SColor(0,200,200,200));
@@ -775,7 +872,7 @@ void App::run()
 {
 // Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
-    this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+    //this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 #else
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
@@ -801,37 +898,11 @@ void App::run()
 	bool activated=false;
 
     while(device->run())
+	//while(app_state>99)
     {
+		
 
-        driver->beginScene(true, true, SColor(0,200,200,200));
-        if(app_state < APP_STATE_CONTROL)
-		{
-			#ifdef EDITOR
-
-			device->yield();
-            updateEditMode();//editMode
-
-			#endif
-		}
-        else
-		{
-// Load a map when the state is switching on the player app
-#ifndef EDITOR
-		if (mapname.size()>0 && !activated)
-		{
-			activated=true;
-			//this->loadProjectFromXML(mapname);
-		}
-#endif
-			updateGameplay();
-		}
-
-		smgr->drawAll();
-		guienv->drawAll();
-
-		draw2DImages();
-
-        driver->endScene();
+		this->update();
 
         // display frames per second in window title
 		int fps = driver->getFPS();
@@ -845,113 +916,9 @@ void App::run()
 			lastFPS = fps;
 		}
     }
-	// Stuff to do when the device is closed.
-	cleanWorkspace();
-	SoundManager::getInstance()->stopEngine();
+	
 }
 
-void App::saveProjectToXML()
-{
-    stringc filename = "../projects/";
-    filename += currentProjectName;
-
-    TiXmlDocument doc;
-	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
-
-	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
-	irb_project->SetAttribute("version","1.0");
-
-    TerrainManager::getInstance()->saveToXML(irb_project);
-    DynamicObjectsManager::getInstance()->saveToXML(irb_project);
-    Player::getInstance()->getObject()->saveToXML(irb_project);
-
-    TiXmlElement* globalScript = new TiXmlElement("global_script");
-    globalScript->SetAttribute("script",scriptGlobal.c_str());
-    irb_project->LinkEndChild(globalScript);
-
-	doc.LinkEndChild( decl );
-	doc.LinkEndChild( irb_project );
-	doc.SaveFile( filename.c_str() );
-
-
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
-    #endif
-}
-
-bool App::loadProjectFromXML(stringc filename)
-{
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
-	printf ("Trying to load this map: %s \n",filename.c_str());
-    TiXmlDocument doc(filename.c_str());
-	if (!doc.LoadFile()) return false;
-
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
-    #endif
-
-    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
-
-    if ( root )
-    {
-        if( atof(root->Attribute("version"))!=APP_VERSION )
-        {
-            #ifdef APP_DEBUG
-            cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
-            #endif
-
-            return false;
-        }
-
-        TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
-        if ( globalScriptXML )
-        {
-			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
-			quickUpdate();
-            scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
-        }
-
-        TiXmlElement* terrain = root->FirstChildElement( "terrain" );
-        if ( terrain )
-        {
-			GUIManager::getInstance()->setTextLoader(L"Loading the terrain");
-			quickUpdate();
-            TerrainManager::getInstance()->loadFromXML(terrain);
-        }
-
-        TiXmlElement* dynamicObjs = root->FirstChildElement( "dynamic_objects" );
-        if ( dynamicObjs )
-        {
-			GUIManager::getInstance()->setTextLoader(L"Loading the dynamic objects");
-			quickUpdate();
-            DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
-        }
-
-        TiXmlElement* playerXML = root->FirstChildElement( "player" );
-        if(playerXML)
-        {
-			// Temporary down since the player is a dynamic object now.
-			// Will need to fix this.
-            //Player::getInstance()->getObject()->loadFromXML(playerXML);
-        }
-    }
-    else
-    {
-        #ifdef APP_DEBUG
-        cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
-        #endif
-		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-        return false;
-    }
-
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
-    #endif
-
-    ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-    return true;
-}
 
 // Stuff needed only in the editor
 #ifdef EDITOR
@@ -1083,6 +1050,7 @@ void App::updateEditMode()
 
 void App::updateGameplay()
 {
+
 	timer = device->getTimer()->getRealTime();
 	//DynamicObjectsManager::getInstance()->updateAnimators();
 	DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
@@ -1092,7 +1060,7 @@ void App::updateGameplay()
 	CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 	// This update the player events and controls at specific time intervals
-    if ((timer-timer2)>17) // 1/60 second
+    if ((timer-timer2)>0) // (17 )1/60 second
 	{
 		timer2 = device->getTimer()->getRealTime();
 
@@ -1271,6 +1239,109 @@ void App::saveProject()
     setAppState(old_state);
 }
 
+void App::saveProjectToXML()
+{
+    stringc filename = "../projects/";
+    filename += currentProjectName;
+
+    TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
+
+	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
+	irb_project->SetAttribute("version","1.0");
+
+    TerrainManager::getInstance()->saveToXML(irb_project);
+    DynamicObjectsManager::getInstance()->saveToXML(irb_project);
+    Player::getInstance()->getObject()->saveToXML(irb_project);
+
+    TiXmlElement* globalScript = new TiXmlElement("global_script");
+    globalScript->SetAttribute("script",scriptGlobal.c_str());
+    irb_project->LinkEndChild(globalScript);
+
+	doc.LinkEndChild( decl );
+	doc.LinkEndChild( irb_project );
+	doc.SaveFile( filename.c_str() );
+
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
+    #endif
+}
+
+bool App::loadProjectFromXML(stringc filename)
+{
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
+	printf ("Trying to load this map: %s \n",filename.c_str());
+    TiXmlDocument doc(filename.c_str());
+	if (!doc.LoadFile()) return false;
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
+    #endif
+
+    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
+
+    if ( root )
+    {
+        if( atof(root->Attribute("version"))!=APP_VERSION )
+        {
+            #ifdef APP_DEBUG
+            cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
+            #endif
+
+            return false;
+        }
+
+        TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
+        if ( globalScriptXML )
+        {
+			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
+			quickUpdate();
+            scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
+        }
+
+        TiXmlElement* terrain = root->FirstChildElement( "terrain" );
+        if ( terrain )
+        {
+			GUIManager::getInstance()->setTextLoader(L"Loading the terrain");
+			quickUpdate();
+            TerrainManager::getInstance()->loadFromXML(terrain);
+        }
+
+        TiXmlElement* dynamicObjs = root->FirstChildElement( "dynamic_objects" );
+        if ( dynamicObjs )
+        {
+			GUIManager::getInstance()->setTextLoader(L"Loading the dynamic objects");
+			quickUpdate();
+            DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
+        }
+
+        TiXmlElement* playerXML = root->FirstChildElement( "player" );
+        if(playerXML)
+        {
+			// Temporary down since the player is a dynamic object now.
+			// Will need to fix this.
+            //Player::getInstance()->getObject()->loadFromXML(playerXML);
+        }
+    }
+    else
+    {
+        #ifdef APP_DEBUG
+        cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
+        #endif
+		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+        return false;
+    }
+
+    #ifdef APP_DEBUG
+    cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
+    #endif
+
+    ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+    return true;
+}
+
 void App::initialize()
 {
 	#ifdef EDITOR
@@ -1296,4 +1367,21 @@ void App::initialize()
 
 	
     this->currentProjectName = "irb_temp_project";
+// Hide the loading windows if the WX Widget is present
+#ifdef _WXMSW
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+#endif
+}
+
+void App::shutdown()
+{
+	// Stuff to do when the device is closed.
+	cleanWorkspace();
+	SoundManager::getInstance()->stopEngine();
+}
+
+stringw App::getLangText(irr::core::stringc node)
+{
+	return LANGManager::getInstance()->getText(node);
 }

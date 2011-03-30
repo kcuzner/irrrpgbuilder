@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 {
     ///TODO: Create a Window to choose resolution
 
-    App::getInstance()->setupDevice();
+    App::getInstance()->setupDevice(NULL);
     App::getInstance()->initialize();
     App::getInstance()->run();
 

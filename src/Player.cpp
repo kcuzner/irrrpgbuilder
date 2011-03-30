@@ -83,7 +83,7 @@ void Player::update()
 {
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	vector3df walkTarget = playerObject->getWalkTarget();
-	if (timercheck-timer1>17)
+	if (timercheck-timer1>17) //17
 	{
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();

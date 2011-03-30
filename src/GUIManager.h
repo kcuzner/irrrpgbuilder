@@ -151,6 +151,7 @@ class GUIManager
         void showConfigWindow();
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
+		IGUIListBox* console;
 		
 
         virtual ~GUIManager();
@@ -281,6 +282,8 @@ class GUIManager
 
         GUIManager();
         rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+		s32 displayheight;
+		s32 displaywidth;
 
         void loadFonts();
 
