@@ -59,6 +59,7 @@ class App
         void eventGuiCombobox(s32 id);
 		void updateEditMode();
 		void hideEditGui();
+		
 		#endif
 
 		void setScreenSize(dimension2d<u32> size);
@@ -66,6 +67,7 @@ class App
 
         static App* getInstance();
 
+		void displayGuiConsole();
         void draw2DImages();
 	
         void eventGuiButton(s32 id);

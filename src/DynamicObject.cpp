@@ -314,8 +314,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// Walk can be interrupted by:
 	// - A collision with another object
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
-	if (GUIManager::getInstance()->console->getItemCount()>100)
-		GUIManager::getInstance()->console->clear();
+	
 
 	
 	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
@@ -338,10 +337,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 		this->setPosition(pos);
 		stringw text=L"Walkto Called:";
 		text.append((stringw)speed);
-		GUIManager::getInstance()->console->addItem(text.c_str());
-		
-
-
+		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+	
 	}
 	else
 	{
@@ -349,7 +346,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		walkTarget = this->getPosition();
 		this->setAnimation("idle");
-		GUIManager::getInstance()->console->addItem(L"Stop because of a collision!");
+		GUIManager::getInstance()->setConsoleText(L"Stop because of a collision!",false);
 		printf("Stop because of a collision...\n");
 		collided=false; // reset the collision flag
 	}
@@ -592,6 +589,12 @@ void DynamicObject::setAnimation(stringc animName)
 	if (this->mesh)
 		defaultskin = (ISkinnedMesh*)this->mesh;
 
+	if (animName=="die")
+	{
+		GUIManager::getInstance()->setConsoleText(L"",true);
+		GUIManager::getInstance()->setConsoleText(L"Die animation encountered",false);
+	}
+
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
@@ -599,7 +602,7 @@ void DynamicObject::setAnimation(stringc animName)
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
 		if( tempAnim.name == animName )
         {
-			if (Animation!=this->currentAnimation)
+			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_DIE)
 			{
 				// Setup the skinned mesh animation. Check if the meshname is present
 				if (tempAnim.meshname!=L"undefined" && defaultskin)

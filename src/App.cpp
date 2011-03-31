@@ -58,7 +58,7 @@ void App::draw2DImages()
 
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
     {
-        GUIManager::getInstance()->drawNodePreview();
+     
     }
 
 	if (app_state > APP_STATE_CONTROL)
@@ -71,42 +71,25 @@ void App::draw2DImages()
 #endif
 }
 
+void App::displayGuiConsole()
+{
+	GUIManager::getInstance()->setConsoleText(L"",true);
+}
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
 bool App::cursorIsInEditArea()
 {
     bool condition = true;
-
-    //is over the main toolbar??
-    if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
-	#ifdef EDITOR
-    //Is over terrain toolbar??
-    if(device->getCursorControl()->getPosition().X > (driver->getScreenSize().Width - 170.0) && (app_state == APP_EDIT_TERRAIN_TRANSFORM || app_state == APP_EDIT_CHARACTER) )
-	{
+	if (GUIManager::getInstance()->isGuiPresent(device->getCursorControl()->getPosition()))
 		condition = false;
-		GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
-        GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
-	}
 
-    //is over the dynamic objects chooser window??
-    if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-    {
-        if( device->getCursorControl()->getPosition().X > driver->getScreenSize().Width - 170.0 )
-        {
-            condition = false;
-        }
-    }
+    // Perhaps remove this...
+	#ifndef _WXMSW
+	//is over the main toolbar??
+    if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 	#endif
-    //gameplay has a toolbar in bottom of the screen (items)
-    if(app_state == APP_GAMEPLAY_NORMAL)
-    {
-		if(device->getCursorControl()->getPosition().Y < 46 && device->getCursorControl()->getPosition().X > driver->getScreenSize().Width - 170.0)  condition = false;
-        if(device->getCursorControl()->getPosition().Y > driver->getScreenSize().Height - 46.0 )
-        {
-            condition = false;
-        }
-    }
-    return condition;
+
+	return condition;
 }
 
 APP_STATE App::getAppState()
@@ -214,8 +197,9 @@ void App::setAppState(APP_STATE newAppState)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
+			Player::getInstance()->setHighLight(false);
 		}
-        Player::getInstance()->setHighLight(false);
+        
     }
 
     if(app_state == APP_EDIT_SCRIPT_GLOBAL)
@@ -325,6 +309,7 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
+			GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
@@ -456,6 +441,7 @@ void App::eventGuiButton(s32 id)
 void App::hideEditGui()
 {
 	wxSystem=true;
+	GUIManager::getInstance()->setConsoleText(L"Ready now for WXwidget!",false);
 	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
 }
 
@@ -484,8 +470,17 @@ void App::eventGuiCombobox(s32 id)
 
 void App::setScreenSize(dimension2d<u32> size)
 {
-	GUIManager::getInstance()->updateGuiPositions(size);
-	screensize = size;
+	if (device->run())
+	{
+		GUIManager::getInstance()->updateGuiPositions(size);
+		screensize = size;
+		stringw text = L"Current screen size is:";
+		text.append((stringw)screensize.Width);
+		text.append(L",");
+		text.append((stringw)screensize.Height);
+	
+		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+	}
 }
 
 dimension2d<u32> App::getScreenSize()
@@ -641,8 +636,18 @@ MousePick App::getMousePosition3D(int id)
 
 bool App::loadConfig()
 {
+#ifndef _WXMSW
 	screensize.Height = 768;
 	screensize.Width = 1024;
+# else
+	screensize = device->getVideoDriver()->getScreenSize();
+	// for some reasons IRRlicht open in 20,20 when used inside a wxWindowé
+	if (screensize.Height<100)
+	{
+		screensize.Width = 1008;
+		screensize.Height = 596;
+	}
+#endif
 	fullScreen = false;
 	resizable = false;
 	language = "en-us";
@@ -685,8 +690,10 @@ bool App::loadConfig()
         TiXmlElement* resXML = root->FirstChildElement( "screen" );
         if ( resXML )
         {
+#ifndef _WXMSW
 			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
 			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
+#endif
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 				fullScreen=true;
@@ -759,8 +766,6 @@ bool App::loadConfig()
 void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
 
-	loadConfig();
-
 	if (!IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
@@ -769,6 +774,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	} else
 		device = IRRdevice;
 	
+	loadConfig();
 
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
@@ -795,40 +801,53 @@ IrrlichtDevice* App::getDevice()
 
 void App::playGame()
 {
-	oldcampos = Player::getInstance()->getObject()->getPosition();
-	CameraSystem::getInstance()->setCamera(1);
-    this->setAppState(APP_GAMEPLAY_NORMAL);
-    //Player::getInstance()->getObject()->doScript();
-    LuaGlobalCaller::getInstance()->storeGlobalParams();
-    DynamicObjectsManager::getInstance()->initializeAllScripts();
-    DynamicObjectsManager::getInstance()->showDebugData(false);
-	DynamicObjectsManager::getInstance()->startCollisions();
-    //DynamicObjectsManager::getInstance()->initializeCollisions();
-    TerrainManager::getInstance()->showDebugData(false);
-    GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+	if (app_state<APP_STATE_CONTROL)
+	{
+		oldcampos = Player::getInstance()->getObject()->getPosition();
+		CameraSystem::getInstance()->setCamera(1);
+		// setback the fog as before (will need to check with LUA)
+		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
+		this->setAppState(APP_GAMEPLAY_NORMAL);
+		//Player::getInstance()->getObject()->doScript();
+		LuaGlobalCaller::getInstance()->storeGlobalParams();
+		DynamicObjectsManager::getInstance()->initializeAllScripts();
+		DynamicObjectsManager::getInstance()->showDebugData(false);
+		DynamicObjectsManager::getInstance()->startCollisions();
+		//DynamicObjectsManager::getInstance()->initializeCollisions();
+		TerrainManager::getInstance()->showDebugData(false);
+		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+	}
 }
 
 void App::stopGame()
 {
-	DynamicObjectsManager::getInstance()->clearAllScripts();
-	DynamicObjectsManager::getInstance()->clearCollisions();
-	DynamicObjectsManager::getInstance()->showDebugData(true);
-	DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-	TerrainManager::getInstance()->showDebugData(true);
-	LuaGlobalCaller::getInstance()->restoreGlobalParams();
-	SoundManager::getInstance()->stopSounds();
-	GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
-	GlobalMap::getInstance()->clearGlobals();
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-	CameraSystem::getInstance()->setCamera(2);
-	CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+	if (app_state>APP_STATE_CONTROL)
+	{
+		DynamicObjectsManager::getInstance()->clearAllScripts();
+		DynamicObjectsManager::getInstance()->clearCollisions();
+		DynamicObjectsManager::getInstance()->showDebugData(true);
+		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		TerrainManager::getInstance()->showDebugData(true);
+		LuaGlobalCaller::getInstance()->restoreGlobalParams();
+		SoundManager::getInstance()->stopSounds();
+		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
+		GlobalMap::getInstance()->clearGlobals();
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		CameraSystem::getInstance()->setCamera(2);
+		CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+	}
 }
 
 void App::update()
 {
 	//while (app_state<APP_STATE_CONTROL)
 	{
+		// Attempt to do automatic rezise detection
+		if (screensize != driver->getScreenSize())
+			this->setScreenSize(driver->getScreenSize());
+
 		driver->beginScene(true, true, SColor(0,200,200,200));
 		if(app_state < APP_STATE_CONTROL)
 		{
@@ -1167,7 +1186,7 @@ void App::createNewProject()
 
     smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
     driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
-
+	
     Player::getInstance();
 
     this->currentProjectName = name;
@@ -1345,20 +1364,22 @@ bool App::loadProjectFromXML(stringc filename)
 
 void App::initialize()
 {
-	#ifdef EDITOR
-
-		GUIManager::getInstance()->setupEditorGUI();
-		TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
-		
-
-	#endif
-
-    CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
+	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
+	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
+    driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
 	quickUpdate();
 
+	screensize=driver->getScreenSize();
 
-    smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
-    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,300,9100);
+	#ifdef EDITOR
+		GUIManager::getInstance()->setupEditorGUI();
+		TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+		quickUpdate();
+	#endif
+
+	GUIManager::getInstance()->setupGameplayGUI();
+    
+    
 	quickUpdate();
 
 	

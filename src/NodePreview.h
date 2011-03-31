@@ -2,6 +2,7 @@
 #define NODEPREVIEW_H
 
 #include <irrlicht.h>
+#include "IGUIElement.h"
 
 using namespace irr;
 using namespace core;
@@ -10,24 +11,34 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-class NodePreview
+namespace irr
+{
+namespace gui
+{
+
+class NodePreview : public IGUIElement
 {
     public:
-        NodePreview(rect<s32> viewPort, ISceneNode* node = 0);
+		NodePreview(IGUIEnvironment* environment, IGUIElement* parent, const core::rect<s32>& rectangle, s32 id);
+        //NodePreview(rect<s32> viewPort, ISceneNode* node = 0);
 
         void setNode(ISceneNode* node);
         ISceneNode* getNode();
 
-        void setViewport(rect<s32> viewPort);
-        rect<s32> getViewPort();
+		void setViewport(core::rect<s32> viewPort);
+		core::rect<s32> getViewPort();
 
-        void draw(IVideoDriver* driver);
+        virtual void draw();
 
-        ~NodePreview();
+        virtual ~NodePreview();
     private:
+		core::rect<s32> rect;
+		video::IVideoDriver * driver;
+
         ISceneNode* node;
-        rect<s32> viewPort;
+		core::rect<s32> viewPort;
 		f32 rotation;
 };
-
+}
+}
 #endif // NODEPREVIEW_H

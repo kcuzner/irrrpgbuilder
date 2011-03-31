@@ -1,6 +1,7 @@
 #include "TerrainTile.h"
 #include "App.h"
 #include "TerrainManager.h"
+#include "GUIManager.h"
 
 using namespace irr;
 using namespace core;
@@ -12,7 +13,7 @@ using namespace gui;
 using namespace std;
 
 //
-const irr::f32 TerrainTile::vegetationRange = 60;
+const irr::f32 TerrainTile::vegetationRange = 160; // old value=60, seem better with the new distance value
 
 
 TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
@@ -229,10 +230,12 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
         {
             TiXmlElement* vertexXML = new TiXmlElement("vertex");
             vertexXML->SetAttribute("id",j);
-            vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
+            vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
+			// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
             vertexXML->SetAttribute("v",vegetation);
 
             segmentXML->LinkEndChild(vertexXML);
+			GUIManager::getInstance()->setConsoleText(L"Write a tree in the project",false);
         }
 	}
 

@@ -96,7 +96,9 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	ScrollbarH = Environment->addScrollBar(true,myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
 	Scrollbar = Environment->addScrollBar(false,myRect(FrameRect.getWidth()-15,2,20,FrameRect.getHeight()-22),this,-1);
 	LineToggle = Environment->addButton(myRect(FrameRect.getWidth()-15,FrameRect.getHeight()-20,20,20),this,-1,L"#",linecount_text.c_str());
-	
+	LineToggle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+
 	Scrollbar->setSubElement(true);
 	Scrollbar->setTabStop(false);
 	Scrollbar->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);

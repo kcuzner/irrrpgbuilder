@@ -11,17 +11,14 @@ bool CIrrApp::OnInit()
 	
 	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - March 2011"), wxPoint(0,0), wxSize(1024,768) );
 	frame->Show(TRUE);
-	//SetIcon(wxIcon(wxT("align_center.xpm")));
+	
 	frame->Centre();
 	SetTopWindow(frame);
 	if (App::getInstance()->getDevice()->run()==true)
 	{
-		
 		App::getInstance()->hideEditGui();
 		App::getInstance()->initialize();
-		
-		App::getInstance()->run();
-		
+		App::getInstance()->run();		
 	}
 	return TRUE;
 }
@@ -46,6 +43,7 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainSegment, CIrrFrame::OnTerrainSegment)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTransform, CIrrFrame::OnTerrainTransform)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTree, CIrrFrame::OnTerrainTree)
+	EVT_RIBBONBUTTONBAR_CLICKED(403, CIrrFrame::OnDisplayConsole)
 	
 END_EVENT_TABLE()
 
@@ -83,6 +81,8 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	this->SetSizer( bSizer1 );
 	this->Layout();
+
+	
 	
 	wxMenu *menuFile = new wxMenu;
 
@@ -180,6 +180,10 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		option_button->AddButton(402, wxT("Game setup"), bt_config_xpm );
 		option_button->EnableButton(402,false);
 		option_button->Realize();
+
+		option_button->AddButton(403, wxT("Display game console"), bt_config_xpm );
+		option_button->EnableButton(403,true);
+		option_button->Realize();
 	}
 	
 //	SetMenuBar( menuBar );
@@ -194,7 +198,6 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	//App::getInstance()->run();
 	//window3D->StartUpdate(0);
 
-	
 }
 
 CIrrFrame::~CIrrFrame()
@@ -273,7 +276,10 @@ void CIrrFrame::OnTerrainTree(wxRibbonButtonBarEvent& WXUNUSED(evt))
 	App::getInstance()->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
 }
 
-
+void CIrrFrame::OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt))
+{
+	App::getInstance()->displayGuiConsole();
+}
 
 void CIrrFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {

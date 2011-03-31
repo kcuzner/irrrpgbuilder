@@ -107,6 +107,7 @@ class CIrrFrame : public wxFrame
 		void OnTerrainSegment(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnTerrainTransform(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnTerrainTree(wxRibbonButtonBarEvent& WXUNUSED(evt));
+		void OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt));
 
 
 		DECLARE_EVENT_TABLE()

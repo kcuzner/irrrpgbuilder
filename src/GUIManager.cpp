@@ -17,13 +17,17 @@ using namespace irrklang;
 GUIManager::GUIManager()
 {
     guienv = App::getInstance()->getDevice()->getGUIEnvironment();
+	screensize = App::getInstance()->getScreenSize();
+	
     loadFonts();
-    setupGameplayGUI();
 
 	// init those because they will move on the display.
+	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
+	guiWindowItems=NULL;
+	consolewin=NULL;
 
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
@@ -112,22 +116,22 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
     switch(img)
     {
         case HELP_TERRAIN_TRANSFORM:
-            driver->draw2DImage(helpTerrainTransform, position2di(0,driver->getScreenSize().Height - helpTerrainTransform->getSize().Height),
+            driver->draw2DImage(helpTerrainTransform, position2di(0,screensize.Height - helpTerrainTransform->getSize().Height),
 				myRect(0,0,helpTerrainTransform->getSize().Width,helpTerrainTransform->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
         case HELP_TERRAIN_SEGMENTS:
-            driver->draw2DImage(helpTerrainSegments, position2di(0,driver->getScreenSize().Height - helpTerrainSegments->getSize().Height),
+            driver->draw2DImage(helpTerrainSegments, position2di(0,screensize.Height - helpTerrainSegments->getSize().Height),
 				myRect(0,0,helpTerrainSegments->getSize().Width,helpTerrainSegments->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
         case HELP_VEGETATION_PAINT:
-            driver->draw2DImage(helpVegetationPaint, position2di(0,driver->getScreenSize().Height - helpVegetationPaint->getSize().Height),
+            driver->draw2DImage(helpVegetationPaint, position2di(0,screensize.Height - helpVegetationPaint->getSize().Height),
 				myRect(0,0,helpVegetationPaint->getSize().Width,helpVegetationPaint->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
         case HELP_IRR_RPG_BUILDER_1:
-            driver->draw2DImage(logo1, position2di(driver->getScreenSize().Width - logo1->getSize().Width,driver->getScreenSize().Height - logo1->getSize().Height),
+			driver->draw2DImage(logo1, position2di(screensize.Width - logo1->getSize().Width,screensize.Height - logo1->getSize().Height),
 				myRect(0,0,logo1->getSize().Width,logo1->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
@@ -183,6 +187,43 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     return "";
 }
 
+bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
+// will tell the caller if he's clicked inside a IRB window
+{
+	
+	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
+		return true;
+	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
+		return true;
+	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjectsWindowChooser->isVisible() && guiDynamicObjectsWindowChooser->isPointInside(mousepos))
+		return true;
+	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
+	{
+		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+        getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
+		return true;
+	}
+	if (guiLoaderWindow->isVisible() && guiLoaderWindow->isPointInside(mousepos))
+		return true;
+	if (guiAboutWindow->isVisible() && guiAboutWindow->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjectsWindowEditAction->isVisible() && guiDynamicObjectsWindowEditAction->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjects_Context_Menu_Window->isVisible() && guiDynamicObjects_Context_Menu_Window->isPointInside(mousepos))
+		return true;
+
+	// old stuff (IRRlicht only editor)
+	if (guiMainWindow->isVisible() && guiMainWindow->isPointInside(mousepos))
+		return true;
+	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
+		return true;
+
+
+	return false;
+}
+
 void GUIManager::setupEditorGUI()
 {
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
@@ -196,9 +237,9 @@ void GUIManager::setupEditorGUI()
 // NEW Create display size since IRRlicht return wrong values
 
 	// Check the current screen size (normally reported by wxWidget or the configuration)
-	dimension2d<u32> size = App::getInstance()->getScreenSize();
-	displayheight=size.Height;
-	displaywidth=size.Width;
+	
+	displayheight=screensize.Height;
+	displaywidth=screensize.Width;
 
 	//LOADER WINDOW
 	//guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
@@ -490,6 +531,7 @@ void GUIManager::setupEditorGUI()
     guiTerrainToolbar->setDraggable(false);
     guiTerrainToolbar->setVisible(false);
 	guiTerrainToolbar->setNotClipped(true);
+	guiTerrainToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
 
 	//Show Playable Area (areas with no Y == 0 will be red)
@@ -541,16 +583,14 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
+	guiDynamicObjectsWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
 
-    rect<s32> nodePreviewPos = myRect(10 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.X,
-                                      guiDynamicObjectsWindowChooser_Y + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.Y,
-                                      150,150);
-
-    guiDynamicObjects_NodePreview = new NodePreview(nodePreviewPos);
+   	guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,10,150,150),-1);
     guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiDynamicObjectsWindowChooser_Y += 160;
 
@@ -603,10 +643,11 @@ void GUIManager::setupEditorGUI()
 	// --- Edit scripts window
 
     //guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
-	guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
+	guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(25,25,displaywidth-50,displayheight-50),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
     guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowEditAction->setDrawTitlebar(false);
     guiDynamicObjectsWindowEditAction->setDraggable(false);
+	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
 	//scripts editor box
     guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
@@ -616,11 +657,12 @@ void GUIManager::setupEditorGUI()
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
                        //myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
-					   myRect(10,40,displaywidth-220,displayheight-260),
+					   myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-120),
 					   App::getInstance()->getDevice());
 
     guiDynamicObjects_Script->setMultiLine(true);
     guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	guiDynamicObjects_Script->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
 	guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
@@ -628,10 +670,11 @@ void GUIManager::setupEditorGUI()
 
 	// Bottom tabcontrol
 	//IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
-	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,displayheight-220,displaywidth-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-90,displaywidth-220,110),guiDynamicObjectsWindowEditAction,true,false);
 	IGUITab * tab1 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_debug").c_str());
 	IGUITab * tab2 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_templates").c_str());
 
+	tabctrl1->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
     s32 X_ScriptToolbar = 10;
 
     guiDynamicObjects_LoadScriptTemplateCB = guienv->addComboBox(myRect(X_ScriptToolbar,10,400,20),tab2,CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
@@ -655,13 +698,12 @@ void GUIManager::setupEditorGUI()
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_validate_script")).c_str() );
 	validate->setOverrideFont(guiFontC12);
 
-    X_ScriptToolbar+=160;
-
-    IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(X_ScriptToolbar,10,82,20),
+	IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-90,10,82,20),
                       guiDynamicObjectsWindowEditAction,
                       BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_close_script")).c_str() );
 	close->setOverrideFont(guiFontC12);
+	close->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 
 	// Console window
@@ -711,9 +753,9 @@ void GUIManager::setupGameplayGUI()
 
 	// NEW Create display size since IRRlicht return wrong values
 	// Check the current screen size (normally reported by wxWidget or the configuration)
-	dimension2d<u32> size = App::getInstance()->getScreenSize();
-	displayheight=size.Height;
-	displaywidth=size.Width;
+	
+	displayheight=screensize.Height;
+	displaywidth=screensize.Width;
 
 	// This is called only in the PLAYER application
 	#ifndef EDITOR
@@ -820,19 +862,10 @@ void GUIManager::setupGameplayGUI()
 
 	// ---------------------------------------
 	#endif
-	console = guienv->addListBox(myRect(20,50,300,100),0,0,true);
-
-	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
-
-    guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(20,displayheight-30,600,30),false,false,0,-1,false);
-    guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
-    guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
-
-    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(21,displayheight-31,600,30),false,false,0,-1,false);
-    guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
-    guiPlayerLife->setOverrideFont(guiFontLarge28);
-
-	this->setElementVisible(ST_ID_PLAYER_LIFE, false);
+	consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window");
+	consolewin->getCloseButton()->setVisible(false);
+	console = guienv->addListBox(myRect(10,30,700,325),consolewin,0,true);
+	consolewin->setVisible(false);
 
 	// --- Active game menu during play
 	ITexture* gameplay_bar = driver->getTexture("../media/art/gameplay_bar.png");
@@ -842,6 +875,7 @@ void GUIManager::setupGameplayGUI()
 
 	// The bottom image of the interface
 	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((displaywidth/2)-(gameplay_bar->getSize().Width/2),displayheight-gameplay_bar->getSize().Height),true);
+	gameplay_bar_image->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 	// The life gauge
 	lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
@@ -880,10 +914,12 @@ void GUIManager::setupGameplayGUI()
     guiBtViewItems->setVisible(false);
 
     //Items window
+	
     guiWindowItems = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-150),false,L"",0,GCW_GAMEPLAY_ITEMS);
     guiWindowItems->getCloseButton()->setVisible(false);
     guiWindowItems->setDrawTitlebar(false);
     guiWindowItems->setDraggable(false);
+	guiWindowItems->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
     guiWindowItems->setVisible(false);
 
     guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-170 - 64),guiWindowItems,LB_ID_PLAYER_ITEMS,true);
@@ -914,8 +950,24 @@ void GUIManager::setupGameplayGUI()
     guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(52+42,displayheight-160 - 32,300,32),false,false,guiWindowItems);
     guiPlayerMoney->setOverrideFont(guiFontLarge28);
     guiPlayerMoney->setOverrideColor(SColor(255,255,255,255));
-	
 
+	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
+
+	guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(224,guiWindowItems->getClientRect().UpperLeftCorner.Y+5,600,30),false,false,guiWindowItems,-1,false);
+    guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
+    guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
+
+    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(225,guiWindowItems->getClientRect().UpperLeftCorner.Y+5,600,30),false,false,guiWindowItems,-1,false);
+    guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
+    guiPlayerLife->setOverrideFont(guiFontLarge28);
+
+	this->setElementVisible(ST_ID_PLAYER_LIFE, false);
+
+	stringw text = L"Current screen size is:";
+	text.append((stringw)screensize.Width);
+	text.append(L",");
+	text.append((stringw)screensize.Height);
+	this->setConsoleText(text.c_str(),false);
 }
 
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
@@ -939,7 +991,8 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
         case GCW_GAMEPLAY_ITEMS:
             this->updateItemsList();
-            guiWindowItems->setVisible(visible);
+			if (guiWindowItems) 
+				guiWindowItems->setVisible(visible);
             break;
         case GCW_ABOUT:
             guiAboutWindow->setVisible(visible);
@@ -978,11 +1031,6 @@ void GUIManager::loadScriptTemplates()
     }
 }
 
-void GUIManager::drawNodePreview()
-{
-    guiDynamicObjects_NodePreview->draw(App::getInstance()->getDevice()->getVideoDriver());
-}
-
 void GUIManager::updateDynamicObjectPreview()
 {
     guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
@@ -1001,21 +1049,8 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
 
 void GUIManager::updateGuiPositions(dimension2d<u32> screensize)
 {
-	// replace the position of the terrain toolbar, the dynamic object chooser, and the gameplay bar
-	// TODO: Have to replace the position of the ITEM window (will contain much more stuff)
-	gameplay_bar_image ->setRelativePosition(position2di((screensize.Width/2)-400,screensize.Height-140));
-	if (guiDynamicObjectsWindowChooser)
-	{
-		guiDynamicObjectsWindowChooser ->setRelativePosition(position2di(screensize.Width-170,30));
-		// reposition the nodepreview
-	    rect<s32> nodePreviewPos = myRect(10 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.X,
-                                   15 + guiDynamicObjectsWindowChooser->getAbsolutePosition().UpperLeftCorner.Y,
-                                   150,150);
-		guiDynamicObjects_NodePreview->setViewport(nodePreviewPos);
-	}
-	if (guiTerrainToolbar)
-		guiTerrainToolbar->setRelativePosition(position2di(screensize.Width-170,30));
-
+	// This update for the new screen size... Needed by the images GUI
+	this->screensize=screensize;
 }
 // Only in the editor
 #ifdef EDITOR
@@ -1196,14 +1231,43 @@ void GUIManager::setStaticTextText(GUI_ID id, stringc text)
     switch(id)
     {
         case ST_ID_PLAYER_LIFE:
-            guiPlayerLife->setText(stringw(text).c_str());
-            guiPlayerLife_Shadow->setText(stringw(text).c_str());
+			if (guiWindowItems->isVisible())
+			{
+				guiPlayerLife->setText(stringw(text).c_str());
+				guiPlayerLife_Shadow->setText(stringw(text).c_str());
+			}
             break;
         case ST_ID_PLAYER_MONEY:
             guiPlayerMoney->setText(stringw(text).c_str());
             break;
     }
 }
+
+void GUIManager::setConsoleText(stringw text, bool forcedisplay)
+// Add text into the output console
+// The function manage up to 500 lines before clearing the buffer
+// Using "forcedisplay" will toggle the display of the GUI
+{
+	u32 maxitem = 500;
+	if (forcedisplay)
+	{
+		if (consolewin->isVisible())
+			consolewin->setVisible(false);
+		else 
+			consolewin->setVisible(true);
+	}
+	
+	if (consolewin && consolewin->isVisible() && !forcedisplay)
+	{
+		if (console->getItemCount()>maxitem-1)
+			console->removeItem(maxitem);
+			//console->clear();
+		console->insertItem(0,text.c_str(),0);
+		//console->addItem(text.c_str());
+		
+	}
+}
+
 
 void GUIManager::showDialogMessage(std::string text, std::string sound)
 {

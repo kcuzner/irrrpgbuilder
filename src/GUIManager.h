@@ -101,8 +101,7 @@ class GUIManager
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
         
-        void drawNodePreview();
-		void drawPlayerStats();
+    	void drawPlayerStats();
 
 		#ifdef EDITOR
 		void setupEditorGUI();
@@ -110,6 +109,7 @@ class GUIManager
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
+		bool isGuiPresent(vector2d<s32> mousepos);
 		void setEditBoxText(GUI_ID id, stringw text);
 
 		#endif
@@ -120,6 +120,7 @@ class GUIManager
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
+		void setConsoleText (stringw text, bool forcedisplay);
 
         void setElementEnabled(GUI_ID id, bool enable);
         void setElementVisible(GUI_ID id, bool visible);
@@ -152,12 +153,13 @@ class GUIManager
         void showConfigWindow();
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
-		IGUIListBox* console;
+		
 		
 
         virtual ~GUIManager();
     private:
         IGUIEnvironment* guienv;
+		dimension2d<u32> screensize;
 
         int mouseX;
         int mouseY;
@@ -192,6 +194,9 @@ class GUIManager
         IGUIButton* guiHelpButton;
         IGUIButton* guiConfigButton;
         GUIConfigWindow* configWindow;
+
+		IGUIListBox* console;
+		IGUIWindow * consolewin;
 		
 		// Loader window
 		

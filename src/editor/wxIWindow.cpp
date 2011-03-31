@@ -27,7 +27,7 @@ wxIDevice *wxCIDevice::Create(HWND hwnd, wxIDriverType type, bool bResizeable)
 
 	wxICreateParam param;
 
-	param.WindowSize =   irr::core::dimension2d<s32>(1008,588); 
+	//param.WindowSize =   irr::core::dimension2d<s32>(1008,596); 
 
 	param.WindowId = reinterpret_cast<void *>( hwnd );
 	param.DriverType = type;
@@ -36,15 +36,6 @@ wxIDevice *wxCIDevice::Create(HWND hwnd, wxIDriverType type, bool bResizeable)
 
 	if ( irrDevice )
 		irrDevice->setResizable( bResizeable );
-
-
-	// This initialize IRR RPG Builder
-	/*if (irrDevice)
-	{	          
-		App::getInstance()->setupDevice(irrDevice);
-		App::getInstance()->initialize();
-		
-	}*/
 
 	return irrDevice;
 }
@@ -108,7 +99,7 @@ void wxCIWindow::OnSize(wxSizeEvent &event)
 			int w, h;
 			this->GetSize(&w, &h);
 			// Tell the new size to Irrlicht
-			App::getInstance()->setScreenSize(dimension2d<u32>(w,h));
+			//App::getInstance()->setScreenSize(dimension2d<u32>(w,h));
 			if (camera)
 				camera->setAspectRatio(float(w)/h);
 			

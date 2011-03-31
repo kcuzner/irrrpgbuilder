@@ -85,7 +85,7 @@ Vegetation::Vegetation()
 
 // Set the debug data in the editor application, not in the player
 #ifdef EDITOR
-    trunk->setDebugDataVisible(true);
+    trunk->setDebugDataVisible(false);
 #endif
 }
 
@@ -120,8 +120,8 @@ void Vegetation::setScale(vector3df scale)
 
 void Vegetation::showDebugData(bool show)
 {
-    if(show)
-        trunk->setDebugDataVisible(EDS_BBOX);
-    else
+    if(!show)
+        //trunk->setDebugDataVisible(EDS_BBOX);
+    //else
         trunk->setDebugDataVisible(EDS_OFF);
 }

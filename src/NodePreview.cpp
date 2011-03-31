@@ -7,33 +7,52 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-NodePreview::NodePreview(rect<s32> viewPort, ISceneNode* node)
+namespace irr
+{
+namespace gui
+{
+
+	NodePreview::NodePreview(IGUIEnvironment* environment, IGUIElement* parent, const core::rect<s32>& rectangle, s32 id) 
+		: IGUIElement(EGUIET_IMAGE, environment ,parent ,id ,rectangle)
+
+{
+	driver = environment->getVideoDriver();
+	
+	this->node = NULL;
+	this->viewPort = rectangle;
+		//this->getParent()->getAbsoluteClippingRect();
+	
+	rotation=0;
+
+}
+/*NodePreview::NodePreview(rect<s32> viewPort, ISceneNode* node)
 {
     this->node = node;
     this->viewPort = viewPort;
 	rotation=0;
-}
+}*/
 
 NodePreview::~NodePreview()
 {
 }
 
-void NodePreview::draw(IVideoDriver* driver)
+void NodePreview::draw()
 {
     if(!node) return;
+
 
 	rotation=rotation+0.15f;
 	if (rotation>360)
 		rotation=0;
-		
-	driver->draw2DRectangle (video::SColor(255,64,64,64),this->viewPort,0);
-	driver->draw2DLine(vector2d<s32>(viewPort.UpperLeftCorner),vector2d<s32>(viewPort.UpperLeftCorner.X,viewPort.LowerRightCorner.Y),video::SColor(255,168,168,168));
-    driver->draw2DLine(vector2d<s32>(viewPort.UpperLeftCorner),vector2d<s32>(viewPort.LowerRightCorner.X,viewPort.UpperLeftCorner.Y),video::SColor(255,168,168,168));
-	driver->draw2DLine(vector2d<s32>(viewPort.UpperLeftCorner.X,viewPort.LowerRightCorner.Y),vector2d<s32>(viewPort.LowerRightCorner),video::SColor(255,220,220,220));
-    driver->draw2DLine(vector2d<s32>(viewPort.LowerRightCorner.X,viewPort.UpperLeftCorner.Y),vector2d<s32>(viewPort.LowerRightCorner),video::SColor(255,220,220,220));
-	rect<s32> originalViewport = driver->getViewPort();
-
-    driver->setViewPort(viewPort);
+	
+	IGUISkin* skin = Environment->getSkin();
+	core::rect<s32> frameRect(AbsoluteRect);
+	skin->draw3DSunkenPane(this, video::SColor(255,64,64,64) ,
+		true, true, frameRect, &AbsoluteClippingRect);
+	
+	core::rect<s32> originalViewport = driver->getViewPort();
+	
+    driver->setViewPort(frameRect);
 
     matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
     matrix4 oldViewMat = driver->getTransform(video::ETS_VIEW);
@@ -64,6 +83,8 @@ void NodePreview::draw(IVideoDriver* driver)
     driver->setTransform ( video::ETS_WORLD, oldWorldMat );
 
     driver->setViewPort(originalViewport);
+	// draw children
+	IGUIElement::draw();
 	
 }
 
@@ -77,7 +98,7 @@ ISceneNode* NodePreview::getNode()
     return node;
 }
 
-void NodePreview::setViewport(rect<s32> viewPort)
+void NodePreview::setViewport(core::rect<s32> viewPort)
 {
     this->viewPort = viewPort;
 }
@@ -86,3 +107,6 @@ rect<s32> NodePreview::getViewPort()
 {
     return viewPort;
 }
+
+} // end namespace
+} // end namespace
