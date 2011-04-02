@@ -64,7 +64,7 @@ void CameraSystem::setCamera(int tempCamera)
     cam->setFarValue(cameraHeight*3.0f);
 	
     cam->setNearValue(12.0f);
-	App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
+	//App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
 }
 
 int CameraSystem::getCamera()
@@ -130,4 +130,11 @@ vector3df CameraSystem::getTarget()
 {
 	vector3df target = vector3df(cam->getPosition() + vector3df(0,-cam->getPosition().Y,cam->getPosition().Y) );
 	return target;
+}
+
+void CameraSystem::fixRatio(IVideoDriver * driver)
+{
+	dimension2d<u32> screensize = driver->getScreenSize();
+	cam->setAspectRatio((irr::f32)screensize.Width/screensize.Height);
+	printf("TEST");
 }

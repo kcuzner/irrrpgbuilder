@@ -31,6 +31,8 @@ class Player
 		void update();
 		void updateDisplay();
 		
+		void setTaggedTarget(DynamicObject* object);
+		DynamicObject* getTaggedTarget();
 		
 		// Other player specific functions
 		
@@ -45,6 +47,7 @@ class Player
         Player();
 		
 		DynamicObject* playerObject;
+		DynamicObject* taggedObject;
 		
         ITimer* timer;
 		u32 currentime;

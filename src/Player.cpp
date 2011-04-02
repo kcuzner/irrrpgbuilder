@@ -59,6 +59,8 @@ Player::Player()
 	playerObject->setProp_level(player_level);
 	playerObject->getNode()->setID(0);
 
+	taggedObject=NULL;
+
 }
 
 Player::~Player()
@@ -93,6 +95,12 @@ void Player::update()
 		// Will give the real size on the map
 		f32 sizePlayer = playerObject->getNode()->getBoundingBox().getExtent().X;
 		f32 meshScale = playerObject->getScale().X;
+
+		// With this the target reticle will follow the target that has been selected (app.cpp)
+		if (taggedObject)
+		{
+			DynamicObjectsManager::getInstance()->getTarget()->setPosition(taggedObject->getPosition()+vector3df(0,0.1f,0));
+		}
 		
 		// Walk until in range
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
@@ -125,13 +133,17 @@ void Player::update()
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
 
-		if (playerObject->getCurrentEnemy())
+		// This should trigger the player attack if the enemy is in range.
+		if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)
 		{
 			printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
 			if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
 			{
 				playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
-				playerObject->setAnimation("attack");
+				if (playerObject->getLife()!=0)
+					playerObject->setAnimation("attack");
+				else
+					playerObject->setAnimation("die");
 			}
 		}
 		//updateDisplay();
@@ -155,4 +167,14 @@ void Player::setHighLight(bool highlight)
         this->playerObject->getShadow()->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/player/highlight.png"));
         this->playerObject->getShadow()->setMaterialFlag(EMF_LIGHTING,false);
     }
+}
+
+void Player::setTaggedTarget(DynamicObject* object)
+{
+	taggedObject = object;
+}
+
+DynamicObject* Player::getTaggedTarget()
+{
+	return taggedObject;
 }

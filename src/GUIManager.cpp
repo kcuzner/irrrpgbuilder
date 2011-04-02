@@ -187,43 +187,6 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     return "";
 }
 
-bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
-// will tell the caller if he's clicked inside a IRB window
-{
-	
-	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
-		return true;
-	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
-		return true;
-	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
-		return true;
-	if (guiDynamicObjectsWindowChooser->isVisible() && guiDynamicObjectsWindowChooser->isPointInside(mousepos))
-		return true;
-	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
-	{
-		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
-        getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
-		return true;
-	}
-	if (guiLoaderWindow->isVisible() && guiLoaderWindow->isPointInside(mousepos))
-		return true;
-	if (guiAboutWindow->isVisible() && guiAboutWindow->isPointInside(mousepos))
-		return true;
-	if (guiDynamicObjectsWindowEditAction->isVisible() && guiDynamicObjectsWindowEditAction->isPointInside(mousepos))
-		return true;
-	if (guiDynamicObjects_Context_Menu_Window->isVisible() && guiDynamicObjects_Context_Menu_Window->isPointInside(mousepos))
-		return true;
-
-	// old stuff (IRRlicht only editor)
-	if (guiMainWindow->isVisible() && guiMainWindow->isPointInside(mousepos))
-		return true;
-	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
-		return true;
-
-
-	return false;
-}
-
 void GUIManager::setupEditorGUI()
 {
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
@@ -246,6 +209,7 @@ void GUIManager::setupEditorGUI()
 	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
+	guiLoaderWindow->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
 
 	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
@@ -277,21 +241,23 @@ void GUIManager::setupEditorGUI()
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
 	guiMainWindow->getCloseButton()->setVisible(false);
+	guiMainWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
 	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,46),false);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
+	guiMainToolWindow->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 
 
 	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
 	guiBackImage->setScaleImage(true);
-	guiBackImage->setMaxSize(dimension2du(displaywidth,92));
-	guiBackImage->setMinSize(dimension2du(displaywidth,92));
-
-
+	guiBackImage->setMaxSize(dimension2du(2048,92));
+	guiBackImage->setMinSize(dimension2du(2048,92));
+	guiBackImage->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
     s32 x = 0;
@@ -299,6 +265,7 @@ void GUIManager::setupEditorGUI()
     ///MAIN FUNCTIONS
 	//mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
 	mainTabCtrl = guienv->addTabControl(myRect(0,0,displaywidth-160,92),guiMainWindow,false,false);
+	mainTabCtrl->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 	IGUITab * tabProject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
 	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
@@ -500,17 +467,19 @@ void GUIManager::setupEditorGUI()
     guiAboutWindow->setDrawTitlebar(false);
     guiAboutWindow->getCloseButton()->setVisible(false);
     guiAboutWindow->setVisible(false);
+	guiAboutWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
     //guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
-	guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getClientRect().getWidth()/2-100,10),true,guiAboutWindow);
-
+	IGUIImage * logo = guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getClientRect().getWidth()/2-100,10),true,guiAboutWindow);
+	logo->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     //guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
 	guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getClientRect().getWidth() - 37,guiAboutWindow->getClientRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
-
     guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
+	guiAboutClose->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 	//guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getClientRect().getWidth()/2-250,160,500,200),guiAboutWindow);
+	guiAboutText->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
   
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
@@ -678,16 +647,19 @@ void GUIManager::setupEditorGUI()
     s32 X_ScriptToolbar = 10;
 
     guiDynamicObjects_LoadScriptTemplateCB = guienv->addComboBox(myRect(X_ScriptToolbar,10,400,20),tab2,CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
+	guiDynamicObjects_LoadScriptTemplateCB->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+
 
     this->loadScriptTemplates();
 
-    X_ScriptToolbar+=400;
+    X_ScriptToolbar+=405;
 
     guiDynamicObjects_LoadScriptTemplateBT = guienv->addButton(myRect(X_ScriptToolbar,10,200,20),
                       tab2,
                       BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_load_script_template")).c_str() );
 	guiDynamicObjects_LoadScriptTemplateBT->setOverrideFont(guiFontC12);
+	guiDynamicObjects_LoadScriptTemplateBT->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     X_ScriptToolbar+=160;
 
@@ -697,6 +669,7 @@ void GUIManager::setupEditorGUI()
                       BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_validate_script")).c_str() );
 	validate->setOverrideFont(guiFontC12);
+	validate->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 	IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-90,10,82,20),
                       guiDynamicObjectsWindowEditAction,
@@ -716,6 +689,7 @@ void GUIManager::setupEditorGUI()
 
     guiDynamicObjects_Script_Console->setOverrideColor(SColor(255,255,0,0));
     guiDynamicObjects_Script_Console->setEnabled(false);
+	guiDynamicObjects_Script_Console->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 	
 
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
@@ -736,6 +710,45 @@ void GUIManager::setupEditorGUI()
 }
 
 #endif
+
+bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
+// will tell the caller if he's clicked inside a IRB window
+{
+	
+	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
+		return true;
+	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
+		return true;
+	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
+		return true;
+#ifdef EDITOR
+	if (guiDynamicObjectsWindowChooser->isVisible() && guiDynamicObjectsWindowChooser->isPointInside(mousepos))
+		return true;
+	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
+	{
+		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+        getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
+		return true;
+	}
+	if (guiLoaderWindow->isVisible() && guiLoaderWindow->isPointInside(mousepos))
+		return true;
+	if (guiAboutWindow->isVisible() && guiAboutWindow->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjectsWindowEditAction->isVisible() && guiDynamicObjectsWindowEditAction->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjects_Context_Menu_Window->isVisible() && guiDynamicObjects_Context_Menu_Window->isPointInside(mousepos))
+		return true;
+
+	// old stuff (IRRlicht only editor)
+	if (guiMainWindow->isVisible() && guiMainWindow->isPointInside(mousepos))
+		return true;
+#endif
+	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
+		return true;
+
+
+	return false;
+}
 
 void GUIManager::setTextLoader(stringw text)
 {

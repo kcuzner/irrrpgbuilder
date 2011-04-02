@@ -16,7 +16,7 @@
 // first icon in the executable and the icons are sorted both by their order
 // (Win9x) and by alphabetically (!) (NT), so put this icon first and give it
 // a name starting with "a"
-a ICON "irrlicht.ico"
+aaaaaaaa ICON "irrlicht.ico"
 
 // this icon is used with wxFrame::SetIcon()
 sample ICON "irrlicht.ico"
@@ -24,7 +24,7 @@ sample ICON "irrlicht.ico"
 // set this to 1 if you don't want to use manifest resource (manifest resource
 // is needed to enable visual styles on Windows XP - see docs/msw/winxp.txt
 // for more information)
-#define wxUSE_NO_MANIFEST 1
+#define wxUSE_NO_MANIFEST 0
 
 // this is not always needed but doesn't hurt (except making the executable
 // very slightly larger): this file contains the standard icons, cursors, ...

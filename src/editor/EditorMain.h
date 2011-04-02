@@ -109,6 +109,10 @@ class CIrrFrame : public wxFrame
 		void OnTerrainTree(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt));
 
+		int MessageBox(core::stringw message, core::stringw message2, int buttons);
+		core::stringw FileOpen(core::stringw message);
+		core::stringw FileSave();
+
 
 		DECLARE_EVENT_TABLE()
 

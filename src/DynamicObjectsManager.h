@@ -38,10 +38,7 @@ class DynamicObjectsManager
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
 
-		void setTaggedTarget(DynamicObject* object);
-		DynamicObject* getTaggedTarget();
-
-        vector<stringc> getObjectsList();
+		vector<stringc> getObjectsList();
 
         void showDebugData(bool show);
 
@@ -59,7 +56,7 @@ class DynamicObjectsManager
         void updateAll();
         void clearAllScripts();
 
-        void clean();
+        void clean(bool full);
 
         virtual ~DynamicObjectsManager();
 
@@ -74,7 +71,7 @@ class DynamicObjectsManager
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
-		DynamicObject* taggedObject;
+		
 
         vector<DynamicObject*> objectsTemplate;
 

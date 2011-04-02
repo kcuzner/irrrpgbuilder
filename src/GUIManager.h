@@ -102,6 +102,7 @@ class GUIManager
 		IGUIFont* getFont(FONT_NAME fontName);
         
     	void drawPlayerStats();
+		bool isGuiPresent(vector2d<s32> mousepos);
 
 		#ifdef EDITOR
 		void setupEditorGUI();
@@ -109,7 +110,6 @@ class GUIManager
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
-		bool isGuiPresent(vector2d<s32> mousepos);
 		void setEditBoxText(GUI_ID id, stringw text);
 
 		#endif

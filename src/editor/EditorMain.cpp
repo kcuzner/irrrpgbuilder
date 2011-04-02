@@ -9,7 +9,7 @@ IMPLEMENT_APP(CIrrApp)
 bool CIrrApp::OnInit()
 {
 	
-	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - March 2011"), wxPoint(0,0), wxSize(1024,768) );
+	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - April 2011"), wxPoint(0,0), wxSize(1024,768) );
 	frame->Show(TRUE);
 	
 	frame->Centre();
@@ -69,7 +69,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 {
 	m_ribbon = new wxRibbonBar(this, wxID_ANY);
 	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
+	SetIcon(wxICON(sample));
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
@@ -218,17 +218,54 @@ void CIrrFrame::OnClose (wxCloseEvent& e)
 
 void CIrrFrame::OnNew(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	App::getInstance()->createNewProject();
+	if (MessageBox(L"New project",L"This will create a new project.\nAre you sure?",2)==1)
+	{
+		App::getInstance()->createNewProject();
+		wxLogStatus(wxT("New project created!"));
+	}
+
 }
 
 void CIrrFrame::OnSave(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	App::getInstance()->saveProject();
+
+	APP_STATE old_state = App::getInstance()->getAppState();
+	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+
+	if (MessageBox(L"Saving project",L"Want to save this project?",2)==1)
+	{
+		stringw result = FileSave();
+		if (result.size()>2)
+		{
+			App::getInstance()->saveProjectToXML(result.c_str());
+			wxLogStatus(wxT("Project %s saved successfully!"),result.c_str());
+		}
+	}
+	App::getInstance()->setAppState(old_state);
 }
 
 void CIrrFrame::OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	App::getInstance()->loadProject();;
+	APP_STATE old_state = App::getInstance()->getAppState();
+	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+
+	int boxres = MessageBox(L"Loading a new project",L"Will you save the current project?",3);
+	if (boxres==1 || boxres==0)
+	{
+		if (boxres==1)
+		{
+			App::getInstance()->saveProjectToXML(App::getInstance()->getProjectName().c_str());
+			wxLogStatus(wxT("Project '%s' saved",App::getInstance()->getProjectName().c_str()));
+		}
+
+		core::stringw result=FileOpen(L"Specify the project file to load");
+		if (result.size()>2)
+		{
+			App::getInstance()->loadProjectFromXML(result.c_str());
+			wxLogStatus(wxT("Project %s loaded successfully"),result.c_str());
+		}
+	}
+	App::getInstance()->setAppState(old_state);
 }
 
 void CIrrFrame::OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt))
@@ -301,3 +338,139 @@ void CIrrFrame::OnStopUpdate(wxCommandEvent &event)
 	window3D->StopUpdate();
 }
 
+int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int buttons)
+{
+	if (buttons==3)
+	{
+		wxMessageDialog dialog(this,
+							message.c_str(),
+                           "IRR Rpg Builder warning",
+                           wxCENTER | 
+						   wxYES_NO | wxYES_DEFAULT | wxCANCEL |
+						   wxICON_WARNING);
+		wxString extmsg;
+		if ( dialog.SetYesNoCancelLabels
+			(
+			"&Yes",
+			"&No",
+			"Cancel"
+			) )
+		{
+			extmsg = message2.c_str();
+		}
+		else
+		{
+			extmsg = message2.c_str();
+		}
+		dialog.SetExtendedMessage(extmsg);
+
+		switch ( dialog.ShowModal() )
+		{
+			case wxID_YES:
+				return 1;
+				break;
+
+			case wxID_NO:
+				return 0;
+				break;
+
+			case wxID_CANCEL:
+				return 2;
+				break;
+
+			default:
+				wxLogError(wxT("Unexpected wxMessageDialog return code!"));
+				return -1;
+		}
+	}
+
+	if (buttons==2)
+	{
+
+		wxMessageDialog dialog(this,
+							message.c_str(),
+                           "IRR Rpg Builder warning",
+                           wxCENTER | 
+						   wxOK | wxCANCEL |
+						   wxICON_WARNING);
+		wxString extmsg;
+		if ( dialog.SetOKCancelLabels
+			(
+			"&Yes",
+			"&No"
+			) )
+		{
+			extmsg = message2.c_str();
+		}
+		else
+		{
+			extmsg = message2.c_str();
+		}
+		dialog.SetExtendedMessage(extmsg);
+
+		switch ( dialog.ShowModal() )
+		{
+			case wxID_OK:
+				return 1;
+				break;
+
+			case wxID_CANCEL:
+				return 0;
+				break;
+
+			default:
+				wxLogError(wxT("Unexpected wxMessageDialog return code!"));
+				return -1;
+		}
+	}
+    
+	return -1;
+}
+
+core::stringw CIrrFrame::FileOpen(core::stringw message)
+{
+    static wxString s_extDef;
+	wxString path = wxFileSelector(
+									message.c_str(),
+                                    wxT("../projects"), wxEmptyString,
+                                    s_extDef,
+                                    wxString::Format
+                                    (
+                                        wxT("Irr Rpg Builder (*.xml)|*.xml|All files (%s)|%s"),
+                                        wxFileSelectorDefaultWildcardStr,
+                                        wxFileSelectorDefaultWildcardStr
+                                    ),
+                                    wxFD_OPEN|wxFD_CHANGE_DIR|wxFD_PREVIEW,
+                                    this
+                                   );
+
+    if ( !path )
+        return L"";
+
+    // it is just a sample, would use wxSplitPath in real program
+    s_extDef = path.AfterLast(wxT('.'));
+	//wxLogStatus(wxT("You selected the file '%s', remembered extension '%s'"),
+    //             path, s_extDef);
+
+    return (core::stringw)path.c_str().AsString().ToStdWstring().c_str();
+}
+
+core::stringw CIrrFrame::FileSave()
+{
+    wxFileDialog dialog(this,
+                        wxT("Testing save file dialog"),
+                        wxT("../projects"),
+						App::getInstance()->getProjectName().c_str(),
+                        //wxT("irb_temp_project.XML"),
+                        wxT("Project files (*.XML)|*.XML"),
+                        wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+
+    dialog.SetFilterIndex(1);
+
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        wxLogStatus(wxT("Saving %s ..."),dialog.GetPath().c_str());
+		return dialog.GetPath().c_str().AsString().ToStdWstring().c_str();
+    }
+	return L"";
+}

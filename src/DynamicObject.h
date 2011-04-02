@@ -180,6 +180,8 @@ class DynamicObject
         stringc getObjectType();
 
 		void attackEnemy(DynamicObject* obj);
+		bool isTemplate();
+		void setTemplate(bool value);
       
     protected:
 
@@ -242,6 +244,7 @@ class DynamicObject
 
 		DynamicObject* enemyUnderAttack;
 		DynamicObject* currentObject;
+		stringc namecollide;
 		f32	currentSpeed;
 		s32 lastframe;
 
@@ -260,6 +263,8 @@ class DynamicObject
 		property prop_base;
 		property prop_level;
 		property properties;
+
+		bool templateobject;
 
 		u32 timer;
 		u32 timer2;

@@ -197,8 +197,8 @@ void App::setAppState(APP_STATE newAppState)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
-			Player::getInstance()->setHighLight(false);
 		}
+		Player::getInstance()->setHighLight(false);
         
     }
 
@@ -287,7 +287,7 @@ void App::eventGuiButton(s32 id)
 
 	#ifdef EDITOR
 
-        case BT_ID_NEW_PROJECT:
+		case BT_ID_NEW_PROJECT:
             this->createNewProject();
             break;
         case BT_ID_LOAD_PROJECT:
@@ -392,7 +392,7 @@ void App::eventGuiButton(s32 id)
             break;
 
 		#endif
-
+		
         case BT_ID_PLAY_GAME:
 			playGame();
             break;
@@ -406,6 +406,10 @@ void App::eventGuiButton(s32 id)
             device->drop();
 		    exit(0);
             break;
+
+		case BT_ID_HELP:
+			this->displayGuiConsole();
+			break;
         case BT_ID_ABOUT:
             GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
             setAppState(APP_EDIT_ABOUT);
@@ -478,7 +482,10 @@ void App::setScreenSize(dimension2d<u32> size)
 		text.append((stringw)screensize.Width);
 		text.append(L",");
 		text.append((stringw)screensize.Height);
-	
+		// Correct the aspect ratio of the camera when the screen is changed.
+#ifndef _WXMSW
+		CameraSystem::getInstance()->fixRatio(driver);
+#endif
 		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
 	}
 }
@@ -639,9 +646,14 @@ bool App::loadConfig()
 #ifndef _WXMSW
 	screensize.Height = 768;
 	screensize.Width = 1024;
+	
 # else
-	screensize = device->getVideoDriver()->getScreenSize();
-	// for some reasons IRRlicht open in 20,20 when used inside a wxWindowé
+	
+//	if (device->run())
+//	{
+//		screensize = device->getVideoDriver()->getScreenSize();
+//	}
+	// for some reasons IRRlicht open in 20,20 when used inside a wxWindow
 	if (screensize.Height<100)
 	{
 		screensize.Width = 1008;
@@ -700,7 +712,14 @@ bool App::loadConfig()
 			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
-
+#ifndef _WXMSW
+			if (resizable && fullScreen)
+			{
+				IrrlichtDevice * tempdevice = createDevice(EDT_NULL,dimension2d<u32>(640,480), 16, false, false, false, 0);
+				screensize = tempdevice->getVideoModeList()->getDesktopResolution();
+				tempdevice->closeDevice();
+			}
+#endif
         }
 		//Language
 		TiXmlElement* langXML = root->FirstChildElement( "language" );
@@ -765,16 +784,16 @@ bool App::loadConfig()
 
 void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
+	
+	loadConfig();
 
 	if (!IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (mar 2011)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (apr 2011)");
 	} else
 		device = IRRdevice;
-	
-	loadConfig();
 
     driver = device->getVideoDriver();
     smgr = device->getSceneManager();
@@ -928,7 +947,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (mar 2011)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (apr 2011)";
 			str += " FPS:";
 			str += fps;
 
@@ -1099,50 +1118,36 @@ void App::updateGameplay()
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
-					if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
+					
+					if(obj->getObjectType() == stringc("ENEMY"))
 					{
-						if(obj->getObjectType() == stringc("ENEMY"))
-						{
-							Player::getInstance()->getObject()->attackEnemy(obj);
-							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
-							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-							DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
-							return;
-						}
-						else
-						{
-							obj->notifyClick();
-							Player::getInstance()->getObject()->clearEnemy();
-							DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
-							Player::getInstance()->getObject()->lookAt(obj->getPosition());
-							return;
-						}
+						Player::getInstance()->getObject()->attackEnemy(obj);
 					}
 					else
 					{
-						mousePick = getMousePosition3D(100);
-						Player::getInstance()->getObject()->setWalkTarget(vector3df(mousePick.pickedPos.X,0,mousePick.pickedPos.Z));
-						DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
-						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-						DynamicObjectsManager::getInstance()->setTaggedTarget(obj);
+						if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
+							obj->notifyClick();			
 						Player::getInstance()->getObject()->clearEnemy();
-						return;
 					}
+					DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+						
+					Player::getInstance()->getObject()->setWalkTarget(obj->getPosition());
+					Player::getInstance()->getObject()->lookAt(obj->getPosition());
+					Player::getInstance()->setTaggedTarget(obj);
+					return;
+				
 				}
 				else
 				{
 					mousePick = getMousePosition3D(100);
 					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
-					Player::getInstance()->getObject()->clearEnemy();
-					DynamicObjectsManager::getInstance()->setTaggedTarget(NULL);
 					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+					Player::getInstance()->setTaggedTarget(NULL);
+					//Player::getInstance()->getObject()->clearEnemy();
 					return;
 				}
-			}
-			else//No action
-			{
-				//if(Player::getInstance()->getObject()->getAnimation() != OBJECT_ANIMATION_WALK) Player::getInstance()->getObject()->setAnimation("idle");
 			}
 		}
 	}
@@ -1154,7 +1159,7 @@ void App::cleanWorkspace()
 
     TerrainManager::getInstance()->clean();
 
-    DynamicObjectsManager::getInstance()->clean();
+    DynamicObjectsManager::getInstance()->clean(false);
 
     scriptGlobal="";
 }
@@ -1163,7 +1168,7 @@ void App::createNewProject()
 {
     APP_STATE old_state = getAppState();
     setAppState(APP_EDIT_WAIT_GUI);
-
+#ifndef _WXMSW
     stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
     GUIManager::getInstance()->flush();
 
@@ -1177,6 +1182,9 @@ void App::createNewProject()
 
     stringc filename = "../projects/";
     filename += name;
+#else
+	stringc name="irb_temp_project.XML";
+#endif
 
     this->cleanWorkspace();
 
@@ -1184,14 +1192,14 @@ void App::createNewProject()
 
     TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
-    smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
-    driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
+    //smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
+    //driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 	
     Player::getInstance();
 
     this->currentProjectName = name;
 
-    this->saveProject();
+    //this->saveProject();
 
     setAppState(old_state);
 }
@@ -1205,7 +1213,9 @@ void App::loadProject()
     GUIManager::getInstance()->flush();
     if(ansSave)
     {
-        saveProjectToXML();
+		stringc filename = "../projects/";
+		filename += currentProjectName;
+        saveProjectToXML(filename);
         GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
         GUIManager::getInstance()->flush();
     }
@@ -1252,17 +1262,22 @@ void App::saveProject()
         currentProjectName += ".XML";
     }
 
-    this->saveProjectToXML();
+	stringc filename = "../projects/";
+    filename += currentProjectName;
+    this->saveProjectToXML(filename);
     GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
     GUIManager::getInstance()->flush();
 
     setAppState(old_state);
 }
 
-void App::saveProjectToXML()
+stringc App::getProjectName()
 {
-    stringc filename = "../projects/";
-    filename += currentProjectName;
+	return this->currentProjectName;
+}
+
+void App::saveProjectToXML(stringc filename)
+{
 
     TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );

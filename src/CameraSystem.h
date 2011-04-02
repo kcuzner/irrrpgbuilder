@@ -30,6 +30,8 @@ class CameraSystem
         vector3df getPosition();
         vector3df getTarget();
 
+		void fixRatio(IVideoDriver * driver);
+
         virtual ~CameraSystem();
     protected:
     private:

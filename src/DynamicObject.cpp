@@ -35,9 +35,11 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	// When enabled, the LUA will update even if the node is culled.
 	this->nodeLuaCulling = false;
+	this->templateobject = false;
 	lastframe=0;
 	enabled=true;
 	enemyUnderAttack=NULL;
+	namecollide="";
 	setAnimation("idle");
 
 	// Tries out animation blending
@@ -61,6 +63,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	//nodeBlend->setTransitionTime(0.5f);
 
 	initProperties();
+	enemyUnderAttack=NULL;
 
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -69,8 +72,9 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 DynamicObject::~DynamicObject()
 {
     selector->drop();
-    node->remove();
 	Healthbar->remove();
+    node->remove();
+	
 }
 
 void DynamicObject::initProperties()
@@ -229,7 +233,7 @@ DynamicObject* DynamicObject::clone()
     newObj->setMaterialType(this->getMaterialType());
 	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
-
+	newObj->setTemplate(false);
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -316,8 +320,11 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 	
 
+	if (getType()==OBJECT_TYPE_PLAYER && Player::getInstance()->getTaggedTarget())
+		targetPos = Player::getInstance()->getTaggedTarget()->getPosition();
+	else
+		targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
 	
-	targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
 	this->lookAt(targetPos);
 
 	f32 speed = currentAnim.walkspeed;
@@ -335,6 +342,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	{
 		pos.Y = height;
 		this->setPosition(pos);
+		
 		stringw text=L"Walkto Called:";
 		text.append((stringw)speed);
 		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
@@ -344,10 +352,29 @@ void DynamicObject::walkTo(vector3df targetPos)
 	{
 		if (objectType==OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+
 		walkTarget = this->getPosition();
-		this->setAnimation("idle");
-		GUIManager::getInstance()->setConsoleText(L"Stop because of a collision!",false);
-		printf("Stop because of a collision...\n");
+		if (enemyUnderAttack)
+		{
+			GUIManager::getInstance()->setConsoleText(L"That is the ennemy!",false);
+			stringc currentenemy = enemyUnderAttack->getNode()->getName();
+			if (namecollide==currentenemy)
+			{
+				if (objectType==OBJECT_TYPE_PLAYER)
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+				lookAt(enemyUnderAttack->getPosition());
+				setAnimation("attack");
+			} else
+				this->setAnimation("idle");
+
+		} else
+			this->setAnimation("idle");
+
+		stringw text=L"Stop because of a collision with";
+		text.append((stringw)namecollide);
+		text.append(L"!");
+		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		
 		collided=false; // reset the collision flag
 	}
 }
@@ -381,6 +408,17 @@ void DynamicObject::clearEnemy()
 //-----------------------------------------------------------------------
 // Properties
 //-----------------------------------------------------------------------
+
+void DynamicObject::setTemplate(bool value)
+{
+	this->templateobject=value;
+}
+
+bool DynamicObject::isTemplate()
+{
+	return this->templateobject;
+}
+
 property DynamicObject::getProperties()
 {
 	return this->properties;
@@ -591,8 +629,10 @@ void DynamicObject::setAnimation(stringc animName)
 
 	if (animName=="die")
 	{
-		GUIManager::getInstance()->setConsoleText(L"",true);
-		GUIManager::getInstance()->setConsoleText(L"Die animation encountered",false);
+		stringw text = L"Die animation for character: ";
+		text.append(getNode()->getName());
+		text.append(L" encoutered.");
+		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
 	}
 
 	// Search for the proper animation name and set it.
@@ -687,12 +727,15 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 
     enemyUnderAttack = obj;
 
-    if(obj)
+	if(obj)
     {
 		printf("Attack for this enemy asked %s\n",obj->getName().c_str());
         this->lookAt(obj->getPosition());
-        this->setAnimation("attack");
-		obj->notifyClick();
+		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
+		{
+			this->setAnimation("attack");
+			obj->notifyClick();
+		}
     }
 
 }
@@ -915,8 +958,7 @@ void DynamicObject::update()
 		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
 		collided=true;
 		notifyCollision();
-		stringc namecollide = animator->getCollisionNode()->getName();
-		printf ("Collision occured with this: %s\n",namecollide.c_str());
+		namecollide = animator->getCollisionNode()->getName();
 	}
 
 	// timed interface an culling check.

@@ -96,6 +96,7 @@ class App
         void loadProject();
         void loadProject(stringc filename);
         void saveProject();
+		stringc getProjectName();
 
         void initialize();
 		
@@ -103,6 +104,9 @@ class App
 
         void setAppState(APP_STATE newAppState);
         APP_STATE getAppState();
+
+		void saveProjectToXML(stringc filename);
+        bool loadProjectFromXML(stringc filename);
 
 		bool wxSystem;
 
@@ -113,11 +117,7 @@ class App
 
         bool cursorIsInEditArea();
 		vector3df oldcampos;
-		
-
-        void saveProjectToXML();
-        bool loadProjectFromXML(stringc filename);
-		
+	
         IrrlichtDevice *device;
         IVideoDriver* driver;
         ISceneManager* smgr;

@@ -11,7 +11,7 @@ using namespace gui;
 DynamicObjectsManager::DynamicObjectsManager()
 {
 	device = App::getInstance()->getDevice();
-	taggedObject=NULL;
+	
 	// Load the definition for all dynamic objects
 	//ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
@@ -279,10 +279,12 @@ bool DynamicObjectsManager::processFile(stringc filename)
 			if (type=="player")
 			{
 				playerObject=newObj; // Shortcut for directly accessing the player dynamic object
+				playerObject->setTemplate(true);
 				objects.push_back(newObj);  // The player object is added to the list of the active dynamic objects (refresh)
 			} else if(type=="editor" && name=="target")
 			{
 				targetObject=newObj;
+				targetObject->setTemplate(true);
 				targetObject->getNode()->setVisible(false);
 				targetObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 			}
@@ -290,6 +292,7 @@ bool DynamicObjectsManager::processFile(stringc filename)
 			{	// other objects that are used as templates
 				newObj->setTemplateObjectName(name);
 				newObj->getNode()->setVisible(false);
+				newObj->setTemplate(true);
 				//store the new object
 				objectsTemplate.push_back(newObj);
 				objsIDs.push_back(name);
@@ -372,7 +375,9 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 {
     for (int i=0 ; i< (int)objects.size() ; i++)
     {
-    	if( objects[i]->getName() == name ) return objects[i];
+		if (objects[i])
+    		if( objects[i]->getName() == name ) 
+				return objects[i];
     }
 
     return NULL;
@@ -386,16 +391,6 @@ DynamicObject* DynamicObjectsManager::getPlayer()
 DynamicObject* DynamicObjectsManager::getTarget()
 {
 	return targetObject;
-}
-
-void DynamicObjectsManager::setTaggedTarget(DynamicObject* object)
-{
-	taggedObject = object;
-}
-
-DynamicObject* DynamicObjectsManager::getTaggedTarget()
-{
-	return taggedObject;
 }
 
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
@@ -476,7 +471,8 @@ void DynamicObjectsManager::initializeAllScripts()
 {
     for(int i=0;i<(int)objects.size();i++)
     {
-        ((DynamicObject*)objects[i])->doScript();
+		if (objects[i])
+			((DynamicObject*)objects[i])->doScript();
     }
 }
 
@@ -486,37 +482,44 @@ void DynamicObjectsManager::updateAll()
     {
 		// Non interactive objects will not be refreshed (update callback)
 		// Should help with performance and allow for more NPC/Interactive objects.
-		if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+		if (objects[i])
 		{
-			((DynamicObject*)objects[i])->update();
+			if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+			{
+				((DynamicObject*)objects[i])->update();
+			}
 		}
     }
 	if (createcollisions)
 		initializeCollisions();
-
-	// With this the target reticle will follow the target that has been selected (app.cpp)
-	if (taggedObject)
-	{
-		targetObject->setPosition(taggedObject->getPosition()+vector3df(0,0.1f,0));
-	}
 }
 
 void DynamicObjectsManager::clearAllScripts()
 {
     for(int i=0;i<(int)objects.size();i++)
     {
-        ((DynamicObject*)objects[i])->restoreParams();
-        ((DynamicObject*)objects[i])->clearScripts();
+		if (objects[i])
+		{
+			((DynamicObject*)objects[i])->restoreParams();
+			((DynamicObject*)objects[i])->clearScripts();
+		}
     }
-	taggedObject=NULL;
 }
 
 void DynamicObjectsManager::showDebugData(bool show)
 {
     for(int i=0;i<(int)objects.size();i++)
+	{
 		// We don't need to have bounding box and other data over the player
-		if (objects[i]->getType()!=OBJECT_TYPE_PLAYER)
-			((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
+		if (objects[i])
+		{
+			if (objects[i]->getType()!=OBJECT_TYPE_PLAYER)
+			{
+				((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
+				objects[i]->objectLabelSetVisible(false);
+			}
+		}
+	}
 }
 
 IMetaTriangleSelector* DynamicObjectsManager::createMeta()
@@ -529,16 +532,19 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	// Put all the triangle selector into one meta selector.
 	for(int i=0;i<(int)objects.size();i++)
 	{
-		if (objects[i]->isEnabled())
+		if (objects[i])
 		{
-			triangle = objects[i]->getNode()->getTriangleSelector();
-			s32 number = triangle->getTriangleCount();
-			printf ("There is about %i triangles in this selector.\n",number);
+			if (objects[i]->isEnabled())
+			{
+				triangle = objects[i]->getNode()->getTriangleSelector();
+				s32 number = triangle->getTriangleCount();
+				printf ("There is about %i triangles in this selector.\n",number);
 
-			meta->addTriangleSelector(triangle);
-			s32 number2  = meta->getTriangleCount();
-			printf ("There is about %i triangles in this metaselector.\n",number2);
-			printf("Collisions: added object %i\n",i);
+				meta->addTriangleSelector(triangle);
+				s32 number2  = meta->getTriangleCount();
+				printf ("There is about %i triangles in this metaselector.\n",number2);
+				printf("Collisions: added object %i\n",i);
+			}
 		}
 	}
 	return meta;
@@ -558,19 +564,22 @@ void DynamicObjectsManager::initializeCollisions()
 	// Done at each update until the list is completed. Should give some time for other tasks.
 
 	// Could perhaps do the meta the same way (Meta creation and this take the longest time)
-	if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
+	if (objects[collisionCounter])
 	{
-		if (objects[collisionCounter]->isEnabled())
+		if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
 		{
-			createMeta();
+			if (objects[collisionCounter]->isEnabled())
+			{
+				createMeta();
 
-			meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
+				meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
 
-			ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-			objects[collisionCounter]->getNode()->addAnimator(coll);
-			objects[collisionCounter]->setAnimator(coll);
+				ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
+				objects[collisionCounter]->getNode()->addAnimator(coll);
+				objects[collisionCounter]->setAnimator(coll);
 
-			meta->drop();
+				meta->drop();
+			}
 		}
 	}
 	collisionCounter++;
@@ -587,16 +596,19 @@ void DynamicObjectsManager::clearCollisions()
 	// Remove the collision animators from the objects
 	for(int i=0;i<(int)objects.size();i++)
     {
-		core::list<ISceneNodeAnimator*>::ConstIterator begin = objects[i]->getNode()->getAnimators().begin();
-		core::list<ISceneNodeAnimator*>::ConstIterator end = objects[i]->getNode()->getAnimators().end();
-
-		for(int it=0; begin != end; ++it )
+		if (objects[i])
 		{
-			ISceneNodeAnimator* pAnim = *begin;
-			if( pAnim->getType() == ESNAT_COLLISION_RESPONSE )
+			core::list<ISceneNodeAnimator*>::ConstIterator begin = objects[i]->getNode()->getAnimators().begin();
+			core::list<ISceneNodeAnimator*>::ConstIterator end = objects[i]->getNode()->getAnimators().end();
+
+			for(int it=0; begin != end; ++it )
 			{
-				objects[i]->getNode()->removeAnimator(*begin);
-				break;
+				ISceneNodeAnimator* pAnim = *begin;
+				if( pAnim->getType() == ESNAT_COLLISION_RESPONSE )
+				{
+					objects[i]->getNode()->removeAnimator(*begin);
+					break;
+				}
 			}
 		}
 	}
@@ -614,8 +626,37 @@ void DynamicObjectsManager::updateMetaSelector()
 	collisionCounter=0;
 }
 
-void DynamicObjectsManager::clean()
+void DynamicObjectsManager::clean(bool full)
 {
+
+	collisionResponseAnimators.clear();
+	vector<DynamicObject*> object_backup;
+	object_backup.clear();
+
+	// Remove all non-templates
+	for(int i=0;i<(int)objects.size();i++)
+    {
+        DynamicObject* d = objects[i];
+		if (d)
+		{
+			d->clearEnemy();
+			if (!d->isTemplate())
+			{
+				delete d;
+          		objects[i]=NULL;
+				
+			} else
+				object_backup.push_back(d);
+		}
+    }
+	// Cleanup
+	objects.clear();
+	objects=object_backup;
+	object_backup.clear();
+	
+	
+	if (!full) 
+		return;
     objsCounter = 0;
 	// Temporarily commented out, was crashing when closing the game in play mode
 	// This doesnt seem to cause a memory leak for now.
@@ -625,7 +666,7 @@ void DynamicObjectsManager::clean()
 
         sc->drop();
     }*/
-    collisionResponseAnimators.clear();
+    
     activeObject = NULL;
 	 /*
     for(int i=0;i<objectsTemplate.size();i++)
@@ -635,13 +676,15 @@ void DynamicObjectsManager::clean()
         delete d;
     }*/
 
-	objectsTemplate.clear();
+	//objectsTemplate.clear();
 
-    for(int i=0;i<(int)objects.size();i++)
+	for(int i=0;i<(int)objects.size();i++)
     {
         DynamicObject* d = objects[i];
-
-        delete d;
+		delete d;
+        objects.erase(objects.begin() + i);
     }
-    objects.clear();
+    
+   objects.clear();
+	
 }
