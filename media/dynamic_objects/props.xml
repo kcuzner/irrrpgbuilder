@@ -7,4 +7,5 @@
     <dynamic_object name="tropical1"		mesh="tropical1.b3d" 		type="non-interactive"	scale="50.4" 	materialType="transparent_1bit"/>
     <dynamic_object name="tropical2" 		mesh="tropical2.b3d" 		type="non-interactive"	scale="72" 	materialType="transparent_1bit"/>
     <dynamic_object name="tropical3" 		mesh="tropical3.b3d" 		type="non-interactive"	scale="72" 	materialType="transparent_1bit"/>
+	<dynamic_object name="player_template" mesh="../player/warrior_temp.x" type="non-interactive" scale="1.0"/>
 </IrrRPG_Builder_DynamicObjects>

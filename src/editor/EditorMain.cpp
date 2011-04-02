@@ -206,13 +206,16 @@ CIrrFrame::~CIrrFrame()
 
 void CIrrFrame::OnQuit(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	Close(TRUE);
+	if (window3D)
+	{	
+		App::getInstance()->shutdown();
+		window3D->Close(true);
+	}
+	Close(true);
 }
 
 void CIrrFrame::OnClose (wxCloseEvent& e)
 {
-	App::getInstance()->shutdown();
-	window3D->Close();
 	exit(0);
 }
 
@@ -261,6 +264,7 @@ void CIrrFrame::OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt))
 		core::stringw result=FileOpen(L"Specify the project file to load");
 		if (result.size()>2)
 		{
+			App::getInstance()->cleanWorkspace();
 			App::getInstance()->loadProjectFromXML(result.c_str());
 			wxLogStatus(wxT("Project %s loaded successfully"),result.c_str());
 		}

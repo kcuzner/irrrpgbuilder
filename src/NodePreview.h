@@ -25,6 +25,10 @@ class NodePreview : public IGUIElement
         void setNode(ISceneNode* node);
         ISceneNode* getNode();
 
+		void drawBackground(bool draw);
+		void drawBorder(bool draw);
+		void setBackgroundColor(video::SColor color);
+
 		void setViewport(core::rect<s32> viewPort);
 		core::rect<s32> getViewPort();
 
@@ -34,6 +38,10 @@ class NodePreview : public IGUIElement
     private:
 		core::rect<s32> rect;
 		video::IVideoDriver * driver;
+
+		bool background;
+		bool border;
+		video::SColor backgroundcolor;
 
         ISceneNode* node;
 		core::rect<s32> viewPort;

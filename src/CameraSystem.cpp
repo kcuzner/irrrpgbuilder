@@ -64,7 +64,7 @@ void CameraSystem::setCamera(int tempCamera)
     cam->setFarValue(cameraHeight*3.0f);
 	
     cam->setNearValue(12.0f);
-	//App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
+	App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
 }
 
 int CameraSystem::getCamera()

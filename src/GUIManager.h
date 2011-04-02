@@ -169,6 +169,7 @@ class GUIManager
 
         position2di mainToolbarPos;
 		IGUITabControl * mainTabCtrl;
+		IGUITabControl * gameTabCtrl;
 
         IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
@@ -235,6 +236,7 @@ class GUIManager
 
         IGUIComboBox* guiDynamicObjects_OBJChooser;
         NodePreview* guiDynamicObjects_NodePreview;
+		NodePreview* guiPlayerNodePreview;
 
         IGUIComboBox* guiDynamicObjects_LoadScriptTemplateCB;
         IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;

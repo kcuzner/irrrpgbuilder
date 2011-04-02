@@ -38,6 +38,12 @@ GUIManager::GUIManager()
             col.setAlpha(230);
             guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
+	
+	// Fake office style skin colors
+	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
+	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
+	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
+	 
 }
 
 GUIManager::~GUIManager()
@@ -46,6 +52,7 @@ GUIManager::~GUIManager()
 	delete managauge;
 	delete lifegauge;
 	delete guiDynamicObjects_NodePreview;
+	delete guiPlayerNodePreview;
 	delete guiDynamicObjects_Script;
 	delete configWindow;
 
@@ -63,7 +70,7 @@ void GUIManager::drawPlayerStats()
 	playerLife += playerObject->getProperties().life;
 	playerLife += "/";
 	playerLife += playerObject->getProperties().maxlife;
-	playerLife += " Exp:";
+	playerLife += " Experience:";
 	stringc playerxp = (stringc)playerObject->getProperties().experience;
 	playerLife += playerxp;
 	playerLife += " Level:";
@@ -205,7 +212,6 @@ void GUIManager::setupEditorGUI()
 	displaywidth=screensize.Width;
 
 	//LOADER WINDOW
-	//guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
@@ -540,14 +546,15 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-		//myRect(driver->getScreenSize().Width - 170,
+#ifdef _WXMSW
+		myRect(displaywidth - 170, 0, 170, displayheight);
+#else
 		myRect(displaywidth - 170,
-		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
 		guiMainToolWindow->getClientRect().getHeight(),
 		170,
-		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight());
 		displayheight-guiMainToolWindow->getClientRect().getHeight());
-
+#endif
+		
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
@@ -555,13 +562,27 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
+	
 
 
-   	guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,10,150,150),-1);
+
+	IGUIStaticText * ObjectText0 = guienv->addStaticText(L"Dynamic object selection",core::rect<s32>(1,1,168,39),false,true,guiDynamicObjectsWindowChooser,-1);
+	ObjectText0->setDrawBackground(true);
+	ObjectText0->setDrawBorder(true);
+	ObjectText0->setBackgroundColor(video::SColor(255,237,242,248));
+	ObjectText0->setOverrideColor(video::SColor(255,65,66,174));
+	ObjectText0->setOverrideFont(guiFontCourier12);
+	ObjectText0->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	IGUIStaticText * ObjectText1 = guienv->addStaticText(L"Current model",core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
+	ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
+	ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+   	guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,40,160,180),-1);
     guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-    guiDynamicObjectsWindowChooser_Y += 160;
+    guiDynamicObjectsWindowChooser_Y += 200;
 
 
     guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
@@ -632,7 +653,7 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_Script->setMultiLine(true);
     guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 	guiDynamicObjects_Script->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-    guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
+    //guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
 	guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
 
@@ -762,6 +783,7 @@ void GUIManager::setupGameplayGUI()
     IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     fader=guienv->addInOutFader();
+	fader->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     fader->setVisible(false);
 
 	// NEW Create display size since IRRlicht return wrong values
@@ -933,19 +955,34 @@ void GUIManager::setupGameplayGUI()
     guiWindowItems->setDrawTitlebar(false);
     guiWindowItems->setDraggable(false);
 	guiWindowItems->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
-    guiWindowItems->setVisible(false);
+    gameTabCtrl = guienv->addTabControl(core::rect<s32>(10,30,displaywidth-240,displayheight-200),guiWindowItems,false,true,-1);
+	IGUITab * tab1 = gameTabCtrl->addTab(L"Character stats");
+	IGUITab * tab2 = gameTabCtrl->addTab(L"Inventory");
+	IGUITab * tab3 = gameTabCtrl->addTab(L"Skills");
+	IGUITab * tab4 = gameTabCtrl->addTab(L"Quests");
+	
+	
+	guiPlayerNodePreview = new NodePreview(guienv,tab1,rect<s32>(440,40,740,370),-1);
+	guiPlayerNodePreview->drawBackground(false);
 
-    guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-170 - 64),guiWindowItems,LB_ID_PLAYER_ITEMS,true);
+	DynamicObjectsManager::getInstance()->setActiveObject("player_template");
 
-    guiBtUseItem = guienv->addButton(myRect(10,displayheight-160 - 32,32,32),
-                                         guiWindowItems,
+	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
+	printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
+	//guiPlayerNodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+
+    guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
+
+    guiBtUseItem = guienv->addButton(myRect(10,displayheight-300,32,32),
+                                         tab2,
                                          BT_ID_USE_ITEM,
                                          L"",
                                          stringw(LANGManager::getInstance()->getText("bt_use_item")).c_str());
     guiBtUseItem->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
-    guiBtDropItem = guienv->addButton(myRect(52,displayheight-192,32,32),
-                                         guiWindowItems,
+    guiBtDropItem = guienv->addButton(myRect(52,displayheight-300,32,32),
+                                         tab2,
                                          BT_ID_DROP_ITEM,
                                          L"",
                                          stringw(LANGManager::getInstance()->getText("bt_drop_item")).c_str());
@@ -958,19 +995,23 @@ void GUIManager::setupGameplayGUI()
                                          L"",
                                          stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
     guiBtCloseItemsWindow->setImage(driver->getTexture("../media/art/bt_arrow_32.png"));
+	guiWindowItems->setVisible(false);
+	
+	
+	
+	// TExt GUI for player stats
 
-
-    guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(52+42,displayheight-160 - 32,300,32),false,false,guiWindowItems);
+    guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(15,displayheight-300,300,32),false,false,tab1);
     guiPlayerMoney->setOverrideFont(guiFontLarge28);
     guiPlayerMoney->setOverrideColor(SColor(255,255,255,255));
 
 	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
 
-	guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(224,guiWindowItems->getClientRect().UpperLeftCorner.Y+5,600,30),false,false,guiWindowItems,-1,false);
+	guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(14,5,600,30),false,false,tab1,-1,false);
     guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
     guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
 
-    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(225,guiWindowItems->getClientRect().UpperLeftCorner.Y+5,600,30),false,false,guiWindowItems,-1,false);
+    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(15,6,600,30),false,false,tab1,-1,false);
     guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
     guiPlayerLife->setOverrideFont(guiFontLarge28);
 

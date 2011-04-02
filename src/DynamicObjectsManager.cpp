@@ -376,8 +376,11 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
     for (int i=0 ; i< (int)objects.size() ; i++)
     {
 		if (objects[i])
-    		if( objects[i]->getName() == name ) 
+		{
+			printf("this object is number %d and it's name is: %s\n",i,objects[i]->getName());
+			if( objects[i]->getName() == name ) 
 				return objects[i];
+		}
     }
 
     return NULL;
@@ -440,12 +443,35 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		a.hit_prob=70;
 
 		// Loading values
-		a.life = (int)atoi(dynamicObjectXML->ToElement()->Attribute("life"));
-		a.maxlife = (int)atoi(dynamicObjectXML->ToElement()->Attribute("maxlife"));
-		a.mana = (int)atoi(dynamicObjectXML->ToElement()->Attribute("mana"));
-		a.maxmana = (int)atoi(dynamicObjectXML->ToElement()->Attribute("maxmana"));
-		//a.experience = (int)atoi(dynamicObjectXML->ToElement()->Attribute("xp"));
-		a.level = (int)atoi(dynamicObjectXML->ToElement()->Attribute("level"));
+		stringc life = ""; 
+		life = dynamicObjectXML->ToElement()->Attribute("life");
+		if (life.size()>0)
+			a.life = (int)atoi(life.c_str());
+
+		stringc maxlife = "";
+		maxlife = dynamicObjectXML->ToElement()->Attribute("maxlife");
+		if (maxlife.size()>0)
+			a.maxlife = (int)atoi(maxlife.c_str());
+		
+		stringc mana = "";
+		mana = dynamicObjectXML->ToElement()->Attribute("mana");
+		if (mana.size()>0)
+			a.mana = (int)atoi(mana.c_str());
+
+		stringc maxmana = "";
+		maxmana = dynamicObjectXML->ToElement()->Attribute("maxmana");
+		if (maxmana.size()>0)
+			a.maxmana = (int)atoi(maxmana.c_str());
+		
+		stringc experience = "";
+		experience = dynamicObjectXML->ToElement()->Attribute("xp");
+		if (experience.size()>0)
+			a.experience = (int)atoi(experience.c_str());
+
+		stringc level = "";
+		level = dynamicObjectXML->ToElement()->Attribute("level");
+		if (level.size()>0)
+			a.level = (int)atoi(level.c_str());
 		newObj->setProperties(a);
 
 		// Update the GUI with a description of the current loading task

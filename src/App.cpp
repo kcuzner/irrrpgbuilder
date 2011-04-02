@@ -421,6 +421,7 @@ void App::eventGuiButton(s32 id)
         case BT_ID_VIEW_ITEMS:
             setAppState(APP_GAMEPLAY_VIEW_ITEMS);
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
+			GUIManager::getInstance()->drawPlayerStats();
             break;
         case BT_ID_USE_ITEM:
             LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
@@ -1414,8 +1415,11 @@ void App::initialize()
 void App::shutdown()
 {
 	// Stuff to do when the device is closed.
-	cleanWorkspace();
 	SoundManager::getInstance()->stopEngine();
+	cleanWorkspace();
+	DynamicObjectsManager::getInstance()->clean(true);
+	device->closeDevice();
+	
 }
 
 stringw App::getLangText(irr::core::stringc node)
