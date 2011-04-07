@@ -4,7 +4,7 @@ uniform sampler2D terrainLayer2;
 uniform sampler2D terrainLayer3;
 uniform sampler2D terrainLayer4;
 
-
+uniform float plateau;
 uniform int terrainTextureScale;
 uniform int terrainScale;
 
@@ -48,8 +48,8 @@ void main()
 	  tex10 = mix( tex10, tex0, min(1,-(posY/scale)*10));
 	}
 	
-	if(posY>(0.01 * scale) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
-	if(posY<-(0.01 * scale) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+	if(posY>(plateau-2.5) && posY<(plateau+2.5) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+	//if(posY<(plateau-2.5) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
 	
 	//tex2 = mix( tex3, tex2, 1-a1.b);
 	

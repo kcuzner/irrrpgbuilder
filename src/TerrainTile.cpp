@@ -410,13 +410,16 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 
             if(mb_vertices[j].Pos.Y > value)
             {
+				//mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
                 mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
-                if(mb_vertices[j].Pos.Y <= strength) mb_vertices[j].Pos.Y = 0;
+                if(mb_vertices[j].Pos.Y <= value) mb_vertices[j].Pos.Y = value;
+				
             }
             if(mb_vertices[j].Pos.Y < value)
             {
-                mb_vertices[j].Pos.Y += strength * ratio / (scale / nodescale);
-                if(mb_vertices[j].Pos.Y >= -strength) mb_vertices[j].Pos.Y = 0;
+		        //mb_vertices[j].Pos.Y += strength * ratio / (scale / nodescale);
+				mb_vertices[j].Pos.Y += strength *ratio / (scale / nodescale);
+                if(mb_vertices[j].Pos.Y >= value) mb_vertices[j].Pos.Y = value;
             }
 	    }
 	}

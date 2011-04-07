@@ -1,5 +1,6 @@
 #include "ShaderCallBack.h"
 #include "TerrainManager.h"
+#include "GUIManager.h"
 #include "App.h"
 
 using namespace irr;
@@ -43,6 +44,8 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setPixelShaderConstant("terrainLayer4",(float*)&layer,1);
 
     services->setPixelShaderConstant("editingTerrain",(float*)&editingTerrain,1);
+	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
+	services->setPixelShaderConstant("plateau",(float*)&plateau,1);
 
     layer=10;
     services->setPixelShaderConstant("terrainTextureScale",(float*)&layer,1);

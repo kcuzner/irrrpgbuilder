@@ -23,7 +23,7 @@
 		<text id="bt_new_project" str="New Project"/>
 		<text id="bt_save_project" str="Save Project"/>
 		<text id="bt_load_project" str="Load Project"/>
-		<text id="bt_show_playable_area" str="Playable Area"/>
+		<text id="bt_show_playable_area" str="Display plateau"/>
 		<text id="bt_terrain_segments" str="Edit Segments"/>
 		<text id="bt_terrain_transform" str="Edit Elevation"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Strength:"/>

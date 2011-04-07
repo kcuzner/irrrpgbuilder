@@ -176,6 +176,14 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
 				return (f32)guiTerrainBrushRadius->getPos();
 			}
 			break;
+		case SC_ID_TERRAIN_BRUSH_PLATEAU :
+			{
+				stringw text = stringw(guiTerrainBrushPlateau->getPos()).c_str();
+				text=text+L"\"";
+				guiTerrainBrushPlateauValue->setText(text.c_str());
+				return (f32)guiTerrainBrushPlateau->getPos();
+				
+			}
     }
     return 0;
 }
@@ -537,11 +545,22 @@ void GUIManager::setupEditorGUI()
                                                          myRect(10,mainToolbarPos.Y+130,150,20),
                                                          false,true, guiTerrainToolbar);
 
+	guienv->addStaticText(L"Plateau height",
+                                                         myRect(10,mainToolbarPos.Y+150,150,20),
+                                                         false,true, guiTerrainToolbar);
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushRadius->setMin(0);
     guiTerrainBrushRadius->setMax(200);
     guiTerrainBrushRadius->setPos(100);
 
+	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
+	guiTerrainBrushPlateau->setMin(-30);
+	guiTerrainBrushPlateau->setMax(255);
+	guiTerrainBrushPlateau->setPos(-10);
+
+	guiTerrainBrushPlateauValue = guienv->addStaticText(L"0",
+                                                         myRect(10,mainToolbarPos.Y+190,150,20),
+                                                         false,true, guiTerrainToolbar);
 
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
@@ -749,6 +768,7 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	{
 		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
         getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
+		getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
 		return true;
 	}
 	if (guiLoaderWindow->isVisible() && guiLoaderWindow->isPointInside(mousepos))

@@ -78,19 +78,55 @@ void App::draw2DImages()
 void App::drawBrush()
 {
 #ifdef EDITOR
-	f32 framesize = 5;
+	
 	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
 	vector3df position = this->getMousePosition3D(100).pickedPos;
+	if (position==vector3df(0,0,0))
+		return;
 		
 	SMaterial m; 
 	m.Lighting=false; 
 	driver->setMaterial(m); 
 	driver->setTransform(video::ETS_WORLD, core::matrix4()); 
 	
-  	//driver->draw3DTriangle(triangle3df(top,topright+vector3df(framesize,0,0),topright),video::SColor(255,255,255,255));
-	//driver->draw3DTriangle(triangle3df(top,top+vector3df(0,0,framesize),topright+vector3df(framesize,0,0)),video::SColor(255,255,255,255));
+  	
 	// Render the size of the brush.
-	int step=15;
+	f32 framesize = 3;
+	int step=10;
+	for (int i=0; i<(360); i=i+step)
+	{
+		float degInRad = i*DEG2RAD;
+		vector3df pos=position;
+		pos.X+=cos(degInRad)*radius;
+		pos.Z+=sin(degInRad)*radius;
+		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
+
+		float degInRad2 = (i+step)*DEG2RAD;
+		vector3df pos2=position;
+		pos2.X+=cos(degInRad2)*radius;
+		pos2.Z+=sin(degInRad2)*radius;
+		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
+		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+
+		vector3df pos3=position;
+		pos3.X+=cos(degInRad)*(radius+framesize);
+		pos3.Z+=sin(degInRad)*(radius+framesize);
+		pos3.Y=pos.Y;
+
+		vector3df pos4=position;
+		pos4.X+=cos(degInRad2)*(radius+framesize);
+		pos4.Z+=sin(degInRad2)*(radius+framesize);
+		pos4.Y=pos2.Y;
+	  
+		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
+		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
+
+	  // printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos3.X,pos.Z);
+	}
+
+
+	radius=5;
+	step=30;
 	for (int i=0; i<(360-step); i=i+step)
 	{
       float degInRad = i*DEG2RAD;
@@ -110,25 +146,8 @@ void App::drawBrush()
 	}
 
 	// Center circle for the brush give the center
-	radius=10;
-	step=30;
-	for (int i=0; i<(360); i=i+step)
-	{
-      float degInRad = i*DEG2RAD;
-	  vector3df pos=position;
-	  pos.X+=cos(degInRad)*radius;
-	  pos.Z+=sin(degInRad)*radius;
-	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
-	  
-
-	  float degInRad2 = (i+step)*DEG2RAD;
-	  vector3df pos2=position;
-	  pos2.X+=cos(degInRad2)*radius;
-	  pos2.Z+=sin(degInRad2)*radius;
-	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
-	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-	  //printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos.Y,pos.Z);
-	}
+	
+	
 #endif
 }
 
@@ -1031,6 +1050,9 @@ void App::run()
 void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
+	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
+		this->drawBrush();
+
 	if ((timer-timer2)>17) // 1/60th second refresh interval
 	{
 		timer2 = device->getTimer()->getRealTime();
@@ -1066,7 +1088,6 @@ void App::updateEditMode()
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
-				this->drawBrush();
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
 				{
 					if(EventReceiver::getInstance()->isMousePressed(0))
@@ -1074,7 +1095,7 @@ void App::updateEditMode()
 						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),																	
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
-																		   0);
+																		   GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
 					}
 				}
 				else

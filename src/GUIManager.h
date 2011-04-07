@@ -26,6 +26,7 @@ enum GUI_ID
     CB_ID_TERRAIN_SHOW_PLAYABLE_AREA = 3,
     SC_ID_TERRAIN_BRUSH_STRENGTH = 5,
 	SC_ID_TERRAIN_BRUSH_RADIUS = 6,
+	SC_ID_TERRAIN_BRUSH_PLATEAU = 7,
     BT_ID_TERRAIN_PAINT_VEGETATION = 10,
     BT_ID_SAVE_PROJECT = 15,
     BT_ID_DYNAMIC_OBJECTS_MODE = 16,
@@ -220,6 +221,8 @@ class GUIManager
         IGUICheckBox* guiTerrainShowPlayableArea;
         IGUIScrollBar* guiTerrainBrushStrength;
         IGUIStaticText* guiTerrainBrushStrengthLabel;
+		IGUIScrollBar* guiTerrainBrushPlateau;
+		IGUIStaticText* guiTerrainBrushPlateauValue;
 		IGUIScrollBar* guiTerrainBrushRadius;
         IGUIStaticText* guiTerrainBrushRadiusLabel;
 		IGUIStaticText* guiTerrainBrushStrengthValue;
