@@ -38,6 +38,9 @@ class NodePreview : public IGUIElement
     private:
 		core::rect<s32> rect;
 		video::IVideoDriver * driver;
+		scene::ISceneManager * smgr;
+		gui::IGUIEnvironment * guienv;
+		scene::ICameraSceneNode * fakecam;
 
 		bool background;
 		bool border;

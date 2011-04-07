@@ -1,4 +1,5 @@
 #include "NodePreview.h"
+#include "TerrainManager.h"
 
 using namespace irr;
 using namespace core;
@@ -16,15 +17,20 @@ namespace gui
 		: IGUIElement(EGUIET_IMAGE, environment ,parent ,id ,rectangle)
 
 {
-	driver = environment->getVideoDriver();
+	
 	
 	this->node = NULL;
 	this->viewPort = rectangle;
-		//this->getParent()->getAbsoluteClippingRect();
+		
 	this->backgroundcolor = video::SColor(255,64,64,64);
 	this->background = true;
 	this->border = false;
+
 	rotation=0;
+	guienv=environment;
+	smgr=NULL;
+	fakecam=NULL;
+	driver = environment->getVideoDriver();
 
 }
 /*NodePreview::NodePreview(rect<s32> viewPort, ISceneNode* node)
@@ -51,16 +57,14 @@ void NodePreview::setBackgroundColor(video::SColor color)
 
 NodePreview::~NodePreview()
 {
+	fakecam->remove();
 }
 
 void NodePreview::draw()
 {
-    if(!node) return;
-
-	rotation=rotation+0.075f;
-	if (rotation>360)
-		rotation=0;
+    if(!node || !smgr) return;
 	
+
 	IGUISkin* skin = Environment->getSkin();
 	core::rect<s32> frameRect(AbsoluteRect);
 
@@ -71,75 +75,132 @@ void NodePreview::draw()
 	}
 	
 	core::rect<s32> originalViewport = driver->getViewPort();
+	scene::ICameraSceneNode * oldcam = smgr->getActiveCamera();
 	
-    driver->setViewPort(frameRect);
-
-    matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
-    matrix4 oldViewMat = driver->getTransform(video::ETS_VIEW);
-    matrix4 oldWorldMat = driver->getTransform(video::ETS_WORLD);
-
-    /*matrix4 mat = core::IdentityMatrix;
-	matrix4 mat2 = core::IdentityMatrix;
-
-	mat.setScale(1.8f * node->getScale().X);
-	mat.setScale((node->getBoundingBox().getExtent().Z)); 
-	//+ node->getBoundingBox().getExtent().X )/3 );
-	mat.setScale(node->getBoundingBox().getExtent().Y);
-	//* node->getScale().X
-    mat.setTranslation(vector3df(-node->getPosition().X * 1.8f,-node->getPosition().Y * 1.8f - 0.9f,-node->getPosition().Z * 1.8f));
-	mat2.setRotationDegrees(vector3df(-35.0f,0,0.0f));
-	mat.setRotationDegrees(vector3df(0.0f,rotation,0.0f));
-	//driver->setTransform ( video::ETS_PROJECTION, mat2 );
-    //driver->setTransform ( video::ETS_VIEW, mat );
-    //driver->setTransform ( video::ETS_WORLD, core::IdentityMatrix ); */
-
 	// Determine the best distance for the camera also find the center of the model.
 	f32 scale1 = (node->getBoundingBox().getExtent().Y)/2;
-	f32 distance = scale1;
+	f32 distance = scale1*2;
 	f32 scale2 = (node->getBoundingBox().getExtent().X)/2;
 	f32 scale3 = (node->getBoundingBox().getExtent().Z)/2;
 	if (scale2>distance)
-		distance=scale2;
+		distance=scale2*2;
 	if (scale3>distance)
-		distance=scale3;
+		distance=scale3*2;
 
+	// Define the aspect ratio for the "camera"
+	f32 aspect = ((f32)frameRect.getWidth()/frameRect.getHeight()); 
+
+    driver->setViewPort(frameRect);
+	f32 increment=0.05f;
+
+	bool camdriven=false;
+	if (distance>3) 
+		camdriven=true;
+	if (!camdriven)
+		increment=0.5f;
+
+	rotation=rotation+increment;
+	if (rotation>360)
+		rotation=0;
+
+	if (camdriven)
+	{
+		// the camera have also the scale factor
+		scale1=scale1*node->getScale().Y;
+		scale2=scale2*node->getScale().X;
+		scale3=scale3*node->getScale().Z;
+
+		// Now find the best distance
+		distance=scale1;
+		if (scale2>distance)
+			distance=scale2;
+		if (scale3>distance)
+			distance=scale3;
+
+		if (fakecam) 
+			smgr->setActiveCamera(fakecam);
+		 
+		fakecam->setFarValue(distance*5);
 	
-	f32 aspect = ((f32)frameRect.getWidth()/frameRect.getHeight()); // Calculated aspect look strange (elongated)
-	SViewFrustum ViewArea;
+		fakecam->setPosition(node->getPosition()+vector3df(0,scale1/2,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2));
+		fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
+		fakecam->setAspectRatio(aspect);
 
-	// Define a perspective projection
-	ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(0.5f, aspect, 0.1f, 12000.0f);
+		// Hide the terrain
+		TerrainManager::getInstance()->setVisible(false);
 
-	// Define a camera that is rotating around it's target
-	vector3df camera = (node->getPosition()+vector3df(0,scale1,0) + vector3df(0,rotation,0).rotationToDirection()) *(distance*4.5f);
-	ViewArea.getTransform(video::ETS_VIEW).buildCameraLookAtMatrixLH(camera, node->getPosition()+vector3df(0,scale1,0), vector3df(0,1,0));
-    
-	// Do the transformations (perspective cam)
-	driver->setTransform ( video::ETS_PROJECTION, ViewArea.getTransform ( video::ETS_PROJECTION) );
-	driver->setTransform ( video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW) );
-    driver->setTransform ( video::ETS_WORLD, core::IdentityMatrix );
+		
+		if (!node->isVisible())
+		{
+			node->setVisible(true);
+			smgr->drawAll();
+			node->setVisible(false);
+		}
+		else
+			//node->render();
+			smgr->drawAll();
+		
+		TerrainManager::getInstance()->setVisible(true);
+	}
+	else
+	{
+	
+		matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
+		matrix4 oldViewMat = driver->getTransform(video::ETS_VIEW);
 
-	//printf ("Determined scale is: %f\n",scale1);
-	//printf ("Determined distance is: %f\n",(camera).getDistanceFrom(vector3df(0,scale1,0)));
-	//printf ("Current Position is %f, %f, %f\n",node->getPosition().X,node->getPosition().Y,node->getPosition().Z);
-	//printf ("Coordinates are: %f, %f, %f\n\n",(camera).X,(camera).Y,(camera).Z);
+		SViewFrustum ViewArea;
+	
 
-    node->render();
+		// Define a perspective projection
+		ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(0.5f, aspect, 0.1f, 9600.0f);
 
-	// Put back the original transformations
-    driver->setTransform ( video::ETS_PROJECTION, oldProjMat );
-    driver->setTransform ( video::ETS_VIEW, oldViewMat );
-    driver->setTransform ( video::ETS_WORLD, oldWorldMat );
+		// Define a camera that is rotating around it's target
+		vector3df camera = (node->getPosition()+vector3df(0,scale1,0) + vector3df(0,rotation,0).rotationToDirection()); 
+		camera.X = camera.X *(distance*3.0f);
+		camera.Z = camera.Z *(distance*3.0f);
+		
+	
+		ViewArea.getTransform(video::ETS_VIEW).buildCameraLookAtMatrixLH(camera, node->getPosition()+vector3df(0,scale1,0), vector3df(0,1,0));
 
-    driver->setViewPort(originalViewport);
+		// Recalculate the view area from the camera position
+		ViewArea.cameraPosition = camera;
+
+		core::matrix4 m(core::matrix4::EM4CONST_NOTHING);
+		m.setbyproduct_nocheck(ViewArea.getTransform(video::ETS_PROJECTION),
+			ViewArea.getTransform(video::ETS_VIEW));
+		ViewArea.setFrom(m);
+
+		f32 scaleaa = node->getScale().Y;
+		//printf ("Here is the current scale of the mesh: %f\n-----------------------\n",scaleaa);
+	
+		// Do the transformations (perspective cam)
+		driver->setTransform ( video::ETS_PROJECTION, ViewArea.getTransform ( video::ETS_PROJECTION));
+		driver->setTransform ( video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW));
+	
+		// Node seem to render the meshbuffers directly (scaling of the mesh does not seem to be accounted for)
+		driver->setTransform(video::ETS_WORLD, node->getAbsoluteTransformation());
+		node->render();
+		
+
+		// Put back the original transformations
+		driver->setTransform ( video::ETS_PROJECTION, oldProjMat );
+	}
+
+    driver->setViewPort(originalViewport);	
+	if (camdriven)
+		smgr->setActiveCamera(oldcam);
+		
 	// draw children
 	IGUIElement::draw();
-	
+
 }
 
 void NodePreview::setNode(ISceneNode* node)
 {
     this->node = node;
+	smgr = node->getSceneManager();
+	if (!fakecam)
+		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }
 
 ISceneNode* NodePreview::getNode()

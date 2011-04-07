@@ -25,6 +25,9 @@ using namespace gui;
 
 using namespace std;
 
+const float DEG2RAD = 3.14159f/180;
+
+
 App::App()
 {
  wxSystem=false;
@@ -44,6 +47,7 @@ void App::draw2DImages()
     if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
     {
         GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
+		
     }
 
     if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
@@ -68,6 +72,63 @@ void App::draw2DImages()
     #ifdef APP_DEBUG
       //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
     #endif
+#endif
+}
+
+void App::drawBrush()
+{
+#ifdef EDITOR
+	f32 framesize = 5;
+	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+	vector3df position = this->getMousePosition3D(100).pickedPos;
+		
+	SMaterial m; 
+	m.Lighting=false; 
+	driver->setMaterial(m); 
+	driver->setTransform(video::ETS_WORLD, core::matrix4()); 
+	
+  	//driver->draw3DTriangle(triangle3df(top,topright+vector3df(framesize,0,0),topright),video::SColor(255,255,255,255));
+	//driver->draw3DTriangle(triangle3df(top,top+vector3df(0,0,framesize),topright+vector3df(framesize,0,0)),video::SColor(255,255,255,255));
+	// Render the size of the brush.
+	int step=15;
+	for (int i=0; i<(360-step); i=i+step)
+	{
+      float degInRad = i*DEG2RAD;
+	  vector3df pos=position;
+	  pos.X+=cos(degInRad)*radius;
+	  pos.Z+=sin(degInRad)*radius;
+	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
+	  
+
+	  float degInRad2 = (i+step)*DEG2RAD;
+	  vector3df pos2=position;
+	  pos2.X+=cos(degInRad2)*radius;
+	  pos2.Z+=sin(degInRad2)*radius;
+	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
+	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
+	  //printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos.Y,pos.Z);
+	}
+
+	// Center circle for the brush give the center
+	radius=10;
+	step=30;
+	for (int i=0; i<(360); i=i+step)
+	{
+      float degInRad = i*DEG2RAD;
+	  vector3df pos=position;
+	  pos.X+=cos(degInRad)*radius;
+	  pos.Z+=sin(degInRad)*radius;
+	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
+	  
+
+	  float degInRad2 = (i+step)*DEG2RAD;
+	  vector3df pos2=position;
+	  pos2.X+=cos(degInRad2)*radius;
+	  pos2.Z+=sin(degInRad2)*radius;
+	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
+	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+	  //printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos.Y,pos.Z);
+	}
 #endif
 }
 
@@ -614,7 +675,11 @@ App* App::getInstance()
 MousePick App::getMousePosition3D(int id)
 {
     position2d<s32> pos=device->getCursorControl()->getPosition();
-	pos.Y = pos.Y+26;
+#ifdef _WXMSW
+	// Fix to a proper position on wxWidget;
+	pos=pos+position2d<s32>(0,22);
+#endif
+	
     line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
     core::vector3df intersection;
@@ -1001,11 +1066,12 @@ void App::updateEditMode()
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
+				this->drawBrush();
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
 				{
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
-						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
+						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),																	
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
 																		   0);

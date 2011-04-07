@@ -237,6 +237,7 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 
 void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 strength)
 {
+	
     if(mousePick.pickedNode != NULL)
     {
         for (int i=-1 ; i<2 ; i++)
@@ -346,6 +347,19 @@ f32 TerrainManager::getScale()
 void TerrainManager::setScale(f32 newsize)
 {
 	this->scale = newsize;
+}
+
+void TerrainManager::setVisible(bool visible)
+{
+	std::map<std::string, TerrainTile*>::iterator it = terrainMap.begin();
+
+    for(;it != terrainMap.end();++it)
+    {
+        TerrainTile* t = it->second;
+
+		t->getNode()->setVisible(visible);
+    }
+
 }
 
 void TerrainManager::clean()

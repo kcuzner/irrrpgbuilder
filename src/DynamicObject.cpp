@@ -193,7 +193,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->animator = NULL;
 		if (objectType != OBJECT_TYPE_EDITOR)
 		{
-			node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
+			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
@@ -319,7 +319,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// - A collision with another object
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 	
-
+	
 	if (getType()==OBJECT_TYPE_PLAYER && Player::getInstance()->getTaggedTarget())
 		targetPos = Player::getInstance()->getTaggedTarget()->getPosition();
 	else
@@ -335,12 +335,35 @@ void DynamicObject::walkTo(vector3df targetPos)
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+	
+	// Sampling points on the ground
+	vector3df posfront1 = pos+(targetPos.normalize()*20);
+	vector3df posfront = pos+(targetPos.normalize()*10);
+	vector3df posback1 = pos-(targetPos.normalize()*20);
+	vector3df posback = pos-(targetPos.normalize()*10);
+	
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
+	f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
+	f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
+	f32 height4 = TerrainManager::getInstance()->getHeightAt(posback);
+	f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
+	f32 cliff =  height3 - height5; 
+	if (cliff<0) 
+		cliff = -cliff;
+
+	//printf ("Here are the height: front: %f, middle: %f, back: %f, cliff: %f\n",height2,height,height3,cliff);
+	
 
 	//TODO: Fix the problem with custom scaling of the objects
-	if (height>-(0.09f*72) && height<(0.05f*72) && !collided)
+	// old terrain values
+	// (height>-(0.09f*72) && height<(0.05f*72)
+
+	// The "cliff" is the number of unit of difference from one point to another
+	// The limit in the water is to get to -80 (legs into water)
+	if (height>-80 && (cliff < 55) && !collided)
 	{
-		pos.Y = height;
+		//pos.Y = height;
+		pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
 		
 		stringw text=L"Walkto Called:";

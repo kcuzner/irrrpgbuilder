@@ -66,7 +66,8 @@ class App
 		dimension2d<u32> getScreenSize();
 
         static App* getInstance();
-
+		
+		void drawBrush();
 		void displayGuiConsole();
         void draw2DImages();
 	
@@ -144,7 +145,6 @@ class App
 #ifndef EDITOR
 		stringc mapname;
 #endif
-
         MousePick lastMousePick;
 };
 

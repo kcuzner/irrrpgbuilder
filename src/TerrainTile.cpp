@@ -60,7 +60,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     //cout << name.c_str() << endl;
 
     node->setName(name);
-
+	
 	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
 	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
@@ -323,6 +323,9 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 
 void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 {
+	IVideoDriver * driver = smgr->getGUIEnvironment()->getVideoDriver();
+	
+	
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -330,6 +333,10 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 	u16* mb_indices  = meshBuffer->getIndices();
 
 	mb_vertices[id].Pos.Y = y;
+	driver->draw3DBox(aabbox3d<f32>(vector3df(mb_vertices[id].Pos.X-10,mb_vertices[id].Pos.Y-10,mb_vertices[id].Pos.Z-10),
+		vector3df(mb_vertices[id].Pos.X+10,mb_vertices[id].Pos.Y+10,mb_vertices[id].Pos.Z+10)),video::SColor(255,255,255,255));
+		//aabbox3d((f32),(f32),(f32),
+		//(f32),(f32),(f32)),video::SColor(255,255,255,255));
 
 	if(addVegetation)
 	{
@@ -341,6 +348,10 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 	}
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+
+	// Attempt to update the triangle selector with the new mesh
+	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+    node->setTriangleSelector(selector);
 }
 
 
@@ -371,6 +382,10 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	// Attempt to update the triangle selector with the new mesh
+	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+    node->setTriangleSelector(selector);
+
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
@@ -407,6 +422,9 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 	}
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	// Attempt to update the triangle selector with the new mesh
+	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+    node->setTriangleSelector(selector);
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
@@ -436,11 +454,40 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 	}
 
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+	// Attempt to update the triangle selector with the new mesh
+	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+    node->setTriangleSelector(selector);
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
+	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
+	core::line3d<f32> ray;
+    ray.start = pos+vector3df(0,+250,0);
+    ray.end = ray.start + (pos+vector3df(0,-250.0f,0) - ray.start).normalize() * 1000.0f;
+
+	// Tracks the current intersection point with the level or a mesh
+	core::vector3df intersection;
+    // Used to show with triangle has been hit
+    core::triangle3df hitTriangle;
+	scene::ISceneNode * selectedSceneNode =
+    collMan->getSceneNodeAndCollisionPointFromRay(
+		ray,
+		intersection, 
+		hitTriangle,
+		100,
+		0); // Check the entire scene (this is actually the implicit default)
+
+	if (selectedSceneNode)
+	{
+		//printf("Test was successful! value=%f ,%s\n",intersection.Y,selectedSceneNode->getName());
+		return intersection.Y;
+	}
+	else
+		return 0;
+
+	// This stuff is not used anymore.. Keep for the moment in case of problems...
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();

@@ -965,9 +965,10 @@ void GUIManager::setupGameplayGUI()
 	guiPlayerNodePreview = new NodePreview(guienv,tab1,rect<s32>(440,40,740,370),-1);
 	guiPlayerNodePreview->drawBackground(false);
 
-	DynamicObjectsManager::getInstance()->setActiveObject("player_template");
-
-	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	//DynamicObjectsManager::getInstance()->setActiveObject("player_template");
+	
+	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getPlayer()->getNode());
 	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
 	printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
 	//guiPlayerNodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);

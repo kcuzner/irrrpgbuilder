@@ -42,6 +42,7 @@ class TerrainManager
 		stringc getTerrainTexture(u32 layer);
 		void setTerrainTexture(u32 layer, stringc name);
 
+		void setVisible(bool visible);
         void clean();
 
         void showDebugData(bool show);
