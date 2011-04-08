@@ -136,5 +136,4 @@ void CameraSystem::fixRatio(IVideoDriver * driver)
 {
 	dimension2d<u32> screensize = driver->getScreenSize();
 	cam->setAspectRatio((irr::f32)screensize.Width/screensize.Height);
-	printf("TEST");
 }

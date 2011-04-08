@@ -35,6 +35,8 @@ Player::Player()
 	playerprop.level = 1;
 	playerprop.mana=100;
 	playerprop.maxmana=100;
+	playerprop.regenlife=1;
+	playerprop.regenmana=1;
 	
 	// Set the upgradable properties (properties that will increase automatically at each level)
 	player_base.maxlife=95; // Starting at level 0 with 95 hp
@@ -111,7 +113,7 @@ void Player::update()
 			if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
 			{
 				this->playerObject->setAnimation("walk");
-				printf("Hey the player specifically asked for a walk state!\n");
+				//printf("Hey the player specifically asked for a walk state!\n");
 			}
 
 			this->playerObject->walkTo(walkTarget); 
@@ -121,7 +123,7 @@ void Player::update()
 		// Stop the walk when in range
 		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer))
 		{
-			printf("Hey the player specifically asked for a idle state!\n");
+			//printf("Hey the player specifically asked for a idle state!\n");
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 			this->playerObject->setAnimation("idle");
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
@@ -137,7 +139,7 @@ void Player::update()
 		// This should trigger the player attack if the enemy is in range.
 		if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)
 		{
-			printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
+			//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
 			if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
 			{
 				playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());

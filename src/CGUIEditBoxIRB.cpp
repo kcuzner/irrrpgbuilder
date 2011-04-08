@@ -822,7 +822,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
             inputChar(L'"');
         else
             inputChar(event.KeyInput.Char);
-		printf("%s",(core::stringc)event.KeyInput.Char);
+		//printf("%s",(core::stringc)event.KeyInput.Char);
 		return true;
 	}
 

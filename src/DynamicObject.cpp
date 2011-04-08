@@ -212,7 +212,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		// Setup the animations
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
-		printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
+		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
@@ -704,7 +704,7 @@ void DynamicObject::checkAnimationEvent()
 		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
 
 		{
-			printf("Should trigger the attack now...\n");
+			//printf("Should trigger the attack now...\n");
 			// Init the combat
 			Combat::getInstance()->attack(this,enemyUnderAttack);
 
@@ -752,7 +752,7 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 
 	if(obj)
     {
-		printf("Attack for this enemy asked %s\n",obj->getName().c_str());
+		//printf("Attack for this enemy asked %s\n",obj->getName().c_str());
         this->lookAt(obj->getPosition());
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 		{
@@ -839,7 +839,7 @@ void DynamicObject::clearScripts()
 	{
 		this->setFrameLoop(0,0);
 		this->setAnimation("idle");
-		printf("Script had been cleared... idle.\n");
+		//printf("Script had been cleared... idle.\n");
 	}
 	/*if (objectType == OBJECT_TYPE_PLAYER)
 	{
@@ -1036,7 +1036,7 @@ void DynamicObject::updateWalk()
 			if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
 			{
 				this->setAnimation("walk");
-				printf("Hey the object specifically asked for a walk state!\n");
+				//printf("Hey the object specifically asked for a walk state!\n");
 			}
 
 			this->walkTo(walkTarget);
@@ -1047,7 +1047,7 @@ void DynamicObject::updateWalk()
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK && this->getPosition().getDistanceFrom(walkTarget)==0)
 			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
 		{
-			printf("Hey the object specifically asked  for a idle state!\n");
+			//printf("Hey the object specifically asked  for a idle state!\n");
 			this->setWalkTarget(this->getPosition());
 			this->setAnimation("idle");
 			if (objectType==OBJECT_TYPE_PLAYER)
@@ -1262,7 +1262,8 @@ int DynamicObject::move(lua_State *LS)//move(speed)
     {
 		if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
 			tempObj->setAnimation("walk");
-		printf ("Lua call the walk animation.\n");
+		
+		//printf ("Lua call the walk animation.\n");
 		tempObj->moveObject(speed);
     }
 
@@ -1374,7 +1375,7 @@ int DynamicObject::attackObj(lua_State *LS)
 	}
 	if (tempObj)
 	{
-		printf("The LUA use attack with that target: %s\n",tempObj->getName().c_str());
+		//printf("The LUA use attack with that target: %s\n",tempObj->getName().c_str());
 		Combat::getInstance()->attack(DynamicObjectsManager::getInstance()->getObjectByName(objName),tempObj);
 	}
 
@@ -1399,7 +1400,7 @@ int DynamicObject::setPropertie(lua_State *LS)
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
-	printf("Set propertie %s to %f from object named: %s\n",propertieName,value,objName.c_str());
+	//printf("Set propertie %s to %f from object named: %s\n",propertieName,value,objName.c_str());
 
 	DynamicObject* Obj = NULL;
 	if (objName!="")
@@ -1439,6 +1440,8 @@ int DynamicObject::setPropertie(lua_State *LS)
 		Obj->properties.regenlife = (int)value;
 	if (propertieName=="regenmana")
 		Obj->properties.regenmana = (int)value;
+	if (propertieName=="level")
+		Obj->properties.level = (int)value;
 
 	if (objName=="player")
 		Player::getInstance()->updateDisplay();
@@ -1465,8 +1468,14 @@ int DynamicObject::getPropertie(lua_State *LS)
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
 	if (propertieName=="life")
 		value = Obj->properties.life;
+	if (propertieName=="money")
+		value = Obj->properties.money;
 	if (propertieName=="maxlife")
 		value = Obj->properties.maxlife;
+	if (propertieName=="mana")
+		value = Obj->properties.mana;
+	if (propertieName=="maxmana")
+		value = Obj->properties.maxmana;
 	if (propertieName=="mindamage")
 		value = Obj->properties.mindamage;
 	if (propertieName=="maxdamage")
@@ -1475,11 +1484,27 @@ int DynamicObject::getPropertie(lua_State *LS)
 		value = Obj->properties.hurt_resist;
 	if (propertieName=="experience")
 		value = Obj->properties.experience;
+	if (propertieName=="level")
+		value = Obj->properties.level;
+	if (propertieName=="regenlife")
+		value = Obj->properties.regenlife;
+	if (propertieName=="regenmana")
+		value = Obj->properties.regenmana;
+
+	if (propertieName=="dodge_prob")
+	{
+		float value2 = Obj->properties.dodge_prop;
+		lua_pushnumber(LS,value2);
+		return 1;
+	}
+	if (propertieName=="hit_prob")
+	{
+		float value2 = Obj->properties.hit_prob;
+		lua_pushnumber(LS,value2);
+		return 1;
+	}
 
 	lua_pushnumber(LS,value);
-	if (objName=="player")
-		printf("Get propertie %s to %f from player!\n",propertieName,value);
-
 
 	return 1;
 }
@@ -1563,7 +1588,7 @@ int DynamicObject::distanceFrom(lua_State *LS)
 		if(otherName.c_str() == "player")
         {
             otherPos = Player::getInstance()->getObject()->getPosition();
-			printf("Asked the distance from the player: %f,%f,%f\n",otherPos.X,otherPos.Y,otherPos.Z);
+			//printf("Asked the distance from the player: %f,%f,%f\n",otherPos.X,otherPos.Y,otherPos.Z);
         }
         else
         {

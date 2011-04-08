@@ -990,7 +990,7 @@ void GUIManager::setupGameplayGUI()
 	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getPlayer()->getNode());
 	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
-	printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
+	//printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
 	//guiPlayerNodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
@@ -1250,7 +1250,7 @@ void GUIManager::showMessage(GUI_MSG_TYPE msgType, stringc msg)
             break;
     }
 
-    printf("MESSAGE:%s\n",msg.c_str());
+    //printf("MESSAGE:%s\n",msg.c_str());
 
     ///TODO:messageBox and Confirm
 }
@@ -1417,7 +1417,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
     ISound* dialogSound = NULL;
 
 	//int len = sound.length();
-	printf ("Here is the dialog for the sound %s, \n",sound.c_str());
+	//printf ("Here is the dialog for the sound %s, \n",sound.c_str());
 	if(sound.c_str() != "")
     {
         stringc soundName = "../media/sound/";
