@@ -301,14 +301,14 @@ void LuaGlobalCaller::doScript(stringc script)
 void LuaGlobalCaller::storeGlobalParams()
 {
     lua_getglobal(L,"IRBStoreGlobalParams");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }
 
 void LuaGlobalCaller::restoreGlobalParams()
 {
     lua_getglobal(L,"IRBRestoreGlobalParams");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }
 
@@ -317,7 +317,7 @@ void LuaGlobalCaller::usePlayerItem(stringc item)
     lua_getglobal(L,item.c_str());
     if(lua_isfunction(L,-1))
     {
-        lua_call(L,0,0);
+        lua_pcall(L,0,0,0);
     }
     else
     {

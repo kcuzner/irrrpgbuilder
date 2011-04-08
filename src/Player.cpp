@@ -22,6 +22,7 @@ Player::Player()
 	playerObject->setEnabled(true);
 	playerObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 	playerObject->setAnimation("idle");
+	playerObject->setName("player");
 
 	// Specific properties for the player (hardcoded for now)
 	property playerprop = playerObject->getProperties();

@@ -912,7 +912,7 @@ void DynamicObject::doScript()
 	//run onLoad() function if it exists
     lua_getglobal(L,"onLoad");
     //if top of stack is not a function then onLoad does not exist
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 	storeParams();
 
@@ -1069,25 +1069,45 @@ void DynamicObject::luaRefresh()
 	{//app_state < APP_STATE_CONTROL
 		lua_getglobal(L,"onUpdate");
 		if(lua_isfunction(L, -1))
-			lua_call(L,0,0);
+		{
+			if (lua_pcall(L,0,0,0)!=0)
+			{
+				printf("error running function `onUpdate'\n");
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",false);
+			}
+
+		}
 		lua_pop( L, -1 );
 
 		lua_getglobal(L,"step");
 
 		if(lua_isfunction(L, -1))
-			lua_call(L,0,0);
+		{
+			if (lua_pcall(L,0,0,0)!=0)
+			{
+				printf("error running function `step': \n");
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",false);
+			}
+
+		}
 		lua_pop( L, -1 );
 
 		//custom update function (updates walkTo for example..)
 		lua_getglobal(L,"CustomDynamicObjectUpdate");
 
 		if(lua_isfunction(L, -1))
-			lua_call(L,0,0);
+		{
+			if (lua_pcall(L,0,0,0)!=0)
+			{
+				printf("error running function `CustomDynamicObjectUpdate': \n");
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",false);
+			}
+		}
 		lua_pop( L, -1 );
 	}
 	lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
 	if(lua_isfunction(L, -1))
-		lua_call(L,0,0);
+		lua_pcall(L,0,0,0);
 	lua_pop( L, -1 );
 }
 
@@ -1366,6 +1386,8 @@ int DynamicObject::setPropertie(lua_State *LS)
 	float value = (float)lua_tonumber(LS, -1);
 	lua_pop(LS, 1);
 
+	
+
 	stringc propertieName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
@@ -1376,7 +1398,15 @@ int DynamicObject::setPropertie(lua_State *LS)
 	lua_getglobal(LS,"objName");
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
-	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	printf("Set propertie %s to %f from object named: %s\n",propertieName,value,objName.c_str());
+
+	DynamicObject* Obj = NULL;
+	if (objName!="")
+		Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
+	else
+		Obj = DynamicObjectsManager::getInstance()->getPlayer();
+
 	if (propertieName=="life")
 		Obj->properties.life = (int)value;
 	if (propertieName=="maxlife")
@@ -1410,6 +1440,9 @@ int DynamicObject::setPropertie(lua_State *LS)
 	if (propertieName=="regenmana")
 		Obj->properties.regenmana = (int)value;
 
+	if (objName=="player")
+		Player::getInstance()->updateDisplay();
+
 	//if (otherObjName=="me")
 
 	return 0;
@@ -1420,14 +1453,16 @@ int DynamicObject::getPropertie(lua_State *LS)
 	stringc propertieName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
+	
 	//stringc otherObjName = lua_tostring(LS, -1);
 	//lua_pop(LS, 1);
 
 	lua_getglobal(LS,"objName");
 	stringc objName = lua_tostring(LS, -1);
+
 	lua_pop(LS, 1);
 	int value = 0;
-	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
 	if (propertieName=="life")
 		value = Obj->properties.life;
 	if (propertieName=="maxlife")
@@ -1442,6 +1477,9 @@ int DynamicObject::getPropertie(lua_State *LS)
 		value = Obj->properties.experience;
 
 	lua_pushnumber(LS,value);
+	if (objName=="player")
+		printf("Get propertie %s to %f from player!\n",propertieName,value);
+
 
 	return 1;
 }
@@ -1599,21 +1637,21 @@ int DynamicObject::setObjectLabel(lua_State *LS)
 void DynamicObject::notifyClick()
 {
     lua_getglobal(L,"onClicked");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }
 
 void DynamicObject::notifyAttackRange()
 {
     lua_getglobal(L,"onAttackRange");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }
 
 void DynamicObject::notifyCollision()
 {
     lua_getglobal(L,"onCollision");
-    if(lua_isfunction(L, -1)) lua_call(L,0,0);
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }
 
