@@ -54,6 +54,8 @@ class GUIConfigWindow
 
         void loadActualSeetings();
         void saveNewSeetings();
+
+        rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 };
 
 #endif // GUICONFIGWINDOW_H

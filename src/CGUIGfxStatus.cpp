@@ -16,13 +16,13 @@ namespace gui
 {
 
 //! constructor
-	CGUIGfxStatus::CGUIGfxStatus(IGUIEnvironment* environment, IGUIElement* parent, const core::rect<s32>& rectangle, s32 id) 
+	CGUIGfxStatus::CGUIGfxStatus(IGUIEnvironment* environment, IGUIElement* parent, const core::rect<s32>& rectangle, s32 id)
 		: IGUIElement(EGUIET_IMAGE, environment ,parent ,id ,rectangle)
 
 {
 	driver = environment->getVideoDriver();
 	image = NULL;
-	
+
 	rect = rectangle;
 	currentvalue=1;
 	maxvalue=1;
@@ -40,11 +40,11 @@ void CGUIGfxStatus::draw()
 {
 	if (image)
 	{
-	
+
 		this->getParent()->getAbsolutePosition();
 		core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 		core::rect<s32> parent = this->getParent()->getAbsolutePosition();
-		core::rect<s32> destination = myRect(parent.UpperLeftCorner.X+rect.UpperLeftCorner.X,
+		core::rect<s32> destination = this->myRect(parent.UpperLeftCorner.X+rect.UpperLeftCorner.X,
 			parent.UpperLeftCorner.Y+rect.UpperLeftCorner.Y,
 			rect.getWidth(),rect.getHeight());
 
@@ -60,7 +60,7 @@ void CGUIGfxStatus::draw()
 			baseX = destination.UpperLeftCorner.X + image->getSize().Width/2;
 			clipX = image->getSize().Width;
 		}
-		
+
 		if (leftportion)
 		{
 			baseX = destination.UpperLeftCorner.X;
@@ -68,14 +68,14 @@ void CGUIGfxStatus::draw()
 		}
 
 		if (full)
-		
+
 		{
 			baseX = destination.UpperLeftCorner.X;
 			clipX = image->getSize().Width;
 		}
 
-		core::rect<s32> clip = myRect(baseX,destination.LowerRightCorner.Y-(s32)finalbase,clipX,(s32)finalbase);
-		driver->draw2DImage(image,destination,myRect(0,0,image->getSize().Height,image->getSize().Width),&clip,0,true);
+		core::rect<s32> clip = this->myRect(baseX,destination.LowerRightCorner.Y-(s32)finalbase,clipX,(s32)finalbase);
+		driver->draw2DImage(image,destination,this->myRect(0,0,image->getSize().Height,image->getSize().Width),&clip,0,true);
 		IGUIElement::draw();
 	}
 }
@@ -114,6 +114,11 @@ void CGUIGfxStatus::ViewFull()
 	full=true;
 	rightportion=false;
 	leftportion=false;
+}
+
+core::rect<s32> CGUIGfxStatus::myRect(s32 x, s32 y, s32 w, s32 h)
+{
+    return core::rect<s32>(x,y,x+w,y+h);
 }
 
 }

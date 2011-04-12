@@ -146,7 +146,7 @@ namespace gui
 		IGUIScrollBar * Scrollbar;
 		IGUIScrollBar * ScrollbarH;
 		IGUIButton *	LineToggle;
-		
+
 		core::stringw  linenumber; //contain the line numbering
 		core::stringw linecount_text;
 
@@ -168,6 +168,8 @@ namespace gui
 		core::array< s32 > BrokenTextPositions;
 
 		core::rect<s32> CurrentTextRect, FrameRect; // temporary values
+
+		irr::core::recti myRect(int x, int y, int w, int h);
 	};
 
 

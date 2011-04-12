@@ -1,5 +1,5 @@
 #include "DynamicObjectsManager.h"
-#include "dynamicObject.h"
+#include "DynamicObject.h"
 
 using namespace irr;
 using namespace core;
@@ -11,7 +11,7 @@ using namespace gui;
 DynamicObjectsManager::DynamicObjectsManager()
 {
 	device = App::getInstance()->getDevice();
-	
+
 	// Load the definition for all dynamic objects
 	//ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	stringc pathFile = "../media/dynamic_objects/";
@@ -67,7 +67,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 	//set the initial active object - the list must be 1 or more objs!
     activeObject = objectsTemplate[0];
 
-    
+
     //just initialize var
     objsCounter = 0;
 
@@ -247,8 +247,8 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				stringc newScript = "";
 				stringc filename = "../media/scripts/";
 				filename += scriptname;
-				
-				std::string line;				
+
+				std::string line;
 				ifstream fileScript (filename.c_str());
 				if (fileScript.is_open())
 				{
@@ -378,7 +378,7 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 		if (objects[i])
 		{
 			//printf("this object is number %d and it's name is: %s\n",i,objects[i]->getName());
-			if( objects[i]->getName() == name ) 
+			if( objects[i]->getName() == name )
 				return objects[i];
 		}
     }
@@ -443,7 +443,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		a.hit_prob=70;
 
 		// Loading values
-		stringc life = ""; 
+		stringc life = "";
 		life = dynamicObjectXML->ToElement()->Attribute("life");
 		if (life.size()>0)
 			a.life = (int)atoi(life.c_str());
@@ -452,7 +452,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		maxlife = dynamicObjectXML->ToElement()->Attribute("maxlife");
 		if (maxlife.size()>0)
 			a.maxlife = (int)atoi(maxlife.c_str());
-		
+
 		stringc mana = "";
 		mana = dynamicObjectXML->ToElement()->Attribute("mana");
 		if (mana.size()>0)
@@ -462,7 +462,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		maxmana = dynamicObjectXML->ToElement()->Attribute("maxmana");
 		if (maxmana.size()>0)
 			a.maxmana = (int)atoi(maxmana.c_str());
-		
+
 		stringc experience = "";
 		experience = dynamicObjectXML->ToElement()->Attribute("xp");
 		if (experience.size()>0)
@@ -670,7 +670,7 @@ void DynamicObjectsManager::clean(bool full)
 			{
 				delete d;
           		objects[i]=NULL;
-				
+
 			} else
 				object_backup.push_back(d);
 		}
@@ -679,9 +679,9 @@ void DynamicObjectsManager::clean(bool full)
 	objects.clear();
 	objects=object_backup;
 	object_backup.clear();
-	
-	
-	if (!full) 
+
+
+	if (!full)
 		return;
     objsCounter = 0;
 	// Temporarily commented out, was crashing when closing the game in play mode
@@ -692,7 +692,7 @@ void DynamicObjectsManager::clean(bool full)
 
         sc->drop();
     }*/
-    
+
     activeObject = NULL;
 	 /*
     for(int i=0;i<objectsTemplate.size();i++)
@@ -710,7 +710,7 @@ void DynamicObjectsManager::clean(bool full)
 		delete d;
         objects.erase(objects.begin() + i);
     }
-    
+
    objects.clear();
-	
+
 }

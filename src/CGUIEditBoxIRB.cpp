@@ -91,11 +91,11 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 	}
 	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-	
-	
-	ScrollbarH = Environment->addScrollBar(true,myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
-	Scrollbar = Environment->addScrollBar(false,myRect(FrameRect.getWidth()-15,2,20,FrameRect.getHeight()-22),this,-1);
-	LineToggle = Environment->addButton(myRect(FrameRect.getWidth()-15,FrameRect.getHeight()-20,20,20),this,-1,L"#",linecount_text.c_str());
+
+
+	ScrollbarH = Environment->addScrollBar(true,this->myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
+	Scrollbar = Environment->addScrollBar(false,this->myRect(FrameRect.getWidth()-15,2,20,FrameRect.getHeight()-22),this,-1);
+	LineToggle = Environment->addButton(this->myRect(FrameRect.getWidth()-15,FrameRect.getHeight()-20,20,20),this,-1,L"#",linecount_text.c_str());
 	LineToggle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 
@@ -111,7 +111,7 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	ScrollbarH->setMax(0);
 	ScrollbarH->setPos(0);
 	ScrollbarH->setVisible(false);
-	
+
 	if (MultiLine)
 	{
 		LineToggle->setVisible(false);
@@ -287,14 +287,14 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 			{
 				if (event.GUIEvent.Caller == this)
 				{
-				
+
 				}
 				break;
 			}
-			
+
 			if (event.GUIEvent.EventType == EGET_SCROLL_BAR_CHANGED)
 			{
-				
+
 				if (event.GUIEvent.Caller == Scrollbar)
 				{
 					if (MultiLine || (WordWrap && BrokenText.size() > 1) )
@@ -305,7 +305,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 							font = skin->getFont();
 						s32 scrollMove = font->getDimension(L"000000").Height;
 						VScrollPos = (s32)(scrollMove/1.7f) * Scrollbar->getPos();
-			
+
 					}
 				}
 				break;
@@ -320,7 +320,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 						LineNumbering=false;
 						LeftSpace=0;
 						irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-						core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
+						core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 	                	localClipRect.clipAgainst(AbsoluteClippingRect);
 					}
 
@@ -329,7 +329,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 						LineNumbering=true;
 						LeftSpace=60;
 						irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
-						core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
+						core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 						localClipRect.clipAgainst(AbsoluteClippingRect);
 					}
 				}
@@ -341,12 +341,12 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 			if (processKey(event))
 				return true;
 			break;
-		
+
 		case EET_MOUSE_INPUT_EVENT:
 			if (processMouse(event))
 				return true;
 			break;
-		
+
 		default:
 			break;
 		}
@@ -560,7 +560,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			}
 			CursorPos = p;
 			BlinkStartTime = IRRdevice->getTimer()->getRealTime();
-		
+
 		}
 		break;
 	case KEY_RETURN:
@@ -583,7 +583,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
                 else
                     break;
             }
-			
+
 			return true;
 		}
 		else
@@ -609,7 +609,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (CursorPos > 0) 
+		if (CursorPos > 0)
 			CursorPos--;
 		BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 		break;
@@ -631,7 +631,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			newMarkEnd = 0;
 		}
 
-		if (Text.size() > (u32)CursorPos) 
+		if (Text.size() > (u32)CursorPos)
 			CursorPos++;
 		BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 		break;
@@ -736,7 +736,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 
 			if (CursorPos < 0)
 				CursorPos = 0;
-			
+
 			BlinkStartTime = IRRdevice->getTimer()->getRealTime();
 			newMarkBegin = 0;
 			newMarkEnd = 0;
@@ -853,7 +853,7 @@ void CGUIEditBoxIRB::draw()
 	IGUISkin* skin = Environment->getSkin();
 	if (!skin)
 		return;
-	
+
 	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
 	FrameRect = AbsoluteRect;
@@ -862,24 +862,24 @@ void CGUIEditBoxIRB::draw()
 	if (Border)
 	{
 		skin->draw3DSunkenPane(this, skin->getColor(EGDC_WINDOW),
-			false, true, myRect(FrameRect.UpperLeftCorner.X-1,FrameRect.UpperLeftCorner.Y-2,FrameRect.getWidth(),FrameRect.getHeight()), &AbsoluteClippingRect);
+			false, true, this->myRect(FrameRect.UpperLeftCorner.X-1,FrameRect.UpperLeftCorner.Y-2,FrameRect.getWidth(),FrameRect.getHeight()), &AbsoluteClippingRect);
 
 		FrameRect.UpperLeftCorner.X += skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.UpperLeftCorner.Y += skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 		FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
-	
+
 	}
 
 	if (LineNumbering)
 	{
 		// Line count background
-		skin->draw2DRectangle(this,video::SColor(255,220,220,220),myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,50,FrameRect.getHeight()-4),&AbsoluteClippingRect);
-		skin->draw2DRectangle(this,video::SColor(255,192,192,192),myRect(FrameRect.UpperLeftCorner.X+45,FrameRect.UpperLeftCorner.Y,5,FrameRect.getHeight()-4),&AbsoluteClippingRect);
+		skin->draw2DRectangle(this,video::SColor(255,220,220,220),this->myRect(FrameRect.UpperLeftCorner.X,FrameRect.UpperLeftCorner.Y,50,FrameRect.getHeight()-4),&AbsoluteClippingRect);
+		skin->draw2DRectangle(this,video::SColor(255,192,192,192),this->myRect(FrameRect.UpperLeftCorner.X+45,FrameRect.UpperLeftCorner.Y,5,FrameRect.getHeight()-4),&AbsoluteClippingRect);
 	}
 
-	core::rect<s32> localClipRect = myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
-	
+	core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
+
 	localClipRect.clipAgainst(AbsoluteClippingRect);
 
 	// draw the text
@@ -968,7 +968,7 @@ void CGUIEditBoxIRB::draw()
 
 				for(int chart = 0; chart < (int)txt_main.size(); chart++)
                 {
-					
+
                     if(txt_main[chart] == static_cast<char>( 9 ))
 					{
 						txt_main.erase(chart,1);
@@ -976,7 +976,7 @@ void CGUIEditBoxIRB::draw()
 					}
                 }
 
-				
+
 
                 //separate and draw keywords in blue
                 // sample:
@@ -1024,7 +1024,7 @@ void CGUIEditBoxIRB::draw()
                 tokens.clear();
 
 				// Add specific IRB token in another tint of blue
-				
+
 				std::string txt2 = txt_main;
 				tokens = split(txt2,' ');
 
@@ -1142,18 +1142,18 @@ void CGUIEditBoxIRB::draw()
 				{
 					s32 right = FrameRect.UpperLeftCorner.X+20 - font->getDimension(linenumber.c_str()).Width;
 					s32 base = 2+(font->getDimension(L"000000").Height * lineCount)/2;
-					irr::core::rect<s32> LineRect = myRect(right,
+					irr::core::rect<s32> LineRect = this->myRect(right,
 						base+FrameRect.UpperLeftCorner.Y-VScrollPos,
 						50,
 						CurrentTextRect.getHeight());
 
-					irr::core::rect<s32> LineClipRect = myRect(AbsoluteClippingRect.UpperLeftCorner.X,
+					irr::core::rect<s32> LineClipRect = this->myRect(AbsoluteClippingRect.UpperLeftCorner.X,
 						AbsoluteClippingRect.UpperLeftCorner.Y+2,50,AbsoluteClippingRect.getHeight()-10);
-					font->draw(linenumber.c_str(), 					
+					font->draw(linenumber.c_str(),
 						LineRect,
 						video::SColor(255,0,128,192),
 						false, true, &LineClipRect); //&AbsoluteClippingRect
-					
+
 				}
 				// draw normal text
 				//font->draw(core::stringw(txt_main.c_str()), CurrentTextRect,
@@ -1254,7 +1254,7 @@ void CGUIEditBoxIRB::draw()
 			font->draw(L"_", CurrentTextRect,
 				OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
 				false, true, &localClipRect);
-		}  // To be fixed 
+		}  // To be fixed
 	}
 
 	// draw children
@@ -1336,20 +1336,20 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 	{
 	case irr::EMIE_MOUSE_WHEEL:
 		value = (s32)-event.MouseInput.Wheel;
-		
+
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
 			s32 lineNo = getLineFromPos(CursorPos);
 			if (lineNo > 0)
 			{
 				s32 cp = CursorPos - BrokenTextPositions[lineNo];
-				
+
 				if ((lineNo+value)>=lineCount-1)
 					value=0;
-				
+
 				if ((lineNo+value)<0)
 					value=0;
-				
+
 				if (value!=0)
 				{
 					if ((s32)BrokenText[lineNo-1].size() < cp)
@@ -1365,7 +1365,7 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 			return true;
 
 		}
-		
+
 
 		break;
 	case irr::EMIE_LMOUSE_LEFT_UP:
@@ -1577,7 +1577,7 @@ void CGUIEditBoxIRB::breakText()
 			{
 				line += whitespace;
 				line += word;
-				
+
 				BrokenText.push_back(line);
 				linenumber += (core::stringw)BrokenText.size() + L"\n";
 				BrokenTextPositions.push_back(lastLineStart);
@@ -1594,7 +1594,7 @@ void CGUIEditBoxIRB::breakText()
 			word += c;
 		}
 	}
-	
+
 	line += whitespace;
 	line += word;
 	BrokenText.push_back(line);
@@ -1603,7 +1603,7 @@ void CGUIEditBoxIRB::breakText()
 	linenumber += (core::stringw)BrokenText.size() + L"\n";
 	//Linecounter->setText(linenumber.c_str());
 	//Linecounter->move(core::vector2di(0,10));
-	
+
 }
 
 
@@ -1698,7 +1698,7 @@ s32 CGUIEditBoxIRB::getLineFromPos(s32 pos)
 			return i-1;
 		++i;
 	}
-	
+
 	return (s32)BrokenTextPositions.size() - 1;
 }
 
@@ -1754,7 +1754,7 @@ void CGUIEditBoxIRB::calculateScrollPos()
 	// calculate horizontal scroll position
 	s32 cursLine = getLineFromPos(CursorPos);
 	setTextRect(cursLine);
-	
+
 	// don't do horizontal scrolling when wordwrap is enabled.
 	if (!WordWrap)
 	{
@@ -1868,6 +1868,11 @@ void CGUIEditBoxIRB::deserializeAttributes(io::IAttributes* in, io::SAttributeRe
 			(EGUI_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
 
 	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
+}
+
+irr::core::recti CGUIEditBoxIRB::myRect(int x, int y, int w, int h)
+{
+    return irr::core::recti(x,y,x+w,y+h);
 }
 
 } // end namespace gui

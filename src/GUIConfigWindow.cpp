@@ -9,12 +9,6 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-//rect sugar...
-rect<s32> myRect(s32 x, s32 y, s32 w, s32 h)
-{
-    return rect<s32>(x,y,x+w,y+h);
-}
-
 GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 {
     this->device = device;
@@ -322,4 +316,9 @@ void GUIConfigWindow::saveNewSeetings()
     doc.LinkEndChild(irb_cfg);
 
     doc.SaveFile("config.xml");
+}
+
+rect<s32> GUIConfigWindow::myRect(s32 x, s32 y, s32 w, s32 h)
+{
+    return rect<s32>(x,y,x+w,y+h);
 }

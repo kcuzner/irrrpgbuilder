@@ -35,6 +35,8 @@ namespace gui
 		s32 maxvalue;
 
 		bool full, rightportion, leftportion;
+
+		core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 	};
 }
 }
