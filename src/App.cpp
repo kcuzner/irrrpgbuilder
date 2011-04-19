@@ -12,7 +12,7 @@
 
 #include "tinyXML/tinyxml.h"
 
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 #include <wx/wx.h>
 #endif
 
@@ -694,7 +694,7 @@ App* App::getInstance()
 MousePick App::getMousePosition3D(int id)
 {
     position2d<s32> pos=device->getCursorControl()->getPosition();
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 	// Fix to a proper position on wxWidget;
 	pos=pos+position2d<s32>(0,22);
 #endif
@@ -958,7 +958,7 @@ void App::update()
 			device->yield();
 
 			// This is needed for wxWidget event management
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 			wxYield();
 #endif
 #ifdef EDITOR
@@ -968,7 +968,7 @@ void App::update()
 		else
 		{
 			// This is needed for wxWidget event management
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 			wxYield();
 #endif
 
@@ -1493,7 +1493,7 @@ void App::initialize()
 	
     this->currentProjectName = "irb_temp_project";
 // Hide the loading windows if the WX Widget is present
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 #endif

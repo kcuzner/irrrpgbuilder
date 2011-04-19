@@ -565,7 +565,7 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-#ifdef _WXMSW
+#ifdef _wxWIDGET
 		myRect(displaywidth - 170, 0, 170, displayheight);
 #else
 		myRect(displaywidth - 170,
