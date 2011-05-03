@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-	<dynamic_object name="peasant" mesh="peasant.b3d" type="npc" script="generic_follower.lua" scale="36" materialType="solid">
+	<dynamic_object name="peasant" mesh="npc/peasant.b3d" type="npc" script="generic_follower.lua" scale="36" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="1.0"/>
 		<animation name="walk" start="1" end="25" speed="25.0" walkspeed="1.0"/>
 	</dynamic_object>
-	<dynamic_object name="wizard" mesh="mago.b3d" type="npc" script="generic_enemy.lua" scale="80" materialType="solid">
+	<dynamic_object name="wizard" mesh="npc/mago.b3d" type="npc" script="generic_enemy.lua" scale="80" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="1.0"/>
 		<animation name="walk" start="1" end="25" speed="25.0" walkspeed="1.0"/>
 	</dynamic_object>
-	<dynamic_object name="frog" mesh="frog.b3d" type="npc" script="generic_enemy.lua" scale="36" materialType="solid">
+	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="generic_enemy.lua" scale="36" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="25"/>
 		<animation name="walk" start="1" end="18" speed="25.0" walkspeed="1.0"/>
 	</dynamic_object>
