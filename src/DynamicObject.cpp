@@ -234,6 +234,7 @@ DynamicObject* DynamicObject::clone()
 	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
 	newObj->setTemplate(false);
+	newObj->setAnimation("idle");
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -686,8 +687,17 @@ void DynamicObject::setAnimation(stringc animName)
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
+				
+
 				if (animName=="idle")
 				{
+					// Fix a random frame so the idle for different character are not the same.
+					if (tempAnim.endFrame>0)
+					{
+						f32 random = (f32)(rand() % tempAnim.endFrame+1);
+						this->nodeAnim->setCurrentFrame(random+1);
+					}
+
 					stringw text2 = L"idle animation for character: ";
 					text2.append(getNode()->getName());
 					text2.append(L" encountered.");
@@ -847,7 +857,7 @@ void DynamicObject::clearScripts()
 {
     if(hasAnimation())
 	{
-		this->setFrameLoop(0,0);
+		//this->setFrameLoop(0,0);
 		this->setAnimation("idle");
 		//printf("Script had been cleared... idle.\n");
 	}
