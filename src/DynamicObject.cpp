@@ -204,7 +204,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 				fakeShadow->setScale(vector3df(32,32,32));
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
-			if(hasAnimation()) this->setFrameLoop(0,0);
+			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
 		else
 			setAnimation("idle");
@@ -654,9 +654,11 @@ void DynamicObject::setAnimation(stringc animName)
 	{
 		stringw text = L"Die animation for character: ";
 		text.append(getNode()->getName());
-		text.append(L" encoutered.");
+		text.append(L" encountered.");
 		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
 	}
+
+	
 
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
@@ -679,10 +681,18 @@ void DynamicObject::setAnimation(stringc animName)
 				// Set the frameloop, the current animation and the speed
 				this->currentAnimation=Animation;
 				this->currentAnim=tempAnim;
+				
 
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
+				if (animName=="idle")
+				{
+					stringw text2 = L"idle animation for character: ";
+					text2.append(getNode()->getName());
+					text2.append(L" encountered.");
+					GUIManager::getInstance()->setConsoleText(text2.c_str(),false);
+				}
 			}
             return;
         }
