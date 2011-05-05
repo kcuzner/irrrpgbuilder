@@ -33,7 +33,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
 
 	SMesh* newMesh = NULL;
-	
+
 	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 
 	newMesh->setHardwareMappingHint(EHM_STATIC);
@@ -60,7 +60,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     //cout << name.c_str() << endl;
 
     node->setName(name);
-	
+
 	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
 	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
@@ -307,9 +307,10 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
 				v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
-                f32 treesize = (f32)(rand() % 100 + 50)/100;
+                f32 treesize = (f32)(rand() % 20 + 50)/100;
+                treesize*= 0.3;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
-				
+
 				printf("Attempting to place a tree with this size: %f\n",treesize);
                 vegetationVector.push_back(v);
 
@@ -324,8 +325,8 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 {
 	IVideoDriver * driver = smgr->getGUIEnvironment()->getVideoDriver();
-	
-	
+
+
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -413,7 +414,7 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 				//mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
                 mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
                 if(mb_vertices[j].Pos.Y <= value) mb_vertices[j].Pos.Y = value;
-				
+
             }
             if(mb_vertices[j].Pos.Y < value)
             {
@@ -477,7 +478,7 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 	scene::ISceneNode * selectedSceneNode =
     collMan->getSceneNodeAndCollisionPointFromRay(
 		ray,
-		intersection, 
+		intersection,
 		hitTriangle,
 		100,
 		0); // Check the entire scene (this is actually the implicit default)

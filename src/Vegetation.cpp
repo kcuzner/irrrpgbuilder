@@ -9,69 +9,38 @@ using namespace gui;
 
 using namespace std;
 
-Vegetation::Vegetation()
+Vegetation::Vegetation(int type)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
-    static IMesh* trunkMesh = smgr->getMesh("../media/vegetation/TreeHigh.obj");
-	trunkMesh->setHardwareMappingHint(EHM_STATIC);
-    trunk = smgr->addMeshSceneNode(trunkMesh);
+    if(type == -1) type=rand()%VegetationSeed::getInstance()->getTotalOfTypes();//randomize tree type when receive -1
+
+    stringc trunkMeshFile = "../media/vegetation/";
+    trunkMeshFile.append(VegetationSeed::getInstance()->getTrunkMesh(type));
+    stringc leafsMeshFile = "../media/vegetation/";
+    leafsMeshFile.append(VegetationSeed::getInstance()->getLeafsMesh(type));
+
+    IMesh* trunkMesh = smgr->getMesh(trunkMeshFile);
+    IMesh* leafsMesh = smgr->getMesh(leafsMeshFile);
+
+    if(trunkMesh)
+    {
+        trunkMesh->setHardwareMappingHint(EHM_STATIC);
+        trunk = smgr->addMeshSceneNode(trunkMesh);
+    }
+    else
+    {
+        trunk = smgr->addEmptySceneNode();
+    }
+
 	trunk->setAutomaticCulling(EAC_FRUSTUM_BOX);
-	
-    //trunk->setMaterialFlag(EMF_LIGHTING,false);
+	//two options to set vegetation scale: load from XML or export in the right size
+	//trunk->setScale(vector3df(25,25,25));//PS: remove this line after decide this...
 
-    IBillboardSceneNode* temp;
-	
-    s32 texture = rand()%4;
-    ITexture* itexture = NULL;
-
-    size = 72.0f;
-
-    switch(texture)
-    {
-        case 2:
-            itexture = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/vegetation/vegetation2.png");
-            break;
-        case 1:
-            itexture = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/vegetation/vegetation1.png");
-            break;
-        default:
-            itexture = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/vegetation/vegetation0.png");
-    }
-
-    f32 radius = 0.5;
-
-    //create 3 billboards..
-    for (int i=0 ; i<3 ; i++)
-    {
-        vector3df pos;
-
-        pos.Z = cos( ((360/3)*i)*PI/180 ) * radius;
-        pos.X = sin( ((360/3)*i)*PI/180 ) * radius;
-        pos.Y = 1.5;
-
-        temp = smgr->addBillboardSceneNode(trunk,
-                                           dimension2df(size,size),
-                                           pos );
-
-        temp->setMaterialTexture(0,itexture);
-        temp->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-        //temp->setMaterialFlag(EMF_LIGHTING,false);
-        temp->setMaterialFlag(EMF_FOG_ENABLE,true);
-		temp->setAutomaticCulling(EAC_FRUSTUM_BOX);
-	
-
-        leafs.push_back(temp);
-    }
-
-    temp = smgr->addBillboardSceneNode(trunk,dimension2df(size*(f32)0.7,size*(f32)0.7),vector3df(0,(f32)2,0));
-    temp->setMaterialTexture(0,itexture);
-    temp->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-    //temp->setMaterialFlag(EMF_LIGHTING,false);
-    temp->setMaterialFlag(EMF_FOG_ENABLE,true);
-	temp->setAutomaticCulling(EAC_FRUSTUM_BOX);
-    leafs.push_back(temp);
-
+	leafsMesh->setHardwareMappingHint(EHM_STATIC);
+    leafs = smgr->addMeshSceneNode(leafsMesh,trunk);
+	leafs->setAutomaticCulling(EAC_FRUSTUM_BOX);
+	leafs->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     //Fake Shadow
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/vegetation/shadow.obj"),trunk);
@@ -83,21 +52,11 @@ Vegetation::Vegetation()
     trunk->setMaterialFlag(EMF_FOG_ENABLE,true);
     fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
-// Set the debug data in the editor application, not in the player
-#ifdef EDITOR
-    trunk->setDebugDataVisible(false);
-#endif
+    trunk->setDebugDataVisible(true);
 }
 
 Vegetation::~Vegetation()
 {
-    for (int i=0 ; i<(int)leafs.size() ; i++)
-    {
-        ((IBillboardSceneNode*)leafs[i])->remove();
-    }
-
-    leafs.clear();
-
     fakeShadow->remove();
 
     trunk->remove();
@@ -113,6 +72,11 @@ void Vegetation::setPosition(vector3df pos)
     trunk->setPosition(pos);
 }
 
+void Vegetation::setRotation(vector3df rot)
+{
+    trunk->setRotation(rot);
+}
+
 void Vegetation::setScale(vector3df scale)
 {
     trunk->setScale(scale);
@@ -120,8 +84,8 @@ void Vegetation::setScale(vector3df scale)
 
 void Vegetation::showDebugData(bool show)
 {
-    if(!show)
-        //trunk->setDebugDataVisible(EDS_BBOX);
-    //else
+    if(show)
+        trunk->setDebugDataVisible(EDS_BBOX);
+    else
         trunk->setDebugDataVisible(EDS_OFF);
 }
