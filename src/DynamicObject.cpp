@@ -23,8 +23,9 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     stringc realFile = "../media/dynamic_objects/";
     realFile += meshFile;
 	//printf("Here is the object: %s \n",realFile.c_str());
-	smgr = App::getInstance()->getDevice()->getSceneManager();
-	mesh = smgr->getMesh(realFile);
+	
+		mesh = smgr->getMesh(realFile);
+	
 	//meshName = meshFile;
     this->animations = animations;
 
@@ -178,19 +179,28 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL);
 	    //nodeAnim->setTransitionTime(0.5f);
 		this->node = nodeAnim;
+		if (node)
+		{
+			this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
+			this->node->setTriangleSelector(selector);
+		}
 
 	}
     else
 	{
 		this->mesh->setHardwareMappingHint(EHM_STATIC);
         this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+		// Would like to load non-animated meshes as occtrees, but something is crashing.
+		//this->node = smgr->addOctreeSceneNode ((IAnimatedMesh*)mesh,0,0x0010,256,false);
+		if (node)
+		{
+			//this->selector = smgr->createTriangleSelector((IAnimatedMesh*)mesh,node);
+			this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
+			this->node->setTriangleSelector(selector);
+		}
 	}
 	if (node)
-	{//this->selector = smgr->createTriangleSelector(mesh,node);
-		this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
-		this->node->setTriangleSelector(selector);
-
-		this->animator = NULL;
+	{	this->animator = NULL;
 		if (objectType != OBJECT_TYPE_EDITOR)
 		{
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);

@@ -26,7 +26,9 @@ Vegetation::Vegetation(int type)
     if(trunkMesh)
     {
         trunkMesh->setHardwareMappingHint(EHM_STATIC);
-        trunk = smgr->addMeshSceneNode(trunkMesh);
+		// load the mesh as an occtree, should be a faster to draw
+		trunk = smgr->addOctreeSceneNode(trunkMesh,0,-1,256,false);
+        //trunk = smgr->addMeshSceneNode(trunkMesh);
     }
     else
     {
@@ -38,7 +40,9 @@ Vegetation::Vegetation(int type)
 	//trunk->setScale(vector3df(25,25,25));//PS: remove this line after decide this...
 
 	leafsMesh->setHardwareMappingHint(EHM_STATIC);
-    leafs = smgr->addMeshSceneNode(leafsMesh,trunk);
+    //leafs = smgr->addMeshSceneNode(leafsMesh,trunk);
+	// load the mesh as an occtree, should be a faster to draw
+	leafs = smgr->addOctreeSceneNode(leafsMesh,trunk,-1,256,false);
 	leafs->setAutomaticCulling(EAC_FRUSTUM_BOX);
 	leafs->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
