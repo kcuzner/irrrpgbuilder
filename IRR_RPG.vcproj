@@ -684,6 +684,50 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="FX"
+				>
+				<File
+					RelativePath=".\src\fx\EffectsManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\fx\EffectsManager.h"
+					>
+				</File>
+				<Filter
+					Name="PostProcess"
+					>
+					<File
+						RelativePath=".\src\fx\postprocess\IPostProcess.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\PostProcessManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\PostProcessManager.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\ShaderMaterial.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\ShaderMaterial.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\ShaderPostProcess.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\postprocess\ShaderPostProcess.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="DynamicObjects"
@@ -900,14 +944,6 @@
 		<Filter
 			Name="StaticObjects"
 			>
-			<File
-				RelativePath=".\src\EffectsManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\EffectsManager.h"
-				>
-			</File>
 			<Filter
 				Name="Terrain"
 				>
@@ -955,10 +991,24 @@
 			<File
 				RelativePath=".\src\ShaderCallBack.cpp"
 				>
+				<FileConfiguration
+					Name="Full_Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\src\ShaderCallBack.h"
 				>
+				<FileConfiguration
+					Name="Full_Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter

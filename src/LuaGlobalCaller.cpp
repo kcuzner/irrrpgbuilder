@@ -5,7 +5,7 @@
 #include <time.h>
 #include "DynamicObjectsManager.h"
 #include "CameraSystem.h"
-#include "EffectsManager.h"
+#include "fx/EffectsManager.h"
 #include "SoundManager.h"
 #include "Player.h"
 

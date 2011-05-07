@@ -4,6 +4,7 @@
 #include "EventReceiver.h"
 #include "GUIManager.h"
 #include "TerrainManager.h"
+#include "fx/EffectsManager.h"
 #include "LANGManager.h"
 #include "DynamicObjectsManager.h"
 #include "LuaGlobalCaller.h"
@@ -147,7 +148,7 @@ void App::drawBrush()
 
 	// Center circle for the brush give the center
 	
-	
+
 #endif
 }
 
@@ -955,6 +956,7 @@ void App::update()
 		driver->beginScene(true, true, SColor(0,200,200,200));
 		if(app_state < APP_STATE_CONTROL)
 		{
+			
 			device->yield();
 
 			// This is needed for wxWidget event management
@@ -975,10 +977,21 @@ void App::update()
     		updateGameplay();
 		}
 
-		smgr->drawAll();
-		guienv->drawAll();
 
-		draw2DImages();
+		// Prepare the RTT for the postFX
+		EffectsManager::getInstance()->preparePostFX(false);
+
+		smgr->drawAll();
+
+		// Tries to do an post FX
+		EffectsManager::getInstance()->update();
+
+		// bring back the gui after the RTT is done
+		video::SMaterial mat; 
+        driver->setMaterial(mat);
+
+		guienv->drawAll();
+		//draw2DImages();
 
 		driver->endScene();
 	}
@@ -988,6 +1001,7 @@ void App::quickUpdate()
 {
 	driver->beginScene(true, true, SColor(0,200,200,200));
 	smgr->drawAll();
+
 	guienv->drawAll();
 	driver->endScene();
 }
@@ -1104,7 +1118,7 @@ void App::updateEditMode()
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
                                                                      GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+																	 GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 					else if(EventReceiver::getInstance()->isMousePressed(1) )
 					{
