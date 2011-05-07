@@ -13,7 +13,7 @@ using namespace gui;
 using namespace std;
 
 //
-const irr::f32 TerrainTile::vegetationRange = 160; // old value=60, seem better with the new distance value
+const irr::f32 TerrainTile::vegetationRange = 60; // old value=60
 
 
 TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
@@ -75,7 +75,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static s32 materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/shaders/splat.frag", "pixelMain", video::EPST_PS_1_1,
-        ShaderCallBack::getInstance(), video::EMT_SOLID);
+        ShaderCallBack::getInstance(), video::EMT_SOLID); 
 
     //Assign Textures
     node->setMaterialTexture(0,layer0);
@@ -84,12 +84,12 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     node->setMaterialTexture(3,layer3);
 
     //Assign GLSL Shader
-    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
+    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
 
 
 
     //Create a Custom GLSL Material (Terrain Splatting)
-    static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+   static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_1,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
@@ -98,11 +98,11 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
 
     //Assign GLSL Shader
-    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean);
+    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean); 
 
     //Assign Textures
     ocean->setMaterialTexture(0,oceanLayer0);
-    ocean->setMaterialTexture(1,oceanLayer1);
+    ocean->setMaterialTexture(1,oceanLayer1); 
 
     node->setMaterialFlag(EMF_FOG_ENABLE,true);
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
@@ -306,7 +306,8 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                 Vegetation* v = new Vegetation();
 
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
-				v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
+				//v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
+				v->setPosition(vector3df(realPos.X,realPos.Y,realPos.Z));
                 f32 treesize = (f32)(rand() % 20 + 50)/100;
                 treesize*= 0.3;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
