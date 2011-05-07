@@ -354,6 +354,7 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 	// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
     node->setTriangleSelector(selector);
+	selector->drop();
 }
 
 
@@ -387,7 +388,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
     node->setTriangleSelector(selector);
-
+	selector->drop();
+	
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
@@ -430,6 +432,7 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 	// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
     node->setTriangleSelector(selector);
+	selector->drop();
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
@@ -462,6 +465,7 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 	// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
     node->setTriangleSelector(selector);
+	selector->drop();
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
