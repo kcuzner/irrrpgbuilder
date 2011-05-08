@@ -234,6 +234,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"getFogColor",getFogColor);//r,g,b = getFogColor()
     lua_register(LS,"setFogRange",setFogRange);//setFogRange(near,far)
     lua_register(LS,"getFogRange",getFogRange);//near,far = getFogRange()
+	lua_register(LS,"setPostFX",setPostFX); // define the postprocess FX
 
     lua_register(LS,"showBlackScreen",showBlackScreen);//showBlackScreen(optional_text)
     lua_register(LS,"hideBlackScreen",hideBlackScreen);//hideBlackScreen()
@@ -569,6 +570,16 @@ int LuaGlobalCaller::getFogRange(lua_State *LS)
     lua_pushnumber(LS,end);
 
     return 2;
+}
+
+int LuaGlobalCaller::setPostFX(lua_State *LS)
+{
+	stringc stringFX = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	EffectsManager::getInstance()->SetPostFX(stringFX);
+
+	return 0;
 }
 
 int LuaGlobalCaller::showBlackScreen(lua_State *LS)

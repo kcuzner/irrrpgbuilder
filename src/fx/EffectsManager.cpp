@@ -179,7 +179,7 @@ void EffectsManager::update()
 	if (postProcessMode>0)
 	{
 		//postProcessManager->render(EPPE_ADAPTIVE_BLOOM);
-		postProcessManager->render(EPPE_INVERT);
+		postProcessManager->render(postEffect);
 		postProcessManager->update();
 	}
 }
@@ -188,4 +188,158 @@ void EffectsManager::preparePostFX(bool depth)
 {
 	if (postProcessMode>0)
 		postProcessManager->prepare(false);
+	
+}
+
+void EffectsManager::DOFaddObject(ISceneNode * DOFNode)
+{
+	postProcessManager->addNodeToDepthPass(DOFNode);
+}
+
+void EffectsManager::DOFclearObjects()
+{
+	postProcessManager->clearDepthPass();
+}
+
+void EffectsManager::SetPostFX(stringc fxname)
+{
+	if (fxname=="invert")
+	{
+		postEffect = EPPE_INVERT;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="sepia")
+	{
+		postEffect = EPPE_SEPIA;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="simple_bloom")
+	{
+		postEffect = EPPE_SIMPLE_BLOOM;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="adaptive_bloom")
+	{
+		postEffect = EPPE_ADAPTIVE_BLOOM;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="motion_blur")
+	{
+		postEffect = EPPE_MOTION_BLUR;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="night_vision")
+	{
+		postEffect = EPPE_NIGHT_VISION;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="dream_vision")
+	{
+		postEffect = EPPE_DREAM_VISION;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="posterize")
+	{
+		postEffect = EPPE_POSTERIZE;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="sharpen")
+	{
+		postEffect = EPPE_SHARPEN;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="embossed")
+	{
+		postEffect = EPPE_EMBOSSED;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="tiling")
+	{
+		postEffect = EPPE_TILING;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="displacement")
+	{
+		postEffect = EPPE_DISPLACEMENT;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="scratched")
+	{
+		postEffect = EPPE_SCRATCHED;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="pencil")
+	{
+		postEffect = EPPE_PENCIL;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="blur")
+	{
+		postEffect = EPPE_BLUR;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="water")
+	{
+		postEffect = EPPE_WATER;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="color")
+	{
+		postEffect = EPPE_COLOR;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="pulsing")
+	{
+		postEffect = EPPE_PULSING;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="shake")
+	{
+		postEffect = EPPE_SHAKE;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="desaturate")
+	{
+		postEffect = EPPE_DESATURATE;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="radial_blur")
+	{
+		postEffect = EPPE_RADIAL_BLUR;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="depth_of_field")
+	{
+		postEffect = EPPE_DEPTH_OF_FIELD;
+		postProcessMode = 1;
+		return;
+	} else
+	if (fxname=="vignette")
+	{
+		postEffect = EPPE_VIGNETTE;
+		postProcessMode = 1;
+		return;
+	} else
+	postProcessMode = 0;
 }

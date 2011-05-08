@@ -1,7 +1,15 @@
 #ifndef EFFECTSMANAGER_H
 #define EFFECTSMANAGER_H
 
+#include <irrlicht.h>
 #include "PostProcess/PostProcessManager.h"
+
+using namespace irr;
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
 
 class EffectsManager
 {
@@ -12,6 +20,9 @@ class EffectsManager
         void setTimeOfDay(int newTime);
 		void update();
 		void preparePostFX(bool depth);
+		void SetPostFX(stringc fxname);
+		void DOFaddObject(ISceneNode * DOFNode);
+		void DOFclearObjects();
 
         virtual ~EffectsManager();
     protected:
@@ -19,7 +30,7 @@ class EffectsManager
         EffectsManager();
 		int postProcessMode;
 		CPostProcessManager* postProcessManager;
-		E_POSTPROCESS_EFFECT sampleEffect;
+		E_POSTPROCESS_EFFECT postEffect;
 };
 
 #endif // EFFECTSMANAGER_H

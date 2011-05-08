@@ -67,6 +67,7 @@ class LuaGlobalCaller
         static int getFogRange(lua_State *LS);//start,end = getFogRange()
         static int setFogColor(lua_State *LS);//setFogColor(r,g,b)   or  or setFogColor(COLOR_NAME)
         static int getFogColor(lua_State *LS);//r,g,b = getFogColor() -> return 0-255 values
+		static int setPostFX(lua_State *LS); // Define a PostProcess FX
         static int showBlackScreen(lua_State *LS);//showBlackScreen(optional_text)
         static int hideBlackScreen(lua_State *LS);//showBlackScreen()
 
