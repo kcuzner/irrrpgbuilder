@@ -1,4 +1,29 @@
 Changes since AlphaRelease 1
+
+May 2011
+- Adding new props as barrel, well, goblin, animated horse
+- Improved vegetation by using new meshes (Andres), updated the system to use a XML definition (Andres)
+
+April 2011
+- Redone the dynamic object preview, object scale better in the view
+- Added a "player" preview inside the Gameplay interface, with the base stats
+- Changed LUA calling to protected mode, hoping to have less LUA based crash
+- Fixed terrain collision detection, now update when the ground is shaped
+- Modified terrain shader to display a "plateau" line at the proper elevation
+- Player can walk on mountain, but will stop if the slope is too high (determined with the new terrain collision)
+- Improved the player script that does now health regen from LUA
+- Droppped the support for Win32 on the codeblock project, the win32 project is now only MSVC
+- Improved the battle a little, now the player, will "track" it's latest enemy and attack when proximity is reached (with it last enemy)
+
+
+March 2011
+- Updated TinyXML with an "accent converter" from UTF8 to IRRlicht Widechar
+- Improved the gameplay bar look
+- Redone the LANG Manager to load text and keep it in memory for the current language instead of loading every time a text is needed.
+- The source can produce a "player" only application that will play the game but not edit it
+- Added WxWidget support to create a wxWidget application from the source, 3 build possible, full editor with wxWidget, full editor Irrlicht, player application
+
+
 January/February 2011
 - Improved the Script EDITOR gui, added the scrollbar and more control with the mouse
 - Script EDITOR has now line count ability
@@ -6,96 +31,60 @@ January/February 2011
 - Added "Health" bar for NPC's as a new node
 - Added a new graphic GUI Health bar using textures
 - Improved the accented character handling via XML (Using TINY XML), characters with accented characters are now converted.
-
-November/December 2010
-- Updated to IRRlicht 1.7.2 with no patch. You can use the official release now.
-
-- Fixed the closing of IRRKlang device that caused a crash/memory leak when closing the application 
-
-- Application use a config.xml file (display, terrain and other things can be set from there)
-
-- Now IRB use a defined scale. 1 unit in the game represent 1 inches. (As in many game engines, ex: Source SDK (Half Life, Left4Dead, Portal, Team Fortress, etc))
-
-- Support external animation files for the player and the dynamic objects. A meshes using the same skeleton structure can share animation using this method. 
-
-- Collisions Using a single collision response animator on player & dynamic objects with a meta selector
-
-- Collisions, the meta selector is updated when a NPC (Dynamic object) is killed. Collision trianges are removed from the meta selector.
-
-- Collisions, the dynamic objects have their own collision response animator
-
-- (Player, Dynamic objects) Properties have been added to the player and the dynamic object to be used later with combat formulas.
-
-- (Player, dynamic objects) External animations can be defined in their XML file
-
-- (player, dynamic objects) preloading of scripts, from the XML
-
-- Player, can define the walking speed from the XML file
-
-- Player, collision detection for obstacles trigger idle animation state
-
-- Player, when life propertie are decreased the hurt animation state is triggered
-
-- Player, when the life propertie is depleted, the death animation state is triggered
-
-- Player, dynamically attack the NPC when the user click on the enemy and is in range. Remove HP on enemy based on simple rules. 
-
-- Combat formulas: Prototype in the player class that use Levels, Experience, HP, and other properties to calculate the damage done to the opponent.
-
-- Cameras: Defined 2 cameras (gameplay and editing). Each camera has their range and FOV.
-
-- Cameras: Mouse in/out in edit mode and run mode. Panning with the mouse is there but still buggy.
-
-- Cameras: Zoom in/out disabled when editing scripts or over a window tool.
-
-- LUA: Dynamic object (NPC) that use the LUA "ChaseObject" will trigger the animation "idle" when it reach a far or near position (parameters)
-
-- LUA: Template script Enemy
-
-- LUA: Template script Follower
-
-- Animation states have been implemented for the AI. A specific animation will be called depending of the event that occur (Going to idle when colliding with an obstacle, so it will not "Moonwalk".)
-
-- Npc have their own Collision Response Animator. So they should not overlap over each other. Still need tweak to define the radius of the collision sphere.
-
-- Performance: Added timers inside the application, so the application should run about the same and is not tied to hardware.
-
-- Performance: Timed the LUA callback to 1/4 second, Animation states 1/60 second refresh
-
-- Performance: Added a yield() to be used in editing mode to give more CPU for other tasks 
-
-- Performance: Implemented VBO hinting on all objects
-
-- Performance: Dynamic objects that are outside view will not refresh (culled detection). Need to add an exception for special cases.
-
-- Terrain edition, GUI for brush radius parameter added.
-
-- Terrain tile size can be defined in a XML file (config.xml)
-
-- Terrain height is now 1/4 of the terrain tile size 
-
-- Terrain Shader updates on the mesh size
-
-- Terrain mesh can be changed (higher or lower mesh density can be used now).
-
-- Terrain tree size randomized when painting
-
-- GUI: added icons for disabled states, as that was patched before 1.7.1
-
-- GUI: New project and Help buttons are disabled during gameplay
-
-- French language added 
-
-- German language added (Bot1q) (IRB can operate now in English, Portugese, French and German)
-
-- Shaders folder renamed to lowercase such as the other folders (linux filesystem is case sensitive)
+- Updated the GUI to used tabs and categories, will allow for more tools
+- Added the Healthbar GUI for NPCs
+- Added a new GUI Element that can do graphical (picture based) Life an Mana gauges (Diablo / Torchlicht style)
+- The Application has it's own icon now
+- Improved the gameplay interface (mostly an improved gameplay bar)
+- Added a "pack" tool to add assets (IRB PACK MAKER), by Andres
 
 January 2011
 - Removed most of the functions in the player class, the player is now referencing a dynamic object
-
 - the dynamic object class has been improved with the new functions the player class had, so most of the new feature introduced to the player should be available to all dynamic objects.
-
 - The item inventory feature is now available to all dynamic objects.
-
 - the XML loading of the dynamic object is now configurable as a "set" as it could get bigger as a single file. The main XML, can load separate XML configuration "sets" of dynamic objects. This is needed since the player and lot of other types of objects will be loaded as dynamic objects. 
+
+
+November/December 2010
+- Updated to IRRlicht 1.7.2 with no patch. You can use the official release now.
+- Fixed the closing of IRRKlang device that caused a crash/memory leak when closing the application 
+- Application use a config.xml file (display, terrain and other things can be set from there)
+- Now IRB use a defined scale. 1 unit in the game represent 1 inches. (As in many game engines, ex: Source SDK (Half Life, Left4Dead, Portal, Team Fortress, etc))
+- Support external animation files for the player and the dynamic objects. A meshes using the same skeleton structure can share animation using this method. 
+- Collisions Using a single collision response animator on player & dynamic objects with a meta selector
+- Collisions, the meta selector is updated when a NPC (Dynamic object) is killed. Collision trianges are removed from the meta selector.
+- Collisions, the dynamic objects have their own collision response animator
+- (Player, Dynamic objects) Properties have been added to the player and the dynamic object to be used later with combat formulas.
+- (Player, dynamic objects) External animations can be defined in their XML file
+- (player, dynamic objects) preloading of scripts, from the XML
+- Player, can define the walking speed from the XML file
+- Player, collision detection for obstacles trigger idle animation state
+- Player, when life propertie are decreased the hurt animation state is triggered
+- Player, when the life propertie is depleted, the death animation state is triggered
+- Player, dynamically attack the NPC when the user click on the enemy and is in range. Remove HP on enemy based on simple rules. 
+- Combat formulas: Prototype in the player class that use Levels, Experience, HP, and other properties to calculate the damage done to the opponent.
+- Cameras: Defined 2 cameras (gameplay and editing). Each camera has their range and FOV.
+- Cameras: Mouse in/out in edit mode and run mode. Panning with the mouse is there but still buggy.
+- Cameras: Zoom in/out disabled when editing scripts or over a window tool.
+- LUA: Dynamic object (NPC) that use the LUA "ChaseObject" will trigger the animation "idle" when it reach a far or near position (parameters)
+- LUA: Template script Enemy
+- LUA: Template script Follower
+- Animation states have been implemented for the AI. A specific animation will be called depending of the event that occur (Going to idle when colliding with an obstacle, so it will not "Moonwalk".)
+- Npc have their own Collision Response Animator. So they should not overlap over each other. Still need tweak to define the radius of the collision sphere.
+- Performance: Added timers inside the application, so the application should run about the same and is not tied to hardware.
+- Performance: Timed the LUA callback to 1/4 second, Animation states 1/60 second refresh
+- Performance: Added a yield() to be used in editing mode to give more CPU for other tasks 
+- Performance: Implemented VBO hinting on all objects
+- Performance: Dynamic objects that are outside view will not refresh (culled detection). Need to add an exception for special cases.
+- Terrain edition, GUI for brush radius parameter added.
+- Terrain tile size can be defined in a XML file (config.xml)
+- Terrain height is now 1/4 of the terrain tile size 
+- Terrain Shader updates on the mesh size
+- Terrain mesh can be changed (higher or lower mesh density can be used now).
+- Terrain tree size randomized when painting
+- GUI: added icons for disabled states, as that was patched before 1.7.1
+- GUI: New project and Help buttons are disabled during gameplay
+- French language added 
+- German language added (Bot1q) (IRB can operate now in English, Portugese, French and German)
+- Shaders folder renamed to lowercase such as the other folders (linux filesystem is case sensitive)
 
