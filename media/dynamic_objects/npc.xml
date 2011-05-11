@@ -5,8 +5,8 @@
 		<animation name="walk" start="1" end="25" speed="25.0" walkspeed="1.0"/>
 	</dynamic_object>
 	<dynamic_object name="goblin" mesh="npc/goblin_run.b3d" type="npc" script="generic_enemy.lua" scale="5" materialType="solid">
-		<animation name="idle" start="1" end="1" speed="1"/>
-		<animation name="walk" start="1" end="30" speed="60.0" walkspeed="1.0"/>
+		<animation name="idle" mesh="npc/goblin_idle.b3d" start="1" end="480" speed="60.0"/>
+		<animation name="walk" mesh="npc/goblin_run.b3d" start="1" end="60" speed="60.0" walkspeed="1.0"/>
 	</dynamic_object>
 	<dynamic_object name="Giant goblin" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid">
 		<animation name="idle" start="1" end="1" speed="1"/>
