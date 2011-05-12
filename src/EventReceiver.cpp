@@ -57,15 +57,15 @@ bool EventReceiver::OnEvent(const SEvent& event)
     else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
     {
         App::getInstance()->eventMousePressed(event.MouseInput.Event);
-		
+
 		mouse[event.MouseInput.Event] = 1;
-		
+
 // Seem to crash when used with WXWidget
 #ifndef _WXMSW
-    mouse[event.MouseInput.Event] = 1;    
+    mouse[event.MouseInput.Event] = 1;
 #endif
 		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
-		{	
+		{
 			mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;
 			//mouse[EMIE_RMOUSE_PRESSED_DOWN] = 1;
 		}
@@ -85,7 +85,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
         {
             App::getInstance()->eventMouseWheel(event.MouseInput.Wheel);
         }
-		
+
     }
     else if (event.EventType == EET_GUI_EVENT)
     {

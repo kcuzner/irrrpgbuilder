@@ -1,7 +1,7 @@
 #ifndef _SHADERPOSTPROCESS_H
 #define _SHADERPOSTPROCESS_H
- 
-#include "IPostprocess.h"
+
+#include "IPostProcess.h"
 #include "ShaderMaterial.h"
 
 class CShaderPostProcess : public IPostProcess
@@ -26,10 +26,10 @@ protected:
 public:
 	// returns the material of the postprocess
 	virtual video::SMaterial& getMaterial() { return ShaderMaterial->getMaterial(); }
-	
+
 	// returns the shader material object of the postprocess
 	virtual CShaderMaterial* getShaderMaterial() { return ShaderMaterial; }
-	
+
 	// renders the postprocess
 	virtual void render();
 };

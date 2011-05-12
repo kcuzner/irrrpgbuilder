@@ -45,6 +45,7 @@
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Cancel"/>
 		<text id="bt_config" str="Editor Setup"/>
+		<text id="bt_terrain_transform_vegetation_paint_strength" str="Brush Strength"/>
 		<text id="txt_cfg_window_changes_msg" str="Changes will take effect next time you run the program"/>
 		<text id="txt_cfg_window_caption" str="Application Settings"/>
 		<text id="txt_cfg_window_resolution" str="Screen Resolution"/>
@@ -145,6 +146,7 @@
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Cancelar"/>
 		<text id="bt_config" str="Preferências"/>
+		<text id="bt_terrain_transform_vegetation_paint_strength" str="Tamanho do pincel"/>
 		<text id="txt_cfg_window_changes_msg" str="As alteracoes terão efeito depois que você reiniciar o programa"/>
 		<text id="txt_cfg_window_caption" str="Preferências"/>
 		<text id="txt_cfg_window_resolution" str="Resolução de Tela"/>
@@ -245,6 +247,7 @@
 		<text id="bt_config" str="Configuration de l'application"/>
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Annuler"/>
+		<text id="bt_terrain_transform_vegetation_paint_strength" str="{TO TRANSLATE}"/>
 		<text id="txt_cfg_window_changes_msg" str="Les changements s'activeronts la prochaine fois que vous demarrerez le programme"/>
 		<text id="txt_cfg_window_caption" str="Configuration de l'application"/>
 		<text id="txt_cfg_window_resolution" str="Résolution d'affichage"/>
@@ -345,6 +348,7 @@
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Abbrechen"/>
 		<text id="bt_config" str="Konfiguration"/>
+		<text id="bt_terrain_transform_vegetation_paint_strength" str="{TO TRANSLATE}"/>
 		<text id="txt_cfg_window_changes_msg" str="Aenderungen werden beim nächsten Start vorgenommen"/>
 		<text id="txt_cfg_window_caption" str="Konfiguration"/>
 		<text id="txt_cfg_window_resolution" str="Fensteraufloesung"/>

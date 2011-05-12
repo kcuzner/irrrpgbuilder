@@ -2,7 +2,7 @@
 #define EFFECTSMANAGER_H
 
 #include <irrlicht.h>
-#include "PostProcess/PostProcessManager.h"
+#include "postprocess/PostProcessManager.h"
 
 using namespace irr;
 using namespace core;

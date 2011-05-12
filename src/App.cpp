@@ -48,7 +48,7 @@ void App::draw2DImages()
     if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
     {
         GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
-		
+
     }
 
     if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
@@ -63,7 +63,7 @@ void App::draw2DImages()
 
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
     {
-     
+
     }
 
 	if (app_state > APP_STATE_CONTROL)
@@ -79,18 +79,18 @@ void App::draw2DImages()
 void App::drawBrush()
 {
 #ifdef EDITOR
-	
+
 	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
 	vector3df position = this->getMousePosition3D(100).pickedPos;
 	if (position==vector3df(0,0,0))
 		return;
-		
-	SMaterial m; 
-	m.Lighting=false; 
-	driver->setMaterial(m); 
-	driver->setTransform(video::ETS_WORLD, core::matrix4()); 
-	
-  	
+
+	SMaterial m;
+	m.Lighting=false;
+	driver->setMaterial(m);
+	driver->setTransform(video::ETS_WORLD, core::matrix4());
+
+
 	// Render the size of the brush.
 	f32 framesize = 3;
 	int step=10;
@@ -118,7 +118,7 @@ void App::drawBrush()
 		pos4.X+=cos(degInRad2)*(radius+framesize);
 		pos4.Z+=sin(degInRad2)*(radius+framesize);
 		pos4.Y=pos2.Y;
-	  
+
 		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
 		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
 
@@ -135,7 +135,7 @@ void App::drawBrush()
 	  pos.X+=cos(degInRad)*radius;
 	  pos.Z+=sin(degInRad)*radius;
 	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
-	  
+
 
 	  float degInRad2 = (i+step)*DEG2RAD;
 	  vector3df pos2=position;
@@ -147,7 +147,7 @@ void App::drawBrush()
 	}
 
 	// Center circle for the brush give the center
-	
+
 
 #endif
 }
@@ -267,7 +267,7 @@ void App::setAppState(APP_STATE newAppState)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
-		} 
+		}
         Player::getInstance()->setHighLight(true);
         CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -280,7 +280,7 @@ void App::setAppState(APP_STATE newAppState)
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
 		}
 		Player::getInstance()->setHighLight(false);
-        
+
     }
 
     if(app_state == APP_EDIT_SCRIPT_GLOBAL)
@@ -298,8 +298,8 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
 		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
 			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
-		
-		
+
+
     }
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
@@ -311,7 +311,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
 		//setAppState(APP_EDIT_CHARACTER);
 	}
-	else 
+	else
 	{
 		// Find a way to set the script once the user change the mode
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
@@ -473,14 +473,14 @@ void App::eventGuiButton(s32 id)
             break;
 
 		#endif
-		
+
         case BT_ID_PLAY_GAME:
 			playGame();
             break;
         case BT_ID_STOP_GAME:
 			stopGame();
             break;
-       
+
         case BT_ID_CLOSE_PROGRAM:
 			this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
@@ -512,12 +512,12 @@ void App::eventGuiButton(s32 id)
 			Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
             GUIManager::getInstance()->updateItemsList();
             break;
-        
+
         case BT_ID_CLOSE_ITEMS_WINDOW:
             setAppState(APP_GAMEPLAY_NORMAL);
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
             break;
-        
+
     }
 }
 
@@ -699,7 +699,7 @@ MousePick App::getMousePosition3D(int id)
 	// Fix to a proper position on wxWidget;
 	pos=pos+position2d<s32>(0,22);
 #endif
-	
+
     line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
     core::vector3df intersection;
@@ -732,9 +732,9 @@ bool App::loadConfig()
 #ifndef _WXMSW
 	screensize.Height = 768;
 	screensize.Width = 1024;
-	
+
 # else
-	
+
 //	if (device->run())
 //	{
 //		screensize = device->getVideoDriver()->getScreenSize();
@@ -870,7 +870,7 @@ bool App::loadConfig()
 
 void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
-	
+
 	loadConfig();
 
 	if (!IRRdevice)
@@ -956,7 +956,7 @@ void App::update()
 		driver->beginScene(true, true, SColor(0,200,200,200));
 		if(app_state < APP_STATE_CONTROL)
 		{
-			
+
 			device->yield();
 
 			// This is needed for wxWidget event management
@@ -987,7 +987,7 @@ void App::update()
 		EffectsManager::getInstance()->update();
 
 		// bring back the gui after the RTT is done
-		video::SMaterial mat; 
+		video::SMaterial mat;
         driver->setMaterial(mat);
 
 		guienv->drawAll();
@@ -1038,7 +1038,7 @@ void App::run()
     while(device->run())
 	//while(app_state>99)
     {
-		
+
 
 		this->update();
 
@@ -1054,7 +1054,7 @@ void App::run()
 			lastFPS = fps;
 		}
     }
-	
+
 }
 
 
@@ -1106,7 +1106,7 @@ void App::updateEditMode()
 				{
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
-						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),																	
+						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
                                                                            GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
 																		   GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
@@ -1220,7 +1220,7 @@ void App::updateGameplay()
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
-					
+
 					if(obj->getObjectType() == stringc("ENEMY"))
 					{
 						Player::getInstance()->getObject()->attackEnemy(obj);
@@ -1228,17 +1228,17 @@ void App::updateGameplay()
 					else
 					{
 						if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
-							obj->notifyClick();			
+							obj->notifyClick();
 						Player::getInstance()->getObject()->clearEnemy();
 					}
 					DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-						
+
 					Player::getInstance()->getObject()->setWalkTarget(obj->getPosition());
 					Player::getInstance()->getObject()->lookAt(obj->getPosition());
 					Player::getInstance()->setTaggedTarget(obj);
 					return;
-				
+
 				}
 				else
 				{
@@ -1296,7 +1296,7 @@ void App::createNewProject()
 
     //smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
     //driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
-	
+
     Player::getInstance();
 
     this->currentProjectName = name;
@@ -1495,16 +1495,16 @@ void App::initialize()
 	#endif
 
 	GUIManager::getInstance()->setupGameplayGUI();
-    
-    
+
+
 	quickUpdate();
 
-	
+
 
     Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
 
-	
+
     this->currentProjectName = "irb_temp_project";
 // Hide the loading windows if the WX Widget is present
 #ifdef _wxWIDGET
@@ -1520,7 +1520,7 @@ void App::shutdown()
 	cleanWorkspace();
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
-	
+
 }
 
 stringw App::getLangText(irr::core::stringc node)

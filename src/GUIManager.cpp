@@ -18,7 +18,7 @@ GUIManager::GUIManager()
 {
     guienv = App::getInstance()->getDevice()->getGUIEnvironment();
 	screensize = App::getInstance()->getScreenSize();
-	
+
     loadFonts();
 
 	// init those because they will move on the display.
@@ -38,12 +38,12 @@ GUIManager::GUIManager()
             col.setAlpha(230);
             guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
-	
+
 	// Fake office style skin colors
 	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
 	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
 	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
-	 
+
 }
 
 GUIManager::~GUIManager()
@@ -182,8 +182,14 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
 				text=text+L"\"";
 				guiTerrainBrushPlateauValue->setText(text.c_str());
 				return (f32)guiTerrainBrushPlateau->getPos();
-				
+
 			}
+			break;
+        case SC_ID_VEGETATION_BRUSH_STRENGTH :
+            {
+                return (f32)guiVegetationBrushStrength->getPos();
+            }
+            break;
     }
     return 0;
 }
@@ -215,7 +221,7 @@ void GUIManager::setupEditorGUI()
 // NEW Create display size since IRRlicht return wrong values
 
 	// Check the current screen size (normally reported by wxWidget or the configuration)
-	
+
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
 
@@ -227,7 +233,7 @@ void GUIManager::setupEditorGUI()
 
 	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
-	
+
 	// quick update of the Irrlicht display while loading.
 	App::getInstance()->quickUpdate();
 
@@ -271,7 +277,7 @@ void GUIManager::setupEditorGUI()
 	guiBackImage->setMaxSize(dimension2du(2048,92));
 	guiBackImage->setMinSize(dimension2du(2048,92));
 	guiBackImage->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
+
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
     //so the next button will be positioned at the right side of the previous button)
     s32 x = 0;
@@ -412,7 +418,7 @@ void GUIManager::setupEditorGUI()
 
     guiConfigButton->setImage(imgConfig);
 	guiConfigButton->setPressedImage(imgConfig1);
-	
+
     //Play Game
 	x = 0;
 	mainToolbarPos.Y=5;
@@ -494,10 +500,10 @@ void GUIManager::setupEditorGUI()
 	//guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getClientRect().getWidth()/2-250,160,500,200),guiAboutWindow);
 	guiAboutText->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-  
+
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
-	
+
     ///TERRAIN TOOLBAR
     guiTerrainToolbar = guienv->addWindow(
 		//myRect(driver->getScreenSize().Width - 170,
@@ -515,7 +521,6 @@ void GUIManager::setupEditorGUI()
     guiTerrainToolbar->setVisible(false);
 	guiTerrainToolbar->setNotClipped(true);
 	guiTerrainToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-
 
 	//Show Playable Area (areas with no Y == 0 will be red)
 	mainToolbarPos.Y=20;
@@ -562,6 +567,33 @@ void GUIManager::setupEditorGUI()
                                                          myRect(10,mainToolbarPos.Y+190,150,20),
                                                          false,true, guiTerrainToolbar);
 
+    ///Vegetation toolbar
+    guiVegetationToolbar = guienv->addWindow(
+		//myRect(driver->getScreenSize().Width - 170,
+		myRect(displaywidth - 170,
+		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight(),
+		170,
+		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()),
+		false,L"Vegetation tool");
+
+    guiVegetationToolbar->getCloseButton()->setVisible(false);
+
+    guiVegetationToolbar->setDraggable(false);
+    guiVegetationToolbar->setVisible(false);
+	guiVegetationToolbar->setNotClipped(true);
+	guiVegetationToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+
+    guiVegetationBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_vegetation_paint_strength")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+10,150,20),
+                                                         false,true, guiVegetationToolbar);
+
+    guiVegetationBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+30,150,20),guiVegetationToolbar,SC_ID_VEGETATION_BRUSH_STRENGTH );
+    guiVegetationBrushStrength->setMin(0);
+    guiVegetationBrushStrength->setMax(200);
+    guiVegetationBrushStrength->setPos(100);
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
@@ -573,7 +605,7 @@ void GUIManager::setupEditorGUI()
 		170,
 		displayheight-guiMainToolWindow->getClientRect().getHeight());
 #endif
-		
+
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
@@ -581,7 +613,7 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
-	
+
 
 
 
@@ -730,7 +762,7 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_Script_Console->setOverrideColor(SColor(255,255,0,0));
     guiDynamicObjects_Script_Console->setEnabled(false);
 	guiDynamicObjects_Script_Console->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
+
 
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
 	guiDynamicObjectsWindowEditAction->setVisible(false);
@@ -754,7 +786,7 @@ void GUIManager::setupEditorGUI()
 bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 // will tell the caller if he's clicked inside a IRB window
 {
-	
+
 	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
 		return true;
 	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
@@ -808,7 +840,7 @@ void GUIManager::setupGameplayGUI()
 
 	// NEW Create display size since IRRlicht return wrong values
 	// Check the current screen size (normally reported by wxWidget or the configuration)
-	
+
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
 
@@ -845,7 +877,7 @@ void GUIManager::setupGameplayGUI()
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 
-	
+
 	//Play Game
 	int x = 0;
 	mainToolbarPos.Y=5;
@@ -911,7 +943,7 @@ void GUIManager::setupGameplayGUI()
     guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
 
 	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
-  
+
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 
@@ -969,7 +1001,7 @@ void GUIManager::setupGameplayGUI()
     guiBtViewItems->setVisible(false);
 
     //Items window
-	
+
     guiWindowItems = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-150),false,L"",0,GCW_GAMEPLAY_ITEMS);
     guiWindowItems->getCloseButton()->setVisible(false);
     guiWindowItems->setDrawTitlebar(false);
@@ -980,13 +1012,13 @@ void GUIManager::setupGameplayGUI()
 	IGUITab * tab2 = gameTabCtrl->addTab(L"Inventory");
 	IGUITab * tab3 = gameTabCtrl->addTab(L"Skills");
 	IGUITab * tab4 = gameTabCtrl->addTab(L"Quests");
-	
-	
+
+
 	guiPlayerNodePreview = new NodePreview(guienv,tab1,rect<s32>(440,40,740,370),-1);
 	guiPlayerNodePreview->drawBackground(false);
 
 	//DynamicObjectsManager::getInstance()->setActiveObject("player_template");
-	
+
 	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getPlayer()->getNode());
 	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
@@ -1017,9 +1049,9 @@ void GUIManager::setupGameplayGUI()
                                          stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
     guiBtCloseItemsWindow->setImage(driver->getTexture("../media/art/bt_arrow_32.png"));
 	guiWindowItems->setVisible(false);
-	
-	
-	
+
+
+
 	// TExt GUI for player stats
 
     guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(15,displayheight-300,300,32),false,false,tab1);
@@ -1066,11 +1098,14 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
         case GCW_GAMEPLAY_ITEMS:
             this->updateItemsList();
-			if (guiWindowItems) 
+			if (guiWindowItems)
 				guiWindowItems->setVisible(visible);
             break;
         case GCW_ABOUT:
             guiAboutWindow->setVisible(visible);
+            break;
+        case GCW_TERRAIN_PAINT_VEGETATION:
+            guiVegetationToolbar->setVisible(visible);
             break;
     }
 }
@@ -1149,7 +1184,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
    /* switch(id)///TODO: fazer metodo getElement by ID!!!
     {
 #ifdef EDITOR
-		
+
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);
@@ -1195,12 +1230,12 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiAbout->setEnabled(enable);
 			guiAbout->setPressed(!enable);
             break;
-      
+
         case BT_ID_HELP:
             guiHelpButton->setEnabled(enable);
             guiHelpButton->setPressed(!enable);
             break;
-			
+
     }*/
 }
 
@@ -1234,7 +1269,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
-		
+
 
     }
 }
@@ -1328,10 +1363,10 @@ void GUIManager::setConsoleText(stringw text, bool forcedisplay)
 	{
 		if (consolewin->isVisible())
 			consolewin->setVisible(false);
-		else 
+		else
 			consolewin->setVisible(true);
 	}
-	
+
 	if (consolewin && consolewin->isVisible() && !forcedisplay)
 	{
 		if (console->getItemCount()>maxitem-1)
@@ -1339,7 +1374,7 @@ void GUIManager::setConsoleText(stringw text, bool forcedisplay)
 			//console->clear();
 		console->insertItem(0,text.c_str(),0);
 		//console->addItem(text.c_str());
-		
+
 	}
 }
 

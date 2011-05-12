@@ -1,6 +1,6 @@
 #include "EffectsManager.h"
 #include <iostream>
-#include "PostProcess/PostProcessManager.h"
+#include "postprocess/PostProcessManager.h"
 
 #include "../App.h"
 
@@ -188,7 +188,7 @@ void EffectsManager::preparePostFX(bool depth)
 {
 	if (postProcessMode>0)
 		postProcessManager->prepare(false);
-	
+
 }
 
 void EffectsManager::DOFaddObject(ISceneNode * DOFNode)

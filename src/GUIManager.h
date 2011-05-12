@@ -61,6 +61,7 @@ enum GUI_ID
     BT_ID_NEW_PROJECT = 45,
     BT_ID_HELP = 46,
     BT_ID_CONFIG = 47,
+    SC_ID_VEGETATION_BRUSH_STRENGTH = 48,
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -72,6 +73,7 @@ enum GUI_CUSTOM_WINDOW
     GCW_TERRAIN_TOOLBAR = 4,
     GCW_GAMEPLAY_ITEMS = 5,
     GCW_ABOUT = 6,
+    GCW_TERRAIN_PAINT_VEGETATION = 7,
 };
 
 enum GUI_HELP_IMAGE
@@ -97,11 +99,11 @@ class GUIManager
     public:
         static GUIManager* getInstance();
 
-        
+
         void setupGameplayGUI();
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
-        
+
     	void drawPlayerStats();
 		bool isGuiPresent(vector2d<s32> mousepos);
 
@@ -114,10 +116,10 @@ class GUIManager
 		void setEditBoxText(GUI_ID id, stringw text);
 
 		#endif
-        
+
 
 		void updateGuiPositions(dimension2d<u32> screensize);
-        
+
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
@@ -154,8 +156,8 @@ class GUIManager
         void showConfigWindow();
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
-		
-		
+
+
 
         virtual ~GUIManager();
     private:
@@ -199,11 +201,11 @@ class GUIManager
 
 		IGUIListBox* console;
 		IGUIWindow * consolewin;
-		
+
 		// Loader window
-		
+
 		IGUIStaticText* guiLoaderDescription;
-		
+
 
         ///Main window (like a toolbar on the top...)
         IGUIWindow* guiMainWindow;
@@ -231,6 +233,10 @@ class GUIManager
         IGUIButton* guiTerrainPaintVegetation;
         ITexture* helpVegetationPaint;
 
+        ///Vegetation Toolbar
+        IGUIWindow* guiVegetationToolbar;
+        IGUIScrollBar* guiVegetationBrushStrength;
+        IGUIStaticText* guiVegetationBrushStrengthLabel;
 
         ///Dynamic Objects
         IGUIButton* guiDynamicObjectsMode;
@@ -253,7 +259,7 @@ class GUIManager
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;
         IGUIButton* guiDynamicObjects_Script_Close;
-	
+
         ///IrrRPG Builder LOGO
         ITexture* logo1;
 
@@ -268,7 +274,7 @@ class GUIManager
 
         ///GAMEPLAY
 		stringc playerLifeText;
-		
+
 
         IGUIInOutFader* fader;
         IGUIStaticText* guiPlayerLife;

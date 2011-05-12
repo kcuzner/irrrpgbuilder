@@ -9,6 +9,8 @@ using namespace std;
 	#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
+#define EDITOR
+
 int main(int argc, char** argv)
 {
     ///TODO: Create a Window to choose resolution

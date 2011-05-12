@@ -5,12 +5,12 @@
 		<Option title="IrrRPG Builder" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="StaticObjects\;StaticObjects\Terrain\;App\;App\;App\GUI\;App\tinyxml\;DynamicObjects\;ShaderCallback\;Player\;" />
+		<Option virtualFolders="StaticObjects/;StaticObjects/Terrain/;App/;App/;App/GUI/;App/tinyxml/;DynamicObjects/;ShaderCallback/;Player/;" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\IrrRPG_Builder_Linux_d" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin\" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/IrrRPG_Builder_Linux_d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -23,20 +23,20 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add library="irrlicht-engine\lib\Linux\libIrrlicht.a" />
-					<Add library="src\lua\liblua.a" />
+					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+					<Add library="src/lua/liblua.a" />
 					<Add library="GL" />
-					<Add library=".\ikpFlac.so" />
-					<Add library=".\libIrrKlang.so" />
-					<Add library=".\ikpMP3.so" />
-					<Add directory="irrlicht-engine\lib\Linux" />
+					<Add library="./ikpFlac.so" />
+					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpMP3.so" />
+					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\IrrRPG_Builder_Linux" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin\" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/IrrRPG_Builder_Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/" />
+				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -51,13 +51,13 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-m32" />
-					<Add library="irrlicht-engine\lib\Linux\libIrrlicht.a" />
-					<Add library="src\lua\liblua.a" />
+					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+					<Add library="src/lua/liblua.a" />
 					<Add library="GL" />
-					<Add library=".\ikpFlac.so" />
-					<Add library=".\libIrrKlang.so" />
-					<Add library=".\ikpMP3.so" />
-					<Add directory="irrlicht-engine\lib\Linux" />
+					<Add library="./ikpFlac.so" />
+					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpMP3.so" />
+					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="lib" />
 				</Linker>
 			</Target>
@@ -65,171 +65,178 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -pthread" />
-			<Add directory="irrlicht-engine\include" />
-			<Add directory="src\lua" />
-			<Add directory="irrlicht-engine\source\Irrlicht" />
-			<Add directory="irrKlang-1.3.0\include" />
-			<Add directory="\usr\local\lib\wx\include\gtk2-unicode-2.9" />
-			<Add directory="\usr\local\include\wx-2.9" />
+			<Add directory="irrlicht-engine/include" />
+			<Add directory="src/lua" />
+			<Add directory="irrlicht-engine/source/Irrlicht" />
+			<Add directory="irrKlang-1.3.0/include" />
+			<Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
+			<Add directory="/usr/local/include/wx-2.9" />
 		</Compiler>
 		<Linker>
 			<Add option="-pthread   -lwx_gtk2u_xrc-2.9 -lwx_gtk2u_html-2.9 -lwx_gtk2u_qa-2.9 -lwx_gtk2u_adv-2.9 -lwx_gtk2u_core-2.9 -lwx_baseu_xml-2.9 -lwx_baseu_net-2.9 -lwx_baseu-2.9" />
 		</Linker>
-		<Unit filename="src\App.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/App.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\App.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/App.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\CGUIEditBoxIRB.cpp">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/CGUIEditBoxIRB.cpp">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\CGUIEditBoxIRB.h">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/CGUIEditBoxIRB.h">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\CGUIGfxStatus.cpp">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/CGUIGfxStatus.cpp">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\CGUIGfxStatus.h">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/CGUIGfxStatus.h">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\CameraSystem.cpp" />
-		<Unit filename="src\CameraSystem.h" />
-		<Unit filename="src\DynamicObject.cpp">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/CameraSystem.cpp" />
+		<Unit filename="src/CameraSystem.h" />
+		<Unit filename="src/DynamicObject.cpp">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\DynamicObject.h">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/DynamicObject.h">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\DynamicObjectsManager.cpp">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/DynamicObjectsManager.cpp">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\DynamicObjectsManager.h">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/DynamicObjectsManager.h">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\EffectsManager.cpp">
-			<Option virtualFolder="StaticObjects\" />
+		<Unit filename="src/EffectsManager.cpp">
+			<Option virtualFolder="StaticObjects/" />
 		</Unit>
-		<Unit filename="src\EffectsManager.h">
-			<Option virtualFolder="StaticObjects\" />
+		<Unit filename="src/EffectsManager.h">
+			<Option virtualFolder="StaticObjects/" />
 		</Unit>
-		<Unit filename="src\EventReceiver.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/EventReceiver.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\EventReceiver.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/EventReceiver.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\GUIConfigWindow.cpp">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/GUIConfigWindow.cpp">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\GUIConfigWindow.h">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/GUIConfigWindow.h">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\GUIManager.cpp">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/GUIManager.cpp">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\GUIManager.h">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/GUIManager.h">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\HealthSceneNode.cpp">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/HealthSceneNode.cpp">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\HealthSceneNode.h">
-			<Option virtualFolder="App\GUI\" />
+		<Unit filename="src/HealthSceneNode.h">
+			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src\Item.cpp" />
-		<Unit filename="src\Item.h" />
-		<Unit filename="src\LANGManager.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/Item.cpp" />
+		<Unit filename="src/Item.h" />
+		<Unit filename="src/LANGManager.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\LANGManager.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/LANGManager.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\LuaGlobalCaller.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/LuaGlobalCaller.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\LuaGlobalCaller.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/LuaGlobalCaller.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\NodePreview.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/NodePreview.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\NodePreview.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/NodePreview.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\Player.cpp">
-			<Option virtualFolder="Player\" />
+		<Unit filename="src/Player.cpp">
+			<Option virtualFolder="Player/" />
 		</Unit>
-		<Unit filename="src\Player.h">
-			<Option virtualFolder="Player\" />
+		<Unit filename="src/Player.h">
+			<Option virtualFolder="Player/" />
 		</Unit>
-		<Unit filename="src\ShaderCallBack.cpp">
-			<Option virtualFolder="ShaderCallback\" />
+		<Unit filename="src/ShaderCallBack.cpp">
+			<Option virtualFolder="ShaderCallback/" />
 		</Unit>
-		<Unit filename="src\ShaderCallBack.h">
-			<Option virtualFolder="ShaderCallback\" />
+		<Unit filename="src/ShaderCallBack.h">
+			<Option virtualFolder="ShaderCallback/" />
 		</Unit>
-		<Unit filename="src\SoundManager.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/SoundManager.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\SoundManager.h">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/SoundManager.h">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\TerrainManager.cpp">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/TerrainManager.cpp">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\TerrainManager.h">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/TerrainManager.h">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\TerrainTile.cpp">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/TerrainTile.cpp">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\TerrainTile.h">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/TerrainTile.h">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\Vegetation.cpp">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/Vegetation.cpp">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\Vegetation.h">
-			<Option virtualFolder="StaticObjects\Terrain\" />
+		<Unit filename="src/Vegetation.h">
+			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src\XMLManager.cpp" />
-		<Unit filename="src\XMLManager.h" />
-		<Unit filename="src\combat.cpp">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/XMLManager.cpp" />
+		<Unit filename="src/XMLManager.h" />
+		<Unit filename="src/combat.cpp">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\combat.h">
-			<Option virtualFolder="DynamicObjects\" />
+		<Unit filename="src/combat.h">
+			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src\irrlicht.ico" />
-		<Unit filename="src\main.cpp">
-			<Option virtualFolder="App\" />
+		<Unit filename="src/fx/postprocess/IPostProcess.h" />
+		<Unit filename="src/fx/postprocess/PostProcessManager.cpp" />
+		<Unit filename="src/fx/postprocess/PostProcessManager.h" />
+		<Unit filename="src/fx/postprocess/ShaderMaterial.cpp" />
+		<Unit filename="src/fx/postprocess/ShaderMaterial.h" />
+		<Unit filename="src/fx/postprocess/ShaderPostProcess.cpp" />
+		<Unit filename="src/fx/postprocess/ShaderPostProcess.h" />
+		<Unit filename="src/irrlicht.ico" />
+		<Unit filename="src/main.cpp">
+			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src\tinyXML\convert.cpp">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/convert.cpp">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\convert.h">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/convert.h">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinystr.cpp">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinystr.cpp">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinystr.h">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinystr.h">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinyxml.cpp">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinyxml.cpp">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinyxml.h">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinyxml.h">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinyxmlerror.cpp">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinyxmlerror.cpp">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\tinyXML\tinyxmlparser.cpp">
-			<Option virtualFolder="App\tinyxml\" />
+		<Unit filename="src/tinyXML/tinyxmlparser.cpp">
+			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src\version.h" />
+		<Unit filename="src/version.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="../irrlicht-engine/source/Irrlicht" />

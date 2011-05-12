@@ -37,14 +37,14 @@ Player::Player()
 	playerprop.maxmana=100;
 	playerprop.regenlife=1;
 	playerprop.regenmana=1;
-	
+
 	// Set the upgradable properties (properties that will increase automatically at each level)
 	player_base.maxlife=95; // Starting at level 0 with 95 hp
 	player_level.maxlife=5; // each level add 5 hp more (level 1=100hp, level 2=105hp, level 3=110hp)
 
 	player_base.mindamage = 1; // Starting at level 0 with 1 point of damage (min)
 	player_level.mindamage = 2; // each level add 2 more points to the min damage (level 1=3pts, level 2=4pts, level 3=7pts)
-	
+
 	player_base.maxdamage = 5;
 	player_level.maxdamage = 5;
 
@@ -56,14 +56,13 @@ Player::Player()
 
 	player_base.dodge_prop = 12;
 	player_level.dodge_prop = 0.5f;
-	
+
 	playerObject->setProperties(playerprop);
 	playerObject->setProp_base(player_base);
 	playerObject->setProp_level(player_level);
 	playerObject->getNode()->setID(0);
 
 	taggedObject=NULL;
-
 }
 
 Player::~Player()
@@ -104,7 +103,7 @@ void Player::update()
 		{
 			DynamicObjectsManager::getInstance()->getTarget()->setPosition(taggedObject->getPosition()+vector3df(0,0.1f,0));
 		}
-		
+
 		// Walk until in range
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
 		{
@@ -116,7 +115,7 @@ void Player::update()
 				//printf("Hey the player specifically asked for a walk state!\n");
 			}
 
-			this->playerObject->walkTo(walkTarget); 
+			this->playerObject->walkTo(walkTarget);
 			return;
 		}
 
