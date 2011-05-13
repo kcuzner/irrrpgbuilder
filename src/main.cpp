@@ -9,7 +9,10 @@ using namespace std;
 	#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-#define EDITOR
+// use the define for Linux. The defines for a win32 project are assigned into the project itself. not in code
+#ifndef WIN32
+	#define EDITOR
+#endif
 
 int main(int argc, char** argv)
 {

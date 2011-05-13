@@ -7,7 +7,7 @@ function die()
   if (answer == true) then   
     hideBlackScreen()
     setPlayerLife(100)
-	setAnimation("idle")	
+	setAnimation("prespawn")	
   end
   dietoggle=false
 end

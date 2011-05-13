@@ -37,6 +37,7 @@ enum OBJECT_ANIMATION
 	OBJECT_ANIMATION_DESPAWN_KNOCKBACK = 9,
 	OBJECT_ANIMATION_OPEN = 10,
 	OBJECT_ANIMATION_CLOSE = 11,
+	OBJECT_ANIMATION_PRESPAWN = 12,
 	OBJECT_ANIMATION_CUSTOM = 99
 };
 enum TYPE
@@ -149,7 +150,7 @@ class DynamicObject
         void setAnimationSpeed(f32 speed);
 		OBJECT_ANIMATION getAnimationState(stringc animName);
 		OBJECT_ANIMATION getAnimation(void);
-        void setAnimation(stringc animName);
+        bool setAnimation(stringc animName);
 		void checkAnimationEvent();
         
 		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
@@ -239,6 +240,7 @@ class DynamicObject
 
 		OBJECT_ANIMATION currentAnimation;
 		OBJECT_ANIMATION oldAnimation;
+		stringc oldAnimName;
 		TYPE objectType;
 		stringc typeText;
 
@@ -265,9 +267,16 @@ class DynamicObject
 		property properties;
 
 		bool templateobject;
+		bool stunstate;
 
-		u32 timer;
-		u32 timer2;
+		// delay timers needed
+		u32 timerAnimation;
+		u32 timerLUA;
+		// timers to unlock animation states.
+		u32 timerDie;
+		u32 timerDespawn;
+		u32 timerHurt;
+		u32 timerStun;
 
 		lua_State *L;
       

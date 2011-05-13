@@ -11,11 +11,6 @@ function setProperties()
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 end
 
-function hitplayer()
-  attack("player")
-  a = 0
-end
-
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user
 function onClicked()
 	print("Lua character is being clicked on!")
@@ -30,21 +25,16 @@ end
 function onUpdate()
   name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
   if (getPropertie("life") == 0) then setEnabled(false) end
-  local x,y,z = getObjectPosition("player")
-  if(distanceFrom(x,y,z) < 288) then 
-    setObjectLabel(name)
-    showObjectLabel()
-    if(distanceFrom(x,y,z) < 66) then
-		setAnimation("idle")
-		setFrameLoop(0,0);
-		if (a==0)then
-		  -- wait 0.5 second then do the attack (the animation is not present for the attack)
-          programAction(0.5, hitplayer)
-          a = 1 -- this will "block the next attacks until it has been really done"
-        end  
-      else
-        chaseObject("player",0.8,66,800)
-      end
+    local x,y,z = getObjectPosition("player")
+    if(distanceFrom(x,y,z) < 288) then 
+      setObjectLabel(name)
+      showObjectLabel()
+      if(distanceFrom(x,y,z) < 66) then
+		  setAnimation("idle")
+		  setFrameLoop(0,0);
+	  else
+          chaseObject("player",0.8,66,800)
+    end
   else
     hideObjectLabel()
     walkRandomly()

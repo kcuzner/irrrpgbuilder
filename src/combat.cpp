@@ -67,6 +67,8 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		printf("%s missed %s!\n",attacker->getName().c_str(),defender->getName().c_str());
 	}
 	life -= damage;
+	if (damage>0)
+		defender->setAnimation("hurt");
 	
 	// limit the damage to the life of the defender.
 	if (life<0) 
@@ -93,9 +95,11 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 			if (attacker_prop.experience>(baseXP+(levelXP*(level*level))))
 				updateLevel(attacker);
 			printf("%s was killed by %s!!\n\n",defender->getName().c_str(),attacker->getName().c_str());
-
-			defender=NULL;
+			// Set the animation for the attacker when the defender is dead
+			//defender=NULL;
 			attacker->setAnimation("idle");
+			attacker->clearEnemy();
+			defender->setAnimation("die");
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			
 		}

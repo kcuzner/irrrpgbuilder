@@ -42,6 +42,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	enemyUnderAttack=NULL;
 	namecollide="";
 	setAnimation("idle");
+	stunstate=false;
 
 	// Tries out animation blending
 	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
@@ -49,7 +50,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	//nodeBlend->setTransitionTime(0.5);
 
 
-	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -66,8 +67,8 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	initProperties();
 	enemyUnderAttack=NULL;
 
-	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	timer2 = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
 DynamicObject::~DynamicObject()
@@ -161,6 +162,8 @@ void DynamicObject::initProperties()
 	this->properties.dodge_prop=12;
 	this->properties.hit_prob=70;
 
+	stunstate=false;
+
 }
 
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
@@ -200,9 +203,16 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		}
 	}
 	if (node)
-	{	this->animator = NULL;
+	{	
+		// Setup the animations
+		this->animator = NULL;
+	
+		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
+	    f32 meshScale = this->getNode()->getScale().Y;
+
 		if (objectType != OBJECT_TYPE_EDITOR)
 		{
+			// Editor objects don't have the fake shadow.
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
@@ -214,14 +224,13 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 				fakeShadow->setScale(vector3df(32,32,32));
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
+			// This set the frameloop to the static pose, we could use a flag if the user decided this
 			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
 		else
 			setAnimation("idle");
 
-		// Setup the animations
-		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
-	    f32 meshScale = this->getNode()->getScale().Y;
+		
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
 		this->setEnabled(true);
@@ -244,7 +253,8 @@ DynamicObject* DynamicObject::clone()
 	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
 	newObj->setTemplate(false);
-	newObj->setAnimation("idle");
+	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
+	newObj->setAnimation("prespawn");
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -489,8 +499,8 @@ void DynamicObject::setEnabled(bool enabled)
     this->enabled = enabled;
 
     this->node->setVisible(enabled);
-	if (!enabled)
-		DynamicObjectsManager::getInstance()->updateMetaSelector();
+	//if (!enabled)
+	//	DynamicObjectsManager::getInstance()->updateMetaSelector();
 	if (this->getNode()->isVisible()==false && this==Player::getInstance()->getObject()->getCurrentEnemy())
 	{
 		Player::getInstance()->getObject()->clearEnemy();
@@ -558,11 +568,6 @@ void DynamicObject::setLife(int life)
     this->properties.life = life;
 	if (objectType==OBJECT_TYPE_PLAYER)
 		Player::getInstance()->updateDisplay();
-	// Trigger the death animation immediately.
-	if (life==0)
-	{
-		this->setAnimation("die");
-	}
 }
 
 int DynamicObject::getLife()
@@ -631,7 +636,7 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 		Animation=OBJECT_ANIMATION_RUN;
 	if (animName=="attack")
 		Animation=OBJECT_ANIMATION_ATTACK;
-	if (animName=="injured")
+	if (animName=="hurt")
 		Animation=OBJECT_ANIMATION_INJURED;
 	if (animName=="knockback")
 		Animation=OBJECT_ANIMATION_KNOCKBACK;
@@ -645,6 +650,8 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 		Animation=OBJECT_ANIMATION_DESPAWN;
 	if (animName=="despawn_knockback")
 		Animation=OBJECT_ANIMATION_DESPAWN_KNOCKBACK;
+	if (animName=="prespawn")
+		Animation=OBJECT_ANIMATION_PRESPAWN;
 	return Animation;
 }
 
@@ -653,33 +660,85 @@ OBJECT_ANIMATION DynamicObject::getAnimation(void)
 	return currentAnimation;
 }
 
-void DynamicObject::setAnimation(stringc animName)
+bool DynamicObject::setAnimation(stringc animName)
 {
+	//define if we use a random frame in the idle animation
+	bool randomize=false;
+
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
-	if (this->mesh)
-		defaultskin = (ISkinnedMesh*)this->mesh;
+	
+
+	// Hack to reject an animation for dying if the NPC has still some life left.
+	// The die animation is called only from the combat class, I don't know why multiple characters are affected.
+	if (animName=="die" && this->getLife()>0)
+		return false;
 
 	if (animName=="die")
 	{
+		// debug output to the console
 		stringw text = L"Die animation for character: ";
 		text.append(getNode()->getName());
 		text.append(L" encountered.");
 		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
+		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		// If the current animation is DIE, then remove the collision on the object
+		if (this->currentAnimation!=OBJECT_ANIMATION_DIE)
+			DynamicObjectsManager::getInstance()->updateMetaSelector();
+		// disable the stun state if present. Dying takes over
+		stunstate=false;
 	}
 
-	
+	// Return if the character is stunned
+	if (stunstate)
+	{
+		printf("The stun state is active no animation is permitted!\n");
+		return false;
+	}
+
+	// This will activate the "hurt" stun state
+	if (animName=="hurt" && !stunstate)
+	{
+		stunstate=true;
+		timerStun = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		
+	}
+
+	// When a character is dead, don't allow anything exept prespawn or despawn
+	if (currentAnimation==OBJECT_ANIMATION_DIE)
+	{
+		if  (animName!="prespawn" && animName!="despawn")
+			return false;
+	}
+
+
+	if (animName=="despawn")
+		printf("The despawn animation was called!\n");
 
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
+		// temporary (until a real prespawn is defined inside the game)
+		if (animName=="prespawn")
+		{
+			animName="idle";
+			randomize=true;
+		}
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
+		
+		
+		
+
 		if( tempAnim.name == animName )
         {
-			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_DIE)
+			if ((Animation!=this->currentAnimation)) //|| Animation==OBJECT_ANIMATION_DIE
 			{
+				
+				if (this->mesh)
+					defaultskin = (ISkinnedMesh*)this->mesh;
 				// Setup the skinned mesh animation. Check if the meshname is present
 				if (tempAnim.meshname!=L"undefined" && defaultskin)
 				{
@@ -689,17 +748,22 @@ void DynamicObject::setAnimation(stringc animName)
 				else if (defaultskin)
 					defaultskin->useAnimationFrom(defaultskin);
 
-				// Set the frameloop, the current animation and the speed
+				
+				// Store the old animations
+				this->oldAnimation=currentAnimation;
+				this->oldAnimName = animName;
+
+				// Set the state of the current one
 				this->currentAnimation=Animation;
 				this->currentAnim=tempAnim;
 				
-
+				// Set the frameloop, the current animation and the speed
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
 				
-
-				if (animName=="idle")
+				// Special case for the idle animation (randomisation)
+				if (animName=="idle" && randomize)
 				{
 					// Fix a random frame so the idle for different character are not the same.
 					if (tempAnim.endFrame>0)
@@ -714,13 +778,14 @@ void DynamicObject::setAnimation(stringc animName)
 					GUIManager::getInstance()->setConsoleText(text2.c_str(),false);
 				}
 			}
-            return;
+            return true;
         }
     }
 
 	#ifdef APP_DEBUG
     cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
     #endif
+	return false;
 }
 
 // To do, this will trigger the combat damage and the sound when it reach the proper frame
@@ -729,14 +794,25 @@ void DynamicObject::setAnimation(stringc animName)
 void DynamicObject::checkAnimationEvent()
 {
 	// Check if the current animation have an attack event
-	if (enemyUnderAttack && (s32)nodeAnim->getFrameNr()!=lastframe)
+	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
-		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
+		// Set a default attack event if there is none defined.
+		if (currentAnim.attackevent==-1)
+			currentAnim.attackevent = currentAnim.startFrame; 
 
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
 		{
-			//printf("Should trigger the attack now...\n");
-			// Init the combat
-			Combat::getInstance()->attack(this,enemyUnderAttack);
+		 // Init the combat for the player, check also that there is a enemy defined
+			if (getType()==OBJECT_TYPE_PLAYER)
+			{
+				if (enemyUnderAttack)
+				{
+					Combat::getInstance()->attack(this,enemyUnderAttack);
+					printf("Here we are attacking the NPC, from frame %i\n",(int)currentAnim.attackevent);
+				}
+			} // Init the combat for the NPC (enemy at the moment), will attack the player. Anim is called from lua
+			else
+				Combat::getInstance()->attack(this,Player::getInstance()->getObject());
 
 		}
 		//printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
@@ -868,7 +944,7 @@ void DynamicObject::clearScripts()
     if(hasAnimation())
 	{
 		//this->setFrameLoop(0,0);
-		this->setAnimation("idle");
+		this->setAnimation("prespawn");
 		//printf("Script had been cleared... idle.\n");
 	}
 	/*if (objectType == OBJECT_TYPE_PLAYER)
@@ -1025,16 +1101,16 @@ void DynamicObject::update()
 	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
 
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timer2>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-	{ // timer2=17
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+	{ // timerLUA=17
 		updateWalk();
 		if (currentSpeed!=0)
 			//currentObject->moveObject(currentSpeed);
-		timer2=timerobject;
+		timerLUA=timerobject;
 	}
 	// Tries out animation blending.
 	//nodeAnim->animateJoints();
-	if((timerobject-timer>250) && enabled) // Lua UPdate to 1/4 second
+	if((timerobject-timerAnimation>250) && enabled) // Lua UPdate to 1/4 second
 	{
 
 		if (!nodeLuaCulling)
@@ -1042,16 +1118,51 @@ void DynamicObject::update()
 			if (!culled)
 			{
 				luaRefresh();
-				timer = timerobject;
+				timerAnimation = timerobject;
 			}
 		} else
 		{// if not then check if the node is culled to refresh
 
 			luaRefresh();
 
-			timer = timerobject;
+			timerAnimation = timerobject;
 		}
 	}
+	// Special timer check for animation states, will trigger after a time has passed
+	bool despawnPresent = false;
+	// Special timer to init when the character is dead for 5 seconds
+	if((this->currentAnimation==OBJECT_ANIMATION_DIE)&&(timerobject-timerDie>5000))
+	{
+		despawnPresent = this->setAnimation("despawn");
+		timerDespawn = timerobject;
+		if (despawnPresent)
+			printf("The despawn state is called now!\n");
+		else
+			printf("The despawn state is called now!, but there is no anims for it!\n");
+	}
+	// Special timer to init when the character is being despawned (5 seconds)
+	if (this->currentAnimation==OBJECT_ANIMATION_DESPAWN && this->isEnabled())
+	{	
+		if (timerobject-timerDespawn>5000)
+		{
+			printf("Done despawn, disabling the character now!\n");
+			// will disable the character after 5 seconds
+			this->setEnabled(false);
+		}
+	}
+
+	if (stunstate)
+	{
+		// 400 ms default delay for hurt
+		if (timerobject-timerStun>400)
+		{
+			// Disable the stun state and restore the previous animation
+			stunstate=false;
+			//setAnimation(this->oldAnimName);
+			setAnimation("idle");
+		}
+	}
+
 }
 
 void DynamicObject::updateWalk()

@@ -7,10 +7,10 @@
 	<dynamic_object name="goblin" mesh="npc/goblin_run.b3d" type="npc" script="AI_Goblin.lua" scale="5" materialType="solid">
 		<animation name="idle" mesh="npc/goblin_idle.b3d" start="1" end="480" speed="60.0"/>
 		<animation name="attack" mesh="npc/goblin_attack1.b3d" start="10" end="25" speed="30.0"/>
-		<animation name="walk" mesh="npc/goblin_run.b3d" start="1" end="60" speed="60.0" walkspeed="1.0"/>
-		<animation name="hurt" mesh="npc/goblin_hdd.b3d" start="1" end="10" speed="30.0"/>
-		<animation name="die" mesh="npc/goblin_hdd.b3d" start="15" end="39" speed="30.0"/>
-		<animation name="despawn" mesh="npc/goblin_hdd.b3d" start="41" end="55" speed="30.0"/>
+		<animation name="walk" mesh="npc/goblin_run.b3d" start="1" end="60" speed="60.0" walkspeed="2.0"/>
+		<animation name="hurt" mesh="npc/goblin_hdd.b3d" start="1" end="10" speed="30.0" loop="false"/>
+		<animation name="die" mesh="npc/goblin_hdd.b3d" start="15" end="39" speed="30.0" loop="false"/>
+		<animation name="despawn" mesh="npc/goblin_hdd.b3d" start="41" end="55" speed="5.0" loop="false" />
 	</dynamic_object>
 	<dynamic_object name="Giant goblin" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid">
 		<animation name="idle" start="1" end="1" speed="1"/>

@@ -560,7 +560,8 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	{
 		if (objects[i])
 		{
-			if (objects[i]->isEnabled())
+			//if (objects[i]->isEnabled())
+			if (objects[i]->getLife()>0)
 			{
 				triangle = objects[i]->getNode()->getTriangleSelector();
 				s32 number = triangle->getTriangleCount();
@@ -594,7 +595,8 @@ void DynamicObjectsManager::initializeCollisions()
 	{
 		if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
 		{
-			if (objects[collisionCounter]->isEnabled())
+			//if (objects[collisionCounter]->isEnabled())
+			if (objects[collisionCounter]->getLife()>0)
 			{
 				createMeta();
 
