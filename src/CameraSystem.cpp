@@ -15,7 +15,9 @@ irr::f32 CameraSystem::cameraHeight = 4.0f;
 CameraSystem::CameraSystem()
 {
 	camera=2;
+	lightset=false;
 	cam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
+	
 	setCamera(camera);
 }
 
@@ -64,7 +66,12 @@ void CameraSystem::setCamera(int tempCamera)
     cam->setFarValue(cameraHeight*3.0f);
 	
     //cam->setNearValue(12.0f);
-	App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(1,1,1),750);
+	// Add a specular light to the camera.
+	if (!lightset)
+	{
+		App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,5,0),video::SColorf(0.4f,0.4f,0.5f),500);
+		lightset=true;
+	}
 }
 
 int CameraSystem::getCamera()

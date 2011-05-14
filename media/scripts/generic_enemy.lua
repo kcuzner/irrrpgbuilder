@@ -30,8 +30,7 @@ function onUpdate()
       setObjectLabel(name)
       showObjectLabel()
       if(distanceFrom(x,y,z) < 66) then
-		  setAnimation("idle")
-		  setFrameLoop(0,0);
+		  setAnimation("attack")
 	  else
           chaseObject("player",0.8,66,800)
     end

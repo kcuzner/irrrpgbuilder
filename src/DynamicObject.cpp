@@ -44,12 +44,6 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	setAnimation("idle");
 	stunstate=false;
 
-	// Tries out animation blending
-	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
-	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL);
-	//nodeBlend->setTransitionTime(0.5);
-
-
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
@@ -58,11 +52,6 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
     this->animations = animations;
 
     setupObj(name, mesh);
-
-	// Tries out animation blending
-	//scene::IAnimatedMeshSceneNode* nodeBlend = (IAnimatedMeshSceneNode*)node;
-	//nodeBlend->setJointMode(irr::scene::EJUOR_CONTROL);
-	//nodeBlend->setTransitionTime(0.5f);
 
 	initProperties();
 	enemyUnderAttack=NULL;
@@ -179,6 +168,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
 
         nodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+		// bone transition test
 		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL);
 	    //nodeAnim->setTransitionTime(0.5f);
 		this->node = nodeAnim;
@@ -219,9 +209,12 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 			// Temporary fix. Need to have a shadow scaled to the size of the object.
+			// This need to be calculated proportionnaly to the object.
+		
+			//(may 13 2011, the player was scaled to 1 unit, so commented that "hack" to have a proper shadow.
+			//if (name=="player_normal")
+			//	fakeShadow->setScale(vector3df(32,32,32));
 
-			if (name=="player_normal")
-				fakeShadow->setScale(vector3df(32,32,32));
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
@@ -670,11 +663,6 @@ bool DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* defaultskin = NULL;
 	
 
-	// Hack to reject an animation for dying if the NPC has still some life left.
-	// The die animation is called only from the combat class, I don't know why multiple characters are affected.
-	if (animName=="die" && this->getLife()>0)
-		return false;
-
 	if (animName=="die")
 	{
 		// debug output to the console
@@ -709,13 +697,10 @@ bool DynamicObject::setAnimation(stringc animName)
 	// When a character is dead, don't allow anything exept prespawn or despawn
 	if (currentAnimation==OBJECT_ANIMATION_DIE)
 	{
+		printf("This animation was called after the die! %s\n",animName.c_str());
 		if  (animName!="prespawn" && animName!="despawn")
 			return false;
 	}
-
-
-	if (animName=="despawn")
-		printf("The despawn animation was called!\n");
 
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
@@ -728,16 +713,20 @@ bool DynamicObject::setAnimation(stringc animName)
 		}
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
-		
-		
-		
 
+		if (animName=="despawn")
+		printf("The despawn animation was called!\n");
+		
 		if( tempAnim.name == animName )
         {
 			if ((Animation!=this->currentAnimation)) //|| Animation==OBJECT_ANIMATION_DIE
 			{
 				
-				if (this->mesh)
+				// To redo... This is a real mess. 
+				// It will need to be implemented in another method
+				// All the animation MUST be in a single archive!!!
+				// So we can use the anim from another file, the character will need all the animations.
+				/*if (this->mesh)
 					defaultskin = (ISkinnedMesh*)this->mesh;
 				// Setup the skinned mesh animation. Check if the meshname is present
 				if (tempAnim.meshname!=L"undefined" && defaultskin)
@@ -748,7 +737,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				else if (defaultskin)
 					defaultskin->useAnimationFrom(defaultskin);
 
-				
+				*/
 				// Store the old animations
 				this->oldAnimation=currentAnimation;
 				this->oldAnimName = animName;
@@ -1029,6 +1018,8 @@ void DynamicObject::storeParams()
 	// store in memory the current position and rotation of the object for later retrieval.
 	this->originalPosition=this->getPosition();
 	this->originalRotation=this->getRotation();
+	this->original_life=this->getLife();
+	this->original_maxlife=this->getProperties().maxlife;
 }
 
 void DynamicObject::restoreParams()
@@ -1039,6 +1030,8 @@ void DynamicObject::restoreParams()
 	this->setEnabled(true);
 	this->objLabel->setVisible(false);
 	this->deadstate=false;
+	this->setLife(original_life);
+	this->properties.maxlife=original_maxlife;
 }
 
 void DynamicObject::saveToXML(TiXmlElement* parentElement)

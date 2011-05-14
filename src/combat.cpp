@@ -67,7 +67,11 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		printf("%s missed %s!\n",attacker->getName().c_str(),defender->getName().c_str());
 	}
 	life -= damage;
-	if (damage>0)
+
+	// Basic "Hurt" state
+	// So if the attacker got almost all his points the defender will be "hurt"
+	// need to update the rules to use the "hurt resistance" propertie...
+	if ((damage+2)>attacker->getProperties().maxdamage)
 		defender->setAnimation("hurt");
 	
 	// limit the damage to the life of the defender.

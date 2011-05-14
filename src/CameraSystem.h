@@ -44,6 +44,8 @@ class CameraSystem
 		int minCamera;
 		int maxCamera;
 
+		bool lightset;
+
 		f32 fov;
 };
 

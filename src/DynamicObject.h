@@ -256,6 +256,8 @@ class DynamicObject
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;
+		int original_life;
+		int original_maxlife;
 		vector<stringc> items;
         ITextSceneNode* objLabel;
 

@@ -94,8 +94,9 @@ void NodePreview::draw()
 	f32 increment=0.05f;
 
 	bool camdriven=false;
-	if (distance>3) 
-		camdriven=true;
+	// disabling this for the moment. Found a way to scale all to 1 unit.
+	//if (distance>3) 
+	//	camdriven=true;
 	if (!camdriven)
 		increment=0.5f;
 
@@ -103,7 +104,7 @@ void NodePreview::draw()
 	if (rotation>360)
 		rotation=0;
 
-	if (camdriven)
+	/*if (camdriven)
 	{
 		// the camera have also the scale factor
 		scale1=scale1*node->getScale().Y;
@@ -142,7 +143,7 @@ void NodePreview::draw()
 		
 		TerrainManager::getInstance()->setVisible(true);
 	}
-	else
+	else*/
 	{
 	
 		matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
@@ -187,8 +188,8 @@ void NodePreview::draw()
 	}
 
     driver->setViewPort(originalViewport);	
-	if (camdriven)
-		smgr->setActiveCamera(oldcam);
+	//if (camdriven)
+	//	smgr->setActiveCamera(oldcam);
 		
 	// draw children
 	IGUIElement::draw();
@@ -199,8 +200,8 @@ void NodePreview::setNode(ISceneNode* node)
 {
     this->node = node;
 	smgr = node->getSceneManager();
-	if (!fakecam)
-		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
+	//if (!fakecam)
+	//	fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }
 
 ISceneNode* NodePreview::getNode()

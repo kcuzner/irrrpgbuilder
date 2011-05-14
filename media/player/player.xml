@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-	<dynamic_object name="player_normal" mesh="../player/warrior_ref.x" script="generic_player.lua" type="player" scale="1.0">
-		<animation name="die" mesh="../player/warrior_die.x" start="0" end="30" speed="30" loop="false"/>
-		<animation name="idle" mesh="../player/warrior_idle.x" start="1" end="30" loop="true" />
-		<animation name="walk" mesh="../player/warrior_walk.x" start="0" end="30" speed="30.0" walkspeed="0.65"/>
-		<animation name="attack" mesh="../player/warrior_attack.x" attackevent="20" start="0" end="30" speed="30.0"/>
-		<animation name="hurt" start="48" end="52" />
+	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="72.0">
+		<animation name="idle"  start="0" end="0" />
+		<animation name="walk"  start="1" end="31" speed="30.0" walkspeed="0.65"/>
+		<animation name="run" start="32" end="63" />
+		<animation name="attack" start="64" end="95" speed="30.0" attackevent="83" />
+		<animation name="die" start="96" end="123" speed="30" loop="false"/>
+		<animation name="hurt" start="128" end="132" loop="false"/>
 	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>
