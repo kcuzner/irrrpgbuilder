@@ -52,6 +52,9 @@ class DynamicObjectsManager
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
+		void freezeAll();
+		void unFreezeAll();
+
         void initializeAllScripts();
         void updateAll();
         void clearAllScripts();

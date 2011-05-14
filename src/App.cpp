@@ -501,6 +501,7 @@ void App::eventGuiButton(s32 id)
             break;
         case BT_ID_VIEW_ITEMS:
             setAppState(APP_GAMEPLAY_VIEW_ITEMS);
+			DynamicObjectsManager::getInstance()->freezeAll();
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
 			GUIManager::getInstance()->drawPlayerStats();
             break;
@@ -516,7 +517,21 @@ void App::eventGuiButton(s32 id)
         case BT_ID_CLOSE_ITEMS_WINDOW:
             setAppState(APP_GAMEPLAY_NORMAL);
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
+			DynamicObjectsManager::getInstance()->unFreezeAll();
             break;
+
+		case BT_ID_DIALOG_YES:
+			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+			Player::getInstance()->getObject()->notifyAnswer(true);
+			setAppState(APP_GAMEPLAY_NORMAL);
+			break;
+		case BT_ID_DIALOG_CANCEL:
+			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+			Player::getInstance()->getObject()->notifyAnswer(false);
+			setAppState(APP_GAMEPLAY_NORMAL);
+			break;
+
+
 
     }
 }
@@ -964,6 +979,7 @@ void App::update()
 			wxYield();
 #endif
 #ifdef EDITOR
+			 
 			updateEditMode();//editMode
 #endif
 		}
@@ -973,7 +989,8 @@ void App::update()
 #ifdef _wxWIDGET
 			wxYield();
 #endif
-
+			// Do not update the gameplay if we "paused" the game for a reason
+			if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
     		updateGameplay();
 		}
 
@@ -1010,7 +1027,7 @@ void App::run()
 {
 // Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
-    //this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+    this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 #else
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
@@ -1036,12 +1053,8 @@ void App::run()
 	bool activated=false;
 
     while(device->run())
-	//while(app_state>99)
     {
-
-
 		this->update();
-
         // display frames per second in window title
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
@@ -1054,13 +1067,11 @@ void App::run()
 			lastFPS = fps;
 		}
     }
-
 }
 
 
 // Stuff needed only in the editor
 #ifdef EDITOR
-
 void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();

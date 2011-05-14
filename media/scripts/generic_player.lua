@@ -3,19 +3,22 @@
 function die()
   showBlackScreen("YOU LOSE!")
   sleep(0.5)
-  answer = showDialogQuestion("Do you want to continue the game?")
-  if (answer == true) then   
-    hideBlackScreen()
-    setPlayerLife(100)
-	setAnimation("prespawn")	
-  end
-  dietoggle=false
+  showDialogQuestion("Do you want to continue the game?")
 end
 
 function regen()
   increasePlayerLife(getPropertie("regenlife"))
   print("regen was called!")
   regentoggle=false
+end
+
+function onAnswer()
+  if (getAnswer() == true) then   
+    hideBlackScreen()
+    setPlayerLife(100)
+	setAnimation("prespawn")	
+  end
+  dietoggle=false
 end
 
 function onLoad()

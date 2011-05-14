@@ -177,12 +177,15 @@ class DynamicObject
         void notifyClick();
 		void notifyAttackRange();
 		void notifyCollision();
+		void notifyAnswer(bool answer);
 
         stringc getObjectType();
 
 		void attackEnemy(DynamicObject* obj);
 		bool isTemplate();
 		void setTemplate(bool value);
+		// Needed in other classes
+		DynamicObject_Animation currentAnim;
       
     protected:
 
@@ -262,7 +265,7 @@ class DynamicObject
         ITextSceneNode* objLabel;
 
 		vector<DynamicObject_Animation> animations;
-		DynamicObject_Animation currentAnim;
+		
 
 		property prop_base;
 		property prop_level;

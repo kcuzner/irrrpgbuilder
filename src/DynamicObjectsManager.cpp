@@ -484,6 +484,34 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 	return true;
 }
 
+void DynamicObjectsManager::freezeAll()
+// Freeze all NPC on the screen when asked to pause
+{
+	for(int i=0;i<(int)objects.size();i++)
+    {
+		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		{
+			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
+			nodeanim->setAnimationSpeed(0);
+		}
+    }
+}
+
+void DynamicObjectsManager::unFreezeAll()
+// Unfreeze all NPC on the screen when asked to pause
+{
+	for(int i=0;i<(int)objects.size();i++)
+    {
+		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		{
+			DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
+			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
+			nodeanim->setAnimationSpeed(anim.speed);
+		}
+
+    }
+}
+
 stringc DynamicObjectsManager::createUniqueName()
 {
     //the unique name of an dynamic object contains his index at the objects vector

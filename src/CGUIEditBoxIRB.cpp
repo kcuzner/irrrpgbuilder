@@ -1065,6 +1065,7 @@ void CGUIEditBoxIRB::draw()
 						tokenIRB == "getFogColor" ||
 						tokenIRB == "setFogRange" ||
 						tokenIRB == "getFogRange" ||
+						tokenIRB == "setPostFX" ||
 						tokenIRB == "setCameraTarget" ||
 						tokenIRB == "getCameraTarget" ||
 						tokenIRB == "getObjectPosition" ||
@@ -1114,6 +1115,8 @@ void CGUIEditBoxIRB::draw()
 						tokenIRB == "onUpdate" ||
 						tokenIRB == "step" ||
 						tokenIRB == "onClicked" ||
+						tokenIRB == "onAnswer" ||
+						tokenIRB == "getAnswer" ||
 						tokenIRB == "onCollision")
                     {
                         txtKeywodsIRB.append(tokens[tokenCount]);

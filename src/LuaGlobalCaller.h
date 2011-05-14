@@ -56,6 +56,8 @@ class LuaGlobalCaller
 
         void usePlayerItem(stringc item);
 
+		void setAnswer(bool answer);
+
         static int setGlobal(lua_State *LS);//setGlobal(varName,value)
         static int getGlobal(lua_State *LS);//getGlobal(varName)
         static int deleteGlobal(lua_State *LS);//getGlobal(varName)
@@ -105,10 +107,13 @@ class LuaGlobalCaller
         static int inGameSave(lua_State *LS);
         static int inGameLoad(lua_State *LS);
 
+		static int getAnswer(lua_State *LS);
+
     protected:
     private:
         LuaGlobalCaller();
         lua_State *L;
+		bool answer;
 };
 
 #endif // LUAGLOBALCALLER_H

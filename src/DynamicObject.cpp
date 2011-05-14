@@ -981,7 +981,7 @@ void DynamicObject::doScript()
     lua_register(L,"showObjectLabel",showObjectLabel);
     lua_register(L,"hideObjectLabel",hideObjectLabel);
     lua_register(L,"setObjectLabel",setObjectLabel);
-
+	
     lua_register(L,"setEnabled",setEnabled);
 
     //register basic functions
@@ -1792,7 +1792,6 @@ int DynamicObject::setObjectLabel(lua_State *LS)
     return 0;
 }
 
-
 void DynamicObject::notifyClick()
 {
     lua_getglobal(L,"onClicked");
@@ -1810,6 +1809,14 @@ void DynamicObject::notifyAttackRange()
 void DynamicObject::notifyCollision()
 {
     lua_getglobal(L,"onCollision");
+    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
+    lua_pop( L, -1 );
+}
+
+void DynamicObject::notifyAnswer(bool answer)
+{
+	LuaGlobalCaller::getInstance()->setAnswer(answer);
+	lua_getglobal(L,"onAnswer");
     if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
     lua_pop( L, -1 );
 }

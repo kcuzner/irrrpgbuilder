@@ -62,6 +62,10 @@ enum GUI_ID
     BT_ID_HELP = 46,
     BT_ID_CONFIG = 47,
     SC_ID_VEGETATION_BRUSH_STRENGTH = 48,
+	TXT_ID_DIALOG = 49,
+	BT_ID_DIALOG_YES = 50,
+	BT_ID_DIALOG_CANCEL = 51,
+	BT_ID_DIALOG_NO = 52,
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -74,6 +78,7 @@ enum GUI_CUSTOM_WINDOW
     GCW_GAMEPLAY_ITEMS = 5,
     GCW_ABOUT = 6,
     GCW_TERRAIN_PAINT_VEGETATION = 7,
+	GCW_DIALOG = 8
 };
 
 enum GUI_HELP_IMAGE
@@ -294,6 +299,11 @@ class GUIManager
         IGUIButton* guiBtUseItem;
         IGUIButton* guiBtDropItem;
         IGUIButton* guiBtCloseItemsWindow;
+
+		IGUIWindow* guidialog;
+		IGUIStaticText* txt_dialog;
+		IGUIButton* guiBtDialogYes;
+		IGUIButton* guiBtDialogCancel;
 
 
         GUIManager();

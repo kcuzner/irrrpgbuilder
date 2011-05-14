@@ -272,6 +272,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"saveGame",inGameSave);
     lua_register(LS,"loadGame",inGameLoad);
 
+	lua_register(LS,"getAnswer",getAnswer);
+
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
 }
@@ -324,6 +326,11 @@ void LuaGlobalCaller::usePlayerItem(stringc item)
     {
         lua_pop(L,-1);
     }
+}
+
+void LuaGlobalCaller::setAnswer(bool answer)
+{
+	this->answer=answer;
 }
 
 int LuaGlobalCaller::getItemCount(lua_State *LS)
@@ -976,4 +983,11 @@ int LuaGlobalCaller::inGameLoad(lua_State *LS)
     lua_pushboolean(LS,result);
 
     return 1;
+}
+
+int LuaGlobalCaller::getAnswer(lua_State *LS)
+{
+	lua_pop(LS, 1);
+	lua_pushboolean(LS,LuaGlobalCaller::getInstance()->answer);
+	return 1;
 }

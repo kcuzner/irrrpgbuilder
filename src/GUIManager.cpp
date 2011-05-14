@@ -980,9 +980,6 @@ void GUIManager::setupGameplayGUI()
 
 	gameplay_bar_image->setVisible(false);
 
-
-
-
     ///DIALOG
     guiDialogImgYes = driver->getTexture("../media/art/img_yes.png");
     guiDialogImgYes_s = driver->getTexture("../media/art/img_yes_s.png");
@@ -1070,6 +1067,40 @@ void GUIManager::setupGameplayGUI()
 
 	this->setElementVisible(ST_ID_PLAYER_LIFE, false);
 
+
+	////// --------------------------------
+	///    Define the Dialogs used in the game
+	//////
+	
+	guidialog = guienv->addWindow(myRect(10,displayheight-200,displaywidth-20,190),true,L"",0,GCW_DIALOG);
+	guidialog->getCloseButton()->setVisible(false);
+	guidialog->setDrawTitlebar(false);
+	guidialog->setDraggable(false);
+	guidialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+	rect<s32> textRect = rect<s32>(10,10,displaywidth-50, 180);
+	txt_dialog = guienv->addStaticText(L"Hello! This is a simple test to see how the text is flowing inside the box. There is a test, test, and test of text we need to make to be sure the flowing is ok",textRect,false,false,guidialog,TXT_ID_DIALOG,false);
+	txt_dialog->setOverrideFont(guiFontDialog);
+	txt_dialog->setWordWrap(true);
+	txt_dialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+	guiBtDialogYes = guienv->addButton(myRect(displaywidth-80,130,52,52),
+                                         guidialog,
+                                         BT_ID_DIALOG_YES,
+                                         L"",
+                                         stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
+    guiBtDialogYes->setImage(guiDialogImgYes);
+	guiBtDialogYes->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	guiBtDialogCancel = guienv->addButton(myRect(displaywidth-150,130,52,52),
+                                         guidialog,
+                                         BT_ID_DIALOG_CANCEL,
+                                         L"",
+                                         stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
+    guiBtDialogCancel->setImage(guiDialogImgNo);
+	guiBtDialogCancel->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	guidialog->setVisible(false);
+	 
+	//////
 	stringw text = L"Current screen size is:";
 	text.append((stringw)screensize.Width);
 	text.append(L",");
@@ -1107,6 +1138,10 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
         case GCW_TERRAIN_PAINT_VEGETATION:
             guiVegetationToolbar->setVisible(visible);
             break;
+		case GCW_DIALOG:
+			this->guidialog->setVisible(visible);
+			break;
+
     }
 }
 
@@ -1381,7 +1416,16 @@ void GUIManager::setConsoleText(stringw text, bool forcedisplay)
 
 void GUIManager::showDialogMessage(std::string text, std::string sound)
 {
-    //insert '\n' to enable multiline (user can add \n from lua call too)
+   
+	stringw text2 = (stringw)text.c_str();
+	txt_dialog->setText((wchar_t *)text2.c_str());
+	if(guiBtDialogCancel->isVisible())
+		guiBtDialogCancel->setVisible(false);
+		
+	setWindowVisible(GCW_DIALOG,true);
+	App::getInstance()->setAppState(APP_WAIT_DIALOG);
+	/*
+	//insert '\n' to enable multiline (user can add \n from lua call too)
     for(int i = 0; i<(int)text.size(); i+=80) text.insert(text.begin() + i, '\n');
 
     bool mouseExit = false;
@@ -1389,13 +1433,16 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
     //Play dialog sound (yes you can record voices!)
     ISound* dialogSound = NULL;
 
-    if((sound.c_str() != "") | (sound.c_str() != NULL))
+	if (sound.size()>0)
+    //if((sound.c_str() != "") | (sound.c_str() != NULL))
     {
         stringc soundName = "../media/sound/";
         soundName += sound.c_str();
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
 
+
+	// We have to change all this! This is really bad for wxWidget and events we should use only 1 game loop
     while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
@@ -1436,10 +1483,28 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
     EventReceiver::getInstance()->flushKeys();
     EventReceiver::getInstance()->flushMouse();
     this->flush();
+	*/
 }
 
 bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 {
+
+	stringw text2 = (stringw)text.c_str();
+	txt_dialog->setText((wchar_t *)text2.c_str());
+	if(!guiBtDialogCancel->isVisible())
+		guiBtDialogCancel->setVisible(true);
+		
+	setWindowVisible(GCW_DIALOG,true);
+	App::getInstance()->setAppState(APP_WAIT_DIALOG);
+	
+	// Return that the user pressed the "yes" button.
+	// need to implement an event handler in LUA so it catches the answer.
+
+	// The previous method forced the application to loop forever until the answer was given
+	// causes problem with the gameplay
+	return true;
+
+	/*
     //insert '\n' to enable multiline (user can add \n from lua call too)
     for(int i = 0; i<(int)text.size(); i+=80) text.insert(text.begin() + i, '\n');
 
@@ -1543,6 +1608,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
     this->flush();
 
     return result;
+	*/
 }
 
 stringc GUIManager::showInputQuestion(std::string text)
