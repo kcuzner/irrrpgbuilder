@@ -64,7 +64,6 @@ void NodePreview::draw()
 {
     if(!node || !smgr) return;
 	
-
 	IGUISkin* skin = Environment->getSkin();
 	core::rect<s32> frameRect(AbsoluteRect);
 
@@ -91,12 +90,20 @@ void NodePreview::draw()
 	f32 aspect = ((f32)frameRect.getWidth()/frameRect.getHeight()); 
 
     driver->setViewPort(frameRect);
-	f32 increment=0.05f;
+	f32 increment=0.5f;
 
-	bool camdriven=false;
-	// disabling this for the moment. Found a way to scale all to 1 unit.
-	//if (distance>3) 
-	//	camdriven=true;
+	bool camdriven=true;
+	
+
+	if (node->getName()=="player")
+	{
+		printf("the camdriven is activated!\n");
+		camdriven=true;
+	}
+
+	if (distance>3) 
+		camdriven=true;
+	
 	if (!camdriven)
 		increment=0.5f;
 
@@ -104,7 +111,7 @@ void NodePreview::draw()
 	if (rotation>360)
 		rotation=0;
 
-	/*if (camdriven)
+	if (camdriven)
 	{
 		// the camera have also the scale factor
 		scale1=scale1*node->getScale().Y;
@@ -120,10 +127,16 @@ void NodePreview::draw()
 
 		if (fakecam) 
 			smgr->setActiveCamera(fakecam);
-		 
+		
+
+
+		vector3df oldposition = node->getPosition();
+		node->setPosition(vector3df(0,-1000,0));
+
 		fakecam->setFarValue(distance*5);
 	
-		fakecam->setPosition(node->getPosition()+vector3df(0,scale1/2,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2));
+
+		fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
 		fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
 		fakecam->setAspectRatio(aspect);
 
@@ -141,9 +154,10 @@ void NodePreview::draw()
 			//node->render();
 			smgr->drawAll();
 		
+		node->setPosition(oldposition);
 		TerrainManager::getInstance()->setVisible(true);
 	}
-	else*/
+	else
 	{
 	
 		matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
@@ -167,29 +181,35 @@ void NodePreview::draw()
 		ViewArea.cameraPosition = camera;
 
 		core::matrix4 m(core::matrix4::EM4CONST_NOTHING);
-		m.setbyproduct_nocheck(ViewArea.getTransform(video::ETS_PROJECTION),
-			ViewArea.getTransform(video::ETS_VIEW));
-		ViewArea.setFrom(m);
+		
+		
 
 		f32 scaleaa = node->getScale().Y;
 		//printf ("Here is the current scale of the mesh: %f\n-----------------------\n",scaleaa);
+
+		m = node->getRelativeTransformation();
+		//ViewArea.setFrom(m);
+		//m.setbyproduct_nocheck(ViewArea.getTransform(video::ETS_PROJECTION),
+		//ViewArea.getTransform(video::ETS_VIEW));
 	
 		// Do the transformations (perspective cam)
 		driver->setTransform ( video::ETS_PROJECTION, ViewArea.getTransform ( video::ETS_PROJECTION));
 		driver->setTransform ( video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW));
+		
 	
 		// Node seem to render the meshbuffers directly (scaling of the mesh does not seem to be accounted for)
 		driver->setTransform(video::ETS_WORLD, node->getAbsoluteTransformation());
+			
 		node->render();
 		
-
 		// Put back the original transformations
 		driver->setTransform ( video::ETS_PROJECTION, oldProjMat );
+
 	}
 
     driver->setViewPort(originalViewport);	
-	//if (camdriven)
-	//	smgr->setActiveCamera(oldcam);
+	if (camdriven)
+		smgr->setActiveCamera(oldcam);
 		
 	// draw children
 	IGUIElement::draw();
@@ -200,8 +220,8 @@ void NodePreview::setNode(ISceneNode* node)
 {
     this->node = node;
 	smgr = node->getSceneManager();
-	//if (!fakecam)
-	//	fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
+	if (!fakecam)
+		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }
 
 ISceneNode* NodePreview::getNode()
