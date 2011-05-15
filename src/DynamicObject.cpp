@@ -981,7 +981,7 @@ void DynamicObject::doScript()
     lua_register(L,"showObjectLabel",showObjectLabel);
     lua_register(L,"hideObjectLabel",hideObjectLabel);
     lua_register(L,"setObjectLabel",setObjectLabel);
-	
+	lua_register(L,"showDialogQuestion",showDialogQuestion);
     lua_register(L,"setEnabled",setEnabled);
 
     //register basic functions
@@ -1790,6 +1790,35 @@ int DynamicObject::setObjectLabel(lua_State *LS)
     if(tempObj) tempObj->setObjectLabel(newLabel.c_str());
 
     return 0;
+}
+
+int DynamicObject::showDialogQuestion(lua_State *LS)
+{
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	DynamicObjectsManager::getInstance()->setDialogCaller(tempObj);
+
+	std::string param1 = lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+    std::string param2 = "";
+
+    if(lua_isstring(LS, -1))
+    {
+        param2 = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+    if(param2!="")
+        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param2, param1));
+    else
+        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param1, ""));
+
+    return 1;
 }
 
 void DynamicObject::notifyClick()

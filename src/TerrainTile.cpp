@@ -309,7 +309,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 				//v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
 				v->setPosition(vector3df(realPos.X,realPos.Y,realPos.Z));
                 f32 treesize = (f32)(rand() % 20 + 50)/100;
-                treesize*= 0.3;
+                treesize*= 0.3f;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 
 				printf("Attempting to place a tree with this size: %f\n",treesize);

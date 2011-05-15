@@ -70,6 +70,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 
     //just initialize var
     objsCounter = 0;
+	dialogCaller = NULL;
 
 	// Collision creation (in steps)
 	collisionCounter = 0;
@@ -510,6 +511,25 @@ void DynamicObjectsManager::unFreezeAll()
 		}
 
     }
+}
+
+
+// Here the LUA script of the dynamic object store its pointer
+// Useful for functions needing to get what is the latest Dynamic Object
+// to call the dialog
+void DynamicObjectsManager::setDialogCaller(DynamicObject* object)
+{
+	dialogCaller=object;
+}
+
+
+// This function give back the last DynamicObject that called the dialog
+DynamicObject* DynamicObjectsManager::getDialogCaller()
+{
+	if (dialogCaller)
+		return dialogCaller;
+	else
+		return getPlayer();
 }
 
 stringc DynamicObjectsManager::createUniqueName()

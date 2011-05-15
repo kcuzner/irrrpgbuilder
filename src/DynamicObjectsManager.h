@@ -55,6 +55,9 @@ class DynamicObjectsManager
 		void freezeAll();
 		void unFreezeAll();
 
+		void setDialogCaller(DynamicObject* object);
+		DynamicObject* getDialogCaller();
+
         void initializeAllScripts();
         void updateAll();
         void clearAllScripts();
@@ -74,6 +77,8 @@ class DynamicObjectsManager
         DynamicObject* activeObject;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
+
+		DynamicObject* dialogCaller;
 		
 
         vector<DynamicObject*> objectsTemplate;

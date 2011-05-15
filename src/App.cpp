@@ -522,12 +522,14 @@ void App::eventGuiButton(s32 id)
 
 		case BT_ID_DIALOG_YES:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			Player::getInstance()->getObject()->notifyAnswer(true);
+			//Player::getInstance()->getObject()->notifyAnswer(true);
+			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
 			setAppState(APP_GAMEPLAY_NORMAL);
 			break;
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			Player::getInstance()->getObject()->notifyAnswer(false);
+			//Player::getInstance()->getObject()->notifyAnswer(false);
+			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
 			setAppState(APP_GAMEPLAY_NORMAL);
 			break;
 

@@ -43,7 +43,6 @@ GUIManager::GUIManager()
 	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
 	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
 	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
-
 }
 
 GUIManager::~GUIManager()
@@ -1076,22 +1075,33 @@ void GUIManager::setupGameplayGUI()
 	guidialog->getCloseButton()->setVisible(false);
 	guidialog->setDrawTitlebar(false);
 	guidialog->setDraggable(false);
+	guidialog->setDrawBackground(false);
 	guidialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	rect<s32> textRect = rect<s32>(10,10,displaywidth-50, 180);
+	// Panel background is done with pictures
+	IGUIImage* img1 = guienv->addImage(driver->getTexture("../media/art/panel_left.png"),vector2d<s32>(0,0),true,guidialog);
+	IGUIImage* img2 = guienv->addImage(driver->getTexture("../media/art/panel_middle.png"),vector2d<s32>(51,0),true,guidialog);
+	IGUIImage* img3 = guienv->addImage(driver->getTexture("../media/art/panel_right.png"),vector2d<s32>(581,0),true,guidialog);
+	img2->setScaleImage(true);
+	img2->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	img3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+	// Text display of the panel
+	rect<s32> textRect = rect<s32>(30,25,600,170);
 	txt_dialog = guienv->addStaticText(L"Hello! This is a simple test to see how the text is flowing inside the box. There is a test, test, and test of text we need to make to be sure the flowing is ok",textRect,false,false,guidialog,TXT_ID_DIALOG,false);
 	txt_dialog->setOverrideFont(guiFontDialog);
+	txt_dialog->setOverrideColor(SColor(255,255,255,255));
 	txt_dialog->setWordWrap(true);
 	txt_dialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	guiBtDialogYes = guienv->addButton(myRect(displaywidth-80,130,52,52),
+	guiBtDialogYes = guienv->addButton(myRect(640,30,52,52),
                                          guidialog,
                                          BT_ID_DIALOG_YES,
                                          L"",
                                          stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
     guiBtDialogYes->setImage(guiDialogImgYes);
 	guiBtDialogYes->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	guiBtDialogCancel = guienv->addButton(myRect(displaywidth-150,130,52,52),
+	guiBtDialogCancel = guienv->addButton(myRect(640,110,52,52),
                                          guidialog,
                                          BT_ID_DIALOG_CANCEL,
                                          L"",

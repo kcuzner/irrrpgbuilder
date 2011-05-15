@@ -266,8 +266,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
     //Dialog Functions
     lua_register(LS,"showDialogMessage",showDialogMessage);
-    lua_register(LS,"showDialogQuestion",showDialogQuestion);
-
+   
     //inGame Save/Load
     lua_register(LS,"saveGame",inGameSave);
     lua_register(LS,"loadGame",inGameLoad);
@@ -916,27 +915,6 @@ int LuaGlobalCaller::showDialogMessage(lua_State *LS)
     else
         GUIManager::getInstance()->showDialogMessage(param1, "");
 	return 0;
-}
-
-int LuaGlobalCaller::showDialogQuestion(lua_State *LS)
-{
-    std::string param1 = lua_tostring(LS, -1);
-    lua_pop(LS, 1);
-
-    std::string param2 = "";
-
-    if(lua_isstring(LS, -1))
-    {
-        param2 = lua_tostring(LS, -1);
-        lua_pop(LS, 1);
-    }
-
-    if(param2!="")
-        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param2, param1));
-    else
-        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param1, ""));
-
-    return 1;
 }
 
 int LuaGlobalCaller::inGameSave(lua_State *LS)
