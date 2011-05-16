@@ -3,11 +3,11 @@ local a = 0
 function setProperties()
 -- Using the new properties attributes, can set the NPC combat attributes. 
 	setEnemy() -- this is an ennemy
-	setPropertie("life",50) -- current life of the NPC
-	setPropertie("maxlife",50) -- current Maximum life of this NPC
-	setPropertie("experience",10) -- given experience to attacker if killed
-	setPropertie("mindamage",1) -- minimum damage inflicted
-	setPropertie("maxdamage",3) -- maximum damage inflicted
+	setPropertie("life",10) -- current life of the NPC
+	setPropertie("maxlife",10) -- current Maximum life of this NPC
+	setPropertie("experience",5) -- given experience to attacker if killed
+	setPropertie("mindamage",0) -- minimum damage inflicted
+	setPropertie("maxdamage",1) -- maximum damage inflicted
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 end
 
@@ -27,7 +27,6 @@ function onUpdate()
   if (getPropertie("life") == 0) then 
 	hideObjectLabel()
 	return
-	--setEnabled(false)
   end
   local x,y,z = getObjectPosition("player")
    if(distanceFrom(x,y,z) < 288 and getPlayerLife()>0) then 

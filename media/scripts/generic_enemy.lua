@@ -24,15 +24,18 @@ end
 -- "step" will trigger at each time interval (around 1/4 second)
 function onUpdate()
   name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
-  if (getPropertie("life") == 0) then setEnabled(false) end
-    local x,y,z = getObjectPosition("player")
-    if(distanceFrom(x,y,z) < 288) then 
-      setObjectLabel(name)
-      showObjectLabel()
-      if(distanceFrom(x,y,z) < 66) then
-		  setAnimation("attack")
-	  else
-          chaseObject("player",0.8,66,800)
+  if (getPropertie("life") == 0) then 
+    setEnabled(false) 
+	return
+  end
+  local x,y,z = getObjectPosition("player")
+  if(distanceFrom(x,y,z) < 288) then 
+    setObjectLabel(name)
+    showObjectLabel()
+    if(distanceFrom(x,y,z) < 66) then
+	  setAnimation("attack")
+	else
+      chaseObject("player",0.8,66,800)
     end
   else
     hideObjectLabel()

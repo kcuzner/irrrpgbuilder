@@ -22,7 +22,7 @@
 		<animation name="die" start="37" end="47" speed="25.0" loop="false"/>
 		<animation name="walk" start="0" end="25" speed="25.0" walkspeed="1.0"/>
 	</dynamic_object>
-	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="frogs.lua" scale="36" materialType="solid">
+	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="36" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="30"/>
 		<animation name="attack" start="16" end="20" speed="15"/>
 		<animation name="hurt" start="16" end="20" speed="15"/>

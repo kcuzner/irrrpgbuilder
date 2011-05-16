@@ -71,7 +71,7 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Basic "Hurt" state
 	// So if the attacker got almost all his points the defender will be "hurt"
 	// need to update the rules to use the "hurt resistance" propertie...
-	if ((damage+2)>attacker->getProperties().maxdamage)
+	if (((damage+2)>attacker->getProperties().maxdamage) && damage>2)
 		defender->setAnimation("hurt");
 	
 	// limit the damage to the life of the defender.

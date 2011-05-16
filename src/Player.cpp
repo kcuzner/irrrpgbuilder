@@ -109,10 +109,30 @@ void Player::update()
 		{
 			SoundManager::getInstance()->setListenerPosition(this->getObject()->getPosition(),this->getObject()->getRotation());
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
+			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 120)
 			{
-				this->playerObject->setAnimation("walk");
-				//printf("Hey the player specifically asked for a walk state!\n");
+				if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
+				{
+					this->playerObject->setRunningMode(false);
+					this->playerObject->setAnimation("walk");
+					//printf("Hey the player specifically asked for a walk state!\n");
+				}
+			}
+			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 120)
+			{
+				if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_RUN)
+				{
+					this->playerObject->setRunningMode(true);
+					bool result=this->playerObject->setAnimation("run");
+					// in case the run animation is not present
+					if (!result)
+					{
+						this->playerObject->setRunningMode(false);
+						this->playerObject->setAnimation("walk");
+					}
+
+					//printf("Hey the player specifically asked for a run state!\n");
+				}
 			}
 
 			this->playerObject->walkTo(walkTarget);

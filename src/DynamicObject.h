@@ -152,6 +152,7 @@ class DynamicObject
 		OBJECT_ANIMATION getAnimation(void);
         bool setAnimation(stringc animName);
 		void checkAnimationEvent();
+		void setRunningMode(bool run); // Switche the walk animation to a run animation
         
 		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
 		ISceneNodeAnimatorCollisionResponse* getAnimator();
@@ -258,6 +259,9 @@ class DynamicObject
 		bool collided;
 		bool nodeLuaCulling;
 		bool deadstate;
+		bool diePresent;
+		bool despawnPresent;
+		bool runningMode;
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;

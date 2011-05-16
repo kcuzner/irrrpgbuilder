@@ -248,6 +248,11 @@ DynamicObject* DynamicObject::clone()
 	newObj->setTemplate(false);
 	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
 	newObj->setAnimation("prespawn");
+
+	// Preset telling the die animation is present (will be tested for this)
+	diePresent=true;
+	despawnPresent = true;
+	runningMode = false;
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -670,10 +675,11 @@ bool DynamicObject::setAnimation(stringc animName)
 		text.append(getNode()->getName());
 		text.append(L" encountered.");
 		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		// If the current animation is DIE, then remove the collision on the object
-		if (this->currentAnimation!=OBJECT_ANIMATION_DIE)
+		if (this->currentAnimation!=OBJECT_ANIMATION_DIE && this->getType()!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->updateMetaSelector();
 		// disable the stun state if present. Dying takes over
 		stunstate=false;
@@ -774,6 +780,14 @@ bool DynamicObject::setAnimation(stringc animName)
 	#ifdef APP_DEBUG
     cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
     #endif
+
+	// If the die animation is not there, the flag become active (will start the die timer anyway)
+	// As always this does not apply to the player (event if it misse it's die animation)
+	if (animName=="die" && this->getType()!=OBJECT_TYPE_PLAYER) 
+		diePresent=false;
+	if (animName=="despawn" && this->getType()!=OBJECT_TYPE_PLAYER) 
+		despawnPresent=false;
+
 	return false;
 }
 
@@ -817,6 +831,12 @@ void DynamicObject::checkAnimationEvent()
 	lastframe=(s32)nodeAnim->getFrameNr();
 
 }
+
+void DynamicObject::setRunningMode(bool run)
+{
+	runningMode=run;
+}
+
 //-----------------------------------------------------------------------
 // Collision response
 //-----------------------------------------------------------------------
@@ -1032,6 +1052,7 @@ void DynamicObject::restoreParams()
 	this->deadstate=false;
 	this->setLife(original_life);
 	this->properties.maxlife=original_maxlife;
+	this->setAnimation("prespawn");
 }
 
 void DynamicObject::saveToXML(TiXmlElement* parentElement)
@@ -1122,25 +1143,35 @@ void DynamicObject::update()
 		}
 	}
 	// Special timer check for animation states, will trigger after a time has passed
-	bool despawnPresent = false;
 	// Special timer to init when the character is dead for 5 seconds
-	if((this->currentAnimation==OBJECT_ANIMATION_DIE)&&(timerobject-timerDie>5000))
+	if (this->enabled)
 	{
-		despawnPresent = this->setAnimation("despawn");
-		timerDespawn = timerobject;
-		if (despawnPresent)
-			printf("The despawn state is called now!\n");
-		else
-			printf("The despawn state is called now!, but there is no anims for it!\n");
+		if((this->currentAnimation==OBJECT_ANIMATION_DIE) && (timerobject-timerDie>5000) && (this->getType()!=OBJECT_TYPE_PLAYER) || (!diePresent))
+		{
+			// Init the despawn timer
+			this->setAnimation("despawn");
+			timerDespawn = timerobject;	
+		}
 	}
 	// Special timer to init when the character is being despawned (5 seconds)
-	if (this->currentAnimation==OBJECT_ANIMATION_DESPAWN && this->isEnabled())
+	// This can be overided if the character don't have a die or despawn animation
+	if (!despawnPresent && isEnabled()) 
+	{
+		printf("No despawn Anim, we should see the disabling now!\n");
+		setAnimation("prespawn");
+		this->setEnabled(false);
+		return;
+	}
+
+	if ((this->currentAnimation==OBJECT_ANIMATION_DESPAWN && this->isEnabled()))
 	{	
 		if (timerobject-timerDespawn>5000)
 		{
 			printf("Done despawn, disabling the character now!\n");
 			// will disable the character after 5 seconds
+			setAnimation("prespawn");
 			this->setEnabled(false);
+			
 		}
 	}
 
@@ -1167,10 +1198,21 @@ void DynamicObject::updateWalk()
 		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
 		{
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+			if (runningMode)
 			{
-				this->setAnimation("walk");
-				//printf("Hey the object specifically asked for a walk state!\n");
+				if (this->getAnimation()!=OBJECT_ANIMATION_RUN)
+				{
+					this->setAnimation("run");
+					//printf("Hey the object specifically asked for a run state!\n");
+				}
+			}
+			else
+			{
+				if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+				{
+					this->setAnimation("walk");
+					//printf("Hey the object specifically asked for a walk state!\n");
+				}
 			}
 
 			this->walkTo(walkTarget);
@@ -1394,10 +1436,19 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 
     if(tempObj)
     {
-		if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
-			tempObj->setAnimation("walk");
+		if (tempObj->runningMode)
+		{
+			if (tempObj->getAnimation()!=OBJECT_ANIMATION_RUN)
+				tempObj->setAnimation("run");
+		}
+		else
+		{
+			if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
+				tempObj->setAnimation("walk");
+		}
 		
 		//printf ("Lua call the walk animation.\n");
+
 		tempObj->moveObject(speed);
     }
 
@@ -1424,8 +1475,16 @@ int DynamicObject::walkToLUA(lua_State *LS)
 
     if(tempObj)
     {
-		if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
-			tempObj->setAnimation("walk");
+		/*if (tempObj->runningMode)
+		{
+			if (tempObj->getAnimation()!=OBJECT_ANIMATION_RUN)
+				tempObj->setAnimation("run");
+		}
+		else*/
+		{
+			if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
+				tempObj->setAnimation("walk");
+		}
 		tempObj->setWalkTarget(vector3df(x,y,z));
     }
 
