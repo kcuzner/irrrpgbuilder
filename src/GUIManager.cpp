@@ -1423,6 +1423,15 @@ void GUIManager::setConsoleText(stringw text, bool forcedisplay)
 	}
 }
 
+void GUIManager::stopDialogSound()
+{
+	 //stop sound when player cancel the dialog
+    if(dialogSound)
+    {
+        dialogSound->stop();
+    }
+
+}
 
 void GUIManager::showDialogMessage(std::string text, std::string sound)
 {
@@ -1434,14 +1443,9 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
 		
 	setWindowVisible(GCW_DIALOG,true);
 	App::getInstance()->setAppState(APP_WAIT_DIALOG);
-	/*
-	//insert '\n' to enable multiline (user can add \n from lua call too)
-    for(int i = 0; i<(int)text.size(); i+=80) text.insert(text.begin() + i, '\n');
 
-    bool mouseExit = false;
-
-    //Play dialog sound (yes you can record voices!)
-    ISound* dialogSound = NULL;
+	//Play dialog sound (yes you can record voices!)
+    dialogSound = NULL;
 
 	if (sound.size()>0)
     //if((sound.c_str() != "") | (sound.c_str() != NULL))
@@ -1451,49 +1455,6 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
 
-
-	// We have to change all this! This is really bad for wxWidget and events we should use only 1 game loop
-    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
-    {
-        App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
-        App::getInstance()->getDevice()->getSceneManager()->drawAll();
-        //guienv->drawAll();
-
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DRectangle(SColor(150,0,0,0), rect<s32>(10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 200,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10));
-
-        rect<s32> textRect = rect<s32>(10,  App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 200,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10);
-
-        guiFontDialog->draw(stringw(text.c_str()),textRect,SColor(255,255,255,255),true,false,&textRect);
-
-        //draw YES GREEN button
-        position2di buttonYesPosition = position2di(App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 58,
-                                                    App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 58);
-
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgYes,buttonYesPosition,rect<s32>(0,0,48,48),0,SColor(255,255,255,255),true);
-
-
-        //check mouse click on OK button
-        position2di mousePos = App::getInstance()->getDevice()->getCursorControl()->getPosition();
-        if(mousePos.getDistanceFrom(buttonYesPosition+position2di(16,16)) < 16 && EventReceiver::getInstance()->isMousePressed(0)) mouseExit = true;
-
-        App::getInstance()->getDevice()->getVideoDriver()->endScene();
-    }
-
-    //stop sound when player cancel the dialog
-    if(dialogSound)
-    {
-        dialogSound->stop();
-    }
-
-    EventReceiver::getInstance()->flushKeys();
-    EventReceiver::getInstance()->flushMouse();
-    this->flush();
-	*/
 }
 
 bool GUIManager::showDialogQuestion(std::string text, std::string sound )
@@ -1506,119 +1467,19 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 		
 	setWindowVisible(GCW_DIALOG,true);
 	App::getInstance()->setAppState(APP_WAIT_DIALOG);
-	
-	// Return that the user pressed the "yes" button.
-	// need to implement an event handler in LUA so it catches the answer.
 
-	// The previous method forced the application to loop forever until the answer was given
-	// causes problem with the gameplay
-	return true;
+	//Play dialog sound (yes you can record voices!)
+    dialogSound = NULL;
 
-	/*
-    //insert '\n' to enable multiline (user can add \n from lua call too)
-    for(int i = 0; i<(int)text.size(); i+=80) text.insert(text.begin() + i, '\n');
-
-    bool result = true;
-    int changeTime = 0;
-
-    bool mouseExit = false;
-
-    //Play question sound (optional voice)
-    ISound* dialogSound = NULL;
-
-	//int len = sound.length();
-	//printf ("Here is the dialog for the sound %s, \n",sound.c_str());
-	if(sound.c_str() != "")
+	if (sound.size()>0)
+    //if((sound.c_str() != "") | (sound.c_str() != NULL))
     {
         stringc soundName = "../media/sound/";
         soundName += sound.c_str();
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
-	else
-		printf("The sound was null");
-
-	while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
-    {
-        App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
-        App::getInstance()->getDevice()->getSceneManager()->drawAll();
-        //guienv->drawAll();
-
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DRectangle(SColor(150,0,0,0), rect<s32>(10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 200,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10));
-
-        rect<s32> textRect = rect<s32>(10,  App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 200,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10);
-
-        guiFontDialog->draw(stringw(text.c_str()),textRect,SColor(255,255,255,255),true,false,&textRect);
-
-        position2di buttonYesPosition = position2di(App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 58,
-                                                    App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 58);
-
-        position2di buttonNoPosition = position2di(App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 58 - 58,
-                                                    App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 58);
-
-        //draw shadowed YES image
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgYes_s,buttonYesPosition,
-                                                                       rect<s32>(0,0,48,48),0,SColor(150,255,255,255),true);
-
-        //draw shadowed NO image
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgNo_s,buttonNoPosition,
-                                                                       rect<s32>(0,0,48,48),0,SColor(150,255,255,255),true);
-
-        if(result)
-        {
-            //draw YES GREEN button
-            App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgYes,buttonYesPosition,
-                                                                       rect<s32>(0,0,48,48),0,SColor(255,255,255,255),true);
-        }
-        else
-        {
-            //draw NO GREEN button
-            App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgNo,buttonNoPosition,
-                                                                       rect<s32>(0,0,48,48),0,SColor(150,255,255,255),true);
-        }
-
-        if((EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT) || EventReceiver::getInstance()->isKeyPressed(KEY_LEFT)) && changeTime == 20)
-        {
-            result = !result;
-            changeTime = 0;
-        }
-
-
-        //check mouse click on OK button
-        position2di mousePos = App::getInstance()->getDevice()->getCursorControl()->getPosition();
-        if(mousePos.getDistanceFrom(buttonYesPosition+position2di(16,16)) < 16 && EventReceiver::getInstance()->isMousePressed(0))
-        {
-            result = 1;
-            mouseExit = true;
-        }
-        if(mousePos.getDistanceFrom(buttonNoPosition+position2di(16,16)) < 16 && EventReceiver::getInstance()->isMousePressed(0))
-        {
-            result = 0;
-            mouseExit = true;
-        }
-
-
-        if(changeTime < 20) changeTime++;
-
-        App::getInstance()->getDevice()->getVideoDriver()->endScene();
-    }
-
-    //stop sound when player cancel the question
-    if(dialogSound)
-    {
-        dialogSound->stop();
-    }
-
-    EventReceiver::getInstance()->flushKeys();
-    EventReceiver::getInstance()->flushMouse();
-    this->flush();
-
-    return result;
-	*/
+	
+	return true;
 }
 
 stringc GUIManager::showInputQuestion(std::string text)

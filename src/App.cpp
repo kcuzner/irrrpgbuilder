@@ -525,12 +525,14 @@ void App::eventGuiButton(s32 id)
 			//Player::getInstance()->getObject()->notifyAnswer(true);
 			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
 			setAppState(APP_GAMEPLAY_NORMAL);
+			GUIManager::getInstance()->stopDialogSound();
 			break;
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
 			//Player::getInstance()->getObject()->notifyAnswer(false);
 			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
 			setAppState(APP_GAMEPLAY_NORMAL);
+			GUIManager::getInstance()->stopDialogSound();
 			break;
 
 
@@ -716,6 +718,9 @@ MousePick App::getMousePosition3D(int id)
 	// Fix to a proper position on wxWidget;
 	pos=pos+position2d<s32>(0,22);
 #endif
+	
+	// For the ray test, we should hide the player
+	Player::getInstance()->getObject()->getNode()->setVisible(false);
 
     line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
@@ -727,6 +732,9 @@ MousePick App::getMousePosition3D(int id)
                                                                                                   hitTriangle,
                                                                                                   id);
     MousePick result;
+	// Show back the player once the ray test is done
+	Player::getInstance()->getObject()->getNode()->setVisible(true);
+
 
     if(tempNode!=NULL)
     {

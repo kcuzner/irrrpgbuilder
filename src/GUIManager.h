@@ -9,6 +9,7 @@
 #include "CGUIEditBoxIRB.h"
 #include "CGUIGfxStatus.h"
 #include "GUIConfigWindow.h"
+#include "SoundManager.h"
 
 using namespace irr;
 using namespace core;
@@ -142,6 +143,7 @@ class GUIManager
         void showBlackScreen(stringc text);
         void hideBlackScreen();
 
+		void stopDialogSound();
         //Shows a simple Text Dialog message. Hit RETURN to close-it
         void showDialogMessage(std::string text, std::string sound = "" );
 
@@ -174,6 +176,10 @@ class GUIManager
 
 		u32 timer;
 		u32 timer2;
+
+		// used for sounds in dialogs;
+		ISound* dialogSound;
+
 
         position2di mainToolbarPos;
 		IGUITabControl * mainTabCtrl;
