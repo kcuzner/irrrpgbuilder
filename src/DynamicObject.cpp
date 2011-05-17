@@ -253,6 +253,7 @@ DynamicObject* DynamicObject::clone()
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
+	activatedSound = false;
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -826,6 +827,23 @@ void DynamicObject::checkAnimationEvent()
 		(nodeAnim->getFrameNr() > currentAnim.soundevent) &&
 		(nodeAnim->getFrameNr() < currentAnim.soundevent+1))
 	{
+		stringc sound = currentAnim.sound;
+		//Play dialog sound (yes you can record voices!)
+		ISound * soundfx = NULL;
+		u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		// After the sound as been called for this duration, permit to trigger other sounds
+		if (timerobject-timerSound>250) 
+			activatedSound=false;
+
+		if (sound.size()>0 && !activatedSound)
+		//if((sound.c_str() != "") | (sound.c_str() != NULL))
+		{
+			stringc soundName = "../media/sound/";
+			soundName += sound.c_str();
+			soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str());
+			timerSound = App::getInstance()->getDevice()->getTimer()->getRealTime();
+			activatedSound=true;
+		}
 		printf("Should trigger the sound now...\n");
 	}
 	lastframe=(s32)nodeAnim->getFrameNr();

@@ -337,7 +337,7 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
-
+		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
     }
     else if(app_state < 100) 
@@ -349,11 +349,13 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
-
+		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
     } else if(app_state == APP_WAIT_DIALOG)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
+		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
+
 	}
 }
 

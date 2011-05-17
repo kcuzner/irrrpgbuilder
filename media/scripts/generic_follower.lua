@@ -47,6 +47,7 @@ function onClicked()
 
 -- Will ask the player if it want it to follow him
 -- There a is following "mode" that decide the type of question to ask
+  playSound("peasant/peasant_hello.ogg",false)
   if (following) then
     showDialogQuestion(tx_notfollow)
    else 

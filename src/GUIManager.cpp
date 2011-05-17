@@ -1298,7 +1298,8 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			if (App::getInstance()->wxSystem==false)
 				guiMainWindow->setVisible(!visible);
 #endif
-			gameplay_bar_image->setVisible(visible);
+			// the bar_image should be made into an element too
+			// gameplay_bar_image->setVisible(visible);
             break;
         case ST_ID_PLAYER_LIFE:
             guiPlayerLife->setVisible(visible);
@@ -1307,6 +1308,9 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_PLAYER_EDIT_SCRIPT:
             guiPlayerEditScript->setVisible(visible);
             break;
+		case IMG_BAR:
+			gameplay_bar_image->setVisible(visible);
+			break;
 		case BT_ID_VIEW_ITEMS:
             guiBtViewItems->setVisible(visible);
 			// Update the gold items
@@ -1314,8 +1318,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
-
-
+		
     }
 }
 
