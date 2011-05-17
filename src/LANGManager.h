@@ -15,6 +15,7 @@ class LANGManager
         static LANGManager* getInstance();
 		void setAboutText(IGUIListBox* guiAboutText);
 		irr::core::stringw getText(irr::core::stringc node);
+		irr::core::stringc getLanguage();
 		bool Load();
 		void setDefaultLanguage(irr::core::stringc language);
         virtual ~LANGManager();

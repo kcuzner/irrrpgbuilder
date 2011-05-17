@@ -1098,14 +1098,14 @@ void GUIManager::setupGameplayGUI()
                                          guidialog,
                                          BT_ID_DIALOG_YES,
                                          L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
+                                         stringw(LANGManager::getInstance()->getText("bt_dialog_yes")).c_str());
     guiBtDialogYes->setImage(guiDialogImgYes);
 	guiBtDialogYes->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 	guiBtDialogCancel = guienv->addButton(myRect(640,110,52,52),
                                          guidialog,
                                          BT_ID_DIALOG_CANCEL,
                                          L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
+                                         stringw(LANGManager::getInstance()->getText("bt_dialog_no")).c_str());
     guiBtDialogCancel->setImage(guiDialogImgNo);
 	guiBtDialogCancel->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 	guidialog->setVisible(false);

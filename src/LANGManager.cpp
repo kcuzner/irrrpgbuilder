@@ -20,6 +20,11 @@ LANGManager* LANGManager::getInstance()
     return instance;
 }
 
+irr::core::stringc LANGManager::getLanguage()
+{
+	return defaultLanguage;
+}
+
 // -- Put the active language in memory for later retrieval 
 bool LANGManager::Load()
 {

@@ -340,7 +340,7 @@ void App::setAppState(APP_STATE newAppState)
 
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
     }
-    else
+    else if(app_state < 100) 
     {
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
         GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
@@ -351,7 +351,10 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
 
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
-    }
+    } else if(app_state == APP_WAIT_DIALOG)
+	{
+		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
+	}
 }
 
 void App::eventGuiButton(s32 id)
@@ -530,7 +533,7 @@ void App::eventGuiButton(s32 id)
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
 			//Player::getInstance()->getObject()->notifyAnswer(false);
-			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
+			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
 			setAppState(APP_GAMEPLAY_NORMAL);
 			GUIManager::getInstance()->stopDialogSound();
 			break;

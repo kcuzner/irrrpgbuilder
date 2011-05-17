@@ -108,6 +108,7 @@ class LuaGlobalCaller
         static int inGameLoad(lua_State *LS);
 
 		static int getAnswer(lua_State *LS);
+		static int getLanguage(lua_State *LS);
 
     protected:
     private:

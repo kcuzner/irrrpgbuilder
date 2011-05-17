@@ -1873,9 +1873,9 @@ int DynamicObject::showDialogQuestion(lua_State *LS)
     }
 
     if(param2!="")
-        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param2, param1));
+       GUIManager::getInstance()->showDialogQuestion(param2, param1);
     else
-        lua_pushboolean(LS, GUIManager::getInstance()->showDialogQuestion(param1, ""));
+       GUIManager::getInstance()->showDialogQuestion(param1, "");
 
     return 1;
 }

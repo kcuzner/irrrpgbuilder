@@ -272,6 +272,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"loadGame",inGameLoad);
 
 	lua_register(LS,"getAnswer",getAnswer);
+	lua_register(LS,"getLanguage",getLanguage);
 
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
@@ -967,5 +968,12 @@ int LuaGlobalCaller::getAnswer(lua_State *LS)
 {
 	lua_pop(LS, 1);
 	lua_pushboolean(LS,LuaGlobalCaller::getInstance()->answer);
+	return 1;
+}
+
+int LuaGlobalCaller::getLanguage(lua_State *LS)
+{
+	lua_pop(LS,1);
+	lua_pushstring(LS,(char *)LANGManager::getInstance()->getLanguage().c_str());
 	return 1;
 }
