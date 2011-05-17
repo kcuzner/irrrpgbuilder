@@ -1117,6 +1117,7 @@ void CGUIEditBoxIRB::draw()
 						tokenIRB == "onClicked" ||
 						tokenIRB == "onAnswer" ||
 						tokenIRB == "getAnswer" ||
+						tokenIRB == "getLanguage" ||
 						tokenIRB == "onCollision")
                     {
                         txtKeywodsIRB.append(tokens[tokenCount]);
