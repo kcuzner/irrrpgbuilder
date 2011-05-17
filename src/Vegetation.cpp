@@ -14,6 +14,9 @@ Vegetation::Vegetation(int type)
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     if(type == -1) type=rand()%VegetationSeed::getInstance()->getTotalOfTypes();//randomize tree type when receive -1
+	
+	// will store the type of the tree
+	vegeType=type;
 
     stringc trunkMeshFile = "../media/vegetation/";
     trunkMeshFile.append(VegetationSeed::getInstance()->getTrunkMesh(type));
@@ -65,6 +68,12 @@ Vegetation::~Vegetation()
     fakeShadow->remove();
 
     trunk->remove();
+}
+
+
+int Vegetation::getType()
+{
+	return vegeType;
 }
 
 vector3df Vegetation::getPosition()

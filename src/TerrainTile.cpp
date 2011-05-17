@@ -133,7 +133,7 @@ Vegetation* TerrainTile::getVegetationAt(vector3df pos)
     for (int i=0 ; i<(int)vegetationVector.size() ; i++)
     {
     	Vegetation* temp = (Vegetation*)vegetationVector[i];
-    	if(temp->getPosition().getDistanceFrom(pos) < vegetationRange) return temp;
+    	if(temp->getPosition().getDistanceFrom(pos) < vegetationRange ) return temp;
     }
     return 0;
 }
@@ -203,6 +203,7 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 
 void TerrainTile::saveToXML(TiXmlElement* parentElement)
 {
+	// Save the terrain land
     int x = (int)node->getPosition().X/(int)node->getScale().X;
     int z = (int)node->getPosition().Z/(int)node->getScale().Z;
 
@@ -218,28 +219,40 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
     for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
 	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
-
-        bool vegetation = false;
-
-	    for (int i=0 ; i<(int)vegetationVector.size() ; i++)
-	    {
-            if( ((Vegetation*)vegetationVector[i])->getPosition().getDistanceFrom(realPos) < vegetationRange) vegetation = true;
-	    }
-
-        if(realPos.Y != 0 || vegetation)
+	    if(realPos.Y != 0.0f )
         {
             TiXmlElement* vertexXML = new TiXmlElement("vertex");
             vertexXML->SetAttribute("id",j);
             vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
+		
+			Vegetation * tree = 0;
+			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
+			{
+    			Vegetation * temp = (Vegetation*)vegetationVector[i];
+    			if(temp->getPosition().getDistanceFrom(realPos) < (vegetationRange/10) )
+				{
+					tree = temp;
+					break;
+				}
+				else
+					tree = 0;
+			}
+    			
+			if (tree!=0)
+			{
+				vector3df treepos=tree->getPosition();
+				vertexXML->SetAttribute("v",tree->getType());
+				vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
+				vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
+				vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+			}
 			// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
-            vertexXML->SetAttribute("v",vegetation);
-
             segmentXML->LinkEndChild(vertexXML);
-			GUIManager::getInstance()->setConsoleText(L"Write a tree in the project",false);
+			//GUIManager::getInstance()->setConsoleText(L"Write a tree in the project",false);
         }
 	}
 
-	parentElement->LinkEndChild(segmentXML);
+	parentElement->LinkEndChild(segmentXML);	
 }
 
 bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
@@ -251,12 +264,26 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
         s32 id = atoi(vertex->ToElement()->Attribute("id"));
         f32 y = (f32)atof(vertex->ToElement()->Attribute("y"));
 
-		int vegetation = atoi(vertex->ToElement()->Attribute("v"));
-		bool addVegetation = false;
-		if (vegetation==1)
-			addVegetation=true;
+		//int vegetation = atoi(vertex->ToElement()->Attribute("v"));
+		stringc sttype = vertex->ToElement()->Attribute("v");
+		if (sttype.size()>0)
+		{
+			int ttype=atoi(sttype.c_str());
+			f32 tposx = (f32)atof(vertex->ToElement()->Attribute("tx"));
+			f32 tposy = (f32)atof(vertex->ToElement()->Attribute("ty"));
+			f32 tposz = (f32)atof(vertex->ToElement()->Attribute("tz"));
 
-        this->transformMeshByVertex(id,y,addVegetation);
+			// Now create a new tree with the informations
+			Vegetation* v = new Vegetation(ttype);
+			v->setPosition(vector3df(tposx,tposy,tposz));
+            f32 treesize = (f32)(rand() % 20 + 50)/100;
+            treesize*= 0.3f;
+			v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+			// Update the infos
+			vegetationVector.push_back(v);
+
+		}
+		this->transformMeshByVertex(id,y,false);
 
         vertex = parentElement->IterateChildren( "vertex", vertex );
     }

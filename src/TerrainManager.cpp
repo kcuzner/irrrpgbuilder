@@ -188,6 +188,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
     }
 
+
     parentElement->LinkEndChild(terrainXML);
 }
 

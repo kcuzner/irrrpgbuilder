@@ -76,6 +76,7 @@ class Vegetation
         virtual ~Vegetation();
 
         vector3df getPosition();
+		int getType();
         void setPosition(vector3df pos);
         void setRotation(vector3df rot);
         void setScale(vector3df scale);
@@ -91,6 +92,7 @@ class Vegetation
         //TODO: remove fake shadow when shadowmaps are available
         IMeshSceneNode* fakeShadow;
 
+		int vegeType;
         f32 size;
 };
 

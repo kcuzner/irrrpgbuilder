@@ -527,20 +527,26 @@ void App::eventGuiButton(s32 id)
 
 		case BT_ID_DIALOG_YES:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			//Player::getInstance()->getObject()->notifyAnswer(true);
-			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
-			setAppState(APP_GAMEPLAY_NORMAL);
-			GUIManager::getInstance()->stopDialogSound();
+			if (app_state>99)
+			{
+				//Player::getInstance()->getObject()->notifyAnswer(true);
+				if (DynamicObjectsManager::getInstance()->getDialogCaller())
+					DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
+				setAppState(APP_GAMEPLAY_NORMAL);
+				GUIManager::getInstance()->stopDialogSound();
+			}
 			break;
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			//Player::getInstance()->getObject()->notifyAnswer(false);
-			DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
-			setAppState(APP_GAMEPLAY_NORMAL);
-			GUIManager::getInstance()->stopDialogSound();
+			if (app_state>99)
+			{
+				//Player::getInstance()->getObject()->notifyAnswer(false);
+				if (DynamicObjectsManager::getInstance()->getDialogCaller())
+					DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
+				setAppState(APP_GAMEPLAY_NORMAL);
+				GUIManager::getInstance()->stopDialogSound();
+			}
 			break;
-
-
 
     }
 }
