@@ -1,5 +1,6 @@
 #include "DynamicObjectsManager.h"
 #include "DynamicObject.h"
+#include "CameraSystem.h"
 
 using namespace irr;
 using namespace core;
@@ -417,31 +418,98 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
     while( dynamicObjectXML != NULL )
     {
 
+		stringc templateObj = "";
+		int type=0;
+		DynamicObject* newObj = NULL;
+
+		stringc stype = dynamicObjectXML->ToElement()->Attribute("type");
+		// Get the type of the object that was saved (if there is one)
+		
+		if (stype.size()>0)
+			type=atoi(stype.c_str());
+
+
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
-        stringc templateObj = dynamicObjectXML->ToElement()->Attribute("template");
+
+		if (type != OBJECT_TYPE_PLAYER)
+            templateObj = dynamicObjectXML->ToElement()->Attribute("template");
 
         f32 posX = (f32)atof(dynamicObjectXML->ToElement()->Attribute("x"));
         f32 posY = (f32)atof(dynamicObjectXML->ToElement()->Attribute("y"));
         f32 posZ = (f32)atof(dynamicObjectXML->ToElement()->Attribute("z"));
         f32 rot = (f32)atof(dynamicObjectXML->ToElement()->Attribute("r"));
 
-        this->setActiveObject(templateObj);
-
-        DynamicObject* newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
+		// Create an object from the template
+		if (type!=OBJECT_TYPE_PLAYER)
+		{ 
+			this->setActiveObject(templateObj);
+			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
+		} 
+		else
+		// If this is the player, retrieve only it's position (permanent dynamic object)
+		{
+			newObj = this->playerObject;
+			newObj->setPosition(vector3df(posX,posY,posZ));
+			CameraSystem::getInstance()->setPosition(vector3df(posX,posY,posZ));
+			
+		}
 		// If a script is assigned to the mesh then load it.
+
+		newObj->setRotation(vector3df(0,rot,0));
         newObj->setScript(convert(script));
-        newObj->setRotation(vector3df(0,rot,0));
+
+		newObj->initProperties();
+        
 		property a;
-		//Default values
-		a.life = 100;
-		a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
-		a.money = 0;
-		a.mindamage=1;
-		a.maxdamage=3;
-		a.maxlife=100;
-		a.maxmana=100;
-		a.dodge_prop=12;
-		a.hit_prob=70;
+		
+		//Default values for any types
+		a.armor=0;
+		a.dodge_prop=0;
+		a.dotduration=0;
+		a.experience=0;
+		a.hit_prob=0;
+		a.hurt_resist=0;
+		a.level=0;
+		a.life=0;
+		a.magic_armor=0;
+		a.mana=0;
+		a.maxdamage=0;
+		a.maxdefense=0;
+		a.maxlife=0;
+		a.maxmana=0;
+		a.mindamage=0;
+		a.mindefense=0;
+		a.money=0;
+		a.regenlife=0;
+		a.regenmana=0;
+		
+		// Default values for the player and the NPCS
+		if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
+		{
+			
+			a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
+			a.mindamage=1;
+			a.maxdamage=3;
+			a.life = 100;
+			a.maxlife=100;
+			a.hurt_resist=50;
+			if (type==OBJECT_TYPE_PLAYER)
+			{
+				a.mana = 100;
+				a.maxmana=100;
+				a.dodge_prop=25;
+				a.hit_prob=70;
+				a.regenlife=1;
+				a.regenmana=1;
+				a.mindamage=3;
+				a.maxdamage=10;
+			} else
+			{
+				a.dodge_prop=12;
+				a.hit_prob=50;
+			}
+			
+		}
 
 		// Loading values
 		stringc life = "";
@@ -473,6 +541,42 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		level = dynamicObjectXML->ToElement()->Attribute("level");
 		if (level.size()>0)
 			a.level = (int)atoi(level.c_str());
+
+		stringc mindamage = "";
+		mindamage = dynamicObjectXML->ToElement()->Attribute("mindamage");
+		if (mindamage.size()>0)
+			a.mindamage = (int)atoi(mindamage.c_str());
+
+		stringc maxdamage = "";
+		maxdamage = dynamicObjectXML->ToElement()->Attribute("maxdamage");
+		if (maxdamage.size()>0)
+			a.maxdamage = (int)atoi(maxdamage.c_str());
+
+		stringc hurtresist = "";
+		hurtresist = dynamicObjectXML->ToElement()->Attribute("hurtresist");
+		if (hurtresist.size()>0)
+			a.hurt_resist = (int)atoi(hurtresist.c_str());
+
+		stringc dodgechance = "";
+		dodgechance = dynamicObjectXML->ToElement()->Attribute("dodgechance");
+		if (dodgechance.size()>0)
+			a.dodge_prop = (f32)atof(dodgechance.c_str());
+
+		stringc hitchance = "";
+		hitchance = dynamicObjectXML->ToElement()->Attribute("hitchance");
+		if (hitchance.size()>0)
+			a.hit_prob = (f32)atof(hitchance.c_str());
+
+		stringc regenlife = "";
+		regenlife = dynamicObjectXML->ToElement()->Attribute("regenlife");
+		if (regenlife.size()>0)
+			a.regenlife = (int)atoi(regenlife.c_str());
+
+		stringc regenmana = "";
+		regenmana = dynamicObjectXML->ToElement()->Attribute("regenmana");
+		if (regenmana.size()>0)
+			a.regenmana = (int)atoi(regenmana.c_str());
+
 		newObj->setProperties(a);
 
 		// Update the GUI with a description of the current loading task

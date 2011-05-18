@@ -138,18 +138,24 @@ void DynamicObject::initProperties()
 	this->properties.hit_prob=0;
 	this->prop_base.hit_prob=0;
 	this->prop_level.hit_prob=0;
+
+	this->properties.hurt_resist=0;
+	this->prop_base.hurt_resist=0;
+	this->prop_level.hurt_resist=0;
 	// end
 
 	//Default values
-	this->properties.life = 100;
-	this->properties.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
-    this->properties.money = 0;
-	this->properties.mindamage=1;
-	this->properties.maxdamage=3;
-	this->properties.maxlife=100;
-	this->properties.maxmana=100;
-	this->properties.dodge_prop=12;
-	this->properties.hit_prob=70;
+	if (this->getType()==OBJECT_TYPE_NPC || this->getType()==OBJECT_TYPE_PLAYER)
+	{
+		this->properties.life = 100;
+		this->properties.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
+		this->properties.mindamage=1;
+		this->properties.maxdamage=3;
+		this->properties.maxlife=100;
+		this->properties.dodge_prop=12;
+		this->properties.hit_prob=70;
+		this->properties.hurt_resist=50;
+	}
 
 	stunstate=false;
 
@@ -200,6 +206,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
 
+		this->initProperties();
+
 		if (objectType != OBJECT_TYPE_EDITOR)
 		{
 			// Editor objects don't have the fake shadow.
@@ -221,7 +229,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
 		else
-			setAnimation("idle");
+			setAnimation("prespawn");
 
 		
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
@@ -248,6 +256,7 @@ DynamicObject* DynamicObject::clone()
 	newObj->setTemplate(false);
 	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
 	newObj->setAnimation("prespawn");
+	newObj->initProperties();
 
 	// Preset telling the die animation is present (will be tested for this)
 	diePresent=true;
@@ -304,8 +313,16 @@ void DynamicObject::setPosition(vector3df pos)
 
 vector3df DynamicObject::getPosition()
 {
-	vector3df pos = fakeShadow->getAbsolutePosition();
-	return pos;
+	if (fakeShadow)
+	{
+		vector3df pos = fakeShadow->getAbsolutePosition();
+		return pos;
+	}
+	else
+	{
+		return vector3df(0,0,0);
+	}
+
 	//return node->getPosition();
 }
 
@@ -503,7 +520,7 @@ void DynamicObject::setEnabled(bool enabled)
 	if (this->getNode()->isVisible()==false && this==Player::getInstance()->getObject()->getCurrentEnemy())
 	{
 		Player::getInstance()->getObject()->clearEnemy();
-		Player::getInstance()->getObject()->setAnimation("idle");
+		Player::getInstance()->getObject()->setAnimation("prespawn");
 	}
 }
 
@@ -778,9 +795,9 @@ bool DynamicObject::setAnimation(stringc animName)
         }
     }
 
-	#ifdef APP_DEBUG
-    cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
-    #endif
+	//#ifdef APP_DEBUG
+    //cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
+    //#endif
 
 	// If the die animation is not there, the flag become active (will start the die timer anyway)
 	// As always this does not apply to the player (event if it misse it's die animation)
@@ -840,7 +857,12 @@ void DynamicObject::checkAnimationEvent()
 		{
 			stringc soundName = "../media/sound/";
 			soundName += sound.c_str();
-			soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str());
+			irrklang::vec3df pos = this->getNode()->getPosition();
+			if (currentAnim.name=="walk" || currentAnim.name=="run")
+				soundfx = SoundManager::getInstance()->playSound3D(soundName.c_str(),pos,false);
+			else
+				soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
+
 			timerSound = App::getInstance()->getDevice()->getTimer()->getRealTime();
 			activatedSound=true;
 		}
@@ -1075,11 +1097,11 @@ void DynamicObject::restoreParams()
 
 void DynamicObject::saveToXML(TiXmlElement* parentElement)
 {
-	if (this->getType()!=OBJECT_TYPE_PLAYER)
-	{
+	//if (this->getType()!=OBJECT_TYPE_PLAYER)
+	//{
 		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
 		//dynamicObjectXML->SetAttribute("name",name.c_str());
-
+		dynamicObjectXML->SetAttribute("type",(int)getType());
 		dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
 		dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
 		dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
@@ -1089,21 +1111,51 @@ void DynamicObject::saveToXML(TiXmlElement* parentElement)
 		dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
 
 		dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
-		dynamicObjectXML->SetAttribute("script",getScript().c_str());
-		dynamicObjectXML->SetAttribute("life",this->properties.life);
-		dynamicObjectXML->SetAttribute("maxlife",this->properties.maxlife);
-		dynamicObjectXML->SetAttribute("mana",this->properties.mana);
-		dynamicObjectXML->SetAttribute("maxmana",this->properties.maxmana);
-		dynamicObjectXML->SetAttribute("level",this->properties.level);
-		dynamicObjectXML->SetAttribute("XP",this->properties.experience);
-		dynamicObjectXML->SetAttribute("mindamage",this->properties.mindamage);
-		dynamicObjectXML->SetAttribute("maxdamage",this->properties.maxdamage);
-		dynamicObjectXML->SetAttribute("hurtprob",this->properties.hurt_resist);
-		dynamicObjectXML->SetAttribute("dodgechance",stringc(this->properties.dodge_prop).c_str());
-		dynamicObjectXML->SetAttribute("hitchance",stringc(this->properties.hit_prob).c_str());
+
+		if (script.size()>0)
+			dynamicObjectXML->SetAttribute("script",getScript().c_str());
+		
+		if (properties.life>0)
+			dynamicObjectXML->SetAttribute("life",this->properties.life);
+		
+		if (properties.maxlife>0)
+			dynamicObjectXML->SetAttribute("maxlife",this->properties.maxlife);
+		
+		if (properties.mana>0 && properties.mana<101)
+			dynamicObjectXML->SetAttribute("mana",this->properties.mana);
+		
+		if (properties.maxmana>0 && properties.maxmana<101)
+			dynamicObjectXML->SetAttribute("maxmana",this->properties.maxmana);
+		
+		if (properties.level>0 && properties.level<101)
+			dynamicObjectXML->SetAttribute("level",this->properties.level);
+		
+		if (properties.experience>0)
+			dynamicObjectXML->SetAttribute("XP",this->properties.experience);
+		
+		if (properties.mindamage>0)
+			dynamicObjectXML->SetAttribute("mindamage",this->properties.mindamage);
+		
+		if (properties.maxdamage>0)
+			dynamicObjectXML->SetAttribute("maxdamage",this->properties.maxdamage);
+		
+		if (properties.hurt_resist>0 && properties.hurt_resist<101)
+			dynamicObjectXML->SetAttribute("hurtresist",this->properties.hurt_resist);
+		
+		if (properties.dodge_prop>0 && properties.dodge_prop<101)
+			dynamicObjectXML->SetAttribute("dodgechance",stringc(this->properties.dodge_prop).c_str());
+		
+		if (properties.hit_prob>0 && properties.hit_prob<101)
+			dynamicObjectXML->SetAttribute("hitchance",stringc(this->properties.hit_prob).c_str());
+
+		if (properties.regenlife>0 && properties.regenlife<101)
+			dynamicObjectXML->SetAttribute("regenlife",stringc(this->properties.regenlife).c_str());
+
+		if (properties.regenmana>0 && properties.regenmana<101)
+			dynamicObjectXML->SetAttribute("regenmana",stringc(this->properties.regenmana).c_str());
 
 		parentElement->LinkEndChild(dynamicObjectXML);
-	}
+	//}
 }
 
 // Update the node, for animation event, collision check, lua refresh, etc.
@@ -1891,9 +1943,9 @@ int DynamicObject::showDialogQuestion(lua_State *LS)
     }
 
     if(param2!="")
-       GUIManager::getInstance()->showDialogQuestion(param2, param1);
+		GUIManager::getInstance()->showDialogQuestion((stringw)param2.c_str(), param1);
     else
-       GUIManager::getInstance()->showDialogQuestion(param1, "");
+		GUIManager::getInstance()->showDialogQuestion((stringw)param1.c_str(), "");
 
     return 1;
 }

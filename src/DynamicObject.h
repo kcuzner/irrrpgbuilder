@@ -42,11 +42,12 @@ enum OBJECT_ANIMATION
 };
 enum TYPE
 {
-	OBJECT_TYPE_NPC = 0,
-	OBJECT_TYPE_INTERACTIVE = 1,
-	OBJECT_TYPE_NON_INTERACTIVE = 2,
-	OBJECT_TYPE_PLAYER	= 3,
-	OBJECT_TYPE_EDITOR	= 4
+	OBJECT_TYPE_NONE = 0,
+	OBJECT_TYPE_NPC = 1,
+	OBJECT_TYPE_INTERACTIVE = 2,
+	OBJECT_TYPE_NON_INTERACTIVE = 3,
+	OBJECT_TYPE_PLAYER	= 4,
+	OBJECT_TYPE_EDITOR	= 5
 };
 
 typedef struct{
@@ -126,7 +127,7 @@ class DynamicObject
 
 		DynamicObject * getCurrentEnemy();
 		void clearEnemy();
-		
+		void initProperties();
 		property getProperties();
 		void setProperties(property prop);
 
@@ -198,7 +199,6 @@ class DynamicObject
 
     private:
         void setupObj(stringc name, IMesh* mesh);
-		void initProperties();
 		void updateWalk();
 		void luaRefresh();
 

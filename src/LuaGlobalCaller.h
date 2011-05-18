@@ -101,7 +101,6 @@ class LuaGlobalCaller
 
         //Dialog Functions
         static int showDialogMessage(lua_State *LS);//showDialogMessage(text, optional_sound_file)
-        static int showDialogQuestion(lua_State *LS);//showDialogQuestion(text, optional_sound_file)
 
         //Save/Load inGame
         static int inGameSave(lua_State *LS);

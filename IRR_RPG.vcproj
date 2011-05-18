@@ -126,14 +126,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE; EDITOR"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				ErrorReporting="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -146,10 +145,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkLibraryDependencies="true"
 				AdditionalDependencies="irrlicht.lib lua5.1.lib irrKlang.lib"
 				OutputFile="bin(msvc)\IrrRPG_Builder_win32.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="src\lua;&quot;irrlicht-engine\lib\Win32-visualstudio&quot;;&quot;irrKlang-1.3.0\lib\Win32-visualStudio&quot;"
 				IgnoreDefaultLibraryNames=""
 				SubSystem="1"
@@ -991,13 +989,6 @@
 			<File
 				RelativePath=".\src\ShaderCallBack.cpp"
 				>
-				<FileConfiguration
-					Name="Full_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\src\ShaderCallBack.h"

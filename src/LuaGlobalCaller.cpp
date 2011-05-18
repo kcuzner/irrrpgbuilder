@@ -912,9 +912,9 @@ int LuaGlobalCaller::showDialogMessage(lua_State *LS)
     }
 
     if(param2!="")
-        GUIManager::getInstance()->showDialogMessage(param2, param1);
+		GUIManager::getInstance()->showDialogMessage((stringw)param2.c_str(), param1);
     else
-        GUIManager::getInstance()->showDialogMessage(param1, "");
+		GUIManager::getInstance()->showDialogMessage((stringw)param1.c_str(), "");
 	return 0;
 }
 

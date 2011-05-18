@@ -27,17 +27,19 @@ ISound* SoundManager::playSound2D(std::string file, bool looped)
 		return NULL;
 }
 
-void SoundManager::playSound3D(std::string file, vec3df pos, bool looped)
+ISound* SoundManager::playSound3D(std::string file, vec3df pos, bool looped)
 {
 	if (engine)
 	{
 		ISound* s = engine->play3D(file.c_str(), pos, looped);
 		if(s)
 		{
-			s->setMinDistance(10);
+			s->setMinDistance(150);
 			s->setPosition(pos);
+			return s;
 		}
 	}
+	return 0;
 }
 
 void SoundManager::setListenerPosition(vec3df pos, vec3df lookDir)

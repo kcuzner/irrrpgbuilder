@@ -146,16 +146,16 @@ class GUIManager
 
 		void stopDialogSound();
         //Shows a simple Text Dialog message. Hit RETURN to close-it
-        void showDialogMessage(std::string text, std::string sound = "" );
+        void showDialogMessage(stringw text, std::string sound = "" );
 
         //Shows a question message, use LEFT and RIGHT arrows to choose YES or NO and hit RETURN
-        bool showDialogQuestion(std::string text, std::string sound = "");
+        bool showDialogQuestion(stringw text, std::string sound = "");
 
         //returns the active item on Player Items Window
         stringc getActivePlayerItem();
 
         //Shows a input message, input the text and hit RETURN
-        stringc showInputQuestion(std::string text);
+        stringc showInputQuestion(stringw text);
 
         void updateItemsList();
 

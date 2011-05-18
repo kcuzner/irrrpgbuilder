@@ -378,9 +378,11 @@ void App::eventGuiButton(s32 id)
             break;
         case BT_ID_LOAD_PROJECT:
             this->loadProject();
+			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_SAVE_PROJECT:
             this->saveProject();
+			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_TERRAIN_ADD_SEGMENT:
             this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
@@ -1341,20 +1343,21 @@ void App::createNewProject()
 void App::loadProject()
 {
     APP_STATE old_state = getAppState();
-    setAppState(APP_EDIT_WAIT_GUI);
-
-    bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
-    GUIManager::getInstance()->flush();
+    
+	// Have to rethink how to do it. It used the gameplay dialog.
+    //bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
+    //GUIManager::getInstance()->flush();
+	bool ansSave=false;
     if(ansSave)
     {
 		stringc filename = "../projects/";
 		filename += currentProjectName;
         saveProjectToXML(filename);
-        GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
+        GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
         GUIManager::getInstance()->flush();
     }
 
-    stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
+    stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
     GUIManager::getInstance()->flush();
 
     stringc filename = "../projects/";
@@ -1364,15 +1367,15 @@ void App::loadProject()
     currentProjectName = name;
     currentProjectName += ".XML";
 
+	setAppState(APP_EDIT_WAIT_GUI);
     if(this->loadProjectFromXML(filename))
-        GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_loaded_ok")).c_str());
+        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_ok"));
     else
-        GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_loaded_error")).c_str());
-
-    GUIManager::getInstance()->flush();
+        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_error"));
 
     //this->loadProject("");
-    setAppState(old_state);
+	setAppState(old_state);
+    //setAppState(APP_STATE_CONTROL);
 }
 
 /*
@@ -1390,7 +1393,7 @@ void App::saveProject()
 
     if(currentProjectName == stringc("irb_temp_project"))
     {
-        currentProjectName = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
+        currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
         GUIManager::getInstance()->flush();
         EventReceiver::getInstance()->flushKeys();
         currentProjectName += ".XML";
@@ -1399,7 +1402,7 @@ void App::saveProject()
 	stringc filename = "../projects/";
     filename += currentProjectName;
     this->saveProjectToXML(filename);
-    GUIManager::getInstance()->showDialogMessage(stringc(LANGManager::getInstance()->getText("msg_saved_ok")).c_str());
+    GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok"));
     GUIManager::getInstance()->flush();
 
     setAppState(old_state);
@@ -1413,24 +1416,35 @@ stringc App::getProjectName()
 void App::saveProjectToXML(stringc filename)
 {
 
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
     TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
 
 	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
 	irb_project->SetAttribute("version","1.0");
 
+	GUIManager::getInstance()->setTextLoader(L"Saving the terrain");
+	quickUpdate();
     TerrainManager::getInstance()->saveToXML(irb_project);
+
+	GUIManager::getInstance()->setTextLoader(L"Saving the active dynamic objects");
+	quickUpdate();
     DynamicObjectsManager::getInstance()->saveToXML(irb_project);
+
+
     Player::getInstance()->getObject()->saveToXML(irb_project);
 
+	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
+	quickUpdate();
     TiXmlElement* globalScript = new TiXmlElement("global_script");
     globalScript->SetAttribute("script",scriptGlobal.c_str());
+
     irb_project->LinkEndChild(globalScript);
 
 	doc.LinkEndChild( decl );
 	doc.LinkEndChild( irb_project );
 	doc.SaveFile( filename.c_str() );
-
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
     #ifdef APP_DEBUG
     cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
@@ -1488,9 +1502,8 @@ bool App::loadProjectFromXML(stringc filename)
         TiXmlElement* playerXML = root->FirstChildElement( "player" );
         if(playerXML)
         {
-			// Temporary down since the player is a dynamic object now.
-			// Will need to fix this.
-            //Player::getInstance()->getObject()->loadFromXML(playerXML);
+			// Player is a dynamic object now.
+			// There is no need for now to load from this
         }
     }
     else

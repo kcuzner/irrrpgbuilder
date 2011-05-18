@@ -13,7 +13,7 @@ class SoundManager
 
         ISound* playSound2D(std::string file, bool looped = false);
 
-        void playSound3D(std::string file, vec3df pos, bool looped = false);
+        ISound* playSound3D(std::string file, vec3df pos, bool looped = false);
 
         void setListenerPosition(vec3df pos, vec3df lookDir);
 

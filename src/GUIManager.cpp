@@ -1436,11 +1436,11 @@ void GUIManager::stopDialogSound()
 
 }
 
-void GUIManager::showDialogMessage(std::string text, std::string sound)
+void GUIManager::showDialogMessage(stringw text, std::string sound)
 {
    
-	stringw text2 = (stringw)text.c_str();
-	txt_dialog->setText((wchar_t *)text2.c_str());
+	//stringw text2 = (stringw)text.c_str();
+	txt_dialog->setText(text.c_str());
 	if(guiBtDialogCancel->isVisible())
 		guiBtDialogCancel->setVisible(false);
 		
@@ -1460,11 +1460,11 @@ void GUIManager::showDialogMessage(std::string text, std::string sound)
 
 }
 
-bool GUIManager::showDialogQuestion(std::string text, std::string sound )
+bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 {
 
-	stringw text2 = (stringw)text.c_str();
-	txt_dialog->setText((wchar_t *)text2.c_str());
+	//stringw text2 = (stringw)text.c_str();
+	txt_dialog->setText(text.c_str());
 	if(!guiBtDialogCancel->isVisible())
 		guiBtDialogCancel->setVisible(true);
 		
@@ -1485,7 +1485,7 @@ bool GUIManager::showDialogQuestion(std::string text, std::string sound )
 	return true;
 }
 
-stringc GUIManager::showInputQuestion(std::string text)
+stringc GUIManager::showInputQuestion(stringw text)
 {
     std::string newtxt = "";
 
