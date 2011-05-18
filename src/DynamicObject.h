@@ -85,7 +85,7 @@ typedef struct {
 	f32 dodge_prop;
 	int mindefense;
 	int maxdefense;
-}property;
+}cproperty;
 
 class DynamicObject
 {
@@ -127,15 +127,15 @@ class DynamicObject
 
 		DynamicObject * getCurrentEnemy();
 		void clearEnemy();
-		void initProperties();
-		property getProperties();
-		void setProperties(property prop);
+		cproperty initProperties();
+		cproperty getProperties();
+		void setProperties(cproperty prop);
 
-		property getProp_base();
-		void setProp_base(property prop);
+		cproperty getProp_base();
+		void setProp_base(cproperty prop);
 
-		property getProp_level();
-		void setProp_level(property prop);
+		cproperty getProp_level();
+		void setProp_level(cproperty prop);
 
 		void setLife(int life);
         int getLife();
@@ -274,9 +274,9 @@ class DynamicObject
 		vector<DynamicObject_Animation> animations;
 		
 
-		property prop_base;
-		property prop_level;
-		property properties;
+		cproperty prop_base;
+		cproperty prop_level;
+		cproperty properties;
 
 		bool templateobject;
 		bool stunstate;

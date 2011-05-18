@@ -49,6 +49,7 @@ class NodePreview : public IGUIElement
         ISceneNode* node;
 		core::rect<s32> viewPort;
 		f32 rotation;
+		vector3df oldposition;
 };
 }
 }

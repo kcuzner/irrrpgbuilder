@@ -10,7 +10,7 @@ uniform int terrainScale;
 
 void main()
 {
-	int scale = terrainScale * 0.1;
+	int scale = terrainScale * 0.145;
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
 	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*5 + waterTime,texCoord.y*3));

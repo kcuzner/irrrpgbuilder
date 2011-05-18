@@ -9,6 +9,8 @@ function setProperties()
 	setPropertie("mindamage",1) -- minimum damage inflicted
 	setPropertie("maxdamage",3) -- maximum damage inflicted
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
+	setPropertie("hit_prob",60) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
+	setPropertie("dodge_prob",12) -- Dodge probability, will lower the hit probability of the attacker
 end
 
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user

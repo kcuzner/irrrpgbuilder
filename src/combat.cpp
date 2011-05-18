@@ -41,7 +41,8 @@ Combat* Combat::getInstance()
 void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 {
 	
-	property attacker_prop = attacker->getProperties();
+	cproperty attacker_prop = attacker->getProperties();
+	cproperty defender_prop = defender->getProperties();
 	
 	// Retrieve the current life meter on the defender
 	int life=defender->getLife();
@@ -59,8 +60,8 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	printf ("----------------------------------------------------------------\n");
 	printf("%s should have %i point of damage!!\n",defender->getName().c_str(),damage);
 	printf("%s have %i%% Hit probability\n",attacker->getName().c_str(),(int)attacker_prop.hit_prob);
-	printf("%s have %i%% Dodge probability\n",defender->getName().c_str(),(int)defender->getProperties().dodge_prop);
-	if (!percent(attacker_prop.hit_prob-defender->getProperties().dodge_prop))
+	printf("%s have %i%% Dodge probability\n",defender->getName().c_str(),(int)defender_prop.dodge_prop);
+	if (!percent(attacker_prop.hit_prob-defender_prop.dodge_prop))
 	{
 		damage = 0;
 		defender->setObjectLabel("Miss!");
@@ -71,7 +72,7 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Basic "Hurt" state
 	// So if the attacker got almost all his points the defender will be "hurt"
 	// need to update the rules to use the "hurt resistance" propertie...
-	if (((damage+2)>attacker->getProperties().maxdamage) && damage>2)
+	if (((damage+2)>attacker_prop.maxdamage) && damage>2)
 		defender->setAnimation("hurt");
 	
 	// limit the damage to the life of the defender.
@@ -88,7 +89,7 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	if (life==0)
 		{
 			// get the experience of the defender
-			attacker_prop.experience += defender->getProperties().experience;
+			attacker_prop.experience += defender_prop.experience;
 			// Set the properties of the attacker back since the experience increased
 			attacker->setProperties(attacker_prop);
 
@@ -113,9 +114,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 
 void Combat::updateLevel(DynamicObject* object)
 {
-	property object_prop = object->getProperties();
-	property object_base = object->getProp_base();
-	property object_level = object->getProp_level();
+	cproperty object_prop = object->getProperties();
+	cproperty object_base = object->getProp_base();
+	cproperty object_level = object->getProp_level();
 
 	// NPC cannot have attribution points
 	//

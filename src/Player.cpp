@@ -24,12 +24,10 @@ Player::Player()
 	//playerObject->setAnimation("idle");
 	playerObject->setName("player");
 
-	playerObject->initProperties();
-
 	// Specific properties for the player (hardcoded for now)
-	property playerprop = playerObject->getProperties();
-	property player_base = playerObject->getProp_base();
-	property player_level = playerObject->getProp_level();
+	cproperty playerprop = playerObject->initProperties();
+	cproperty player_base = playerObject->initProperties();
+	cproperty player_level = playerObject->initProperties();
 
 	playerprop.experience = 0;
 	playerprop.mindamage = 3;
@@ -39,29 +37,34 @@ Player::Player()
 	playerprop.maxmana=100;
 	playerprop.regenlife=1;
 	playerprop.regenmana=1;
+	playerprop.maxlife = 100;
+	playerprop.dodge_prop = 16;
+	playerprop.hit_prob = 60;
+	playerObject->setProperties(playerprop);
 
 	// Set the upgradable properties (properties that will increase automatically at each level)
 	player_base.maxlife=95; // Starting at level 0 with 95 hp
 	player_level.maxlife=5; // each level add 5 hp more (level 1=100hp, level 2=105hp, level 3=110hp)
 
-	player_base.mindamage = 1; // Starting at level 0 with 1 point of damage (min)
+	player_base.mindamage = 3; // Starting at level 0 with 1 point of damage (min)
 	player_level.mindamage = 2; // each level add 2 more points to the min damage (level 1=3pts, level 2=4pts, level 3=7pts)
 
-	player_base.maxdamage = 5;
+	player_base.maxdamage = 10;
 	player_level.maxdamage = 5;
 
 	player_base.experience = 50;
 	player_level.experience = 20;
 
-	player_base.hit_prob = 70;
+	player_base.hit_prob = 60;
 	player_level.hit_prob = 0.5f;
 
-	player_base.dodge_prop = 12;
+	player_base.dodge_prop = 16;
 	player_level.dodge_prop = 0.5f;
 
-	playerObject->setProperties(playerprop);
+	
 	playerObject->setProp_base(player_base);
 	playerObject->setProp_level(player_level);
+	
 	playerObject->getNode()->setID(0);
 
 	taggedObject=NULL;

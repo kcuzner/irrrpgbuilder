@@ -458,35 +458,14 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		newObj->setRotation(vector3df(0,rot,0));
         newObj->setScript(convert(script));
 
-		newObj->initProperties();
-        
-		property a;
 		
-		//Default values for any types
-		a.armor=0;
-		a.dodge_prop=0;
-		a.dotduration=0;
-		a.experience=0;
-		a.hit_prob=0;
-		a.hurt_resist=0;
-		a.level=0;
-		a.life=0;
-		a.magic_armor=0;
-		a.mana=0;
-		a.maxdamage=0;
-		a.maxdefense=0;
-		a.maxlife=0;
-		a.maxmana=0;
-		a.mindamage=0;
-		a.mindefense=0;
-		a.money=0;
-		a.regenlife=0;
-		a.regenmana=0;
+        
+		cproperty a=newObj->initProperties();
 		
 		// Default values for the player and the NPCS
 		if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
 		{
-			
+			// If LUA or a loaded value redefine a properties, it will override thoses values
 			a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
 			a.mindamage=1;
 			a.maxdamage=3;

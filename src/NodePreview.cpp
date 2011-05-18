@@ -91,125 +91,56 @@ void NodePreview::draw()
 
     driver->setViewPort(frameRect);
 	f32 increment=0.5f;
-
-	bool camdriven=true;
-	
-
-	if (node->getName()=="player")
-	{
-		printf("the camdriven is activated!\n");
-		camdriven=true;
-	}
-
-	if (distance>3) 
-		camdriven=true;
-	
-	if (!camdriven)
-		increment=0.5f;
-
 	rotation=rotation+increment;
+
 	if (rotation>360)
 		rotation=0;
 
-	if (camdriven)
-	{
-		// the camera have also the scale factor
-		scale1=scale1*node->getScale().Y;
-		scale2=scale2*node->getScale().X;
-		scale3=scale3*node->getScale().Z;
+	//the camera have also the scale factor
+	scale1=scale1*node->getScale().Y;
+	scale2=scale2*node->getScale().X;
+	scale3=scale3*node->getScale().Z;
 
-		// Now find the best distance
-		distance=scale1;
-		if (scale2>distance)
-			distance=scale2;
-		if (scale3>distance)
-			distance=scale3;
+	// Now find the best distance
+	distance=scale1;
+	if (scale2>distance)
+		distance=scale2;
+	if (scale3>distance)
+		distance=scale3;
 
-		if (fakecam) 
-			smgr->setActiveCamera(fakecam);
+	if (fakecam) 
+		smgr->setActiveCamera(fakecam);
 		
 
 
-		vector3df oldposition = node->getPosition();
-		node->setPosition(vector3df(0,-1000,0));
+	node->setPosition(vector3df(0,-1000,0));
 
-		fakecam->setFarValue(distance*5);
+	fakecam->setFarValue(distance*5);
 	
 
-		fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
-		fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
-		fakecam->setAspectRatio(aspect);
+	fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
+	fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
+	fakecam->setAspectRatio(aspect);
 
-		// Hide the terrain
-		TerrainManager::getInstance()->setVisible(false);
+	// Hide the terrain
+	TerrainManager::getInstance()->setVisible(false);
 
 		
-		if (!node->isVisible())
-		{
-			node->setVisible(true);
-			smgr->drawAll();
-			node->setVisible(false);
-		}
-		else
-			//node->render();
-			smgr->drawAll();
-		
-		node->setPosition(oldposition);
-		TerrainManager::getInstance()->setVisible(true);
+	if (!node->isVisible())
+	{
+		node->setVisible(true);
+		smgr->drawAll();
+		node->setVisible(false);
 	}
 	else
-	{
-	
-		matrix4 oldProjMat = driver->getTransform(video::ETS_PROJECTION);
-		matrix4 oldViewMat = driver->getTransform(video::ETS_VIEW);
-
-		SViewFrustum ViewArea;
-	
-
-		// Define a perspective projection
-		ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(0.5f, aspect, 0.1f, 9600.0f);
-
-		// Define a camera that is rotating around it's target
-		vector3df camera = (node->getPosition()+vector3df(0,scale1,0) + vector3df(0,rotation,0).rotationToDirection()); 
-		camera.X = camera.X *(distance*3.0f);
-		camera.Z = camera.Z *(distance*3.0f);
+		//node->render();
+		smgr->drawAll();
 		
-	
-		ViewArea.getTransform(video::ETS_VIEW).buildCameraLookAtMatrixLH(camera, node->getPosition()+vector3df(0,scale1,0), vector3df(0,1,0));
-
-		// Recalculate the view area from the camera position
-		ViewArea.cameraPosition = camera;
-
-		core::matrix4 m(core::matrix4::EM4CONST_NOTHING);
+	node->setPosition(oldposition);
+	TerrainManager::getInstance()->setVisible(true);
 		
-		
-
-		f32 scaleaa = node->getScale().Y;
-		//printf ("Here is the current scale of the mesh: %f\n-----------------------\n",scaleaa);
-
-		m = node->getRelativeTransformation();
-		//ViewArea.setFrom(m);
-		//m.setbyproduct_nocheck(ViewArea.getTransform(video::ETS_PROJECTION),
-		//ViewArea.getTransform(video::ETS_VIEW));
-	
-		// Do the transformations (perspective cam)
-		driver->setTransform ( video::ETS_PROJECTION, ViewArea.getTransform ( video::ETS_PROJECTION));
-		driver->setTransform ( video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW));
-		
-	
-		// Node seem to render the meshbuffers directly (scaling of the mesh does not seem to be accounted for)
-		driver->setTransform(video::ETS_WORLD, node->getAbsoluteTransformation());
-			
-		node->render();
-		
-		// Put back the original transformations
-		driver->setTransform ( video::ETS_PROJECTION, oldProjMat );
-
-	}
-
     driver->setViewPort(originalViewport);	
-	if (camdriven)
-		smgr->setActiveCamera(oldcam);
+	smgr->setActiveCamera(oldcam);
 		
 	// draw children
 	IGUIElement::draw();
@@ -220,6 +151,7 @@ void NodePreview::setNode(ISceneNode* node)
 {
     this->node = node;
 	smgr = node->getSceneManager();
+	oldposition = node->getPosition();
 	if (!fakecam)
 		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }

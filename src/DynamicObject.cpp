@@ -18,7 +18,12 @@ using namespace gui;
 
 DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFile, vector<DynamicObject_Animation> animations)
 {
+	// This is done when an dynamic object is initialised (template && player)
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+
+	properties=initProperties();
+	prop_base=initProperties();
+	prop_level=initProperties();
 
     stringc realFile = "../media/dynamic_objects/";
     realFile += meshFile;
@@ -30,9 +35,6 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     this->animations = animations;
 
 	setupObj(name, mesh);
-	// Setup default properties for all dynamic objects
-	initProperties();
-
 
 	// When enabled, the LUA will update even if the node is culled.
 	this->nodeLuaCulling = false;
@@ -41,23 +43,43 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	enabled=true;
 	enemyUnderAttack=NULL;
 	namecollide="";
-	setAnimation("idle");
+	
+	diePresent=true;
+	despawnPresent = true;
+	runningMode = false;
+	activatedSound = false;
 	stunstate=false;
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	this->setAnimation("idle");
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
 {
+	// This is done when a new character is created from the template
+	properties=initProperties();
+	prop_base=initProperties();
+	prop_level=initProperties();
+
     this->animations = animations;
 
     setupObj(name, mesh);
 
-	initProperties();
 	enemyUnderAttack=NULL;
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
+
+	diePresent=true;
+	despawnPresent = true;
+	runningMode = false;
+	activatedSound = false;
+
+	stunstate=false;
+	currentAnimation=OBJECT_ANIMATION_CUSTOM;
+	oldAnimation=OBJECT_ANIMATION_CUSTOM;
+	this->setAnimation("prespawn");
 }
 
 DynamicObject::~DynamicObject()
@@ -68,96 +90,30 @@ DynamicObject::~DynamicObject()
 	
 }
 
-void DynamicObject::initProperties()
+cproperty DynamicObject::initProperties()
 {
-	// Initialize the properties
-	this->properties.armor=0;
-	this->prop_base.armor=0;
-	this->prop_level.armor=0;
-
-	this->properties.dotduration=0;
-	this->prop_base.dotduration=0;
-	this->prop_level.dotduration=0;
-
-	this->properties.experience=0;
-	this->prop_base.experience=0;
-	this->prop_level.experience=0;
-
-	this->properties.hurt_resist=0;
-	this->prop_base.hurt_resist=0;
-	this->prop_level.hurt_resist=0;
-
-	this->properties.level=0;
-	this->prop_base.level=0;
-	this->prop_level.level=0;
-
-	this->properties.life=0;
-	this->prop_base.life=0;
-	this->prop_level.life=0;
-
-	this->properties.magic_armor=0;
-	this->prop_base.magic_armor=0;
-	this->prop_level.magic_armor=0;
-
-	this->properties.mana=0;
-	this->prop_base.mana=0;
-	this->prop_level.mana=0;
-
-	this->properties.maxdamage=0;
-	this->prop_base.maxdamage=0;
-	this->prop_level.maxdamage=0;
-
-	this->properties.maxlife=0;
-	this->prop_base.maxlife=0;
-	this->prop_level.maxlife=0;
-
-	this->properties.maxmana=0;
-	this->prop_base.maxmana=0;
-	this->prop_level.maxmana=0;
-
-	this->properties.mindamage=0;
-	this->prop_base.mindamage=0;
-	this->prop_level.mindamage=0;
-
-	this->properties.money=0;
-	this->prop_base.money=0;
-	this->prop_level.money=0;
-
-	this->properties.regenlife=0;
-	this->prop_base.regenlife=0;
-	this->prop_level.regenlife=0;
-
-	this->properties.regenmana=0;
-	this->prop_base.regenmana=0;
-	this->prop_level.regenmana=0;
-
-	this->properties.dodge_prop=0;
-	this->prop_base.dodge_prop=0;
-	this->prop_level.dodge_prop=0;
-
-	this->properties.hit_prob=0;
-	this->prop_base.hit_prob=0;
-	this->prop_level.hit_prob=0;
-
-	this->properties.hurt_resist=0;
-	this->prop_base.hurt_resist=0;
-	this->prop_level.hurt_resist=0;
-	// end
-
-	//Default values
-	if (this->getType()==OBJECT_TYPE_NPC || this->getType()==OBJECT_TYPE_PLAYER)
-	{
-		this->properties.life = 100;
-		this->properties.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
-		this->properties.mindamage=1;
-		this->properties.maxdamage=3;
-		this->properties.maxlife=100;
-		this->properties.dodge_prop=12;
-		this->properties.hit_prob=70;
-		this->properties.hurt_resist=50;
-	}
-
-	stunstate=false;
+	cproperty prop;
+	// Initialize the property
+	prop.armor=0;
+	prop.dodge_prop=0;
+	prop.dotduration=0;
+	prop.experience=0;
+	prop.hurt_resist=0;
+	prop.hit_prob=0;
+	prop.level=0;
+	prop.life=0;
+	prop.magic_armor=0;
+	prop.mana=0;
+	prop.maxdamage=0;
+	prop.maxdefense=0;
+	prop.maxlife=0;
+	prop.maxmana=0;
+	prop.mindamage=0;
+	prop.mindefense=0;
+	prop.money=0;
+	prop.regenlife=0;
+	prop.regenmana=0;
+	return prop;
 
 }
 
@@ -206,8 +162,6 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
 
-		this->initProperties();
-
 		if (objectType != OBJECT_TYPE_EDITOR)
 		{
 			// Editor objects don't have the fake shadow.
@@ -228,9 +182,6 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
 			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
-		else
-			setAnimation("prespawn");
-
 		
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
@@ -249,20 +200,14 @@ DynamicObject* DynamicObject::clone()
 {
     DynamicObject* newObj = new DynamicObject(name,mesh,animations);
 
-    newObj->setScale(this->getScale());
+	newObj->setScale(this->getScale());
     newObj->setMaterialType(this->getMaterialType());
 	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
 	newObj->setTemplate(false);
 	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
-	newObj->setAnimation("prespawn");
-	newObj->initProperties();
 
 	// Preset telling the die animation is present (will be tested for this)
-	diePresent=true;
-	despawnPresent = true;
-	runningMode = false;
-	activatedSound = false;
     return newObj;
 }
 //-----------------------------------------------------------------------
@@ -479,33 +424,33 @@ bool DynamicObject::isTemplate()
 	return this->templateobject;
 }
 
-property DynamicObject::getProperties()
+cproperty DynamicObject::getProperties()
 {
 	return this->properties;
 }
 
-void DynamicObject::setProperties(property prop)
+void DynamicObject::setProperties(cproperty prop)
 {
 	properties = prop;
 }
 
 
-property DynamicObject::getProp_base()
+cproperty DynamicObject::getProp_base()
 {
 	return this->prop_base;
 }
 
-void DynamicObject::setProp_base(property prop)
+void DynamicObject::setProp_base(cproperty prop)
 {
 	prop_base=prop;
 }
 
-property DynamicObject::getProp_level()
+cproperty DynamicObject::getProp_level()
 {
 	return this->prop_level;
 }
 
-void DynamicObject::setProp_level(property prop)
+void DynamicObject::setProp_level(cproperty prop)
 {
 	prop_level=prop;
 }
@@ -732,8 +677,10 @@ bool DynamicObject::setAnimation(stringc animName)
 		// temporary (until a real prespawn is defined inside the game)
 		if (animName=="prespawn")
 		{
+			stunstate=false;
 			animName="idle";
 			randomize=true;
+			printf("Prespawn is called here.\n");
 		}
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
@@ -778,6 +725,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				// Special case for the idle animation (randomisation)
 				if (animName=="idle" && randomize)
 				{
+					printf ("if you drop a character on the map this should display!");
 					// Fix a random frame so the idle for different character are not the same.
 					if (tempAnim.endFrame>0)
 					{
@@ -795,9 +743,9 @@ bool DynamicObject::setAnimation(stringc animName)
         }
     }
 
-	//#ifdef APP_DEBUG
-    //cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
-    //#endif
+	#ifdef APP_DEBUG
+    cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
+    #endif
 
 	// If the die animation is not there, the flag become active (will start the die timer anyway)
 	// As always this does not apply to the player (event if it misse it's die animation)
