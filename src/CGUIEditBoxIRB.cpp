@@ -1030,103 +1030,128 @@ void CGUIEditBoxIRB::draw()
 
 				std::string txtKeywodsIRB = "";
 
+				std::vector<std::string> IRBDict;
+
+				IRBDict.push_back("setObjectName(");
+				IRBDict.push_back("chaseObject(");
+				IRBDict.push_back("walkRandomly(");
+				IRBDict.push_back("walkToObject(");
+				IRBDict.push_back("CustomDynamicObjectUpdate(");
+				IRBDict.push_back("programAction(");
+				IRBDict.push_back("CustomDynamicObjectUpdateProgrammedAction(");
+				IRBDict.push_back("hasActionProgrammed(");
+				IRBDict.push_back("enableObject(");
+				IRBDict.push_back("disableObject(");
+				IRBDict.push_back("increasePlayerLife(");
+				IRBDict.push_back("decreasePlayerLife(");
+				IRBDict.push_back("decreasePLayerMoney(");
+				IRBDict.push_back("increasePlayerMoney(");
+				IRBDict.push_back("playSound(");
+				IRBDict.push_back("emitSound(");
+				IRBDict.push_back("sleep(");
+				IRBDict.push_back("setGlobal(");
+				IRBDict.push_back("getGlobal(");
+				IRBDict.push_back("deleteGlobal(");
+				IRBDict.push_back("setTimeOfDay(");
+				IRBDict.push_back("setAmbientLight(");
+				IRBDict.push_back("getAmbientColor(");
+				IRBDict.push_back("setFogColor(");
+				IRBDict.push_back("getFogColor(");
+				IRBDict.push_back("setFogRange(");
+				IRBDict.push_back("getFogRange(");
+				IRBDict.push_back("setPostFX(");
+				IRBDict.push_back("setCameraTarget(");
+				IRBDict.push_back("getCameraTarget(");
+				IRBDict.push_back("getObjectPosition(");
+				IRBDict.push_back("playSound2D(");
+				IRBDict.push_back("playSound3D(");
+				IRBDict.push_back("setSoundListenerPosition(");
+				IRBDict.push_back("stopSounds(");
+				IRBDict.push_back("setPlayerLife(");
+				IRBDict.push_back("setSoundVolume(");
+				IRBDict.push_back("getPlayerLife(");
+				IRBDict.push_back("setPlayerMoney(");
+				IRBDict.push_back("getPlayerMoney(");
+				IRBDict.push_back("addPlayerItem(");
+				IRBDict.push_back("removePlayerItem(");
+				IRBDict.push_back("usePlayerItem(");
+				IRBDict.push_back("getItemCount(");
+				IRBDict.push_back("showBlackScreen(");
+				IRBDict.push_back("hideBlackScreen(");
+				IRBDict.push_back("showDialogMessage(");
+				IRBDict.push_back("showDialogQuestion(");
+				IRBDict.push_back("saveGame(");
+				IRBDict.push_back("loadGame(");
+				IRBDict.push_back("showObjectLabel(");
+				IRBDict.push_back("hideObjectLabel(");
+				IRBDict.push_back("setObjectLabel(");
+				IRBDict.push_back("setPosition(");
+				IRBDict.push_back("getPosition(");
+				IRBDict.push_back("setRotation(");
+				IRBDict.push_back("getRotation(");
+				IRBDict.push_back("turn(");
+				IRBDict.push_back("move(");
+				IRBDict.push_back("walkTo(");
+				IRBDict.push_back("lookAt(");
+				IRBDict.push_back("lookToObject(");
+				IRBDict.push_back("getName(");
+				IRBDict.push_back("distanceFrom(");
+				IRBDict.push_back("setEnabled(");
+				IRBDict.push_back("setFrameLoop(");
+				IRBDict.push_back("setAnimationSpeed(");
+				IRBDict.push_back("setAnimation(");
+				IRBDict.push_back("setEnemy(");
+				IRBDict.push_back("setObject(");
+				IRBDict.push_back("setPropertie(");
+				IRBDict.push_back("getPropertie(");
+				IRBDict.push_back("attack(");
+				IRBDict.push_back("onLoad(");
+				IRBDict.push_back("onUpdate(");
+				IRBDict.push_back("step(");
+				IRBDict.push_back("onClicked(");
+				IRBDict.push_back("onAnswer(");
+				IRBDict.push_back("getLanguage(");
+				IRBDict.push_back("onCollision(");
+				
+
+
 				for(int tokenCount = 0; tokenCount < (int)tokens.size(); tokenCount++)
                 {
 					std::string tokenIRB = tokens[tokenCount];
-					int end = tokenIRB.find("(");
-					std::string tIRB = tokenIRB.substr(0,end);
-					int begin = tokenIRB.find(")..");
-					tokenIRB = tIRB;
-					if	(tokenIRB == "setObjectName" ||
-						tokenIRB == "chaseObject" ||
-						tokenIRB == "walkRandomly" ||
-						tokenIRB == "walkToObject" ||
-						tokenIRB == "CustomDynamicObjectUpdate" ||
-						tokenIRB == "programAction" ||
-						tokenIRB == "CustomDynamicObjectUpdateProgrammedAction" ||
-						tokenIRB == "hasActionProgrammed" ||
-						tokenIRB == "enableObject" ||
-						tokenIRB == "disableObject" ||
-						tokenIRB == "increasePlayerLife" ||
-						tokenIRB == "decreasePlayerLife" ||
-						tokenIRB == "decreasePLayerMoney" ||
-						tokenIRB == "increasePlayerMoney" ||
-						tokenIRB == "playSound" ||
-						tokenIRB == "emitSound" ||
-						tokenIRB == "sleep" ||
-						tokenIRB == "setGlobal" ||
-						tokenIRB == "getGlobal" ||
-						tokenIRB == "setGlobal" ||
-						tokenIRB == "deleteGlobal" ||
-						tokenIRB == "setTimeOfDay" ||
-						tokenIRB == "setAmbientLight" ||
-						tokenIRB == "getAmbientColor" ||
-						tokenIRB == "setFogColor" ||
-						tokenIRB == "getFogColor" ||
-						tokenIRB == "setFogRange" ||
-						tokenIRB == "getFogRange" ||
-						tokenIRB == "setPostFX" ||
-						tokenIRB == "setCameraTarget" ||
-						tokenIRB == "getCameraTarget" ||
-						tokenIRB == "getObjectPosition" ||
-						tokenIRB == "playSound2D" ||
-						tokenIRB == "playSound3D" ||
-						tokenIRB == "setSoundListenerPosition" ||
-						tokenIRB == "setSoundVolume" ||
-						tokenIRB == "stopSounds" ||
-						tokenIRB == "setPlayerLife" ||
-						tokenIRB == "getPlayerLife" ||
-						tokenIRB == "setPlayerMoney" ||
-						tokenIRB == "getPlayerMoney" ||
-						tokenIRB == "addPlayerItem" ||
-						tokenIRB == "removePlayerItem" ||
-						tokenIRB == "usePlayerItem" ||
-						tokenIRB == "getItemCount" ||
-						tokenIRB == "showBlackScreen" ||
-						tokenIRB == "hideBlackScreen" ||
-						tokenIRB == "showDialogMessage" ||
-						tokenIRB == "showDialogQuestion" ||
-						tokenIRB == "saveGame" ||
-						tokenIRB == "loadGame" ||
-						tokenIRB == "showObjectLabel" ||
-						tokenIRB == "hideObjectLabel" ||
-						tokenIRB == "setObjectLabel" ||
-						tokenIRB == "setPosition" ||
-						tokenIRB == "getPosition" ||
-						tokenIRB == "setRotation" ||
-						tokenIRB == "getRotation" ||
-						tokenIRB == "turn" ||
-						tokenIRB == "move" ||
-						tokenIRB == "walkTo" ||
-						tokenIRB == "lookAt" ||
-						tokenIRB == "lookToObject" ||
-						tokenIRB == "getName" ||
-						tokenIRB == "distanceFrom" ||
-						tokenIRB == "setEnabled" ||
-						tokenIRB == "setFrameLoop" ||
-						tokenIRB == "setAnimationSpeed" ||
-						tokenIRB == "setAnimation" ||
-						tokenIRB == "setEnemy" ||
-						tokenIRB == "setObject" ||
-						tokenIRB == "setPropertie" ||
-						tokenIRB == "getPropertie" ||
-						tokenIRB == "attack" ||
-						tokenIRB == "onLoad" ||
-						tokenIRB == "onUpdate" ||
-						tokenIRB == "step" ||
-						tokenIRB == "onClicked" ||
-						tokenIRB == "onAnswer" ||
-						tokenIRB == "getAnswer" ||
-						tokenIRB == "getLanguage" ||
-						tokenIRB == "onCollision")
-                    {
-                        txtKeywodsIRB.append(tokens[tokenCount]);
-                    }
-                    else
-                    {
-                        txtKeywodsIRB.append(std::string(tokens[tokenCount].size(),' '));
-                    }
+					int posi=0;
+					bool find=false;
+					std::string result="";
+					for (int count = 0; count < (int)IRBDict.size(); count++)
+					{
+						size_t found;
+						found=tokenIRB.find(IRBDict[count]);
+						if (found!=std::string::npos)
+						{
+							find=true;
+							posi=int(found);
+							result=IRBDict[count].c_str();
+						}
+					}
+					if (find)
+					{
+						std::string res="";
+						for (int i = 0; i<posi; i++)
+							res=res+" ";
+
+						res=res+result.substr(0,result.size()-1).c_str();
+						int last=tokens[tokenCount].size()-res.size();
+						for (int i = 0; i<last; i++)
+							res=res+" ";
+				
+						//printf("res size is: %i, final is: %i \n",res.size(),tokens[tokenCount].size());
+						txtKeywodsIRB.append(res);
+						//txtKeywodsIRB.append(tokens[tokenCount]);
+					}
+					else
+						txtKeywodsIRB.append(std::string(tokens[tokenCount].size(),' '));
+
                 }
+				IRBDict.clear();
 				tokens.clear();
 
 
@@ -1544,7 +1569,7 @@ void CGUIEditBoxIRB::breakText()
 		if (!MultiLine)
 			lineBreak = false;
 
-		if (c == L' ' || c == 0 || i == (size-1))
+		if (c == L' ' || c == L'(' || c == L')' || c == 0 || i == (size-1))
 		{
 			if (word.size())
 			{

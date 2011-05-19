@@ -697,7 +697,7 @@ void GUIManager::setupEditorGUI()
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
                        //myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
-					   myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-120),
+					   myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-130),
 					   App::getInstance()->getDevice());
 
     guiDynamicObjects_Script->setMultiLine(true);
