@@ -200,6 +200,9 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
         case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
             return stringc(guiDynamicObjects_OBJChooser->getItem(guiDynamicObjects_OBJChooser->getSelected()));
             break;
+		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
+			return stringc(guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected()));
+			break;
         case CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
             return stringc(guiDynamicObjects_LoadScriptTemplateCB->getItem(guiDynamicObjects_LoadScriptTemplateCB->getSelected()));
             break;
@@ -253,6 +256,7 @@ void GUIManager::setupEditorGUI()
 	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
 
 
+	// Standard toolbar
     mainToolbarPos = position2di(2,2);
 
     //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
@@ -613,9 +617,6 @@ void GUIManager::setupEditorGUI()
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
-
-
-
 	IGUIStaticText * ObjectText0 = guienv->addStaticText(L"Dynamic object selection",core::rect<s32>(1,1,168,39),false,true,guiDynamicObjectsWindowChooser,-1);
 	ObjectText0->setDrawBackground(true);
 	ObjectText0->setDrawBorder(true);
@@ -632,17 +633,22 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-    guiDynamicObjectsWindowChooser_Y += 200;
+    guiDynamicObjectsWindowChooser_Y += 220;
+	guienv->addStaticText(L"Category",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guiDynamicObjectsWindowChooser_Y += 20;
+	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
+	guiDynamicObjects_Category->addItem(L"NPC");
+	guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
+	guiDynamicObjects_Category->addItem(L"PROPS");
 
 
-    guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
-
-    vector<stringc> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList();
-
-    for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
-    {
-    	guiDynamicObjects_OBJChooser->addItem( stringw( listDynamicObjs[i] ).c_str() );
-    }
+	guiDynamicObjectsWindowChooser_Y += 40;
+	guienv->addStaticText(L"Item",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guiDynamicObjectsWindowChooser_Y += 20;
+	guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
+	UpdateGUIChooser(1);
+   
+	
 
     guiDynamicObjectsWindowChooser_Y += 25;
 
@@ -820,6 +826,17 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 
 
 	return false;
+}
+
+void GUIManager::UpdateGUIChooser(int objType)
+{
+	guiDynamicObjects_OBJChooser->clear();
+	std::vector<stringc> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)objType);
+
+    for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+    {
+    	guiDynamicObjects_OBJChooser->addItem( stringw( listDynamicObjs[i] ).c_str() );
+    }
 }
 
 void GUIManager::setTextLoader(stringw text)

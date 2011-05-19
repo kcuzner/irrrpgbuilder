@@ -69,6 +69,7 @@ enum GUI_ID
 	BT_ID_DIALOG_NO = 52,
 	IMG_BAR = 53,
 	CONSOLE = 54,
+	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -109,6 +110,7 @@ class GUIManager
 
 
         void setupGameplayGUI();
+		void UpdateGUIChooser(int objType);
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
 
@@ -257,6 +259,7 @@ class GUIManager
         IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIComboBox* guiDynamicObjects_OBJChooser;
+		IGUIComboBox* guiDynamicObjects_Category;
         NodePreview* guiDynamicObjects_NodePreview;
 		NodePreview* guiPlayerNodePreview;
 
@@ -322,6 +325,8 @@ class GUIManager
         void loadFonts();
 
         void loadScriptTemplates();
+
+		
 };
 
 #endif // GUIMANAGER_H

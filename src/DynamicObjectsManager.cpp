@@ -364,13 +364,14 @@ void DynamicObjectsManager::setActiveObject(stringc name)
     }
 }
 
-vector<stringc> DynamicObjectsManager::getObjectsList()
+vector<stringc> DynamicObjectsManager::getObjectsList(TYPE objectType)
 {
     vector<stringc> listObjs;
 
     for (int i=0 ; i<(int)objectsTemplate.size() ; i++)
     {
-    	listObjs.push_back( objectsTemplate[i]->getName() );
+		if (objectsTemplate[i]->getType()==objectType)
+    		listObjs.push_back( objectsTemplate[i]->getName() );
     }
 
     return listObjs;

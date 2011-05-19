@@ -582,6 +582,23 @@ void App::eventGuiCombobox(s32 id)
             DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
             GUIManager::getInstance()->updateDynamicObjectPreview();
             break;
+		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
+			std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
+			TYPE choice = OBJECT_TYPE_NPC;
+			
+			if (result.find("NPC") != std::string::npos)
+				choice = OBJECT_TYPE_NPC;
+			
+			if (result.find("INTERACTIVE OBJECTS") != std::string::npos)
+				choice = OBJECT_TYPE_INTERACTIVE;
+
+			if (result.find("PROPS") != std::string::npos)
+				choice = OBJECT_TYPE_NON_INTERACTIVE;
+
+			GUIManager::getInstance()->UpdateGUIChooser(choice);
+			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+			GUIManager::getInstance()->updateDynamicObjectPreview();
+			break;
     }
 }
 
@@ -916,7 +933,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (apr 2011)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (may 2011)");
 	} else
 		device = IRRdevice;
 
@@ -1083,7 +1100,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (apr 2011)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (may 2011)";
 			str += " FPS:";
 			str += fps;
 

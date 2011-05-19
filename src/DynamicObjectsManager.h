@@ -38,7 +38,7 @@ class DynamicObjectsManager
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
 
-		vector<stringc> getObjectsList();
+		vector<stringc> getObjectsList(TYPE objectType);
 
         void showDebugData(bool show);
 
