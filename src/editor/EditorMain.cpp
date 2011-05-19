@@ -9,7 +9,7 @@ IMPLEMENT_APP(CIrrApp)
 bool CIrrApp::OnInit()
 {
 	
-	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - April 2011"), wxPoint(0,0), wxSize(1024,768) );
+	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - May 2011"), wxPoint(0,0), wxSize(1024,768) );
 	frame->Show(TRUE);
 	
 	frame->Centre();
@@ -103,8 +103,8 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	wxRibbonPage* home = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_project").c_str(), empty_xpm);
 	if (home)
 	{	
-		wxRibbonPanel *toolbar_panel = new wxRibbonPanel(home, wxID_ANY, wxT("IRB Project tools"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonPanel *test_panel = new wxRibbonPanel(home, wxID_ANY, wxT("Test"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *toolbar_panel = new wxRibbonPanel(home, wxID_ANY,  App::getInstance()->getLangText("txt_tool_des0").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *test_panel = new wxRibbonPanel(home, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		/*wxRibbonButtonBar *main_button = new wxRibbonButtonBar(toolbar_panel, wxID_ANY);
 		main_button->AddButton(wxID_ANY, wxT("Quit"), msw_style_xpm);
 		main_button->Realize();*/
@@ -123,8 +123,8 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
         
         toolbar->SetRows(1, 2);
 		wxRibbonButtonBar *test_button = new wxRibbonButtonBar(test_panel, wxID_ANY);
-		test_button->AddButton(ID_Play, wxT("Play Mode"), bt_play_game_xpm);
-		test_button->AddButton(ID_Stop, wxT("Editor mode"), bt_stop_game_xpm);
+		test_button->AddButton(ID_Play, App::getInstance()->getLangText("txt_tool_edpl").c_str(), bt_play_game_xpm);
+		test_button->AddButton(ID_Stop, App::getInstance()->getLangText("txt_tool_edit").c_str(), bt_stop_game_xpm);
 		test_button->Realize();
 
 	}
@@ -132,8 +132,8 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	wxRibbonPage* terrain = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_environment").c_str(), empty_xpm);
 	if (terrain)
 	{
-		wxRibbonPanel *terrain_panel = new wxRibbonPanel(terrain, wxID_ANY, wxT("Terrain tools"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonPanel *terrain_panelv = new wxRibbonPanel(terrain, wxID_ANY, wxT("Vegetation tools"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *terrain_panel = new wxRibbonPanel(terrain, wxID_ANY, App::getInstance()->getLangText("txt_tool_des5").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *terrain_panelv = new wxRibbonPanel(terrain, wxID_ANY,App::getInstance()->getLangText("txt_tool_des6").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 
 		wxRibbonButtonBar *terrain_button = new wxRibbonButtonBar(terrain_panel, wxID_ANY);
 		terrain_button->AddButton(ID_TerrainSegment, App::getInstance()->getLangText("bt_terrain_segments").c_str(), bt_terrain_add_segment_xpm);
@@ -144,16 +144,16 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 		// Buttons
 		wxRibbonButtonBar *terrain_buttonv = new wxRibbonButtonBar(terrain_panelv, wxID_ANY);
-		terrain_buttonv->AddButton(ID_TerrainTree, wxT("trees"), bt_terrain_paint_vegetation_xpm);
-		terrain_buttonv->AddButton(wxID_ANY, wxT("bushes"), bt_terrain_paint_vegetation_xpm);
-		terrain_buttonv->AddButton(wxID_ANY, wxT("rocks"), bt_terrain_paint_vegetation_xpm);
+		terrain_buttonv->AddButton(ID_TerrainTree, App::getInstance()->getLangText("txt_tool_tree").c_str(), bt_terrain_paint_vegetation_xpm);
+		terrain_buttonv->AddButton(wxID_ANY, App::getInstance()->getLangText("txt_tool_bush").c_str(), bt_terrain_paint_vegetation_xpm);
+		terrain_buttonv->AddButton(wxID_ANY, App::getInstance()->getLangText("txt_tool_rock").c_str(), bt_terrain_paint_vegetation_xpm);
 		terrain_buttonv->Realize();
 	}
 	//Dynamic Object toolbar
 	wxRibbonPage* dynobject = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_objects").c_str(), empty_xpm);
 	if (dynobject)
 	{
-		wxRibbonPanel *dynobject_panel = new wxRibbonPanel(dynobject, wxID_ANY, wxT("Editing"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *dynobject_panel = new wxRibbonPanel(dynobject, wxID_ANY, App::getInstance()->getLangText("txt_tool_des1").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		wxRibbonButtonBar *dynobject_button = new wxRibbonButtonBar(dynobject_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize);
 		dynobject_button->AddButton(ID_ObjEditMode, App::getInstance()->getLangText("bt_dynamic_objects_mode").c_str(), bt_dynamic_objects_mode_xpm);
 		dynobject_button->AddButton(ID_PlayerEdit,App::getInstance()->getLangText("bt_edit_character").c_str(), bt_edit_character_xpm, L"Aide é");
@@ -161,7 +161,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		dynobject_button->Realize();
 		
 		
-		wxRibbonPanel *script_panel = new wxRibbonPanel(dynobject, wxID_ANY, wxT("Scripting"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel *script_panel = new wxRibbonPanel(dynobject, wxID_ANY, App::getInstance()->getLangText("txt_tool_des2").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		wxRibbonButtonBar *script_button = new wxRibbonButtonBar(script_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
 		script_button->AddButton(ID_PlayerScript, App::getInstance()->getLangText("bt_player_edit_script").c_str(), bt_player_edit_script_xpm);
 		script_button->AddButton(ID_GlobalScript, App::getInstance()->getLangText("bt_edit_script_global").c_str(), bt_edit_script_global_xpm);
@@ -173,15 +173,15 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	wxRibbonPage* option = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_setup").c_str(), empty_xpm);
 	if (option)
 	{
-		wxRibbonPanel* option_panel = new wxRibbonPanel(option, wxID_ANY, wxT("Configuration"), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		wxRibbonPanel* option_panel = new wxRibbonPanel(option, wxID_ANY, App::getInstance()->getLangText("txt_tool_des3").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		wxRibbonButtonBar* option_button = new wxRibbonButtonBar(option_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
 		option_button->AddButton(400, App::getInstance()->getLangText("bt_config").c_str(), bt_config_xpm, "Editor setup");
 		
-		option_button->AddButton(402, wxT("Game setup"), bt_config_xpm );
+		option_button->AddButton(402, App::getInstance()->getLangText("txt_tool_setg").c_str(), bt_config_xpm );
 		option_button->EnableButton(402,false);
 		option_button->Realize();
 
-		option_button->AddButton(403, wxT("Display game console"), bt_config_xpm );
+		option_button->AddButton(403, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
 		option_button->EnableButton(403,true);
 		option_button->Realize();
 	}
@@ -189,7 +189,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 //	SetMenuBar( menuBar );
 
 	CreateStatusBar();
-	SetStatusText( _T("Welcome to IRR RPG Builder!") );
+	SetStatusText(App::getInstance()->getLangText("msg_welcome").c_str());
 	m_ribbon->SetActivePage(dynobject);
 	Connect (-1, wxEVT_CLOSE_WINDOW,
              wxCloseEventHandler (CIrrFrame::OnClose),
@@ -221,10 +221,10 @@ void CIrrFrame::OnClose (wxCloseEvent& e)
 
 void CIrrFrame::OnNew(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	if (MessageBox(L"New project",L"This will create a new project.\nAre you sure?",2)==1)
+	if (MessageBox(App::getInstance()->getLangText("msg_prj_np0").c_str(),App::getInstance()->getLangText("msg_prj_np1").c_str(),2)==1)
 	{
 		App::getInstance()->createNewProject();
-		wxLogStatus(wxT("New project created!"));
+		wxLogStatus(App::getInstance()->getLangText("msg_prj_np2").c_str());
 	}
 
 }
@@ -235,13 +235,13 @@ void CIrrFrame::OnSave(wxRibbonToolBarEvent& WXUNUSED(evt))
 	APP_STATE old_state = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
 
-	if (MessageBox(L"Saving project",L"Want to save this project?",2)==1)
+	if (MessageBox(App::getInstance()->getLangText("msg_prj_sp0").c_str(),App::getInstance()->getLangText("msg_prj_sp1").c_str(),2)==1)
 	{
 		stringw result = FileSave();
 		if (result.size()>2)
 		{
 			App::getInstance()->saveProjectToXML(result.c_str());
-			wxLogStatus(wxT("Project %s saved successfully!"),result.c_str());
+			wxLogStatus(App::getInstance()->getLangText("msg_prj_sp2").c_str(),result.c_str());
 		}
 	}
 	App::getInstance()->setAppState(old_state);
@@ -252,21 +252,21 @@ void CIrrFrame::OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt))
 	APP_STATE old_state = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
 
-	int boxres = MessageBox(L"Loading a new project",L"Will you save the current project?",3);
+	int boxres = MessageBox(App::getInstance()->getLangText("msg_prj_lp0").c_str(),App::getInstance()->getLangText("msg_prj_lp1").c_str(),3);
 	if (boxres==1 || boxres==0)
 	{
 		if (boxres==1)
 		{
 			App::getInstance()->saveProjectToXML(App::getInstance()->getProjectName().c_str());
-			wxLogStatus(wxT("Project '%s' saved",App::getInstance()->getProjectName().c_str()));
+			wxLogStatus(App::getInstance()->getLangText("msg_prj_lp2").c_str(),App::getInstance()->getProjectName().c_str());
 		}
 
-		core::stringw result=FileOpen(L"Specify the project file to load");
+		core::stringw result=FileOpen(App::getInstance()->getLangText("msg_prj_lp3").c_str());
 		if (result.size()>2)
 		{
 			App::getInstance()->cleanWorkspace();
 			App::getInstance()->loadProjectFromXML(result.c_str());
-			wxLogStatus(wxT("Project %s loaded successfully"),result.c_str());
+			wxLogStatus(App::getInstance()->getLangText("msg_prj_lp4").c_str(),result.c_str());
 		}
 	}
 	App::getInstance()->setAppState(old_state);
@@ -348,17 +348,16 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 	{
 		wxMessageDialog dialog(this,
 							message.c_str(),
-                           "IRR Rpg Builder warning",
+                           App::getInstance()->getLangText("msg_dlg_warn").c_str(),
                            wxCENTER | 
 						   wxYES_NO | wxYES_DEFAULT | wxCANCEL |
 						   wxICON_WARNING);
 		wxString extmsg;
 		if ( dialog.SetYesNoCancelLabels
 			(
-			"&Yes",
-			"&No",
-			"Cancel"
-			) )
+			App::getInstance()->getLangText("msg_dlg_yes").c_str(),
+			App::getInstance()->getLangText("msg_dlg_no").c_str(),
+			App::getInstance()->getLangText("msg_dlg_cancel").c_str()) )
 		{
 			extmsg = message2.c_str();
 		}
@@ -393,16 +392,15 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 
 		wxMessageDialog dialog(this,
 							message.c_str(),
-                           "IRR Rpg Builder warning",
+                           App::getInstance()->getLangText("msg_dlg_warn").c_str(),
                            wxCENTER | 
 						   wxOK | wxCANCEL |
 						   wxICON_WARNING);
 		wxString extmsg;
 		if ( dialog.SetOKCancelLabels
 			(
-			"&Yes",
-			"&No"
-			) )
+			App::getInstance()->getLangText("msg_dlg_yes").c_str(),
+			App::getInstance()->getLangText("msg_dlg_no").c_str()) )
 		{
 			extmsg = message2.c_str();
 		}

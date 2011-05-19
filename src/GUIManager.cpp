@@ -617,7 +617,7 @@ void GUIManager::setupEditorGUI()
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
-	IGUIStaticText * ObjectText0 = guienv->addStaticText(L"Dynamic object selection",core::rect<s32>(1,1,168,39),false,true,guiDynamicObjectsWindowChooser,-1);
+	IGUIStaticText * ObjectText0 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),core::rect<s32>(1,1,168,39),false,true,guiDynamicObjectsWindowChooser,-1);
 	ObjectText0->setDrawBackground(true);
 	ObjectText0->setDrawBorder(true);
 	ObjectText0->setBackgroundColor(video::SColor(255,237,242,248));
@@ -625,7 +625,7 @@ void GUIManager::setupEditorGUI()
 	ObjectText0->setOverrideFont(guiFontCourier12);
 	ObjectText0->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	IGUIStaticText * ObjectText1 = guienv->addStaticText(L"Current model",core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
+	IGUIStaticText * ObjectText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcur")).c_str(),core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
 	ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
 	ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
@@ -634,7 +634,7 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiDynamicObjectsWindowChooser_Y += 220;
-	guienv->addStaticText(L"Category",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->addItem(L"NPC");
@@ -643,7 +643,7 @@ void GUIManager::setupEditorGUI()
 
 
 	guiDynamicObjectsWindowChooser_Y += 40;
-	guienv->addStaticText(L"Item",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
 	UpdateGUIChooser(1);

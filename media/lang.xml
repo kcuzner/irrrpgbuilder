@@ -70,13 +70,53 @@
 		<text id="msg_loaded_error" str="Loaded Error!"/>
 		<text id="msg_loaded_ok" str="Loaded successfully!"/>
 		<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
+		<text id="txt_dynobjsel" str="Dynamic object selection" />
+		<text id="txt_dynobjcur" str="Current model" />
+		<text id="txt_dynobjcat" str="Category" />
+		<text id="txt_dynobjitm" str="Item" />
+		<text id="txt_tool_des0" str="IRB Project tools" />
+		<text id="txt_tool_des1" str="Editing" />
+		<text id="txt_tool_des2" str="Scripting" />
+		<text id="txt_tool_des3" str="Configuration" />
+		<text id="txt_tool_des4" str="Playtest" />
+		<text id="txt_tool_des5" str="Terrain tools" />
+		<text id="txt_tool_des6" str="Vegetation tools" />
+		<text id="txt_tool_edit" str="Edit mode" />
+		<text id="txt_tool_edpl" str="Edit Player" />
+		<text id="txt_tool_scrp" str="Player script" />
+		<text id="txt_tool_scrg" str="Global script" />
+		<text id="txt_tool_sete" str="Editor setup" />
+		<text id="txt_tool_setg" str="Game setup" />
+		<text id="txt_tool_gc" str="Display game console" />
+		<text id="txt_tool_play" str="Play mode" />
+		<text id="txt_tool_edim" str="Edit mode" />
+		<text id="txt_tool_edsg" str="Edit segments" />
+		<text id="txt_tool_edel" str="Edit elevation" />
+		<text id="txt_tool_tree" str="Trees" />
+		<text id="txt_tool_bush" str="Bushes" />
+		<text id="txt_tool_rock" str="Rocks" />
+		<text id="msg_welcome" str="Welcome to IRR RPG Builder" />
+		<text id="msg_prj_np0" str="New project" />
+		<text id="msg_prj_np1" str='This will create a new project. Are you sure?' />
+		<text id="msg_prj_np2" str="New project created!" />
+		<text id="msg_prj_sp0" str="Saving project" />
+		<text id="msg_prj_sp1" str="Want to save this project?" />
+		<text id="msg_prj_sp2" str="Project %s saved successfully!" />
+		<text id="msg_prj_lp0" str="Loading a new project" />
+		<text id="msg_prj_lp1" str="Will you save the current project?" />
+		<text id="msg_prj_lp2" str="Project '%s' saved" />
+		<text id="msg_prj_lp3" str="Specify the project file to load" />
+		<text id="msg_prj_lp4" str="Project %s loaded successfully!" />
+		<text id="msg_dlg_warn" str="IRR Rpg Builder warning" />
+		<text id="msg_dlg_yes" str="&Yes" />
+		<text id="msg_dlg_no" str="&No" />
+		<text id="msg_dlg_cancel" str="Cancel" />
 		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
 		<about str="    by Andres Jesse Porfirio" />
 		<about str=" " />
 		<about str="Programming and scripting by:" />
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
 		<about str="    Christian Clavet (www.clavet.org)" />
-		<about str="    Your name here" />
 		<about str=" " />
 		<about str="Interface design:" />
 		<about str="    Andres Jesse Porfirio" />
@@ -86,18 +126,21 @@
 		<about str="    Borges (www.vhborges.tk)" />
 		<about str=" " />
 		<about str="Models by:" />
-		<about str="    Your name here" />
-		<about str="    Your name here" />
+		<about str="    Andres Jesse Porfirio" />
+		<about str="    Christian Clavet" />
 		<about str=" " />
 		<about str="Animations:" />
-		<about str="    Your name here" />
-		<about str="    Your name here" />
+		<about str="    Andres Jesse Porfirio" />
+		<about str="    Christian Clavet" />
 		<about str=" " />
 		<about str="Shaders:" />
 		<about str="    Andres Jesse Porfirio" />
-		<about str="    Your name here" />
-		<about str="    Your name here" />
+		<about str="    Christian Clavet" />
+		<about str="    TBW (post FX shaders)" />
 		<about str=" " />
+		<about str="Thanks: " />
+		<about str="The IRRlicht team (irrlicht.sourceforge.net) " />
+		<about str="TBW from the IRRlicht forum for the postFX system " />
 		<about str="check irrrpgbuilder.sourceforge.net" />
 		<about str="have fun!"/>
 	</language>
@@ -171,6 +214,47 @@
 		<text id="msg_loaded_error" str="Erro ao Carregar!"/>
 		<text id="msg_loaded_ok" str="Carregado com sucesso!"/>
 		<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
+		<text id="txt_dynobjsel" str="Dynamic object selection" />
+		<text id="txt_dynobjcur" str="Current model" />
+		<text id="txt_dynobjcat" str="Category" />
+		<text id="txt_dynobjitm" str="Item" />
+		<text id="txt_tool_des0" str="IRB Project tools" />
+		<text id="txt_tool_des1" str="Editing" />
+		<text id="txt_tool_des2" str="Scripting" />
+		<text id="txt_tool_des3" str="Configuration" />
+		<text id="txt_tool_des4" str="Playtest" />
+		<text id="txt_tool_des5" str="Terrain tools" />
+		<text id="txt_tool_des6" str="Vegetation tools" />
+		<text id="txt_tool_edit" str="Edit mode" />
+		<text id="txt_tool_edpl" str="Edit Player" />
+		<text id="txt_tool_scrp" str="Player script" />
+		<text id="txt_tool_scrg" str="Global script" />
+		<text id="txt_tool_sete" str="Editor setup" />
+		<text id="txt_tool_setg" str="Game setup" />
+		<text id="txt_tool_gc" str="Display game console" />
+		<text id="txt_tool_play" str="Play mode" />
+		<text id="txt_tool_edim" str="Edit mode" />
+		<text id="txt_tool_edsg" str="Edit segments" />
+		<text id="txt_tool_edel" str="Edit elevation" />
+		<text id="txt_tool_tree" str="Trees" />
+		<text id="txt_tool_bush" str="Bushes" />
+		<text id="txt_tool_rock" str="Rocks" />
+		<text id="msg_welcome" str="Welcome to IRR RPG Builder" />
+		<text id="msg_prj_np0" str="New project" />
+		<text id="msg_prj_np1" str='This will create a new project. Are you sure?' />
+		<text id="msg_prj_np2" str="New project created!" />
+		<text id="msg_prj_sp0" str="Saving project" />
+		<text id="msg_prj_sp1" str="Want to save this project?" />
+		<text id="msg_prj_sp2" str="Project %s saved successfully!" />
+		<text id="msg_prj_lp0" str="Loading a new project" />
+		<text id="msg_prj_lp1" str="Will you save the current project?" />
+		<text id="msg_prj_lp2" str="Project '%s' saved" />
+		<text id="msg_prj_lp3" str="Specify the project file to load" />
+		<text id="msg_prj_lp4" str="Project %s loaded successfully!" />
+		<text id="msg_dlg_warn" str="IRR Rpg Builder warning" />
+		<text id="msg_dlg_yes" str="&Yes" />
+		<text id="msg_dlg_no" str="&No" />
+		<text id="msg_dlg_cancel" str="Cancel" />
 		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
 		<about str="    por Andres Jesse Porfirio" />
 		<about str=" " />
@@ -199,6 +283,9 @@
 		<about str="    Seu nome aqui" />
 		<about str="    Seu nome aqui" />
 		<about str=" " />
+		<about str="Thanks: " />
+		<about str="The IRRlicht team (irrlicht.sourceforge.net) " />
+		<about str="TBW from the IRRlicht forum for the postFX system " />
 		<about str="confira irrrpgbuilder.sourceforge.net" />
 		<about str="diverta-se!"/>
 	</language>	
@@ -220,14 +307,14 @@
 		<text id="bt_dynamic_objects_edit_script" str="Éditer le script Lua"/>
 		<text id="bt_dynamic_objects_cancel" str="Abandon"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
-		<text id="bt_dynamic_objects_mode" str="Mode Édition"/>
+		<text id="bt_dynamic_objects_mode" str="Édition objet"/>
 		<text id="bt_paint_vegetation" str="Peindre la végétation"/>
 		<text id="bt_new_project" str="Nouveau projet"/>
 		<text id="bt_save_project" str="Sauver le projet"/>
 		<text id="bt_load_project" str="Charger le projet"/>
 		<text id="bt_show_playable_area" str="Zone jouable"/>
-		<text id="bt_terrain_segments" str="Éditer les segments du terrain"/>
-		<text id="bt_terrain_transform" str="Éditer l'élevation du terrain"/>
+		<text id="bt_terrain_segments" str="Éditer les segments"/>
+		<text id="bt_terrain_transform" str="Éditer l'élevation"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Force:"/>
 		<text id="bt_terrain_transform_brush_radius_label" str="Grandeur:"/>
 		<text id="bt_play_game" str="Jouer"/>
@@ -272,6 +359,47 @@
 		<text id="msg_loaded_error" str="Erreur chargement!"/>
 		<text id="msg_loaded_ok" str="Chargement réussi!"/>
 		<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
+		<text id="txt_dynobjsel" str="Sélection d'objet dynamique" />
+		<text id="txt_dynobjcur" str="Modèle actuel" />
+		<text id="txt_dynobjcat" str="Catégorie" />
+		<text id="txt_dynobjitm" str="Item" />
+		<text id="txt_tool_des0" str="Outils Projet IRB" />
+		<text id="txt_tool_des1" str="Édition" />
+		<text id="txt_tool_des2" str="Scripts" />
+		<text id="txt_tool_des3" str="Configuration" />
+		<text id="txt_tool_des4" str="Playtest" />
+		<text id="txt_tool_des5" str="Outils de terrain" />
+		<text id="txt_tool_des6" str="Outils de végétation" />
+		<text id="txt_tool_edit" str="Mode édition" />
+		<text id="txt_tool_edpl" str="Mode jeu" />
+		<text id="txt_tool_scrp" str="Script joueur" />
+		<text id="txt_tool_scrg" str="Script global" />
+		<text id="txt_tool_sete" str="Configuration éditeur" />
+		<text id="txt_tool_setg" str="Config jeu" />
+		<text id="txt_tool_gc" str="Afficher la console" />
+		<text id="txt_tool_play" str="Play mode" />
+		<text id="txt_tool_edim" str="Edit mode" />
+		<text id="txt_tool_edsg" str="Éditer les segments" />
+		<text id="txt_tool_edel" str="Éditer l'élévation" />
+		<text id="txt_tool_tree" str="Arbres" />
+		<text id="txt_tool_bush" str="Buissons" />
+		<text id="txt_tool_rock" str="Roches" />
+		<text id="msg_welcome" str="Bienvenue dans IRR RPG Builder" />
+		<text id="msg_prj_np0" str="Nouveau projet" />
+		<text id="msg_prj_np1" str='Ceci fera un nouveau projet. Est-ce que vous êtes sûrs?' />
+		<text id="msg_prj_np2" str="Nouveau projet crée!" />
+		<text id="msg_prj_sp0" str="Sauvegarde du projet" />
+		<text id="msg_prj_sp1" str="Vous voulez sauvegarder ce projet?" />
+		<text id="msg_prj_sp2" str="Le projet %s est sauvegardé avec succès!" />
+		<text id="msg_prj_lp0" str="Charger un nouveau projet" />
+		<text id="msg_prj_lp1" str="Est-ce que vous sauvez le projet actuel?" />
+		<text id="msg_prj_lp2" str="Projet '%s' sauvé" />
+		<text id="msg_prj_lp3" str="Spécifiez le fichier du projet à charger" />
+		<text id="msg_prj_lp4" str="Le project %s est chargé avec succès!" />
+		<text id="msg_dlg_warn" str="Avertissement IRR Rpg Builder!" />
+		<text id="msg_dlg_yes" str="&Oui" />
+		<text id="msg_dlg_no" str="&Non" />
+		<text id="msg_dlg_cancel" str="Annuler" />
 		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
 		<about str=" "/>
@@ -300,6 +428,9 @@
 		<about str="    Votre nom ici" />
 		<about str="    Votre nom ici" />
 		<about str=" " />
+		<about str="Thanks: " />
+		<about str="The IRRlicht team (irrlicht.sourceforge.net) " />
+		<about str="TBW from the IRRlicht forum for the postFX system " />
 		<about str="Consultez irrrpgbuilder.sourceforge.net" />
 		<about str="Amusez-vous!"/>
 	</language>
@@ -373,6 +504,47 @@
 		<text id="msg_loaded_error" str="Fehler beim Laden"/>
 		<text id="msg_loaded_ok" str="Laden erfolgreich!"/>
 		<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
+		<text id="txt_dynobjsel" str="Dynamic object selection" />
+		<text id="txt_dynobjcur" str="Current model" />
+		<text id="txt_dynobjcat" str="Category" />
+		<text id="txt_dynobjitm" str="Item" />
+		<text id="txt_tool_des0" str="IRB Project tools" />
+		<text id="txt_tool_des1" str="Editing" />
+		<text id="txt_tool_des2" str="Scripting" />
+		<text id="txt_tool_des3" str="Configuration" />
+		<text id="txt_tool_des4" str="Playtest" />
+		<text id="txt_tool_des5" str="Terrain tools" />
+		<text id="txt_tool_des6" str="Vegetation tools" />
+		<text id="txt_tool_edit" str="Edit mode" />
+		<text id="txt_tool_edpl" str="Edit Player" />
+		<text id="txt_tool_scrp" str="Player script" />
+		<text id="txt_tool_scrg" str="Global script" />
+		<text id="txt_tool_sete" str="Editor setup" />
+		<text id="txt_tool_setg" str="Game setup" />
+		<text id="txt_tool_gc" str="Display game console" />
+		<text id="txt_tool_play" str="Play mode" />
+		<text id="txt_tool_edim" str="Edit mode" />
+		<text id="txt_tool_edsg" str="Edit segments" />
+		<text id="txt_tool_edel" str="Edit elevation" />
+		<text id="txt_tool_tree" str="Trees" />
+		<text id="txt_tool_bush" str="Bushes" />
+		<text id="txt_tool_rock" str="Rocks" />
+		<text id="msg_welcome" str="Welcome to IRR RPG Builder" />
+		<text id="msg_prj_np0" str="New project" />
+		<text id="msg_prj_np1" str='This will create a new project. Are you sure?' />
+		<text id="msg_prj_np2" str="New project created!" />
+		<text id="msg_prj_sp0" str="Saving project" />
+		<text id="msg_prj_sp1" str="Want to save this project?" />
+		<text id="msg_prj_sp2" str="Project %s saved successfully!" />
+		<text id="msg_prj_lp0" str="Loading a new project" />
+		<text id="msg_prj_lp1" str="Will you save the current project?" />
+		<text id="msg_prj_lp2" str="Project '%s' saved" />
+		<text id="msg_prj_lp3" str="Specify the project file to load" />
+		<text id="msg_prj_lp4" str="Project %s loaded successfully!" />
+		<text id="msg_dlg_warn" str="IRR Rpg Builder warning" />
+		<text id="msg_dlg_yes" str="&Yes" />
+		<text id="msg_dlg_no" str="&No" />
+		<text id="msg_dlg_cancel" str="Cancel" />
 		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
 		<about str="    von Andres Jesse Porfirio" />
 		<about str=" " />
@@ -401,6 +573,9 @@
 		<about str="    Ihren Namen hier einfugen" />
 		<about str="    Ihren Namen hier einfugen" />
 		<about str=" " />
+		<about str="Thanks: " />
+		<about str="The IRRlicht team (irrlicht.sourceforge.net) " />
+		<about str="TBW from the IRRlicht forum for the postFX system " />
 		<about str="besuchen Sie irrrpgbuilder.sourceforge.net" />
 		<about str="Viel Spaß!"/>
 	</language>
