@@ -1777,7 +1777,7 @@ void CGUIEditBoxIRB::inputChar(wchar_t c)
 	}
 	breakText();
 	sendGuiEvent(EGET_EDITBOX_CHANGED);
-	//calculateScrollPos();
+	calculateScrollPos();
 }
 
 
