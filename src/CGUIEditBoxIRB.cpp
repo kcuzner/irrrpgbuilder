@@ -304,7 +304,8 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 						if (!OverrideFont)
 							font = skin->getFont();
 						s32 scrollMove = font->getDimension(L"000000").Height;
-						VScrollPos = (s32)(scrollMove/1.7f) * Scrollbar->getPos();
+						VScrollPos = (s32)Scrollbar->getPos()*scrollMove;
+						
 
 					}
 				}
@@ -661,7 +662,6 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 				newMarkEnd = 0;
 			}
 			Scrollbar->setPos(getLineFromPos(CursorPos));
-
 		}
 		else
 		{
@@ -1418,8 +1418,8 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 				CursorPos = getCursorPos(event.MouseInput.X, event.MouseInput.Y);
 				setTextMarkers( MarkBegin, CursorPos );
 				//TODO: calculateScrollPos seem to have bugs
-				//if (MarkBegin!=CursorPos)
-				//	calculateScrollPos();
+				if (MarkBegin!=CursorPos)
+					calculateScrollPos();
 				return true;
 			}
 		}
@@ -1452,7 +1452,7 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 
 				MouseMarking = true;
 				setTextMarkers( newMarkBegin, CursorPos);
-				//calculateScrollPos();
+				calculateScrollPos();
 				return true;
 			}
 		}
@@ -1628,7 +1628,13 @@ void CGUIEditBoxIRB::breakText()
 	line += word;
 	BrokenText.push_back(line);
 	BrokenTextPositions.push_back(lastLineStart);
-	Scrollbar->setMax(BrokenText.size()-1);
+
+	s32 textframe = FrameRect.getHeight();
+	u32 linesize = skin->getFont()->getDimension(L"O").Height;
+	int maxLines = BrokenText.size();
+	int linecount=int(textframe/linesize);
+
+	Scrollbar->setMax(maxLines-linecount);
 	linenumber += (core::stringw)BrokenText.size() + L"\n";
 	//Linecounter->setText(linenumber.c_str());
 	//Linecounter->move(core::vector2di(0,10));
@@ -1771,7 +1777,7 @@ void CGUIEditBoxIRB::inputChar(wchar_t c)
 	}
 	breakText();
 	sendGuiEvent(EGET_EDITBOX_CHANGED);
-	calculateScrollPos();
+	//calculateScrollPos();
 }
 
 
@@ -1813,14 +1819,28 @@ void CGUIEditBoxIRB::calculateScrollPos()
 		// todo: adjust scrollbar
 	}
 
+	// New method of calculating the scrolling
+	IGUISkin* skin = Environment->getSkin();
+	IGUIFont* font = OverrideFont ? OverrideFont : skin->getFont();
+	int height = (s32)font->getDimension(L"O").Height;
+	int linepos=(int)getLineFromPos(CursorPos);
+	int lines=FrameRect.getHeight()/height;
+	s32 min=VScrollPos/height;
+	s32 max=(VScrollPos+((lines-2)*height))/height;
+	if (linepos<=min)
+		VScrollPos=VScrollPos-height;
+	if (linepos>max)
+		VScrollPos=VScrollPos+height;
+	
+	//printf("Here is the current pos %i, here is the current vscroll pos: %i, total lines: %i \n",linepos,VScrollPos,lines);
 	// vertical scroll position
-	if (FrameRect.LowerRightCorner.Y < CurrentTextRect.LowerRightCorner.Y + VScrollPos)
+	/*if (FrameRect.LowerRightCorner.Y < CurrentTextRect.LowerRightCorner.Y + VScrollPos)
 		VScrollPos = CurrentTextRect.LowerRightCorner.Y - FrameRect.LowerRightCorner.Y + VScrollPos;
 
 	else if (FrameRect.UpperLeftCorner.Y > CurrentTextRect.UpperLeftCorner.Y + VScrollPos)
 		VScrollPos = CurrentTextRect.UpperLeftCorner.Y - FrameRect.UpperLeftCorner.Y + VScrollPos;
 	else
-		VScrollPos = 0;
+		VScrollPos = 0;*/
 
 	// todo: adjust scrollbar
 	//Scrollbar->setMax(BrokenText.size());
