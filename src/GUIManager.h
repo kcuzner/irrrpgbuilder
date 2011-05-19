@@ -68,6 +68,7 @@ enum GUI_ID
 	BT_ID_DIALOG_CANCEL = 51,
 	BT_ID_DIALOG_NO = 52,
 	IMG_BAR = 53,
+	CONSOLE = 54,
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)

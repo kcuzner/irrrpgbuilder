@@ -219,11 +219,14 @@ bool DynamicObjectsManager::processFile(stringc filename)
 
 				// Load the walking speed of the NPC or Player (unit by 1/60th of a second)
 				// Current default will move 60 inches (default unit) per second.
-				stringc s_wspeed = currentAnimXML->ToElement()->Attribute("walkspeed");
+				// Something is strange, ATOF function round the number on the wxWidget build.
+				stringc s_wspeed = currentAnimXML->ToElement()->Attribute("movespeed");
 				if (s_wspeed.size()>0)
 					currAnim.walkspeed = (f32)atof(s_wspeed.c_str());
 				else
-					currAnim.walkspeed = 1.0f;
+					currAnim.walkspeed = 0.0f;
+
+
 
 				// Check for an defined animation loop mode. Default is set to true (looping)
 				stringc s_loop = currentAnimXML->ToElement()->Attribute("loop");

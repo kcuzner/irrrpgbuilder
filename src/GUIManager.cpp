@@ -1016,10 +1016,10 @@ void GUIManager::setupGameplayGUI()
 	//DynamicObjectsManager::getInstance()->setActiveObject("player_template");
 
 	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
-	guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getPlayer()->getNode());
+	guiPlayerNodePreview->setNode(Player::getInstance()->getNodeRef());
 	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
 	//printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
-	//guiPlayerNodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
 
@@ -1311,6 +1311,9 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 		case IMG_BAR:
 			gameplay_bar_image->setVisible(visible);
 			break;
+		case CONSOLE:
+			consolewin->setVisible(visible);
+			break;
 		case BT_ID_VIEW_ITEMS:
             guiBtViewItems->setVisible(visible);
 			// Update the gold items
@@ -1318,6 +1321,8 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
+		
+
 		
     }
 }

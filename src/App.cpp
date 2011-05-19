@@ -32,6 +32,7 @@ const float DEG2RAD = 3.14159f/180;
 App::App()
 {
  wxSystem=false;
+ app_state=APP_EDIT_LOOK;
 }
 
 App::~App()
@@ -976,7 +977,7 @@ void App::stopGame()
 		SoundManager::getInstance()->stopSounds();
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
 		GlobalMap::getInstance()->clearGlobals();
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		this->setAppState(APP_EDIT_LOOK);
 		CameraSystem::getInstance()->setCamera(2);
 		CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);

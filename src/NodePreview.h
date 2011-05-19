@@ -41,12 +41,14 @@ class NodePreview : public IGUIElement
 		scene::ISceneManager * smgr;
 		gui::IGUIEnvironment * guienv;
 		scene::ICameraSceneNode * fakecam;
+		
 
 		bool background;
 		bool border;
 		video::SColor backgroundcolor;
 
-        ISceneNode* node;
+		scene::ISceneNode* node;
+		
 		core::rect<s32> viewPort;
 		f32 rotation;
 		vector3df oldposition;

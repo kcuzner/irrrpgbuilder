@@ -41,6 +41,7 @@ class Player
         void setHighLight(bool highlight);
 		
 		ISceneNode* getNode() { return playerObject->getNode(); };
+		ISceneNode* getNodeRef() {return player_ref; };
 
     protected:
     private:
@@ -48,6 +49,8 @@ class Player
 		
 		DynamicObject* playerObject;
 		DynamicObject* taggedObject;
+
+		ISceneNode* player_ref;
 		
         ITimer* timer;
 		u32 currentime;

@@ -1,5 +1,6 @@
 #include "NodePreview.h"
 #include "TerrainManager.h"
+#include "Player.h"
 
 using namespace irr;
 using namespace core;
@@ -110,14 +111,10 @@ void NodePreview::draw()
 
 	if (fakecam) 
 		smgr->setActiveCamera(fakecam);
-		
-
-
-	node->setPosition(vector3df(0,-1000,0));
-
+	
 	fakecam->setFarValue(distance*5);
 	
-
+	node->setPosition(vector3df(0,-1000,0));
 	fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
 	fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
 	fakecam->setAspectRatio(aspect);
@@ -129,14 +126,14 @@ void NodePreview::draw()
 	if (!node->isVisible())
 	{
 		node->setVisible(true);
+		//node2->render();
 		smgr->drawAll();
 		node->setVisible(false);
 	}
 	else
-		//node->render();
+		//node2->render();
 		smgr->drawAll();
 		
-	node->setPosition(oldposition);
 	TerrainManager::getInstance()->setVisible(true);
 		
     driver->setViewPort(originalViewport);	
@@ -149,9 +146,9 @@ void NodePreview::draw()
 
 void NodePreview::setNode(ISceneNode* node)
 {
-    this->node = node;
+	this->node=node;
+	
 	smgr = node->getSceneManager();
-	oldposition = node->getPosition();
 	if (!fakecam)
 		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }

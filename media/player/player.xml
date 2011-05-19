@@ -2,8 +2,8 @@
 <IrrRPG_Builder_DynamicObjects version="1.0">
 	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="72.0">
 		<animation name="idle"  start="0" end="0" />
-		<animation name="walk"  start="1" end="31" speed="30.0" walkspeed="0.65"/>
-		<animation name="run" start="32" end="63" speed="40.0" walkspeed="1.7"/>
+		<animation name="walk"  start="1" end="31" speed="30.0" movespeed="6.5"/>
+		<animation name="run" start="32" end="62" speed="40.0" movespeed="17"/>
 		<animation name="attack" start="64" end="95" speed="30.0" attackevent="83" soundevent="70" sound="player/98341__punch1.ogg"/>
 		<animation name="die" start="96" end="123" speed="30" loop="false" soundevent="97" sound="player/44262__Erdie__male_fight02.ogg"/>
 		<animation name="hurt" start="128" end="132" loop="false" soundevent="129" sound="player/44268__Erdie__male_fight08.ogg"/>

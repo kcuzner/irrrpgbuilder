@@ -158,6 +158,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	{	
 		// Setup the animations
 		this->animator = NULL;
+
+		node->setName(name);
 	
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
@@ -309,11 +311,12 @@ void DynamicObject::walkTo(vector3df targetPos)
 	
 	this->lookAt(targetPos);
 
-	f32 speed = currentAnim.walkspeed;
+	f32 speed = currentAnim.walkspeed/10;
 	if (speed == 0)
-		speed = 1.0;
+		speed=1.0f;
+		
 
-    vector3df pos=this->getPosition();
+	 vector3df pos=this->getPosition();
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
@@ -348,9 +351,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 		pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
 		
-		stringw text=L"Walkto Called:";
-		text.append((stringw)speed);
-		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		//stringw text=L"Walkto Called:";
+		//text.append((stringw)speed);
+		//GUIManager::getInstance()->setConsoleText(text.c_str(),false);
 	
 	}
 	else
@@ -814,7 +817,6 @@ void DynamicObject::checkAnimationEvent()
 			timerSound = App::getInstance()->getDevice()->getTimer()->getRealTime();
 			activatedSound=true;
 		}
-		printf("Should trigger the sound now...\n");
 	}
 	lastframe=(s32)nodeAnim->getFrameNr();
 
@@ -1156,7 +1158,6 @@ void DynamicObject::update()
 		{// if not then check if the node is culled to refresh
 
 			luaRefresh();
-
 			timerAnimation = timerobject;
 		}
 	}
