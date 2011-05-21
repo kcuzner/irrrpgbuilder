@@ -136,8 +136,8 @@ function CustomDynamicObjectUpdate()
   --update walkTo
   if(DynamicObjectWalkTarget ~= nil) then
     lookToObject(DynamicObjectWalkTarget)
-    move(0.01)
-    if(distanceFrom(DynamicObjectWalkTarget) < 1) then 
+    move(5.0)
+    if(distanceFrom(DynamicObjectWalkTarget) < 60) then 
       DynamicObjectWalkTarget=nil 
       setFrameLoop(0,0)--set initial animation when done
     end

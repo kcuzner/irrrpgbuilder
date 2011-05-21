@@ -792,6 +792,9 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 // will tell the caller if he's clicked inside a IRB window
 {
 
+	if (guidialog->isVisible() && guidialog->isPointInside(mousepos))
+	    return true;
+
 	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
 		return true;
 	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
@@ -965,9 +968,11 @@ void GUIManager::setupGameplayGUI()
 
 	// ---------------------------------------
 	#endif
-	consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window");
+	consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
 	consolewin->getCloseButton()->setVisible(false);
 	console = guienv->addListBox(myRect(10,30,700,325),consolewin,0,true);
+	console->setAutoScrollEnabled(false);
+	console->setItemHeight(20);
 	consolewin->setVisible(false);
 
 	// --- Active game menu during play
@@ -1132,7 +1137,7 @@ void GUIManager::setupGameplayGUI()
 	text.append((stringw)screensize.Width);
 	text.append(L",");
 	text.append((stringw)screensize.Height);
-	this->setConsoleText(text.c_str(),false);
+	this->setConsoleText(text.c_str(),SColor(255,0,0,255));
 }
 
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
@@ -1423,28 +1428,47 @@ void GUIManager::setStaticTextText(GUI_ID id, stringc text)
     }
 }
 
-void GUIManager::setConsoleText(stringw text, bool forcedisplay)
+void GUIManager::setConsoleText(stringw text, video::SColor color)
 // Add text into the output console
 // The function manage up to 500 lines before clearing the buffer
 // Using "forcedisplay" will toggle the display of the GUI
 {
 	u32 maxitem = 500;
-	if (forcedisplay)
-	{
-		if (consolewin->isVisible())
-			consolewin->setVisible(false);
-		else
-			consolewin->setVisible(true);
-	}
-
-	if (consolewin && consolewin->isVisible() && !forcedisplay)
+	
+	if (consolewin && consolewin->isVisible())
 	{
 		if (console->getItemCount()>maxitem-1)
-			console->removeItem(maxitem);
-			//console->clear();
+			console->removeItem(maxitem);	
+		
 		console->insertItem(0,text.c_str(),0);
-		//console->addItem(text.c_str());
+		console->setItemOverrideColor(0,color);
+	}
+}
 
+void GUIManager::setConsoleLogger(vector<core::stringw> &text)
+{
+	u32 maxitem = 500;
+	if (consolewin && consolewin->isVisible())
+	{
+		if (text.size()>0)
+		{
+			for (int a=0; a<(int)text.size(); a++)
+			{
+			
+				if (console->getItemCount()>maxitem-1)
+					console->removeItem(maxitem);
+				
+				//
+				console->insertItem(0,text[a].subString(0,90).c_str(),0);
+				console->setItemOverrideColor(0,video::SColor(255,0,0,0));
+				
+				//text.pop_back();
+			
+			}
+			text.clear();
+			
+		}
+		
 	}
 }
 

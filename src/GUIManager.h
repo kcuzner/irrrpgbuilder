@@ -82,7 +82,8 @@ enum GUI_CUSTOM_WINDOW
     GCW_GAMEPLAY_ITEMS = 5,
     GCW_ABOUT = 6,
     GCW_TERRAIN_PAINT_VEGETATION = 7,
-	GCW_DIALOG = 8
+	GCW_DIALOG = 8,
+	GCW_CONSOLE = 9
 };
 
 enum GUI_HELP_IMAGE
@@ -133,7 +134,8 @@ class GUIManager
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
-		void setConsoleText (stringw text, bool forcedisplay);
+		void setConsoleText (stringw text, video::SColor color);
+		void setConsoleLogger(vector<core::stringw> &text);
 
         void setElementEnabled(GUI_ID id, bool enable);
         void setElementVisible(GUI_ID id, bool visible);
@@ -168,9 +170,7 @@ class GUIManager
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
 
-
-
-        virtual ~GUIManager();
+	    virtual ~GUIManager();
     private:
         IGUIEnvironment* guienv;
 		dimension2d<u32> screensize;

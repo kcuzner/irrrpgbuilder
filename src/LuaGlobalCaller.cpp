@@ -264,15 +264,13 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"setObjectLife",setObjectLife);
     lua_register(LS,"getObjectLife",getObjectLife);
 
-    //Dialog Functions
-    lua_register(LS,"showDialogMessage",showDialogMessage);
-   
     //inGame Save/Load
     lua_register(LS,"saveGame",inGameSave);
     lua_register(LS,"loadGame",inGameLoad);
 
 	lua_register(LS,"getAnswer",getAnswer);
 	lua_register(LS,"getLanguage",getLanguage);
+	lua_register(LS,"loadMap",loadMap);
 
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
@@ -897,27 +895,6 @@ int LuaGlobalCaller::removePlayerItem(lua_State *LS)
 	return 0;
 }
 
-
-int LuaGlobalCaller::showDialogMessage(lua_State *LS)
-{
-    std::string param1 = lua_tostring(LS, -1);
-    lua_pop(LS, 1);
-
-    std::string param2 = "";
-
-    if(lua_isstring(LS, -1))
-    {
-        param2 = lua_tostring(LS, -1);
-        lua_pop(LS, 1);
-    }
-
-    if(param2!="")
-		GUIManager::getInstance()->showDialogMessage((stringw)param2.c_str(), param1);
-    else
-		GUIManager::getInstance()->showDialogMessage((stringw)param1.c_str(), "");
-	return 0;
-}
-
 int LuaGlobalCaller::inGameSave(lua_State *LS)
 {
     bool result = false;
@@ -960,6 +937,37 @@ int LuaGlobalCaller::inGameLoad(lua_State *LS)
     }
 
     lua_pushboolean(LS,result);
+
+    return 1;
+}
+
+int LuaGlobalCaller::loadMap(lua_State *LS)
+{
+bool result = false;
+
+    if(lua_isstring(LS, -1))
+    {
+        stringc name = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+
+		stringc filename = "../projects/";
+		filename += name;
+		//App::getInstance()->setAppState(APP_WAIT_DIALOG);
+		//DynamicObjectsManager::getInstance()->clearCollisions();
+		App::getInstance()->stopGame();
+		App::getInstance()->cleanWorkspace();
+		//result = App::getInstance()->loadProjectFromXML(filename);
+		//if (result)
+		//	App::getInstance()->playGame();
+    }
+    else
+    {
+        #ifdef APP_DEBUG
+        cout << "ERROR : LUA : UNABLE TO LOAD MAP @FILENAME IS NULL!" << endl;
+        #endif
+    }
+
+    //lua_pushboolean(LS,result);
 
     return 1;
 }

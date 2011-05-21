@@ -350,21 +350,16 @@ void DynamicObject::walkTo(vector3df targetPos)
 		//pos.Y = height;
 		pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
-		
-		//stringw text=L"Walkto Called:";
-		//text.append((stringw)speed);
-		//GUIManager::getInstance()->setConsoleText(text.c_str(),false);
 	
 	}
 	else
 	{
 		if (objectType==OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-
+		
 		walkTarget = this->getPosition();
 		if (enemyUnderAttack)
 		{
-			GUIManager::getInstance()->setConsoleText(L"That is the ennemy!",false);
 			stringc currentenemy = enemyUnderAttack->getNode()->getName();
 			if (namecollide==currentenemy)
 			{
@@ -378,10 +373,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 		} else
 			this->setAnimation("idle");
 
-		stringw text=L"Stop because of a collision with";
-		text.append((stringw)namecollide);
-		text.append(L"!");
-		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		printf("Collision detected..\n");
 		
 		collided=false; // reset the collision flag
 	}
@@ -640,7 +632,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		stringw text = L"Die animation for character: ";
 		text.append(getNode()->getName());
 		text.append(L" encountered.");
-		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,128,0));
 		
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -739,7 +731,7 @@ bool DynamicObject::setAnimation(stringc animName)
 					stringw text2 = L"idle animation for character: ";
 					text2.append(getNode()->getName());
 					text2.append(L" encountered.");
-					GUIManager::getInstance()->setConsoleText(text2.c_str(),false);
+					GUIManager::getInstance()->setConsoleText(text2.c_str(),SColor(255,0,128,0));
 				}
 			}
             return true;
@@ -991,7 +983,11 @@ void DynamicObject::doScript()
     lua_register(L,"showObjectLabel",showObjectLabel);
     lua_register(L,"hideObjectLabel",hideObjectLabel);
     lua_register(L,"setObjectLabel",setObjectLabel);
+
+	//Dialog Functions
+    lua_register(L,"showDialogMessage",showDialogMessage);
 	lua_register(L,"showDialogQuestion",showDialogQuestion);
+
     lua_register(L,"setEnabled",setEnabled);
 
     //register basic functions
@@ -1268,7 +1264,7 @@ void DynamicObject::luaRefresh()
 			if (lua_pcall(L,0,0,0)!=0)
 			{
 				printf("error running function `onUpdate'\n");
-				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",false);
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",SColor(255,255,0,0));
 			}
 
 		}
@@ -1281,7 +1277,7 @@ void DynamicObject::luaRefresh()
 			if (lua_pcall(L,0,0,0)!=0)
 			{
 				printf("error running function `step': \n");
-				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",false);
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",SColor(255,255,0,0));
 			}
 
 		}
@@ -1295,7 +1291,7 @@ void DynamicObject::luaRefresh()
 			if (lua_pcall(L,0,0,0)!=0)
 			{
 				printf("error running function `CustomDynamicObjectUpdate': \n");
-				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",false);
+				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",SColor(255,255,0,0));
 			}
 		}
 		lua_pop( L, -1 );
@@ -1868,6 +1864,35 @@ int DynamicObject::setObjectLabel(lua_State *LS)
     if(tempObj) tempObj->setObjectLabel(newLabel.c_str());
 
     return 0;
+}
+
+int DynamicObject::showDialogMessage(lua_State *LS)
+{
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	DynamicObjectsManager::getInstance()->setDialogCaller(tempObj);
+
+	std::string param1 = lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+    std::string param2 = "";
+
+    if(lua_isstring(LS, -1))
+    {
+        param2 = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+    if(param2!="")
+		GUIManager::getInstance()->showDialogMessage((stringw)param2.c_str(), param1);
+    else
+		GUIManager::getInstance()->showDialogMessage((stringw)param1.c_str(), "");
+
+    return 1;
 }
 
 int DynamicObject::showDialogQuestion(lua_State *LS)

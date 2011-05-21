@@ -1,6 +1,7 @@
 #ifndef EVENTRECEIVER_H
 #define EVENTRECEIVER_H
 
+#include <vector>
 #include <irrlicht.h>
 #include "App.h"
 
@@ -32,14 +33,15 @@ class EventReceiver : public IEventReceiver
         bool OnEvent(const SEvent& event);
 
         virtual ~EventReceiver();
+	
 		
     protected:
     private:
         EventReceiver();
+		
 		bool mouse[EMIE_COUNT];
 		bool keys[KEY_KEY_CODES_COUNT];
-
-		
+				
 };
 
 #endif // EVENTRECEIVER_H

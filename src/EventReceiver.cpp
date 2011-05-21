@@ -1,4 +1,5 @@
 #include "EventReceiver.h"
+#include "GUIManager.h"
 
 using namespace irr;
 using namespace core;
@@ -11,6 +12,7 @@ EventReceiver::EventReceiver()
 {
 	memset(mouse, 0x00, sizeof mouse);
 	memset(keys, 0x00, sizeof keys);
+	
 	//mouse = {0};
 	//keys = {0};
 }
@@ -41,7 +43,7 @@ bool EventReceiver::isKeyPressed(int key)
 
 bool EventReceiver::OnEvent(const SEvent& event)
 {
-    if (event.EventType == irr::EET_KEY_INPUT_EVENT)
+	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
     {
         App::getInstance()->eventKeyPressed(event.KeyInput.Key);
 
@@ -106,7 +108,14 @@ bool EventReceiver::OnEvent(const SEvent& event)
 #endif
         }
     }
-
+	else if (event.EventType == EET_LOG_TEXT_EVENT)
+	{
+		stringw text = "";
+		text += L"Log>>";
+        text += stringw(event.LogEvent.Text).c_str();
+		App::getInstance()->textevent.push_back(text.c_str());
+		
+	}
     return false;
 }
 

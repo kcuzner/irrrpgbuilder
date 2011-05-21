@@ -1,6 +1,5 @@
 #ifndef LUAGLOBALCALLER_H
 #define LUAGLOBALCALLER_H
-
 #include <irrlicht.h>
 #include <iostream>
 #include <map>
@@ -99,12 +98,10 @@ class LuaGlobalCaller
         static int removePlayerItem(lua_State *LS);
         static int getItemCount(lua_State *LS);
 
-        //Dialog Functions
-        static int showDialogMessage(lua_State *LS);//showDialogMessage(text, optional_sound_file)
-
         //Save/Load inGame
         static int inGameSave(lua_State *LS);
         static int inGameLoad(lua_State *LS);
+		static int loadMap(lua_State *LS);
 
 		static int getAnswer(lua_State *LS);
 		static int getLanguage(lua_State *LS);

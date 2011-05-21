@@ -75,6 +75,8 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	window3D = new wxCIWindow( this, wxID_ANY, style, irr::video::EDT_OPENGL, true );
 	App::getInstance()->setupDevice(window3D->getDevice());
+	window3D->AcceptsFocus();
+	
 
 	bSizer1->Add( m_ribbon, 0, wxEXPAND);
 	bSizer1->Add( window3D, 1, wxEXPAND, 5 );
@@ -206,16 +208,22 @@ CIrrFrame::~CIrrFrame()
 
 void CIrrFrame::OnQuit(wxRibbonToolBarEvent& WXUNUSED(evt))
 {
-	if (window3D)
-	{	
-		App::getInstance()->shutdown();
-		window3D->Close(true);
-	}
+	
 	Close(true);
 }
 
 void CIrrFrame::OnClose (wxCloseEvent& e)
 {
+	if (window3D)
+	{	
+		
+		App::getInstance()->shutdown();
+		window3D->ClearEventHashTable();
+		
+		window3D->Close(true);
+		//window3D->DissociateHandle();
+		
+	}
 	exit(0);
 }
 

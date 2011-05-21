@@ -2,7 +2,7 @@
 #define APP_H
 
 #include <irrlicht.h>
-
+#include <vector>
 #include <iostream>
 #include <fstream>
 
@@ -112,6 +112,9 @@ class App
 
 		bool wxSystem;
 
+		// used for the logger
+		std::vector<core::stringw> textevent;
+		
     private:
 
         App();

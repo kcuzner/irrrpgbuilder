@@ -226,6 +226,8 @@ class DynamicObject
         static int hideObjectLabel(lua_State *LS);//hideObjectLabel()
         static int setObjectLabel(lua_State *LS);//setObjectLabel(newLabelText)
 
+		//Dialog Functions
+        static int showDialogMessage(lua_State *LS);//showDialogMessage(text, optional_sound_file)
 		static int showDialogQuestion(lua_State *LS);//showDialogQuestion(text, optional_sound_file)
 
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)

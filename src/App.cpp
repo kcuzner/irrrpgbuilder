@@ -33,6 +33,7 @@ App::App()
 {
  wxSystem=false;
  app_state=APP_EDIT_LOOK;
+ textevent.clear();
 }
 
 App::~App()
@@ -155,7 +156,10 @@ void App::drawBrush()
 
 void App::displayGuiConsole()
 {
-	GUIManager::getInstance()->setConsoleText(L"",true);
+
+	bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
+	GUIManager::getInstance()->setElementVisible(CONSOLE,result);
+	//GUIManager::getInstance()->setConsoleText(L"",true);
 }
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
@@ -412,7 +416,7 @@ void App::eventGuiButton(s32 id)
             setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
             break;
         case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
-            if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
+            //if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
             {
                 stringc newScript = "";
 
@@ -530,7 +534,7 @@ void App::eventGuiButton(s32 id)
 
 		case BT_ID_DIALOG_YES:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			if (app_state>99)
+			if (app_state> APP_STATE_CONTROL)
 			{
 				//Player::getInstance()->getObject()->notifyAnswer(true);
 				if (DynamicObjectsManager::getInstance()->getDialogCaller())
@@ -541,7 +545,7 @@ void App::eventGuiButton(s32 id)
 			break;
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			if (app_state>99)
+			if (app_state> APP_STATE_CONTROL)
 			{
 				//Player::getInstance()->getObject()->notifyAnswer(false);
 				if (DynamicObjectsManager::getInstance()->getDialogCaller())
@@ -560,7 +564,7 @@ void App::eventGuiButton(s32 id)
 void App::hideEditGui()
 {
 	wxSystem=true;
-	GUIManager::getInstance()->setConsoleText(L"Ready now for WXwidget!",false);
+	GUIManager::getInstance()->setConsoleText(L"Ready now for WXwidget!",SColor(255,0,0,255));
 	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
 }
 
@@ -618,7 +622,7 @@ void App::setScreenSize(dimension2d<u32> size)
 #ifndef _WXMSW
 		CameraSystem::getInstance()->fixRatio(driver);
 #endif
-		GUIManager::getInstance()->setConsoleText(text.c_str(),false);
+		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,0,255));
 	}
 }
 
@@ -645,6 +649,11 @@ void App::eventKeyPressed(s32 key)
                 LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
             break;
 
+
+		case KEY_RETURN:
+			if (app_state == APP_WAIT_DIALOG)
+				printf ("pressed enter in this mode!");
+			break;
         case KEY_ESCAPE:
             //device->drop();
             break;
@@ -1039,6 +1048,9 @@ void App::update()
 		// Prepare the RTT for the postFX
 		EffectsManager::getInstance()->preparePostFX(false);
 
+		// Check for events of the logger
+		GUIManager::getInstance()->setConsoleLogger(textevent);
+
 		smgr->drawAll();
 
 		// Tries to do an post FX
@@ -1049,7 +1061,7 @@ void App::update()
         driver->setMaterial(mat);
 
 		guienv->drawAll();
-		//draw2DImages();
+		draw2DImages();
 
 		driver->endScene();
 	}
@@ -1213,7 +1225,8 @@ void App::updateEditMode()
 			app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
 			app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
 			app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
-			app_state == APP_EDIT_CHARACTER)
+			app_state == APP_EDIT_CHARACTER ||
+			app_state == APP_EDIT_LOOK)
 			{
 
 				//Update Editor Camera Position
@@ -1295,10 +1308,13 @@ void App::updateGameplay()
 				else
 				{
 					mousePick = getMousePosition3D(100);
-					Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
-					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
-					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-					Player::getInstance()->setTaggedTarget(NULL);
+					if (mousePick.pickedPos!=vector3df(0,0,0))
+					{
+						Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
+						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+						Player::getInstance()->setTaggedTarget(NULL);
+					}
 					//Player::getInstance()->getObject()->clearEnemy();
 					return;
 				}
@@ -1377,6 +1393,8 @@ void App::loadProject()
 
     stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
     GUIManager::getInstance()->flush();
+
+	this->cleanWorkspace();
 
     stringc filename = "../projects/";
     filename += name;
