@@ -55,30 +55,29 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	
 	int damage = chances(attacker_prop.mindamage,attacker_prop.maxdamage);
 
-	#ifdef _MSC_VER
-	stringw temptext=L"";
-	// Damage probable
+	
+	stringw temptext="";
+	// Probable damage
 	temptext=stringw(defender->getName().c_str());
-	temptext+=L" should have ";
+	temptext+=" should have ";
 	temptext+=stringw(damage);
-	temptext+=L" points of damage!!.";
+	temptext+=" points of damage!!.";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 /*	// hit probability
 	temptext=stringw(attacker->getName().c_str());
-	temptext+=L" have ";
+	temptext+=" have ";
 	temptext+=stringw(attacker_prop.hit_prob).subString(0,4);
-	temptext+=L"% hit probability.";
+	temptext+="% hit probability.";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// dodge probability
 	temptext=stringw(defender->getName().c_str());
-	temptext+=L" have ";
+	temptext+=" have ";
 	temptext+=stringw(defender_prop.dodge_prop).subString(0,4);
-	temptext+=L"% dodge probability.";
+	temptext+="% dodge probability.";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 */	
-	#endif
 	if (!percent(attacker_prop.hit_prob-defender_prop.dodge_prop))
 	{
 		damage = 0;
@@ -86,9 +85,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		#ifdef _MSC_VER
 		// Missed!
 		temptext=stringw(attacker->getName().c_str());
-		temptext+=L" missed ";
+		temptext+=" missed ";
 		temptext+=stringw(defender->getName().c_str());
-		temptext+=L"!";
+		temptext+="!";
 		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
 		#endif
 	}
@@ -98,9 +97,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	{
 		// Damage final
 		temptext=stringw(defender->getName().c_str());
-		temptext+=L" lost ";
+		temptext+=" lost ";
 		temptext+=stringw(damage);
-		temptext+=L" points of life!!.";
+		temptext+=" points of life!!.";
 		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
 	}
 	#endif
@@ -132,14 +131,13 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		int level = attacker_prop.level;
 		if (attacker_prop.experience>(baseXP+(levelXP*(level*level))))
 			updateLevel(attacker);
-		#ifdef _MSC_VER	
-		// Dead of defender
+
 		temptext=stringw(defender->getName().c_str());
-		temptext+=L" was killed by ";
+		temptext+=" was killed by ";
 		temptext+=stringw(attacker->getName().c_str());
-		temptext+=L"!!.";
+		temptext+="!!.";
 		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
-		#endif	
+		
 		// Set the animation for the attacker when the defender is dead
 		//defender=NULL;
 		attacker->setAnimation("idle");
@@ -148,19 +146,19 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			
 	}
-	#ifdef _MSC_VER
+	
 	// Names
-	temptext=L"Attacker:";
+	temptext="Attacker:";
 	temptext+=stringw(attacker->getName().c_str());
-	temptext+=L" and defender: ";
+	temptext+=" and defender: ";
 	temptext+=stringw(defender->getName().c_str());
-	temptext+=L"!!!";
+	temptext+="!!!";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 	
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	GUIManager::getInstance()->setConsoleText("  COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT",SColor(255,128,0,128));
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
-	#endif
+	
 	Player::getInstance()->updateDisplay();
 }
 
@@ -180,7 +178,7 @@ void Combat::updateLevel(DynamicObject* object)
 
 
 	// Properties that are not changed by this:
-	// level in "base" and "level", only used in "properties"
+	// level in "base" and "leve", only used in "properties"
 	// experience, dotduration, skillevel
 	object_prop.level += 1;
 	object_prop.maxdamage = object_base.maxdamage+(object_level.maxdamage*object_prop.level);
@@ -225,106 +223,105 @@ int Combat::chances(int min, int max)
 
 void Combat::dumpProperties(DynamicObject* object)
 {
-	#ifdef _MSC_VER
-	stringw temptext=L"";
-	stringw temptext2=L"";
+	stringw temptext="";
+	stringw temptext2="";
 	
 	// send the dump in reverse order (the log show the latest element first) So this block is readable
 
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	// Hurt resistance (%)  
 	temptext="Hurt resistance (%)       |  ";
-	temptext+=(stringw((f32)object->getProperties().hurt_resist)+stringw(L"     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw((f32)object->getProp_base().hurt_resist)+stringw(L"     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw((f32)object->getProp_level().hurt_resist)+stringw(L"     ")).subString(0,4)+L"%";
+	temptext+=(stringw((f32)object->getProperties().hurt_resist)+stringw("     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw((f32)object->getProp_base().hurt_resist)+stringw("     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw((f32)object->getProp_level().hurt_resist)+stringw("     ")).subString(0,4)+"%";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// Dodge (%)  
 	temptext="Dodge probability(%)      |  ";
-	temptext+=(stringw(object->getProperties().dodge_prop)+stringw(L"     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().dodge_prop)+stringw(L"     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().dodge_prop)+stringw(L"     ")).subString(0,4)+L"%";
+	temptext+=(stringw(object->getProperties().dodge_prop)+stringw("     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().dodge_prop)+stringw("     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().dodge_prop)+stringw("     ")).subString(0,4)+"%";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// Dodge (%)  
 	temptext="Hit probability(%)        |  ";
-	temptext+=(stringw(object->getProperties().hit_prob)+stringw(L"     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().hit_prob)+stringw(L"%     ")).subString(0,4)+L"%";
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().hit_prob)+stringw(L"%     ")).subString(0,4)+L"%";
+	temptext+=(stringw(object->getProperties().hit_prob)+stringw("     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().hit_prob)+stringw("%     ")).subString(0,4)+"%";
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().hit_prob)+stringw("%     ")).subString(0,4)+"%";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 
 	// Max Damage
 	temptext="Maximum damage            |  ";
-	temptext+=(stringw(object->getProperties().maxdamage)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().maxdamage)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().maxdamage)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().maxdamage)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().maxdamage)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().maxdamage)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// Min Damage
 	temptext="Minimum damage            |  ";
-	temptext+=(stringw(object->getProperties().mindamage)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().mindamage)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().mindamage)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().mindamage)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().mindamage)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().mindamage)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 
 	// Level
 	temptext="Level                     |  ";
-	temptext+=(stringw(object->getProperties().level)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().level)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().level)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().level)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().level)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().level)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// Money
 	temptext="Money (Gold)              |  ";
-	temptext+=(stringw(object->getProperties().money)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().money)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().money)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().money)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().money)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().money)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// Experience
 	temptext="Experience                |  ";
-	temptext+=(stringw(object->getProperties().experience)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().experience)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().experience)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().experience)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().experience)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().experience)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	// Max life
 	temptext="Maximum life              |  ";
-	temptext+=(stringw(object->getProperties().maxlife)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().maxlife)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().maxlife)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().maxlife)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().maxlife)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().maxlife)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	// life
 	temptext="Current life              |  ";
-	temptext+=(stringw(object->getProperties().life)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_base().life)+stringw(L"     ")).subString(0,5);
-	temptext+=L"      |   ";
-	temptext+=(stringw(object->getProp_level().life)+stringw(L"     ")).subString(0,5);
+	temptext+=(stringw(object->getProperties().life)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_base().life)+stringw("     ")).subString(0,5);
+	temptext+="      |   ";
+	temptext+=(stringw(object->getProp_level().life)+stringw("     ")).subString(0,5);
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
@@ -334,30 +331,6 @@ void Combat::dumpProperties(DynamicObject* object)
 	temptext+=stringw(object->getName().c_str());
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 	GUIManager::getInstance()->setConsoleText(" ",SColor(255,128,0,128));
-	#else
- 	printf ("\nObject: %s\n",object->getName().c_str());
-	printf ("----------------------------------------------------------------\n");
-	printf ("PROPERTIE NAME            |  Current   |  Base     |  Level     |\n");
-	printf ("-----------------------------------------------------------------\n");
-	printf ("Life (Hit points/hp)      |  %4i      |   %4i    |   %4i     |\n",object->getProperties().life,object->getProp_base().life,object->getProp_level().life);
-	printf ("Experience                |  %4i      |   %4i    |   %4i     |\n",object->getProperties().experience,object->getProp_base().experience,object->getProp_level().experience);
-	printf ("Money (Gold)              |  %4i      |   %4i    |   %4i     |\n",object->getProperties().money,object->getProp_base().money,object->getProp_level().money);
-	printf ("Level                     |  %4i      |   %4i    |   %4i     |\n",object->getProperties().level,object->getProp_base().level,object->getProp_level().level);
-	printf ("-----------------------------------------------------------------\n");
-	printf ("Minimum damage            |  %4i      |   %4i    |   %4i     |\n",object->getProperties().mindamage,object->getProp_base().mindamage,object->getProp_level().mindamage);
-	printf ("Maximum damage            |  %4i      |   %4i    |   %4i     |\n",object->getProperties().maxdamage,object->getProp_base().maxdamage,object->getProp_level().maxdamage);
-	printf ("Hurt resistance (%%)       |  %4i      |   %4i    |   %4i     |\n",object->getProperties().hurt_resist,object->getProp_base().hurt_resist,object->getProp_level().hurt_resist);
-	printf ("Dodge probability(%%)      |  %4i      |   %4i    |   %4.2f     |\n",(int)object->getProperties().dodge_prop,(int)object->getProp_base().dodge_prop,object->getProp_level().dodge_prop);
-	printf ("Hit probability(%%)        |  %4i      |   %4i    |   %4.2f     |\n",(int)object->getProperties().hit_prob,(int)object->getProp_base().hit_prob,object->getProp_level().hit_prob);
-	printf ("-----------------------------------------------------------------\n");
-	printf ("Armor                     |  %4i      |   %4i    |   %4i     |\n",object->getProperties().armor,object->getProp_base().armor,object->getProp_level().armor);
-	printf ("Magic Armor               |  %4i      |   %4i    |   %4i     |\n",object->getProperties().magic_armor,object->getProp_base().magic_armor,object->getProp_level().magic_armor);
-	printf ("-----------------------------------------------------------------\n");
-	printf ("Regen life points per tick|  %4i      |   %4i    |   %4i     |\n",object->getProperties().regenlife,object->getProp_base().regenlife,object->getProp_level().regenlife);
-	printf ("Regen mana points per tick|  %4i      |   %4i    |   %4i     |\n",object->getProperties().regenmana,object->getProp_base().regenmana,object->getProp_level().regenmana);
-	printf ("Dot(poison) duration      |  %4i      |   %4i    |   %4i     |\n",object->getProperties().dotduration,object->getProp_base().dotduration,object->getProp_level().dotduration);
-	printf ("----------------------------------------------------------------\n");
-	#endif	
 }
 
 void Combat::dot(DynamicObject *victim, int duration, int damage)
