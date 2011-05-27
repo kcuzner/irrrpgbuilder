@@ -30,12 +30,20 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_MENU(ID_StartUpdate, CIrrFrame::OnStartUpdate)
 	EVT_MENU(ID_StopUpdate, CIrrFrame::OnStopUpdate)
 	EVT_MENU(ID_Irrlicht,CIrrFrame::OnTakeOver)
+/*
 	EVT_RIBBONTOOLBAR_CLICKED(ID_Quit, CIrrFrame::OnQuit)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_New, CIrrFrame::OnNew)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_Save, CIrrFrame::OnSave)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_Load, CIrrFrame::OnLoad)
+*/
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Quit, CIrrFrame::OnQuit)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_New, CIrrFrame::OnNew)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Save, CIrrFrame::OnSave)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Load, CIrrFrame::OnLoad)
+
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Play, CIrrFrame::OnPlay)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Stop, CIrrFrame::OnStop)
+
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_ObjEditMode, CIrrFrame::OnObjectEditMode)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_PlayerEdit, CIrrFrame::OnPlayerEdit)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_PlayerScript, CIrrFrame::OnScriptPlayer)
@@ -68,17 +76,25 @@ END_EVENT_TABLE()
 CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
 {
 	m_ribbon = new wxRibbonBar(this, wxID_ANY);
+	m_ribbon1 = new wxRibbonBar(this, wxID_ANY);
+    m_ribbon2 = new wxRibbonBar(this, wxID_ANY);
 	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	SetIcon(wxICON(sample));
 	wxBoxSizer* bSizer1;
+	wxBoxSizer* bSizer2;
+
+	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
 	window3D = new wxCIWindow( this, wxID_ANY, style, irr::video::EDT_OPENGL, true );
 	App::getInstance()->setupDevice(window3D->getDevice());
 	window3D->AcceptsFocus();
+	bSizer2->Add( m_ribbon1, 1, wxLEFT, 5);
+	bSizer2->Add( m_ribbon, 8, wxEXPAND, 5);
+	bSizer2->Add( m_ribbon2, 1, wxRIGHT, 5);
 	
 
-	bSizer1->Add( m_ribbon, 0, wxEXPAND);
+	bSizer1->Add( bSizer2, 0, wxEXPAND);
 	bSizer1->Add( window3D, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
@@ -102,33 +118,48 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	menuBar->Append( menuCommands, _T("&Command") );
 */
 	// Main toolbar
-	wxRibbonPage* home = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_project").c_str(), empty_xpm);
-	if (home)
-	{	
-		wxRibbonPanel *toolbar_panel = new wxRibbonPanel(home, wxID_ANY,  App::getInstance()->getLangText("txt_tool_des0").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonPanel *test_panel = new wxRibbonPanel(home, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		/*wxRibbonButtonBar *main_button = new wxRibbonButtonBar(toolbar_panel, wxID_ANY);
-		main_button->AddButton(wxID_ANY, wxT("Quit"), msw_style_xpm);
-		main_button->Realize();*/
-		
-		wxRibbonToolBar *toolbar = new wxRibbonToolBar(toolbar_panel, ID_MAIN_TOOLBAR);
-		toolbar->AddTool(ID_Quit, bt_close_program_xpm);
-		toolbar->AddSeparator();
-        toolbar->AddHybridTool(ID_New, bt_new_project_xpm);
-        toolbar->AddTool(ID_Load, bt_load_project_xpm);
-        toolbar->AddTool(ID_Save, bt_save_project_xpm);
-        toolbar->AddTool(wxID_ANY, wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_OTHER));
-        toolbar->AddSeparator();
-        toolbar->AddDropdownTool(wxID_UNDO, wxArtProvider::GetBitmap(wxART_UNDO, wxART_OTHER));
-        toolbar->AddDropdownTool(wxID_REDO, wxArtProvider::GetBitmap(wxART_REDO, wxART_OTHER));
-        toolbar->AddSeparator();
-        
-        toolbar->SetRows(1, 2);
+	wxRibbonPage* home2 = new wxRibbonPage(m_ribbon2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), empty_xpm);
+	if (home2)
+	{
+		wxRibbonPanel *test_panel = new wxRibbonPanel(home2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE || wxRIBBON_PANEL_MINIMISE_BUTTON);
 		wxRibbonButtonBar *test_button = new wxRibbonButtonBar(test_panel, wxID_ANY);
 		test_button->AddButton(ID_Play, App::getInstance()->getLangText("txt_tool_edpl").c_str(), bt_play_game_xpm);
 		test_button->AddButton(ID_Stop, App::getInstance()->getLangText("txt_tool_edit").c_str(), bt_stop_game_xpm);
 		test_button->Realize();
 
+
+	}
+
+	wxRibbonPage* home1 = new wxRibbonPage(m_ribbon1, wxID_ANY, App::getInstance()->getLangText("tab_project").c_str(), empty_xpm);
+	if (home1)
+	{	
+		wxRibbonPanel *toolbar_panel = new wxRibbonPanel(home1, wxID_ANY,  App::getInstance()->getLangText("txt_tool_des0").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+				
+		//wxRibbonToolBar *toolbar = new wxRibbonToolBar(toolbar_panel, ID_MAIN_TOOLBAR);
+		
+		//toolbar->AddTool(ID_Quit, bt_close_program_xpm);
+		//toolbar->AddSeparator();
+        //toolbar->AddHybridTool(ID_New, bt_new_project_xpm);
+        //toolbar->AddTool(ID_Load, bt_load_project_xpm);
+        //toolbar->AddTool(ID_Save, bt_save_project_xpm);
+		//toolbar->SetRows(1, 2);
+
+		wxRibbonButtonBar *project = new wxRibbonButtonBar(toolbar_panel, wxID_ANY);
+		project->AddButton(ID_Quit,App::getInstance()->getLangText("bt_close_program").c_str(),bt_close_program_xpm);
+		project->AddButton(ID_New,App::getInstance()->getLangText("bt_new_project").c_str(),bt_new_project_xpm);
+		project->AddButton(ID_Load,App::getInstance()->getLangText("bt_load_project").c_str(),bt_load_project_xpm);
+		project->AddButton(ID_Save,App::getInstance()->getLangText("bt_save_project").c_str(),bt_save_project_xpm);
+		project->Realize();
+        
+		// Will show this when it's implemented (if it's ever implemented (undo/redo/save as)
+		//toolbar->AddTool(wxID_ANY, wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_OTHER));
+		//toolbar->AddSeparator();
+		//toolbar->AddDropdownTool(wxID_UNDO, wxArtProvider::GetBitmap(wxART_UNDO, wxART_OTHER));
+		//toolbar->AddDropdownTool(wxID_REDO, wxArtProvider::GetBitmap(wxART_REDO, wxART_OTHER));
+		//toolbar->AddSeparator();
+        
+       
+		
 	}
 	// Terrain Toolbar
 	wxRibbonPage* terrain = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_environment").c_str(), empty_xpm);
@@ -206,7 +237,7 @@ CIrrFrame::~CIrrFrame()
 {
 }
 
-void CIrrFrame::OnQuit(wxRibbonToolBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	
 	Close(true);
@@ -227,7 +258,7 @@ void CIrrFrame::OnClose (wxCloseEvent& e)
 	exit(0);
 }
 
-void CIrrFrame::OnNew(wxRibbonToolBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	if (MessageBox(App::getInstance()->getLangText("msg_prj_np0").c_str(),App::getInstance()->getLangText("msg_prj_np1").c_str(),2)==1)
 	{
@@ -237,7 +268,7 @@ void CIrrFrame::OnNew(wxRibbonToolBarEvent& WXUNUSED(evt))
 
 }
 
-void CIrrFrame::OnSave(wxRibbonToolBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 
 	APP_STATE old_state = App::getInstance()->getAppState();
@@ -255,7 +286,7 @@ void CIrrFrame::OnSave(wxRibbonToolBarEvent& WXUNUSED(evt))
 	App::getInstance()->setAppState(old_state);
 }
 
-void CIrrFrame::OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	APP_STATE old_state = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
@@ -282,11 +313,15 @@ void CIrrFrame::OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt))
 
 void CIrrFrame::OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	this->m_ribbon->Hide();
+	this->Layout();
 	App::getInstance()->playGame();
 }
 
 void CIrrFrame::OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	this->m_ribbon->Show();
+	this->Layout();
 	App::getInstance()->stopGame();
 }
 

@@ -309,7 +309,7 @@
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
 		<text id="bt_dynamic_objects_mode" str="Édition objet"/>
 		<text id="bt_paint_vegetation" str="Peindre la végétation"/>
-		<text id="bt_new_project" str="Nouveau projet"/>
+		<text id="bt_new_project" str="Nouv. projet"/>
 		<text id="bt_save_project" str="Sauver le projet"/>
 		<text id="bt_load_project" str="Charger le projet"/>
 		<text id="bt_show_playable_area" str="Zone jouable"/>
@@ -321,7 +321,7 @@
 		<text id="bt_stop_game" str="Arrêter le jeu"/>
 		<text id="bt_edit_character" str="Éditer le personage"/>
 		<text id="bt_player_edit_script" str="Éditer le script du personage"/>
-		<text id="bt_close_program" str="Fermer l'application"/>
+		<text id="bt_close_program" str="Quitter"/>
 		<text id="bt_about" str="À Propos"/>
 		<text id="bt_help" str="Aide"/>
 		<text id="bt_dialog_yes" str="Oui"/>

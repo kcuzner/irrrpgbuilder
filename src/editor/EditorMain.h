@@ -89,15 +89,15 @@ class CIrrFrame : public wxFrame
 		CIrrFrame(const wxString &title, const wxPoint &pos, const wxSize &size, long style=wxDEFAULT_FRAME_STYLE);
 		~CIrrFrame();
 
-		void OnQuit(wxRibbonToolBarEvent& WXUNUSED(evt));
+		void OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnClose (wxCloseEvent& e);
 		void OnAbout(wxCommandEvent &event);
 		void OnStartUpdate(wxCommandEvent &event);
 		void OnStopUpdate(wxCommandEvent &event);
 		void OnTakeOver(wxCommandEvent &event);
-		void OnNew(wxRibbonToolBarEvent& WXUNUSED(evt));
-		void OnSave(wxRibbonToolBarEvent& WXUNUSED(evt));
-		void OnLoad(wxRibbonToolBarEvent& WXUNUSED(evt));
+		void OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt));
+		void OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt));
+		void OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnObjectEditMode(wxRibbonButtonBarEvent& WXUNUSED(evt));
@@ -121,6 +121,8 @@ class CIrrFrame : public wxFrame
 		wxCIWindow *window3D;
 
 		wxRibbonBar* m_ribbon;
+		wxRibbonBar* m_ribbon1;
+		wxRibbonBar* m_ribbon2;
 };
 
 #endif // WXIRRHELLOAPP_H
