@@ -484,3 +484,11 @@ core::stringw CIrrFrame::FileSave()
     }
 	return L"";
 }
+
+int winmain(int argc, char** argv)
+{
+    ///TODO: Create a Window to choose resolution
+
+	CIrrApp::CIrrApp();
+    return 0;
+}

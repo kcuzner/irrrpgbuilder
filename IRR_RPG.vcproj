@@ -426,7 +426,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory=".\obj\wxMSVC_Release"
 			ConfigurationType="1"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			>
 			<Tool
@@ -476,7 +476,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				LinkLibraryDependencies="false"
-				AdditionalOptions="/NODEFAULTLIB:libcmt.lib libcmtd.lib"
+				AdditionalOptions="/NODEFAULTLIB:MSVCTY.lib&#x0D;&#x0A;/NODEFAULTLIB:msvcprt.lib"
 				AdditionalDependencies="irrlicht.lib irrKlang.lib lualib.lib wxmsw29u_ribbon.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxbase29u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wininet.lib"
 				OutputFile="bin(msvc)\wx_IrrRPG_Builder_win32.exe"
 				LinkIncremental="0"
