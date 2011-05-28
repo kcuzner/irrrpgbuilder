@@ -516,7 +516,8 @@ void GUIManager::setupEditorGUI()
 		170,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
 		displayheight-guiMainToolWindow->getClientRect().getHeight()),
-		false,L"Brush tool");
+		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str());
+	
 
     guiTerrainToolbar->getCloseButton()->setVisible(false);
 
@@ -553,16 +554,18 @@ void GUIManager::setupEditorGUI()
                                                          myRect(10,mainToolbarPos.Y+130,150,20),
                                                          false,true, guiTerrainToolbar);
 
-	guienv->addStaticText(L"Plateau height",
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_plateau")).c_str(),
                                                          myRect(10,mainToolbarPos.Y+150,150,20),
                                                          false,true, guiTerrainToolbar);
+
+	
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushRadius->setMin(0);
     guiTerrainBrushRadius->setMax(200);
     guiTerrainBrushRadius->setPos(100);
 
 	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
-	guiTerrainBrushPlateau->setMin(-30);
+	guiTerrainBrushPlateau->setMin(-100);
 	guiTerrainBrushPlateau->setMax(255);
 	guiTerrainBrushPlateau->setPos(-10);
 

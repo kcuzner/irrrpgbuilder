@@ -874,7 +874,7 @@ bool App::loadConfig()
         }
 		//Language
 		TiXmlElement* langXML = root->FirstChildElement( "language" );
-        if ( resXML )
+        if ( langXML )
         {
 			language=stringc(langXML->ToElement()->Attribute("type")).c_str();
 
