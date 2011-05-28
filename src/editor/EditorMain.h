@@ -73,6 +73,9 @@ class CIrrFrame : public wxFrame
 		ID_TerrainSegment,
 		ID_TerrainTransform,
 		ID_TerrainTree,
+		ID_EditConfig,
+		ID_EditGameConfig,
+		ID_Console,
         ID_MAIN_TOOLBAR,
 		ID_TOOLBAR_TERRAIN,
 		ID_TOOLBAR_TERRAIN2,
@@ -112,6 +115,7 @@ class CIrrFrame : public wxFrame
 		int MessageBox(core::stringw message, core::stringw message2, int buttons);
 		core::stringw FileOpen(core::stringw message);
 		core::stringw FileSave();
+		void UncheckAllButtons();
 
 
 		DECLARE_EVENT_TABLE()
@@ -123,6 +127,15 @@ class CIrrFrame : public wxFrame
 		wxRibbonBar* m_ribbon;
 		wxRibbonBar* m_ribbon1;
 		wxRibbonBar* m_ribbon2;
+
+		wxRibbonButtonBar *test_button;
+		wxRibbonButtonBar *project;
+		wxRibbonButtonBar *terrain_button;
+		wxRibbonButtonBar *terrain_buttonv;
+		wxRibbonButtonBar *dynobject_button;
+		wxRibbonButtonBar *script_button;
+		wxRibbonButtonBar *tools_button;
+		wxRibbonButtonBar *option_button;
 };
 
 #endif // WXIRRHELLOAPP_H

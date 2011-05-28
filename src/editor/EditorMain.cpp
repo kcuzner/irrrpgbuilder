@@ -51,7 +51,7 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainSegment, CIrrFrame::OnTerrainSegment)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTransform, CIrrFrame::OnTerrainTransform)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTree, CIrrFrame::OnTerrainTree)
-	EVT_RIBBONBUTTONBAR_CLICKED(403, CIrrFrame::OnDisplayConsole)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnDisplayConsole)
 	
 END_EVENT_TABLE()
 
@@ -78,6 +78,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	m_ribbon = new wxRibbonBar(this, wxID_ANY);
 	m_ribbon1 = new wxRibbonBar(this, wxID_ANY);
     m_ribbon2 = new wxRibbonBar(this, wxID_ANY);
+
 	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	SetIcon(wxICON(sample));
 	wxBoxSizer* bSizer1;
@@ -117,24 +118,26 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	menuBar->Append( menuFile, _T("&File") );
 	menuBar->Append( menuCommands, _T("&Command") );
 */
-	// Main toolbar
+	// "Playtest" toolbar
 	wxRibbonPage* home2 = new wxRibbonPage(m_ribbon2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), empty_xpm);
 	if (home2)
 	{
-		wxRibbonPanel *test_panel = new wxRibbonPanel(home2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE || wxRIBBON_PANEL_MINIMISE_BUTTON);
-		wxRibbonButtonBar *test_button = new wxRibbonButtonBar(test_panel, wxID_ANY);
-		test_button->AddButton(ID_Play, App::getInstance()->getLangText("txt_tool_edpl").c_str(), bt_play_game_xpm);
-		test_button->AddButton(ID_Stop, App::getInstance()->getLangText("txt_tool_edit").c_str(), bt_stop_game_xpm);
+		wxRibbonPanel *test_panel = new wxRibbonPanel(home2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE | wxRIBBON_PANEL_MINIMISE_BUTTON);
+			
+		test_button = new wxRibbonButtonBar(test_panel, wxID_ANY);
+		test_button->AddToggleButton(ID_Play, App::getInstance()->getLangText("txt_tool_edpl").c_str(), bt_play_game_xpm);
+		test_button->AddToggleButton(ID_Stop, App::getInstance()->getLangText("txt_tool_edit").c_str(), bt_stop_game_xpm);
+		
+		test_button->ToggleButton(ID_Stop,true);
 		test_button->Realize();
-
-
 	}
-
+    // Main toolbar
 	wxRibbonPage* home1 = new wxRibbonPage(m_ribbon1, wxID_ANY, App::getInstance()->getLangText("tab_project").c_str(), empty_xpm);
 	if (home1)
 	{	
 		wxRibbonPanel *toolbar_panel = new wxRibbonPanel(home1, wxID_ANY,  App::getInstance()->getLangText("txt_tool_des0").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-				
+			
+		// Used a button bar instead of a toolbar.
 		//wxRibbonToolBar *toolbar = new wxRibbonToolBar(toolbar_panel, ID_MAIN_TOOLBAR);
 		
 		//toolbar->AddTool(ID_Quit, bt_close_program_xpm);
@@ -142,24 +145,25 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
         //toolbar->AddHybridTool(ID_New, bt_new_project_xpm);
         //toolbar->AddTool(ID_Load, bt_load_project_xpm);
         //toolbar->AddTool(ID_Save, bt_save_project_xpm);
-		//toolbar->SetRows(1, 2);
 
-		wxRibbonButtonBar *project = new wxRibbonButtonBar(toolbar_panel, wxID_ANY);
-		project->AddButton(ID_Quit,App::getInstance()->getLangText("bt_close_program").c_str(),bt_close_program_xpm);
-		project->AddButton(ID_New,App::getInstance()->getLangText("bt_new_project").c_str(),bt_new_project_xpm);
-		project->AddButton(ID_Load,App::getInstance()->getLangText("bt_load_project").c_str(),bt_load_project_xpm);
-		project->AddButton(ID_Save,App::getInstance()->getLangText("bt_save_project").c_str(),bt_save_project_xpm);
-		project->Realize();
-        
 		// Will show this when it's implemented (if it's ever implemented (undo/redo/save as)
 		//toolbar->AddTool(wxID_ANY, wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_OTHER));
 		//toolbar->AddSeparator();
 		//toolbar->AddDropdownTool(wxID_UNDO, wxArtProvider::GetBitmap(wxART_UNDO, wxART_OTHER));
 		//toolbar->AddDropdownTool(wxID_REDO, wxArtProvider::GetBitmap(wxART_REDO, wxART_OTHER));
 		//toolbar->AddSeparator();
-        
-       
+
+		//toolbar->SetRows(1, 2);
+
+		project = new wxRibbonButtonBar(toolbar_panel, wxID_ANY);
+		project->AddButton(ID_Quit,App::getInstance()->getLangText("bt_close_program").c_str(),bt_close_program_xpm);
+		project->AddButton(ID_New,App::getInstance()->getLangText("bt_new_project").c_str(),bt_new_project_xpm);
+		project->AddButton(ID_Load,App::getInstance()->getLangText("bt_load_project").c_str(),bt_load_project_xpm);
+		project->AddButton(ID_Save,App::getInstance()->getLangText("bt_save_project").c_str(),bt_save_project_xpm);
 		
+		project->Realize();
+		
+	
 	}
 	// Terrain Toolbar
 	wxRibbonPage* terrain = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_environment").c_str(), empty_xpm);
@@ -168,16 +172,16 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		wxRibbonPanel *terrain_panel = new wxRibbonPanel(terrain, wxID_ANY, App::getInstance()->getLangText("txt_tool_des5").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		wxRibbonPanel *terrain_panelv = new wxRibbonPanel(terrain, wxID_ANY,App::getInstance()->getLangText("txt_tool_des6").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 
-		wxRibbonButtonBar *terrain_button = new wxRibbonButtonBar(terrain_panel, wxID_ANY);
-		terrain_button->AddButton(ID_TerrainSegment, App::getInstance()->getLangText("bt_terrain_segments").c_str(), bt_terrain_add_segment_xpm);
-		terrain_button->AddButton(ID_TerrainTransform, App::getInstance()->getLangText("bt_terrain_transform").c_str(), bt_terrain_up_xpm);
+		terrain_button = new wxRibbonButtonBar(terrain_panel, wxID_ANY);
+		terrain_button->AddToggleButton(ID_TerrainSegment, App::getInstance()->getLangText("bt_terrain_segments").c_str(), bt_terrain_add_segment_xpm);
+		terrain_button->AddToggleButton(ID_TerrainTransform, App::getInstance()->getLangText("bt_terrain_transform").c_str(), bt_terrain_up_xpm);
 		terrain_button->Center();
 		//terrain_button->SetInitialBestSize(wxSize(400,120));
 		terrain_button->Realize();
 
 		// Buttons
-		wxRibbonButtonBar *terrain_buttonv = new wxRibbonButtonBar(terrain_panelv, wxID_ANY);
-		terrain_buttonv->AddButton(ID_TerrainTree, App::getInstance()->getLangText("txt_tool_tree").c_str(), bt_terrain_paint_vegetation_xpm);
+		terrain_buttonv = new wxRibbonButtonBar(terrain_panelv, wxID_ANY);
+		terrain_buttonv->AddToggleButton(ID_TerrainTree, App::getInstance()->getLangText("txt_tool_tree").c_str(), bt_terrain_paint_vegetation_xpm);
 		terrain_buttonv->AddButton(wxID_ANY, App::getInstance()->getLangText("txt_tool_bush").c_str(), bt_terrain_paint_vegetation_xpm);
 		terrain_buttonv->AddButton(wxID_ANY, App::getInstance()->getLangText("txt_tool_rock").c_str(), bt_terrain_paint_vegetation_xpm);
 		terrain_buttonv->Realize();
@@ -187,37 +191,48 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	if (dynobject)
 	{
 		wxRibbonPanel *dynobject_panel = new wxRibbonPanel(dynobject, wxID_ANY, App::getInstance()->getLangText("txt_tool_des1").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonButtonBar *dynobject_button = new wxRibbonButtonBar(dynobject_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize);
-		dynobject_button->AddButton(ID_ObjEditMode, App::getInstance()->getLangText("bt_dynamic_objects_mode").c_str(), bt_dynamic_objects_mode_xpm);
-		dynobject_button->AddButton(ID_PlayerEdit,App::getInstance()->getLangText("bt_edit_character").c_str(), bt_edit_character_xpm, L"Aide é");
+		dynobject_button = new wxRibbonButtonBar(dynobject_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize);
+		dynobject_button->AddToggleButton(ID_ObjEditMode, App::getInstance()->getLangText("bt_dynamic_objects_mode").c_str(), bt_dynamic_objects_mode_xpm);
+		dynobject_button->AddToggleButton(ID_PlayerEdit,App::getInstance()->getLangText("bt_edit_character").c_str(), bt_edit_character_xpm, L"Aide é");
 		dynobject_button->SetToolTip(App::getInstance()->getLangText("tab_objects").c_str());
+		dynobject_button->ToggleButton(ID_ObjEditMode,true);
 		dynobject_button->Realize();
 		
 		
 		wxRibbonPanel *script_panel = new wxRibbonPanel(dynobject, wxID_ANY, App::getInstance()->getLangText("txt_tool_des2").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonButtonBar *script_button = new wxRibbonButtonBar(script_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
-		script_button->AddButton(ID_PlayerScript, App::getInstance()->getLangText("bt_player_edit_script").c_str(), bt_player_edit_script_xpm);
-		script_button->AddButton(ID_GlobalScript, App::getInstance()->getLangText("bt_edit_script_global").c_str(), bt_edit_script_global_xpm);
+		script_button = new wxRibbonButtonBar(script_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
+		script_button->AddToggleButton(ID_PlayerScript, App::getInstance()->getLangText("bt_player_edit_script").c_str(), bt_player_edit_script_xpm);
+		script_button->AddToggleButton(ID_GlobalScript, App::getInstance()->getLangText("bt_edit_script_global").c_str(), bt_edit_script_global_xpm);
 		
 		script_panel->SetToolTip(App::getInstance()->getLangText("tab_objects").c_str());
 		script_button->Realize();
+	}
+	// Tools toolbar
+	wxRibbonPage* tools = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_tools").c_str(), empty_xpm);
+	if (tools)
+	{
+		wxRibbonPanel* tools_panel = new wxRibbonPanel(tools, wxID_ANY, App::getInstance()->getLangText("tab_tools").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
+		tools_button = new wxRibbonButtonBar(tools_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
+		tools_button->AddToggleButton(ID_Console, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
+		tools_button->EnableButton(ID_Console,true);
+		tools_button->Realize();
 	}
 	//Options toolbar
 	wxRibbonPage* option = new wxRibbonPage(m_ribbon, wxID_ANY, App::getInstance()->getLangText("tab_setup").c_str(), empty_xpm);
 	if (option)
 	{
 		wxRibbonPanel* option_panel = new wxRibbonPanel(option, wxID_ANY, App::getInstance()->getLangText("txt_tool_des3").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
-		wxRibbonButtonBar* option_button = new wxRibbonButtonBar(option_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
-		option_button->AddButton(400, App::getInstance()->getLangText("bt_config").c_str(), bt_config_xpm, "Editor setup");
+		option_button = new wxRibbonButtonBar(option_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
+		option_button->AddButton(ID_EditConfig, App::getInstance()->getLangText("bt_config").c_str(), bt_config_xpm, "Editor setup");
 		
-		option_button->AddButton(402, App::getInstance()->getLangText("txt_tool_setg").c_str(), bt_config_xpm );
-		option_button->EnableButton(402,false);
+		option_button->AddButton(ID_EditGameConfig, App::getInstance()->getLangText("txt_tool_setg").c_str(), bt_config_xpm );
+		option_button->EnableButton(ID_EditGameConfig,false);
 		option_button->Realize();
-
-		option_button->AddButton(403, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
-		option_button->EnableButton(403,true);
-		option_button->Realize();
+		
 	}
+
+	
+	
 	
 //	SetMenuBar( menuBar );
 
@@ -313,55 +328,78 @@ void CIrrFrame::OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt))
 
 void CIrrFrame::OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
-	this->m_ribbon->Hide();
+	UncheckAllButtons();
+	m_ribbon->Disable();
+	test_button->ToggleButton(ID_Play,true);
+	test_button->ToggleButton(ID_Stop,false);
 	this->Layout();
 	App::getInstance()->playGame();
 }
 
 void CIrrFrame::OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
-	this->m_ribbon->Show();
+	UncheckAllButtons();
+	//this->m_ribbon->Show();
+	m_ribbon->Enable();
+	test_button->ToggleButton(ID_Play,false);
+	test_button->ToggleButton(ID_Stop,true);
 	this->Layout();
 	App::getInstance()->stopGame();
 }
 
 void CIrrFrame::OnObjectEditMode(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	dynobject_button->ToggleButton(ID_ObjEditMode,true);
 	App::getInstance()->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 }
 
 void CIrrFrame::OnPlayerEdit(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	dynobject_button->ToggleButton(ID_PlayerEdit,true);
 	App::getInstance()->setAppState(APP_EDIT_CHARACTER);
 }
 
 void CIrrFrame::OnScriptGlobal(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	script_button->ToggleButton(ID_GlobalScript,true);
 	App::getInstance()->setAppState(APP_EDIT_SCRIPT_GLOBAL);
 }
 
 void CIrrFrame::OnScriptPlayer(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	script_button->ToggleButton(ID_PlayerScript,true);
 	App::getInstance()->setAppState(APP_EDIT_PLAYER_SCRIPT);
 }
 
 void CIrrFrame::OnTerrainSegment(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	terrain_button->ToggleButton(ID_TerrainSegment,true);
 	App::getInstance()->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
 }
 
 void CIrrFrame::OnTerrainTransform(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	terrain_button->ToggleButton(ID_TerrainTransform,true);
 	App::getInstance()->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
 }
 
 void CIrrFrame::OnTerrainTree(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	UncheckAllButtons();
+	terrain_buttonv->ToggleButton(ID_TerrainTree,true);
 	App::getInstance()->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
 }
 
 void CIrrFrame::OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
+	//UncheckAllButtons();
+	//option_button->ToggleButton(ID_Console,true);
 	App::getInstance()->displayGuiConsole();
 }
 
@@ -518,6 +556,35 @@ core::stringw CIrrFrame::FileSave()
 		return dialog.GetPath().c_str().AsString().ToStdWstring().c_str();
     }
 	return L"";
+}
+
+void CIrrFrame::UncheckAllButtons()
+{
+	terrain_button->ToggleButton(ID_TerrainSegment,false);
+	terrain_button->ToggleButton(ID_TerrainTransform,false);
+	terrain_buttonv->ToggleButton(ID_TerrainTree,false);
+	dynobject_button->ToggleButton(ID_ObjEditMode,false);
+	dynobject_button->ToggleButton(ID_PlayerEdit,false);
+	script_button->ToggleButton(ID_GlobalScript,false);
+	script_button->ToggleButton(ID_PlayerScript,false);
+	option_button->ToggleButton(ID_EditConfig,false);
+	option_button->ToggleButton(ID_EditGameConfig,false);
+	//option_button->ToggleButton(ID_Console,false);
+
+
+		/*ID_New,
+		ID_Save,
+		ID_Load,
+		ID_Quit,
+		ID_Play,
+		ID_Stop,
+		ID_ObjEditMode,
+		ID_PlayerEdit,
+		ID_GlobalScript,
+		ID_PlayerScript,
+		ID_TerrainSegment,
+		ID_TerrainTransform,
+		ID_TerrainTree,*/
 }
 
 int winmain(int argc, char** argv)
