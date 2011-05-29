@@ -14,6 +14,7 @@ class LANGManager
     public:
         static LANGManager* getInstance();
 		void setAboutText(IGUIListBox* guiAboutText);
+		vector<stringw> getAboutText();
 		irr::core::stringw getText(irr::core::stringc node);
 		irr::core::stringc getLanguage();
 		bool Load();

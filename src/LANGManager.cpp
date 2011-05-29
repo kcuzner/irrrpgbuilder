@@ -119,7 +119,17 @@ void LANGManager::setAboutText(IGUIListBox* guiAboutText)
 		guiAboutText->addItem(aboutext[i].text.c_str());        
     }
 	// Clear the memory since it should not be used again
-	aboutext.clear();
+	//aboutext.clear();
+}
+
+vector<stringw> LANGManager::getAboutText()
+{
+	vector<stringw> result;
+	for (int i=0 ; i<(int)aboutext.size() ; i++)
+    {		
+		result.push_back(aboutext[i].text.c_str());        
+    }
+	return result;
 }
 
 // - Retrieve the proper string from stored memory.

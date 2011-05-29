@@ -1433,19 +1433,43 @@ void GUIManager::setStaticTextText(GUI_ID id, stringc text)
 
 void GUIManager::setConsoleText(stringw text, video::SColor color)
 // Add text into the output console
-// The function manage up to 500 lines before clearing the buffer
+// The function manage up to 2000 lines before clearing the buffer
 // Using "forcedisplay" will toggle the display of the GUI
 {
-	u32 maxitem = 500;
-	
+	u32 maxitem = 2000;
+	// If the GUI is not displayed, accumulate the info in a buffer
+	if (textevent.size()<maxitem)
+	{
+		textevent.push_back(text);
+		texteventcolor.push_back(color);
+#ifdef _wxWIDGET
+		// This is sent to the APP Class for the wxWidget console
+		App::getInstance()->console_event.push_back(text);
+		App::getInstance()->console_event_color.push_back(color);
+#endif
+	}
+
+	// This part will update the IRRlicht type console
 	if (consolewin && consolewin->isVisible())
 	{
-		if (console->getItemCount()>maxitem-1)
-			console->removeItem(maxitem);	
-		
-		console->insertItem(0,text.c_str(),0);
-		console->setItemOverrideColor(0,color);
+		for (int a=0; a<(int)textevent.size(); a++)
+		{
+			if (console->getItemCount()>maxitem-1)
+				console->removeItem(maxitem);	
+
+			console->insertItem(0,textevent[a].c_str(),0);
+			console->setItemOverrideColor(0,texteventcolor[a]);
+		}
+		textevent.clear();
+		texteventcolor.clear();
 	}
+
+}
+
+void GUIManager::clearConsole() // The APP Class can clear the buffer because the wxWidget console need it.
+{
+	textevent.clear();
+	texteventcolor.clear();
 }
 
 void GUIManager::setConsoleLogger(vector<core::stringw> &text)

@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+//#include "editor/EditorMain.h"
+
 
 using namespace irr;
 using namespace core;
@@ -60,6 +62,7 @@ class App
         void eventGuiCombobox(s32 id);
 		void updateEditMode();
 		void hideEditGui();
+		std::vector<core::stringw> getAbout();
 		
 		#endif
 
@@ -110,15 +113,24 @@ class App
 		void saveProjectToXML(stringc filename);
         bool loadProjectFromXML(stringc filename);
 
+		// Used by wxWidget to retrieve the color and text of the console events
+		std::vector<stringw> getConsoleText();
+		std::vector<SColor> getConsoleColor();
+		void clearConsole();
+
 		bool wxSystem;
 
 		// used for the logger
 		std::vector<core::stringw> textevent;
+		std::vector<core::stringw> console_event;
+		std::vector<video::SColor> console_event_color;
 		
     private:
 
         App();
         ~App();
+
+		//ConsoleDialog * console_dialog;
 
         bool cursorIsInEditArea();
 		vector3df oldcampos;

@@ -135,6 +135,7 @@ class GUIManager
 
         void setStaticTextText(GUI_ID id, stringc text);
 		void setConsoleText (stringw text, video::SColor color);
+		void clearConsole();
 		void setConsoleLogger(vector<core::stringw> &text);
 
         void setElementEnabled(GUI_ID id, bool enable);
@@ -180,6 +181,10 @@ class GUIManager
 
 		u32 timer;
 		u32 timer2;
+		
+		// Used to store text events in a buffer while the GUI is not displayed
+		std::vector<core::stringw> textevent;
+		std::vector<video::SColor> texteventcolor;
 
 		// used for sounds in dialogs;
 		ISound* dialogSound;

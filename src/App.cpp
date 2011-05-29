@@ -11,6 +11,7 @@
 #include "SoundManager.h"
 #include "Player.h"
 
+
 #include "tinyXML/tinyxml.h"
 
 #ifdef _wxWIDGET
@@ -568,6 +569,11 @@ void App::hideEditGui()
 	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
 }
 
+std::vector<stringw> App::getAbout()
+{
+	return LANGManager::getInstance()->getAboutText();
+}
+
 void App::eventGuiCheckbox(s32 id)
 {
     switch (id)
@@ -978,7 +984,6 @@ void App::playGame()
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
 		this->setAppState(APP_GAMEPLAY_NORMAL);
-		//Player::getInstance()->getObject()->doScript();
 		LuaGlobalCaller::getInstance()->storeGlobalParams();
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 		DynamicObjectsManager::getInstance()->showDebugData(false);
@@ -1591,6 +1596,9 @@ void App::initialize()
 #ifdef _wxWIDGET
 	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
+	// Testing the link with the other classes
+//	ConsoleDialog::getInstance()->AddMessage(L"Working?",SColor(255,255,255,255));
 #endif
 }
 
@@ -1602,6 +1610,23 @@ void App::shutdown()
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
 
+}
+
+std::vector<stringw> App::getConsoleText()
+{
+	return console_event;
+}
+
+std::vector<SColor> App::getConsoleColor()
+{
+	return console_event_color;
+}
+
+void App::clearConsole()
+{
+	console_event.clear();
+	console_event_color.clear();
+	GUIManager::getInstance()->clearConsole();
 }
 
 stringw App::getLangText(irr::core::stringc node)

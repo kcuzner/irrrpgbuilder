@@ -2,6 +2,7 @@
 #include "../app.h"
 #include "wxIWindow.h"
 #include "wx/wx.h"
+#include "wx/aboutdlg.h"
 
 
 IMPLEMENT_APP(CIrrApp)
@@ -44,6 +45,8 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Play, CIrrFrame::OnPlay)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Stop, CIrrFrame::OnStop)
 
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_About, CIrrFrame::OnAbout)
+
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_ObjEditMode, CIrrFrame::OnObjectEditMode)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_PlayerEdit, CIrrFrame::OnPlayerEdit)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_PlayerScript, CIrrFrame::OnScriptPlayer)
@@ -51,9 +54,16 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainSegment, CIrrFrame::OnTerrainSegment)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTransform, CIrrFrame::OnTerrainTransform)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTree, CIrrFrame::OnTerrainTree)
-	EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnDisplayConsole)
+	//EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnDisplayConsole)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnLog)
+
+	EVT_TIMER(ID_UpdateTimer, OnProgressTimer)
 	
 END_EVENT_TABLE()
+
+	BEGIN_EVENT_TABLE(ConsoleDialog, wxDialog)
+        EVT_CLOSE(ConsoleDialog::OnClose)
+	END_EVENT_TABLE()
 
 
 #include "icons/empty.xpm"
@@ -71,6 +81,9 @@ END_EVENT_TABLE()
 #include "icons/bt_load_project.xpm"
 #include "icons/bt_new_project.xpm"
 #include "icons/bt_save_project.xpm"
+#include "icons/bt_about.xpm"
+#include "icons/bt_help.xpm"
+#include "icons/logo1.xpm"
 
 
 CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
@@ -101,9 +114,14 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	this->SetSizer( bSizer1 );
 	this->Layout();
 
-	
-	
 	wxMenu *menuFile = new wxMenu;
+
+	// Timer set there to check for the engine event (IRRlicht), need to pull updates
+	wxTimer * m_timer = new wxTimer(this, ID_UpdateTimer);
+	m_timer->Start(250);
+
+	 
+	console_dialog = (ConsoleDialog *)NULL;
 
 /*	menuFile->Append( ID_About, _T("&About...") );
 	menuFile->AppendSeparator();
@@ -127,8 +145,10 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		test_button = new wxRibbonButtonBar(test_panel, wxID_ANY);
 		test_button->AddToggleButton(ID_Play, App::getInstance()->getLangText("txt_tool_edpl").c_str(), bt_play_game_xpm);
 		test_button->AddToggleButton(ID_Stop, App::getInstance()->getLangText("txt_tool_edit").c_str(), bt_stop_game_xpm);
-		
 		test_button->ToggleButton(ID_Stop,true);
+		test_button->AddButton(ID_Console, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
+		test_button->EnableButton(ID_Console,true);
+	
 		test_button->Realize();
 	}
     // Main toolbar
@@ -213,8 +233,10 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	{
 		wxRibbonPanel* tools_panel = new wxRibbonPanel(tools, wxID_ANY, App::getInstance()->getLangText("tab_tools").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE);
 		tools_button = new wxRibbonButtonBar(tools_panel, wxID_ANY,wxDefaultPosition,wxDefaultSize,1);
-		tools_button->AddToggleButton(ID_Console, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
-		tools_button->EnableButton(ID_Console,true);
+		//tools_button->AddToggleButton(ID_Console, App::getInstance()->getLangText("txt_tool_gc").c_str(), bt_config_xpm );
+		//tools_button->EnableButton(ID_Console,true);
+		tools_button->AddButton(ID_About, App::getInstance()->getLangText("bt_about").c_str(), bt_about_xpm );
+		tools_button->EnableButton(ID_About,true);
 		tools_button->Realize();
 	}
 	//Options toolbar
@@ -271,6 +293,20 @@ void CIrrFrame::OnClose (wxCloseEvent& e)
 		
 	}
 	exit(0);
+}
+
+void CIrrFrame::OnProgressTimer(wxTimerEvent& event)
+{
+	// Check for console events on the APP class (from timer event here (250ms)
+	if (console_dialog && console_dialog->IsVisible())
+	{
+		for (int a=0; a<(int)App::getInstance()->getConsoleText().size(); a++)
+		{
+			console_dialog->AddMessage(App::getInstance()->getConsoleText()[a].c_str(),App::getInstance()->getConsoleColor()[a]);
+		}
+		App::getInstance()->clearConsole();
+		//console_dialog->AddMessage(L"Timed test message",SColor(255,0,0,64));
+	}
 }
 
 void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
@@ -345,6 +381,101 @@ void CIrrFrame::OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt))
 	test_button->ToggleButton(ID_Stop,true);
 	this->Layout();
 	App::getInstance()->stopGame();
+}
+
+void CIrrFrame::OnAbout(wxRibbonButtonBarEvent& WXUNUSED(evt))
+{
+	wxAboutDialogInfo info;
+	info.SetName(wxT("IrrRPG Builder "));
+	info.SetIcon(wxIcon(logo1_xpm));
+	info.SetDescription(wxString::Format
+        (
+			"Libraries:\nwxWidget %s version %s\nIrrlicht version %s",
+			wxMINOR_VERSION % 2 ? "Development" : "Stable",
+			wxVERSION_NUM_DOT_STRING,
+			App::getInstance()->getDevice()->getVersion()
+		));
+	info.SetVersion(wxT("0.2 Alpha"),wxT("0.2 Alpha"));
+		/*wxString::Format
+        (
+			"\n >wxWidget %s\n >Irrlicht %s",
+			wxVERSION_NUM_DOT_STRING,
+			App::getInstance()->getDevice()->getVersion()
+		),
+		wxString::Format
+        (
+			"wxWidget %s version %s\nIrrlicht version %s",
+			wxMINOR_VERSION % 2 ? "Development" : "Stable",
+			wxVERSION_NUM_DOT_STRING,
+			App::getInstance()->getDevice()->getVersion()
+		));*/
+	std::vector<core::stringw> abouttxt = App::getInstance()->getAbout();
+	stringw text = L"\n";
+	for (int a=0; a<(int)abouttxt.size(); a++)
+	{
+		text+=abouttxt[a].c_str();
+		text+=L"\n";
+		//info.AddDeveloper(text.c_str());
+	}
+	
+	//info.SetDescription(text.c_str());
+	info.SetDevelopers(wxArrayString(1,text.c_str()));
+    info.SetCopyright(wxT("(C) 2011  IrrRPG BUILDER dev team"));
+	info.SetWebSite(wxT("http://irrrpgbuilder.sourceforge.net/"),wxT("IRR RPG BUILDER official web site"));
+	info.SetLicence(wxString::FromAscii(
+	"Copyright (c) 2011\n"
+	"Permission is hereby granted,\n"
+	"free of charge, to any person\n"
+	"obtaining a copy of this software\n"
+	"and associated documentation files\n"
+	"(the 'Software'), to deal in the\n"
+	"Software without restriction,\n"
+	"including without limitation\n"
+	"the rights to use, copy, modify,\n"
+	"merge, publish, distribute,\n"
+	"sublicense, and/or sell copies\n"
+	"of the Software, and to permit\n"
+	"persons to whom the Software is\n"
+	"furnished to do so, subject to\n"
+	"the following conditions:\n"
+	"\n"
+	"The above copyright notice\n"
+	"and this permission notice\n"
+	"shall be included in all copies\n"
+	"or substantial portions of the\n"
+	"Software.\n"
+	"\n"
+	"THE SOFTWARE IS PROVIDED 'AS IS',\n"
+	"WITHOUT WARRANTY OF ANY KIND,\n"
+	"EXPRESS OR IMPLIED, INCLUDING BUT\n"
+	"NOT LIMITED TO THE WARRANTIES OF\n"
+	"MERCHANTABILITY, FITNESS FOR A\n"
+	"PARTICULAR PURPOSE AND\n"
+	"NONINFRINGEMENT. IN NO EVENT SHALL\n"
+	"THE AUTHORS OR COPYRIGHT HOLDERS\n"
+	"BE LIABLE FOR ANY CLAIM, DAMAGES\n"
+	"OR OTHER LIABILITY, WHETHER IN AN\n"
+	"ACTION OF CONTRACT, TORT OR\n"
+	"OTHERWISE, ARISING FROM, OUT OF OR\n"
+	"IN CONNECTION WITH THE SOFTWARE OR\n"
+	"THE USE OR OTHER DEALINGS IN THE\n"
+	"SOFTWARE.\n\n"
+    ));
+    
+	wxAboutBox(info, this);
+}
+
+void CIrrFrame::OnLog(wxRibbonButtonBarEvent& WXUNUSED(evt))
+{
+	if (!console_dialog)
+		console_dialog = new ConsoleDialog(this);
+	if (console_dialog)
+	{
+		if (console_dialog->IsVisible())
+			console_dialog->Hide();
+		else
+			console_dialog->Show();
+	}
 }
 
 void CIrrFrame::OnObjectEditMode(wxRibbonButtonBarEvent& WXUNUSED(evt))
@@ -585,6 +716,56 @@ void CIrrFrame::UncheckAllButtons()
 		ID_TerrainSegment,
 		ID_TerrainTransform,
 		ID_TerrainTree,*/
+}
+
+// Log console dialog
+ConsoleDialog::ConsoleDialog(wxWindow *parent)
+                : wxDialog(parent, wxID_ANY, wxString(wxT("Console")),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+{
+	wxBoxSizer *sizerH = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+
+	m_textMsg = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600,200), wxLC_REPORT);
+	
+   	sizerH->Add(m_textMsg,5,wxEXPAND,10);
+	sizer->Add(sizerH,5,wxEXPAND);
+	sizer->SetSizeHints(this);
+	SetSizer(sizer);
+
+	m_textMsg->InsertColumn(0, wxT("Item"), wxLIST_FORMAT_LEFT, 1600); 
+}
+
+void ConsoleDialog::AddMessage(core::stringw text, video::SColor color)
+{
+	wxListItem NewItem;
+	
+	NewItem.SetText(text.c_str());
+	NewItem.SetFont(wxFont(10,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false));
+	NewItem.SetTextColour(wxColour(color.getRed(),color.getGreen(),color.getBlue()));
+	if (m_textMsg && m_textMsg->GetColumnCount()>0)
+	{
+		if (m_textMsg->GetItemCount()>1999)
+			m_textMsg->DeleteAllItems();
+
+		m_textMsg->InsertItem(NewItem);
+
+	// Temporary just to have too much memory used. After 2000 lines, it clear itself
+	// Will need to remove the first item entered in the list and remove the first item
+	}	
+}
+
+
+void ConsoleDialog::OnClose(wxCloseEvent& event)
+{
+    if ( event.CanVeto() )
+    {
+        //wxMessageBox(wxT("Use the menu item to close this dialog"),
+        //             wxT("Modeless dialog"),
+        //             wxOK | wxICON_INFORMATION, this);
+		this->Hide();
+
+        event.Veto();
+    }
 }
 
 int winmain(int argc, char** argv)

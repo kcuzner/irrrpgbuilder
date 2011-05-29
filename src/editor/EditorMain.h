@@ -5,6 +5,8 @@
  * Created:   2009-12-12
  * Copyright: Steve Bondy (http://stevebondy.ca)
  * License:
+ * Partly used in IRR RPG Builder
+ * Updated by: Christian Clavet (http://www.clavet.org)
  **************************************************************/
 
 #ifndef WXIRRHELLOAPP_H
@@ -15,6 +17,7 @@
 #include "wx/app.h"
 #include "wx/frame.h"
 #include "wx/textctrl.h"
+#include <wx/listctrl.h> 
 #include "wx/ribbon/bar.h"
 #include "wx/ribbon/buttonbar.h"
 #include "wx/ribbon/gallery.h"
@@ -49,6 +52,18 @@ class CIrrApp : public wxApp
 		virtual bool OnInit(void);
 };
 
+class ConsoleDialog : public wxDialog
+{
+public:
+    ConsoleDialog(wxWindow *parent);
+	void AddMessage(core::stringw text, video::SColor color);
+    void OnClose(wxCloseEvent& event);
+	
+private:
+    DECLARE_EVENT_TABLE()
+	wxListCtrl * m_textMsg;
+};
+
 class CIrrFrame : public wxFrame
 {
 	public:
@@ -76,6 +91,8 @@ class CIrrFrame : public wxFrame
 		ID_EditConfig,
 		ID_EditGameConfig,
 		ID_Console,
+		ID_About,
+		ID_UpdateTimer,
         ID_MAIN_TOOLBAR,
 		ID_TOOLBAR_TERRAIN,
 		ID_TOOLBAR_TERRAIN2,
@@ -91,7 +108,7 @@ class CIrrFrame : public wxFrame
 
 		CIrrFrame(const wxString &title, const wxPoint &pos, const wxSize &size, long style=wxDEFAULT_FRAME_STYLE);
 		~CIrrFrame();
-
+		void OnProgressTimer(wxTimerEvent& event);
 		void OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnClose (wxCloseEvent& e);
 		void OnAbout(wxCommandEvent &event);
@@ -103,6 +120,8 @@ class CIrrFrame : public wxFrame
 		void OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt));
+		void OnAbout(wxRibbonButtonBarEvent& WXUNUSED(evt));
+		void OnLog(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnObjectEditMode(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnPlayerEdit(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnScriptGlobal(wxRibbonButtonBarEvent& WXUNUSED(evt));
@@ -136,6 +155,8 @@ class CIrrFrame : public wxFrame
 		wxRibbonButtonBar *script_button;
 		wxRibbonButtonBar *tools_button;
 		wxRibbonButtonBar *option_button;
+	private:
+		ConsoleDialog * console_dialog;
 };
 
 #endif // WXIRRHELLOAPP_H
