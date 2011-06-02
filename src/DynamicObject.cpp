@@ -144,13 +144,14 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     else
 	{
 		this->mesh->setHardwareMappingHint(EHM_STATIC);
-        this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+        //this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
 		// Would like to load non-animated meshes as occtrees, but something is crashing.
-		//this->node = smgr->addOctreeSceneNode ((IAnimatedMesh*)mesh,0,0x0010,256,false);
+		this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,0x0010,256,false);
 		if (node)
 		{
 			//this->selector = smgr->createTriangleSelector((IAnimatedMesh*)mesh,node);
-			this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
+			this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
+			//this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 			this->node->setTriangleSelector(selector);
 		}
 	}

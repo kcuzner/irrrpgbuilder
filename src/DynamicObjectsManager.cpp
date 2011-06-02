@@ -622,7 +622,7 @@ DynamicObject* DynamicObjectsManager::getDialogCaller()
 stringc DynamicObjectsManager::createUniqueName()
 {
     //the unique name of an dynamic object contains his index at the objects vector
-    stringc uniqueName = "dynamic_object ";
+    stringc uniqueName = "dynamic_object_";
     uniqueName += objsCounter++;
 
     return uniqueName;
@@ -695,17 +695,16 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	{
 		if (objects[i])
 		{
-			//if (objects[i]->isEnabled())
-			if (objects[i]->getLife()>0)
+			if (objects[i]->isEnabled())
+			//if (objects[i]->getLife()>0)
 			{
-				triangle = objects[i]->getNode()->getTriangleSelector();
-				s32 number = triangle->getTriangleCount();
-				printf ("There is about %i triangles in this selector.\n",number);
-
-				meta->addTriangleSelector(triangle);
-				s32 number2  = meta->getTriangleCount();
-				printf ("There is about %i triangles in this metaselector.\n",number2);
-				printf("Collisions: added object %i\n",i);
+				if ((objects[i]->getType()==OBJECT_TYPE_NPC && objects[i]->getLife()>0) || (objects[i]->getType()!=OBJECT_TYPE_NPC))
+				{
+					triangle = objects[i]->getNode()->getTriangleSelector();
+					s32 number = triangle->getTriangleCount();
+					meta->addTriangleSelector(triangle);
+					s32 number2  = meta->getTriangleCount();
+				} 
 			}
 		}
 	}
