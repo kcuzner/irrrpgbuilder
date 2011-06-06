@@ -1,5 +1,6 @@
 #include "ShaderCallBack.h"
 #include "TerrainManager.h"
+#include "CameraSystem.h"
 #include "GUIManager.h"
 #include "App.h"
 
@@ -97,29 +98,38 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     layer=10;
     services->setPixelShaderConstant("MAPRES",(float*)&layer,1);
 */
+	//core::vector3df pos = vector3df(0,0,0);
+	scene::ICameraSceneNode * cam = device->getSceneManager()->getActiveCamera();
+	if (cam)
+	{
+		// A light that is attached to the camera is used to light the terrain.
+		vector3df pos = CameraSystem::getInstance()->light->getAbsolutePosition();
 
-    core::vector3df pos = vector3df(0,250,0);
+		services->setPixelShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
+		pos = cam->getPosition();
+		services->setPixelShaderConstant("mCamPos", reinterpret_cast<float*>(&pos),3);
+	}
+	
+	//device->getSceneManager()->getActiveCamera()->getPosition();
 
-    services->setVertexShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
+   
 /*
 
     // set camera position
     pos = device->getSceneManager()->getActiveCamera()->getPosition();
     services->setVertexShaderConstant("camPos", reinterpret_cast<f32*>(&pos), 3);
 
-    // set light color
+    
 
-    video::SColorf col(2.0f,2.0f,2.0f,2.0f);
-
-    services->setVertexShaderConstant("LightColor",reinterpret_cast<f32*>(&col), 4);
-
-    // set transposed world matrix
+   
+	// set transposed world matrix
 
     core::matrix4 world = device->getVideoDriver()->getTransform(video::ETS_WORLD);
     world = world.getTransposed();
 
     services->setVertexShaderConstant("mTransWorld", world.pointer(), 16);
-*/
+	 */
+
 
     f32 time=device->getTimer()->getTime()/10000.0f;
     services->setVertexShaderConstant("waterTime",&time,1);

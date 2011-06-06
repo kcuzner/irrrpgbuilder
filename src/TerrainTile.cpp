@@ -84,6 +84,9 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     node->setMaterialTexture(3,layer3);
 
     //Assign GLSL Shader
+	node->getMaterial(0).setFlag(EMF_LIGHTING,true);
+	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
+
     node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
 
 

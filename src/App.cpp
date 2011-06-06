@@ -1567,9 +1567,11 @@ bool App::loadProjectFromXML(stringc filename)
 
 void App::initialize()
 {
-	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
+	// Initialize the GUI class first
+	GUIManager::getInstance();
 	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
-    driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+	// Set the fog to be very far when not in gameplay
+    driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
 	quickUpdate();
 
 	screensize=driver->getScreenSize();
@@ -1579,6 +1581,8 @@ void App::initialize()
 		TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 		quickUpdate();
 	#endif
+
+	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 
 	GUIManager::getInstance()->setupGameplayGUI();
 

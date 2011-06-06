@@ -2,6 +2,7 @@
 #define CameraSystem_H
 
 #include "App.h"
+#include "Player.h"
 #include <irrlicht.h>
 
 using namespace irr;
@@ -33,6 +34,9 @@ class CameraSystem
 		void fixRatio(IVideoDriver * driver);
 
         virtual ~CameraSystem();
+		scene::ILightSceneNode * light;
+		scene::ILightSceneNode * sun;
+
     protected:
     private:
         CameraSystem();
@@ -40,6 +44,8 @@ class CameraSystem
         ICameraSceneNode* cam;
 		//static const irr::f32 cameraHeight;
 		static irr::f32 cameraHeight;
+
+
 		int camera;
 		int minCamera;
 		int maxCamera;
