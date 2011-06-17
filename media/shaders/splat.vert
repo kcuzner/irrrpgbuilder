@@ -1,5 +1,6 @@
 varying vec3 normal;
 varying vec3 position;
+varying vec4 worldCoord;
 
 void main(void)
 {
@@ -9,4 +10,6 @@ void main(void)
 	gl_FogFragCoord = gl_Position.z;
 	normal = gl_Normal.xyz;
 	position = gl_Vertex.xyz;
+	//worldCoord = gl_ModelViewMatrix * gl_Vertex;
+	worldCoord = gl_ModelViewMatrix * gl_Vertex;
 }

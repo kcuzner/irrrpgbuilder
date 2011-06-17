@@ -16,6 +16,7 @@ uniform vec3 mCamPos;
 
 varying vec3 normal;
 varying vec3 position;
+varying vec4 worldCoord;
 
 void main() 
 {
@@ -51,7 +52,7 @@ void main()
 	// Point light with attenuation calculation	
 	vec4 diffuse;
 	vec3 norm = normalize(normal);
-	vec3 lightVector = mLightPos - position;
+	vec3 lightVector = mLightPos - worldCoord;
 	float dist = length(lightVector);
 	float attenuation = 1.0 /( gl_LightSource[0].constantAttenuation +
 								gl_LightSource[0].linearAttenuation * dist +
@@ -62,11 +63,12 @@ void main()
 	
 	// Directional light no attenuation
 	vec4 sunDiffuse;
-	vec3 sunVector = normalize(vec3(0,500,0) - position);
+	vec3 sunVector = normalize(vec3(2500,5500,-5500) - worldCoord);
 	float sunDir = max(0.0, dot(norm, sunVector));
 	
 	//Seem to cause seams with lighting
 	diffuse = (gl_LightSource[1].diffuse * sunDir) + (gl_LightSource[0].diffuse * nxDir * attenuation);
+	//diffuse = (gl_LightSource[1].diffuse * sunDir);
 	
 	//diffuse = AmbientLight +(gl_LightSource[0].diffuse * nxDir * attenuation);
 		
