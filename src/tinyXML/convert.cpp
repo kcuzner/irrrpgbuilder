@@ -3,7 +3,7 @@
 //Tries to convert  accented characters from UT8
 irr::core::stringw convert(irr::core::stringc text)
 {
-// This method is working 100% on Windows with MSVC. But cause a problem in with the GCC compiler. 
+// This method is working 100% on Windows with MSVC. But cause a problem in with the GCC compiler.
 // Currently only MSVC compiler seem to support unicode encoding
 #ifdef WIN32
 	irr::core::stringw line = "";
@@ -102,7 +102,7 @@ irr::core::stringw convert(irr::core::stringc text)
 		if ((int)text[a]==-30)
 		{
 			// Euro Symbol (Might not be available in the font)
-			if ((int)text[a+1]==-126 && (int)text[a+2]==-84)line+=irr::core::stringw(L"€");
+			if ((int)text[a+1]==-126 && (int)text[a+2]==-84)line+=irr::core::stringw(irr::core::stringw('€'));
 			a++;
 			a++;
 		}

@@ -64,7 +64,6 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -pthread" />
 			<Add directory="irrlicht-engine/include" />
 			<Add directory="src/lua" />
 			<Add directory="irrlicht-engine/source/Irrlicht" />
@@ -72,9 +71,6 @@
 			<Add directory="/usr/local/lib/wx/include/gtk2-unicode-2.9" />
 			<Add directory="/usr/local/include/wx-2.9" />
 		</Compiler>
-		<Linker>
-			<Add option="-pthread   -lwx_gtk2u_xrc-2.9 -lwx_gtk2u_html-2.9 -lwx_gtk2u_qa-2.9 -lwx_gtk2u_adv-2.9 -lwx_gtk2u_core-2.9 -lwx_baseu_xml-2.9 -lwx_baseu_net-2.9 -lwx_baseu-2.9" />
-		</Linker>
 		<Unit filename="src/App.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
@@ -106,12 +102,6 @@
 		</Unit>
 		<Unit filename="src/DynamicObjectsManager.h">
 			<Option virtualFolder="DynamicObjects/" />
-		</Unit>
-		<Unit filename="src/EffectsManager.cpp">
-			<Option virtualFolder="StaticObjects/" />
-		</Unit>
-		<Unit filename="src/EffectsManager.h">
-			<Option virtualFolder="StaticObjects/" />
 		</Unit>
 		<Unit filename="src/EventReceiver.cpp">
 			<Option virtualFolder="App/" />
@@ -201,6 +191,8 @@
 		<Unit filename="src/combat.h">
 			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
+		<Unit filename="src/fx/EffectsManager.cpp" />
+		<Unit filename="src/fx/EffectsManager.h" />
 		<Unit filename="src/fx/postprocess/IPostProcess.h" />
 		<Unit filename="src/fx/postprocess/PostProcessManager.cpp" />
 		<Unit filename="src/fx/postprocess/PostProcessManager.h" />
@@ -208,7 +200,6 @@
 		<Unit filename="src/fx/postprocess/ShaderMaterial.h" />
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.cpp" />
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.h" />
-		<Unit filename="src/irrlicht.ico" />
 		<Unit filename="src/main.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
