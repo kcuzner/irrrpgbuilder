@@ -118,6 +118,9 @@ showBlackScreen(string 'optional text')
 hideBlackScreen()
 	Remove the black screen
 
+setRain(intensity, speed)
+	Set rain effect. intensity between 0 and 100, speed default = 100.
+
 setCameraTarget(float x, float y, float z)
 	Set a new position for the camera, use the specified coordinates
 

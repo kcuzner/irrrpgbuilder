@@ -2,6 +2,8 @@
 --read colors name (this allows to call setAmbientLight(COLOR_NAME) instead setAmbientLight(r,g,b) for example)
 dofile("../media/scripts/colors.lua")
 
+--================================================
+dofile("../media/scripts/rain.lua")
 
 --================================================IRRRPG BUILER INTERNAL USE ONLY
 
@@ -18,6 +20,7 @@ function IRBRestoreGlobalParams()
   setFogColor(IRBOriginalFogR,IRBOriginalFogG,IRBOriginalFogB)
   setFogRange(IRBOriginalFogStart,IRBOriginalFogEnd)
   setCameraTarget(IRBOriginalCameraPosX,IRBOriginalCameraPosY,IRBOriginalCameraPosZ)
+  setRain(0)
 end
 
 

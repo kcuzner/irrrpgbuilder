@@ -5,7 +5,7 @@
 		<Option title="IrrRPG Builder" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="StaticObjects/;StaticObjects/Terrain/;App/;App/;App/GUI/;App/tinyxml/;DynamicObjects/;ShaderCallback/;Player/;" />
+		<Option virtualFolders="App/;App/;App/GUI/;App/tinyxml/;App/Effects/;DynamicObjects/;Player/;ShaderCallback/;StaticObjects/Terrain/;App/Sound/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/IrrRPG_Builder_Linux_d" prefix_auto="1" extension_auto="1" />
@@ -89,8 +89,12 @@
 		<Unit filename="src/CGUIGfxStatus.h">
 			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src/CameraSystem.cpp" />
-		<Unit filename="src/CameraSystem.h" />
+		<Unit filename="src/CameraSystem.cpp">
+			<Option virtualFolder="App/" />
+		</Unit>
+		<Unit filename="src/CameraSystem.h">
+			<Option virtualFolder="App/" />
+		</Unit>
 		<Unit filename="src/DynamicObject.cpp">
 			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
@@ -127,8 +131,12 @@
 		<Unit filename="src/HealthSceneNode.h">
 			<Option virtualFolder="App/GUI/" />
 		</Unit>
-		<Unit filename="src/Item.cpp" />
-		<Unit filename="src/Item.h" />
+		<Unit filename="src/Item.cpp">
+			<Option virtualFolder="App/" />
+		</Unit>
+		<Unit filename="src/Item.h">
+			<Option virtualFolder="App/" />
+		</Unit>
 		<Unit filename="src/LANGManager.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
@@ -160,10 +168,10 @@
 			<Option virtualFolder="ShaderCallback/" />
 		</Unit>
 		<Unit filename="src/SoundManager.cpp">
-			<Option virtualFolder="App/" />
+			<Option virtualFolder="App/Sound/" />
 		</Unit>
 		<Unit filename="src/SoundManager.h">
-			<Option virtualFolder="App/" />
+			<Option virtualFolder="App/Sound/" />
 		</Unit>
 		<Unit filename="src/TerrainManager.cpp">
 			<Option virtualFolder="StaticObjects/Terrain/" />
@@ -183,23 +191,45 @@
 		<Unit filename="src/Vegetation.h">
 			<Option virtualFolder="StaticObjects/Terrain/" />
 		</Unit>
-		<Unit filename="src/XMLManager.cpp" />
-		<Unit filename="src/XMLManager.h" />
+		<Unit filename="src/XMLManager.cpp">
+			<Option virtualFolder="App/" />
+		</Unit>
+		<Unit filename="src/XMLManager.h">
+			<Option virtualFolder="App/" />
+		</Unit>
 		<Unit filename="src/combat.cpp">
 			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
 		<Unit filename="src/combat.h">
 			<Option virtualFolder="DynamicObjects/" />
 		</Unit>
-		<Unit filename="src/fx/EffectsManager.cpp" />
-		<Unit filename="src/fx/EffectsManager.h" />
-		<Unit filename="src/fx/postprocess/IPostProcess.h" />
-		<Unit filename="src/fx/postprocess/PostProcessManager.cpp" />
-		<Unit filename="src/fx/postprocess/PostProcessManager.h" />
-		<Unit filename="src/fx/postprocess/ShaderMaterial.cpp" />
-		<Unit filename="src/fx/postprocess/ShaderMaterial.h" />
-		<Unit filename="src/fx/postprocess/ShaderPostProcess.cpp" />
-		<Unit filename="src/fx/postprocess/ShaderPostProcess.h" />
+		<Unit filename="src/fx/EffectsManager.cpp">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/EffectsManager.h">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/IPostProcess.h">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/PostProcessManager.cpp">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/PostProcessManager.h">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/ShaderMaterial.cpp">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/ShaderMaterial.h">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/ShaderPostProcess.cpp">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
+		<Unit filename="src/fx/postprocess/ShaderPostProcess.h">
+			<Option virtualFolder="App/Effects/" />
+		</Unit>
 		<Unit filename="src/main.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
@@ -227,7 +257,6 @@
 		<Unit filename="src/tinyXML/tinyxmlparser.cpp">
 			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
-		<Unit filename="src/version.h" />
 		<Extensions>
 			<code_completion>
 				<search_path add="../irrlicht-engine/source/Irrlicht" />
