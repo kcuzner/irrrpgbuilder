@@ -14,7 +14,7 @@ Vegetation::Vegetation(int type)
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     if(type == -1) type=rand()%VegetationSeed::getInstance()->getTotalOfTypes();//randomize tree type when receive -1
-	
+
 	// will store the type of the tree
 	vegeType=type;
 
@@ -49,6 +49,7 @@ Vegetation::Vegetation(int type)
 	leafs = smgr->addOctreeSceneNode(leafsMesh,trunk,-1);
 	leafs->setAutomaticCulling(EAC_FRUSTUM_BOX);
 	leafs->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+	leafs->setMaterialFlag(EMF_FOG_ENABLE,true);
 
     //Fake Shadow
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/vegetation/shadow.obj"),trunk);

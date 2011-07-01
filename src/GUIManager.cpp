@@ -517,7 +517,7 @@ void GUIManager::setupEditorGUI()
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
 		displayheight-guiMainToolWindow->getClientRect().getHeight()),
 		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str());
-	
+
 
     guiTerrainToolbar->getCloseButton()->setVisible(false);
 
@@ -558,7 +558,7 @@ void GUIManager::setupEditorGUI()
                                                          myRect(10,mainToolbarPos.Y+150,150,20),
                                                          false,true, guiTerrainToolbar);
 
-	
+
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushRadius->setMin(0);
     guiTerrainBrushRadius->setMax(200);
@@ -650,8 +650,8 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
 	UpdateGUIChooser(1);
-   
-	
+
+
 
     guiDynamicObjectsWindowChooser_Y += 25;
 
@@ -1095,7 +1095,7 @@ void GUIManager::setupGameplayGUI()
 	////// --------------------------------
 	///    Define the Dialogs used in the game
 	//////
-	
+
 	guidialog = guienv->addWindow(myRect(10,displayheight-200,displaywidth-20,190),true,L"",0,GCW_DIALOG);
 	guidialog->getCloseButton()->setVisible(false);
 	guidialog->setDrawTitlebar(false);
@@ -1134,7 +1134,7 @@ void GUIManager::setupGameplayGUI()
     guiBtDialogCancel->setImage(guiDialogImgNo);
 	guiBtDialogCancel->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 	guidialog->setVisible(false);
-	 
+
 	//////
 	stringw text = L"Current screen size is:";
 	text.append((stringw)screensize.Width);
@@ -1346,9 +1346,9 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
             break;
-		
 
-		
+
+
     }
 }
 
@@ -1455,7 +1455,7 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 		for (int a=0; a<(int)textevent.size(); a++)
 		{
 			if (console->getItemCount()>maxitem-1)
-				console->removeItem(maxitem);	
+				console->removeItem(maxitem);
 
 			console->insertItem(0,textevent[a].c_str(),0);
 			console->setItemOverrideColor(0,texteventcolor[a]);
@@ -1481,21 +1481,21 @@ void GUIManager::setConsoleLogger(vector<core::stringw> &text)
 		{
 			for (int a=0; a<(int)text.size(); a++)
 			{
-			
+
 				if (console->getItemCount()>maxitem-1)
 					console->removeItem(maxitem);
-				
+
 				//
 				console->insertItem(0,text[a].subString(0,90).c_str(),0);
 				console->setItemOverrideColor(0,video::SColor(255,0,0,0));
-				
+
 				//text.pop_back();
-			
+
 			}
 			text.clear();
-			
+
 		}
-		
+
 	}
 }
 
@@ -1511,12 +1511,12 @@ void GUIManager::stopDialogSound()
 
 void GUIManager::showDialogMessage(stringw text, std::string sound)
 {
-   
+
 	//stringw text2 = (stringw)text.c_str();
 	txt_dialog->setText(text.c_str());
 	if(guiBtDialogCancel->isVisible())
 		guiBtDialogCancel->setVisible(false);
-		
+
 	setWindowVisible(GCW_DIALOG,true);
 	App::getInstance()->setAppState(APP_WAIT_DIALOG);
 
@@ -1540,7 +1540,7 @@ bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 	txt_dialog->setText(text.c_str());
 	if(!guiBtDialogCancel->isVisible())
 		guiBtDialogCancel->setVisible(true);
-		
+
 	setWindowVisible(GCW_DIALOG,true);
 	App::getInstance()->setAppState(APP_WAIT_DIALOG);
 
@@ -1554,7 +1554,7 @@ bool GUIManager::showDialogQuestion(stringw text, std::string sound )
         soundName += sound.c_str();
         dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
     }
-	
+
 	return true;
 }
 

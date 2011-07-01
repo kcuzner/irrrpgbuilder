@@ -72,6 +72,8 @@ class LuaGlobalCaller
         static int showBlackScreen(lua_State *LS);//showBlackScreen(optional_text)
         static int hideBlackScreen(lua_State *LS);//showBlackScreen()
 
+        static int setWeather(lua_State *LS);//rain and snow
+
         static int setCameraTarget(lua_State *LS);
         static int getCameraTarget(lua_State *LS);
 

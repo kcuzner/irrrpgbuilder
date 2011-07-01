@@ -239,6 +239,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"showBlackScreen",showBlackScreen);//showBlackScreen(optional_text)
     lua_register(LS,"hideBlackScreen",hideBlackScreen);//hideBlackScreen()
 
+    lua_register(LS,"setWeatherPr",setWeather);//setWeather(maxParticles,particleSpeed)
+
     lua_register(LS,"setCameraTarget",setCameraTarget);//setCameraTarget(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraTarget",getCameraTarget);//x,y,z = getCameraTarget()
 
@@ -607,6 +609,25 @@ int LuaGlobalCaller::hideBlackScreen(lua_State *LS)
 	return 0;
 }
 
+int LuaGlobalCaller::setWeather(lua_State *LS)
+{
+    int maxParticles = 0;
+    float particleSpeed = 1;
+
+    if(lua_isnumber(LS, -1))
+    {
+        particleSpeed = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+    if(lua_isnumber(LS, -1))
+    {
+        maxParticles = (int)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+    EffectsManager::getInstance()->setWeather(maxParticles,particleSpeed*0.01);
+}
 
 int LuaGlobalCaller::setCameraTarget(lua_State *LS)
 {
@@ -701,11 +722,11 @@ int LuaGlobalCaller::playSound2D(lua_State *LS)
     stringc soundName = "../media/sound/";
 
     int LUAlooped = lua_toboolean(LS, -1);
-	
+
 	bool looped = false;
 	if (LUAlooped==1)
 		looped = true;
-    
+
 	lua_pop(LS, 1);
 
     soundName += (char*)lua_tostring(LS, -1);

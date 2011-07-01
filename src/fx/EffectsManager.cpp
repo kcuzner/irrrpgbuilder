@@ -3,6 +3,14 @@
 #include "postprocess/PostProcessManager.h"
 
 #include "../App.h"
+#include "../CameraSystem.h"
+
+using namespace irr;
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
 
 EffectsManager::EffectsManager()
 {
@@ -12,13 +20,35 @@ EffectsManager::EffectsManager()
 		printf ("Success initialized the postprocess manager.\n");
 	//postProcessManager->prepare(false);
 	postProcessMode = 0;
-    //ctor
+
+    //get main app scenemanager pointer
+    ISceneManager* smgr=App::getInstance()->getDevice()->getSceneManager();
+    //this is the main particle system, it is used to rain and snow effects
+    mainParticleSystem = smgr->addParticleSystemSceneNode(false,//use default emitter
+                                                          CameraSystem::getInstance()->getNode(),
+                                                          -1,
+                                                          vector3df(0,0,250));
+
+    f32 emitterSize = 500;
+    emitter = mainParticleSystem->createBoxEmitter(
+                                         aabbox3df(vector3df(-emitterSize,-1,0),vector3df(emitterSize,1,emitterSize)),
+                                         vector3df(0,-1,0.5));
+
+    mainParticleSystem->setEmitter(emitter);
+
+    mainParticleSystem->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+    //default particle texture -> media/rain.png
+    mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
+
+    mainParticleSystem->setVisible(false);
 }
 
 EffectsManager::~EffectsManager()
 {
 	delete postProcessManager;
-    //dtor
+
+    emitter->drop();
 }
 
 EffectsManager* EffectsManager::getInstance()
@@ -28,9 +58,17 @@ EffectsManager* EffectsManager::getInstance()
     return instance;
 }
 
-void EffectsManager::setWeather(float fogFactor, float rainFactor)
+void EffectsManager::setWeather(int maxParticles, float particlesSpeed)
 {
+    //hide effect when user sets zero particles
+    if(maxParticles == 0)
+        mainParticleSystem->setVisible(false);
+    else
+        mainParticleSystem->setVisible(true);
 
+    emitter->setMaxParticlesPerSecond(maxParticles);
+    emitter->setMinParticlesPerSecond(maxParticles);
+    emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.5));
 }
 
 ///TODO: define this function in Lua by setting AmbinetLight(COLOR_NAME)

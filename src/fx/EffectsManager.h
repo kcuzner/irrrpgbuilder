@@ -16,7 +16,7 @@ class EffectsManager
     public:
         static EffectsManager* getInstance();
 
-        void setWeather(float fogFactor, float rainFactor);
+        void setWeather(int maxParticles, float particlesSpeed);
         void setTimeOfDay(int newTime);
 		void update();
 		void preparePostFX(bool depth);
@@ -31,6 +31,9 @@ class EffectsManager
 		int postProcessMode;
 		CPostProcessManager* postProcessManager;
 		E_POSTPROCESS_EFFECT postEffect;
+
+		IParticleSystemSceneNode* mainParticleSystem;
+		IParticleBoxEmitter* emitter;
 };
 
 #endif // EFFECTSMANAGER_H
