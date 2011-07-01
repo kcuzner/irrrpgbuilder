@@ -613,6 +613,13 @@ int LuaGlobalCaller::setWeather(lua_State *LS)
 {
     int maxParticles = 0;
     float particleSpeed = 1;
+    stringc textureFile = "";
+
+    if(lua_isstring(LS, -1))
+    {
+        textureFile = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
 
     if(lua_isnumber(LS, -1))
     {
@@ -626,7 +633,7 @@ int LuaGlobalCaller::setWeather(lua_State *LS)
         lua_pop(LS, 1);
     }
 
-    EffectsManager::getInstance()->setWeather(maxParticles,particleSpeed*0.01);
+    EffectsManager::getInstance()->setWeather(maxParticles,particleSpeed*0.01,textureFile);
 }
 
 int LuaGlobalCaller::setCameraTarget(lua_State *LS)

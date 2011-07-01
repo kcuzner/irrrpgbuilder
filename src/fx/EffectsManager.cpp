@@ -31,15 +31,21 @@ EffectsManager::EffectsManager()
 
     f32 emitterSize = 500;
     emitter = mainParticleSystem->createBoxEmitter(
-                                         aabbox3df(vector3df(-emitterSize,-1,0),vector3df(emitterSize,1,emitterSize)),
-                                         vector3df(0,-1,0.5));
+                                         aabbox3df(vector3df(-emitterSize,-1,-emitterSize),vector3df(emitterSize,1,emitterSize)),
+                                         vector3df(0,-1,0.5),
+                                         5,
+                                         10,
+                                         SColor(255,0,0,0),
+                                         SColor(255,255,255,255),
+                                         5000,
+                                         10000);
+
 
     mainParticleSystem->setEmitter(emitter);
-
     mainParticleSystem->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     //default particle texture -> media/rain.png
-    mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
+    //mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
 
     mainParticleSystem->setVisible(false);
 }
@@ -58,7 +64,7 @@ EffectsManager* EffectsManager::getInstance()
     return instance;
 }
 
-void EffectsManager::setWeather(int maxParticles, float particlesSpeed)
+void EffectsManager::setWeather(int maxParticles, float particlesSpeed, stringc textureFile="")
 {
     //hide effect when user sets zero particles
     if(maxParticles == 0)
@@ -69,6 +75,9 @@ void EffectsManager::setWeather(int maxParticles, float particlesSpeed)
     emitter->setMaxParticlesPerSecond(maxParticles);
     emitter->setMinParticlesPerSecond(maxParticles);
     emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.5));
+
+    if(textureFile!="")
+        mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture(textureFile));
 }
 
 ///TODO: define this function in Lua by setting AmbinetLight(COLOR_NAME)
