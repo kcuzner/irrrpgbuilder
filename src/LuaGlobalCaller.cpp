@@ -633,7 +633,9 @@ int LuaGlobalCaller::setWeather(lua_State *LS)
         lua_pop(LS, 1);
     }
 
-    EffectsManager::getInstance()->setWeather(maxParticles,particleSpeed*0.01,textureFile);
+    EffectsManager::getInstance()->setWeather(maxParticles,particleSpeed*0.01f,textureFile);
+
+	return 0;
 }
 
 int LuaGlobalCaller::setCameraTarget(lua_State *LS)

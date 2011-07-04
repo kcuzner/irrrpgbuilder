@@ -74,7 +74,7 @@ void EffectsManager::setWeather(int maxParticles, float particlesSpeed, stringc 
 
     emitter->setMaxParticlesPerSecond(maxParticles);
     emitter->setMinParticlesPerSecond(maxParticles);
-    emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.5));
+    emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.5f));
 
     if(textureFile!="")
         mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture(textureFile));

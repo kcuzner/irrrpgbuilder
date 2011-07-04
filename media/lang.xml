@@ -18,7 +18,7 @@
 		<text id="bt_dynamic_objects_edit_script" str="Edit Lua Script"/>
 		<text id="bt_dynamic_objects_cancel" str="Cancel"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
-		<text id="bt_dynamic_objects_mode" str="Edit Mode"/>
+		<text id="bt_dynamic_objects_mode" str="Edit Object"/>
 		<text id="bt_paint_vegetation" str="Paint Vegetation"/>
 		<text id="bt_new_project" str="New Project"/>
 		<text id="bt_save_project" str="Save Project"/>
@@ -83,8 +83,8 @@
 		<text id="txt_tool_des4" str="Playtest" />
 		<text id="txt_tool_des5" str="Terrain tools" />
 		<text id="txt_tool_des6" str="Vegetation tools" />
-		<text id="txt_tool_edit" str="Edit mode" />
-		<text id="txt_tool_edpl" str="Edit Player" />
+		<text id="txt_tool_edit" str="Editor mode" />
+		<text id="txt_tool_edpl" str="Play mode" />
 		<text id="txt_tool_scrp" str="Player script" />
 		<text id="txt_tool_scrg" str="Global script" />
 		<text id="txt_tool_sete" str="Editor setup" />

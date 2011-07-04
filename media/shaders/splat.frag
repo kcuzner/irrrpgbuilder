@@ -75,11 +75,11 @@ void main()
 		
 
 	
-	// Flat rendering with FOG possible	
-  	//vec4 finalColor = tex10;
+	// Flat rendering with FOG possible (Used at the moment, need tweakings)	
+  	vec4 finalColor = tex10;
 	
-	// Rendering with 1 point light source
-	vec4 finalColor = gl_LightSource[0].ambient + (diffuse * vec4(tex10.rgb, 1.0));
+	// Rendering with 1 point light source (Disabled at the moment)
+	//vec4 finalColor = gl_LightSource[0].ambient + (diffuse * vec4(tex10.rgb, 1.0));
 	
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
 	gl_FragColor = mix(gl_Fog.color,finalColor, fog);
