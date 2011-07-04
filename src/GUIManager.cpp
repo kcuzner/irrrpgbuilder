@@ -798,8 +798,16 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	if (guidialog->isVisible() && guidialog->isPointInside(mousepos))
 	    return true;
 
+	// This one is special, the gameplay bar has a Health that takes 100% height while the buttons take half
+	// of the bottom of the image. So we check if the mouse is in the element and check if it reaches the buttons
 	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(mousepos))
-		return true;
+	{
+		s32 startpos = (gameplay_bar_image->getAbsolutePosition().UpperLeftCorner.Y-15) + (gameplay_bar_image->getAbsolutePosition().getHeight()/2);
+		if (mousepos.Y>startpos)
+			return true;
+	}
+		
+
 	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
 		return true;
 	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
