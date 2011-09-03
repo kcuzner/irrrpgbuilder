@@ -11,7 +11,7 @@ void main ()
 	vec3 edgeCol=vec3(0.6, 0.6, 0.6);
 
 	vec2 texSize = vec2(1.0/NumTilesX, 1.0/NumTilesY);
-	vec2 baseCoord = gl_TexCoord[0].xy-fmod(gl_TexCoord[0].xy, texSize);
+	vec2 baseCoord = gl_TexCoord[0].xy-mod(gl_TexCoord[0].xy, texSize);
     vec2 centerCoord = baseCoord+texSize/2.0;
     vec2 stCoord = (gl_TexCoord[0].xy-baseCoord)/texSize;
     vec4 col0 = vec4(1.0-edgeCol ,1.0);

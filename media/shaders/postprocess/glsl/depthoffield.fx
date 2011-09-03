@@ -19,5 +19,6 @@ void main ()
 		factor = 2.0 *(dist.a - 0.5);
 
 	clamp(factor, 0.0, 0.90);
-	gl_FragColor = lerp(sharp, blur, factor);
+	//lerp(sharp, blur, factor);
+	gl_FragColor = mix(sharp, blur, factor);
 }

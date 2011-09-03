@@ -2,22 +2,43 @@ uniform sampler2D texture0; //sceneBuffer
 uniform float SampleDist;
 uniform float SampleStrength;
 
-static const float samples[10] =
+//static const float samples[10] =
+
+float saturate(float x)
 {
-	-0.08,
-	-0.05,
-	-0.03,
-	-0.02,
-	-0.01,
-	0.01,
-	0.02,
-	0.03,
-	0.05,
-	0.08
-};
+ return (x < 0.0) ? 0.0 : (1.0 < x) ? 1.0 : x;
+}
+ 
+vec2 saturate(vec2 x)
+{
+ return vec2(saturate(x[0]),saturate(x[1]));
+}
+ 
+vec3 saturate(vec3 x)
+{
+ return vec3(saturate(x[0]),saturate(x[1]),saturate(x[2]));
+}
+ 
+vec4 saturate(vec4 x)
+{
+ return vec4(saturate(x[0]),saturate(x[1]),saturate(x[2]),saturate(x[3]));
+}
+ 
 
 void main ()
 {
+   float samples[10];
+	samples[0]= -0.08;
+	samples[1]= -0.05;
+	samples[2]= -0.03;
+	samples[3]= -0.02;
+	samples[4]= -0.01;
+	samples[5]= 0.01;
+	samples[6]= 0.02;
+	samples[7]= 0.03;
+	samples[8]= 0.05;
+	samples[9]= 0.08;
+
    // Vector from pixel to the center of the screen
    vec2 dir = 0.5-gl_TexCoord[0].xy;
 
@@ -44,5 +65,5 @@ void main ()
    float t = saturate(dist*SampleStrength);
 
    //Blend the original color with the averaged pixels
-   gl_FragColor = lerp(color, sum, t);
+   gl_FragColor = mix(color, sum, t);
 }

@@ -7,17 +7,17 @@ void main()
 	vec4 finalCol = vec4(0.0);
 
 	// gauss distribution with mean:0 std:2
-	float weight[9] = {
-		0.0295,
-		0.0673,
-		0.1235,
-		0.1786,
-		0.2022,
-		0.1786,
-		0.1235,
-		0.0673,
-		0.0295
-	};
+	float weight[9];
+	weight[0] = 0.0295;
+	weight[1] = 0.0673;
+	weight[2] =	0.1235;
+	weight[3] =	0.1786;
+	weight[4] =	0.2022;
+	weight[5] = 0.1786;
+	weight[6] = 0.1235;
+	weight[7] =	0.0673;
+	weight[8] =	0.0295;
+
 
 	// blur in y (vertical)
 	// take the samples with the distance blurSize between them
@@ -33,15 +33,14 @@ void main7x7()
 	vec4 finalCol = vec4(0.0);
 
 	// gauss distribution with mean:0 std:1
-	float weight[7] = {
-		0.0050,
-		0.0540,
-		0.2410,
-		0.4000,
-		0.2410,
-		0.0540,
-		0.0050
-	};
+	float weight[7];
+	weight[0]= 0.0050;
+	weight[1]= 0.0540;
+	weight[2]= 0.2410;
+	weight[3]= 0.4000;
+	weight[4]= 0.2410;
+	weight[5]= 0.0540;
+	weight[6]= 0.0050;
 
 	// blur in y (vertical)
 	// take the samples with the distance blurSize between them

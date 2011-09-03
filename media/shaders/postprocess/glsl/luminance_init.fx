@@ -9,7 +9,7 @@ const vec3 ITU_R_709 = vec3(0.2126f, 0.7152f, 0.0722f);
 void main ()
 {
 	vec2 texSize = vec2(1.0/BufferWidth, 1.0/BufferHeight);
-	vec4 texCol = 0.0f;
+	vec4 texCol = vec4(0.0f);
 	float average = 0.0f;
     for (int v=0; v<2; v++)
 	{

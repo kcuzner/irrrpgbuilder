@@ -16,7 +16,7 @@ void main()
 	
     vec2 i = Shake*vec2(RandomValue, RandomValue);
     vec2 j = abs(i);
-    vec2 pj = pow(j, Sharpness);
+    vec2 pj = vec2(pow(float(j), Sharpness));
     vec2 si = sign(i);
     vec2 shook = si * pj;
 	gl_TexCoord[0].st -= shook;

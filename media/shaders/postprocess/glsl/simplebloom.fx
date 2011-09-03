@@ -7,11 +7,11 @@ void main()
 	vec4 col0 = finalCol;
 	
 	// higher contrast
-	finalCol.rgb = pow(col0.rgb, EffectStrength);
+	finalCol.rgb = vec3(pow(float(col0.rgb), EffectStrength));
 	
 	// mix colors
-	finalCol.rgb *= col0;
-	finalCol.rgb += col0;
+	finalCol.rgb *= vec3(col0);
+	finalCol.rgb += vec3(col0);
 
 	gl_FragColor = finalCol;
 }

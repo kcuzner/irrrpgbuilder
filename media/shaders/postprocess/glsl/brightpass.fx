@@ -30,9 +30,9 @@ void main()
     // 5. Use the magnitude of the colour
     //float lumValue = length(texCol.rgb);	
 	
-	if(lumValue < min(lumCol.r*EffectStrength*2, 0.95))
+	if(lumValue < min(lumCol.r*EffectStrength*2, 0.95f))
 	{
-		texCol.rgb = 0.0;
+		texCol.rgb = vec3(0.0f);
 	}
 	gl_FragColor = texCol;
 }	
