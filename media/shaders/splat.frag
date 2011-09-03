@@ -20,7 +20,7 @@ varying vec4 worldCoord;
 
 void main() 
 {
-    int scale = terrainScale / 4;
+    float scale = terrainScale / 4;
 	if (terrainScale==1)
 		scale = 1;
 		
@@ -52,7 +52,8 @@ void main()
 	// Point light with attenuation calculation	
 	vec4 diffuse;
 	vec3 norm = normalize(normal);
-	vec3 lightVector = mLightPos - worldCoord;
+	
+    vec3 lightVector = mLightPos - vec3(worldCoord);
 	float dist = length(lightVector);
 	float attenuation = 1.0 /( gl_LightSource[0].constantAttenuation +
 								gl_LightSource[0].linearAttenuation * dist +
@@ -63,7 +64,7 @@ void main()
 	
 	// Directional light no attenuation
 	vec4 sunDiffuse;
-	vec3 sunVector = normalize(vec3(2500,5500,-5500) - worldCoord);
+	vec3 sunVector = normalize(vec3(2500,5500,-5500) - vec3(worldCoord));
 	float sunDir = max(0.0, dot(norm, sunVector));
 	
 	//Seem to cause seams with lighting
