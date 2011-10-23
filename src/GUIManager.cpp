@@ -28,6 +28,7 @@ GUIManager::GUIManager()
 	guiTerrainToolbar=NULL;
 	guiWindowItems=NULL;
 	consolewin=NULL;
+	guiLoaderDescription = NULL;
 
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
@@ -43,6 +44,8 @@ GUIManager::GUIManager()
 	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
 	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
 	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
+
+	
 }
 
 GUIManager::~GUIManager()
@@ -855,8 +858,11 @@ void GUIManager::UpdateGUIChooser(int objType)
 
 void GUIManager::setTextLoader(stringw text)
 {
-	guiLoaderDescription->setText(text.c_str());
-	App::getInstance()->quickUpdate();
+	if (guiLoaderDescription)
+	{
+		guiLoaderDescription->setText(text.c_str());
+		App::getInstance()->quickUpdate();
+	}
 }
 
 void GUIManager::setupGameplayGUI()
