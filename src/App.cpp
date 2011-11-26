@@ -32,7 +32,7 @@ const float DEG2RAD = 3.14159f/180;
 
 App::App()
 {
- wxSystem=false;
+ wxSystemState=false;
  app_state=APP_EDIT_LOOK;
  textevent.clear();
 }
@@ -269,7 +269,7 @@ void App::setAppState(APP_STATE newAppState)
 
     if(app_state == APP_EDIT_CHARACTER)
     {
-		if (!wxSystem)
+		if (!wxSystemState==true)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
@@ -280,7 +280,7 @@ void App::setAppState(APP_STATE newAppState)
     }
     else
     {
-		if (!wxSystem)
+		if (!wxSystemState==true)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
@@ -564,7 +564,7 @@ void App::eventGuiButton(s32 id)
 
 void App::hideEditGui()
 {
-	wxSystem=true;
+	wxSystemState=true;
 	GUIManager::getInstance()->setConsoleText(L"Ready now for WXwidget!",SColor(255,0,0,255));
 	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
 }

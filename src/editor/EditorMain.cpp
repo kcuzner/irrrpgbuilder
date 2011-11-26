@@ -10,7 +10,7 @@ IMPLEMENT_APP(CIrrApp)
 bool CIrrApp::OnInit()
 {
 	
-	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - May 2011"), wxPoint(0,0), wxSize(1024,768) );
+	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - November 2011"), wxPoint(0,0), wxSize(1024,768) );
 	frame->Show(TRUE);
 	
 	frame->Centre();
@@ -36,7 +36,7 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_New, CIrrFrame::OnNew)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_Save, CIrrFrame::OnSave)
 	EVT_RIBBONTOOLBAR_CLICKED(ID_Load, CIrrFrame::OnLoad)
-*/
+
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Quit, CIrrFrame::OnQuit)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_New, CIrrFrame::OnNew)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_Save, CIrrFrame::OnSave)
@@ -55,7 +55,7 @@ BEGIN_EVENT_TABLE(CIrrFrame, wxFrame)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTransform, CIrrFrame::OnTerrainTransform)
 	EVT_RIBBONBUTTONBAR_CLICKED(ID_TerrainTree, CIrrFrame::OnTerrainTree)
 	//EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnDisplayConsole)
-	EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnLog)
+	EVT_RIBBONBUTTONBAR_CLICKED(ID_Console, CIrrFrame::OnLog) */
 
 	EVT_TIMER(ID_UpdateTimer, OnProgressTimer)
 	
@@ -88,9 +88,9 @@ END_EVENT_TABLE()
 
 CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
 {
-	m_ribbon = new wxRibbonBar(this, wxID_ANY);
+	/* m_ribbon = new wxRibbonBar(this, wxID_ANY);
 	m_ribbon1 = new wxRibbonBar(this, wxID_ANY);
-    m_ribbon2 = new wxRibbonBar(this, wxID_ANY);
+    m_ribbon2 = new wxRibbonBar(this, wxID_ANY); */
 
 	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	SetIcon(wxICON(sample));
@@ -103,22 +103,22 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	window3D = new wxCIWindow( this, wxID_ANY, style, irr::video::EDT_OPENGL, true );
 	App::getInstance()->setupDevice(window3D->getDevice());
 	window3D->AcceptsFocus();
-	bSizer2->Add( m_ribbon1, 1, wxLEFT, 5);
+	/* bSizer2->Add( m_ribbon1, 1, wxLEFT, 5);
 	bSizer2->Add( m_ribbon, 8, wxEXPAND, 5);
 	bSizer2->Add( m_ribbon2, 1, wxRIGHT, 5);
 	
 
-	bSizer1->Add( bSizer2, 0, wxEXPAND);
+	bSizer1->Add( bSizer2, 0, wxEXPAND); */
 	bSizer1->Add( window3D, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
 	this->Layout();
 
-	wxMenu *menuFile = new wxMenu;
+	//wxMenu *menuFile = new wxMenu;
 
 	// Timer set there to check for the engine event (IRRlicht), need to pull updates
 	wxTimer * m_timer = new wxTimer(this, ID_UpdateTimer);
-	m_timer->Start(250);
+	m_timer->Start(25);
 
 	 
 	console_dialog = (ConsoleDialog *)NULL;
@@ -137,7 +137,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	menuBar->Append( menuCommands, _T("&Command") );
 */
 	// "Playtest" toolbar
-	wxRibbonPage* home2 = new wxRibbonPage(m_ribbon2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), empty_xpm);
+/*	wxRibbonPage* home2 = new wxRibbonPage(m_ribbon2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), empty_xpm);
 	if (home2)
 	{
 		wxRibbonPanel *test_panel = new wxRibbonPanel(home2, wxID_ANY, App::getInstance()->getLangText("txt_tool_des4").c_str(), wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxRIBBON_PANEL_NO_AUTO_MINIMISE | wxRIBBON_PANEL_MINIMISE_BUTTON);
@@ -252,7 +252,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 		option_button->Realize();
 		
 	}
-
+*/
 	
 	
 	
@@ -260,7 +260,7 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	CreateStatusBar();
 	SetStatusText(App::getInstance()->getLangText("msg_welcome").c_str());
-	m_ribbon->SetActivePage(dynobject);
+	// m_ribbon->SetActivePage(dynobject);
 	Connect (-1, wxEVT_CLOSE_WINDOW,
              wxCloseEventHandler (CIrrFrame::OnClose),
              NULL, this);
@@ -274,11 +274,11 @@ CIrrFrame::~CIrrFrame()
 {
 }
 
-void CIrrFrame::OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt))
+/*void CIrrFrame::OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	
 	Close(true);
-}
+}*/
 
 void CIrrFrame::OnClose (wxCloseEvent& e)
 {
@@ -309,6 +309,7 @@ void CIrrFrame::OnProgressTimer(wxTimerEvent& event)
 	}
 }
 
+/*
 void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	if (MessageBox(App::getInstance()->getLangText("msg_prj_np0").c_str(),App::getInstance()->getLangText("msg_prj_np1").c_str(),2)==1)
@@ -396,19 +397,6 @@ void CIrrFrame::OnAbout(wxRibbonButtonBarEvent& WXUNUSED(evt))
 			App::getInstance()->getDevice()->getVersion()
 		));
 	info.SetVersion(wxT("0.2 Alpha"),wxT("0.2 Alpha"));
-		/*wxString::Format
-        (
-			"\n >wxWidget %s\n >Irrlicht %s",
-			wxVERSION_NUM_DOT_STRING,
-			App::getInstance()->getDevice()->getVersion()
-		),
-		wxString::Format
-        (
-			"wxWidget %s version %s\nIrrlicht version %s",
-			wxMINOR_VERSION % 2 ? "Development" : "Stable",
-			wxVERSION_NUM_DOT_STRING,
-			App::getInstance()->getDevice()->getVersion()
-		));*/
 	std::vector<core::stringw> abouttxt = App::getInstance()->getAbout();
 	stringw text = L"\n";
 	for (int a=0; a<(int)abouttxt.size(); a++)
@@ -533,6 +521,8 @@ void CIrrFrame::OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt))
 	//option_button->ToggleButton(ID_Console,true);
 	App::getInstance()->displayGuiConsole();
 }
+*/
+
 
 void CIrrFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
@@ -564,8 +554,8 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
                            wxCENTER | 
 						   wxYES_NO | wxYES_DEFAULT | wxCANCEL |
 						   wxICON_WARNING);
-		wxString extmsg;
-		if ( dialog.SetYesNoCancelLabels
+		//wxString extmsg;
+		/*if ( dialog.SetYesNoCancelLabels
 			(
 			App::getInstance()->getLangText("msg_dlg_yes").c_str(),
 			App::getInstance()->getLangText("msg_dlg_no").c_str(),
@@ -577,7 +567,7 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 		{
 			extmsg = message2.c_str();
 		}
-		dialog.SetExtendedMessage(extmsg);
+		dialog.SetExtendedMessage(extmsg);*/
 
 		switch ( dialog.ShowModal() )
 		{
@@ -608,8 +598,8 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
                            wxCENTER | 
 						   wxOK | wxCANCEL |
 						   wxICON_WARNING);
-		wxString extmsg;
-		if ( dialog.SetOKCancelLabels
+		//wxString extmsg;
+		/*if ( dialog.SetOKCancelLabels
 			(
 			App::getInstance()->getLangText("msg_dlg_yes").c_str(),
 			App::getInstance()->getLangText("msg_dlg_no").c_str()) )
@@ -621,7 +611,7 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 			extmsg = message2.c_str();
 		}
 		dialog.SetExtendedMessage(extmsg);
-
+        */
 		switch ( dialog.ShowModal() )
 		{
 			case wxID_OK:
@@ -643,6 +633,7 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 
 core::stringw CIrrFrame::FileOpen(core::stringw message)
 {
+	/*
     static wxString s_extDef;
 	wxString path = wxFileSelector(
 									message.c_str(),
@@ -666,12 +657,14 @@ core::stringw CIrrFrame::FileOpen(core::stringw message)
 	//wxLogStatus(wxT("You selected the file '%s', remembered extension '%s'"),
     //             path, s_extDef);
 
-    return (core::stringw)path.c_str().AsString().ToStdWstring().c_str();
+    //return (core::stringw)path.c_str().AsString().ToStdWstring().c_str();
+	*/
+	return (core::stringw)L"";
 }
 
 core::stringw CIrrFrame::FileSave()
 {
-    wxFileDialog dialog(this,
+    /*wxFileDialog dialog(this,
                         wxT("Testing save file dialog"),
                         wxT("../projects"),
 						App::getInstance()->getProjectName().c_str(),
@@ -685,13 +678,13 @@ core::stringw CIrrFrame::FileSave()
     {
         wxLogStatus(wxT("Saving %s ..."),dialog.GetPath().c_str());
 		return dialog.GetPath().c_str().AsString().ToStdWstring().c_str();
-    }
+    }*/
 	return L"";
 }
 
 void CIrrFrame::UncheckAllButtons()
 {
-	terrain_button->ToggleButton(ID_TerrainSegment,false);
+	/*terrain_button->ToggleButton(ID_TerrainSegment,false);
 	terrain_button->ToggleButton(ID_TerrainTransform,false);
 	terrain_buttonv->ToggleButton(ID_TerrainTree,false);
 	dynobject_button->ToggleButton(ID_ObjEditMode,false);
@@ -701,7 +694,7 @@ void CIrrFrame::UncheckAllButtons()
 	option_button->ToggleButton(ID_EditConfig,false);
 	option_button->ToggleButton(ID_EditGameConfig,false);
 	//option_button->ToggleButton(ID_Console,false);
-
+   */
 
 		/*ID_New,
 		ID_Save,

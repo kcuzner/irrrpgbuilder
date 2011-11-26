@@ -476,10 +476,12 @@ void GUIManager::setupEditorGUI()
 
     guiCloseProgram->setImage(imgCloseProgram);
 
-	if (App::getInstance()->wxSystem)
+	// Old code that used The wxRibbonToolbar (For a beta wxWidget release)
+	if (App::getInstance()->wxSystemState)
 	{
-		guiMainWindow->setVisible(false);
-		guiMainToolWindow->setVisible(false);
+		// Temporary comment out.. Want back the IRRlicht GUI
+		//guiMainWindow->setVisible(false);
+		//guiMainToolWindow->setVisible(false);
 	}
 
 
@@ -1334,7 +1336,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
 #ifdef EDITOR
-			if (App::getInstance()->wxSystem==false)
+			if (App::getInstance()->wxSystemState==false)
 				guiMainWindow->setVisible(!visible);
 #endif
 			// the bar_image should be made into an element too

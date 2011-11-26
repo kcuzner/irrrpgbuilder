@@ -118,7 +118,7 @@ class App
 		std::vector<SColor> getConsoleColor();
 		void clearConsole();
 
-		bool wxSystem;
+		bool wxSystemState;
 
 		// used for the logger
 		std::vector<core::stringw> textevent;
