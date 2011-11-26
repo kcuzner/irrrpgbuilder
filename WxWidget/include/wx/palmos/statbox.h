@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: statbox.h 67280 2011-03-22 14:17:38Z DS $
+// RCS-ID:      $Id: statbox.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _WX_STATBOX_H_
 
 // Group box
-class WXDLLIMPEXP_CORE wxStaticBox : public wxStaticBoxBase
+class WXDLLEXPORT wxStaticBox : public wxStaticBoxBase
 {
 public:
     wxStaticBox() { }
@@ -40,7 +40,7 @@ public:
 
     virtual WXLRESULT MSWWindowProc(WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam);
 
-    // overridden base class virtuals
+    // overriden base class virtuals
     virtual bool AcceptsFocus() const { return FALSE; }
 
 protected:

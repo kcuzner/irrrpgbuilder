@@ -2,9 +2,9 @@
 // Name:        wx/palmos/font.h
 // Purpose:     wxFont class
 // Author:      William Osborne - minimal working wxPalmOS port
-// Modified by: Yunhui Fu
+// Modified by:
 // Created:     10/14/04
-// RCS-ID:      $Id: font.h 65670 2010-09-29 13:46:09Z VZ $
+// RCS-ID:      $Id: font.h 39411 2006-05-29 00:03:36Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,13 +18,12 @@
 // wxFont
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxFont : public wxFontBase
+class WXDLLEXPORT wxFont : public wxFontBase
 {
 public:
     // ctors and such
     wxFont() { }
 
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
     wxFont(int size,
            int family,
            int style,
@@ -33,28 +32,8 @@ public:
            const wxString& face = wxEmptyString,
            wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
     {
-        (void)Create(size, (wxFontFamily)family, (wxFontStyle)style, (wxFontWeight)weight, underlined, face, encoding);
+        (void)Create(size, family, style, weight, underlined, face, encoding);
     }
-#endif
-
-    wxFont(int size,
-           wxFontFamily family,
-           wxFontStyle style,
-           wxFontWeight weight,
-           bool underlined = false,
-           const wxString& face = wxEmptyString,
-           wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
-    {
-        Create(size, family, style, weight, underlined, face, encoding);
-    }
-
-    bool Create(int size,
-                wxFontFamily family,
-                wxFontStyle style,
-                wxFontWeight weight,
-                bool underlined = false,
-                const wxString& face = wxEmptyString,
-                wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
 
     wxFont(const wxSize& pixelSize,
            int family,
@@ -75,6 +54,18 @@ public:
 
     wxFont(const wxString& fontDesc);
 
+    bool Create(int size,
+                int family,
+                int style,
+                int weight,
+                bool underlined = false,
+                const wxString& face = wxEmptyString,
+                wxFontEncoding encoding = wxFONTENCODING_DEFAULT)
+    {
+        return DoCreate(size, wxDefaultSize, false, family, style,
+                        weight, underlined, face, encoding);
+    }
+
     bool Create(const wxSize& pixelSize,
                 int family,
                 int style,
@@ -91,16 +82,13 @@ public:
 
     virtual ~wxFont();
 
-    // wxFontBase overridden functions
-    virtual wxString GetNativeFontInfoDesc() const;
-    virtual wxString GetNativeFontInfoUserDesc() const;
-
     // implement base class pure virtuals
     virtual int GetPointSize() const;
     virtual wxSize GetPixelSize() const;
     virtual bool IsUsingSizeInPixels() const;
-    virtual wxFontStyle GetStyle() const;
-    virtual wxFontWeight GetWeight() const;
+    virtual int GetFamily() const;
+    virtual int GetStyle() const;
+    virtual int GetWeight() const;
     virtual bool GetUnderlined() const;
     virtual wxString GetFaceName() const;
     virtual wxFontEncoding GetEncoding() const;
@@ -108,14 +96,12 @@ public:
 
     virtual void SetPointSize(int pointSize);
     virtual void SetPixelSize(const wxSize& pixelSize);
-    virtual void SetFamily(wxFontFamily family);
-    virtual void SetStyle(wxFontStyle style);
-    virtual void SetWeight(wxFontWeight weight);
+    virtual void SetFamily(int family);
+    virtual void SetStyle(int style);
+    virtual void SetWeight(int weight);
     virtual bool SetFaceName(const wxString& faceName);
     virtual void SetUnderlined(bool underlined);
     virtual void SetEncoding(wxFontEncoding encoding);
-
-    wxDECLARE_COMMON_FONT_METHODS();
 
     virtual bool IsFixedWidth() const;
 
@@ -140,11 +126,8 @@ protected:
                   wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
 
     virtual void DoSetNativeFontInfo(const wxNativeFontInfo& info);
-    virtual wxFontFamily DoGetFamily() const;
 
-    // implement wxObject virtuals which are used by AllocExclusive()
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
+    void Unshare();
 
 private:
     DECLARE_DYNAMIC_CLASS(wxFont)

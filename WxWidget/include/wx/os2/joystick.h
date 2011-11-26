@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/joystick.h
+// Name:        joystick.h
 // Purpose:     wxJoystick class
 // Author:      David Webster
 // Modified by:
 // Created:     10/09/99
-// RCS-ID:      $Id: joystick.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: joystick.h 36284 2005-11-29 12:50:13Z MR $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/event.h"
 
-class WXDLLIMPEXP_ADV wxJoystick: public wxObject
+class WXDLLEXPORT wxJoystick: public wxObject
 {
   DECLARE_DYNAMIC_CLASS(wxJoystick)
  public:

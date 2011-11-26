@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: bitmap.h 66086 2010-11-10 13:51:51Z VZ $
+// RCS-ID:      $Id: bitmap.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,26 +16,26 @@
 #include "wx/gdicmn.h"
 #include "wx/palette.h"
 
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
-class WXDLLIMPEXP_FWD_CORE wxBitmapHandler;
-class WXDLLIMPEXP_FWD_CORE wxBitmapRefData;
-class WXDLLIMPEXP_FWD_CORE wxControl;
-class WXDLLIMPEXP_FWD_CORE wxCursor;
-class WXDLLIMPEXP_FWD_CORE wxDC;
+class WXDLLEXPORT wxBitmap;
+class WXDLLEXPORT wxBitmapHandler;
+class WXDLLEXPORT wxBitmapRefData;
+class WXDLLEXPORT wxControl;
+class WXDLLEXPORT wxCursor;
+class WXDLLEXPORT wxDC;
 #if wxUSE_WXDIB
-class WXDLLIMPEXP_FWD_CORE wxDIB;
+class WXDLLEXPORT wxDIB;
 #endif
-class WXDLLIMPEXP_FWD_CORE wxIcon;
-class WXDLLIMPEXP_FWD_CORE wxImage;
-class WXDLLIMPEXP_FWD_CORE wxMask;
-class WXDLLIMPEXP_FWD_CORE wxPalette;
-class WXDLLIMPEXP_FWD_CORE wxPixelDataBase;
+class WXDLLEXPORT wxIcon;
+class WXDLLEXPORT wxImage;
+class WXDLLEXPORT wxMask;
+class WXDLLEXPORT wxPalette;
+class WXDLLEXPORT wxPixelDataBase;
 
 // ----------------------------------------------------------------------------
 // wxBitmap: a mono or colour bitmap
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBitmap : public wxGDIImage
+class WXDLLEXPORT wxBitmap : public wxGDIImage
 {
 public:
     // default ctor creates an invalid bitmap, you must Create() it later
@@ -48,7 +48,7 @@ public:
     wxBitmap(const char* const* data);
 
     // Load a file or resource
-    wxBitmap(const wxString& name, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+    wxBitmap(const wxString& name, wxBitmapType type = wxBITMAP_TYPE_BMP_RESOURCE);
 
     // New constructor for generalised creation from data
     wxBitmap(const void* data, long type, int width, int height, int depth = 1);
@@ -58,8 +58,7 @@ public:
     //
     // NB: this ctor will create a DIB for 24 and 32bpp bitmaps, use ctor
     //     taking a DC argument if you want to force using DDB in this case
-    wxBitmap(int width, int height, int depth = -1) { /*TODO*/ }
-    wxBitmap(const wxSize& sz, int depth = -1) { /*TODO*/ }
+    wxBitmap(int width, int height, int depth = -1);
 
     // Create a bitmap compatible with the given DC
     wxBitmap(int width, int height, const wxDC& dc);
@@ -92,11 +91,10 @@ public:
         return *this;
     }
 
-    virtual ~wxBitmap() {}
+    virtual ~wxBitmap();
 
 #if wxUSE_IMAGE && wxUSE_WXDIB
     wxImage ConvertToImage() const;
-    wxBitmap ConvertToDisabled(unsigned char brightness = 255) const;
 #endif // wxUSE_IMAGE
 
     // get the given part of bitmap
@@ -113,13 +111,10 @@ public:
     bool CopyFromDIB(const wxDIB& dib);
 #endif
 
-    virtual bool Create(int width, int height, int depth = wxBITMAP_SCREEN_DEPTH);
-    virtual bool Create(const wxSize& sz, int depth = wxBITMAP_SCREEN_DEPTH)
-        { return Create(sz.GetWidth(), sz.GetHeight(), depth); }
-
+    virtual bool Create(int width, int height, int depth = -1);
     virtual bool Create(int width, int height, const wxDC& dc);
     virtual bool Create(const void* data, long type, int width, int height, int depth = 1);
-    virtual bool LoadFile(const wxString& name, long type = wxBITMAP_DEFAULT_TYPE);
+    virtual bool LoadFile(const wxString& name, long type = wxBITMAP_TYPE_BMP_RESOURCE);
     virtual bool SaveFile(const wxString& name, int type, const wxPalette *cmap = NULL);
 
     wxBitmapRefData *GetBitmapData() const
@@ -140,6 +135,7 @@ public:
     // these functions are internal and shouldn't be used, they risk to
     // disappear in the future
     bool HasAlpha() const;
+    void UseAlpha();
 
     // implementation only from now on
     // -------------------------------
@@ -147,6 +143,11 @@ public:
 public:
     void SetHBITMAP(WXHBITMAP bmp) { SetHandle((WXHANDLE)bmp); }
     WXHBITMAP GetHBITMAP() const { return (WXHBITMAP)GetHandle(); }
+
+#ifdef __WXDEBUG__
+    void SetSelectedInto(wxDC *dc);
+    wxDC *GetSelectedInto() const;
+#endif // __WXDEBUG__
 
 protected:
     // common part of all ctors
@@ -176,7 +177,7 @@ private:
 // wxMask: a mono bitmap used for drawing bitmaps transparently.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMask : public wxObject
+class WXDLLEXPORT wxMask : public wxObject
 {
 public:
     wxMask();
@@ -215,7 +216,7 @@ protected:
 // wxBitmapHandler is a class which knows how to load/save bitmaps to/from file
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBitmapHandler : public wxGDIImageHandler
+class WXDLLEXPORT wxBitmapHandler : public wxGDIImageHandler
 {
 public:
     wxBitmapHandler() { m_type = wxBITMAP_TYPE_INVALID; }

@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: minifram.h 54125 2008-06-11 19:17:41Z SC $
+// RCS-ID:      $Id: minifram.h 49299 2007-10-21 18:07:29Z PC $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +29,7 @@
 #elif defined(__WXX11__)
 #include "wx/x11/minifram.h"
 #elif defined(__WXMAC__)
-#include "wx/osx/minifram.h"
+#include "wx/mac/minifram.h"
 #elif defined(__WXPM__)
 #include "wx/os2/minifram.h"
 #else

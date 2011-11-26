@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/mgl/dcmemory.h
+// Name:        dcmemory.h
 // Purpose:
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: dcmemory.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: dcmemory.h 42755 2006-10-30 19:41:46Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,13 +17,13 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxMemoryDC;
+class WXDLLEXPORT wxMemoryDC;
 
 //-----------------------------------------------------------------------------
 // wxMemoryDC
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMemoryDC : public wxDC, public wxMemoryDCBase
+class WXDLLEXPORT wxMemoryDC : public wxDC, public wxMemoryDCBase
 {
 public:
     wxMemoryDC() { Init(); }
@@ -42,7 +42,7 @@ public:
 
     // implementation
     wxBitmap  m_selected;
-
+    
     wxBitmap GetSelectedObject() const { return m_selected; }
 
 protected:

@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: icon.h 59266 2009-03-02 13:45:09Z VZ $
+// RCS-ID:      $Id: icon.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #include "wx/bitmap.h"
 
 // Icon
-class WXDLLIMPEXP_CORE wxIcon : public wxBitmap
+class WXDLLEXPORT wxIcon : public wxBitmap
 {
 public:
     wxIcon();
@@ -24,12 +24,10 @@ public:
     wxIcon(const char bits[], int width, int height);
 
     // Initialize with XPM data
-    wxIcon(const char* const* data);
-#ifdef wxNEEDS_CHARPP
+    wxIcon(const char **data);
     wxIcon(char **data);
-#endif
 
-    wxIcon(const wxString& name, wxBitmapType type = wxICON_DEFAULT_TYPE,
+    wxIcon(const wxString& name, wxBitmapType type = wxBITMAP_TYPE_XPM,
            int desiredWidth = -1, int desiredHeight = -1)
     {
         LoadFile(name, type, desiredWidth, desiredHeight);
@@ -43,12 +41,14 @@ public:
     virtual ~wxIcon();
 
     bool LoadFile(const wxString& name, wxBitmapType type,
-                  int desiredWidth, int desiredHeight);
+                  int desiredWidth, int desiredHeight = -1);
 
-    // unhide the base class version
+    // unhide base class LoadFile()
     virtual bool LoadFile(const wxString& name,
-                          wxBitmapType flags = wxICON_DEFAULT_TYPE)
-        { return LoadFile(name, flags); }
+                          wxBitmapType type = wxBITMAP_TYPE_XPM)
+    {
+        return LoadFile(name, type, -1, -1);
+    }
 
     // create from bitmap (which should have a mask unless it's monochrome):
     // there shouldn't be any implicit bitmap -> icon conversion (i.e. no

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/cocoa/dcclient.h
-// Purpose:     wxClientDCImpl, wxPaintDCImpl and wxWindowDCImpl classes
+// Purpose:     wxClientDC, wxPaintDC and wxWindowDC classes
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/04/01
-// RCS-ID:      $Id: dcclient.h 50462 2007-12-04 04:22:16Z DE $
+// RCS-ID:      $Id: dcclient.h 42077 2006-10-17 14:44:52Z ABX $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,20 +12,20 @@
 #ifndef __WX_COCOA_DCCLIENT_H__
 #define __WX_COCOA_DCCLIENT_H__
 
-#include "wx/cocoa/dc.h"
+#include "wx/dc.h"
 
 // DFE: A while ago I stumbled upon the fact that retrieving the parent
 // NSView of the content view seems to return the entire window rectangle
 // (including decorations).  Of course, that is not at all part of the
 // Cocoa or OpenStep APIs, but it might be a neat hack.
-class WXDLLIMPEXP_CORE wxWindowDCImpl: public wxCocoaDCImpl
+class wxWindowDC: public wxDC
 {
-    DECLARE_DYNAMIC_CLASS(wxWindowDCImpl)
+    DECLARE_DYNAMIC_CLASS(wxWindowDC)
 public:
-    wxWindowDCImpl(wxDC *owner);
+    wxWindowDC(void);
     // Create a DC corresponding to a window
-    wxWindowDCImpl(wxDC *owner, wxWindow *win);
-    virtual ~wxWindowDCImpl(void);
+    wxWindowDC(wxWindow *win);
+    virtual ~wxWindowDC(void);
 
 protected:
     wxWindow *m_window;
@@ -38,28 +38,28 @@ protected:
     virtual bool CocoaGetBounds(void *rectData);
 };
 
-class WXDLLIMPEXP_CORE wxClientDCImpl: public wxWindowDCImpl
+class wxClientDC: public wxWindowDC
 {
-    DECLARE_DYNAMIC_CLASS(wxClientDCImpl)
+    DECLARE_DYNAMIC_CLASS(wxClientDC)
 public:
-    wxClientDCImpl(wxDC *owner);
+    wxClientDC(void);
     // Create a DC corresponding to a window
-    wxClientDCImpl(wxDC *owner, wxWindow *win);
-    virtual ~wxClientDCImpl(void);
+    wxClientDC(wxWindow *win);
+    virtual ~wxClientDC(void);
 protected:
 // DC stack
     virtual bool CocoaLockFocus();
     virtual bool CocoaUnlockFocus();
 };
 
-class WXDLLIMPEXP_CORE wxPaintDCImpl: public wxWindowDCImpl
+class wxPaintDC: public wxWindowDC
 {
-    DECLARE_DYNAMIC_CLASS(wxPaintDCImpl)
+    DECLARE_DYNAMIC_CLASS(wxPaintDC)
 public:
-    wxPaintDCImpl(wxDC *owner);
+    wxPaintDC(void);
     // Create a DC corresponding to a window
-    wxPaintDCImpl(wxDC *owner, wxWindow *win);
-    virtual ~wxPaintDCImpl(void);
+    wxPaintDC(wxWindow *win);
+    virtual ~wxPaintDC(void);
 protected:
 // DC stack
     virtual bool CocoaLockFocus();

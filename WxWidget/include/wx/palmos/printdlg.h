@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: printdlg.h 58757 2009-02-08 11:45:59Z VZ $
+// RCS-ID:      $Id: printdlg.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,13 +17,13 @@
 #include "wx/dialog.h"
 #include "wx/cmndata.h"
 
-class WXDLLIMPEXP_FWD_CORE wxDC;
+class WXDLLEXPORT wxDC;
 
 // ---------------------------------------------------------------------------
 // wxPrinterDialog: the common dialog for printing.
 // ---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPrintDialog : public wxDialog
+class WXDLLEXPORT wxPrintDialog : public wxDialog
 {
     DECLARE_DYNAMIC_CLASS(wxPrintDialog)
 
@@ -46,10 +46,10 @@ private:
     bool              m_destroyDC;
     wxWindow*         m_dialogParent;
 
-    wxDECLARE_NO_COPY_CLASS(wxPrintDialog);
+    DECLARE_NO_COPY_CLASS(wxPrintDialog)
 };
 
-class WXDLLIMPEXP_CORE wxPageSetupDialog: public wxDialog
+class WXDLLEXPORT wxPageSetupDialog: public wxDialog
 {
     DECLARE_DYNAMIC_CLASS(wxPageSetupDialog)
 
@@ -67,7 +67,7 @@ private:
     wxPageSetupData   m_pageSetupData;
     wxWindow*         m_dialogParent;
 
-    wxDECLARE_NO_COPY_CLASS(wxPageSetupDialog);
+    DECLARE_NO_COPY_CLASS(wxPageSetupDialog)
 };
 
 #endif // wxUSE_PRINTING_ARCHITECTURE

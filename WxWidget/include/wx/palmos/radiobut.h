@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native wxRadioButton implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: radiobut.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: radiobut.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_RADIOBUT_H_
 #define _WX_RADIOBUT_H_
 
-class WXDLLIMPEXP_CORE wxRadioButton: public wxControl
+class WXDLLEXPORT wxRadioButton: public wxControl
 {
 public:
     // ctors and creation functions

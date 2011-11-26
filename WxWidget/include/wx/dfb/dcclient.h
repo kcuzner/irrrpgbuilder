@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/dfb/dcclient.h
-// Purpose:     wxWindowDCImpl, wxClientDCImpl and wxPaintDCImpl
+// Purpose:     wxWindowDC, wxClientDC and wxPaintDC
 // Author:      Vaclav Slavik
 // Created:     2006-08-10
-// RCS-ID:      $Id: dcclient.h 58757 2009-02-08 11:45:59Z VZ $
+// RCS-ID:      $Id: dcclient.h 42340 2006-10-24 12:29:14Z VS $
 // Copyright:   (c) 2006 REA Elektronik GmbH
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,20 +11,22 @@
 #ifndef _WX_DFB_DCCLIENT_H_
 #define _WX_DFB_DCCLIENT_H_
 
-#include "wx/dfb/dc.h"
+#include "wx/dc.h"
 
-class WXDLLIMPEXP_FWD_CORE wxWindow;
+class WXDLLIMPEXP_CORE wxWindow;
 
 //-----------------------------------------------------------------------------
-// wxWindowDCImpl
+// wxWindowDC
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxWindowDCImpl : public wxDFBDCImpl
+class WXDLLIMPEXP_CORE wxWindowDC : public wxDC
 {
 public:
-    wxWindowDCImpl(wxDC *owner) : wxDFBDCImpl(owner), m_shouldFlip(false) { }
-    wxWindowDCImpl(wxDC *owner, wxWindow *win);
-    virtual ~wxWindowDCImpl();
+    wxWindowDC() : m_shouldFlip(false) {}
+    wxWindowDC(wxWindow *win);
+    virtual ~wxWindowDC();
+
+    virtual wxWindow *GetWindow() const { return m_win; }
 
 protected:
     // initializes the DC for painting on given window; if rect!=NULL, then
@@ -32,43 +34,44 @@ protected:
     void InitForWin(wxWindow *win, const wxRect *rect);
 
 private:
+    wxWindow *m_win;
     wxRect    m_winRect; // rectangle of the window being painted
 
     bool m_shouldFlip; // flip the surface when done?
 
     friend class wxOverlayImpl; // for m_shouldFlip;
 
-    DECLARE_DYNAMIC_CLASS(wxWindowDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxWindowDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxWindowDC)
+    DECLARE_NO_COPY_CLASS(wxWindowDC)
 };
 
 //-----------------------------------------------------------------------------
-// wxClientDCImpl
+// wxClientDC
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxClientDCImpl : public wxWindowDCImpl
+class WXDLLIMPEXP_CORE wxClientDC : public wxWindowDC
 {
 public:
-    wxClientDCImpl(wxDC *owner) : wxWindowDCImpl(owner) { }
-    wxClientDCImpl(wxDC *owner, wxWindow *win);
+    wxClientDC() {}
+    wxClientDC(wxWindow *win);
 
-    DECLARE_DYNAMIC_CLASS(wxClientDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxClientDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxClientDC)
+    DECLARE_NO_COPY_CLASS(wxClientDC)
 };
 
 
 //-----------------------------------------------------------------------------
-// wxPaintDCImpl
+// wxPaintDC
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPaintDCImpl : public wxClientDCImpl
+class WXDLLIMPEXP_CORE wxPaintDC : public wxClientDC
 {
 public:
-    wxPaintDCImpl(wxDC *owner) : wxClientDCImpl(owner) { }
-    wxPaintDCImpl(wxDC *owner, wxWindow *win) : wxClientDCImpl(owner, win) { }
+    wxPaintDC() {}
+    wxPaintDC(wxWindow *win) : wxClientDC(win) {}
 
-    DECLARE_DYNAMIC_CLASS(wxPaintDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxPaintDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxPaintDC)
+    DECLARE_NO_COPY_CLASS(wxPaintDC)
 };
 
 #endif // _WX_DFB_DCCLIENT_H_

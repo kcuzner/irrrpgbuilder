@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: slider.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: slider.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@
 #include "wx/control.h"
 
 // Slider
-class WXDLLIMPEXP_CORE wxSlider: public wxSliderBase
+class WXDLLEXPORT wxSlider: public wxSliderBase
 {
     DECLARE_DYNAMIC_CLASS(wxSlider)
 

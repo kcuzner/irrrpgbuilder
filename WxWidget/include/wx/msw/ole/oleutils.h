@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/ole/oleutils.h
+// Name:        oleutils.h
 // Purpose:     OLE helper routines, OLE debugging support &c
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: oleutils.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,19 +36,12 @@
 // return true if ok, false otherwise
 inline bool wxOleInitialize()
 {
-    HRESULT
+    // we need to initialize OLE library
 #ifdef __WXWINCE__
-     hr = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    if ( FAILED(::CoInitializeEx(NULL, COINIT_MULTITHREADED)) )
 #else
-     hr = ::OleInitialize(NULL);
+    if ( FAILED(::OleInitialize(NULL)) )
 #endif
-
-    // RPC_E_CHANGED_MODE indicates that OLE had been already initialized
-    // before, albeit with different mode. Don't consider it to be an error as
-    // we don't actually care ourselves about the mode used so this allows the
-    // main application to call OleInitialize() on its own before we do if it
-    // needs non-default mode.
-    if ( hr != RPC_E_CHANGED_MODE && FAILED(hr) )
     {
         wxLogError(_("Cannot initialize OLE"));
 
@@ -150,7 +143,7 @@ private:
 #define   IMPLEMENT_IUNKNOWN_METHODS(classname)                               \
   STDMETHODIMP classname::QueryInterface(REFIID riid, void **ppv)             \
   {                                                                           \
-    wxLogQueryInterface(wxT(#classname), riid);                               \
+    wxLogQueryInterface(_T(#classname), riid);                                \
                                                                               \
     if ( IsIidFromList(riid, ms_aIids, WXSIZEOF(ms_aIids)) ) {                \
       *ppv = this;                                                            \
@@ -167,14 +160,14 @@ private:
                                                                               \
   STDMETHODIMP_(ULONG) classname::AddRef()                                    \
   {                                                                           \
-    wxLogAddRef(wxT(#classname), m_cRef);                                     \
+    wxLogAddRef(_T(#classname), m_cRef);                                      \
                                                                               \
     return ++m_cRef;                                                          \
   }                                                                           \
                                                                               \
   STDMETHODIMP_(ULONG) classname::Release()                                   \
   {                                                                           \
-    wxLogRelease(wxT(#classname), m_cRef);                                    \
+    wxLogRelease(_T(#classname), m_cRef);                                     \
                                                                               \
     if ( --m_cRef == wxAutoULong(0) ) {                                                    \
       delete this;                                                            \
@@ -211,40 +204,43 @@ void wxLogRelease(const wxChar *szInterface, ULONG cRef);
 
 // wrapper around BSTR type (by Vadim Zeitlin)
 
-class WXDLLIMPEXP_CORE wxBasicString
+class WXDLLEXPORT wxBasicString
 {
 public:
     // ctors & dtor
+    wxBasicString(const char *sz);
     wxBasicString(const wxString& str);
-    wxBasicString(const wxBasicString& bstr);
     ~wxBasicString();
 
-    wxBasicString& operator=(const wxBasicString& bstr);
+    void Init(const char* sz);
 
     // accessors
-        // just get the string
-    operator BSTR() const { return m_bstrBuf; }
-        // retrieve a copy of our string - caller must SysFreeString() it later!
-    BSTR Get() const { return SysAllocString(m_bstrBuf); }
+    // just get the string
+    operator BSTR() const { return m_wzBuf; }
+    // retrieve a copy of our string - caller must SysFreeString() it later!
+    BSTR Get() const { return SysAllocString(m_wzBuf); }
 
 private:
-    // actual string
-    BSTR m_bstrBuf;
+    // @@@ not implemented (but should be)
+    wxBasicString(const wxBasicString&);
+    wxBasicString& operator=(const wxBasicString&);
+
+    OLECHAR *m_wzBuf;     // actual string
 };
 
 #if wxUSE_VARIANT
 // Convert variants
 class WXDLLIMPEXP_FWD_BASE wxVariant;
 
-WXDLLIMPEXP_CORE bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant);
-WXDLLIMPEXP_CORE bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant);
+WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant);
+WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant);
 #endif // wxUSE_VARIANT
 
 // Convert string to Unicode
-WXDLLIMPEXP_CORE BSTR wxConvertStringToOle(const wxString& str);
+WXDLLEXPORT BSTR wxConvertStringToOle(const wxString& str);
 
 // Convert string from BSTR to wxString
-WXDLLIMPEXP_CORE wxString wxConvertStringFromOle(BSTR bStr);
+WXDLLEXPORT wxString wxConvertStringFromOle(BSTR bStr);
 
 #else // !wxUSE_OLE
 

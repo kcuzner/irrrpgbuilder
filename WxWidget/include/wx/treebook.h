@@ -4,7 +4,7 @@
 // Author:      Evgeniy Tarassov, Vadim Zeitlin
 // Modified by:
 // Created:     2005-09-15
-// RCS-ID:      $Id: treebook.h 65931 2010-10-27 16:54:36Z VZ $
+// RCS-ID:      $Id: treebook.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 2005 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,6 +18,7 @@
 
 #include "wx/bookctrl.h"
 #include "wx/treectrl.h"        // for wxArrayTreeItemIds
+#include "wx/containr.h"
 
 typedef wxWindow wxTreebookPage;
 
@@ -27,7 +28,7 @@ class WXDLLIMPEXP_FWD_CORE wxTreeEvent;
 // wxTreebook
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxTreebook : public wxBookCtrlBase
+class WXDLLEXPORT wxTreebook : public wxBookCtrlBase
 {
 public:
     // Constructors and such
@@ -126,10 +127,12 @@ public:
     // Standard operations inherited from wxBookCtrlBase
     // -------------------------------------------------
 
+    virtual int GetSelection() const;
     virtual bool SetPageText(size_t n, const wxString& strText);
     virtual wxString GetPageText(size_t n) const;
     virtual int GetPageImage(size_t n) const;
     virtual bool SetPageImage(size_t n, int imageId);
+    virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const;
     virtual int SetSelection(size_t n) { return DoSetSelection(n, SetSelection_SendEvent); }
     virtual int ChangeSelection(size_t n) { return DoSetSelection(n); }
     virtual int HitTest(const wxPoint& pt, long *flags = NULL) const;
@@ -150,6 +153,9 @@ protected:
 
     // array of page ids and page windows
     wxArrayTreeItemIds m_treeIds;
+
+    // the currently selected page or wxNOT_FOUND if none
+    int m_selection;
 
     // in the situation when m_selection page is not wxNOT_FOUND but page is
     // NULL this is the first (sub)child that has a non-NULL page
@@ -216,11 +222,12 @@ private:
 
     // Returns internal number of pages which can be different from
     // GetPageCount() while performing a page insertion or removal.
-    size_t DoInternalGetPageCount() const { return m_treeIds.GetCount(); }
+    size_t DoInternalGetPageCount() const { return m_treeIds.Count(); }
 
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxTreebook)
+    WX_DECLARE_CONTROL_CONTAINER();
 };
 
 
@@ -228,28 +235,47 @@ private:
 // treebook event class and related stuff
 // ----------------------------------------------------------------------------
 
-// wxTreebookEvent is obsolete and defined for compatibility only
-typedef wxBookCtrlEvent wxTreebookEvent;
-typedef wxBookCtrlEventFunction wxTreebookEventFunction;
-#define wxTreebookEventHandler(func) wxBookCtrlEventHandler(func)
+class WXDLLEXPORT wxTreebookEvent : public wxBookCtrlBaseEvent
+{
+public:
+    wxTreebookEvent(wxEventType commandType = wxEVT_NULL, int id = 0,
+                    int nSel = wxNOT_FOUND, int nOldSel = wxNOT_FOUND)
+        : wxBookCtrlBaseEvent(commandType, id, nSel, nOldSel)
+    {
+    }
 
+    wxTreebookEvent(const wxTreebookEvent& event)
+        : wxBookCtrlBaseEvent(event)
+    {
+    }
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, wxBookCtrlEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, wxBookCtrlEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, wxBookCtrlEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, wxBookCtrlEvent );
+    virtual wxEvent *Clone() const { return new wxTreebookEvent(*this); }
+
+private:
+    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxTreebookEvent)
+};
+
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED;
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING;
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED;
+extern WXDLLIMPEXP_CORE const wxEventType wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED;
+
+typedef void (wxEvtHandler::*wxTreebookEventFunction)(wxTreebookEvent&);
+
+#define wxTreebookEventHandler(func) \
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxTreebookEventFunction, &func)
 
 #define EVT_TREEBOOK_PAGE_CHANGED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, winid, wxBookCtrlEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, winid, wxTreebookEventHandler(fn))
 
 #define EVT_TREEBOOK_PAGE_CHANGING(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, winid, wxBookCtrlEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, winid, wxTreebookEventHandler(fn))
 
 #define EVT_TREEBOOK_NODE_COLLAPSED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, winid, wxBookCtrlEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, winid, wxTreebookEventHandler(fn))
 
 #define EVT_TREEBOOK_NODE_EXPANDED(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, winid, wxBookCtrlEventHandler(fn))
+    wx__DECLARE_EVT1(wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, winid, wxTreebookEventHandler(fn))
 
 
 #endif // wxUSE_TREEBOOK

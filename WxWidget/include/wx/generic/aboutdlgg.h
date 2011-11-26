@@ -3,7 +3,7 @@
 // Purpose:     generic wxAboutBox() implementation
 // Author:      Vadim Zeitlin
 // Created:     2006-10-07
-// RCS-ID:      $Id: aboutdlgg.h 60389 2009-04-26 13:41:21Z VZ $
+// RCS-ID:      $Id: aboutdlgg.h 49804 2007-11-10 01:09:42Z VZ $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,15 +35,15 @@ public:
     wxGenericAboutDialog() { Init(); }
 
     // ctor which fully initializes the object
-    wxGenericAboutDialog(const wxAboutDialogInfo& info, wxWindow* parent = NULL)
+    wxGenericAboutDialog(const wxAboutDialogInfo& info)
     {
         Init();
 
-        (void)Create(info, parent);
+        (void)Create(info);
     }
 
     // this method must be called if and only if the default ctor was used
-    bool Create(const wxAboutDialogInfo& info, wxWindow* parent = NULL);
+    bool Create(const wxAboutDialogInfo& info);
 
 protected:
     // this virtual method may be overridden to add some more controls to the
@@ -79,7 +79,7 @@ private:
 
 // unlike wxAboutBox which can show either the native or generic about dialog,
 // this function always shows the generic one
-WXDLLIMPEXP_ADV void wxGenericAboutBox(const wxAboutDialogInfo& info, wxWindow* parent = NULL);
+WXDLLIMPEXP_ADV void wxGenericAboutBox(const wxAboutDialogInfo& info);
 
 #endif // wxUSE_ABOUTDLG
 

@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by: Vadim Zeitlin (2005-10-10): wxScrolledWindow is now common
 // Created:     01/02/97
-// RCS-ID:      $Id: scrolwin.h 58773 2009-02-08 20:51:44Z PC $
+// RCS-ID:      $Id: scrolwin.h 43795 2006-12-04 11:05:59Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,26 +16,20 @@
 // wxScrolledWindow
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxScrollHelper : public wxScrollHelperBase
+class WXDLLEXPORT wxScrollHelperNative : public wxScrollHelper
 {
-    typedef wxScrollHelperBase base_type;
 public:
     // default ctor doesn't do anything
-    wxScrollHelper(wxWindow *win) : wxScrollHelperBase(win) { }
+    wxScrollHelperNative(wxWindow *win) : wxScrollHelper(win) { }
 
-    // implement the base class methods
     virtual void SetScrollbars(int pixelsPerUnitX, int pixelsPerUnitY,
                                int noUnitsX, int noUnitsY,
                                int xPos = 0, int yPos = 0,
                                bool noRefresh = false);
     virtual void AdjustScrollbars();
+    virtual void Scroll(int x, int y);
 
 protected:
-    virtual void DoScroll(int x, int y);
-    virtual void DoShowScrollbars(wxScrollbarVisibility horz,
-                                  wxScrollbarVisibility vert);
-
-private:
     // this does (each) half of AdjustScrollbars() work
     void DoAdjustScrollbar(GtkRange* range,
                            int pixelsPerLine,
@@ -66,12 +60,13 @@ private:
     }
 
     // and this does the same for Scroll()
-    void DoScrollOneDir(int orient,
-                        int pos,
-                        int pixelsPerLine,
-                        int *posOld);
+    void DoScroll(int orient,
+                  int pos,
+                  int pixelsPerLine,
+                  int *posOld);
 
-    wxDECLARE_NO_COPY_CLASS(wxScrollHelper);
+private:
+    DECLARE_NO_COPY_CLASS(wxScrollHelperNative)
 };
 
 #endif // _WX_GTK_SCROLLWIN_H_

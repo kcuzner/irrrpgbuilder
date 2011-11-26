@@ -4,7 +4,7 @@
 // Author:      David Webster
 // Modified by:
 // Created:     10/09/99
-// RCS-ID:      $Id: listbox.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: listbox.h 38319 2006-03-23 22:05:23Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // ----------------------------------------------------------------------------
 
 #if wxUSE_OWNER_DRAWN
-    class WXDLLIMPEXP_FWD_CORE wxOwnerDrawn;
+    class WXDLLEXPORT wxOwnerDrawn;
 
     // define the array of list box items
     #include  "wx/dynarray.h"
@@ -32,7 +32,7 @@ class wxArrayInt;
 // List box control
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxListBox : public wxListBoxBase
+class WXDLLEXPORT wxListBox : public wxListBoxBase
 {
 public:
     // ctors and such
@@ -103,8 +103,8 @@ public:
     //
     // Implement base class pure virtuals
     //
-    virtual void          DoClear(void);
-    virtual void          DoDeleteOneItem(unsigned int n);
+    virtual void          Clear(void);
+    virtual void          Delete(unsigned int n);
 
     virtual unsigned int  GetCount() const;
     virtual wxString      GetString(unsigned int n) const;
@@ -115,10 +115,18 @@ public:
     virtual int           GetSelection(void) const;
     virtual int           GetSelections(wxArrayInt& raSelections) const;
 
+    virtual int           DoAppend(const wxString& rsItem);
+    virtual void          DoInsertItems( const wxArrayString& raItems, unsigned int rPos );
+    virtual void          DoSetItems( const wxArrayString& raItems
+                                     ,void **              ppClientData
+                                    );
+
     virtual void          DoSetFirstItem(int n);
 
     virtual void          DoSetItemClientData(unsigned int n, void* pClientData);
     virtual void*         DoGetItemClientData(unsigned int n) const;
+    virtual void          DoSetItemClientObject(unsigned int n, wxClientData* pClientData);
+    virtual wxClientData* DoGetItemClientObject(unsigned int n) const;
 
     //
     // wxCheckListBox support
@@ -152,14 +160,7 @@ protected:
     wxListBoxItemsArray             m_aItems;
 #endif
 
-    //
-    // Implement base wxItemContainer virtuals
-    //
-    virtual int           DoInsertItems(const wxArrayStringsAdapter& items,
-                                        unsigned int pos,
-                                        void **clientData,
-                                        wxClientDataType type);
-
+private:
     DECLARE_DYNAMIC_CLASS(wxListBox)
 }; // end of wxListBox
 

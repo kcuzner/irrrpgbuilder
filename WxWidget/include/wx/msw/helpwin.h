@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/helpwin.h
+// Name:        helpwin.h
 // Purpose:     Help system: WinHelp implementation
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: helpwin.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: helpwin.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 
 #include "wx/helpbase.h"
 
-class WXDLLIMPEXP_CORE wxWinHelpController: public wxHelpControllerBase
+class WXDLLEXPORT wxWinHelpController: public wxHelpControllerBase
 {
     DECLARE_CLASS(wxWinHelpController)
 

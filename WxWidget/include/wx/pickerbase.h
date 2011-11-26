@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Vadim Zeitlin, Francesco Montorsi
-// RCS-ID:      $Id: pickerbase.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: pickerbase.h 49804 2007-11-10 01:09:42Z VZ $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@
 class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
 class WXDLLIMPEXP_FWD_CORE wxToolTip;
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxButtonNameStr[];
+extern WXDLLEXPORT_DATA(const wxChar) wxButtonNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxPickerBase is the base class for the picker controls which support
@@ -37,7 +37,7 @@ class WXDLLIMPEXP_CORE wxPickerBase : public wxControl
 public:
     // ctor: text is the associated text control
     wxPickerBase() : m_text(NULL), m_picker(NULL), m_sizer(NULL)
-        { WX_INIT_CONTROL_CONTAINER(); }
+        { m_container.SetContainerWindow(this); }
     virtual ~wxPickerBase() {}
 
 

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/thrimpl.cpp
+// Name:        include/wx/thrimpl.cpp
 // Purpose:     common part of wxThread Implementations
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     04.06.02 (extracted from src/*/thread.cpp files)
-// RCS-ID:      $Id: thrimpl.cpp 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: thrimpl.cpp 66922 2011-02-16 22:26:57Z JS $
 // Copyright:   (c) Vadim Zeitlin (2002)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -42,14 +42,6 @@ wxMutexError wxMutex::Lock()
                  wxT("wxMutex::Lock(): not initialized") );
 
     return m_internal->Lock();
-}
-
-wxMutexError wxMutex::LockTimeout(unsigned long ms)
-{
-    wxCHECK_MSG( m_internal, wxMUTEX_INVALID,
-                 wxT("wxMutex::Lock(): not initialized") );
-
-    return m_internal->Lock(ms);
 }
 
 wxMutexError wxMutex::TryLock()
@@ -101,7 +93,7 @@ private:
     wxMutex& m_mutex;
     wxSemaphore m_semaphore;
 
-    wxDECLARE_NO_COPY_CLASS(wxConditionInternal);
+    DECLARE_NO_COPY_CLASS(wxConditionInternal)
 };
 
 wxConditionInternal::wxConditionInternal(wxMutex& mutex)
@@ -338,13 +330,3 @@ wxSemaError wxSemaphore::Post()
     return m_internal->Post();
 }
 
-// ----------------------------------------------------------------------------
-// wxThread
-// ----------------------------------------------------------------------------
-
-#include "wx/utils.h"
-
-void wxThread::Sleep(unsigned long milliseconds)
-{
-    wxMilliSleep(milliseconds);
-}

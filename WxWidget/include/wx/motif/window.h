@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: window.h 66633 2011-01-07 18:15:21Z PC $
+// RCS-ID:      $Id: window.h 36079 2005-11-03 20:58:02Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,8 +20,8 @@
 
 class WXDLLIMPEXP_CORE wxWindow : public wxWindowBase
 {
-    friend class WXDLLIMPEXP_FWD_CORE wxDC;
-    friend class WXDLLIMPEXP_FWD_CORE wxWindowDC;
+    friend class WXDLLEXPORT wxDC;
+    friend class WXDLLEXPORT wxWindowDC;
 
 public:
     wxWindow() { Init(); }
@@ -71,6 +71,12 @@ public:
 
     virtual int GetCharHeight() const;
     virtual int GetCharWidth() const;
+    virtual void GetTextExtent(const wxString& string,
+        int *x, int *y,
+        int *descent = (int *) NULL,
+        int *externalLeading = (int *) NULL,
+        const wxFont *theFont = (const wxFont *) NULL)
+        const;
 
     virtual void SetScrollbar( int orient, int pos, int thumbVisible,
         int range, bool refresh = true );
@@ -79,7 +85,7 @@ public:
     virtual int GetScrollThumb( int orient ) const;
     virtual int GetScrollRange( int orient ) const;
     virtual void ScrollWindow( int dx, int dy,
-        const wxRect* rect = NULL );
+        const wxRect* rect = (wxRect *) NULL );
 
 #if wxUSE_DRAG_AND_DROP
     virtual void SetDropTarget( wxDropTarget *dropTarget );
@@ -138,11 +144,8 @@ public:
     void ClearUpdateRegion() { m_updateRegion.Clear(); }
     void SetUpdateRegion(const wxRegion& region) { m_updateRegion = region; }
 
-    // post-creation activities
-    void PostCreation();
-
-    // pre-creation activities
-    void PreCreation();
+    // Process idle (send update events)
+    void OnInternalIdle();
 
 protected:
     // Responds to colour changes: passes event on to children.
@@ -271,11 +274,6 @@ protected:
     int                   m_scrollPosY;
 
     // implement the base class pure virtuals
-    virtual void DoGetTextExtent(const wxString& string,
-                                 int *x, int *y,
-                                 int *descent = NULL,
-                                 int *externalLeading = NULL,
-                                 const wxFont *font = NULL) const;
     virtual void DoClientToScreen( int *x, int *y ) const;
     virtual void DoScreenToClient( int *x, int *y ) const;
     virtual void DoGetPosition( int *x, int *y ) const;
@@ -299,7 +297,7 @@ private:
     void Init();
 
     DECLARE_DYNAMIC_CLASS(wxWindow)
-    wxDECLARE_NO_COPY_CLASS(wxWindow);
+    DECLARE_NO_COPY_CLASS(wxWindow)
     DECLARE_EVENT_TABLE()
 };
 
@@ -315,7 +313,7 @@ private:
 // from scope.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxNoOptimize
+class WXDLLEXPORT wxNoOptimize
 {
 public:
     wxNoOptimize() { ms_count++; }

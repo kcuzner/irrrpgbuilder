@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2002/12/08
-// RCS-ID:      $Id: toplevel.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: toplevel.h 47995 2007-08-10 04:47:49Z DE $
 // Copyright:   (c) 2002 David Elliott
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,12 +15,12 @@
 #include "wx/hashmap.h"
 #include "wx/cocoa/NSWindow.h"
 
-class WXDLLIMPEXP_FWD_CORE wxMenuBar;
+class WXDLLEXPORT wxMenuBar;
 
 // ========================================================================
 // wxTopLevelWindowCocoa
 // ========================================================================
-class WXDLLIMPEXP_CORE wxTopLevelWindowCocoa : public wxTopLevelWindowBase, protected wxCocoaNSWindow
+class WXDLLEXPORT wxTopLevelWindowCocoa : public wxTopLevelWindowBase, protected wxCocoaNSWindow
 {
     DECLARE_EVENT_TABLE();
     DECLARE_NO_COPY_CLASS(wxTopLevelWindowCocoa);
@@ -111,7 +111,8 @@ public:
     wxWindow *SetDefaultItem(wxWindow *win);
 
 // Things I may/may not do
-//    virtual void SetIcons(const wxIconBundle& icons);
+//    virtual void SetIcon(const wxIcon& icon);
+//    virtual void SetIcons(const wxIconBundle& icons) { SetIcon( icons.GetIcon( -1 ) ); }
 //    virtual void Clear() ;
 //    virtual void Raise();
 //    virtual void Lower();
@@ -126,6 +127,6 @@ protected:
 };
 
 // list of all frames and modeless dialogs
-extern WXDLLIMPEXP_DATA_CORE(wxWindowList) wxModelessWindows;
+extern WXDLLEXPORT_DATA(wxWindowList) wxModelessWindows;
 
 #endif // __WX_COCOA_TOPLEVEL_H__

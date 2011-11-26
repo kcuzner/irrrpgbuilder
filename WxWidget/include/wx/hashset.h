@@ -4,7 +4,7 @@
 // Author:      Mattia Barbon
 // Modified by:
 // Created:     11/08/2003
-// RCS-ID:      $Id: hashset.h 60410 2009-04-27 13:26:19Z VZ $
+// RCS-ID:      $Id: hashset.h 55215 2008-08-23 18:54:04Z VZ $
 // Copyright:   (c) Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,12 +22,14 @@
 
 #if defined(HAVE_STD_UNORDERED_SET)
     #include <unordered_set>
-    #define WX_HASH_SET_BASE_TEMPLATE std::unordered_set
+    #define _WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP )\
+        typedef std::unordered_set< KEY_T, HASH_T, KEY_EQ_T > CLASSNAME
 #elif defined(HAVE_TR1_UNORDERED_SET)
     #include <tr1/unordered_set>
-    #define WX_HASH_SET_BASE_TEMPLATE std::tr1::unordered_set
+    #define _WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP )\
+        typedef std::tr1::unordered_set< KEY_T, HASH_T, KEY_EQ_T > CLASSNAME
 #else
-    #error Update this code: unordered_set is available, but I do not know where.
+#error Update this code: unordered_set is available, but I do not know where.
 #endif
 
 #elif wxUSE_STL && defined(HAVE_STL_HASH_MAP)
@@ -38,38 +40,10 @@
     #include <hash_set>
 #endif
 
-#define WX_HASH_SET_BASE_TEMPLATE WX_HASH_MAP_NAMESPACE::hash_set
+#define _WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP )\
+    typedef WX_HASH_MAP_NAMESPACE::hash_set< KEY_T, HASH_T, KEY_EQ_T > CLASSNAME
 
-#endif // different hash_set/unordered_set possibilities
-
-#ifdef WX_HASH_SET_BASE_TEMPLATE
-
-// we need to define the class declared by _WX_DECLARE_HASH_SET as a class and
-// not a typedef to allow forward declaring it
-#define _WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME, CLASSEXP )  \
-CLASSEXP CLASSNAME                                                            \
-    : public WX_HASH_SET_BASE_TEMPLATE< KEY_T, HASH_T, KEY_EQ_T >             \
-{                                                                             \
-public:                                                                       \
-    explicit CLASSNAME(size_type n = 3,                                       \
-                       const hasher& h = hasher(),                            \
-                       const key_equal& ke = key_equal(),                     \
-                       const allocator_type& a = allocator_type())            \
-        : WX_HASH_SET_BASE_TEMPLATE< KEY_T, HASH_T, KEY_EQ_T >(n, h, ke, a)   \
-    {}                                                                        \
-    template <class InputIterator>                                            \
-    CLASSNAME(InputIterator f, InputIterator l,                               \
-              const hasher& h = hasher(),                                     \
-              const key_equal& ke = key_equal(),                              \
-              const allocator_type& a = allocator_type())                     \
-        : WX_HASH_SET_BASE_TEMPLATE< KEY_T, HASH_T, KEY_EQ_T >(f, l, h, ke, a)\
-    {}                                                                        \
-    CLASSNAME(const WX_HASH_SET_BASE_TEMPLATE< KEY_T, HASH_T, KEY_EQ_T >& s)  \
-        : WX_HASH_SET_BASE_TEMPLATE< KEY_T, HASH_T, KEY_EQ_T >(s)             \
-    {}                                                                        \
-}
-
-#else // no appropriate STL class, use our own implementation
+#else // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
 // this is a complex way of defining an easily inlineable identity function...
 #define _WX_DECLARE_HASH_SET_KEY_EX( KEY_T, CLASSNAME, CLASSEXP )            \
@@ -125,12 +99,11 @@ public:                                                                      \
     void erase( const const_iterator& it ) { erase( *it ); }                 \
                                                                              \
     /* count() == 0 | 1 */                                                   \
-    size_type count( const const_key_type& key ) const                       \
+    size_type count( const const_key_type& key )                             \
         { return GetNode( key ) ? 1 : 0; }                                   \
 }
 
-#endif // STL/wx implementations
-
+#endif // !wxUSE_STL || !defined(HAVE_STL_HASH_MAP)
 
 // these macros are to be used in the user code
 #define WX_DECLARE_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME) \
@@ -143,7 +116,7 @@ public:                                                                      \
 
 #define WX_DECLARE_EXPORTED_HASH_SET( KEY_T, HASH_T, KEY_EQ_T, CLASSNAME) \
     WX_DECLARE_HASH_SET_WITH_DECL( KEY_T, HASH_T, KEY_EQ_T, \
-                                   CLASSNAME, class WXDLLIMPEXP_CORE )
+                                   CLASSNAME, class WXDLLEXPORT )
 
 // delete all hash elements
 //

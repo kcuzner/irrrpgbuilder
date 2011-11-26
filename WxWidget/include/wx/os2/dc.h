@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/dc.h
+// Name:        dc.h
 // Purpose:     wxDC class
 // Author:      David Webster
 // Modified by:
 // Created:     08/26/99
-// RCS-ID:      $Id: dc.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: dc.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,6 @@
 #define _WX_DC_H_
 
 #include "wx/defs.h"
-#include "wx/dc.h"
 
 // ---------------------------------------------------------------------------
 // macros
@@ -95,26 +94,24 @@ public:
 }; // end of CLASS wxDCCacheEntry
 #endif
 
-// this is an ABC: use one of the derived classes to create a DC associated
-// with a window, screen, printer and so on
-class WXDLLIMPEXP_CORE wxPMDCImpl : public wxDCImpl
+class WXDLLEXPORT wxDC : public wxDCBase
 {
     DECLARE_DYNAMIC_CLASS(wxDC)
 
 public:
-    wxPMDCImpl(wxDC *owner, WXHDC hDC);
-    virtual ~wxPMDCImpl();
+    wxDC(void);
+    virtual ~wxDC();
 
     // implement base class pure virtuals
     // ----------------------------------
 
-    virtual void Clear();
+    virtual void Clear(void);
 
     virtual bool    StartDoc(const wxString& rsMessage);
-    virtual void    EndDoc();
+    virtual void    EndDoc(void);
 
-    virtual void    StartPage();
-    virtual void    EndPage();
+    virtual void    StartPage(void);
+    virtual void    EndPage(void);
 
     virtual void    SetFont(const wxFont& rFont);
     virtual void    SetPen(const wxPen& rPen);
@@ -123,20 +120,29 @@ public:
     virtual void    SetBackgroundMode(int nMode);
     virtual void    SetPalette(const wxPalette& rPalette);
 
-    virtual void    DestroyClippingRegion();
+    virtual void    DestroyClippingRegion(void);
 
-    virtual wxCoord GetCharHeight() const;
-    virtual wxCoord GetCharWidth() const;
+    virtual wxCoord GetCharHeight(void) const;
+    virtual wxCoord GetCharWidth(void) const;
+    virtual void    DoGetTextExtent( const wxString& rsString
+                                    ,wxCoord*        pX
+                                    ,wxCoord*        pY
+                                    ,wxCoord*        pDescent = NULL
+                                    ,wxCoord*        pExternalLeading = NULL
+                                    ,wxFont*         pTheFont = NULL
+                                   ) const;
+    virtual bool    CanDrawBitmap(void) const;
+    virtual bool    CanGetTextExtent(void) const;
+    virtual int     GetDepth(void) const;
+    virtual wxSize  GetPPI(void) const;
 
-    virtual bool    CanDrawBitmap() const;
-    virtual bool    CanGetTextExtent() const;
-    virtual int     GetDepth() const;
-    virtual wxSize  GetPPI() const;
-
-    virtual void    SetMapMode(wxMappingMode nMode);
+    virtual void    SetMapMode(int nMode);
     virtual void    SetUserScale( double dX
                                  ,double dY
                                 );
+    virtual void    SetSystemScale( double dX
+                                   ,double dY
+                                  );
     virtual void    SetLogicalScale( double dX
                                     ,double dY
                                    );
@@ -149,7 +155,7 @@ public:
     virtual void    SetAxisOrientation( bool bXLeftRight
                                        ,bool bYBottomUp
                                       );
-    virtual void    SetLogicalFunction(wxRasterOperationMode nFunction);
+    virtual void    SetLogicalFunction(int nFunction);
 
     // implementation from now on
     // --------------------------
@@ -157,10 +163,10 @@ public:
     virtual void    SetRop(WXHDC hCdc);
     virtual void    SelectOldObjects(WXHDC hDc);
 
-    wxWindow*       GetWindow() const { return m_pCanvas; }
+    wxWindow*       GetWindow(void) const { return m_pCanvas; }
     void            SetWindow(wxWindow* pWin) { m_pCanvas = pWin; }
 
-    WXHDC           GetHDC() const { return m_hDC; }
+    WXHDC           GetHDC(void) const { return m_hDC; }
     void            SetHDC( WXHDC hDc
                            ,bool  bOwnsDC = FALSE
                           )
@@ -169,13 +175,13 @@ public:
         m_bOwnsDC = bOwnsDC;
     }
 
-    HPS             GetHPS() const { return m_hPS; }
+    HPS             GetHPS(void) const { return m_hPS; }
     void            SetHPS(HPS hPS)
     {
         m_hPS = hPS;
     }
-    const wxBitmap& GetSelectedBitmap() const { return m_vSelectedBitmap; }
-    wxBitmap&       GetSelectedBitmap() { return m_vSelectedBitmap; }
+    const wxBitmap& GetSelectedBitmap(void) const { return m_vSelectedBitmap; }
+    wxBitmap&       GetSelectedBitmap(void) { return m_vSelectedBitmap; }
 
     void            UpdateClipBox();
 
@@ -190,47 +196,14 @@ public:
 
     static void AddToBitmapCache(wxDCCacheEntry* pEntry);
     static void AddToDCCache(wxDCCacheEntry* pEntry);
-    static void ClearCache();
+    static void ClearCache(void);
 #endif
 
 protected:
-    void Init()
-    {
-        m_pCanvas      = NULL;
-        m_hOldBitmap   = 0;
-        m_hOldPen      = 0;
-        m_hOldBrush    = 0;
-        m_hOldFont     = 0;
-#if wxUSE_PALETTE
-        m_hOldPalette  = 0;
-#endif // wxUSE_PALETTE
-
-        m_bOwnsDC      = false;
-        m_hDC          = 0;
-        m_hOldPS       = NULL;
-        m_hPS          = NULL;
-        m_bIsPaintTime = false; // True at Paint Time
-
-        m_pen.SetColour(*wxBLACK);
-        m_brush.SetColour(*wxWHITE);
-    }
-
-    // create an uninitialized DC: this should be only used by the derived
-    // classes
-    wxPMDCImpl( wxDC *owner ) : wxDCImpl( owner ) { Init(); }
-
-public:
-    virtual void    DoGetTextExtent( const wxString& rsString
-                                    ,wxCoord*        pX
-                                    ,wxCoord*        pY
-                                    ,wxCoord*        pDescent = NULL
-                                    ,wxCoord*        pExternalLeading = NULL
-                                    ,const wxFont*   pTheFont = NULL
-                                   ) const;
-    virtual bool DoFloodFill( wxCoord          vX
-                             ,wxCoord          vY
-                             ,const wxColour&  rCol
-                             ,wxFloodFillStyle nStyle = wxFLOOD_SURFACE
+    virtual bool DoFloodFill( wxCoord         vX
+                             ,wxCoord         vY
+                             ,const wxColour& rCol
+                             ,int             nStyle = wxFLOOD_SURFACE
                             );
 
     virtual bool DoGetPixel( wxCoord   vX
@@ -315,18 +288,18 @@ public:
                         ,wxDC*   pSource
                         ,wxCoord vXsrc
                         ,wxCoord vYsrc
-                        ,wxRasterOperationMode     nRop = wxCOPY
+                        ,int     nRop = wxCOPY
                         ,bool    bUseMask = FALSE
                         ,wxCoord vXsrcMask = -1
                         ,wxCoord vYsrcMask = -1
                        );
 
+    virtual void DoSetClippingRegionAsRegion(const wxRegion& rRegion);
     virtual void DoSetClippingRegion( wxCoord vX
                                      ,wxCoord vY
                                      ,wxCoord vWidth
                                      ,wxCoord vHeight
                                     );
-    virtual void DoSetDeviceClippingRegion(const wxRegion& rRegion);
 
     virtual void DoGetSize( int* pWidth
                            ,int* pHeight
@@ -344,15 +317,14 @@ public:
                                ,wxPoint vaPoints[]
                                ,wxCoord vXoffset
                                ,wxCoord vYoffset
-                               ,wxPolygonFillMode     nFillStyle = wxODDEVEN_RULE
+                               ,int     nFillStyle = wxODDEVEN_RULE
                               );
 
 #if wxUSE_PALETTE
     void DoSelectPalette(bool bRealize = FALSE);
-    void InitializePalette();
+    void InitializePalette(void);
 #endif // wxUSE_PALETTE
 
-protected:
     //
     // common part of DoDrawText() and DoDrawRotatedText()
     //

@@ -1,21 +1,21 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/gtk/notebook.h
+// Name:        notebook.h
 // Purpose:     wxNotebook class
 // Author:      Robert Roebling
 // Modified by:
-// RCS-ID:      $Id: notebook.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: notebook.h 43051 2006-11-04 18:29:28Z RR $
 // Copyright:   (c) Julian Smart and Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_GTKNOTEBOOK_H_
-#define _WX_GTKNOTEBOOK_H_
+#ifndef __GTKNOTEBOOKH__
+#define __GTKNOTEBOOKH__
 
 //-----------------------------------------------------------------------------
 // internal class
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxGtkNotebookPage;
+class WXDLLIMPEXP_CORE wxGtkNotebookPage;
 
 #include "wx/list.h"
 WX_DECLARE_LIST(wxGtkNotebookPage, wxGtkNotebookPagesList);
@@ -50,7 +50,7 @@ public:
   // ---------
 
     // set the currently selected page, return the index of the previously
-    // selected one (or wxNOT_FOUND on error)
+    // selected one (or -1 on error)
     // NB: this function will _not_ generate wxEVT_NOTEBOOK_PAGE_xxx events
     int SetSelection(size_t nPage) { return DoSetSelection(nPage, SetSelection_SendEvent); }
     // get the currently selected page
@@ -110,9 +110,6 @@ public:
     // common part of all ctors
     void Init();
 
-    // Called by GTK event handler when the current page is definitely changed.
-    void GTKOnPageChanged();
-
     // helper function
     wxGtkNotebookPage* GetNotebookPage(int page) const;
 
@@ -138,10 +135,9 @@ private:
     // the padding set by SetPadding()
     int m_padding;
 
-    virtual void AddChildGTK(wxWindowGTK* child);
-
     DECLARE_DYNAMIC_CLASS(wxNotebook)
     DECLARE_EVENT_TABLE()
 };
 
-#endif // _WX_GTKNOTEBOOK_H_
+#endif
+    // __GTKNOTEBOOKH__

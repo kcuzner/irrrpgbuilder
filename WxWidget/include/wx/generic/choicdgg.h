@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: 03.11.00: VZ to add wxArrayString and multiple sel functions
 // Created:     01/02/97
-// RCS-ID:      $Id: choicdgg.h 63731 2010-03-21 11:06:31Z VZ $
+// RCS-ID:      $Id: choicdgg.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ class WXDLLIMPEXP_FWD_CORE wxListBoxBase;
 // wxAnyChoiceDialog: a base class for dialogs containing a listbox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxAnyChoiceDialog : public wxDialog
+class WXDLLEXPORT wxAnyChoiceDialog : public wxDialog
 {
 public:
     wxAnyChoiceDialog() { }
@@ -86,14 +86,14 @@ protected:
                                       const wxString *choices,
                                       long styleLbox);
 
-    wxDECLARE_NO_COPY_CLASS(wxAnyChoiceDialog);
+    DECLARE_NO_COPY_CLASS(wxAnyChoiceDialog)
 };
 
 // ----------------------------------------------------------------------------
 // wxSingleChoiceDialog: a dialog with single selection listbox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSingleChoiceDialog : public wxAnyChoiceDialog
+class WXDLLEXPORT wxSingleChoiceDialog : public wxAnyChoiceDialog
 {
 public:
     wxSingleChoiceDialog()
@@ -164,7 +164,7 @@ private:
 // wxMultiChoiceDialog: a dialog with multi selection listbox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMultiChoiceDialog : public wxAnyChoiceDialog
+class WXDLLEXPORT wxMultiChoiceDialog : public wxAnyChoiceDialog
 {
 public:
     wxMultiChoiceDialog() { }
@@ -227,7 +227,7 @@ private:
 // ----------------------------------------------------------------------------
 
 // get the user selection as a string
-WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
+WXDLLEXPORT wxString wxGetSingleChoice(const wxString& message,
                                        const wxString& caption,
                                        const wxArrayString& choices,
                                        wxWindow *parent = NULL,
@@ -235,10 +235,9 @@ WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
                                        int y = wxDefaultCoord,
                                        bool centre = true,
                                        int width = wxCHOICE_WIDTH,
-                                       int height = wxCHOICE_HEIGHT,
-                                       int initialSelection = 0);
+                                       int height = wxCHOICE_HEIGHT);
 
-WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
+WXDLLEXPORT wxString wxGetSingleChoice(const wxString& message,
                                        const wxString& caption,
                                        int n, const wxString *choices,
                                        wxWindow *parent = NULL,
@@ -246,24 +245,11 @@ WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
                                        int y = wxDefaultCoord,
                                        bool centre = true,
                                        int width = wxCHOICE_WIDTH,
-                                       int height = wxCHOICE_HEIGHT,
-                                       int initialSelection = 0);
-
-WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
-                                            const wxString& caption,
-                                            const wxArrayString& choices,
-                                            int initialSelection,
-                                            wxWindow *parent = NULL);
-
-WXDLLIMPEXP_CORE wxString wxGetSingleChoice(const wxString& message,
-                                            const wxString& caption,
-                                            int n, const wxString *choices,
-                                            int initialSelection,
-                                            wxWindow *parent = NULL);
+                                       int height = wxCHOICE_HEIGHT);
 
 // Same as above but gets position in list of strings, instead of string,
 // or -1 if no selection
-WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
+WXDLLEXPORT int wxGetSingleChoiceIndex(const wxString& message,
                                        const wxString& caption,
                                        const wxArrayString& choices,
                                        wxWindow *parent = NULL,
@@ -271,10 +257,9 @@ WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
                                        int y = wxDefaultCoord,
                                        bool centre = true,
                                        int width = wxCHOICE_WIDTH,
-                                       int height = wxCHOICE_HEIGHT,
-                                       int initialSelection = 0);
+                                       int height = wxCHOICE_HEIGHT);
 
-WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
+WXDLLEXPORT int wxGetSingleChoiceIndex(const wxString& message,
                                        const wxString& caption,
                                        int n, const wxString *choices,
                                        wxWindow *parent = NULL,
@@ -282,23 +267,10 @@ WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
                                        int y = wxDefaultCoord,
                                        bool centre = true,
                                        int width = wxCHOICE_WIDTH,
-                                       int height = wxCHOICE_HEIGHT,
-                                       int initialSelection = 0);
+                                       int height = wxCHOICE_HEIGHT);
 
-WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
-                                            const wxString& caption,
-                                            const wxArrayString& choices,
-                                            int initialSelection,
-                                            wxWindow *parent = NULL);
-
-WXDLLIMPEXP_CORE int wxGetSingleChoiceIndex(const wxString& message,
-                                            const wxString& caption,
-                                            int n, const wxString *choices,
-                                            int initialSelection,
-                                            wxWindow *parent = NULL);
-
-// Return client data instead or NULL if canceled
-WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
+// Return client data instead or NULL if cancelled
+WXDLLEXPORT void* wxGetSingleChoiceData(const wxString& message,
                                         const wxString& caption,
                                         const wxArrayString& choices,
                                         void **client_data,
@@ -307,10 +279,9 @@ WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
                                         int y = wxDefaultCoord,
                                         bool centre = true,
                                         int width = wxCHOICE_WIDTH,
-                                        int height = wxCHOICE_HEIGHT,
-                                        int initialSelection = 0);
+                                        int height = wxCHOICE_HEIGHT);
 
-WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
+WXDLLEXPORT void* wxGetSingleChoiceData(const wxString& message,
                                         const wxString& caption,
                                         int n, const wxString *choices,
                                         void **client_data,
@@ -319,54 +290,12 @@ WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
                                         int y = wxDefaultCoord,
                                         bool centre = true,
                                         int width = wxCHOICE_WIDTH,
-                                        int height = wxCHOICE_HEIGHT,
-                                        int initialSelection = 0);
-
-WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
-                                             const wxString& caption,
-                                             const wxArrayString& choices,
-                                             void **client_data,
-                                             int initialSelection,
-                                             wxWindow *parent = NULL);
-
-
-WXDLLIMPEXP_CORE void* wxGetSingleChoiceData(const wxString& message,
-                                             const wxString& caption,
-                                             int n, const wxString *choices,
-                                             void **client_data,
-                                             int initialSelection,
-                                             wxWindow *parent = NULL);
-
-// fill the array with the indices of the chosen items, it will be empty
-// if no items were selected or Cancel was pressed - return the number of
-// selections or -1 if cancelled
-WXDLLIMPEXP_CORE int wxGetSelectedChoices(wxArrayInt& selections,
-                                        const wxString& message,
-                                        const wxString& caption,
-                                        int n, const wxString *choices,
-                                        wxWindow *parent = NULL,
-                                        int x = wxDefaultCoord,
-                                        int y = wxDefaultCoord,
-                                        bool centre = true,
-                                        int width = wxCHOICE_WIDTH,
                                         int height = wxCHOICE_HEIGHT);
 
-WXDLLIMPEXP_CORE int wxGetSelectedChoices(wxArrayInt& selections,
-                                        const wxString& message,
-                                        const wxString& caption,
-                                        const wxArrayString& choices,
-                                        wxWindow *parent = NULL,
-                                        int x = wxDefaultCoord,
-                                        int y = wxDefaultCoord,
-                                        bool centre = true,
-                                        int width = wxCHOICE_WIDTH,
-                                        int height = wxCHOICE_HEIGHT);
-
-#if WXWIN_COMPATIBILITY_2_8
 // fill the array with the indices of the chosen items, it will be empty
 // if no items were selected or Cancel was pressed - return the number of
 // selections
-wxDEPRECATED( WXDLLIMPEXP_CORE size_t wxGetMultipleChoices(wxArrayInt& selections,
+WXDLLEXPORT size_t wxGetMultipleChoices(wxArrayInt& selections,
                                         const wxString& message,
                                         const wxString& caption,
                                         int n, const wxString *choices,
@@ -375,9 +304,9 @@ wxDEPRECATED( WXDLLIMPEXP_CORE size_t wxGetMultipleChoices(wxArrayInt& selection
                                         int y = wxDefaultCoord,
                                         bool centre = true,
                                         int width = wxCHOICE_WIDTH,
-                                        int height = wxCHOICE_HEIGHT) );
+                                        int height = wxCHOICE_HEIGHT);
 
-wxDEPRECATED( WXDLLIMPEXP_CORE size_t wxGetMultipleChoices(wxArrayInt& selections,
+WXDLLEXPORT size_t wxGetMultipleChoices(wxArrayInt& selections,
                                         const wxString& message,
                                         const wxString& caption,
                                         const wxArrayString& choices,
@@ -386,7 +315,6 @@ wxDEPRECATED( WXDLLIMPEXP_CORE size_t wxGetMultipleChoices(wxArrayInt& selection
                                         int y = wxDefaultCoord,
                                         bool centre = true,
                                         int width = wxCHOICE_WIDTH,
-                                        int height = wxCHOICE_HEIGHT));
-#endif // WXWIN_COMPATIBILITY_2_8
+                                        int height = wxCHOICE_HEIGHT);
 
 #endif // _WX_GENERIC_CHOICDGG_H_

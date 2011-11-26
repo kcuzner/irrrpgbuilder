@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/motif/scrolbar.h
+// Name:        wx/motif/scrollbar.h
 // Purpose:     wxScrollBar class
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: scrolbar.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: scrolbar.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 #define _WX_SCROLBAR_H_
 
 // Scrollbar item
-class WXDLLIMPEXP_CORE wxScrollBar: public wxScrollBarBase
+class WXDLLEXPORT wxScrollBar: public wxScrollBarBase
 {
     DECLARE_DYNAMIC_CLASS(wxScrollBar)
 

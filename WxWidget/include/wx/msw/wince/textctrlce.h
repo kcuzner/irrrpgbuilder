@@ -4,9 +4,9 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     30.08.2004
-// RCS-ID:      $Id: textctrlce.h 64940 2010-07-13 13:29:13Z VZ $
+// RCS-ID:      $Id: textctrlce.h 41739 2006-10-08 17:46:12Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TEXTCTRLCE_H_
@@ -14,10 +14,10 @@
 
 #include "wx/dynarray.h"
 
-class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
+class WXDLLEXPORT wxTextCtrl;
 WX_DEFINE_EXPORTED_ARRAY_PTR(wxTextCtrl *, wxArrayTextSpins);
 
-class WXDLLIMPEXP_CORE wxTextCtrl : public wxTextCtrlBase
+class WXDLLEXPORT wxTextCtrl : public wxTextCtrlBase
 {
 public:
     // creation

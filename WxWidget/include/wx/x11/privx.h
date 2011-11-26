@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/x11/privx.h
+// Name:        privx.h
 // Purpose:     Private declarations common to X11 and Motif ports
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: privx.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: privx.h 41640 2006-10-05 19:34:25Z MBN $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -26,14 +26,17 @@
 #pragma message enable nosimpint
 #endif
 
-class WXDLLIMPEXP_FWD_CORE wxMouseEvent;
-class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
-class WXDLLIMPEXP_FWD_CORE wxWindow;
-class WXDLLIMPEXP_FWD_CORE wxRegion;
+class WXDLLIMPEXP_CORE wxMouseEvent;
+class WXDLLIMPEXP_CORE wxKeyEvent;
+class WXDLLIMPEXP_CORE wxWindow;
+class WXDLLIMPEXP_CORE wxRegion;
 
 // ----------------------------------------------------------------------------
 // key events related functions
 // ----------------------------------------------------------------------------
+
+extern int wxCharCodeXToWX(KeySym keySym);
+extern KeySym wxCharCodeWXToX(int id);
 
 WXPixel wxGetBestMatchingPixel(Display *display, XColor *desiredColor, Colormap cmap);
 Pixmap XCreateInsensitivePixmap( Display *display, Pixmap pixmap );
@@ -64,7 +67,12 @@ void wxAllocNearestColor(Display *display,Colormap colormap,XColor *xcolor);
 void wxAllocColor(Display *display,Colormap colormap,XColor *xcolor);
 
 // For debugging
+#ifdef __WXDEBUG__
 wxString wxGetXEventName(XEvent& event);
+#endif
+
+// Is the window visible?
+bool wxWindowIsVisible(Window win);
 
 #if wxUSE_NANOX
 #define XEventGetWindow(event) event->general.wid
@@ -140,7 +148,7 @@ wxString wxGetXEventName(XEvent& event);
 
 bool wxDoSetShape( Display* xdisplay, Window xwindow, const wxRegion& region );
 
-class WXDLLIMPEXP_CORE wxXVisualInfo
+class WXDLLEXPORT wxXVisualInfo
 {
 public:
     wxXVisualInfo();
@@ -161,7 +169,7 @@ public:
     int                   m_visualRedPrec;
     int                   m_visualGreenPrec;
     int                   m_visualBluePrec;
-
+    
     unsigned char        *m_colorCube;
 };
 

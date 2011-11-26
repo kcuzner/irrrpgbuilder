@@ -4,7 +4,7 @@
 // Author:      David Webster
 // Modified by:
 // Created:     10/12/99
-// RCS-ID:      $Id: radiobox.h 60885 2009-06-03 22:33:32Z VZ $
+// RCS-ID:      $Id: radiobox.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,9 +13,9 @@
 #define _WX_RADIOBOX_H_
 
 // List box item
-class WXDLLIMPEXP_FWD_CORE wxBitmap ;
+class WXDLLEXPORT wxBitmap ;
 
-class WXDLLIMPEXP_CORE wxRadioBox: public wxControl, public wxRadioBoxBase
+class WXDLLEXPORT wxRadioBox: public wxControl, public wxRadioBoxBase
 {
 public:
     wxRadioBox();
@@ -28,7 +28,7 @@ public:
                       ,int                nNum = 0
                       ,const wxString     asChoices[] = NULL
                       ,int                nMajorDim = 0
-                      ,long               lStyle = wxRA_SPECIFY_COLS
+                      ,long               lStyle = wxRA_HORIZONTAL
                       ,const wxValidator& rVal = wxDefaultValidator
                       ,const wxString&    rsName = wxRadioBoxNameStr
                      )
@@ -54,7 +54,7 @@ public:
                       ,const wxSize&        rSize
                       ,const wxArrayString& asChoices
                       ,int                  nMajorDim = 0
-                      ,long                 lStyle = wxRA_SPECIFY_COLS
+                      ,long                 lStyle = wxRA_HORIZONTAL
                       ,const wxValidator&   rVal = wxDefaultValidator
                       ,const wxString&      rsName = wxRadioBoxNameStr
                      )
@@ -82,7 +82,7 @@ public:
                 ,int                nNum = 0
                 ,const wxString     asChoices[] = NULL
                 ,int                nMajorDim = 0
-                ,long               lStyle = wxRA_SPECIFY_COLS
+                ,long               lStyle = wxRA_HORIZONTAL
                 ,const wxValidator& rVal = wxDefaultValidator
                 ,const wxString&    rsName = wxRadioBoxNameStr
                );
@@ -94,7 +94,7 @@ public:
                 ,const wxSize&        rSize
                 ,const wxArrayString& asChoices
                 ,int                  nMajorDim = 0
-                ,long                 lStyle = wxRA_SPECIFY_COLS
+                ,long                 lStyle = wxRA_HORIZONTAL
                 ,const wxValidator&   rVal = wxDefaultValidator
                 ,const wxString&      rsName = wxRadioBoxNameStr
                );
@@ -165,7 +165,6 @@ public:
     wxString GetLabel(int nItem) const;
 
 protected:
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
     virtual wxSize DoGetBestSize(void) const;
     virtual void   DoSetSize( int nX
                              ,int nY

@@ -3,7 +3,7 @@
 // Purpose:     wxStopWatch and global time-related functions
 // Author:      Julian Smart (wxTimer), Sylvain Bougnoux (wxStopWatch)
 // Created:     26.06.03 (extracted from wx/timer.h)
-// RCS-ID:      $Id: stopwatch.h 61508 2009-07-23 20:30:22Z VZ $
+// RCS-ID:      $Id: stopwatch.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 1998-2003 Julian Smart, Sylvain Bougnoux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -90,25 +90,13 @@ extern long WXDLLIMPEXP_BASE wxGetUTCTime();
 
 #if wxUSE_LONGLONG
     typedef wxLongLong wxMilliClock_t;
-    inline long wxMilliClockToLong(wxLongLong ll) { return ll.ToLong(); }
 #else
     typedef double wxMilliClock_t;
-    inline long wxMilliClockToLong(double d) { return wx_truncate_cast(long, d); }
 #endif // wxUSE_LONGLONG
 
 // Get number of milliseconds since local time 00:00:00 Jan 1st 1970
 extern wxMilliClock_t WXDLLIMPEXP_BASE wxGetLocalTimeMillis();
 
 #define wxGetCurrentTime() wxGetLocalTime()
-
-// on some really old systems gettimeofday() doesn't have the second argument,
-// define wxGetTimeOfDay() to hide this difference
-#ifdef HAVE_GETTIMEOFDAY
-    #ifdef WX_GETTIMEOFDAY_NO_TZ
-        #define wxGetTimeOfDay(tv)      gettimeofday(tv)
-    #else
-        #define wxGetTimeOfDay(tv)      gettimeofday((tv), NULL)
-    #endif
-#endif // HAVE_GETTIMEOFDAY
 
 #endif // _WX_STOPWATCH_H_

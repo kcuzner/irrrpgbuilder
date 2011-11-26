@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/cursor.h
+// Name:        cursor.h
 // Purpose:     wxCursor class
 // Author:      David Webster
 // Modified by:
 // Created:     10/13/99
-// RCS-ID:      $Id: cursor.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: cursor.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/bitmap.h"
 
-class WXDLLIMPEXP_CORE wxCursorRefData: public wxGDIImageRefData
+class WXDLLEXPORT wxCursorRefData: public wxGDIImageRefData
 {
 public:
     wxCursorRefData();
@@ -27,29 +27,32 @@ public:
 #define M_CURSORHANDLERDATA ((wxCursorRefData *)bitmap->m_refData)
 
 // Cursor
-class WXDLLIMPEXP_CORE wxCursor: public wxBitmap
+class WXDLLEXPORT wxCursor: public wxBitmap
 {
 public:
     wxCursor();
 
     wxCursor(const wxImage& rImage);
 
+    wxCursor( const char acBits[]
+             ,int        nWidth
+             ,int        nHeight
+             ,int        nHotSpotX = -1
+             ,int        nHotSpotY = -1
+             ,const char zMaskBits[] = NULL
+            );
     wxCursor( const wxString& rsName
-             ,wxBitmapType    lType = wxCURSOR_DEFAULT_TYPE
+             ,long            lFlags = wxBITMAP_TYPE_CUR_RESOURCE
              ,int             nHotSpotX = 0
              ,int             nHotSpotY = 0
             );
-    wxCursor(wxStockCursor id) { InitFromStock(id); }
-#if WXWIN_COMPATIBILITY_2_8
-    wxCursor(int id) { InitFromStock((wxStockCursor)id); }
-#endif
+    wxCursor(int nCursorType);
     inline ~wxCursor() { }
 
     inline WXHCURSOR GetHCURSOR(void) const { return (M_CURSORDATA ? M_CURSORDATA->m_hCursor : 0); }
     inline void      SetHCURSOR(WXHCURSOR hCursor) { SetHandle((WXHANDLE)hCursor); }
 
 protected:
-    void InitFromStock(wxStockCursor);
     inline virtual wxGDIImageRefData* CreateData(void) const { return (new wxCursorRefData); }
 
 private:

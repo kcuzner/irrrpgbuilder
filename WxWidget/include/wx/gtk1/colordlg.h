@@ -4,7 +4,7 @@
 // Author:      Vaclav Slavik
 // Modified by:
 // Created:     2004/06/04
-// RCS-ID:      $Id: colordlg.h 66615 2011-01-07 05:26:57Z PC $
+// RCS-ID:      $Id: colordlg.h 37164 2006-01-26 17:20:50Z ABX $
 // Copyright:   (c) Vaclav Slavik, 2004
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,17 +15,18 @@
 #include "wx/defs.h"
 #include "wx/gdicmn.h"
 #include "wx/dialog.h"
+#include "wx/cmndata.h"
 
 
-class WXDLLIMPEXP_CORE wxColourDialog : public wxDialog
+class WXDLLEXPORT wxColourDialog : public wxDialog
 {
 public:
     wxColourDialog() {}
     wxColourDialog(wxWindow *parent,
-                   wxColourData *data = NULL);
+                   wxColourData *data = (wxColourData *)NULL);
     virtual ~wxColourDialog() {}
 
-    bool Create(wxWindow *parent, wxColourData *data = NULL);
+    bool Create(wxWindow *parent, wxColourData *data = (wxColourData *)NULL);
 
     wxColourData &GetColourData() { return m_data; }
 

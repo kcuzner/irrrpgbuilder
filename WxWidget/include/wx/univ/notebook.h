@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id: notebook.h 66092 2010-11-10 13:52:29Z VZ $
+// RCS-ID:      $Id: notebook.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/arrstr.h"
 
-class WXDLLIMPEXP_FWD_CORE wxSpinButton;
+class WXDLLEXPORT wxSpinButton;
 
 // ----------------------------------------------------------------------------
 // the actions supported by this control
@@ -29,7 +29,7 @@ class WXDLLIMPEXP_FWD_CORE wxSpinButton;
 // wxNotebook
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxNotebook : public wxNotebookBase
+class WXDLLEXPORT wxNotebook : public wxNotebookBase
 {
 public:
     // ctors and such
@@ -64,6 +64,7 @@ public:
     // --------------------------------------
 
     virtual int SetSelection(size_t nPage) { return DoSetSelection(nPage, SetSelection_SendEvent); }
+    virtual int GetSelection() const { return (int) m_sel; }
 
     // changes selected page without sending events
     int ChangeSelection(size_t nPage) { return DoSetSelection(nPage); }
@@ -201,13 +202,16 @@ protected:
     wxSize GetSizeForPage(const wxSize& size) const;
 
     // scroll the tabs so that the first page shown becomes the given one
-    void ScrollTo(size_t page);
+    void ScrollTo(int page);
 
     // scroll the tabs so that the first page shown becomes the given one
-    void ScrollLastTo(size_t page);
+    void ScrollLastTo(int page);
 
     // the pages titles
     wxArrayString m_titles;
+
+    // the current selection
+    size_t m_sel;
 
     // the spin button to change the pages
     wxSpinButton *m_spinbtn;

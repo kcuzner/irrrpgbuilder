@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/debughlp.h
+// Name:        wx/msw/wrapdbgh.h
 // Purpose:     wraps dbghelp.h standard file
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     2005-01-08 (extracted from msw/crashrpt.cpp)
-// RCS-ID:      $Id: debughlp.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: debughlp.h 31443 2005-01-18 10:10:23Z ABX $
 // Copyright:   (c) 2003-2005 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

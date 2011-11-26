@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: printpalm.h 58757 2009-02-08 11:45:59Z VZ $
+// RCS-ID:      $Id: printpalm.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
 // Represents the printer: manages printing a wxPrintout object
 // ---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPalmPrinter : public wxPrinterBase
+class WXDLLEXPORT wxPalmPrinter : public wxPrinterBase
 {
     DECLARE_DYNAMIC_CLASS(wxPalmPrinter)
 
@@ -35,7 +35,7 @@ public:
 private:
     WXFARPROC     m_lpAbortProc;
 
-    wxDECLARE_NO_COPY_CLASS(wxPalmPrinter);
+    DECLARE_NO_COPY_CLASS(wxPalmPrinter)
 };
 
 // ---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ private:
 // wxPrintout.
 // ---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPalmPrintPreview : public wxPrintPreviewBase
+class WXDLLEXPORT wxPalmPrintPreview : public wxPrintPreviewBase
 {
 public:
     wxPalmPrintPreview(wxPrintout *printout,

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/dcmemory.h
+// Name:        dcmemory.h
 // Purpose:     wxMemoryDC class
 // Author:      David Webster
 // Modified by:
 // Created:     09/09/99
-// RCS-ID:      $Id: dcmemory.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: dcmemory.h 42755 2006-10-30 19:41:46Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,33 +12,30 @@
 #ifndef _WX_DCMEMORY_H_
 #define _WX_DCMEMORY_H_
 
-#include "wx/dcmemory.h"
-#include "wx/os2/dc.h"
+#include "wx/dcclient.h"
 
-class WXDLLIMPEXP_CORE wxMemoryDCImpl: public wxPMDCImpl
+class WXDLLEXPORT wxMemoryDC: public wxDC, public wxMemoryDCBase
 {
 public:
-    wxMemoryDCImpl( wxMemoryDC *owner );
-    wxMemoryDCImpl( wxMemoryDC *owner, wxBitmap& bitmap );
-    wxMemoryDCImpl( wxMemoryDC *owner, wxDC* pDC); // Create compatible DC
-
-    // override some base class virtuals
-    virtual void DoGetSize(int* pWidth, int* pHeight) const;
-    virtual void DoSelect(const wxBitmap& bitmap);
-
-    virtual wxBitmap DoGetAsBitmap(const wxRect* subrect) const
-    { return subrect == NULL ? GetSelectedBitmap() : GetSelectedBitmap().GetSubBitmap(*subrect);}
+    wxMemoryDC() { CreateCompatible(NULL); Init(); }
+    wxMemoryDC(wxBitmap& bitmap) { CreateCompatible(NULL); Init(); SelectObject(bitmap); }
+    wxMemoryDC(wxDC* pDC); // Create compatible DC
 
 protected:
+    // override some base class virtuals
+    virtual void DoGetSize( int* pWidth
+                           ,int* pHeight
+                          ) const;
+    virtual void DoSelect(const wxBitmap& bitmap);
+
     // create DC compatible with the given one or screen if dc == NULL
     bool CreateCompatible(wxDC* pDC);
 
     // initialize the newly created DC
     void Init(void);
 private:
-    DECLARE_CLASS(wxMemoryDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxMemoryDCImpl);
-}; // end of CLASS wxMemoryDCImpl
+    DECLARE_DYNAMIC_CLASS(wxMemoryDC)
+}; // end of CLASS wxMemoryDC
 
 #endif
     // _WX_DCMEMORY_H_

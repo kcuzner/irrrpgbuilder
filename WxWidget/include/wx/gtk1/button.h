@@ -2,7 +2,7 @@
 // Name:        wx/gtk1/button.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: button.h 49873 2007-11-12 21:37:46Z VZ $
+// Id:          $Id: button.h 37065 2006-01-23 02:28:01Z MR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,19 @@
 #include "wx/defs.h"
 #include "wx/object.h"
 #include "wx/list.h"
+#include "wx/control.h"
+
+//-----------------------------------------------------------------------------
+// classes
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_CORE wxButton;
+
+//-----------------------------------------------------------------------------
+// global data
+//-----------------------------------------------------------------------------
+
+extern WXDLLIMPEXP_CORE const wxChar wxButtonNameStr[];
 
 //-----------------------------------------------------------------------------
 // wxButton
@@ -41,7 +54,7 @@ public:
            const wxValidator& validator = wxDefaultValidator,
            const wxString& name = wxButtonNameStr);
 
-    virtual wxWindow *SetDefault();
+    virtual void SetDefault();
     virtual void SetLabel( const wxString &label );
     virtual bool Enable( bool enable = TRUE );
 

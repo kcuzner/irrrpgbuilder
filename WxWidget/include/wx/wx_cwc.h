@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/wx_cwc.h
+// Name:        wx_cw.h
 // Purpose:     wxWidgets definitions for CodeWarrior builds
 // Author:      Stefan Csomor
 // Modified by:
 // Created:     12/10/98
-// RCS-ID:      $Id: wx_cwc.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: wx_cwc.h 36967 2006-01-18 14:13:20Z JS $
 // Copyright:   (c) Stefan Csomor
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

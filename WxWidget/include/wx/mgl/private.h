@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/mgl/private.h
+// Name:        private.h
 // Purpose:     Private declarations: as this header is only included by
 //              wxWidgets itself, it may contain identifiers which don't start
 //              with "wx".
 // Author:      Vaclav Slavik
 // Created:     2001/04/07
-// RCS-ID:      $Id: private.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: private.h 36679 2006-01-04 14:14:32Z MW $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@
 #undef true
 #undef false
 
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
+class WXDLLEXPORT wxBitmap;
 
 
 // ---------------------------------------------------------------------------

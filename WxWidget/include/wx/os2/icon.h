@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/icon.h
+// Name:        icon.h
 // Purpose:     wxIcon class
 // Author:      David Webster
 // Modified by:
 // Created:     10/09/99
-// RCS-ID:      $Id: icon.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: icon.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 #define wxIconRefDataBase   wxGDIImageRefData
 #define wxIconBase          wxGDIImage
 
-class WXDLLIMPEXP_CORE wxIconRefData: public wxIconRefDataBase
+class WXDLLEXPORT wxIconRefData: public wxIconRefDataBase
 {
 public:
     wxIconRefData() { };
@@ -35,7 +35,7 @@ public:
 // Icon
 // ---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxIcon: public wxIconBase
+class WXDLLEXPORT wxIcon: public wxIconBase
 {
 public:
     wxIcon();
@@ -44,12 +44,10 @@ public:
            ,int        nWidth
            ,int        nHeight
           );
-    wxIcon(const char* const* ppData) { CreateIconFromXpm(ppData); }
-#ifdef wxNEEDS_CHARPP
-    wxIcon(char** ppData) { CreateIconFromXpm(const_cast<const char* const*>(ppData)); }
-#endif
+    inline wxIcon(const char** ppData) { CreateIconFromXpm(ppData); }
+    inline wxIcon(char** ppData) { CreateIconFromXpm((const char**)ppData); }
     wxIcon( const wxString& rName
-           ,wxBitmapType    lFlags = wxICON_DEFAULT_TYPE
+           ,long            lFlags = wxBITMAP_TYPE_ICO_RESOURCE
            ,int             nDesiredWidth = -1
            ,int             nDesiredHeight = -1
           );
@@ -61,7 +59,7 @@ public:
     virtual ~wxIcon();
 
     bool LoadFile( const wxString& rName
-                  ,wxBitmapType    lFlags = wxICON_DEFAULT_TYPE
+                  ,long            lFlags = wxBITMAP_TYPE_ICO_RESOURCE
                   ,int             nDesiredWidth = -1
                   ,int             nDesiredHeight = -1
                  );
@@ -79,7 +77,7 @@ protected:
     {
         return new wxIconRefData;
     }
-    void    CreateIconFromXpm(const char* const* ppData);
+    void    CreateIconFromXpm(const char **ppData);
 
 private:
     bool                            m_bIsXpm;

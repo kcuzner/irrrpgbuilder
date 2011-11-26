@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/xrc/xh_richtext.h
+// Name:        wx/xrc/xh_text.h
 // Purpose:     XML resource handler for wxRichTextCtrl
 // Author:      Julian Smart
 // Created:     2006-11-08
-// RCS-ID:      $Id: xh_richtext.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: xh_richtext.h 43199 2006-11-08 15:45:11Z JS $
 // Copyright:   (c) 2006 Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

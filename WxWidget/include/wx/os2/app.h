@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/app.h
+// Name:        app.h
 // Purpose:     wxApp class
 // Author:      David Webster
 // Modified by:
 // Created:     10/13/99
-// RCS-ID:      $Id: app.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: app.h 34903 2005-07-21 17:18:43Z ABX $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -37,20 +37,20 @@
 #include "wx/event.h"
 #include "wx/icon.h"
 
-class WXDLLIMPEXP_FWD_CORE wxFrame;
-class WXDLLIMPEXP_FWD_CORE wxWindow;
-class WXDLLIMPEXP_FWD_CORE wxApp;
-class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
-class WXDLLIMPEXP_FWD_BASE wxLog;
+class WXDLLEXPORT wxFrame;
+class WXDLLEXPORT wxWindow;
+class WXDLLEXPORT wxApp;
+class WXDLLEXPORT wxKeyEvent;
+class WXDLLEXPORT wxLog;
 
-WXDLLIMPEXP_DATA_CORE(extern wxApp*) wxTheApp;
-WXDLLIMPEXP_DATA_CORE(extern HAB)    vHabmain;
+WXDLLEXPORT_DATA(extern wxApp*) wxTheApp;
+WXDLLEXPORT_DATA(extern HAB)    vHabmain;
 
 // Force an exit from main loop
-void WXDLLIMPEXP_CORE wxExit(void);
+void WXDLLEXPORT wxExit(void);
 
 // Yield to other apps/messages
-bool WXDLLIMPEXP_CORE wxYield(void);
+bool WXDLLEXPORT wxYield(void);
 
 extern MRESULT EXPENTRY wxWndProc( HWND
                                   ,ULONG
@@ -61,7 +61,7 @@ extern MRESULT EXPENTRY wxWndProc( HWND
 
 // Represents the application. Derive OnInit and declare
 // a new App object to start application
-class WXDLLIMPEXP_CORE wxApp : public wxAppBase
+class WXDLLEXPORT wxApp : public wxAppBase
 {
     DECLARE_DYNAMIC_CLASS(wxApp)
 
@@ -75,6 +75,7 @@ public:
 
     virtual bool OnInitGui(void);
 
+    virtual bool Yield(bool onlyIfNeeded = false);
     virtual void WakeUpIdle(void);
 
     virtual void SetPrintMode(int mode) { m_nPrintMode = mode; }
@@ -116,7 +117,7 @@ public:
 
 protected:
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxApp);
+    DECLARE_NO_COPY_CLASS(wxApp)
 };
 #endif
     // _WX_APP_H_

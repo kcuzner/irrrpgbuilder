@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/frame.h
+// Name:        frame.h
 // Purpose:     wxFrame class
 // Author:      David Webster
 // Modified by:
 // Created:     10/27/99
-// RCS-ID:      $Id: frame.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: frame.h 56457 2008-10-20 06:55:43Z SN $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 //
 #include "wx/os2/wxrsc.h"
 
-class WXDLLIMPEXP_CORE wxFrame : public wxFrameBase
+class WXDLLEXPORT wxFrame : public wxFrameBase
 {
 public:
     // construction
@@ -81,7 +81,7 @@ public:
     // Status bar
 #if wxUSE_STATUSBAR
     virtual wxStatusBar* OnCreateStatusBar( int             nNumber = 1
-                                           ,long            lStyle = wxSTB_DEFAULT_STYLE
+                                           ,long            lStyle = wxST_SIZEGRIP
                                            ,wxWindowID      vId = 0
                                            ,const wxString& rsName = wxStatusLineNameStr
                                           );
@@ -124,6 +124,8 @@ public:
     WXHWND GetToolTipCtrl(void) const { return m_hWndToolTip; }
     void   SetToolTipCtrl(WXHWND hHwndTT) { m_hWndToolTip = hHwndTT; }
 #endif // tooltips
+
+    virtual void SendSizeEvent(void);
 
     void      SetClient(WXHWND    c_Hwnd);
     void      SetClient(wxWindow* c_Window);

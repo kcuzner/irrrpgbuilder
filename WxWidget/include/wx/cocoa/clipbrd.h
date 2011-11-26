@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/cocoa/clipbrd.h
+// Name:        wx/cocoa/clipboard.h
 // Purpose:     wxClipboard
 // Author:      David Elliott <dfe@cox.net>
 // Modified by:
 // Created:     2003/07/23
-// RCS-ID:      $Id: clipbrd.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: clipbrd.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

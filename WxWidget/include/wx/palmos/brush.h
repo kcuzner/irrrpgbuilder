@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: brush.h 54273 2008-06-17 17:28:26Z VZ $
+// RCS-ID:      $Id: brush.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,49 +16,45 @@
 #include "wx/gdiobj.h"
 #include "wx/bitmap.h"
 
-class WXDLLIMPEXP_FWD_CORE wxBrush;
+class WXDLLEXPORT wxBrush;
 
 // ----------------------------------------------------------------------------
 // wxBrush
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBrush : public wxBrushBase
+class WXDLLEXPORT wxBrush : public wxBrushBase
 {
 public:
     wxBrush();
-    wxBrush(const wxColour& col, wxBrushStyle style = wxBRUSHSTYLE_SOLID);
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( wxBrush(const wxColour& col, int style) );
-#endif
+    wxBrush(const wxColour& col, int style = wxSOLID);
     wxBrush(const wxBitmap& stipple);
     virtual ~wxBrush();
 
     virtual void SetColour(const wxColour& col);
     virtual void SetColour(unsigned char r, unsigned char g, unsigned char b);
-    virtual void SetStyle(wxBrushStyle style);
+    virtual void SetStyle(int style);
     virtual void SetStipple(const wxBitmap& stipple);
 
     bool operator==(const wxBrush& brush) const;
     bool operator!=(const wxBrush& brush) const { return !(*this == brush); }
 
     wxColour GetColour() const;
-    wxBrushStyle GetStyle() const;
+    virtual int GetStyle() const;
     wxBitmap *GetStipple() const;
 
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( void SetStyle(int style) )
-        { SetStyle((wxBrushStyle)style); }
-#endif
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return m_refData != NULL; }
 
     // return the HBRUSH for this brush
     virtual WXHANDLE GetResourceHandle() const;
 
 protected:
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxBrush)
 };
 
-#endif // _WX_BRUSH_H_
+#endif
+    // _WX_BRUSH_H_

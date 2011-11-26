@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/help.h
+// Name:        help.h
 // Purpose:     wxHelpController base header
 // Author:      wxWidgets Team
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: help.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: help.h 33948 2005-05-04 18:57:50Z JS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

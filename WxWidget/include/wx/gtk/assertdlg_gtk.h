@@ -1,8 +1,8 @@
 /* ///////////////////////////////////////////////////////////////////////////
-// Name:        wx/gtk/assertdlg_gtk.h
+// Name:        assertdlg_gtk.h
 // Purpose:     GtkAssertDialog
 // Author:      Francesco Montorsi
-// Id:          $Id: assertdlg_gtk.h 67254 2011-03-20 00:14:35Z DS $
+// Id:          $Id: assertdlg_gtk.h 43766 2006-12-03 16:15:01Z VZ $
 // Copyright:   (c) 2006 Francesco Montorsi
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////// */
@@ -14,7 +14,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include <gtk/gtk.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtklabel.h>
 
 #define GTK_TYPE_ASSERT_DIALOG            (gtk_assert_dialog_get_type ())
 #define GTK_ASSERT_DIALOG(object)         (G_TYPE_CHECK_INSTANCE_CAST ((object), GTK_TYPE_ASSERT_DIALOG, GtkAssertDialog))
@@ -58,8 +59,8 @@ typedef enum
 
 
 
-GType gtk_assert_dialog_get_type(void);
-GtkWidget *gtk_assert_dialog_new(void);
+GType gtk_assert_dialog_get_type();
+GtkWidget *gtk_assert_dialog_new();
 
 /* get the assert message */
 gchar *gtk_assert_dialog_get_message(GtkAssertDialog *assertdlg);

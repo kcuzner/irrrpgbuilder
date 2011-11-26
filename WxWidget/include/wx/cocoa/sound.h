@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/cocoa/sound.h
+// Name:        sound.h
 // Purpose:     wxSound class (loads and plays short Windows .wav files).
 //              Optional on non-Windows platforms.
 // Authors:     David Elliott, Ryan Norton
-// Modified by:
+// Modified by: 
 // Created:     2004-10-02
-// RCS-ID:      $Id: sound.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: sound.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 2004 David Elliott, Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #include "wx/object.h"
 #include "wx/cocoa/ObjcRef.h"
 
-class WXDLLIMPEXP_ADV wxSound : public wxSoundBase
+class WXDLLEXPORT wxSound : public wxSoundBase
 {
 public:
     wxSound()
@@ -41,7 +41,7 @@ public:
     void SetNSSound(WX_NSSound cocoaNSSound);
     inline WX_NSSound GetNSSound()
     {   return m_cocoaNSSound; }
-protected:
+protected:  
     bool DoPlay(unsigned flags) const;
     bool LoadWAV(const wxUint8 *data, size_t length, bool copyData);
 private:

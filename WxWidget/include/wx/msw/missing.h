@@ -3,7 +3,7 @@
 // Purpose:     Declarations for parts of the Win32 SDK that are missing in
 //              the versions that come with some compilers
 // Created:     2002/04/23
-// RCS-ID:      $Id: missing.h 66996 2011-02-22 13:26:06Z VZ $
+// RCS-ID:      $Id: missing.h 48436 2007-08-28 19:26:16Z JS $
 // Copyright:   (c) 2002 Mattia Barbon
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,24 +29,17 @@
     #define WM_CONTEXTMENU      0x007B
 #endif
 
-#ifndef WM_CHANGEUISTATE
-    #define WM_CHANGEUISTATE    0x0127
-#endif
-
+// Needed by toplevel.cpp
 #ifndef WM_UPDATEUISTATE
     #define WM_UPDATEUISTATE    0x0128
 #endif
 
-#ifndef WM_QUERYUISTATE
-    #define WM_QUERYUISTATE     0x0129
+#ifndef WM_CHANGEUISTATE
+    #define WM_CHANGEUISTATE    0x0127
 #endif
 
 #ifndef WM_PRINTCLIENT
     #define WM_PRINTCLIENT 0x318
-#endif
-
-#ifndef DT_HIDEPREFIX
-    #define DT_HIDEPREFIX 0x00100000
 #endif
 
 // Needed by toplevel.cpp
@@ -145,8 +138,38 @@
 #define LWA_ALPHA 2
 #endif
 
-#ifndef QS_ALLPOSTMESSAGE
-#define QS_ALLPOSTMESSAGE 0
+#if defined __VISUALC__ && __VISUALC__ <= 1200 && !defined MIIM_BITMAP
+#define MIIM_STRING      0x00000040
+#define MIIM_BITMAP      0x00000080
+#define MIIM_FTYPE       0x00000100
+#define HBMMENU_CALLBACK            ((HBITMAP) -1)
+typedef struct tagMENUINFO
+{
+    DWORD   cbSize;
+    DWORD   fMask;
+    DWORD   dwStyle;
+    UINT    cyMax;
+    HBRUSH  hbrBack;
+    DWORD   dwContextHelpID;
+    DWORD   dwMenuData;
+}   MENUINFO, FAR *LPMENUINFO;
+struct wxMENUITEMINFO_
+{
+    UINT cbSize;
+    UINT fMask;
+    UINT fType;
+    UINT fState;
+    UINT wID;
+    HMENU hSubMenu;
+    HBITMAP hbmpChecked;
+    HBITMAP hbmpUnchecked;
+    DWORD dwItemData;
+    LPTSTR dwTypeData;
+    UINT cch;
+    HBITMAP hbmpItem;
+};
+#else
+#define wxMENUITEMINFO_ MENUITEMINFO
 #endif
 
 /*
@@ -218,42 +241,15 @@ typedef struct wxtagNMLVCUSTOMDRAW_ {
 #endif // defined __VISUALC__ && __VISUALC__ <= 1100
 
 // ----------------------------------------------------------------------------
-// menu stuff
+// ListView common control
+// Needed by listctrl.cpp
 // ----------------------------------------------------------------------------
-
-#ifndef MIIM_BITMAP
-    #define MIIM_STRING      0x00000040
-    #define MIIM_BITMAP      0x00000080
-    #define MIIM_FTYPE       0x00000100
-    #define HBMMENU_CALLBACK            ((HBITMAP) -1)
-
-    typedef struct tagMENUINFO
-    {
-        DWORD   cbSize;
-        DWORD   fMask;
-        DWORD   dwStyle;
-        UINT    cyMax;
-        HBRUSH  hbrBack;
-        DWORD   dwContextHelpID;
-        DWORD   dwMenuData;
-    }   MENUINFO, FAR *LPMENUINFO;
-#endif // MIIM_BITMAP &c
-
-// ----------------------------------------------------------------------------
-// definitions related to ListView and Header common controls, needed by
-// msw/listctrl.cpp and msw/headerctrl.cpp
-// ----------------------------------------------------------------------------
-
-#ifndef I_IMAGENONE
-    #define I_IMAGENONE (-2)
-#endif
 
 #ifndef LVS_EX_FULLROWSELECT
     #define LVS_EX_FULLROWSELECT 0x00000020
 #endif
 
-// LVS_EX_LABELTIP is not supported by Windows CE, don't define it there
-#if !defined(LVS_EX_LABELTIP) && !defined(__WXWINCE__)
+#ifndef LVS_EX_LABELTIP
     #define LVS_EX_LABELTIP 0x00004000
 #endif
 
@@ -263,18 +259,6 @@ typedef struct wxtagNMLVCUSTOMDRAW_ {
 
 #ifndef HDN_GETDISPINFOW
     #define HDN_GETDISPINFOW (HDN_FIRST-29)
-#endif
-
-#ifndef HDS_HOTTRACK
-    #define HDS_HOTTRACK 4
-#endif
-#ifndef HDS_FLAT
-    #define HDS_FLAT 0x0200
-#endif
-
-#ifndef HDF_SORTUP
-    #define HDF_SORTUP   0x0400
-    #define HDF_SORTDOWN 0x0200
 #endif
 
  /*
@@ -332,7 +316,6 @@ typedef struct wxtagNMLVCUSTOMDRAW_ {
 
 #ifdef __DMC__
 
-#ifndef VER_NT_WORKSTATION
 typedef struct _OSVERSIONINFOEX {
     DWORD dwOSVersionInfoSize;
     DWORD dwMajorVersion;
@@ -346,7 +329,6 @@ typedef struct _OSVERSIONINFOEX {
     BYTE  wProductType;
     BYTE  wReserved;
 } OSVERSIONINFOEX;
-#endif // !defined(VER_NT_WORKSTATION)
 
 #ifndef _TrackMouseEvent
     #define _TrackMouseEvent TrackMouseEvent
@@ -383,34 +365,6 @@ typedef struct _OSVERSIONINFOEX {
 
 #ifndef LVM_GETHEADER
     #define LVM_GETHEADER (LVM_FIRST+31)
-#endif
-
-#ifndef HDLAYOUT
-    #define HDLAYOUT HD_LAYOUT
-#endif
-
-#ifndef HDITEM
-    #define HDITEM HD_ITEM
-#endif
-
-#ifndef NMHEADER
-    #define NMHEADER HD_NOTIFY
-#endif
-
-#ifndef HDS_DRAGDROP
-    #define HDS_DRAGDROP 0x0040
-#endif
-#ifndef HDS_FULLDRAG
-    #define HDS_FULLDRAG 0x0080
-#endif
-
-
-#ifndef HDN_BEGINDRAG
-    #define HDN_BEGINDRAG (HDN_FIRST - 11)
-#endif
-
-#ifndef HDN_ENDDRAG
-    #define HDN_ENDDRAG (HDN_FIRST - 10)
 #endif
 
 #ifndef LVSICF_NOSCROLL
@@ -536,10 +490,6 @@ typedef struct
         #define BROADCAST_QUERY_DENY    1112363332
     #endif
 #endif  // defined __WINE__
-
-#ifndef INVALID_FILE_ATTRIBUTES
-    #define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
-#endif
 
 #endif
     // _WX_MISSING_H_

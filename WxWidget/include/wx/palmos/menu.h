@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: menu.h 66637 2011-01-07 21:36:17Z SC $
+// RCS-ID:      $Id: menu.h 48053 2007-08-13 17:07:01Z JS $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,10 +19,10 @@
     WX_DEFINE_EXPORTED_ARRAY_PTR(wxAcceleratorEntry *, wxAcceleratorArray);
 #endif // wxUSE_ACCEL
 
-class WXDLLIMPEXP_FWD_CORE wxFrame;
+class WXDLLEXPORT wxFrame;
 
 #if defined(__WXWINCE__) && wxUSE_TOOLBAR
-class WXDLLIMPEXP_FWD_CORE wxToolBar;
+class WXDLLEXPORT wxToolBar;
 #endif
 
 #include "wx/arrstr.h"
@@ -31,7 +31,7 @@ class WXDLLIMPEXP_FWD_CORE wxToolBar;
 // Menu
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMenu : public wxMenuBase
+class WXDLLEXPORT wxMenu : public wxMenuBase
 {
 public:
     // ctors & dtor
@@ -103,7 +103,26 @@ private:
 // Menu Bar (a la Windows)
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMenuBar : public wxMenuBarBase
+class WXDLLEXPORT wxMenuInfo : public wxObject
+{
+public :
+    wxMenuInfo() { m_menu = NULL ; }
+    virtual ~wxMenuInfo() { }
+
+    void Create( wxMenu *menu , const wxString &title )
+    { m_menu = menu ; m_title = title ; }
+    wxMenu* GetMenu() const { return m_menu ; }
+    wxString GetTitle() const { return m_title ; }
+private :
+    wxMenu *m_menu ;
+    wxString m_title ;
+
+    DECLARE_DYNAMIC_CLASS(wxMenuInfo) ;
+} ;
+
+WX_DECLARE_EXPORTED_LIST(wxMenuInfo, wxMenuInfoList );
+
+class WXDLLEXPORT wxMenuBar : public wxMenuBarBase
 {
 public:
     // ctors & dtor
@@ -115,14 +134,18 @@ public:
     wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long style = 0);
     virtual ~wxMenuBar();
 
+    // menubar construction
+    bool Append( wxMenuInfo *info ) { return Append( info->GetMenu() , info->GetTitle() ) ; }
+    const wxMenuInfoList& GetMenuInfos() const ;
+
     virtual bool Append( wxMenu *menu, const wxString &title );
     virtual bool Insert(size_t pos, wxMenu *menu, const wxString& title);
     virtual wxMenu *Replace(size_t pos, wxMenu *menu, const wxString& title);
     virtual wxMenu *Remove(size_t pos);
 
     virtual void EnableTop( size_t pos, bool flag );
-    virtual void SetMenuLabel( size_t pos, const wxString& label );
-    virtual wxString GetMenuLabel( size_t pos ) const;
+    virtual void SetLabelTop( size_t pos, const wxString& label );
+    virtual wxString GetLabelTop( size_t pos ) const;
 
     // implementation from now on
     WXHMENU Create();
@@ -169,6 +192,13 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS_NO_COPY(wxMenuBar)
+
+public:
+
+#if wxABI_VERSION >= 20805
+    // Gets the original label at the top-level of the menubar
+    wxString GetMenuLabel(size_t pos) const;
+#endif
 };
 
 #endif // _WX_MENU_H_

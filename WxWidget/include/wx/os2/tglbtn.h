@@ -5,16 +5,18 @@
 // Author:      Dave Webster
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h 66992 2011-02-22 13:25:30Z VZ $
+// RCS-ID:      $Id: tglbtn.h 36891 2006-01-16 14:59:55Z MR $
 // Copyright:   (c) 2005 David A Webster
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_TOGGLEBUTTON_H_
 #define _WX_TOGGLEBUTTON_H_
 
+extern WXDLLEXPORT_DATA(const wxChar) wxCheckBoxNameStr[];
+
 // Checkbox item (single checkbox)
-class WXDLLIMPEXP_CORE wxToggleButton : public wxToggleButtonBase
+class WXDLLEXPORT wxToggleButton : public wxControl
 {
 public:
     wxToggleButton() {}

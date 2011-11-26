@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: spinctrl.h 61508 2009-07-23 20:30:22Z VZ $
+// RCS-ID:      $Id: spinctrl.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 
 #include "wx/dynarray.h"
 
-class WXDLLIMPEXP_FWD_CORE wxSpinCtrl;
+class WXDLLEXPORT wxSpinCtrl;
 WX_DEFINE_EXPORTED_ARRAY_PTR(wxSpinCtrl *, wxArraySpins);
 
 // ----------------------------------------------------------------------------
@@ -25,7 +25,7 @@ WX_DEFINE_EXPORTED_ARRAY_PTR(wxSpinCtrl *, wxArraySpins);
 // control is clicked.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSpinCtrl : public wxSpinButton
+class WXDLLEXPORT wxSpinCtrl : public wxSpinButton
 {
 public:
     wxSpinCtrl() { }
@@ -37,7 +37,7 @@ public:
                const wxSize& size = wxDefaultSize,
                long style = wxSP_ARROW_KEYS,
                int min = 0, int max = 100, int initial = 0,
-               const wxString& name = wxT("wxSpinCtrl"))
+               const wxString& name = _T("wxSpinCtrl"))
     {
         Create(parent, id, value, pos, size, style, min, max, initial, name);
     }
@@ -49,7 +49,7 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = wxSP_ARROW_KEYS,
                 int min = 0, int max = 100, int initial = 0,
-                const wxString& name = wxT("wxSpinCtrl"));
+                const wxString& name = _T("wxSpinCtrl"));
 
     // a wxTextCtrl-like method (but we can't have GetValue returning wxString
     // because the base class already has one returning int!)
@@ -109,7 +109,7 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS(wxSpinCtrl)
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxSpinCtrl);
+    DECLARE_NO_COPY_CLASS(wxSpinCtrl)
 };
 
 #endif // _WX_PALMOS_SPINCTRL_H_

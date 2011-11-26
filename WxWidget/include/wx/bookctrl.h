@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.08.03
-// RCS-ID:      $Id: bookctrl.h 65967 2010-10-31 13:33:34Z VZ $
+// RCS-ID:      $Id: bookctrl.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 2003 Vadim Zeitlin <vadim@wxwidgets.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 WX_DEFINE_EXPORTED_ARRAY_PTR(wxWindow *, wxArrayPages);
 
 class WXDLLIMPEXP_FWD_CORE wxImageList;
-class WXDLLIMPEXP_FWD_CORE wxBookCtrlEvent;
+class WXDLLIMPEXP_FWD_CORE wxBookCtrlBaseEvent;
 
 // ----------------------------------------------------------------------------
 // constants
@@ -54,7 +54,7 @@ enum
 // wxBookCtrlBase
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBookCtrlBase : public wxControl
+class WXDLLEXPORT wxBookCtrlBase : public wxControl
 {
 public:
     // construction
@@ -96,6 +96,7 @@ public:
     virtual size_t GetPageCount() const { return m_pages.size(); }
 
     // get the panel which represents the given page
+    wxWindow *GetPage(size_t n) { return m_pages[n]; }
     wxWindow *GetPage(size_t n) const { return m_pages[n]; }
 
     // get the current page or NULL if none
@@ -106,7 +107,7 @@ public:
     }
 
     // get the currently selected page or wxNOT_FOUND if none
-    int GetSelection() const { return m_selection; }
+    virtual int GetSelection() const = 0;
 
     // set/get the title of a page
     virtual bool SetPageText(size_t n, const wxString& strText) = 0;
@@ -137,14 +138,8 @@ public:
     // resize the notebook so that all pages will have the specified size
     virtual void SetPageSize(const wxSize& size);
 
-    // return the size of the area needed to accommodate the controller
-    wxSize GetControllerSize() const;
-
     // calculate the size of the control from the size of its page
-    //
-    // by default this simply returns size enough to fit both the page and the
-    // controller
-    virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const;
+    virtual wxSize CalcSizeFromPage(const wxSize& sizePage) const = 0;
 
     // get/set size of area between book control area and page area
     unsigned int GetInternalBorder() const { return m_internalBorder; }
@@ -164,7 +159,6 @@ public:
     // returns the sizer containing the control, if any
     wxSizer* GetControlSizer() const { return m_controlSizer; }
 
-
     // operations
     // ----------
 
@@ -181,7 +175,6 @@ public:
     // remove all pages and delete them
     virtual bool DeleteAllPages()
     {
-        m_selection = wxNOT_FOUND;
         DoInvalidateBestSize();
         WX_CLEAR_ARRAY(m_pages);
         return true;
@@ -205,7 +198,7 @@ public:
                             int imageId = -1) = 0;
 
     // set the currently selected page, return the index of the previously
-    // selected one (or wxNOT_FOUND on error)
+    // selected one (or -1 on error)
     //
     // NB: this function will generate PAGE_CHANGING/ED events
     virtual int SetSelection(size_t n) = 0;
@@ -218,7 +211,7 @@ public:
     void AdvanceSelection(bool forward = true)
     {
         int nPage = GetNextPage(forward);
-        if ( nPage != wxNOT_FOUND )
+        if ( nPage != -1 )
         {
             // cast is safe because of the check above
             SetSelection((size_t)nPage);
@@ -236,11 +229,6 @@ public:
     // we do have multiple pages
     virtual bool HasMultiplePages() const { return true; }
 
-    // we don't want focus for ourselves
-    virtual bool AcceptsFocus() const { return false; }
-
-    // returns true if the platform should explicitly apply a theme border
-    virtual bool CanApplyThemeBorder() const { return false; }
 
 protected:
     // flags for DoSetSelection()
@@ -248,20 +236,6 @@ protected:
     {
         SetSelection_SendEvent = 1
     };
-
-    // choose the default border for this window
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
-
-    // After the insertion of the page in the method InsertPage, calling this
-    // method sets the selection to the given page or the first one if there is
-    // still no selection. The "selection changed" event is sent only if
-    // bSelect is true, so when it is false, no event is sent even if the
-    // selection changed from wxNOT_FOUND to 0 when inserting the first page.
-    //
-    // Returns true if the selection was set to the specified page (explicitly
-    // because of bSelect == true or implicitly because it's the first page) or
-    // false otherwise.
-    bool DoSetSelectionAfterInsertion(size_t n, bool bSelect);
 
     // set the selection to the given page, sending the events (which can
     // possibly prevent the page change from taking place) if SendEvent flag is
@@ -278,12 +252,12 @@ protected:
         { wxFAIL_MSG(wxT("Override this function!")); }
 
     // create a new "page changing" event
-    virtual wxBookCtrlEvent* CreatePageChangingEvent() const
+    virtual wxBookCtrlBaseEvent* CreatePageChangingEvent() const
         { wxFAIL_MSG(wxT("Override this function!")); return NULL; }
 
     // modify the event created by CreatePageChangingEvent() to "page changed"
     // event, usually by just calling SetEventType() on it
-    virtual void MakeChangedEvent(wxBookCtrlEvent& WXUNUSED(event))
+    virtual void MakeChangedEvent(wxBookCtrlBaseEvent& WXUNUSED(event))
         { wxFAIL_MSG(wxT("Override this function!")); }
 
 
@@ -304,7 +278,7 @@ protected:
     int GetNextPage(bool forward) const;
 
     // Lay out controls
-    virtual void DoSize();
+    void DoSize();
 
     // This method also invalidates the size of the controller and should be
     // called instead of just InvalidateBestSize() whenever pages are added or
@@ -327,9 +301,10 @@ protected:
     bool m_ownsImageList;
 
     // get the page area
-    virtual wxRect GetPageRect() const;
+    wxRect GetPageRect() const;
 
     // event handlers
+    virtual wxSize GetControllerSize() const;
     void OnSize(wxSizeEvent& event);
 
     // controller buddy if available, NULL otherwise (usually for native book controls like wxNotebook)
@@ -344,11 +319,6 @@ protected:
     // the margin around the choice control
     int m_controlMargin;
 
-    // The currently selected page (in range 0..m_pages.size()-1 inclusive) or
-    // wxNOT_FOUND if none (this can normally only be the case for an empty
-    // control without any pages).
-    int m_selection;
-
 private:
 
     // common part of all ctors
@@ -358,75 +328,66 @@ private:
     unsigned int m_internalBorder;
 
     DECLARE_ABSTRACT_CLASS(wxBookCtrlBase)
-    wxDECLARE_NO_COPY_CLASS(wxBookCtrlBase);
-
+    DECLARE_NO_COPY_CLASS(wxBookCtrlBase)
     DECLARE_EVENT_TABLE()
 };
 
 // ----------------------------------------------------------------------------
-// wxBookCtrlEvent: page changing events generated by book classes
+// wxBookCtrlBaseEvent: page changing events generated by derived classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBookCtrlEvent : public wxNotifyEvent
+class WXDLLEXPORT wxBookCtrlBaseEvent : public wxNotifyEvent
 {
 public:
-    wxBookCtrlEvent(wxEventType commandType = wxEVT_NULL, int winid = 0,
-                        int nSel = wxNOT_FOUND, int nOldSel = wxNOT_FOUND)
+    wxBookCtrlBaseEvent(wxEventType commandType = wxEVT_NULL, int winid = 0,
+                        int nSel = -1, int nOldSel = -1)
         : wxNotifyEvent(commandType, winid)
     {
         m_nSel = nSel;
         m_nOldSel = nOldSel;
     }
 
-    wxBookCtrlEvent(const wxBookCtrlEvent& event)
+    wxBookCtrlBaseEvent(const wxBookCtrlBaseEvent& event)
         : wxNotifyEvent(event)
     {
         m_nSel = event.m_nSel;
         m_nOldSel = event.m_nOldSel;
     }
 
-    virtual wxEvent *Clone() const { return new wxBookCtrlEvent(*this); }
-
     // accessors
-        // the currently selected page (wxNOT_FOUND if none)
+        // the currently selected page (-1 if none)
     int GetSelection() const { return m_nSel; }
     void SetSelection(int nSel) { m_nSel = nSel; }
-        // the page that was selected before the change (wxNOT_FOUND if none)
+        // the page that was selected before the change (-1 if none)
     int GetOldSelection() const { return m_nOldSel; }
     void SetOldSelection(int nOldSel) { m_nOldSel = nOldSel; }
 
 private:
     int m_nSel,     // currently selected page
         m_nOldSel;  // previously selected page
-
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxBookCtrlEvent)
 };
-
-typedef void (wxEvtHandler::*wxBookCtrlEventFunction)(wxBookCtrlEvent&);
-
-#define wxBookCtrlEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxBookCtrlEventFunction, func)
-
-// obsolete name, defined for compatibility only
-#define wxBookCtrlBaseEvent wxBookCtrlEvent
 
 // make a default book control for given platform
 #if wxUSE_NOTEBOOK
     // dedicated to majority of desktops
     #include "wx/notebook.h"
     #define wxBookCtrl                             wxNotebook
+    #define wxBookCtrlEvent                        wxNotebookEvent
     #define wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGED    wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED
     #define wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGING   wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING
     #define EVT_BOOKCTRL_PAGE_CHANGED(id, fn)      EVT_NOTEBOOK_PAGE_CHANGED(id, fn)
     #define EVT_BOOKCTRL_PAGE_CHANGING(id, fn)     EVT_NOTEBOOK_PAGE_CHANGING(id, fn)
+    #define wxBookctrlEventHandler(func)           wxNotebookEventHandler(func)
 #else
     // dedicated to Smartphones
     #include "wx/choicebk.h"
     #define wxBookCtrl                             wxChoicebook
+    #define wxBookCtrlEvent                        wxChoicebookEvent
     #define wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGED    wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED
     #define wxEVT_COMMAND_BOOKCTRL_PAGE_CHANGING   wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGING
     #define EVT_BOOKCTRL_PAGE_CHANGED(id, fn)      EVT_CHOICEBOOK_PAGE_CHANGED(id, fn)
     #define EVT_BOOKCTRL_PAGE_CHANGING(id, fn)     EVT_CHOICEBOOK_PAGE_CHANGING(id, fn)
+    #define wxBookctrlEventHandler(func)           wxChoicebookEventHandler(func)
 #endif
 
 #if WXWIN_COMPATIBILITY_2_6

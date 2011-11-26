@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: app.h 59711 2009-03-21 23:36:37Z VZ $
+// RCS-ID:      $Id: app.h 42119 2006-10-19 14:39:53Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,18 +23,18 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxFrame;
-class WXDLLIMPEXP_FWD_CORE wxWindow;
-class WXDLLIMPEXP_FWD_CORE wxApp;
-class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
-class WXDLLIMPEXP_FWD_BASE wxLog;
-class WXDLLIMPEXP_FWD_CORE wxXVisualInfo;
+class WXDLLEXPORT wxFrame;
+class WXDLLEXPORT wxWindow;
+class WXDLLEXPORT wxApp;
+class WXDLLEXPORT wxKeyEvent;
+class WXDLLEXPORT wxLog;
+class WXDLLEXPORT wxXVisualInfo;
 
 // ----------------------------------------------------------------------------
 // the wxApp class for wxX11 - see wxAppBase for more details
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxApp : public wxAppBase
+class WXDLLEXPORT wxApp : public wxAppBase
 {
 public:
     wxApp();
@@ -45,6 +45,7 @@ public:
 
     virtual void Exit();
 
+    virtual bool Yield(bool onlyIfNeeded = FALSE);
     virtual void WakeUpIdle();
 
     virtual bool OnInitGui();
@@ -54,6 +55,10 @@ public:
 
     // Processes an X event.
     virtual bool ProcessXEvent(WXEvent* event);
+
+#ifdef __WXDEBUG__
+    virtual void OnAssert(const wxChar *file, int line, const wxChar* cond, const wxChar *msg);
+#endif // __WXDEBUG__
 
 public:
     // Implementation
@@ -79,7 +84,7 @@ public:
     PangoContext* GetPangoContext();
 #endif
 
-    wxXVisualInfo* GetVisualInfo(WXDisplay* WXUNUSED(display))
+    wxXVisualInfo* GetVisualInfo(WXDisplay* display)
     {
         // this should be implemented correctly for wxBitmap to work
         // with multiple display
@@ -101,6 +106,7 @@ protected:
     long                  m_maxRequestSize;
 
     DECLARE_DYNAMIC_CLASS(wxApp)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // _WX_X11_APP_H_

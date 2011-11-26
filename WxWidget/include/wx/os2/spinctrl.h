@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/spinctrl.h
+// Name:        msw/spinctrl.h
 // Purpose:     wxSpinCtrl class declaration for Win32
 // Author:      David Webster
 // Modified by:
 // Created:     10/15/99
-// RCS-ID:      $Id: spinctrl.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: spinctrl.h 34903 2005-07-21 17:18:43Z ABX $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/spinbutt.h"    // the base class
 #include "wx/dynarray.h"
-class WXDLLIMPEXP_FWD_CORE wxSpinCtrl;
+class WXDLLEXPORT wxSpinCtrl;
 WX_DEFINE_EXPORTED_ARRAY_PTR(wxSpinCtrl *, wxArraySpins);
 
 // ----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ WX_DEFINE_EXPORTED_ARRAY_PTR(wxSpinCtrl *, wxArraySpins);
 // control is clicked.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxSpinCtrl : public wxSpinButton
+class WXDLLEXPORT wxSpinCtrl : public wxSpinButton
 {
 public:
     wxSpinCtrl() { }
@@ -36,7 +36,7 @@ public:
                ,int             nMin = 0
                ,int             nMax = 100
                ,int             nInitial = 0
-               ,const wxString& rsName = wxT("wxSpinCtrl")
+               ,const wxString& rsName = _T("wxSpinCtrl")
               )
     {
         Create(pParent, vId, rsValue, rPos, rSize, lStyle, nMin, nMax, nInitial, rsName);
@@ -52,7 +52,7 @@ public:
                ,int             nMin = 0
                ,int             nMax = 100
                ,int             nInitial = 0
-               ,const wxString& rsName = wxT("wxSpinCtrl")
+               ,const wxString& rsName = _T("wxSpinCtrl")
               );
 
     //

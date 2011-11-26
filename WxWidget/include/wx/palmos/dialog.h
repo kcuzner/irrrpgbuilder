@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dialog.h 60559 2009-05-09 12:26:15Z VZ $
+// RCS-ID:      $Id: dialog.h 40791 2006-08-24 14:35:48Z ABX $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,12 +14,12 @@
 
 #include "wx/panel.h"
 
-//WXDLLIMPEXP_DATA_CORE(extern const wxChar) wxDialogNameStr[];
+WXDLLEXPORT_DATA(extern const wxChar) wxDialogNameStr[];
 
-class WXDLLIMPEXP_FWD_CORE wxDialogModalData;
+class WXDLLEXPORT wxDialogModalData;
 
 // Dialog boxes
-class WXDLLIMPEXP_CORE wxDialog : public wxDialogBase
+class WXDLLEXPORT wxDialog : public wxDialogBase
 {
 public:
     wxDialog() { Init(); }
@@ -64,6 +64,12 @@ public:
     virtual void Raise();
 
 protected:
+    // find the window to use as parent for this dialog if none has been
+    // specified explicitly by the user
+    //
+    // may return NULL
+    wxWindow *FindSuitableParent() const;
+
     // common part of all ctors
     void Init();
 
@@ -76,7 +82,7 @@ private:
 
 
     DECLARE_DYNAMIC_CLASS(wxDialog)
-    wxDECLARE_NO_COPY_CLASS(wxDialog);
+    DECLARE_NO_COPY_CLASS(wxDialog)
 };
 
 #endif

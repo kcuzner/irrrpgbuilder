@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     14/4/2006
 // Copyright:   (c) Francesco Montorsi
-// RCS-ID:      $Id: filepickerg.h 63690 2010-03-16 00:23:57Z VZ $
+// RCS-ID:      $Id: filepickerg.h 40100 2006-07-15 15:13:04Z VS $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -17,8 +17,8 @@
 #include "wx/dirdlg.h"
 
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_DIRPICKER_CHANGED, wxFileDirPickerEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEvent );
+extern WXDLLEXPORT_DATA(const wxEventType) wxEVT_COMMAND_DIRPICKER_CHANGED;
+extern WXDLLEXPORT_DATA(const wxEventType) wxEVT_COMMAND_FILEPICKER_CHANGED;
 
 
 //-----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ class WXDLLIMPEXP_CORE wxGenericFileDirButton : public wxButton,
                                                 public wxFileDirPickerWidgetBase
 {
 public:
-    wxGenericFileDirButton() { Init(); }
+    wxGenericFileDirButton() { }
     wxGenericFileDirButton(wxWindow *parent,
                            wxWindowID id,
                            const wxString& label = wxFilePickerWidgetLabel,
@@ -42,10 +42,11 @@ public:
                            const wxValidator& validator = wxDefaultValidator,
                            const wxString& name = wxFilePickerWidgetNameStr)
     {
-        Init();
         Create(parent, id, label, path, message, wildcard,
                pos, size, style, validator, name);
     }
+
+    virtual ~wxGenericFileDirButton() {}
 
     virtual wxControl *AsControl() { return this; }
 
@@ -76,15 +77,6 @@ public:
 
 protected:
     wxString m_message, m_wildcard;
-
-    // we just store the style passed to the ctor here instead of passing it to
-    // wxButton as some of our bits can conflict with wxButton styles and it
-    // just doesn't make sense to use picker styles for wxButton anyhow
-    long m_pickerStyle;
-
-private:
-    // common part of all ctors
-    void Init() { m_pickerStyle = -1; }
 };
 
 
@@ -118,23 +110,17 @@ public:     // overrideable
 
     virtual long GetDialogStyle() const
     {
-        // the derived class must initialize it if it doesn't use the
-        // non-default wxGenericFileDirButton ctor
-        wxASSERT_MSG( m_pickerStyle != -1,
-                      "forgot to initialize m_pickerStyle?" );
-
-
         long filedlgstyle = 0;
 
-        if ( m_pickerStyle & wxFLP_OPEN )
+        if (this->HasFlag(wxFLP_OPEN))
             filedlgstyle |= wxFD_OPEN;
-        if ( m_pickerStyle & wxFLP_SAVE )
+        if (this->HasFlag(wxFLP_SAVE))
             filedlgstyle |= wxFD_SAVE;
-        if ( m_pickerStyle & wxFLP_OVERWRITE_PROMPT )
+        if (this->HasFlag(wxFLP_OVERWRITE_PROMPT))
             filedlgstyle |= wxFD_OVERWRITE_PROMPT;
-        if ( m_pickerStyle & wxFLP_FILE_MUST_EXIST )
+        if (this->HasFlag(wxFLP_FILE_MUST_EXIST))
             filedlgstyle |= wxFD_FILE_MUST_EXIST;
-        if ( m_pickerStyle & wxFLP_CHANGE_DIR )
+        if (this->HasFlag(wxFLP_CHANGE_DIR))
             filedlgstyle |= wxFD_CHANGE_DIR;
 
         return filedlgstyle;
@@ -196,9 +182,9 @@ public:     // overrideable
     {
         long dirdlgstyle = wxDD_DEFAULT_STYLE;
 
-        if ( m_pickerStyle & wxDIRP_DIR_MUST_EXIST )
+        if (this->HasFlag(wxDIRP_DIR_MUST_EXIST))
             dirdlgstyle |= wxDD_DIR_MUST_EXIST;
-        if ( m_pickerStyle & wxDIRP_CHANGE_DIR )
+        if (this->HasFlag(wxDIRP_CHANGE_DIR))
             dirdlgstyle |= wxDD_CHANGE_DIR;
 
         return dirdlgstyle;

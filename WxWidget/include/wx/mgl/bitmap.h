@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/mgl/bitmap.h
+// Name:        bitmap.h
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: bitmap.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: bitmap.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,8 +13,8 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxDC;
-class WXDLLIMPEXP_FWD_CORE wxMemoryDC;
+class WXDLLEXPORT wxDC;
+class WXDLLEXPORT wxMemoryDC;
 
 class MGLDevCtx;
 struct bitmap_t;
@@ -23,23 +23,25 @@ struct bitmap_t;
 // wxBitmap
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxBitmap: public wxBitmapBase
+class WXDLLIMPEXP_CORE wxBitmapHandler: public wxBitmapHandlerBase
+{
+    DECLARE_ABSTRACT_CLASS(wxBitmapHandler)
+};
+
+class WXDLLEXPORT wxBitmap: public wxBitmapBase
 {
 public:
     wxBitmap() {}
-    wxBitmap(int width, int height, int depth = -1)
-        { Create(width, height, depth); }
-    wxBitmap(const wxSize& sz, int depth = -1)
-        { Create(sz, depth); }
+    wxBitmap(int width, int height, int depth = -1);
     wxBitmap(const char bits[], int width, int height, int depth = 1);
     wxBitmap(const char* const* bits);
-    wxBitmap(const wxString &filename, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+    wxBitmap(const wxString &filename, wxBitmapType type = wxBITMAP_TYPE_RESOURCE);
     wxBitmap(const wxImage& image, int depth = -1);
     virtual ~wxBitmap() {}
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const;
 
-    bool Create(int width, int height, int depth = wxBITMAP_SCREEN_DEPTH);
-    bool Create(const wxSize& sz, int depth = wxBITMAP_SCREEN_DEPTH)
-        { return Create(sz.GetWidth(), sz.GetHeight(), depth); }
+    bool Create(int width, int height, int depth = -1);
 
     virtual int GetHeight() const;
     virtual int GetWidth() const;
@@ -52,8 +54,8 @@ public:
 
     virtual wxBitmap GetSubBitmap(const wxRect& rect) const;
 
-    virtual bool SaveFile(const wxString &name, wxBitmapType type, const wxPalette *palette = NULL) const;
-    virtual bool LoadFile(const wxString &name, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+    virtual bool SaveFile(const wxString &name, wxBitmapType type, const wxPalette *palette = (wxPalette *) NULL) const;
+    virtual bool LoadFile(const wxString &name, wxBitmapType type = wxBITMAP_TYPE_RESOURCE);
 
     virtual wxPalette *GetPalette() const;
     virtual void SetPalette(const wxPalette& palette);
@@ -74,9 +76,6 @@ public:
     bitmap_t *GetMGLbitmap_t() const;
 
 protected:
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
-
     // creates temporary DC for access to bitmap's data:
     MGLDevCtx *CreateTmpDC() const;
     // sets fg & bg colours for 1bit bitmaps:

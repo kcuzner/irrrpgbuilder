@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/gbsizer.h
+// Name:        gbsizer.h
 // Purpose:     wxGridBagSizer:  A sizer that can lay out items in a grid,
 //              with items at specified cells, and with the option of row
 //              and/or column spanning
 //
 // Author:      Robin Dunn
 // Created:     03-Nov-2003
-// RCS-ID:      $Id: gbsizer.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: gbsizer.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Robin Dunn
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@
 // is used for this and also for wxGridCellCoords.
 //---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGBPosition
+class WXDLLEXPORT wxGBPosition
 {
 public:
     wxGBPosition() : m_row(0), m_col(0) {}
@@ -50,55 +50,29 @@ private:
 };
 
 
-class WXDLLIMPEXP_CORE wxGBSpan
+class WXDLLEXPORT wxGBSpan
 {
 public:
-    wxGBSpan() { Init(); }
-    wxGBSpan(int rowspan, int colspan)
-    {
-        // Initialize the members to valid values as not doing it may result in
-        // infinite loop in wxGBSizer code if the user passed 0 for any of
-        // them, see #12934.
-        Init();
-
-        SetRowspan(rowspan);
-        SetColspan(colspan);
-    }
+    wxGBSpan() : m_rowspan(1), m_colspan(1) {}
+    wxGBSpan(int rowspan, int colspan) : m_rowspan(rowspan), m_colspan(colspan) {}
 
     // default copy ctor and assignment operator are okay.
 
     int GetRowspan() const { return m_rowspan; }
     int GetColspan() const { return m_colspan; }
-    void SetRowspan(int rowspan)
-    {
-        wxCHECK_RET( rowspan > 0, "Row span should be strictly positive" );
-
-        m_rowspan = rowspan;
-    }
-
-    void SetColspan(int colspan)
-    {
-        wxCHECK_RET( colspan > 0, "Column span should be strictly positive" );
-
-        m_colspan = colspan;
-    }
+    void SetRowspan(int rowspan) { m_rowspan = rowspan; }
+    void SetColspan(int colspan) { m_colspan = colspan; }
 
     bool operator==(const wxGBSpan& o) const { return m_rowspan == o.m_rowspan && m_colspan == o.m_colspan; }
     bool operator!=(const wxGBSpan& o) const { return !(*this == o); }
 
 private:
-    void Init()
-    {
-        m_rowspan =
-        m_colspan = 1;
-    }
-
     int m_rowspan;
     int m_colspan;
 };
 
 
-extern WXDLLIMPEXP_DATA_CORE(const wxGBSpan) wxDefaultSpan;
+extern WXDLLEXPORT_DATA(const wxGBSpan) wxDefaultSpan;
 
 
 //---------------------------------------------------------------------------
@@ -108,7 +82,7 @@ extern WXDLLIMPEXP_DATA_CORE(const wxGBSpan) wxDefaultSpan;
 class WXDLLIMPEXP_FWD_CORE wxGridBagSizer;
 
 
-class WXDLLIMPEXP_CORE wxGBSizerItem : public wxSizerItem
+class WXDLLEXPORT wxGBSizerItem : public wxSizerItem
 {
 public:
     // spacer
@@ -182,7 +156,7 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxGBSizerItem)
-    wxDECLARE_NO_COPY_CLASS(wxGBSizerItem);
+    DECLARE_NO_COPY_CLASS(wxGBSizerItem)
 };
 
 
@@ -191,7 +165,7 @@ private:
 //---------------------------------------------------------------------------
 
 
-class WXDLLIMPEXP_CORE wxGridBagSizer : public wxFlexGridSizer
+class WXDLLEXPORT wxGridBagSizer : public wxFlexGridSizer
 {
 public:
     wxGridBagSizer(int vgap = 0, int hgap = 0 );
@@ -312,7 +286,9 @@ public:
 
 protected:
     wxGBPosition FindEmptyCell();
+#if wxABI_VERSION >= 20808
     void AdjustForOverflow();
+#endif
 
     wxSize m_emptyCellSize;
 
@@ -320,7 +296,7 @@ protected:
 private:
 
     DECLARE_CLASS(wxGridBagSizer)
-    wxDECLARE_NO_COPY_CLASS(wxGridBagSizer);
+    DECLARE_NO_COPY_CLASS(wxGridBagSizer)
 };
 
 //---------------------------------------------------------------------------

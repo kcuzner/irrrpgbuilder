@@ -2,16 +2,13 @@
 // Name:        wx/gtk/listbox.h
 // Purpose:     wxListBox class declaration
 // Author:      Robert Roebling
-// Id:          $Id: listbox.h 67298 2011-03-23 17:36:10Z PC $
+// Id:          $Id: listbox.h 51659 2008-02-11 16:03:23Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_GTK_LISTBOX_H_
-#define _WX_GTK_LISTBOX_H_
-
-struct _GtkTreeEntry;
-struct _GtkTreeIter;
+#ifndef __GTKLISTBOXH__
+#define __GTKLISTBOXH__
 
 //-----------------------------------------------------------------------------
 // wxListBox
@@ -64,6 +61,10 @@ public:
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxListBoxNameStr);
 
+    // implement base class pure virtuals
+    virtual void Clear();
+    virtual void Delete(unsigned int n);
+
     virtual unsigned int GetCount() const;
     virtual wxString GetString(unsigned int n) const;
     virtual void SetString(unsigned int n, const wxString& s);
@@ -75,14 +76,16 @@ public:
 
     virtual void EnsureVisible(int n);
 
-    virtual void Update();
-
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
     // implementation from now on
 
-    virtual GtkWidget *GetConnectWidget();
+    GtkWidget *GetConnectWidget();
+
+#if wxUSE_TOOLTIPS
+    void ApplyToolTip( GtkTooltips *tips, const wxChar *tip );
+#endif // wxUSE_TOOLTIPS
 
     struct _GtkTreeView   *m_treeview;
     struct _GtkListStore  *m_liststore;
@@ -91,48 +94,37 @@ public:
     bool       m_hasCheckBoxes;
 #endif // wxUSE_CHECKLISTBOX
 
-    struct _GtkTreeEntry* GTKGetEntry(unsigned pos) const;
+    bool       m_blockEvent;
 
-    void GTKDisableEvents();
-    void GTKEnableEvents();
-
-    void GTKOnSelectionChanged();
-    void GTKOnActivated(int item);
+    struct _GtkTreeEntry* GtkGetEntry(int pos) const;
+    void GtkInsertItems(const wxArrayString& items,
+                        void** clientData, unsigned int pos);
+    void GtkDeselectAll();
+    void GtkSetSelection(int n, const bool select, const bool blockEvent);
 
 protected:
-    virtual void DoClear();
-    virtual void DoDeleteOneItem(unsigned int n);
     virtual wxSize DoGetBestSize() const;
     virtual void DoApplyWidgetStyle(GtkRcStyle *style);
     virtual GdkWindow *GTKGetWindow(wxArrayGdkWindows& windows) const;
 
     virtual void DoSetSelection(int n, bool select);
-
-    virtual int DoInsertItems(const wxArrayStringsAdapter& items,
-                              unsigned int pos,
-                              void **clientData, wxClientDataType type);
-
+    virtual int DoAppend(const wxString& item);
+    virtual void DoInsertItems(const wxArrayString& items, unsigned int pos);
+    virtual void DoSetItems(const wxArrayString& items, void **clientData);
     virtual void DoSetFirstItem(int n);
     virtual void DoSetItemClientData(unsigned int n, void* clientData);
     virtual void* DoGetItemClientData(unsigned int n) const;
+    virtual void DoSetItemClientObject(unsigned int n, wxClientData* clientData);
+    virtual wxClientData* DoGetItemClientObject(unsigned int n) const;
     virtual int DoListHitTest(const wxPoint& point) const;
-
-    // get the iterator for the given index, returns false if invalid
-    bool GTKGetIteratorFor(unsigned pos, _GtkTreeIter *iter) const;
-
-    // get the index for the given iterator, return wxNOT_FOUND on failure
-    int GTKGetIndexFor(_GtkTreeIter& iter) const;
-
-    // set the specified item
-    void GTKSetItem(_GtkTreeIter& iter, const _GtkTreeEntry *entry);
-
-    // common part of DoSetFirstItem() and EnsureVisible()
-    void DoScrollToCell(int n, float alignY, float alignX);
 
 private:
     void Init(); //common construction
 
+    // common part of DoSetFirstItem() and EnsureVisible()
+    void DoScrollToCell(int n, float alignY, float alignX);
+
     DECLARE_DYNAMIC_CLASS(wxListBox)
 };
 
-#endif // _WX_GTK_LISTBOX_H_
+#endif // __GTKLISTBOXH__

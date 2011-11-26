@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: accel.h 66994 2011-02-22 13:25:51Z VZ $
+// RCS-ID:      $Id: accel.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 #include "wx/string.h"
 #include "wx/event.h"
 
-class WXDLLIMPEXP_CORE wxAcceleratorTable: public wxObject
+class WXDLLEXPORT wxAcceleratorTable: public wxObject
 {
     DECLARE_DYNAMIC_CLASS(wxAcceleratorTable)
 public:
@@ -34,7 +34,7 @@ public:
     wxAcceleratorEntry* GetEntries() const;
 };
 
-extern WXDLLIMPEXP_DATA_CORE(wxAcceleratorTable) wxNullAcceleratorTable;
+WXDLLEXPORT_DATA(extern wxAcceleratorTable) wxNullAcceleratorTable;
 
 #endif
 // _WX_ACCEL_H_

@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/metafile.h
+// Name:        metafile.h
 // Purpose:     wxMetaFile, wxMetaFileDC classes.
 //              This probably should be restricted to Windows platforms,
 //              but if there is an equivalent on your platform, great.
 // Author:      David Webster
 // Modified by:
 // Created:     10/10/99
-// RCS-ID:      $Id: metafile.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: metafile.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,6 @@
 
 #include "wx/dc.h"
 #include "wx/gdiobj.h"
-#include "wx/os2/dc.h"
 
 #if wxUSE_DRAG_AND_DROP
 #include "wx/dataobj.h"
@@ -31,16 +30,14 @@
 #define wxMetaFile wxMetafile
 #define wxMetaFileDC wxMetafileDC
 
-class WXDLLIMPEXP_FWD_CORE wxMetafile;
+class WXDLLEXPORT wxMetafile;
 
-class WXDLLIMPEXP_CORE wxMetafileRefData: public wxGDIRefData
+class WXDLLEXPORT wxMetafileRefData: public wxGDIRefData
 {
-    friend class WXDLLIMPEXP_FWD_CORE wxMetafile;
+    friend class WXDLLEXPORT wxMetafile;
 public:
     wxMetafileRefData(void);
     virtual ~wxMetafileRefData(void);
-
-    virtual bool IsOk() const { return m_metafile != 0; }
 
 public:
     WXHANDLE m_metafile;
@@ -49,7 +46,7 @@ public:
 
 #define M_METAFILEDATA ((wxMetafileRefData *)m_refData)
 
-class WXDLLIMPEXP_CORE wxMetafile: public wxGDIObject
+class WXDLLEXPORT wxMetafile: public wxGDIObject
 {
     DECLARE_DYNAMIC_CLASS(wxMetafile)
 public:
@@ -61,82 +58,61 @@ public:
     virtual bool SetClipboard(int width = 0, int height = 0);
 
     virtual bool Play(wxDC *dc);
+    inline bool Ok() const { return IsOk(); }
+    inline bool IsOk(void) const { return (M_METAFILEDATA && (M_METAFILEDATA->m_metafile != 0)); };
 
     // Implementation
     inline WXHANDLE GetHMETAFILE(void) { return M_METAFILEDATA->m_metafile; }
     void SetHMETAFILE(WXHANDLE mf) ;
     inline int GetWindowsMappingMode(void) { return M_METAFILEDATA->m_windowsMappingMode; }
     void SetWindowsMappingMode(int mm);
-
-protected:
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
 };
 
-class WXDLLIMPEXP_CORE wxMetafileDCImpl: public wxPMDCImpl
+class WXDLLEXPORT wxMetafileDC: public wxDC
 {
-public:
-    wxMetafileDCImpl(wxDC *owner, const wxString& file = wxEmptyString);
-    wxMetafileDCImpl(wxDC *owner, const wxString& file,
-                     int xext, int yext, int xorg, int yorg);
-    virtual ~wxMetafileDCImpl();
+    DECLARE_DYNAMIC_CLASS(wxMetafileDC)
 
-    virtual wxMetafile *Close();
-    virtual void SetMapMode(wxMappingMode mode);
-    virtual void DoGetTextExtent(const wxString& string,
-                                 wxCoord *x, wxCoord *y,
-                                 wxCoord *descent = NULL,
-                                 wxCoord *externalLeading = NULL,
-                                 const wxFont *theFont = NULL) const;
+public:
+    // Don't supply origin and extent
+    // Supply them to wxMakeMetaFilePlaceable instead.
+    wxMetafileDC(const wxString& file = wxEmptyString);
+
+    // Supply origin and extent (recommended).
+    // Then don't need to supply them to wxMakeMetaFilePlaceable.
+    wxMetafileDC(const wxString& file, int xext, int yext, int xorg, int yorg);
+
+    virtual ~wxMetafileDC(void);
+
+    // Should be called at end of drawing
+    virtual wxMetafile *Close(void);
+    virtual void SetMapMode(int mode);
+    virtual void GetTextExtent(const wxString& string, long *x, long *y,
+                               long *descent = NULL, long *externalLeading = NULL,
+                               wxFont *theFont = NULL, bool use16bit = false) const;
 
     // Implementation
-    wxMetafile *GetMetaFile() const { return m_metaFile; }
-    void SetMetaFile(wxMetafile *mf) { m_metaFile = mf; }
-    int GetWindowsMappingMode() const { return m_windowsMappingMode; }
-    void SetWindowsMappingMode(int mm) { m_windowsMappingMode = mm; }
+    inline wxMetafile *GetMetaFile(void) const { return m_metaFile; }
+    inline void SetMetaFile(wxMetafile *mf) { m_metaFile = mf; }
+    inline int GetWindowsMappingMode(void) const { return m_windowsMappingMode; }
+    inline void SetWindowsMappingMode(int mm) { m_windowsMappingMode = mm; }
 
 protected:
-    virtual void DoGetSize(int *width, int *height) const;
-
     int           m_windowsMappingMode;
     wxMetafile*   m_metaFile;
 
 private:
-    DECLARE_CLASS(wxMetafileDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxMetafileDCImpl);
-};
-
-class WXDLLIMPEXP_CORE wxMetafileDC: public wxDC
-{
-public:
-    // Don't supply origin and extent
-    // Supply them to wxMakeMetaFilePlaceable instead.
-    wxMetafileDC(const wxString& file = wxEmptyString)
-         :wxDC(new wxMetafileDCImpl( this, file ))
-         { }
-
-    // Supply origin and extent (recommended).
-    // Then don't need to supply them to wxMakeMetaFilePlaceable.
-    wxMetafileDC(const wxString& file, int xext, int yext, int xorg, int yorg)
-        : wxDC(new wxMetafileDCImpl( this, file, xext, yext, xorg, yorg ))
-         { }
-
-    wxMetafile *GetMetafile() const
-        { return ((wxMetafileDCImpl*)m_pimpl)->GetMetaFile(); }
-
-    virtual ~wxMetafileDC(void)
-        { delete m_pimpl; }
-
-    // Should be called at end of drawing
-    virtual wxMetafile *Close(void)
-        { return ((wxMetafileDCImpl*)m_pimpl)->Close(); }
-
-    inline void SetMetaFile(wxMetafile *mf)
-        { ((wxMetafileDCImpl*)m_pimpl)->SetMetaFile(mf); }
-
-private:
-    DECLARE_CLASS(wxMetafileDC)
-    wxDECLARE_NO_COPY_CLASS(wxMetafileDC);
+#ifndef __WATCOMC__
+    // function hiding warning supression
+    // still required ??
+    inline virtual void   GetTextExtent( const wxString& string
+                                        ,long*           width
+                                        ,long*           height
+                                        ,long*           descent = NULL
+                                        ,long*           externalLeading = NULL
+                                        ,wxFont*         theFont = NULL
+                                       ) const
+    { GetTextExtent( string, width, height, descent, externalLeading, theFont, false);};
+#endif
 };
 
 /*
@@ -148,10 +124,10 @@ private:
 
 // No origin or extent
 #define wxMakeMetaFilePlaceable wxMakeMetafilePlaceable
-bool WXDLLIMPEXP_CORE wxMakeMetafilePlaceable(const wxString& filename, float scale = 1.0);
+bool WXDLLEXPORT wxMakeMetafilePlaceable(const wxString& filename, float scale = 1.0);
 
 // Optional origin and extent
-bool WXDLLIMPEXP_CORE wxMakeMetaFilePlaceable( const wxString& filename
+bool WXDLLEXPORT wxMakeMetaFilePlaceable( const wxString& filename
                                          ,int x1
                                          ,int y1
                                          ,int x2
@@ -168,7 +144,7 @@ bool WXDLLIMPEXP_CORE wxMakeMetaFilePlaceable( const wxString& filename
 // use.
 
 #if wxUSE_DRAG_AND_DROP
-class WXDLLIMPEXP_CORE wxMetafileDataObject : public wxDataObject
+class WXDLLEXPORT wxMetafileDataObject : public wxDataObject
 {
 public:
     // ctors

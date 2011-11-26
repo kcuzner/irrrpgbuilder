@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: joystick.h 50646 2007-12-12 01:35:53Z VZ $
+// RCS-ID:      $Id: joystick.h 42077 2006-10-17 14:44:52Z ABX $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/event.h"
 
-class WXDLLIMPEXP_ADV wxJoystick: public wxObject
+class WXDLLEXPORT wxJoystick: public wxObject
 {
     DECLARE_DYNAMIC_CLASS(wxJoystick)
 public:

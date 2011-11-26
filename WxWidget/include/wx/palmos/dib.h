@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: dib.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: dib.h 31469 2005-01-18 21:14:27Z ABX $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,8 @@
 #ifndef _WX_PALMOS_DIB_H_
 #define _WX_PALMOS_DIB_H_
 
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
-class WXDLLIMPEXP_FWD_CORE wxPalette;
+class WXDLLEXPORT wxBitmap;
+class WXDLLEXPORT wxPalette;
 
 #include "wx/msw/private.h"
 
@@ -23,7 +23,7 @@ class WXDLLIMPEXP_FWD_CORE wxPalette;
 // wxDIB: represents a DIB section
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDIB
+class WXDLLEXPORT wxDIB
 {
 public:
     // ctors and such

@@ -5,7 +5,7 @@
 // Author:      David Webster
 // Modified by:
 // Created:     10/12/99
-// RCS-ID:      $Id: msgdlg.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: msgdlg.h 37164 2006-01-26 17:20:50Z ABX $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,23 +13,31 @@
 #ifndef _WX_MSGBOXDLG_H_
 #define _WX_MSGBOXDLG_H_
 
-class WXDLLIMPEXP_CORE wxMessageDialog : public wxMessageDialogBase
+#include "wx/defs.h"
+#include "wx/dialog.h"
+
+/*
+ * Message box dialog
+ */
+
+class WXDLLEXPORT wxMessageDialog : public wxDialog, public wxMessageDialogBase
 {
+DECLARE_DYNAMIC_CLASS(wxMessageDialog)
 public:
     wxMessageDialog( wxWindow*       pParent
                     ,const wxString& rsMessage
                     ,const wxString& rsCaption = wxMessageBoxCaptionStr
                     ,long            lStyle = wxOK|wxCENTRE
-                    ,const wxPoint&  WXUNUSED(rPos) = wxDefaultPosition
-                   )
-        : wxMessageDialogBase(pParent, rsMessage, rsCaption, lStyle)
-    {
-    }
+                    ,const wxPoint&  rPos = wxDefaultPosition
+                   );
 
     int ShowModal(void);
 
 protected:
-    DECLARE_DYNAMIC_CLASS(wxMessageDialog)
+    wxString                        m_sCaption;
+    wxString                        m_sMessage;
+    wxWindow*                       m_pParent;
 }; // end of CLASS wxMessageDialog
 
-#endif // _WX_MSGBOXDLG_H_
+#endif
+    // _WX_MSGBOXDLG_H_

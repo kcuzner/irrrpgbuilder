@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/x11/private.h
+// Name:        private.h
 // Purpose:     Private declarations for X11 port
 // Author:      Julian Smart
 // Modified by:
 // Created:     17/09/98
-// RCS-ID:      $Id: private.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: private.h 39407 2006-05-28 23:51:23Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,13 +28,13 @@
 // Include common declarations
 #include "wx/x11/privx.h"
 
-#if wxUSE_PANGO
-#include <pango/pango.h>
+#if wxUSE_UNICODE
+#include "pango/pango.h"
 #endif
 
-class WXDLLIMPEXP_FWD_CORE wxMouseEvent;
-class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
-class WXDLLIMPEXP_FWD_CORE wxWindow;
+class WXDLLIMPEXP_CORE wxMouseEvent;
+class WXDLLIMPEXP_CORE wxKeyEvent;
+class WXDLLIMPEXP_CORE wxWindow;
 
 // ----------------------------------------------------------------------------
 // Some Unicode <-> UTF8 macros stolen from GTK
@@ -79,6 +79,10 @@ extern Window wxGetWindowParent(Window window);
 // given wxWidgets style
 bool wxSetWMDecorations(Window w, long style);
 bool wxMWMIsRunning(Window w);
+
+// Checks if any of our children are finished.
+// implemented in src/x11/utils.cpp
+void wxCheckForFinishedChildren();
 
 #endif
 // _WX_PRIVATE_H_

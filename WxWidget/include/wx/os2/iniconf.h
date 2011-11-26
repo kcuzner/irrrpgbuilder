@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/iniconf.h
+// Name:        include/wx/msw/iniconf.h
 // Purpose:     INI-file based wxConfigBase implementation
 // Author:      David Webster
 // Modified by:
@@ -35,7 +35,7 @@
 // same as appname). The file name (strAppName parameter) may, in fact,
 // contain the full path to the file. If it doesn't, the file is searched for
 // in the Windows directory.
-class WXDLLIMPEXP_CORE wxIniConfig : public wxConfigBase
+class WXDLLEXPORT wxIniConfig : public wxConfigBase
 {
 public:
   // ctor & dtor

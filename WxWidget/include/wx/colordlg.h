@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/colordlg.h
+// Name:        wx/colrdlgg.h
 // Purpose:     wxColourDialog
 // Author:      Vadim Zeitiln
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: colordlg.h 66615 2011-01-07 05:26:57Z PC $
+// RCS-ID:      $Id: colordlg.h 36623 2006-01-02 14:26:36Z JS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,10 @@
 
 #if wxUSE_COLOURDLG
 
-#include "wx/colourdata.h"
-
 #if defined(__WXMSW__) && !defined(__WXUNIVERSAL__)
     #include "wx/msw/colordlg.h"
 #elif defined(__WXMAC__) && !defined(__WXUNIVERSAL__)
-    #include "wx/osx/colordlg.h"
+    #include "wx/mac/colordlg.h"
 #elif defined(__WXGTK20__) && !defined(__WXUNIVERSAL__)
     #include "wx/gtk/colordlg.h"
 #elif defined(__WXPALMOS__)
@@ -33,10 +31,9 @@
 #endif
 
 // get the colour from user and return it
-WXDLLIMPEXP_CORE wxColour wxGetColourFromUser(wxWindow *parent = NULL,
-                                              const wxColour& colInit = wxNullColour,
-                                              const wxString& caption = wxEmptyString,
-                                              wxColourData *data = NULL);
+wxColour WXDLLEXPORT
+wxGetColourFromUser(wxWindow *parent = (wxWindow *)NULL,
+                    const wxColour& colInit = wxNullColour, const wxString& caption = wxEmptyString);
 
 #endif // wxUSE_COLOURDLG
 

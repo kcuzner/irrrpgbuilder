@@ -4,7 +4,7 @@
 // Author:      David Elliott <dfe@cox.net>
 // Modified by:
 // Created:     2003/07/03
-// RCS-ID:      $Id: brush.h 54273 2008-06-17 17:28:26Z VZ $
+// RCS-ID:      $Id: brush.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,12 +16,12 @@
 #include "wx/gdiobj.h"
 #include "wx/bitmap.h"
 
-class WXDLLIMPEXP_FWD_CORE wxBrush;
+class WXDLLEXPORT wxBrush;
 
 // ========================================================================
 // wxBrush
 // ========================================================================
-class WXDLLIMPEXP_CORE wxBrush: public wxBrushBase
+class WXDLLEXPORT wxBrush: public wxBrushBase
 {
     DECLARE_DYNAMIC_CLASS(wxBrush)
 // ------------------------------------------------------------------------
@@ -29,10 +29,7 @@ class WXDLLIMPEXP_CORE wxBrush: public wxBrushBase
 // ------------------------------------------------------------------------
 public:
     wxBrush();
-    wxBrush(const wxColour& col, wxBrushStyle style = wxBRUSHSTYLE_SOLID);
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( wxBrush(const wxColour& col, int style) );
-#endif
+    wxBrush(const wxColour& col, int style = wxSOLID);
     wxBrush(const wxBitmap& stipple);
     virtual ~wxBrush();
 
@@ -41,7 +38,7 @@ public:
 // ------------------------------------------------------------------------
     virtual void SetColour(const wxColour& col) ;
     virtual void SetColour(unsigned char r, unsigned char g, unsigned char b) ;
-    virtual void SetStyle(wxBrushStyle style) ;
+    virtual void SetStyle(int style) ;
     virtual void SetStipple(const wxBitmap& stipple) ;
 
     // comparison
@@ -52,20 +49,19 @@ public:
 
     // accessors
     wxColour GetColour() const;
-    virtual wxBrushStyle GetStyle() const;
+    virtual int GetStyle() const;
     wxBitmap *GetStipple() const;
 
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( void SetStyle(int style) )
-        { SetStyle((wxBrushStyle)style); }
-#endif
+    virtual bool Ok() const { return IsOk(); }
+    virtual bool IsOk() const
+    {   return (m_refData != NULL); }
+
+    // wxObjectRefData
+    wxObjectRefData *CreateRefData() const;
+    wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
     // wxCocoa
     WX_NSColor GetNSColor();
-
-protected:
-    wxGDIRefData *CreateGDIRefData() const;
-    wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
 };
 
 #endif // __WX_COCOA_BRUSH_H__

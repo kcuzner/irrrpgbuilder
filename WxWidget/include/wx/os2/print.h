@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/print.h
+// Name:        print.h
 // Purpose:     wxPrinter, wxPrintPreview classes
 // Author:      David Webster
 // Modified by:
 // Created:     10/14/99
-// RCS-ID:      $Id: print.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: print.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@
  * Represents the printer: manages printing a wxPrintout object
  */
 
-class WXDLLIMPEXP_CORE wxOS2Printer: public wxPrinterBase
+class WXDLLEXPORT wxOS2Printer: public wxPrinterBase
 {
   DECLARE_DYNAMIC_CLASS(wxPrinter)
 
@@ -37,7 +37,7 @@ private:
  * Programmer creates an object of this class to preview a wxPrintout.
  */
 
-class WXDLLIMPEXP_CORE wxOS2PrintPreview: public wxPrintPreviewBase
+class WXDLLEXPORT wxOS2PrintPreview: public wxPrintPreviewBase
 {
   DECLARE_CLASS(wxPrintPreview)
 

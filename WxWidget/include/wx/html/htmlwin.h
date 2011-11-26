@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/htmlwin.h
+// Name:        htmlwin.h
 // Purpose:     wxHtmlWindow class for parsing & displaying HTML
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlwin.h 67280 2011-03-22 14:17:38Z DS $
+// RCS-ID:      $Id: htmlwin.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ class wxHtmlProcessorList;
 class WXDLLIMPEXP_FWD_HTML wxHtmlWinAutoScrollTimer;
 class WXDLLIMPEXP_FWD_HTML wxHtmlCellEvent;
 class WXDLLIMPEXP_FWD_HTML wxHtmlLinkEvent;
-class WXDLLIMPEXP_FWD_CORE wxStatusBar;
+
 
 // wxHtmlWindow flags:
 #define wxHW_SCROLLBAR_NEVER    0x0002
@@ -195,7 +195,7 @@ protected:
 
     /**
         Called by HandleMouseClick when the user clicks on a cell.
-        Default behaviour is to call wxHtmlWindowInterface::OnLinkClicked()
+        Default behavior is to call wxHtmlWindowInterface::OnLinkClicked()
         if this cell corresponds to a hypertext link.
 
         @param cell   the cell the mouse is over
@@ -297,8 +297,7 @@ public:
 #if wxUSE_STATUSBAR
     // After(!) calling SetRelatedFrame, this sets statusbar slot where messages
     // will be displayed. Default is -1 = no messages.
-    void SetRelatedStatusBar(int index);
-    void SetRelatedStatusBar(wxStatusBar*, int index = 0);
+    void SetRelatedStatusBar(int bar);
 #endif // wxUSE_STATUSBAR
 
     // Sets fonts to be used when displaying HTML page.
@@ -318,14 +317,12 @@ public:
     // when/if we have CSS support we could add other possibilities...)
     void SetBackgroundImage(const wxBitmap& bmpBg) { m_bmpBg = bmpBg; }
 
-#if wxUSE_CONFIG
     // Saves custom settings into cfg config. it will use the path 'path'
     // if given, otherwise it will save info into currently selected path.
     // saved values : things set by SetFonts, SetBorders.
     virtual void ReadCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
     // ...
     virtual void WriteCustomization(wxConfigBase *cfg, wxString path = wxEmptyString);
-#endif // wxUSE_CONFIG
 
     // Goes to previous/next page (in browsing history)
     // Returns true if successful, false otherwise
@@ -358,7 +355,7 @@ public:
     // (depending on the information passed to SetRelatedFrame() method)
     virtual void OnSetTitle(const wxString& title);
 
-    // Called when user clicked on hypertext link. Default behaviour is to
+    // Called when user clicked on hypertext link. Default behavior is to
     // call LoadPage(loc)
     virtual void OnLinkClicked(const wxHtmlLinkInfo& link);
 
@@ -402,6 +399,7 @@ protected:
     // actual size of window. This method also setup scrollbars
     void CreateLayout();
 
+    void OnEraseBackground(wxEraseEvent& event);
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);
     void OnMouseMove(wxMouseEvent& event);
@@ -481,14 +479,13 @@ protected:
     // class for opening files (file system)
     wxFileSystem* m_FS;
 
+    wxFrame *m_RelatedFrame;
+    wxString m_TitleFormat;
+#if wxUSE_STATUSBAR
     // frame in which page title should be displayed & number of it's statusbar
     // reserved for usage with this html window
-    wxFrame *m_RelatedFrame;
-#if wxUSE_STATUSBAR
-    int m_RelatedStatusBarIndex;
-    wxStatusBar* m_RelatedStatusBar;
+    int m_RelatedStatusBar;
 #endif // wxUSE_STATUSBAR
-    wxString m_TitleFormat;
 
     // borders (free space between text and window borders)
     // defaults to 10 pixels.
@@ -511,13 +508,8 @@ protected:
 #endif // wxUSE_CLIPBOARD
 
 private:
-    // erase the window background using m_bmpBg or just solid colour if we
-    // don't have any background image
-    void DoEraseBackground(wxDC& dc);
-
-    // window content for double buffered rendering, may be invalid until it is
-    // really initialized in OnPaint()
-    wxBitmap m_backBuffer;
+    // window content for double buffered rendering:
+    wxBitmap *m_backBuffer;
 
     // background image, may be invalid
     wxBitmap m_bmpBg;
@@ -545,19 +537,29 @@ private:
     // if this FLAG is false, items are not added to history
     bool m_HistoryOn;
 
+    // a flag set if we need to erase background in OnPaint() (otherwise this
+    // is supposed to have been done in OnEraseBackground())
+    bool m_eraseBgInOnPaint;
+
     // standard mouse cursors
     static wxCursor *ms_cursorLink;
     static wxCursor *ms_cursorText;
 
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxHtmlWindow);
+    DECLARE_NO_COPY_CLASS(wxHtmlWindow)
 };
 
-class WXDLLIMPEXP_FWD_HTML wxHtmlCellEvent;
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_HTML, wxEVT_COMMAND_HTML_CELL_CLICKED, wxHtmlCellEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_HTML, wxEVT_COMMAND_HTML_CELL_HOVER, wxHtmlCellEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_HTML, wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEvent );
+
+
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_HTML,
+                                wxEVT_COMMAND_HTML_CELL_CLICKED, 1000)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_HTML,
+                                wxEVT_COMMAND_HTML_CELL_HOVER, 1001)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_HTML,
+                                wxEVT_COMMAND_HTML_LINK_CLICKED, 1002)
+END_DECLARE_EVENT_TYPES()
 
 
 /*!
@@ -631,9 +633,9 @@ typedef void (wxEvtHandler::*wxHtmlCellEventFunction)(wxHtmlCellEvent&);
 typedef void (wxEvtHandler::*wxHtmlLinkEventFunction)(wxHtmlLinkEvent&);
 
 #define wxHtmlCellEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxHtmlCellEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxHtmlCellEventFunction, &func)
 #define wxHtmlLinkEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxHtmlLinkEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxHtmlLinkEventFunction, &func)
 
 #define EVT_HTML_CELL_CLICKED(id, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_HTML_CELL_CLICKED, id, wxHtmlCellEventHandler(fn))

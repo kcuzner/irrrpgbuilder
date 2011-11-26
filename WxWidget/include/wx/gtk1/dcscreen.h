@@ -2,7 +2,7 @@
 // Name:        wx/gtk1/dcscreen.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: dcscreen.h 50728 2007-12-15 18:20:59Z VZ $
+// Id:          $Id: dcscreen.h 37065 2006-01-23 02:28:01Z MR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,17 +10,27 @@
 #ifndef __GTKDCSCREENH__
 #define __GTKDCSCREENH__
 
-#include "wx/gtk1/dcclient.h"
+#include "wx/dcclient.h"
 
 //-----------------------------------------------------------------------------
-// wxScreenDCImpl
+// classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxScreenDCImpl : public wxPaintDCImpl
+class WXDLLIMPEXP_CORE wxScreenDC;
+
+//-----------------------------------------------------------------------------
+// wxScreenDC
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_CORE wxScreenDC : public wxPaintDC
 {
 public:
-    wxScreenDCImpl(wxScreenDC *owner);
-    virtual ~wxScreenDCImpl();
+    wxScreenDC();
+    virtual ~wxScreenDC();
+
+    static bool StartDrawingOnTop( wxWindow *window );
+    static bool StartDrawingOnTop( wxRect *rect = (wxRect *) NULL );
+    static bool EndDrawingOnTop();
 
     // implementation
 
@@ -32,8 +42,10 @@ protected:
     virtual void DoGetSize(int *width, int *height) const;
 
 private:
-    DECLARE_DYNAMIC_CLASS(wxScreenDCImpl)
+    DECLARE_DYNAMIC_CLASS(wxScreenDC)
 };
 
-#endif // __GTKDCSCREENH__
+#endif
+
+    // __GTKDCSCREENH__
 

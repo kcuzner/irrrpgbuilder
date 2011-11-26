@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: metafile.h 57907 2009-01-08 14:21:53Z FM $
+// RCS-ID:      $Id: metafile.h 42752 2006-10-30 19:26:48Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,27 +23,24 @@
 // Metafile and metafile device context classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxMetafile;
+class WXDLLEXPORT wxMetafile;
 
-class WXDLLIMPEXP_CORE wxMetafileRefData: public wxGDIRefData
+class WXDLLEXPORT wxMetafileRefData: public wxGDIRefData
 {
+    friend class WXDLLEXPORT wxMetafile;
 public:
     wxMetafileRefData();
     virtual ~wxMetafileRefData();
-
-    virtual bool IsOk() const { return m_metafile != 0; }
 
 public:
     WXHANDLE m_metafile;
     int m_windowsMappingMode;
     int m_width, m_height;
-
-    friend class WXDLLIMPEXP_FWD_CORE wxMetafile;
 };
 
 #define M_METAFILEDATA ((wxMetafileRefData *)m_refData)
 
-class WXDLLIMPEXP_CORE wxMetafile: public wxGDIObject
+class WXDLLEXPORT wxMetafile: public wxGDIObject
 {
 public:
     wxMetafile(const wxString& file = wxEmptyString);
@@ -54,6 +51,8 @@ public:
     virtual bool SetClipboard(int width = 0, int height = 0);
 
     virtual bool Play(wxDC *dc);
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return (M_METAFILEDATA && (M_METAFILEDATA->m_metafile != 0)); };
 
     // set/get the size of metafile for clipboard operations
     wxSize GetSize() const { return wxSize(GetWidth(), GetHeight()); }
@@ -73,7 +72,7 @@ private:
     DECLARE_DYNAMIC_CLASS(wxMetafile)
 };
 
-class WXDLLIMPEXP_CORE wxMetafileDC: public wxDC
+class WXDLLEXPORT wxMetafileDC: public wxDC
 {
 public:
     // Don't supply origin and extent
@@ -88,10 +87,10 @@ public:
 
     // Should be called at end of drawing
     virtual wxMetafile *Close();
-    virtual void SetMapMode(wxMappingMode mode);
+    virtual void SetMapMode(int mode);
     virtual void GetTextExtent(const wxString& string, long *x, long *y,
             long *descent = NULL, long *externalLeading = NULL,
-            const wxFont *theFont = NULL, bool use16bit = FALSE) const;
+            wxFont *theFont = NULL, bool use16bit = FALSE) const;
 
     // Implementation
     wxMetafile *GetMetaFile() const { return m_metaFile; }
@@ -115,10 +114,10 @@ private:
  */
 
 // No origin or extent
-bool WXDLLIMPEXP_CORE wxMakeMetafilePlaceable(const wxString& filename, float scale = 1.0);
+bool WXDLLEXPORT wxMakeMetafilePlaceable(const wxString& filename, float scale = 1.0);
 
 // Optional origin and extent
-bool WXDLLIMPEXP_CORE wxMakeMetaFilePlaceable(const wxString& filename, int x1, int y1, int x2, int y2, float scale = 1.0, bool useOriginAndExtent = TRUE);
+bool WXDLLEXPORT wxMakeMetaFilePlaceable(const wxString& filename, int x1, int y1, int x2, int y2, float scale = 1.0, bool useOriginAndExtent = TRUE);
 
 // ----------------------------------------------------------------------------
 // wxMetafileDataObject is a specialization of wxDataObject for metafile data
@@ -126,7 +125,7 @@ bool WXDLLIMPEXP_CORE wxMakeMetaFilePlaceable(const wxString& filename, int x1, 
 
 #if wxUSE_DRAG_AND_DROP
 
-class WXDLLIMPEXP_CORE wxMetafileDataObject : public wxDataObjectSimple
+class WXDLLEXPORT wxMetafileDataObject : public wxDataObjectSimple
 {
 public:
     // ctors

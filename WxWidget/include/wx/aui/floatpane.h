@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      $Id: floatpane.h 61724 2009-08-21 10:41:26Z VZ $
+// RCS-ID:      $Id: floatpane.h 43467 2006-11-17 13:07:01Z BIW $
 // Copyright:   (C) Copyright 2005, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,16 +17,16 @@
 // ----------------------------------------------------------------------------
 
 #include "wx/defs.h"
-#include "wx/weakref.h"
 
 #if wxUSE_AUI
 
-#if wxUSE_MINIFRAME
-    #include "wx/minifram.h"
-    #define wxAuiFloatingFrameBaseClass wxMiniFrame
+#include "wx/frame.h"
+
+#if defined( __WXMSW__ ) || defined( __WXMAC__ ) ||  defined( __WXGTK__ )
+#include "wx/minifram.h"
+#define wxAuiFloatingFrameBaseClass wxMiniFrame
 #else
-    #include "wx/frame.h"
-    #define wxAuiFloatingFrameBaseClass wxFrame
+#define wxAuiFloatingFrameBaseClass wxFrame
 #endif
 
 class WXDLLIMPEXP_AUI wxAuiFloatingFrame : public wxAuiFloatingFrameBaseClass
@@ -37,18 +37,18 @@ public:
                    const wxAuiPaneInfo& pane,
                    wxWindowID id = wxID_ANY,
                    long style = wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION |
-                                wxFRAME_NO_TASKBAR | wxFRAME_FLOAT_ON_PARENT |
+                                wxFRAME_NO_TASKBAR | wxFRAME_FLOAT_ON_PARENT | 
                                 wxCLIP_CHILDREN
                    );
     virtual ~wxAuiFloatingFrame();
     void SetPaneWindow(const wxAuiPaneInfo& pane);
     wxAuiManager* GetOwnerManager() const;
-
+    
 protected:
     virtual void OnMoveStart();
     virtual void OnMoving(const wxRect& window_rect, wxDirection dir);
     virtual void OnMoveFinished();
-
+    
 private:
     void OnSize(wxSizeEvent& event);
     void OnClose(wxCloseEvent& event);
@@ -56,7 +56,7 @@ private:
     void OnIdle(wxIdleEvent& event);
     void OnActivate(wxActivateEvent& event);
     static bool isMouseDown();
-
+    
 private:
     wxWindow* m_pane_window;    // pane window being managed
     bool m_solid_drag;          // true if system uses solid window drag
@@ -67,7 +67,7 @@ private:
     wxSize m_last_size;
     wxDirection m_lastDirection;
 
-    wxWeakRef<wxAuiManager> m_owner_mgr;
+    wxAuiManager* m_owner_mgr;
     wxAuiManager m_mgr;
 
 #ifndef SWIG

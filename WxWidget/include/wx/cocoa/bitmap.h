@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/07/19
-// RCS-ID:      $Id: bitmap.h 59526 2009-03-14 13:57:51Z FM $
+// RCS-ID:      $Id: bitmap.h 47992 2007-08-09 19:08:30Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,18 +15,18 @@
 #include "wx/palette.h"
 
 // Bitmap
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
-class WXDLLIMPEXP_FWD_CORE wxIcon;
-class WXDLLIMPEXP_FWD_CORE wxCursor;
-class WXDLLIMPEXP_FWD_CORE wxImage;
-class WXDLLIMPEXP_FWD_CORE wxPixelDataBase;
+class WXDLLEXPORT wxBitmap;
+class WXDLLEXPORT wxIcon;
+class WXDLLEXPORT wxCursor;
+class WXDLLEXPORT wxImage;
+class WXDLLEXPORT wxPixelDataBase;
 
 // ========================================================================
 // wxMask
 // ========================================================================
 
 // A mask is a 1-bit alpha bitmap used for drawing bitmaps transparently.
-class WXDLLIMPEXP_CORE wxMask: public wxObject
+class WXDLLEXPORT wxMask: public wxObject
 {
     DECLARE_DYNAMIC_CLASS(wxMask)
 public:
@@ -59,13 +59,12 @@ protected:
     WX_NSBitmapImageRep m_cocoaNSBitmapImageRep;
 };
 
-
 // ========================================================================
 // wxBitmap
 // ========================================================================
-
-class WXDLLIMPEXP_CORE wxBitmap: public wxGDIObject
+class WXDLLEXPORT wxBitmap: public wxGDIObject
 {
+    DECLARE_DYNAMIC_CLASS(wxBitmap)
 // ------------------------------------------------------------------------
 // initialization
 // ------------------------------------------------------------------------
@@ -77,7 +76,7 @@ public:
     // Initialize with XPM data
     wxBitmap(const char* const* bits);
     // Load a file or resource
-    wxBitmap(const wxString& name, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+    wxBitmap(const wxString& name, wxBitmapType type = wxBITMAP_TYPE_BMP_RESOURCE);
     // Construct from Cocoa's NSImage
     wxBitmap(NSImage* cocoaNSImage);
     // Construct from Cocoa's NSBitmapImageRep
@@ -85,13 +84,10 @@ public:
     // Constructor for generalised creation from data
     wxBitmap(const void* data, wxBitmapType type, int width, int height, int depth = 1);
     // If depth is omitted, will create a bitmap compatible with the display
-    wxBitmap(int width, int height, int depth = -1)
-        { (void)Create(width, height, depth); }
-    wxBitmap(const wxSize& sz, int depth = -1)
-        { (void)Create(sz, depth); }
+    wxBitmap(int width, int height, int depth = -1);
     // Convert from wxImage:
     wxBitmap(const wxImage& image, int depth = -1)
-        { CreateFromImage(image, depth); }
+    {   CreateFromImage(image, depth); }
     // Convert from wxIcon
     wxBitmap(const wxIcon& icon) { CopyFromIcon(icon); }
 
@@ -105,14 +101,11 @@ public:
     // Initialize from wxImage
     bool CreateFromImage(const wxImage& image, int depth=-1);
 
-    virtual bool Create(int width, int height, int depth = wxBITMAP_SCREEN_DEPTH);
-    virtual bool Create(const wxSize& sz, int depth = wxBITMAP_SCREEN_DEPTH)
-        { return Create(sz.GetWidth(), sz.GetHeight(), depth); }
-
+    virtual bool Create(int width, int height, int depth = -1);
     bool Create(NSImage* cocoaNSImage);
     bool Create(NSBitmapImageRep* cocoaNSBitmapImageRep);
     virtual bool Create(const void* data, wxBitmapType type, int width, int height, int depth = 1);
-    virtual bool LoadFile(const wxString& name, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+    virtual bool LoadFile(const wxString& name, wxBitmapType type = wxBITMAP_TYPE_BMP_RESOURCE);
     virtual bool SaveFile(const wxString& name, wxBitmapType type, const wxPalette *cmap = NULL) const;
 
     // copies the contents and mask of the given (colour) icon to the bitmap
@@ -123,6 +116,8 @@ public:
     // get the given part of bitmap
     wxBitmap GetSubBitmap( const wxRect& rect ) const;
 
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const;
     int GetWidth() const;
     int GetHeight() const;
     int GetDepth() const;
@@ -136,6 +131,7 @@ public:
     // raw bitmap access support functions
     void *GetRawData(wxPixelDataBase& data, int bpp);
     void UngetRawData(wxPixelDataBase& data);
+    void UseAlpha();
 
     wxPalette* GetPalette() const;
     void SetPalette(const wxPalette& palette);
@@ -143,7 +139,11 @@ public:
     wxMask *GetMask() const;
     void SetMask(wxMask *mask) ;
 
-    wxBitmapType GetBitmapType() const;
+    int GetBitmapType() const;
+
+    // wxObjectRefData
+    wxObjectRefData *CreateRefData() const;
+    wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
     // wxCocoa
     WX_NSBitmapImageRep GetNSBitmapImageRep();
@@ -152,13 +152,12 @@ public:
 
     static void InitStandardHandlers() { }
     static void CleanUpHandlers() { }
-
-protected:
-    wxGDIRefData *CreateGDIRefData() const;
-    wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
-
-    DECLARE_DYNAMIC_CLASS(wxBitmap)
 };
 
+class WXDLLIMPEXP_CORE wxBitmapHandler: public wxBitmapHandlerBase
+{
+    DECLARE_ABSTRACT_CLASS(wxBitmapHandler)
+};
 
-#endif // __WX_COCOA_BITMAP_H__
+#endif
+    // __WX_COCOA_BITMAP_H__

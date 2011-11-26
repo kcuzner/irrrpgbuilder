@@ -2,13 +2,13 @@
 // Name:        wx/gtk/menu.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: menu.h 66180 2010-11-17 05:57:21Z PC $
+// Id:          $Id: menu.h 48053 2007-08-13 17:07:01Z JS $
 // Copyright:   (c) 1998 Robert Roebling, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_GTKMENU_H_
-#define _WX_GTKMENU_H_
+#ifndef __GTKMENUH__
+#define __GTKMENUH__
 
 //-----------------------------------------------------------------------------
 // wxMenuBar
@@ -21,6 +21,7 @@ public:
     wxMenuBar();
     wxMenuBar(long style);
     wxMenuBar(size_t n, wxMenu *menus[], const wxString titles[], long style = 0);
+    virtual ~wxMenuBar();
 
     // implement base class (pure) virtuals
     virtual bool Append( wxMenu *menu, const wxString &title );
@@ -33,29 +34,36 @@ public:
     virtual wxMenuItem* FindItem( int id, wxMenu **menu = NULL ) const;
 
     virtual void EnableTop( size_t pos, bool flag );
-    virtual void SetMenuLabel( size_t pos, const wxString& label );
-    virtual wxString GetMenuLabel( size_t pos ) const;
+    virtual void SetLabelTop( size_t pos, const wxString& label );
+    virtual wxString GetLabelTop( size_t pos ) const;
 
     void SetLayoutDirection(wxLayoutDirection dir);
     wxLayoutDirection GetLayoutDirection() const;
 
-    // wxMenuBar is not a top level window but it still doesn't need a parent
-    // window
-    virtual bool GTKNeedsParent() const { return false; }
-
-    virtual void Attach(wxFrame *frame);
-    virtual void Detach();
+    void Attach(wxFrame *frame);
 
     // implementation only from now on
-    GtkWidget       *m_menubar; // Public for hildon support
+    void SetInvokingWindow( wxWindow *win );
+    void UnsetInvokingWindow( wxWindow *win );
 
-private:
     // common part of Append and Insert
     bool GtkAppend(wxMenu *menu, const wxString& title, int pos=-1);
 
+    GtkWidget       *m_menubar;
+    long             m_style;
+    wxWindow        *m_invokingWindow;
+
+private:
     void Init(size_t n, wxMenu *menus[], const wxString titles[], long style);
 
     DECLARE_DYNAMIC_CLASS(wxMenuBar)
+
+public:
+
+#if wxABI_VERSION >= 20805
+    // Gets the original label at the top-level of the menubar
+    wxString GetMenuLabel(size_t pos) const;
+#endif
 };
 
 //-----------------------------------------------------------------------------
@@ -78,16 +86,15 @@ public:
     void SetLayoutDirection(const wxLayoutDirection dir);
     wxLayoutDirection GetLayoutDirection() const;
 
-    // Returns the title, with mnemonics translated to wx format
-    wxString GetTitle() const;
-
     // TODO: virtual void SetTitle(const wxString& title);
+
+    // implementation
+    int FindMenuIdByMenuItem( GtkWidget *menuItem ) const;
 
     // implementation GTK only
     GtkWidget       *m_menu;  // GtkMenu
     GtkWidget       *m_owner;
     GtkAccelGroup   *m_accel;
-    bool m_popupShown;
 
 protected:
     virtual wxMenuItem* DoAppend(wxMenuItem *item);
@@ -107,4 +114,4 @@ private:
 };
 
 #endif
-    // _WX_GTKMENU_H_
+    // __GTKMENUH__

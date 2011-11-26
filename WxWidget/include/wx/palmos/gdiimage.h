@@ -3,9 +3,9 @@
 // Purpose:     wxGDIImage class: base class for wxBitmap, wxIcon, wxCursor
 //              under Palm OS
 // Author:      William Osborne - minimal working wxPalmOS port
-// Modified by: Yunhui Fu
+// Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: gdiimage.h 61508 2009-07-23 20:30:22Z VZ $
+// RCS-ID:      $Id: gdiimage.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,9 +20,9 @@
 #include "wx/gdicmn.h"          // wxBITMAP_TYPE_INVALID
 #include "wx/list.h"
 
-class WXDLLIMPEXP_FWD_CORE wxGDIImageRefData;
-class WXDLLIMPEXP_FWD_CORE wxGDIImageHandler;
-class WXDLLIMPEXP_FWD_CORE wxGDIImage;
+class WXDLLEXPORT wxGDIImageRefData;
+class WXDLLEXPORT wxGDIImageHandler;
+class WXDLLEXPORT wxGDIImage;
 
 WX_DECLARE_EXPORTED_LIST(wxGDIImageHandler, wxGDIImageHandlerList);
 
@@ -30,7 +30,7 @@ WX_DECLARE_EXPORTED_LIST(wxGDIImageHandler, wxGDIImageHandlerList);
 // wxGDIImageRefData: common data fields for all derived classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIImageRefData : public wxGDIRefData
+class WXDLLEXPORT wxGDIImageRefData : public wxGDIRefData
 {
 public:
     wxGDIImageRefData()
@@ -41,7 +41,7 @@ public:
     }
 
     // accessors
-    virtual bool IsOk() const { return m_handle != 0; }
+    bool IsOk() const { return m_handle != 0; }
 
     void SetSize(int w, int h) { m_width = w; m_height = h; }
 
@@ -70,7 +70,7 @@ public:
 // wxGDIImageHandler: a class which knows how to load/save wxGDIImages.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIImageHandler : public wxObject
+class WXDLLEXPORT wxGDIImageHandler : public wxObject
 {
 public:
     // ctor
@@ -117,7 +117,7 @@ protected:
 // format. It also falls back to wxImage if no appropriate image is found.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGDIImage : public wxGDIObject
+class WXDLLEXPORT wxGDIImage : public wxGDIObject
 {
 public:
     // handlers list interface
@@ -147,15 +147,12 @@ public:
     void SetHandle(WXHANDLE handle)
         { EnsureHasData(); GetGDIImageData()->m_handle = handle; }
 
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return GetHandle() != 0; }
+
     int GetWidth() const { return IsNull() ? 0 : GetGDIImageData()->m_width; }
     int GetHeight() const { return IsNull() ? 0 : GetGDIImageData()->m_height; }
     int GetDepth() const { return IsNull() ? 0 : GetGDIImageData()->m_depth; }
-
-    wxSize GetSize() const
-    {
-        return IsNull() ? wxSize(0,0) :
-               wxSize(GetGDIImageData()->m_width, GetGDIImageData()->m_height);
-    }
 
     void SetWidth(int w) { EnsureHasData(); GetGDIImageData()->m_width = w; }
     void SetHeight(int h) { EnsureHasData(); GetGDIImageData()->m_height = h; }
@@ -175,15 +172,6 @@ public:
 protected:
     // create the data for the derived class here
     virtual wxGDIImageRefData *CreateData() const = 0;
-    virtual wxGDIRefData *CreateGDIRefData() const { return CreateData(); }
-    // we can't [efficiently] clone objects of this class
-    virtual wxGDIRefData *
-    CloneGDIRefData(const wxGDIRefData *WXUNUSED(data)) const
-    {
-        wxFAIL_MSG( wxT("must be implemented if used") );
-
-        return NULL;
-    }
 
     static wxGDIImageHandlerList ms_handlers;
 };

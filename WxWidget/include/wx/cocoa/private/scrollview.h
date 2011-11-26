@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/cocoa/private/scrollview.h
+// Name:        wx/cocoa/scrollview.h
 // Purpose:     wxWindowCocoaScrollView
 // Author:      David Elliott
 // Modified by:
 // Created:     2008/02/14
-// RCS-ID:      $Id: scrollview.h 67280 2011-03-22 14:17:38Z DS $
+// RCS-ID:      $Id: scrollview.h 60554 2009-05-08 23:10:00Z VZ $
 // Copyright:   (c) 2003- David Elliott
-// Licence:     wxWindows licence
+// Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_COCOA_SCROLLVIEW_H__
@@ -19,7 +19,7 @@
 // ========================================================================
 class wxWindowCocoaScrollView: protected wxCocoaNSView
 {
-    wxDECLARE_NO_COPY_CLASS(wxWindowCocoaScrollView);
+    DECLARE_NO_COPY_CLASS(wxWindowCocoaScrollView)
 public:
     wxWindowCocoaScrollView(wxWindow *owner);
     virtual ~wxWindowCocoaScrollView();
@@ -45,10 +45,12 @@ protected:
     wxWindowCocoa *m_owner;
     WX_NSScrollView m_cocoaNSScrollView;
     virtual void Cocoa_FrameChanged(void);
+#if wxUSE_ABI_INCOMPATIBLE_FEATURES
     virtual void Cocoa_synthesizeMouseMoved(void) {}
+#endif
     /*!
         Flag as to whether we're scrolling for a native view or a custom
-        wxWindow.  This controls the scrolling behaviour.  When providing
+        wxWindow.  This controls the scrolling behavior.  When providing
         scrolling for a native view we don't catch scroller action messages
         and thus don't send scroll events and we don't actually scroll the
         window when the application calls ScrollWindow.

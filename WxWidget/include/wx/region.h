@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:
-// RCS-ID:      $Id: region.h 58804 2009-02-09 09:01:19Z SC $
+// RCS-ID:      $Id: region.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ enum wxRegionOp
 // wxRegionBase defines wxRegion API
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxRegionBase : public wxGDIObject
+class WXDLLEXPORT wxRegionBase : public wxGDIObject
 {
 public:
     // ctors
@@ -67,7 +67,7 @@ public:
     wxRegion(wxCoord x, wxCoord y, wxCoord w, wxCoord h);
     wxRegion(const wxPoint& topLeft, const wxPoint& bottomRight);
     wxRegion(const wxRect& rect);
-    wxRegion(size_t n, const wxPoint *points, wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
+    wxRegion(size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE);
     wxRegion(const wxBitmap& bmp);
     wxRegion(const wxBitmap& bmp, const wxColour& transp, int tolerance = 0);
 #endif // 0
@@ -81,6 +81,9 @@ public:
 
     // accessors
     // ---------
+
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const { return m_refData != NULL; }
 
     // Is region empty?
     virtual bool IsEmpty() const = 0;
@@ -183,12 +186,12 @@ protected:
 // ports with Combine() in this class
 #if defined(__WXPALMOS__) || \
     defined(__WXMSW__) || \
-    ( defined(__WXMAC__) && wxOSX_USE_COCOA_OR_CARBON ) || \
+    defined(__WXMAC__) || \
     defined(__WXPM__)
 
 #define wxHAS_REGION_COMBINE
 
-class WXDLLIMPEXP_CORE wxRegionWithCombine : public wxRegionBase
+class WXDLLEXPORT wxRegionWithCombine : public wxRegionBase
 {
 public:
     // these methods are not part of public API as they're not implemented on
@@ -228,7 +231,7 @@ protected:
 #elif defined(__WXDFB__)
     #include "wx/dfb/region.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/region.h"
+    #include "wx/mac/region.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/region.h"
 #elif defined(__WXPM__)

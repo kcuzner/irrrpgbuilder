@@ -4,7 +4,7 @@
 // Author:      wxWidgets team
 // Modified by:
 // Created:     13.01.00
-// RCS-ID:      $Id: metafile.h 54125 2008-06-11 19:17:41Z SC $
+// RCS-ID:      $Id: metafile.h 39841 2006-06-26 14:37:34Z VZ $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@
 #elif defined(__WXPM__)
     #include "wx/os2/metafile.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/metafile.h"
+    #include "wx/mac/metafile.h"
 #endif
 
 #endif // wxUSE_METAFILE

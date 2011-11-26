@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: glcanvas.h 58227 2009-01-19 13:55:27Z VZ $
+// RCS-ID:      $Id: glcanvas.h 43097 2006-11-06 00:57:46Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 
 #include <GL/gl.h>
 
-class WXDLLIMPEXP_FWD_GL wxGLCanvas;     /* forward reference */
+class WXDLLIMPEXP_GL wxGLCanvas;     /* forward reference */
 
 class WXDLLIMPEXP_GL wxGLContext: public wxObject
 {
@@ -35,7 +35,7 @@ public:
 
     void SetCurrent();
 
-    void SetColour(const wxString& colour);
+    void SetColour(const wxChar *colour);
 
     void SwapBuffers();
 
@@ -63,17 +63,17 @@ public:
         const wxPalette& palette = wxNullPalette);
 
     wxGLCanvas(wxWindow *parent,
-        const wxGLContext *shared = NULL,
+        const wxGLContext *shared = (wxGLContext *) NULL,
         wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0,
         const wxString& name = wxGLCanvasName,
-        int *attribList = NULL,
+        int *attribList = (int *) NULL,
         const wxPalette& palette = wxNullPalette);
 
     wxGLCanvas(wxWindow *parent,
-        const wxGLCanvas *shared = NULL,
+        const wxGLCanvas *shared = (wxGLCanvas *)NULL,
         wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
@@ -110,11 +110,17 @@ public:
 
     inline WXHDC GetHDC() const { return m_hDC; }
 
-    void SetupPixelFormat(int *attribList = NULL);
+    void SetupPixelFormat(int *attribList = (int *) NULL);
 
     void SetupPalette(const wxPalette& palette);
 
+    wxPalette CreateDefaultPalette();
+
+    inline wxPalette* GetPalette() const { return (wxPalette *) &m_palette; }
+
 protected:
+    wxGLContext*   m_glContext;  // this is typedef-ed ptr, in fact
+    wxPalette      m_palette;
     WXHDC          m_hDC;
 
     DECLARE_EVENT_TABLE()

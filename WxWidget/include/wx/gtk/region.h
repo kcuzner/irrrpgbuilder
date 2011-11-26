@@ -2,7 +2,7 @@
 // Name:        wx/gtk/region.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: region.h 61724 2009-08-21 10:41:26Z VZ $
+// Id:          $Id: region.h 42873 2006-10-31 22:48:38Z RR $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,10 +35,8 @@ public:
         InitRect(rect.x, rect.y, rect.width, rect.height);
     }
 
-    wxRegion( size_t n, const wxPoint *points,
-              wxPolygonFillMode fillStyle = wxODDEVEN_RULE );
+    wxRegion( size_t n, const wxPoint *points, int fillStyle = wxODDEVEN_RULE );
 
-#if wxUSE_IMAGE
     wxRegion( const wxBitmap& bmp)
     {
         Union(bmp);
@@ -48,7 +46,6 @@ public:
     {
         Union(bmp, transColour, tolerance);
     }
-#endif // wxUSE_IMAGE
 
     virtual ~wxRegion();
 
@@ -64,8 +61,9 @@ public:
     GdkRegion *GetRegion() const;
 
 protected:
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
+    // ref counting code
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
     // wxRegionBase pure virtuals
     virtual bool DoIsEqual(const wxRegion& region) const;

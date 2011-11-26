@@ -2,19 +2,15 @@
 // Name:        wx/palmos/apptrait.h
 // Purpose:     class implementing wxAppTraits for Palm OS
 // Author:      William Osborne - minimal working wxPalmOS port
-// Modified by: Yunhui Fu
+// Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: apptrait.h 67288 2011-03-22 17:15:56Z VZ $
+// RCS-ID:      $Id: apptrait.h 40599 2006-08-13 21:00:32Z VZ $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_PALM_APPTRAIT_H_
 #define _WX_PALM_APPTRAIT_H_
-
-#if wxUSE_TIMER
-#include "wx/palmos/private/timer.h" // wxPalmOSTimerImpl
-#endif // wxUSE_TIMER
 
 // ----------------------------------------------------------------------------
 // wxGUI/ConsoleAppTraits: must derive from wxAppTraits, not wxAppTraitsBase
@@ -23,18 +19,11 @@
 class WXDLLIMPEXP_BASE wxConsoleAppTraits : public wxConsoleAppTraitsBase
 {
 public:
-#if wxUSE_CONSOLE_EVENTLOOP
-    virtual wxEventLoopBase *CreateEventLoop();
-#endif // wxUSE_CONSOLE_EVENTLOOP
     virtual void *BeforeChildWaitLoop();
+    virtual void AlwaysYield();
     virtual void AfterChildWaitLoop(void *data);
-#if wxUSE_TIMER
-    virtual wxTimerImpl *CreateTimerImpl(wxTimer *timer) { return new wxPalmOSTimerImpl(timer); }
-#endif // wxUSE_TIMER
-#if wxUSE_THREADS
+
     virtual bool DoMessageFromThreadWait();
-    virtual WXDWORD WaitForThread(WXHANDLE hThread);
-#endif // wxUSE_THREADS
 };
 
 #if wxUSE_GUI
@@ -42,17 +31,12 @@ public:
 class WXDLLIMPEXP_CORE wxGUIAppTraits : public wxGUIAppTraitsBase
 {
 public:
-    virtual wxEventLoopBase *CreateEventLoop();
     virtual void *BeforeChildWaitLoop();
+    virtual void AlwaysYield();
     virtual void AfterChildWaitLoop(void *data);
-#if wxUSE_TIMER
-    // there is no wxTimer support yet
-    virtual wxTimerImpl *CreateTimerImpl(wxTimer *timer);
-#endif // wxUSE_TIMER
-#if wxUSE_THREADS
+
     virtual bool DoMessageFromThreadWait();
-#endif // wxUSE_THREADS
-    virtual wxPortId GetToolkitVersion(int *majVer = NULL, int *minVer = NULL) const;
+    virtual wxPortId GetToolkitVersion(int *majVer, int *minVer) const;
 };
 
 #endif // wxUSE_GUI

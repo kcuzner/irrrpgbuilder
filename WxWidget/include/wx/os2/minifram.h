@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/minifram.h
+// Name:        minifram.h
 // Purpose:     wxMiniFrame class. A small frame for e.g. floating toolbars.
 //              If there is no equivalent on your platform, just make it a
 //              normal frame.
 // Author:      David Webster
 // Modified by:
 // Created:     10/10/99
-// RCS-ID:      $Id: minifram.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: minifram.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 
 #include "wx/frame.h"
 
-class WXDLLIMPEXP_CORE wxMiniFrame: public wxFrame {
+class WXDLLEXPORT wxMiniFrame: public wxFrame {
 
   DECLARE_DYNAMIC_CLASS(wxMiniFrame)
 

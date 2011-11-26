@@ -2,7 +2,7 @@
 // Name:        wx/mgl/window.h
 // Purpose:     wxWindow class
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: window.h 66633 2011-01-07 18:15:21Z PC $
+// RCS-ID:      $Id: window.h 36086 2005-11-04 18:49:49Z ABX $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ class MGLDevCtx;
 // wxWindow declaration for MGL
 // ---------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxWindowMGL : public wxWindowBase
+class WXDLLEXPORT wxWindowMGL : public wxWindowBase
 {
 public:
     wxWindowMGL() { Init(); }
@@ -68,12 +68,21 @@ public:
     virtual void Refresh(bool eraseBackground = true,
                          const wxRect *rect = (const wxRect *) NULL);
     virtual void Update();
+    virtual void Clear();
+    virtual void Freeze();
+    virtual void Thaw();
 
     virtual bool SetCursor(const wxCursor &cursor);
     virtual bool SetFont(const wxFont &font) { m_font = font; return true; }
 
     virtual int GetCharHeight() const;
     virtual int GetCharWidth() const;
+    virtual void GetTextExtent(const wxString& string,
+                               int *x, int *y,
+                               int *descent = (int *) NULL,
+                               int *externalLeading = (int *) NULL,
+                               const wxFont *theFont = (const wxFont *) NULL)
+                               const;
 
 #if wxUSE_DRAG_AND_DROP
     virtual void SetDropTarget(wxDropTarget *dropTarget);
@@ -89,24 +98,18 @@ public:
     // implementation from now on
     // --------------------------
 
+    void OnInternalIdle();
+
 protected:
-    virtual void DoFreeze();
-    virtual void DoThaw();
-
-
     // the window handle
     struct window_t      *m_wnd;
     // whether there should be wxEraseEvent before wxPaintEvent or not
     // (see wxWindow::Refresh)
+    bool                  m_frozen:1;
     bool                  m_refreshAfterThaw:1;
     int                   m_eraseBackground;
 
     // implement the base class pure virtuals
-    virtual void DoGetTextExtent(const wxString& string,
-                                 int *x, int *y,
-                                 int *descent = NULL,
-                                 int *externalLeading = NULL,
-                                 const wxFont *font = NULL) const;
     virtual void DoClientToScreen( int *x, int *y ) const;
     virtual void DoScreenToClient( int *x, int *y ) const;
     virtual void DoGetPosition( int *x, int *y ) const;
@@ -136,7 +139,7 @@ private:
     friend class wxPaintDC;
 
     DECLARE_DYNAMIC_CLASS(wxWindowMGL)
-    wxDECLARE_NO_COPY_CLASS(wxWindowMGL);
+    DECLARE_NO_COPY_CLASS(wxWindowMGL)
     DECLARE_EVENT_TABLE()
 
 public:

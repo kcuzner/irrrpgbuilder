@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by: Wlodzimierz ABX Skiba - native wxButton implementation
 // Created:     10/13/04
-// RCS-ID:      $Id: button.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: button.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) William Osborne, Wlodzimierz Skiba
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // Pushbutton
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxButton : public wxButtonBase
+class WXDLLEXPORT wxButton : public wxButtonBase
 {
 public:
     wxButton() { }
@@ -43,7 +43,7 @@ public:
 
     virtual ~wxButton();
 
-    virtual wxWindow *SetDefault();
+    virtual void SetDefault();
 
     // implementation from now on
     virtual void Command(wxCommandEvent& event);

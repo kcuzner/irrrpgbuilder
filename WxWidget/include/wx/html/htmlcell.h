@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/htmlcell.h
+// Name:        htmlcell.h
 // Purpose:     wxHtmlCell class is used by wxHtmlWindow/wxHtmlWinParser
 //              as a basic visual element of HTML page
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlcell.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: htmlcell.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) 1999-2003 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -352,7 +352,7 @@ protected:
     wxString m_id;
 
     DECLARE_ABSTRACT_CLASS(wxHtmlCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlCell)
 };
 
 
@@ -375,17 +375,12 @@ public:
     void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
               wxHtmlRenderingInfo& info);
     virtual wxCursor GetMouseCursor(wxHtmlWindowInterface *window) const;
-    virtual wxString ConvertToText(wxHtmlSelection *sel) const;
+    wxString ConvertToText(wxHtmlSelection *sel) const;
     bool IsLinebreakAllowed() const { return m_allowLinebreak; }
 
     void SetPreviousWord(wxHtmlWordCell *cell);
 
 protected:
-    virtual wxString GetAllAsText() const
-        { return m_Word; }
-    virtual wxString GetPartAsText(int begin, int end) const
-        { return m_Word.Mid(begin, end - begin); }
-
     void SetSelectionPrivPos(const wxDC& dc, wxHtmlSelection *s) const;
     void Split(const wxDC& dc,
                const wxPoint& selFrom, const wxPoint& selTo,
@@ -395,32 +390,11 @@ protected:
     bool     m_allowLinebreak;
 
     DECLARE_ABSTRACT_CLASS(wxHtmlWordCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlWordCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlWordCell)
 };
 
 
-// wxHtmlWordCell specialization for storing text fragments with embedded
-// '\t's; these differ from normal words in that the displayed text is
-// different from the text copied to clipboard
-class WXDLLIMPEXP_HTML wxHtmlWordWithTabsCell : public wxHtmlWordCell
-{
-public:
-    wxHtmlWordWithTabsCell(const wxString& word,
-                           const wxString& wordOrig,
-                           size_t linepos,
-                           const wxDC& dc)
-        : wxHtmlWordCell(word, dc),
-          m_wordOrig(wordOrig),
-          m_linepos(linepos)
-    {}
 
-protected:
-    virtual wxString GetAllAsText() const;
-    virtual wxString GetPartAsText(int begin, int end) const;
-
-    wxString m_wordOrig;
-    size_t   m_linepos;
-};
 
 
 // Container contains other cells, thus forming tree structure of rendering
@@ -470,7 +444,7 @@ public:
     // returns background colour (of wxNullColour if none set), so that widgets can
     // adapt to it:
     wxColour GetBackgroundColour();
-    void SetBorder(const wxColour& clr1, const wxColour& clr2, int border = 1) {m_Border = border; m_BorderColour1 = clr1, m_BorderColour2 = clr2;}
+    void SetBorder(const wxColour& clr1, const wxColour& clr2) {m_UseBorder = true; m_BorderColour1 = clr1, m_BorderColour2 = clr2;}
     virtual wxHtmlLinkInfo* GetLink(int x = 0, int y = 0) const;
     virtual const wxHtmlCell* Find(int condition, const void* param) const;
 
@@ -484,7 +458,9 @@ public:
                                    const wxMouseEvent& event);
 
     virtual wxHtmlCell* GetFirstChild() const { return m_Cells; }
-
+#if WXWIN_COMPATIBILITY_2_4
+    wxDEPRECATED( wxHtmlCell* GetFirstCell() const );
+#endif
     // returns last child cell:
     wxHtmlCell* GetLastChild() const { return m_LastCell; }
 
@@ -529,8 +505,7 @@ protected:
     bool m_UseBkColour;
     wxColour m_BkColour;
             // background color of this container
-    int m_Border;
-            // border size. Draw only if m_Border > 0
+    bool m_UseBorder;
     wxColour m_BorderColour1, m_BorderColour2;
             // borders color of this container
     int m_LastLayout;
@@ -541,8 +516,14 @@ protected:
 
 
     DECLARE_ABSTRACT_CLASS(wxHtmlContainerCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlContainerCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlContainerCell)
 };
+
+#if WXWIN_COMPATIBILITY_2_4
+inline wxHtmlCell* wxHtmlContainerCell::GetFirstCell() const
+    { return GetFirstChild(); }
+#endif
+
 
 
 
@@ -565,7 +546,7 @@ protected:
     unsigned m_Flags;
 
     DECLARE_ABSTRACT_CLASS(wxHtmlColourCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlColourCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlColourCell)
 };
 
 
@@ -589,7 +570,7 @@ protected:
     wxFont m_Font;
 
     DECLARE_ABSTRACT_CLASS(wxHtmlFontCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlFontCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlFontCell)
 };
 
 
@@ -625,7 +606,7 @@ protected:
             // width float is used in adjustWidth (it is in percents)
 
     DECLARE_ABSTRACT_CLASS(wxHtmlWidgetCell)
-    wxDECLARE_NO_COPY_CLASS(wxHtmlWidgetCell);
+    DECLARE_NO_COPY_CLASS(wxHtmlWidgetCell)
 };
 
 

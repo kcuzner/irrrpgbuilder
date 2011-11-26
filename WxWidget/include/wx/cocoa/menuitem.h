@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2002/12/13
-// RCS-ID:      $Id: menuitem.h 58227 2009-01-19 13:55:27Z VZ $
+// RCS-ID:      $Id:
 // Copyright:   (c) 2002 David Elliott
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,18 +25,18 @@
 class wxMenuItemCocoa;
 WX_DECLARE_HASH_MAP(WX_NSMenuItem,wxMenuItem*,wxPointerHash,wxPointerEqual,wxMenuItemCocoaHash);
 
-class WXDLLIMPEXP_CORE wxMenuItemCocoa : public wxMenuItemBase
+class WXDLLEXPORT wxMenuItemCocoa : public wxMenuItemBase
 {
 public:
 // ------------------------------------------------------------------------
 // initialization
 // ------------------------------------------------------------------------
-    wxMenuItemCocoa(wxMenu *parentMenu = NULL,
+    wxMenuItemCocoa(wxMenu *parentMenu = (wxMenu *)NULL,
                int id = wxID_SEPARATOR,
                const wxString& name = wxEmptyString,
                const wxString& help = wxEmptyString,
                wxItemKind kind = wxITEM_NORMAL,
-               wxMenu *subMenu = NULL);
+               wxMenu *subMenu = (wxMenu *)NULL);
     virtual ~wxMenuItemCocoa();
 
 // ------------------------------------------------------------------------
@@ -63,7 +63,7 @@ protected:
 // ------------------------------------------------------------------------
 public:
     // override base class virtuals to update the item appearance on screen
-    virtual void SetItemLabel(const wxString& text);
+    virtual void SetText(const wxString& text);
     virtual void SetCheckable(bool checkable);
 
     virtual void Enable(bool enable = TRUE);
@@ -94,6 +94,14 @@ protected:
 
 private:
     DECLARE_DYNAMIC_CLASS(wxMenuItem)
+
+public:
+
+#if wxABI_VERSION >= 20805
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    wxString GetItemLabel() const { return GetText(); }
+#endif
 };
 
 #endif // _WX_COCOA_MENUITEM_H_

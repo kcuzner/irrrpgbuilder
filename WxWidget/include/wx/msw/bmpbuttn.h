@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: bmpbuttn.h 61071 2009-06-15 23:10:16Z VZ $
+// RCS-ID:      $Id: bmpbuttn.h 36078 2005-11-03 19:38:20Z VZ $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,10 +16,10 @@
 #include "wx/bitmap.h"
 #include "wx/brush.h"
 
-class WXDLLIMPEXP_CORE wxBitmapButton : public wxBitmapButtonBase
+class WXDLLEXPORT wxBitmapButton : public wxBitmapButtonBase
 {
 public:
-    wxBitmapButton() { Init(); }
+    wxBitmapButton() { }
 
     wxBitmapButton(wxWindow *parent,
                    wxWindowID id,
@@ -30,8 +30,6 @@ public:
                    const wxValidator& validator = wxDefaultValidator,
                    const wxString& name = wxButtonNameStr)
     {
-        Init();
-
         Create(parent, id, bitmap, pos, size, style, validator, name);
     }
 
@@ -44,24 +42,28 @@ public:
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxButtonNameStr);
 
+    // Implementation
+    virtual bool SetBackgroundColour(const wxColour& colour);
+    virtual void SetDefault();
+    virtual bool MSWOnDraw(WXDRAWITEMSTRUCT *item);
+    virtual void DrawFace( WXHDC dc, int left, int top, int right, int bottom, bool sel );
+    virtual void DrawButtonFocus( WXHDC dc, int left, int top, int right, int bottom, bool sel );
+    virtual void DrawButtonDisable( WXHDC dc, int left, int top, int right, int bottom, bool with_marg );
+
 protected:
-    // common part of all ctors
-    void Init()
-    {
-        m_disabledSetByUser =
-        m_hoverSetByUser = false;
-    }
-
     // reimplement some base class virtuals
-    virtual void DoSetBitmap(const wxBitmap& bitmap, State which);
+    virtual wxSize DoGetBestSize() const;
+    virtual void OnSetBitmap();
 
-    // true if disabled bitmap was set by user, false if we created it
-    // ourselves from the normal one
-    bool m_disabledSetByUser;
+    // invalidate m_brushDisabled when system colours change
+    void OnSysColourChanged(wxSysColourChangedEvent& event);
 
-    // true if hover bitmap was set by user, false if it was set from focused
-    // one
-    bool m_hoverSetByUser;
+    // change the currently bitmap if we have a hover one
+    void OnMouseEnterOrLeave(wxMouseEvent& event);
+
+
+    // the brush we use to draw disabled buttons
+    wxBrush m_brushDisabled;
 
 
     DECLARE_EVENT_TABLE()

@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2002/12/15
-// RCS-ID:      $Id: dialog.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: dialog.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,10 +17,12 @@
 #include "wx/panel.h"
 #include "wx/cocoa/NSPanel.h"
 
+WXDLLEXPORT_DATA(extern const wxChar) wxDialogNameStr[];
+
 // ========================================================================
 // wxDialog
 // ========================================================================
-class WXDLLIMPEXP_CORE wxDialog : public wxDialogBase, protected wxCocoaNSPanel
+class WXDLLEXPORT wxDialog : public wxDialogBase, protected wxCocoaNSPanel
 {
     DECLARE_DYNAMIC_CLASS(wxDialog)
     WX_DECLARE_COCOA_OWNER(NSPanel,NSWindow,NSWindow)

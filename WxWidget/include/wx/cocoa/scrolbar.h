@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2004/04/25
-// RCS-ID:      $Id: scrolbar.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: scrolbar.h 42077 2006-10-17 14:44:52Z ABX $
 // Copyright:   (c) 2004 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@
 // ========================================================================
 // wxScrollBar
 // ========================================================================
-class WXDLLIMPEXP_CORE wxScrollBar: public wxScrollBarBase, protected wxCocoaNSScroller
+class WXDLLEXPORT wxScrollBar: public wxScrollBarBase, protected wxCocoaNSScroller
 {
     DECLARE_DYNAMIC_CLASS(wxScrollBar)
     DECLARE_EVENT_TABLE()

@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/mgl/clipbrd.h
+// Name:        clipboard.h
 // Purpose:
 // Author:      Vaclav Slavik
-// Id:          $Id: clipbrd.h 67254 2011-03-20 00:14:35Z DS $
+// Id:          $Id: clipbrd.h 41020 2006-09-05 20:47:48Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 // wxClipboard
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxClipboard : public wxClipboardBase
+class WXDLLEXPORT wxClipboard : public wxClipboardBase
 {
 public:
     wxClipboard() {}
@@ -52,6 +52,11 @@ public:
     // clears wxTheClipboard and the system's clipboard if possible
     virtual void Clear() {}
 
+    // If primary == TRUE, use primary selection in all further ops,
+    // primary == FALSE resets it.
+    virtual void UsePrimarySelection(bool primary = TRUE)
+        { m_usePrimary = primary; }
+    
     // implementation from now on
     bool              m_open;
     bool              m_ownsClipboard;
@@ -64,6 +69,7 @@ public:
 
     bool              m_formatSupported;
     GdkAtom           m_targetRequested;
+    bool              m_usePrimary;
     wxDataObject     *m_receivedData;
 
 private:

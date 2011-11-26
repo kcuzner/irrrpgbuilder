@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/htmlfilt.h
+// Name:        htmlfilt.h
 // Purpose:     filters
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id: htmlfilt.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: htmlfilt.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      $Id: dockart.h 66670 2011-01-12 13:39:36Z VZ $
+// RCS-ID:      $Id: dockart.h 43154 2006-11-07 10:29:02Z BIW $
 // Copyright:   (C) Copyright 2005, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -130,15 +130,9 @@ public:
                   const wxRect& rect,
                   wxAuiPaneInfo& pane);
 
-    void DrawIcon(wxDC& dc,
-                  const wxRect& rect,
-                  wxAuiPaneInfo& pane);
-
 protected:
 
     void DrawCaptionBackground(wxDC& dc, const wxRect& rect, bool active);
-
-    void InitBitmaps();
 
 protected:
 

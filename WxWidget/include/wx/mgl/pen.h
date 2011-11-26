@@ -2,7 +2,7 @@
 // Name:        wx/mgl/pen.h
 // Purpose:
 // Author:      Vaclav Slavik
-// Id:          $Id: pen.h 54273 2008-06-17 17:28:26Z VZ $
+// Id:          $Id: pen.h 41751 2006-10-08 21:56:55Z VZ $
 // Copyright:   (c) 2001-2002 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -20,22 +20,18 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
-class WXDLLIMPEXP_FWD_CORE wxPen;
+class WXDLLEXPORT wxBitmap;
+class WXDLLEXPORT wxPen;
 
 //-----------------------------------------------------------------------------
 // wxPen
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPen : public wxPenBase
+class WXDLLEXPORT wxPen: public wxGDIObject
 {
 public:
     wxPen() {}
-    wxPen(const wxColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID);
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( wxPen(const wxColour& col, int width, int style) );
-#endif
-
+    wxPen(const wxColour &colour, int width = 1, int style = wxSOLID);
     wxPen(const wxBitmap& stipple, int width);
     virtual ~wxPen() {}
     bool operator == (const wxPen& pen) const;
@@ -43,34 +39,33 @@ public:
 
     void SetColour(const wxColour &colour);
     void SetColour(unsigned char red, unsigned char green, unsigned char blue);
-    void SetCap(wxPenCap capStyle);
-    void SetJoin(wxPenJoin joinStyle);
-    void SetStyle(wxPenStyle style);
+    void SetCap(int capStyle);
+    void SetJoin(int joinStyle);
+    void SetStyle(int style);
     void SetWidth(int width);
     void SetDashes(int number_of_dashes, const wxDash *dash);
     void SetStipple(const wxBitmap& stipple);
 
-    wxColour GetColour() const;
-    wxPenCap GetCap() const;
-    wxPenJoin GetJoin() const;
-    wxPenStyle GetStyle() const;
+    wxColour &GetColour() const;
+    int GetCap() const;
+    int GetJoin() const;
+    int GetStyle() const;
     int GetWidth() const;
     int GetDashes(wxDash **ptr) const;
     int GetDashCount() const;
     wxDash* GetDash() const;
     wxBitmap *GetStipple() const;
 
-#if FUTURE_WXWIN_COMPATIBILITY_3_0
-    wxDEPRECATED_FUTURE( void SetStyle(int style) )
-        { SetStyle((wxPenStyle)style); }
-#endif
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const;
 
     // implementation:
     void* GetPixPattern() const;
 
 protected:
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
+    // ref counting code
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxPen)

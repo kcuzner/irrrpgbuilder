@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/os2/dcclient.h
+// Name:        dcclient.h
 // Purpose:     wxClientDC class
 // Author:      David Webster
 // Modified by:
 // Created:     09/12/99
-// RCS-ID:      $Id: dcclient.h 67254 2011-03-20 00:14:35Z DS $
+// RCS-ID:      $Id: dcclient.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) David Webster
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,8 +17,6 @@
 // ----------------------------------------------------------------------------
 
 #include "wx/dc.h"
-#include "wx/os2/dc.h"
-#include "wx/dcclient.h"
 #include "wx/dynarray.h"
 
 // ----------------------------------------------------------------------------
@@ -26,65 +24,70 @@
 // ----------------------------------------------------------------------------
 
 // this one if used by wxPaintDC only
-struct WXDLLIMPEXP_FWD_CORE wxPaintDCInfo;
+struct WXDLLEXPORT wxPaintDCInfo;
 
-WX_DECLARE_EXPORTED_OBJARRAY(wxPaintDCInfo, wxArrayDCInfo);
+WX_DECLARE_OBJARRAY(wxPaintDCInfo, wxArrayDCInfo);
 
 // ----------------------------------------------------------------------------
 // DC classes
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxWindowDCImpl : public wxPMDCImpl
+class WXDLLEXPORT wxWindowDC : public wxDC
 {
 public:
-    // default ctor
-    wxWindowDCImpl( wxDC *owner );
+    wxWindowDC();
 
+    //
     // Create a DC corresponding to the whole window
-    wxWindowDCImpl( wxDC *owner, wxWindow *pWin );
-
-    virtual void DoGetSize(int *pWidth, int *pHeight) const;
+    //
+    wxWindowDC(wxWindow* pWin);
 
 protected:
-    // initialize the newly created DC
     void InitDC(void);
+
+    //
+    // Override some base class virtuals
+    //
+    virtual void DoGetSize( int* pWidth
+                           ,int* pHeight
+                          ) const;
 
 private:
     SIZEL                   m_PageSize;
-    DECLARE_CLASS(wxWindowDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxWindowDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxWindowDC)
 }; // end of CLASS wxWindowDC
 
-class WXDLLIMPEXP_CORE wxClientDCImpl : public wxWindowDCImpl
+class WXDLLEXPORT wxClientDC : public wxWindowDC
 {
 public:
-    // default ctor
-    wxClientDCImpl( wxDC *owner );
+    wxClientDC();
+    virtual ~wxClientDC();
 
-    // Create a DC corresponding to the client area of the window
-    wxClientDCImpl( wxDC *owner, wxWindow *pWin );
-
-    virtual ~wxClientDCImpl();
-
-    virtual void DoGetSize(int *pWidth, int *pHeight) const;
+    wxClientDC(wxWindow *win);
 
 protected:
     void InitDC(void);
 
+    //
+    // Override some base class virtuals
+    //
+    virtual void DoGetSize( int* pWidth
+                           ,int* pHeight
+                          ) const;
+
 private:
-    DECLARE_CLASS(wxClientDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxClientDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxClientDC)
 }; // end of CLASS wxClientDC
 
-class WXDLLIMPEXP_CORE wxPaintDCImpl : public wxClientDCImpl
+class WXDLLEXPORT wxPaintDC : public wxClientDC
 {
 public:
-    wxPaintDCImpl( wxDC *owner );
+    wxPaintDC();
 
     // Create a DC corresponding for painting the window in OnPaint()
-    wxPaintDCImpl( wxDC *owner, wxWindow *pWin );
+    wxPaintDC(wxWindow* pWin);
 
-    virtual ~wxPaintDCImpl();
+    virtual ~wxPaintDC();
 
     // find the entry for this DC in the cache (keyed by the window)
     static WXHDC FindDCInCache(wxWindow* pWin);
@@ -95,8 +98,7 @@ protected:
     // find the entry for this DC in the cache (keyed by the window)
     wxPaintDCInfo* FindInCache(size_t* pIndex = NULL) const;
 private:
-    DECLARE_CLASS(wxPaintDCImpl)
-    wxDECLARE_NO_COPY_CLASS(wxPaintDCImpl);
+    DECLARE_DYNAMIC_CLASS(wxPaintDC)
 }; // end of wxPaintDC
 
 #endif

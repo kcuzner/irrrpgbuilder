@@ -2,7 +2,7 @@
 // Name:        wx/gtk1/menuitem.h
 // Purpose:     wxMenuItem class
 // Author:      Robert Roebling
-// RCS-ID:      $Id: menuitem.h 58227 2009-01-19 13:55:27Z VZ $
+// RCS-ID:      $Id: menuitem.h 48053 2007-08-13 17:07:01Z JS $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,17 +19,16 @@
 class WXDLLIMPEXP_CORE wxMenuItem : public wxMenuItemBase
 {
 public:
-    wxMenuItem(wxMenu *parentMenu = NULL,
+    wxMenuItem(wxMenu *parentMenu = (wxMenu *)NULL,
                int id = wxID_SEPARATOR,
                const wxString& text = wxEmptyString,
                const wxString& help = wxEmptyString,
                wxItemKind kind = wxITEM_NORMAL,
-               wxMenu *subMenu = NULL);
+               wxMenu *subMenu = (wxMenu *)NULL);
     virtual ~wxMenuItem();
 
     // implement base class virtuals
-    virtual void SetItemLabel( const wxString& str );
-    virtual wxString GetItemLabel() const;
+    virtual void SetText( const wxString& str );
     virtual void Enable( bool enable = TRUE );
     virtual void Check( bool check = TRUE );
     virtual bool IsChecked() const;
@@ -55,11 +54,11 @@ public:
                const wxString& text,
                const wxString& help,
                bool isCheckable,
-               wxMenu *subMenu = NULL);
+               wxMenu *subMenu = (wxMenu *)NULL);
 
 private:
     // common part of all ctors
-    void Init();
+    void Init(const wxString& text);
 
     // DoSetText() transforms the accel mnemonics in our label from MSW/wxWin
     // style to GTK+ and is called from ctor and SetText()
@@ -72,7 +71,16 @@ private:
     GtkWidget* m_labelWidget; // Label widget
 
     DECLARE_DYNAMIC_CLASS(wxMenuItem)
+
+public:
+
+#if wxABI_VERSION >= 20805
+    // return the item label including any mnemonics and accelerators.
+    // This used to be called GetText.
+    wxString GetItemLabel() const;
+#endif
 };
+
 
 #endif
         //__GTKMENUITEMH__

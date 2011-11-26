@@ -4,7 +4,7 @@
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/18
-// RCS-ID:      $Id: radiobut.h 52834 2008-03-26 15:06:00Z FM $
+// RCS-ID:      $Id: radiobut.h 48532 2007-09-03 18:16:03Z DE $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -14,14 +14,14 @@
 
 #include "wx/cocoa/NSButton.h"
 
-class WXDLLIMPEXP_FWD_CORE wxRadioButton;
+class WXDLLEXPORT wxRadioButton;
 
-WX_DECLARE_EXPORTED_LIST(wxRadioButton, wxRadioButtonList);
+WX_DECLARE_LIST(wxRadioButton, wxRadioButtonList);
 
 // ========================================================================
 // wxRadioButton
 // ========================================================================
-class WXDLLIMPEXP_CORE wxRadioButton: public wxControl, protected wxCocoaNSButton
+class WXDLLEXPORT wxRadioButton: public wxControl, protected wxCocoaNSButton
 {
     DECLARE_DYNAMIC_CLASS(wxRadioButton)
     DECLARE_EVENT_TABLE()

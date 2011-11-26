@@ -2,7 +2,7 @@
 // Name:        wx/gtk1/stattext.h
 // Purpose:
 // Author:      Robert Roebling
-// Id:          $Id: stattext.h 45399 2007-04-11 12:13:36Z VZ $
+// Id:          $Id: stattext.h 42077 2006-10-17 14:44:52Z ABX $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -10,11 +10,26 @@
 #ifndef __GTKSTATICTEXTH__
 #define __GTKSTATICTEXTH__
 
+#include "wx/defs.h"
+#include "wx/object.h"
+#include "wx/list.h"
+#include "wx/control.h"
+
+//-----------------------------------------------------------------------------
+// classes
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_CORE wxStaticText;
+
+//-----------------------------------------------------------------------------
+// global data
+//-----------------------------------------------------------------------------
+
 //-----------------------------------------------------------------------------
 // wxStaticText
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxStaticText : public wxStaticTextBase
+class WXDLLIMPEXP_CORE wxStaticText : public wxControl
 {
 public:
     wxStaticText();
@@ -34,14 +49,20 @@ public:
                 long style = 0,
                 const wxString &name = wxStaticTextNameStr );
 
-    virtual wxString GetLabel() const;
-    virtual void SetLabel( const wxString &label );
+    wxString GetLabel() const;
+    void SetLabel( const wxString &label );
 
-    virtual bool SetFont( const wxFont &font );
-    virtual bool SetForegroundColour( const wxColour& colour );
+    bool SetFont( const wxFont &font );
+    bool SetForegroundColour( const wxColour& colour );
 
     static wxVisualAttributes
     GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
+
+    // see wx/stattext.h
+    void Wrap(int width);
+
+    // implementation
+    // --------------
 
 protected:
     virtual void DoSetSize(int x, int y,
@@ -53,4 +74,5 @@ protected:
     DECLARE_DYNAMIC_CLASS(wxStaticText)
 };
 
-#endif // __GTKSTATICTEXTH__
+#endif
+    // __GTKSTATICTEXTH__

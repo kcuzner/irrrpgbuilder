@@ -5,9 +5,9 @@
 // Author:      John Norris, minor changes by Axel Schlueter
 // Modified by:
 // Created:     08.02.01
-// RCS-ID:      $Id: tglbtn.h 66992 2011-02-22 13:25:30Z VZ $
+// RCS-ID:      $Id: tglbtn.h 37065 2006-01-23 02:28:01Z MR $
 // Copyright:   (c) 2000 Johnny C. Norris II
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_GTK_TOGGLEBUTTON_H_
@@ -19,14 +19,20 @@
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxToggleButton;
-class WXDLLIMPEXP_FWD_CORE wxToggleBitmapButton;
+class WXDLLIMPEXP_CORE wxToggleButton;
+class WXDLLIMPEXP_CORE wxToggleBitmapButton;
+
+//-----------------------------------------------------------------------------
+// global data
+//-----------------------------------------------------------------------------
+
+extern WXDLLIMPEXP_CORE const wxChar wxCheckBoxNameStr[];
 
 //-----------------------------------------------------------------------------
 // wxToggleBitmapButton
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxToggleBitmapButton: public wxToggleButtonBase
+class WXDLLIMPEXP_CORE wxToggleBitmapButton: public wxControl
 {
 public:
     // construction/destruction

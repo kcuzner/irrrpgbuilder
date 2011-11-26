@@ -4,7 +4,7 @@
 // Author:      William Osborne - minimal working wxPalmOS port
 // Modified by:
 // Created:     10/13/04
-// RCS-ID:      $Id: msgdlg.h 58757 2009-02-08 11:45:59Z VZ $
+// RCS-ID:      $Id: msgdlg.h 37164 2006-01-26 17:20:50Z ABX $
 // Copyright:   (c) William Osborne
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,22 +12,29 @@
 #ifndef _WX_MSGBOXDLG_H_
 #define _WX_MSGBOXDLG_H_
 
-class WXDLLIMPEXP_CORE wxMessageDialog : public wxMessageDialogBase
+#include "wx/defs.h"
+#include "wx/dialog.h"
+
+/*
+ * Message box dialog
+ */
+
+WXDLLEXPORT_DATA(extern const wxChar) wxMessageBoxCaptionStr[];
+
+class WXDLLEXPORT wxMessageDialog: public wxDialog, public wxMessageDialogBase
 {
+DECLARE_DYNAMIC_CLASS(wxMessageDialog)
+protected:
+    wxString    m_caption;
+    wxString    m_message;
+    wxWindow *  m_parent;
 public:
-    wxMessageDialog(wxWindow *parent,
-                    const wxString& message,
-                    const wxString& caption = wxMessageBoxCaptionStr,
-                    long style = wxOK|wxCENTRE,
-                    const wxPoint& WXUNUSED(pos) = wxDefaultPosition)
-        : wxMessageDialogBase(parent, message, caption, style)
-    {
-    }
+    wxMessageDialog(wxWindow *parent, const wxString& message, const wxString& caption = wxMessageBoxCaptionStr,
+        long style = wxOK|wxCENTRE, const wxPoint& pos = wxDefaultPosition);
 
-    virtual int ShowModal(void);
+    int ShowModal(void);
 
-    DECLARE_DYNAMIC_CLASS(wxMessageDialog)
-    wxDECLARE_NO_COPY_CLASS(wxMessageDialog);
+    DECLARE_NO_COPY_CLASS(wxMessageDialog)
 };
 
 

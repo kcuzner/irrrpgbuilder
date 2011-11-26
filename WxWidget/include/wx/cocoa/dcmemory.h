@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wx/cocoa/dcmemory.h
-// Purpose:     wxMemoryDCImpl class
+// Purpose:     wxMemoryDC class
 // Author:      David Elliott
 // Modified by:
 // Created:     2003/03/16
-// RCS-ID:      $Id: dcmemory.h 57907 2009-01-08 14:21:53Z FM $
+// RCS-ID:      $Id: dcmemory.h 42755 2006-10-30 19:41:46Z VZ $
 // Copyright:   (c) 2003 David Elliott
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,25 +12,17 @@
 #ifndef __WX_COCOA_DCMEMORY_H__
 #define __WX_COCOA_DCMEMORY_H__
 
-#include "wx/cocoa/dc.h"
+#include "wx/dc.h"
 
-#include "wx/dcmemory.h"
-
-class WXDLLIMPEXP_CORE wxMemoryDCImpl: public wxCocoaDCImpl
+class WXDLLEXPORT wxMemoryDC: public wxDC, public wxMemoryDCBase
 {
-    DECLARE_DYNAMIC_CLASS(wxMemoryDCImpl)
+    DECLARE_DYNAMIC_CLASS(wxMemoryDC)
 
 public:
-    wxMemoryDCImpl(wxMemoryDC *owner)
-    :   wxCocoaDCImpl(owner)
-    {   Init(); }
-    wxMemoryDCImpl(wxMemoryDC *owner, wxBitmap& bitmap)
-    :   wxCocoaDCImpl(owner)
-    {   Init();
-        owner->SelectObject(bitmap);
-    }
-    wxMemoryDCImpl(wxMemoryDC *owner, wxDC *dc ); // Create compatible DC
-    virtual ~wxMemoryDCImpl(void);
+    wxMemoryDC() { Init(); }
+    wxMemoryDC(wxBitmap& bitmap) { Init(); SelectObject(bitmap); }
+    wxMemoryDC( wxDC *dc ); // Create compatible DC
+    virtual ~wxMemoryDC(void);
 
     virtual void DoGetSize(int *width, int *height) const;
     virtual void DoSelect(const wxBitmap& bitmap);
@@ -45,7 +37,7 @@ protected:
 // Blitting
     virtual bool CocoaDoBlitOnFocusedDC(wxCoord xdest, wxCoord ydest,
         wxCoord width, wxCoord height, wxCoord xsrc, wxCoord ysrc,
-        wxRasterOperationMode logicalFunc, bool useMask, wxCoord xsrcMask, wxCoord ysrcMask);
+        int logicalFunc, bool useMask, wxCoord xsrcMask, wxCoord ysrcMask);
 
 private:
     void Init();

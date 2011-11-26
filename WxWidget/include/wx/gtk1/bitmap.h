@@ -2,7 +2,7 @@
 // Name:        wx/gtk1/bitmap.h
 // Purpose:
 // Author:      Robert Roebling
-// RCS-ID:      $Id: bitmap.h 59526 2009-03-14 13:57:51Z FM $
+// RCS-ID:      $Id: bitmap.h 42882 2006-11-01 01:36:32Z VZ $
 // Copyright:   (c) 1998 Robert Roebling
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -17,15 +17,15 @@
 #include "wx/palette.h"
 #include "wx/gdiobj.h"
 
-class WXDLLIMPEXP_FWD_CORE wxPixelDataBase;
+class WXDLLEXPORT wxPixelDataBase;
 
 //-----------------------------------------------------------------------------
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxMask;
-class WXDLLIMPEXP_FWD_CORE wxBitmap;
-class WXDLLIMPEXP_FWD_CORE wxImage;
+class WXDLLIMPEXP_CORE wxMask;
+class WXDLLIMPEXP_CORE wxBitmap;
+class WXDLLIMPEXP_CORE wxImage;
 
 //-----------------------------------------------------------------------------
 // wxMask
@@ -64,29 +64,28 @@ private:
 class WXDLLIMPEXP_CORE wxBitmap: public wxBitmapBase
 {
 public:
-    wxBitmap() {}
-    wxBitmap( int width, int height, int depth = -1 ) { Create( width, height, depth ); }
-    wxBitmap( const wxSize& sz, int depth = -1 ) { Create( sz, depth ); }
+    wxBitmap();
+    wxBitmap( int width, int height, int depth = -1 );
     wxBitmap( const char bits[], int width, int height, int depth = 1 );
     wxBitmap( const char* const* bits );
 #ifdef wxNEEDS_CHARPP
     // needed for old GCC
     wxBitmap(char** data)
     {
-        *this = wxBitmap(const_cast<const char* const*>(data));
+        *this = wxBitmap(wx_const_cast(const char* const*, data));
     }
 #endif
-    wxBitmap( const wxString &filename, wxBitmapType type = wxBITMAP_DEFAULT_TYPE );
+    wxBitmap( const wxString &filename, wxBitmapType type = wxBITMAP_TYPE_XPM );
     wxBitmap( const wxImage& image, int depth = -1 ) { (void)CreateFromImage(image, depth); }
     virtual ~wxBitmap();
+    bool Ok() const { return IsOk(); }
+    bool IsOk() const;
 
-    bool Create(int width, int height, int depth = wxBITMAP_SCREEN_DEPTH);
-    bool Create(const wxSize& sz, int depth = wxBITMAP_SCREEN_DEPTH)
-        { return Create(sz.GetWidth(), sz.GetHeight(), depth); }
+    bool Create(int width, int height, int depth = -1);
 
-    virtual int GetHeight() const;
-    virtual int GetWidth() const;
-    virtual int GetDepth() const;
+    int GetHeight() const;
+    int GetWidth() const;
+    int GetDepth() const;
 
     wxImage ConvertToImage() const;
 
@@ -99,8 +98,8 @@ public:
     wxBitmap GetSubBitmap( const wxRect& rect ) const;
 
     bool SaveFile(const wxString &name, wxBitmapType type,
-                          const wxPalette *palette = NULL) const;
-    bool LoadFile(const wxString &name, wxBitmapType type = wxBITMAP_DEFAULT_TYPE);
+                          const wxPalette *palette = (wxPalette *)NULL) const;
+    bool LoadFile(const wxString &name, wxBitmapType type = wxBITMAP_TYPE_XPM );
 
 #if wxUSE_PALETTE
     wxPalette *GetPalette() const;
@@ -131,12 +130,13 @@ public:
     void UngetRawData(wxPixelDataBase& data);
 
     bool HasAlpha() const;
+    void UseAlpha();
 
 protected:
     bool CreateFromImage(const wxImage& image, int depth);
 
-    virtual wxGDIRefData *CreateGDIRefData() const;
-    virtual wxGDIRefData *CloneGDIRefData(const wxGDIRefData *data) const;
+    virtual wxObjectRefData *CreateRefData() const;
+    virtual wxObjectRefData *CloneRefData(const wxObjectRefData *data) const;
 
 private:
     // to be called from CreateFromImage only!
@@ -149,5 +149,13 @@ private:
     DECLARE_DYNAMIC_CLASS(wxBitmap)
 };
 
+//-----------------------------------------------------------------------------
+// wxBitmapHandler
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_CORE wxBitmapHandler: public wxBitmapHandlerBase
+{
+    DECLARE_ABSTRACT_CLASS(wxBitmapHandler)
+};
 
 #endif // __GTKBITMAPH__
