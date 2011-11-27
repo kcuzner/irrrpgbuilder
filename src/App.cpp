@@ -7,16 +7,16 @@
 #include "fx/EffectsManager.h"
 #include "LANGManager.h"
 #include "DynamicObjectsManager.h"
-#include "LuaGlobalCaller.h"
+
 #include "SoundManager.h"
 #include "Player.h"
 
 
 #include "tinyXML/tinyxml.h"
 
-#ifdef _wxWIDGET
-#include <wx/wx.h>
-#endif
+//#ifdef _wxWIDGET
+//#include <wx/wx.h>
+//#endif
 
 using namespace irr;
 using namespace core;
@@ -175,6 +175,9 @@ bool App::cursorIsInEditArea()
 	//is over the main toolbar??
     if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 	#endif
+
+	// New code (nov 2011)
+	if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 
 	return condition;
 }
@@ -669,7 +672,7 @@ void App::eventKeyPressed(s32 key)
 void App::eventMousePressed(s32 mouse)
 {
     //printf("%d",mouse);
-
+	printf("Log: Mouse event");
     switch(mouse)
     {///TODO: colocar acoes mais comuns acima e menos comuns nos elses
         case 0://LB
@@ -721,6 +724,7 @@ void App::eventMousePressed(s32 mouse)
 
 void App::eventMouseWheel(f32 value)
 {
+	
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
     {
         vector3df oldRot = lastMousePick.pickedNode->getRotation();
@@ -1031,7 +1035,7 @@ void App::update()
 
 			// This is needed for wxWidget event management
 #ifdef _wxWIDGET
-			wxYield();
+			//wxYield();
 #endif
 #ifdef EDITOR
 			 
@@ -1042,7 +1046,7 @@ void App::update()
 		{
 			// This is needed for wxWidget event management
 #ifdef _wxWIDGET
-			wxYield();
+			//wxYield();
 #endif
 			// Do not update the gameplay if we "paused" the game for a reason
 			if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
@@ -1600,9 +1604,6 @@ void App::initialize()
 #ifdef _wxWIDGET
 	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-
-	// Testing the link with the other classes
-//	ConsoleDialog::getInstance()->AddMessage(L"Working?",SColor(255,255,255,255));
 #endif
 }
 

@@ -608,14 +608,14 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-#ifdef _wxWIDGET
-		myRect(displaywidth - 170, 0, 170, displayheight);
-#else
+//#ifdef _wxWIDGET
+//		myRect(displaywidth - 170, 0, 170, displayheight);
+//#else
 		myRect(displaywidth - 170,
 		guiMainToolWindow->getClientRect().getHeight(),
 		170,
 		displayheight-guiMainToolWindow->getClientRect().getHeight());
-#endif
+//#endif
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -1336,7 +1336,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
 #ifdef EDITOR
-			if (App::getInstance()->wxSystemState==false)
+			//if (App::getInstance()->wxSystemState==false)
 				guiMainWindow->setVisible(!visible);
 #endif
 			// the bar_image should be made into an element too

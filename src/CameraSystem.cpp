@@ -44,7 +44,7 @@ void CameraSystem::setCamera(int tempCamera)
 	{
 		// Camera 1 - Gameplay
 		case 1: fov=0.65f;
-				cameraHeight = 220.0f;
+				cameraHeight = 350.0f;
 				break;
 
 		// Camera 2 - Editing

@@ -268,6 +268,17 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	//App::getInstance()->run();
 	//window3D->StartUpdate(0);
 
+	// Temporary
+	if (!console_dialog)
+		console_dialog = new ConsoleDialog(this);
+	if (console_dialog)
+	{
+		if (console_dialog->IsVisible())
+			console_dialog->Hide();
+		else
+			console_dialog->Show();
+	}
+
 }
 
 CIrrFrame::~CIrrFrame()

@@ -5,8 +5,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-//#include "editor/EditorMain.h"
-
 
 using namespace irr;
 using namespace core;
@@ -17,7 +15,9 @@ using namespace gui;
 
 static const float APP_VERSION = 1.0;
 
-#define APP_DEBUG
+//#define APP_DEBUG
+
+#include "LuaGlobalCaller.h"
 
 //Current Application State
 enum APP_STATE

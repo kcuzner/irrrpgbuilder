@@ -46,7 +46,7 @@ BEGIN_EVENT_TABLE(wxCIWindow, wxWindow)
 	EVT_PAINT(wxCIWindow::OnPaint)
 	EVT_SIZE(wxCIWindow::OnSize)
 	EVT_TIMER( wxID_ANY, wxCIWindow::OnTimer)
-	//EVT_MOUSE_EVENTS(wxCIWindow::OnMouse)
+	EVT_MOUSE_EVENTS(wxCIWindow::OnMouse)
 	//EVT_KEY_DOWN(wxCIWindow::OnKey)
     //EVT_KEY_UP(wxCIWindow::OnKey)
 END_EVENT_TABLE()
@@ -185,7 +185,8 @@ void wxCIWindow::OnKey(wxKeyEvent& event)
     sevt.KeyInput.Char = event.GetKeyCode();
 #endif
 
-    irrDevice->postEventFromUser(sevt);
+    //irrDevice->postEventFromUser(sevt);
+	irrDevice->run();
 
     if (!m_timer.IsRunning()) {
 		Update();
