@@ -34,8 +34,8 @@
 
 #include "../app.h"
 
-class CIrrApp;
-class CIrrFrame;
+//class CIrrApp;
+//class CIrrFrame;
 
 enum
 {
@@ -106,8 +106,11 @@ class CIrrFrame : public wxFrame
         ID_POSITION_LEFT_BOTH,
     };
 
+	  
 		CIrrFrame(const wxString &title, const wxPoint &pos, const wxSize &size, long style=wxDEFAULT_FRAME_STYLE);
 		~CIrrFrame();
+
+		CIrrFrame getInstance();
 		void OnProgressTimer(wxTimerEvent& event);
 		//void OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnClose (wxCloseEvent& e);
@@ -135,7 +138,7 @@ class CIrrFrame : public wxFrame
 		core::stringw FileOpen(core::stringw message);
 		core::stringw FileSave();
 		void UncheckAllButtons();
-
+		ConsoleDialog * console_dialog;
 
 		DECLARE_EVENT_TABLE()
 
@@ -156,7 +159,7 @@ class CIrrFrame : public wxFrame
 		wxRibbonButtonBar *tools_button;
 		wxRibbonButtonBar *option_button; */
 	private:
-		ConsoleDialog * console_dialog;
+		//ConsoleDialog * console_dialog;
 };
 
 #endif // WXIRRHELLOAPP_H

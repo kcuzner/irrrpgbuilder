@@ -1,6 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
+
+
 #include <irrlicht.h>
 #include <vector>
 #include <iostream>
@@ -18,6 +20,10 @@ static const float APP_VERSION = 1.0;
 //#define APP_DEBUG
 
 #include "LuaGlobalCaller.h"
+#include "tinyXML/tinyxml.h"
+#include "editor/EditorMain.h"
+// try to force the class to be remembered for the compiler
+class CIrrFrame;
 
 //Current Application State
 enum APP_STATE
@@ -116,9 +122,15 @@ class App
 		// Used by wxWidget to retrieve the color and text of the console events
 		std::vector<stringw> getConsoleText();
 		std::vector<SColor> getConsoleColor();
+		
+		// Function related to the wxWidget classes
+		void setFramePointer(wxFrame * frm);
+
 		void clearConsole();
 
 		bool wxSystemState;
+
+
 
 		// used for the logger
 		std::vector<core::stringw> textevent;
@@ -162,6 +174,9 @@ class App
 		stringc mapname;
 #endif
         MousePick lastMousePick;
+
+		// The "appFrame" object contain the most of the wxWidget controls and are accessible from there.
+		CIrrFrame * appFrame;
 };
 
 #endif // APP_H

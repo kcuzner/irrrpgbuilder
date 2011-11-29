@@ -16,7 +16,8 @@ CameraSystem::CameraSystem()
 {
 	camera=2;
 	lightset=false;
-	cam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
+	gameCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
+	editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
 	setCamera(camera);
 }
 
@@ -34,7 +35,7 @@ CameraSystem* CameraSystem::getInstance()
 
 vector3df CameraSystem::getPosition()
 {
-    return cam->getPosition();
+    return currentCam->getPosition();
 }
 
 void CameraSystem::setCamera(int tempCamera)
@@ -45,25 +46,33 @@ void CameraSystem::setCamera(int tempCamera)
 		// Camera 1 - Gameplay
 		case 1: fov=0.65f;
 				cameraHeight = 350.0f;
+				currentCam = gameCam;
+				currentCam->setPosition(vector3df(0,cameraHeight,0));
 				break;
 
 		// Camera 2 - Editing
 		case 2: fov=0.45f;
 				cameraHeight = 1000.0f;
+				currentCam = editCamMaya;
+				editCamMaya->setInputReceiverEnabled(false);
+				editCamMaya->setPosition(vector3df(1000,cameraHeight,-1000));
+				editCamMaya->setFarValue(cameraHeight*3.0f);
 				break;
 	}
-	cam->setFOV(fov);
-	cam->setTarget(getTarget());
+	App::getInstance()->getDevice()->getSceneManager()->setActiveCamera(currentCam);
+
+	currentCam->setFOV(fov);
+	currentCam->setTarget(getTarget());
 	
-	cam->setPosition(vector3df(0,cameraHeight,0));
-    cam->setFarValue(cameraHeight*3.0f);
+	
+	
 	
     //cam->setNearValue(12.0f);
 	// Add a specular light to the camera.
 	if (!lightset)
 	{
 		SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
-		light = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(cam,vector3df(0,0,250),video::SColorf(0.5f,0.5f,0.6f),250);
+		light = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(gameCam,vector3df(0,0,250),video::SColorf(0.5f,0.5f,0.6f),250);
 		sun = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(0,vector3df(0,500,0),color,250);
 		lightset=true;
 	}
@@ -96,11 +105,11 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	if (cameraHeight<min)
 		cameraHeight=min;
 	if (camera==2 && cameraHeight!=min && cameraHeight!=max)
-		cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z+(increments*0.1f)));
+		editCamMaya->setPosition(vector3df(editCamMaya->getPosition().X,cameraHeight,editCamMaya->getPosition().Z+(increments*0.1f)));
 	else
-		cam->setPosition(vector3df(cam->getPosition().X,cameraHeight,cam->getPosition().Z));
+		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
 
-    cam->setFarValue(cameraHeight*3.0f);
+    gameCam->setFarValue(cameraHeight*3.0f);
 	//vector3df newtarget = this->getTarget();
 	//newtarget.Y = newtarget.Y;
 	//cam->setTarget(newtarget);
@@ -113,32 +122,32 @@ f32 CameraSystem::getCameraHeight()
 
 void CameraSystem::moveCamera(vector3df pos)
 {
-    cam->setPosition(cam->getPosition() + pos);
-	cam->setTarget(getTarget());
+    gameCam->setPosition(gameCam->getPosition() + pos);
+	gameCam->setTarget(getTarget());
 	//cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y+36,cam->getPosition().Y));
 }
 
 void CameraSystem::setPosition(vector3df pos)
 {
-	cam->setPosition(vector3df(pos.X,cam->getPosition().Y,pos.Z-cameraHeight));
-	cam->setTarget(getTarget());
+	gameCam->setPosition(vector3df(pos.X,gameCam->getPosition().Y,pos.Z-cameraHeight));
+	gameCam->setTarget(getTarget());
 	//cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y+36,cam->getPosition().Y));
 }
 
 ICameraSceneNode* CameraSystem::getNode()
 {
-	return cam;
+	return currentCam;
 }
 
 vector3df CameraSystem::getTarget()
 {
 	vector3df playerpos = Player::getInstance()->getObject()->getPosition();
-	vector3df target = vector3df(cam->getPosition() + vector3df(0,-cam->getPosition().Y+playerpos.Y+36,cam->getPosition().Y) );
+	vector3df target = vector3df(gameCam->getPosition() + vector3df(0,-gameCam->getPosition().Y+playerpos.Y+36,gameCam->getPosition().Y) );
 	return target;
 }
 
 void CameraSystem::fixRatio(IVideoDriver * driver)
 {
 	dimension2d<u32> screensize = driver->getScreenSize();
-	cam->setAspectRatio((irr::f32)screensize.Width/screensize.Height);
+	currentCam->setAspectRatio((irr::f32)screensize.Width/screensize.Height);
 }

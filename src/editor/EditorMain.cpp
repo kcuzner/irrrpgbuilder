@@ -19,7 +19,7 @@ bool CIrrApp::OnInit()
 	{
 		App::getInstance()->hideEditGui();
 		App::getInstance()->initialize();
-		App::getInstance()->run();		
+		App::getInstance()->run();	
 	}
 	return TRUE;
 }
@@ -93,6 +93,12 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
     m_ribbon2 = new wxRibbonBar(this, wxID_ANY); */
 
 	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	
+	// Try to set the instance
+	//static instance=this;
+
+
 	SetIcon(wxICON(sample));
 	wxBoxSizer* bSizer1;
 	wxBoxSizer* bSizer2;
@@ -275,15 +281,18 @@ CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	{
 		if (console_dialog->IsVisible())
 			console_dialog->Hide();
-		else
-			console_dialog->Show();
+		//else
+		//	console_dialog->Show();
 	}
+
+	App::getInstance()->setFramePointer(this);
 
 }
 
 CIrrFrame::~CIrrFrame()
 {
 }
+
 
 /*void CIrrFrame::OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {

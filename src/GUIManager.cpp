@@ -219,7 +219,7 @@ void GUIManager::setupEditorGUI()
 //    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     //guienv->getSkin()->setFont(guiFontC12);
-	guienv->getSkin()->setFont(guiFontCourier12);
+	guienv->getSkin()->setFont(guiFont10);
 	// Load textures
 	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
 
@@ -263,25 +263,35 @@ void GUIManager::setupEditorGUI()
     mainToolbarPos = position2di(2,2);
 
     //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
-	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-170,92),false);
+	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-170,122),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
 	guiMainWindow->getCloseButton()->setVisible(false);
+	guiMainWindow->setDrawBackground(false);
 	guiMainWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
+	guiLoaderWindow->bringToFront(guiMainWindow);
+	
+
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
-	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,46),false);
+	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,120),false);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 	guiMainToolWindow->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
+	
 
+	guiBackImage2=guienv->addImage(backtexture,vector2d<s32>(0,0),true,guiMainToolWindow);
+	guiBackImage2->setScaleImage(true);
+	guiBackImage2->setMaxSize(dimension2du(2048,120));
+	guiBackImage2->setMinSize(dimension2du(2048,120));
+	guiBackImage2->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),false,guiMainWindow);
+	guiBackImage = guienv->addImage(backtexture,vector2d<s32>(0,0),true,guiMainWindow);
 	guiBackImage->setScaleImage(true);
-	guiBackImage->setMaxSize(dimension2du(2048,92));
-	guiBackImage->setMinSize(dimension2du(2048,92));
+	guiBackImage->setMaxSize(dimension2du(2048,120));
+	guiBackImage->setMinSize(dimension2du(2048,120));
 	guiBackImage->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
@@ -290,19 +300,83 @@ void GUIManager::setupEditorGUI()
 
     ///MAIN FUNCTIONS
 	//mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
-	mainTabCtrl = guienv->addTabControl(myRect(0,0,displaywidth-160,92),guiMainWindow,false,false);
+
+	// project TAB
+	prjTabCtrl = guienv->addTabControl(myRect(5,2,250,112),guiMainWindow,true,true);
+	IGUITab * tabProject = prjTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
+
+	// Tool tab
+	mainToolCtrl = guienv->addTabControl(myRect(2,2,164,112),guiMainToolWindow,true,true);
+	IGUITab * tabPlayTool = mainToolCtrl->addTab(LANGManager::getInstance()->getText("txt_tool_des4").c_str());
+	
+	// Tools TAB
+	mainTabCtrl = guienv->addTabControl(myRect(260,2,displaywidth-435,112),guiMainWindow,true,true);
 	mainTabCtrl->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	IGUITab * tabProject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
+	
 	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
 	IGUITab * tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
 	IGUITab * tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
-	mainTabCtrl->setTabExtraWidth(75);
-	mainTabCtrl->setActiveTab(2);
+	//mainTabCtrl->setTabExtraWidth(25);
+	mainTabCtrl->setActiveTab(1);
 
+	// Tab description box text
+	IGUIStaticText * projectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des0")).c_str(),
+		core::rect<s32>(0,64,250,80),false,true,tabProject,-1);
+	projectTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	projectTabText->setOverrideColor(video::SColor(255,65,66,174));
+	projectTabText->setOverrideFont(guiFont10);
+	projectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	mainToolbarPos.Y=10;
+	// Tab description box text
+	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
+		core::rect<s32>(0,64,120,80),false,true,tabEnv,-1);
+	environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
+	environmentTabText->setOverrideFont(guiFont10);
+	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
+		core::rect<s32>(130,64,250,80),false,true,tabEnv,-1);
+	vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
+	vegetationTabText->setOverrideFont(guiFont10);
+	vegetationTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	// Tab description box text
+	IGUIStaticText * objectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des1")).c_str(),
+		core::rect<s32>(0,64,120,80),false,true,tabObject,-1);
+	objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	objectTabText->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText->setOverrideFont(guiFont10);
+	objectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	// Tab description box text
+	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
+		core::rect<s32>(130,64,250,80),false,true,tabObject,-1);
+	objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
+	objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText2->setOverrideFont(guiFont10);
+	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	mainToolbarPos.Y=5;
+	// Close program
+	x += 12;
+	guiCloseProgram = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabProject,
+                                     BT_ID_CLOSE_PROGRAM,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
+
+    guiCloseProgram->setImage(imgCloseProgram);
+
+	IGUIStaticText * closeText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabProject,-1);
+	closeText->setOverrideColor(video::SColor(255,65,66,174));
+	closeText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	closeText->setOverrideFont(guiFont9);
+
     //New Project
+	x+=60;
     guiMainNewProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabProject,
                                      BT_ID_NEW_PROJECT,L"",
@@ -311,9 +385,15 @@ void GUIManager::setupEditorGUI()
     guiMainNewProject->setImage(imgNewProject);
 	guiMainNewProject->setPressedImage(imgNewProject1);
 
+	IGUIStaticText * newPText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_new_project")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
+	newPText->setOverrideColor(video::SColor(255,65,66,174));
+	newPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	newPText->setOverrideFont(guiFont9);
+
 
     //Load Project
-	x+=42;
+	x+=60;
     guiMainLoadProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabProject,
                                      BT_ID_LOAD_PROJECT,L"",
@@ -321,8 +401,16 @@ void GUIManager::setupEditorGUI()
 
     guiMainLoadProject->setImage(imgLoadProject);
 	guiMainLoadProject->setPressedImage(imgLoadProject1);
+
+	IGUIStaticText * loadPText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_load_project")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
+	loadPText->setOverrideColor(video::SColor(255,65,66,174));
+	loadPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	loadPText->setOverrideFont(guiFont9);
+
+
 	//Save Project
-	x+=42;
+	x+=60;
     guiMainSaveProject = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabProject,
                                      BT_ID_SAVE_PROJECT,L"",
@@ -331,20 +419,15 @@ void GUIManager::setupEditorGUI()
     guiMainSaveProject->setImage(imgSaveProject);
 	guiMainSaveProject->setPressedImage(imgSaveProject1);
 
+	IGUIStaticText * savePText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_save_project")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
+	savePText->setOverrideColor(video::SColor(255,65,66,174));
+	savePText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	savePText->setOverrideFont(guiFont9);
+
 
     //Transform Terrain
-	x=0;
-    guiTerrainTransform = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     tabEnv,
-                                     BT_ID_TERRAIN_TRANSFORM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str());
-
-    guiTerrainTransform->setImage(driver->getTexture("../media/art/bt_terrain_up.png"));
-	guiTerrainTransform->setPressedImage(driver->getTexture("../media/art/bt_terrain_up_ghost.png"));
-
-
-    x+= 42;
-
+	x=12;
     //Terrain Add Segment
     guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
@@ -354,7 +437,29 @@ void GUIManager::setupEditorGUI()
     guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
 	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
 
-    x+= 42;
+	IGUIStaticText * terrainSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	terrainSText->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText->setOverrideFont(guiFont9);
+
+	 x+= 60;
+
+	guiTerrainTransform = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_TRANSFORM,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str());
+
+    guiTerrainTransform->setImage(driver->getTexture("../media/art/bt_terrain_up.png"));
+	guiTerrainTransform->setPressedImage(driver->getTexture("../media/art/bt_terrain_up_ghost.png"));
+
+	IGUIStaticText * terrainTText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	terrainTText->setOverrideColor(video::SColor(255,65,66,174));
+	terrainTText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainTText->setOverrideFont(guiFont9);
+    
+     x+= 70;
 
     //Terrain Add Segment
     guiTerrainPaintVegetation = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -365,11 +470,15 @@ void GUIManager::setupEditorGUI()
     guiTerrainPaintVegetation->setImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation.png"));
 	guiTerrainPaintVegetation->setPressedImage(driver->getTexture("../media/art/bt_terrain_paint_vegetation_ghost.png"));
 
-
+	IGUIStaticText * paintVText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	paintVText->setOverrideColor(video::SColor(255,65,66,174));
+	paintVText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	paintVText->setOverrideFont(guiFont9);
 
 
     //Dynamic Objects
-	x = 0;
+	x = 12;
     guiDynamicObjectsMode= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabObject,
                                      BT_ID_DYNAMIC_OBJECTS_MODE,L"",
@@ -378,8 +487,14 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_dynamic_objects_mode.png"));
 	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_dynamic_objects_mode_ghost.png"));
 
+	IGUIStaticText * dynObjText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	dynObjText->setOverrideColor(video::SColor(255,65,66,174));
+	dynObjText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	dynObjText->setOverrideFont(guiFont9);
 
-    x += 42;
+
+    x += 60;
 
     //Edit Character
     guiEditCharacter = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -390,8 +505,16 @@ void GUIManager::setupEditorGUI()
     guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
 	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
 
+	IGUIStaticText * editCharText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	editCharText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editCharText->setOverrideFont(guiFont9);
+
+
+	 x+=70;
 	///EDIT CHARACTER
-    guiPlayerEditScript = guienv->addButton(myRect(guiEditCharacter->getAbsoluteClippingRect().UpperLeftCorner.X,mainToolbarPos.Y+33,32,32),
+    guiPlayerEditScript = guienv->addButton(myRect(mainToolbarPos.X+x,mainToolbarPos.Y,32,32),
                                                            tabObject,
                                                            BT_ID_PLAYER_EDIT_SCRIPT,
                                                            L"",
@@ -399,12 +522,19 @@ void GUIManager::setupEditorGUI()
 
 	guiPlayerEditScript->setOverrideFont(guiFontC12);
     guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
-	guiPlayerEditScript->setNotClipped(true);
 
-    guiPlayerEditScript->setVisible(false);
+	IGUIStaticText * editCharSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	editCharSText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editCharSText->setOverrideFont(guiFont9);
+
+	//guiPlayerEditScript->setNotClipped(true);
+
+    //guiPlayerEditScript->setVisible(false);
 
 
-    x += 42;
+    x += 60;
 
     //Edit Items Script
     guiEditScriptGlobal = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -415,8 +545,14 @@ void GUIManager::setupEditorGUI()
     guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
 	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
 
+	IGUIStaticText * editGlobSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	editGlobSText->setOverrideColor(video::SColor(255,65,66,174));
+	editGlobSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editGlobSText->setOverrideFont(guiFont9);
+
      //CONFIG BUTTON
-	x=0;
+	x=12;
     guiConfigButton = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabConfig,
                                      BT_ID_CONFIG,L"",
@@ -426,19 +562,25 @@ void GUIManager::setupEditorGUI()
 	guiConfigButton->setPressedImage(imgConfig1);
 
     //Play Game
-	x = 0;
+	x = 12;
 	mainToolbarPos.Y=5;
-    guiPlayGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
+    guiPlayGame= guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
                                      BT_ID_PLAY_GAME,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
 
     guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
 
+	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	playGText->setOverrideColor(video::SColor(255,65,66,174));
+	playGText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	playGText->setOverrideFont(guiFont9);
+
 
     //Stop Game
-    guiStopGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
+    guiStopGame= guienv->addButton(myRect(+x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
                                      BT_ID_STOP_GAME,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
 
@@ -448,44 +590,37 @@ void GUIManager::setupEditorGUI()
 
 
     //ABOUT BUTTON
-	x += 42;
-    guiAbout = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
+	x += 50;
+    guiAbout = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
                                      BT_ID_ABOUT,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
 
     guiAbout->setImage(imgAbout);
 	guiAbout->setPressedImage(imgAbout1);
 
+	IGUIStaticText * aboutBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_about")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	aboutBText->setOverrideColor(video::SColor(255,65,66,174));
+	aboutBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	aboutBText->setOverrideFont(guiFont9);
+
 	// Help Button
-	x += 42;
-    guiHelpButton = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
+	x += 50;
+    guiHelpButton = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
                                      BT_ID_HELP,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
 
     guiHelpButton->setImage(imgHelp);
     guiHelpButton->setPressedImage(imgHelp1);
 
-	// Close program
-	x += 42;
-	guiCloseProgram = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_CLOSE_PROGRAM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
+	IGUIStaticText * helpBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_help")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	helpBText->setOverrideColor(video::SColor(255,65,66,174));
+	helpBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 
-    guiCloseProgram->setImage(imgCloseProgram);
-
-	// Old code that used The wxRibbonToolbar (For a beta wxWidget release)
-	if (App::getInstance()->wxSystemState)
-	{
-		// Temporary comment out.. Want back the IRRlicht GUI
-		//guiMainWindow->setVisible(false);
-		//guiMainToolWindow->setVisible(false);
-	}
-
-
-	// Update the display
+		// Update the display
 	App::getInstance()->quickUpdate();
 
 	//ABOUT WINDOW
@@ -608,14 +743,14 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-//#ifdef _wxWIDGET
-//		myRect(displaywidth - 170, 0, 170, displayheight);
-//#else
+#ifdef _wxWIDGET
+		myRect(displaywidth - 170, 120, 170, displayheight);
+#else
 		myRect(displaywidth - 170,
 		guiMainToolWindow->getClientRect().getHeight(),
 		170,
 		displayheight-guiMainToolWindow->getClientRect().getHeight());
-//#endif
+#endif
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -792,6 +927,7 @@ void GUIManager::setupEditorGUI()
     logo1 = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/logo1.png");
 
     configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+
 }
 
 #endif
@@ -1347,7 +1483,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             guiPlayerLife_Shadow->setVisible(visible);
             break;
         case BT_ID_PLAYER_EDIT_SCRIPT:
-            guiPlayerEditScript->setVisible(visible);
+            //guiPlayerEditScript->setVisible(visible);
             break;
 		case IMG_BAR:
 			gameplay_bar_image->setVisible(visible);
@@ -1428,6 +1564,17 @@ void GUIManager::loadFonts()
     guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
     guiFontLarge28 = guienv->getFont("../media/fonts/large28.xml");
     guiFontDialog = guienv->getFont("../media/fonts/dialog.xml");
+	guiFont6 = guienv->getFont("../media/fonts/Arial6.xml");
+	guiFont8 = guienv->getFont("../media/fonts/Arial8.xml");
+	guiFont9 = guienv->getFont("../media/fonts/Trebuchet10.xml");
+	guiFont10 = guienv->getFont("../media/fonts/Arial10.xml");
+	guiFont12 = guienv->getFont("../media/fonts/Arial12.xml");
+	guiFont14 = guienv->getFont("../media/fonts/Arial14.xml");
+
+	guiFont10->setKerningWidth(-1);
+	guiFont9->setKerningWidth(-2);
+	guiFont8->setKerningWidth(-1);
+	guiFont8->setKerningHeight(-6);
 }
 
 void GUIManager::setStaticTextText(GUI_ID id, stringc text)

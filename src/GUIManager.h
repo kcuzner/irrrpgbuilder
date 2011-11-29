@@ -192,15 +192,24 @@ class GUIManager
 
         position2di mainToolbarPos;
 		IGUITabControl * mainTabCtrl;
+		IGUITabControl * mainToolCtrl;
+		IGUITabControl * prjTabCtrl;
 		IGUITabControl * gameTabCtrl;
 
         IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
         IGUIFont* guiFontLarge28;//arial 28
         IGUIFont* guiFontDialog;
+		IGUIFont* guiFont6;
+		IGUIFont* guiFont8;
+		IGUIFont* guiFont9;
+		IGUIFont* guiFont10;
+		IGUIFont* guiFont12;
+		IGUIFont* guiFont14;
 
         ///Main Functions
 		IGUIImage*  guiBackImage;
+		IGUIImage*  guiBackImage2;
         IGUIButton* guiMainNewProject;
         IGUIButton* guiMainSaveProject;
         IGUIButton* guiMainLoadProject;

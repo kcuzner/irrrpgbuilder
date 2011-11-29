@@ -37,11 +37,16 @@ class CameraSystem
 		scene::ILightSceneNode * light;
 		scene::ILightSceneNode * sun;
 
+		ICameraSceneNode* editCamMaya;
+
     protected:
     private:
         CameraSystem();
 
-        ICameraSceneNode* cam;
+        ICameraSceneNode* gameCam;
+		
+		ICameraSceneNode* editCamFPS;
+		ICameraSceneNode* currentCam;
 		//static const irr::f32 cameraHeight;
 		static irr::f32 cameraHeight;
 

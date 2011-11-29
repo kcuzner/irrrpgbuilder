@@ -12,11 +12,6 @@
 #include "Player.h"
 
 
-#include "tinyXML/tinyxml.h"
-
-//#ifdef _wxWIDGET
-//#include <wx/wx.h>
-//#endif
 
 using namespace irr;
 using namespace core;
@@ -157,10 +152,16 @@ void App::drawBrush()
 
 void App::displayGuiConsole()
 {
-
-	bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
-	GUIManager::getInstance()->setElementVisible(CONSOLE,result);
+	// This was the old console (might be needed for the player app
+	//bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
+	//GUIManager::getInstance()->setElementVisible(CONSOLE,result);
+	
+	
 	//GUIManager::getInstance()->setConsoleText(L"",true);
+
+	// This is the new console used via wxWidget console window
+	if (appFrame)
+		appFrame->console_dialog->Show();
 }
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
@@ -170,7 +171,7 @@ bool App::cursorIsInEditArea()
 	if (GUIManager::getInstance()->isGuiPresent(device->getCursorControl()->getPosition()))
 		condition = false;
 
-    // Perhaps remove this...
+    // Perhaps remove this (nov 2011)...
 	#ifndef _WXMSW
 	//is over the main toolbar??
     if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
@@ -272,22 +273,22 @@ void App::setAppState(APP_STATE newAppState)
 
     if(app_state == APP_EDIT_CHARACTER)
     {
-		if (!wxSystemState==true)
-		{
+		//if (!wxSystemState==true)
+		//{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
-		}
+		//}
         Player::getInstance()->setHighLight(true);
         CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
     }
     else
     {
-		if (!wxSystemState==true)
-		{
+		//if (!wxSystemState==true)
+		//{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
 			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
-		}
+		//}
 		Player::getInstance()->setHighLight(false);
 
     }
@@ -818,7 +819,7 @@ bool App::loadConfig()
 	if (screensize.Height<100)
 	{
 		screensize.Width = 1008;
-		screensize.Height = 596;
+		screensize.Height = 596+112; // 112 is added because before it was used for a window separation. Now it use the full screen.
 	}
 #endif
 	fullScreen = false;
@@ -1162,7 +1163,9 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
 						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
-						CameraSystem::getInstance()->setPosition(camPosition);
+						// Unlock the maya camera (Need to be improved)
+						if (!CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
+							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(true);
 					}
 
 					return;
@@ -1170,7 +1173,12 @@ void App::updateEditMode()
 			}
 			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
 			if (app_state == APP_EDIT_VIEWDRAG)
+			{
+				// lock the maya camera (Need to be improved)
+				if (CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
+							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
 				app_state = old_state;
+			}
 			// --- End of code for drag of view
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
@@ -1632,6 +1640,12 @@ void App::clearConsole()
 	console_event.clear();
 	console_event_color.clear();
 	GUIManager::getInstance()->clearConsole();
+}
+
+// Get the pointer to the wxFrame from the wxWidget system
+void App::setFramePointer(wxFrame * frm)
+{
+	appFrame = (CIrrFrame*)frm; 
 }
 
 stringw App::getLangText(irr::core::stringc node)
