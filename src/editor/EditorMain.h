@@ -118,6 +118,15 @@ class CIrrFrame : public wxFrame
 		void OnStartUpdate(wxCommandEvent &event);
 		void OnStopUpdate(wxCommandEvent &event);
 		void OnTakeOver(wxCommandEvent &event);
+		
+		// Will call the file request feature of wxWidget from outside
+		void OnNew();
+		void OnSave();
+		void OnLoad();
+
+		void MessageStatus(core::stringw message);
+		
+		//Were called by the ribbon, removed in this version
 		//void OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		//void OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		//void OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt));

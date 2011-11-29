@@ -249,6 +249,7 @@ void App::setAppState(APP_STATE newAppState)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
     }
     else
     {
@@ -261,6 +262,8 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
     }
 
+	if (app_state == APP_EDIT_VIEWDRAG)
+		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
 
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
     {
@@ -384,14 +387,17 @@ void App::eventGuiButton(s32 id)
 	#ifdef EDITOR
 
 		case BT_ID_NEW_PROJECT:
-            this->createNewProject();
+            //this->createNewProject();
+			appFrame->OnNew();
             break;
         case BT_ID_LOAD_PROJECT:
-            this->loadProject();
+            //this->loadProject();
+			appFrame->OnLoad();
 			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_SAVE_PROJECT:
-            this->saveProject();
+            //this->saveProject();
+			appFrame->OnSave();
 			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_TERRAIN_ADD_SEGMENT:
@@ -404,7 +410,10 @@ void App::eventGuiButton(s32 id)
             this->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
             break;
         case BT_ID_DYNAMIC_OBJECTS_MODE:
-            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			{
+				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+				
+			}
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -508,24 +517,29 @@ void App::eventGuiButton(s32 id)
 		case BT_ID_HELP:
 			this->displayGuiConsole();
 			break;
+
         case BT_ID_ABOUT:
             GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
             setAppState(APP_EDIT_ABOUT);
             break;
+
         case BT_ID_ABOUT_WINDOW_CLOSE:
             GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
             setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
+
         case BT_ID_VIEW_ITEMS:
             setAppState(APP_GAMEPLAY_VIEW_ITEMS);
 			DynamicObjectsManager::getInstance()->freezeAll();
             GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
 			GUIManager::getInstance()->drawPlayerStats();
             break;
+
         case BT_ID_USE_ITEM:
             LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
             GUIManager::getInstance()->updateItemsList();
             break;
+
         case BT_ID_DROP_ITEM:
 			Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
             GUIManager::getInstance()->updateItemsList();
@@ -548,6 +562,7 @@ void App::eventGuiButton(s32 id)
 				GUIManager::getInstance()->stopDialogSound();
 			}
 			break;
+
 		case BT_ID_DIALOG_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
 			if (app_state> APP_STATE_CONTROL)
@@ -1159,7 +1174,7 @@ void App::updateEditMode()
 					if (app_state != APP_EDIT_VIEWDRAG)
 						old_state = app_state;
 
-					app_state = APP_EDIT_VIEWDRAG;
+					setAppState(APP_EDIT_VIEWDRAG);
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
 						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
@@ -1177,7 +1192,7 @@ void App::updateEditMode()
 				// lock the maya camera (Need to be improved)
 				if (CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
 							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
-				app_state = old_state;
+				setAppState(old_state);
 			}
 			// --- End of code for drag of view
 

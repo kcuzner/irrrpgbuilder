@@ -19,6 +19,8 @@
 		<text id="bt_dynamic_objects_cancel" str="Cancel"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
 		<text id="bt_dynamic_objects_mode" str="Edit Object"/>
+		<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+		<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
 		<text id="bt_paint_vegetation" str="Paint Vegetation"/>
 		<text id="bt_new_project" str="New Project"/>
 		<text id="bt_save_project" str="Save Project"/>
@@ -165,6 +167,8 @@
 		<text id="bt_dynamic_objects_cancel" str="Cancelar"/>
 		<text id="bt_dynamic_objects_has_action" str="Tem Ação"/>
 		<text id="bt_dynamic_objects_mode" str="Editar objeto"/>
+		<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+		<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
 		<text id="bt_paint_vegetation" str="Pintar vegetação"/>
 		<text id="bt_new_project" str="Novo Projeto"/>
 		<text id="bt_save_project" str="Salvar"/>
@@ -312,6 +316,8 @@
 		<text id="bt_dynamic_objects_cancel" str="Abandon"/>
 		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
 		<text id="bt_dynamic_objects_mode" str="Édition objet"/>
+		<text id="info_dynamic_objects_mode" str="Pressez et maintenez la touche <ESPACE> pour aller en mode navigation"/>
+		<text id="info_drag" str="Mode navigation actif. Souris gauche: rotation, Souris droite: déplacement, Molette: Zoom"/>
 		<text id="bt_paint_vegetation" str="Peindre la végétation"/>
 		<text id="bt_new_project" str="Nouv. projet"/>
 		<text id="bt_save_project" str="Sauver le projet"/>
@@ -459,6 +465,8 @@
 		<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
 		<text id="bt_dynamic_objects_has_action" str="wird benutzt"/>
 		<text id="bt_dynamic_objects_mode" str="Dynamischer Objekt Modus"/>
+		<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+		<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
 		<text id="bt_paint_vegetation" str="Vegetation einfuegen"/>
 		<text id="bt_new_project" str="Neues Projekt"/>
 		<text id="bt_save_project" str="Projekt speichern"/>
@@ -606,6 +614,8 @@
 		<text id="bt_dynamic_objects_cancel" str="Cancelar"/>
 		<text id="bt_dynamic_objects_has_action" str="Tiene acción"/>
 		<text id="bt_dynamic_objects_mode" str="Editar objeto"/>
+		<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+		<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
 		<text id="bt_paint_vegetation" str="Pintura Vegetación"/>
 		<text id="bt_new_project" str="Nuevo proyecto"/>
 		<text id="bt_save_project" str="Guardar proyecto"/>

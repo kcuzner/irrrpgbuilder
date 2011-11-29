@@ -329,8 +329,8 @@ void CIrrFrame::OnProgressTimer(wxTimerEvent& event)
 	}
 }
 
-/*
-void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
+//void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnNew()
 {
 	if (MessageBox(App::getInstance()->getLangText("msg_prj_np0").c_str(),App::getInstance()->getLangText("msg_prj_np1").c_str(),2)==1)
 	{
@@ -340,7 +340,8 @@ void CIrrFrame::OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt))
 
 }
 
-void CIrrFrame::OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt))
+//void CIrrFrame::OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnSave()
 {
 
 	APP_STATE old_state = App::getInstance()->getAppState();
@@ -358,7 +359,8 @@ void CIrrFrame::OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt))
 	App::getInstance()->setAppState(old_state);
 }
 
-void CIrrFrame::OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt))
+//void CIrrFrame::OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt))
+void CIrrFrame::OnLoad()
 {
 	APP_STATE old_state = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
@@ -383,6 +385,12 @@ void CIrrFrame::OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt))
 	App::getInstance()->setAppState(old_state);
 }
 
+void CIrrFrame::MessageStatus(core::stringw message)
+{
+	wxLogStatus(message.c_str());
+};
+
+/*
 void CIrrFrame::OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt))
 {
 	UncheckAllButtons();
@@ -618,7 +626,7 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
                            wxCENTER | 
 						   wxOK | wxCANCEL |
 						   wxICON_WARNING);
-		//wxString extmsg;
+		wxString extmsg;
 		/*if ( dialog.SetOKCancelLabels
 			(
 			App::getInstance()->getLangText("msg_dlg_yes").c_str(),
@@ -629,9 +637,10 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 		else
 		{
 			extmsg = message2.c_str();
-		}
-		dialog.SetExtendedMessage(extmsg);
-        */
+		}*/
+
+		//dialog.SetExtendedMessage(extmsg);
+        
 		switch ( dialog.ShowModal() )
 		{
 			case wxID_OK:
@@ -653,8 +662,7 @@ int CIrrFrame::MessageBox(core::stringw message, core::stringw message2, int but
 
 core::stringw CIrrFrame::FileOpen(core::stringw message)
 {
-	/*
-    static wxString s_extDef;
+	static wxString s_extDef;
 	wxString path = wxFileSelector(
 									message.c_str(),
                                     wxT("../projects"), wxEmptyString,
@@ -677,17 +685,19 @@ core::stringw CIrrFrame::FileOpen(core::stringw message)
 	//wxLogStatus(wxT("You selected the file '%s', remembered extension '%s'"),
     //             path, s_extDef);
 
-    //return (core::stringw)path.c_str().AsString().ToStdWstring().c_str();
-	*/
-	return (core::stringw)L"";
+	return (core::stringw)path.c_str();
+		//.c_str().AsString().ToStdWstring().c_str();
+
+	//return (core::stringw)L"";
 }
 
 core::stringw CIrrFrame::FileSave()
 {
-    /*wxFileDialog dialog(this,
+	//wxString filetext = (wxString)App::getInstance()->getProjectName().c_str();
+    wxFileDialog dialog(this,
                         wxT("Testing save file dialog"),
                         wxT("../projects"),
-						App::getInstance()->getProjectName().c_str(),
+						wxT("file.xml"),//App::getInstance()->getProjectName().c_str(),
                         //wxT("irb_temp_project.XML"),
                         wxT("Project files (*.XML)|*.XML"),
                         wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
@@ -697,8 +707,9 @@ core::stringw CIrrFrame::FileSave()
     if (dialog.ShowModal() == wxID_OK)
     {
         wxLogStatus(wxT("Saving %s ..."),dialog.GetPath().c_str());
-		return dialog.GetPath().c_str().AsString().ToStdWstring().c_str();
-    }*/
+		return dialog.GetPath().c_str();
+			//.AsString().ToStdWstring().c_str();
+    }
 	return L"";
 }
 

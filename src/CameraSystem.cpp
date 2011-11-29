@@ -17,7 +17,9 @@ CameraSystem::CameraSystem()
 	camera=2;
 	lightset=false;
 	gameCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
+	gameCam->setFarValue(5000);
 	editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
+	editCamMaya->setFarValue(16000);
 	setCamera(camera);
 }
 
@@ -56,7 +58,7 @@ void CameraSystem::setCamera(int tempCamera)
 				currentCam = editCamMaya;
 				editCamMaya->setInputReceiverEnabled(false);
 				editCamMaya->setPosition(vector3df(1000,cameraHeight,-1000));
-				editCamMaya->setFarValue(cameraHeight*3.0f);
+				//editCamMaya->setFarValue(cameraHeight*3.0f);
 				break;
 	}
 	App::getInstance()->getDevice()->getSceneManager()->setActiveCamera(currentCam);
