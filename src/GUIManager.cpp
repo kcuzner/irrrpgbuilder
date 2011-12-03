@@ -854,8 +854,104 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Script->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     //guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
-	guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
+	
+	//Old code now changed to setElementText()
+	//guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->BT_LINECOUNT,LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
 
+	// Set the IRB commands Highlights
+	
+	// Allow the code editor to use syntax highlighting based on LUA keywords
+	guiDynamicObjects_Script->addLUAKeywords();
+
+	
+	// Define custom "Group" keywords, here are "dictionnary" for IRB specific keywords
+	guiDynamicObjects_Script->addKeyword("setObjectName",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("chaseObject",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("walkRandomly",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("walkToObject",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdate",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("programAction",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdateProgrammedAction",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("hasActionProgrammed",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("enableObject",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("disableObject",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("increasePlayerLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("decreasePlayerLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("increasePlayerMoney",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("playSound",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("emitSound",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("sleep",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setGlobal",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getGlobal",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("deleteGlobal",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setTimeOfDay",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("setAmbientLight",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getAmbientColor",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setFogColor",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getFogColor",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setFogRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getFogRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPostFX",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraTarget",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setSoundListenerPosition",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setPlayerLife",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setSoundVolume",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getPlayerLife",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setPlayerMoney",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getPlayerMoney",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("addPlayerItem",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("stopSounds",SColor(255,128,0,255),true);	
+
+	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("showDialogMessage",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("showDialogQuestion",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("saveGame",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("loadGame",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("showObjectLabel",SColor(255,128,0,255),true);	
+
+	guiDynamicObjects_Script->addKeyword("hideObjectLabel",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setObjectLabel",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setPosition",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getPosition",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("setRotation",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getRotation",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("turn",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("move",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("walkTo",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("lookAt",SColor(255,128,0,255),true);	
+
+	guiDynamicObjects_Script->addKeyword("lookToObject",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getName",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("distanceFrom",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setEnabled",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setFrameLoop",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setAnimationSpeed",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setAnimation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setEnemy",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObject",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPropertie",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("getPropertie",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("attack",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onLoad",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onUpdate",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("step",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onClicked",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onAnswer",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getLanguage",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onCollision",SColor(255,128,0,255),true);
 
 	// Bottom tabcontrol
 	//IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
