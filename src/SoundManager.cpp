@@ -22,7 +22,7 @@ SoundManager* SoundManager::getInstance()
 ISound* SoundManager::playSound2D(std::string file, bool looped)
 {
 	if (engine)
-		return engine->play2D(file.c_str(),looped);
+		return engine->play2D(file.c_str(),looped,false,true);
 	else
 		return NULL;
 }
@@ -31,7 +31,7 @@ ISound* SoundManager::playSound3D(std::string file, vec3df pos, bool looped)
 {
 	if (engine)
 	{
-		ISound* s = engine->play3D(file.c_str(), pos, looped);
+		ISound* s = engine->play3D(file.c_str(), pos, looped, true);
 		if(s)
 		{
 			s->setMinDistance(150);

@@ -52,7 +52,9 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	// Set the animation and AI state to idle (default)
 	this->setAnimation("idle");
+	this->AI_State=AI_STATE_IDLE;
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -668,7 +670,6 @@ bool DynamicObject::setAnimation(stringc animName)
 	// When a character is dead, don't allow anything exept prespawn or despawn
 	if (currentAnimation==OBJECT_ANIMATION_DIE)
 	{
-		printf("This animation was called after the die! %s\n",animName.c_str());
 		if  (animName!="prespawn" && animName!="despawn")
 			return false;
 	}
@@ -764,12 +765,63 @@ bool DynamicObject::setAnimation(stringc animName)
 // Called at each refresh (1/60 th sec)
 void DynamicObject::checkAnimationEvent()
 {
+
+	// Temporary.. .Print the player animation frames because of a problem
+	if (getType()==OBJECT_TYPE_PLAYER && currentAnimation==OBJECT_ANIMATION_DIE)
+	{
+		stringw temptext="";
+		s32 frm = 0;
+		frm = (s32)nodeAnim->getFrameNr();
+		// Names
+		
+		temptext="This is the current frame:";
+		temptext+=stringw(frm);
+		
+		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
+		printf ("This is the current frame: %d\n",frm);
+	}
+
+
+
+	// Check if the character is hurt and tell the combat manager to stop the attack while the character play all the animation
+	// Need to update this to support more specific animation that MUST not be stopped
+	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_INJURED)
+	{
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.startFrame))
+		{
+			// Set the AI State to busy, so the combat manager won't call animations
+			AI_State=AI_STATE_BUSY;
+		}
+
+		// should do something when the animation can reach the end
+		// This is required
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.endFrame))
+		{
+			AI_State=AI_STATE_IDLE;
+		}
+
+	}
 	// Check if the current animation have an attack event
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
 		// Set a default attack event if there is none defined.
 		if (currentAnim.attackevent==-1)
 			currentAnim.attackevent = currentAnim.startFrame; 
+		
+		// Should do something if the animation can start
+		// This is required
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.startFrame))
+		{
+			// Set the AI State to busy, so the combat manager won't call animations
+			AI_State=AI_STATE_BUSY;
+		}
+
+		// should do something when the animation can reach the end
+		// This is required
+		if (((s32)nodeAnim->getFrameNr() == currentAnim.endFrame))
+		{
+			AI_State=AI_STATE_IDLE;
+		}
 
 		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
 		{

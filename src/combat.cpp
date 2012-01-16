@@ -107,8 +107,15 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Basic "Hurt" state
 	// So if the attacker got almost all his points the defender will be "hurt"
 	// need to update the rules to use the "hurt resistance" propertie...
-	if (((damage+2)>attacker_prop.maxdamage) && damage>2)
-		defender->setAnimation("hurt");
+	//if (((damage+2)>attacker_prop.maxdamage) && damage>2)
+	
+	// Update (1/15/12)
+	// Would have to check and calculate a chance of breaking an attack
+	// Example: attacker attack another attacker, who will win the attack?
+	if (damage>0)
+	{	//if (defender->AI_State==AI_STATE_IDLE)
+			defender->setAnimation("hurt");
+	}
 	
 	// limit the damage to the life of the defender.
 	if (life<0) 
@@ -119,7 +126,9 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	if (attacker->getName()==Player::getInstance()->getObject()->getName())
 		DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
 
-	if (life==0)
+	// Will calculate the level only if the player IS the attacker. NPC should not gain a level by defeating others
+	if (attacker->getName()==Player::getInstance()->getObject()->getName() &&
+		life==0)
 	{
 		// get the experience of the defender
 		attacker_prop.experience += defender_prop.experience;

@@ -50,7 +50,13 @@ enum TYPE
 	OBJECT_TYPE_EDITOR	= 5
 };
 
-typedef struct{
+enum AI_INFO
+{
+	AI_STATE_IDLE = 0,
+	AI_STATE_BUSY
+};
+
+typedef struct Animation{
     stringc name;
 	stringc meshname;
 	IAnimatedMesh* mesh;
@@ -65,7 +71,7 @@ typedef struct{
 
 }DynamicObject_Animation;
 
-typedef struct {
+typedef struct Propertie{
 	int life;
 	int mana;
 	int maxlife;
@@ -188,6 +194,7 @@ class DynamicObject
 		void setTemplate(bool value);
 		// Needed in other classes
 		DynamicObject_Animation currentAnim;
+		AI_INFO AI_State;
       
     protected:
 
