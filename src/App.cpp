@@ -1316,7 +1316,7 @@ void App::updateGameplay()
 		// It would be interesting to put this for the "player controls"
 		// As I would like to define other ways to control the targeting of the player
 
-		//Player::getInstance()->update(); // This one is timed now.
+		Player::getInstance()->update(); // This one is timed now.
 		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)

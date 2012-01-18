@@ -6,7 +6,7 @@
 	</dynamic_object>
 	<dynamic_object name="goblin" mesh="npc/goblin_anims.b3d" type="npc" script="ai_goblin.lua" scale="46" materialType="solid">
 		<animation name="idle" start="1" end="240" speed="30.0"/>
-		<animation name="attack" start="281" end="295" speed="30.0" soundevent="282" sound="goblin/goblin_attack.ogg"/>
+		<animation name="attack" start="281" end="295" speed="30.0" attackevent="282" soundevent="282" sound="goblin/goblin_attack.ogg"/>
 		<animation name="walk" start="241" end="270" speed="30.0" movespeed="8.0"/>
 		<animation name="hurt"  start="306" end="317" speed="30.0" loop="false" soundevent="318" sound="goblin/goblin_hurt.ogg"/>
 		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>
@@ -18,7 +18,7 @@
 	</dynamic_object>
 	<dynamic_object name="wizard" mesh="npc/mago.b3d" type="npc" script="ai_goblin.lua" scale="60" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="1.0"/>
-		<animation name="attack" start="26" end="36" speed="25.0"/>
+		<animation name="attack" start="26" end="36" speed="25.0" attackevent="30" soundevent="30"/>
 		<animation name="die" start="37" end="47" speed="25.0" loop="false"/>
 		<animation name="walk" start="0" end="25" speed="25.0" movespeed="6.5"/>
 	</dynamic_object>

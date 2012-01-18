@@ -271,7 +271,7 @@ class DynamicObject
 		bool diePresent;
 		bool despawnPresent;
 		bool runningMode;
-		bool activatedSound;
+		
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;
@@ -299,8 +299,10 @@ class DynamicObject
 		u32 timerHurt;
 		u32 timerStun;
 		// Timer to delay the sound (do it's not repeating too fast)
-		u32 timerSound;
 		u32 lastTime;
+
+		bool soundActivated;
+		bool attackActivated;
 
 
 		lua_State *L;

@@ -677,7 +677,7 @@ void DynamicObjectsManager::updateAll()
 			}
 		}
     }
-	Player::getInstance()->update();
+	
 	if (createcollisions)
 		initializeCollisions();
 }

@@ -47,8 +47,10 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
-	activatedSound = false;
+	soundActivated = false;
+	attackActivated = false;
 	stunstate=false;
+	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -78,12 +80,14 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
-	activatedSound = false;
+	soundActivated = false;
+	attackActivated = false;
 
 	stunstate=false;
 	currentAnimation=OBJECT_ANIMATION_CUSTOM;
 	oldAnimation=OBJECT_ANIMATION_CUSTOM;
 	this->setAnimation("prespawn");
+	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 }
 
 DynamicObject::~DynamicObject()
@@ -326,8 +330,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
-	//f32 speed = currentAnim.walkspeed/10;
-	f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
+	// Temporary removed the distance interval as numbers are
+	f32 speed = currentAnim.walkspeed/10;
+	//f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
 	if (speed == 0)
 		speed=1.0f;
 		
@@ -343,6 +348,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	vector3df posback1 = pos-(targetPos.normalize()*20);
 	vector3df posback = pos-(targetPos.normalize()*10);
 	
+	// Samples position where the ground is 
 	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
 	f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
 	f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
@@ -830,40 +836,54 @@ void DynamicObject::checkAnimationEvent()
 			AI_State=AI_STATE_IDLE;
 		}
 
-		if (((s32)nodeAnim->getFrameNr() == currentAnim.attackevent))
+		// Set up a "default" attack frame in case the user forgot to define one
+		if (currentAnim.attackevent=-1)
+			currentAnim.attackevent=currentAnim.startFrame+1;
+
+		if (nodeAnim->getFrameNr()<currentAnim.attackevent) 
+			attackActivated=true;
+		
+		if ((nodeAnim->getFrameNr() > currentAnim.attackevent) && attackActivated)
 		{
+
 		 // Init the combat for the player, check also that there is a enemy defined
 			if (getType()==OBJECT_TYPE_PLAYER)
 			{
 				if (enemyUnderAttack)
 				{
 					Combat::getInstance()->attack(this,enemyUnderAttack);
-					printf("Here we are attacking the NPC, from frame %i\n",(int)currentAnim.attackevent);
+					attackActivated=false;
 				}
 			} // Init the combat for the NPC (enemy at the moment), will attack the player. Anim is called from lua
-			else
+			
+			if (getType()!=OBJECT_TYPE_PLAYER)
+			{
 				Combat::getInstance()->attack(this,Player::getInstance()->getObject());
+				attackActivated=false;
+				GUIManager::getInstance()->setConsoleText(L"Ennemy try to attack",SColor(255,128,0,128));
 
+				
+			}
 		}
-		//printf("Current Frame of animation is: %i, and lastframe is %i\n",(s32)nodeAnim->getFrameNr(),lastframe);
 	}
 
 	// Check if the current animation have an sound event
+	if (nodeAnim->getFrameNr()<currentAnim.soundevent) 
+			soundActivated=true;
+
 	if ((currentAnim.sound.size() > 0) &&
-		(nodeAnim->getFrameNr() > currentAnim.soundevent) &&
-		(nodeAnim->getFrameNr() < currentAnim.soundevent+1))
+		(nodeAnim->getFrameNr() > currentAnim.soundevent) && soundActivated)
 	{
 		stringc sound = currentAnim.sound;
 		//Play dialog sound (yes you can record voices!)
 		ISound * soundfx = NULL;
 		u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		// After the sound as been called for this duration, permit to trigger other sounds
-		if (timerobject-timerSound>250) 
-			activatedSound=false;
 
-		if (sound.size()>0 && !activatedSound)
+		if (sound.size()>0)
 		//if((sound.c_str() != "") | (sound.c_str() != NULL))
 		{
+			soundActivated=false;
 			stringc soundName = "../media/sound/";
 			soundName += sound.c_str();
 			irrklang::vec3df pos = this->getNode()->getPosition();
@@ -871,9 +891,6 @@ void DynamicObject::checkAnimationEvent()
 				soundfx = SoundManager::getInstance()->playSound3D(soundName.c_str(),pos,false);
 			else
 				soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
-
-			timerSound = App::getInstance()->getDevice()->getTimer()->getRealTime();
-			activatedSound=true;
 		}
 	}
 	lastframe=(s32)nodeAnim->getFrameNr();

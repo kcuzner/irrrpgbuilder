@@ -10,7 +10,7 @@ IMPLEMENT_APP(CIrrApp)
 bool CIrrApp::OnInit()
 {
 	
-	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - November 2011"), wxPoint(0,0), wxSize(1024,768) );
+	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - January 2012"), wxPoint(0,0), wxSize(1024,768) );
 	frame->Show(TRUE);
 	
 	frame->Centre();
