@@ -30,6 +30,9 @@ App::App()
  wxSystemState=false;
  app_state=APP_EDIT_LOOK;
  textevent.clear();
+ timer=0;
+ timer2=0;
+ timer3=0;
 }
 
 App::~App()
@@ -979,6 +982,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
     device->setEventReceiver(EventReceiver::getInstance());
 	timer = device->getTimer()->getRealTime();
 	timer2 = device->getTimer()->getRealTime();
+	timer3 = device->getTimer()->getRealTime();
 	LANGManager::getInstance()->setDefaultLanguage(language);
 	quickUpdate();
 
@@ -1156,6 +1160,7 @@ void App::updateEditMode()
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 		this->drawBrush();
 
+	
 	if ((timer-timer2)>17) // 1/60th second refresh interval
 	{
 		timer2 = device->getTimer()->getRealTime();
@@ -1291,16 +1296,28 @@ void App::updateGameplay()
 
 	timer = device->getTimer()->getRealTime();
 	//DynamicObjectsManager::getInstance()->updateAnimators();
-	DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
+	//DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
 
-	// the update for the player. It's a dynamic object now.
-	Player::getInstance()->update(); // This one is timed now.
-	CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+	// Refresh the NPC loop
+	if ((timer-timer3)>0) // (17 )1/60 second (0 value seem ok for now)
+	{
+		// Update the NPc refresh
+		timer3 = device->getTimer()->getRealTime();
+		DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
+	}
+
 
 	// This update the player events and controls at specific time intervals
-    if ((timer-timer2)>0) // (17 )1/60 second
+    if ((timer-timer2)>34) // (34)1/30 second (17ms was 1/60)
 	{
 		timer2 = device->getTimer()->getRealTime();
+
+		// the update for the player. It's a dynamic object now.
+		// It would be interesting to put this for the "player controls"
+		// As I would like to define other ways to control the targeting of the player
+
+		//Player::getInstance()->update(); // This one is timed now.
+		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{

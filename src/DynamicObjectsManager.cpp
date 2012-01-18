@@ -71,6 +71,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 
     //just initialize var
     objsCounter = 0;
+	objectCounter = 0;
 	dialogCaller = NULL;
 
 	// Collision creation (in steps)
@@ -639,7 +640,32 @@ void DynamicObjectsManager::initializeAllScripts()
 
 void DynamicObjectsManager::updateAll()
 {
-    for(int i=0;i<(int)objects.size();i++)
+
+	// New method.. Should be more efficient.
+
+	// Use an object counter
+	// each iteration will update a specific object, one by one
+	// So at each cycle only one object is refreshed.
+	objectCounter++;
+	if (objectCounter>(int)objects.size()-1)
+	{
+		objectCounter=0;
+		Player::getInstance()->update(); // This one is timed now.
+	}
+
+	if (objects[objectCounter])
+	{
+		if (objects[objectCounter]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+		{
+			((DynamicObject*)objects[objectCounter])->update();
+		}
+	}
+
+	// Have to redo this. This is less than efficient for a game!
+	// This will refresh the objects in a single "strike", but will remove control for other things.
+	// Will be bad.
+
+    /*for(int i=0;i<(int)objects.size();i++)
     {
 		// Non interactive objects will not be refreshed (update callback)
 		// Should help with performance and allow for more NPC/Interactive objects.
@@ -650,7 +676,7 @@ void DynamicObjectsManager::updateAll()
 				((DynamicObject*)objects[i])->update();
 			}
 		}
-    }
+    }*/
 	if (createcollisions)
 		initializeCollisions();
 }

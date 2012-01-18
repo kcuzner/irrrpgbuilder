@@ -55,6 +55,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	// Set the animation and AI state to idle (default)
 	this->setAnimation("idle");
 	this->AI_State=AI_STATE_IDLE;
+	// Init the timedelay taken for a loop
+	lastTime=0;
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -320,7 +322,12 @@ void DynamicObject::walkTo(vector3df targetPos)
 	
 	this->lookAt(targetPos);
 
-	f32 speed = currentAnim.walkspeed/10;
+	//Attemp to calculate the proper time/distance interval
+	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
+	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+	
+	//f32 speed = currentAnim.walkspeed/10;
+	f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
 	if (speed == 0)
 		speed=1.0f;
 		
@@ -778,7 +785,7 @@ void DynamicObject::checkAnimationEvent()
 		temptext+=stringw(frm);
 		
 		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
-		printf ("This is the current frame: %d\n",frm);
+	
 	}
 
 

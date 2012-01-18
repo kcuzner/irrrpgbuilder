@@ -300,6 +300,7 @@ class DynamicObject
 		u32 timerStun;
 		// Timer to delay the sound (do it's not repeating too fast)
 		u32 timerSound;
+		u32 lastTime;
 
 
 		lua_State *L;

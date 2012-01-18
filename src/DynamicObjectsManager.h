@@ -94,6 +94,7 @@ class DynamicObjectsManager
 		ISceneNodeAnimatorCollisionResponse* anim;
 
         stringc createUniqueName();
+		int objectCounter;
 };
 
 #endif // DYNAMICOBJECTSMANAGER_H

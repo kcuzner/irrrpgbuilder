@@ -154,6 +154,7 @@ class App
 		
 		u32 timer;
 		u32 timer2;
+		u32 timer3;
 		
 		dimension2d<u32> screensize;
 		bool fullScreen;
