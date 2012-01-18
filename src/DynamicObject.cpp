@@ -1197,7 +1197,8 @@ void DynamicObject::update()
 	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
 
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+	//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (objectType!=OBJECT_TYPE_PLAYER)) 
 	{ // timerLUA=17
 		updateWalk();
 		if (currentSpeed!=0)

@@ -646,7 +646,7 @@ void DynamicObjectsManager::updateAll()
 	// Use an object counter
 	// each iteration will update a specific object, one by one
 	// So at each cycle only one object is refreshed.
-	objectCounter++;
+	/*objectCounter++;
 	if (objectCounter>(int)objects.size()-1)
 	{
 		objectCounter=0;
@@ -659,13 +659,13 @@ void DynamicObjectsManager::updateAll()
 		{
 			((DynamicObject*)objects[objectCounter])->update();
 		}
-	}
+	}*/
 
 	// Have to redo this. This is less than efficient for a game!
 	// This will refresh the objects in a single "strike", but will remove control for other things.
 	// Will be bad.
 
-    /*for(int i=0;i<(int)objects.size();i++)
+    for(int i=0;i<(int)objects.size();i++)
     {
 		// Non interactive objects will not be refreshed (update callback)
 		// Should help with performance and allow for more NPC/Interactive objects.
@@ -676,7 +676,8 @@ void DynamicObjectsManager::updateAll()
 				((DynamicObject*)objects[i])->update();
 			}
 		}
-    }*/
+    }
+	Player::getInstance()->update();
 	if (createcollisions)
 		initializeCollisions();
 }
