@@ -11,7 +11,10 @@ void main(void)
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
-	gl_Position = ftransform();
+	//gl_Position = ftransform();
+	vec4 vertex = gl_Vertex;
+	vertex.y = -scale;
+	gl_Position = gl_ModelViewProjectionMatrix * vertex;
 
 	gl_FogFragCoord = gl_Position.z;
 }
