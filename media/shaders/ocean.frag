@@ -10,13 +10,13 @@ uniform int terrainScale;
 
 void main()
 {
-	float scale = terrainScale * 0.145f;
+	float scale = terrainScale * 0.145;
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
-	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*5 + waterTime,texCoord.y*3));
-	vec4 tex1    = texture2D( oceanReflection, texCoord.xy*2 + tex0.r*0.5 );
+	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*5.0 + waterTime,texCoord.y*3.0));
+	vec4 tex1    = texture2D( oceanReflection, texCoord.xy*2.0 + tex0.r*0.5 );
 	
-	tex1.a = (-posY/scale)-(0.1)*3;
+	tex1.a = (-posY/scale)-(0.1)*3.0;
 	
  	vec4 finalColor = tex1 * AmbientLight;
 	float pAlpha = finalColor.a;

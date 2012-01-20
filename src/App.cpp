@@ -161,10 +161,11 @@ void App::displayGuiConsole()
 	
 	
 	//GUIManager::getInstance()->setConsoleText(L"",true);
-
+#ifdef _wxWIDGET
 	// This is the new console used via wxWidget console window
 	if (appFrame)
 		appFrame->console_dialog->Show();
+#endif
 }
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
@@ -252,7 +253,9 @@ void App::setAppState(APP_STATE newAppState)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
         GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+#ifdef _wxWIDGET
 		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+#endif
     }
     else
     {
@@ -266,8 +269,9 @@ void App::setAppState(APP_STATE newAppState)
     }
 
 	if (app_state == APP_EDIT_VIEWDRAG)
+#ifdef _wxWIDGET
 		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
-
+#endif
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
@@ -390,17 +394,29 @@ void App::eventGuiButton(s32 id)
 	#ifdef EDITOR
 
 		case BT_ID_NEW_PROJECT:
-            //this->createNewProject();
+            //
+			#ifdef wxWIDGET
 			appFrame->OnNew();
+			#else
+			this->createNewProject();
+			#endif
             break;
         case BT_ID_LOAD_PROJECT:
-            //this->loadProject();
+
+            //
+			#ifdef wxWIDGET
 			appFrame->OnLoad();
+			#else
+			this->loadProject();
+			#endif
 			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_SAVE_PROJECT:
-            //this->saveProject();
-			appFrame->OnSave();
+			#ifdef wxWIDGET
+            appFrame->OnSave();
+			#else
+			this->saveProject();
+			#endif
 			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_TERRAIN_ADD_SEGMENT:
@@ -690,8 +706,6 @@ void App::eventKeyPressed(s32 key)
 
 void App::eventMousePressed(s32 mouse)
 {
-    //printf("%d",mouse);
-	printf("Log: Mouse event");
     switch(mouse)
     {///TODO: colocar acoes mais comuns acima e menos comuns nos elses
         case 0://LB
@@ -971,7 +985,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (may 2011)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (January 2012)");
 	} else
 		device = IRRdevice;
 
@@ -1141,7 +1155,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (may 2011)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (january 2012)";
 			str += " FPS:";
 			str += fps;
 
@@ -1674,11 +1688,13 @@ void App::clearConsole()
 	GUIManager::getInstance()->clearConsole();
 }
 
+#ifdef _wxWIDGET
 // Get the pointer to the wxFrame from the wxWidget system
 void App::setFramePointer(wxFrame * frm)
 {
 	appFrame = (CIrrFrame*)frm; 
 }
+#endif
 
 stringw App::getLangText(irr::core::stringc node)
 {

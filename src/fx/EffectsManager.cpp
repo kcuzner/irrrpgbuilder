@@ -14,6 +14,9 @@ using namespace gui;
 
 EffectsManager::EffectsManager()
 {
+
+	// Temporary disable the post FX to check the shaders
+	
 	// Init the postProcess FX manager
 	postProcessManager = new CPostProcessManager(App::getInstance()->getDevice());
 	if (postProcessManager == 0)
@@ -48,6 +51,7 @@ EffectsManager::EffectsManager()
     //mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
 
     mainParticleSystem->setVisible(false);
+
 }
 
 EffectsManager::~EffectsManager()

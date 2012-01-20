@@ -21,7 +21,9 @@ static const float APP_VERSION = 1.0;
 
 #include "LuaGlobalCaller.h"
 #include "tinyXML/tinyxml.h"
+#ifdef _wxWIDGET
 #include "editor/EditorMain.h"
+#endif
 // try to force the class to be remembered for the compiler
 class CIrrFrame;
 
@@ -123,8 +125,10 @@ class App
 		std::vector<stringw> getConsoleText();
 		std::vector<SColor> getConsoleColor();
 		
+#ifdef _wxWIDGET
 		// Function related to the wxWidget classes
 		void setFramePointer(wxFrame * frm);
+#endif
 
 		void clearConsole();
 
