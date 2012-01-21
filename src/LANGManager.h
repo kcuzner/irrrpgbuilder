@@ -1,7 +1,7 @@
 #ifndef LANGMANAGER_H
 #define LANGMANAGER_H
 
-#include "GUIManager.h"
+#include "gui/GUIManager.h"
 #include "tinyXML/tinyxml.h"
 
 typedef struct{

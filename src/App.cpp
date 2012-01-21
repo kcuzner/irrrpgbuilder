@@ -1,15 +1,15 @@
 #include "App.h"
 
-#include "CameraSystem.h"
-#include "EventReceiver.h"
-#include "GUIManager.h"
-#include "TerrainManager.h"
+#include "camera/CameraSystem.h"
+#include "events/EventReceiver.h"
+#include "gui/GUIManager.h"
+#include "terrain/TerrainManager.h"
 #include "fx/EffectsManager.h"
 #include "LANGManager.h"
-#include "DynamicObjectsManager.h"
+#include "objects/DynamicObjectsManager.h"
 
-#include "SoundManager.h"
-#include "Player.h"
+#include "sound/SoundManager.h"
+#include "objects/Player.h"
 
 
 

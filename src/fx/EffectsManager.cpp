@@ -3,7 +3,7 @@
 #include "postprocess/PostProcessManager.h"
 
 #include "../App.h"
-#include "../CameraSystem.h"
+#include "../camera/CameraSystem.h"
 
 using namespace irr;
 using namespace core;

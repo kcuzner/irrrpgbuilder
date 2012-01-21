@@ -1,13 +1,13 @@
 #include "LuaGlobalCaller.h"
 
-#include "GUIManager.h"
+#include "gui/GUIManager.h"
 #include "LANGManager.h"
 #include <time.h>
-#include "DynamicObjectsManager.h"
-#include "CameraSystem.h"
+#include "objects/DynamicObjectsManager.h"
+#include "camera/CameraSystem.h"
 #include "fx/EffectsManager.h"
-#include "SoundManager.h"
-#include "Player.h"
+#include "sound/SoundManager.h"
+#include "objects/Player.h"
 
 using namespace irr;
 using namespace core;

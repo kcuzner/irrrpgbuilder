@@ -530,22 +530,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\CameraSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\CameraSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\EventReceiver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\EventReceiver.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\LANGManager.cpp"
 				>
 			</File>
@@ -581,63 +565,47 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\src\SoundManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\SoundManager.h"
-				>
-			</File>
 			<Filter
-				Name="GUI"
+				Name="gui"
 				>
 				<File
-					RelativePath=".\src\CGUIEditBoxIRB.cpp"
+					RelativePath=".\src\gui\CGUIEditBoxIRB.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\CGUIEditBoxIRB.h"
+					RelativePath=".\src\gui\CGUIEditBoxIRB.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\CGUIGfxStatus.cpp"
+					RelativePath=".\src\gui\CGUIGfxStatus.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\CGUIGfxStatus.h"
+					RelativePath=".\src\gui\CGUIGfxStatus.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\GUIConfigWindow.cpp"
+					RelativePath=".\src\gui\GUIConfigWindow.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\GUIConfigWindow.h"
+					RelativePath=".\src\gui\GUIConfigWindow.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\GUIManager.cpp"
+					RelativePath=".\src\gui\GUIManager.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\GUIManager.h"
+					RelativePath=".\src\gui\GUIManager.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\HealthSceneNode.cpp"
+					RelativePath=".\src\gui\NodePreview.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\HealthSceneNode.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\NodePreview.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\NodePreview.h"
+					RelativePath=".\src\gui\NodePreview.h"
 					>
 				</File>
 			</Filter>
@@ -686,7 +654,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="FX"
+				Name="fx"
 				>
 				<File
 					RelativePath=".\src\fx\EffectsManager.cpp"
@@ -728,44 +696,168 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="ShaderCallback"
+					>
+					<File
+						RelativePath=".\src\fx\ShaderCallBack.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\ShaderCallBack.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="cameras"
+				>
+				<File
+					RelativePath=".\src\camera\CameraSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\camera\CameraSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMaya.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMaya.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="objects"
+				>
+				<File
+					RelativePath=".\src\objects\combat.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\combat.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\DynamicObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\DynamicObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\DynamicObjectsManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\DynamicObjectsManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\HealthSceneNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\HealthSceneNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\Item.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\Item.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\Player.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\Player.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="events"
+				>
+				<File
+					RelativePath=".\src\events\EventReceiver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\events\EventReceiver.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sound"
+				>
+				<File
+					RelativePath=".\src\sound\SoundManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\sound\SoundManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="terrain"
+				>
+				<File
+					RelativePath=".\src\terrain\TerrainManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\terrain\TerrainManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\terrain\TerrainTile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\terrain\TerrainTile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\terrain\Vegetation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\terrain\Vegetation.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="DynamicObjects"
-			>
-			<File
-				RelativePath=".\src\combat.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\combat.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\DynamicObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\DynamicObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\DynamicObjectsManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\DynamicObjectsManager.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Editor"
+			Name="wxEditor"
 			>
 			<File
 				RelativePath=".\src\editor\EditorMain.cpp"
 				>
 				<FileConfiguration
 					Name="Full_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -793,6 +885,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Full_Debug|Win32"
 					ExcludedFromBuild="true"
 					>
@@ -806,6 +914,22 @@
 				>
 				<FileConfiguration
 					Name="Full_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -833,6 +957,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Full_Debug|Win32"
 					ExcludedFromBuild="true"
 					>
@@ -846,6 +986,22 @@
 				>
 				<FileConfiguration
 					Name="Full_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -873,6 +1029,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Player_Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Player_Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Full_Debug|Win32"
 					ExcludedFromBuild="true"
 					>
@@ -893,71 +1065,24 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Full_Debug|Win32"
+					Name="Player_Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="StaticObjects"
-			>
-			<Filter
-				Name="Terrain"
-				>
-				<File
-					RelativePath=".\src\TerrainManager.cpp"
+				<FileConfiguration
+					Name="Player_Release|Win32"
+					ExcludedFromBuild="true"
 					>
-				</File>
-				<File
-					RelativePath=".\src\TerrainManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\TerrainTile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\TerrainTile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\Vegetation.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\Vegetation.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Player"
-			>
-			<File
-				RelativePath=".\src\Player.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\Player.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="ShaderCallback"
-			>
-			<File
-				RelativePath=".\src\ShaderCallBack.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ShaderCallBack.h"
-				>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 				<FileConfiguration
 					Name="Full_Debug|Win32"
+					ExcludedFromBuild="true"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
