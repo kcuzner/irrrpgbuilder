@@ -18,19 +18,19 @@ namespace irr
 	//! enumeration for key actions. Used for example in the FPS Camera.
 	enum EKEY_ACTION2
 	{
-		EKA_MOVE_FORWARD = 0,
-		EKA_MOVE_BACKWARD,
-		EKA_STRAFE_LEFT,
-		EKA_STRAFE_RIGHT,
-		EKA_JUMP_UP,
-		EKA_CROUCH,
-		EKA_ROTATE,
-		EKA_TRANSLATE,
-		EKA_ZOOM,
-		EKA_COUNT,
+		EK_MOVE_FORWARD = 0,
+		EK_MOVE_BACKWARD,
+		EK_STRAFE_LEFT,
+		EK_STRAFE_RIGHT,
+		EK_JUMP_UP,
+		EK_CROUCH,
+		EK_ROTATE,
+		EK_TRANSLATE,
+		EK_ZOOM,
+		EK_COUNT,
 
 		//! This value is not used. It only forces this enumeration to compile in 32 bit.
-		EKA_FORCE_32BIT = 0x7fffffff
+		EK_FORCE_32BIT = 0x7fffffff
 	};
 
 	//! Struct storing which keyboard key belongs to which action.
@@ -154,7 +154,7 @@ namespace scene
 		bool FirstUpdate;
 
 		core::array<SKeyMap2> KeyMap;
-		bool ActionKeys[EKA_COUNT];
+		bool ActionKeys[EK_COUNT];
 
 
 	};

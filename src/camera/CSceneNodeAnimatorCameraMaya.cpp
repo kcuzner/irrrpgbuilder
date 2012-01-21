@@ -38,9 +38,9 @@ CSceneNodeAnimatorCameraMaya::CSceneNodeAnimatorCameraMaya(gui::ICursorControl* 
     if (!keyMapArray || !keyMapSize)
     {
 		// create default key map
-		KeyMap.push_back(SKeyMap2(EKA_ROTATE, irr::KEY_LBUTTON));
-		KeyMap.push_back(SKeyMap2(EKA_TRANSLATE, irr::KEY_RBUTTON));
-		KeyMap.push_back(SKeyMap2(EKA_ZOOM, irr::KEY_MBUTTON));
+		KeyMap.push_back(SKeyMap2(EK_ROTATE, irr::KEY_LBUTTON));
+		KeyMap.push_back(SKeyMap2(EK_TRANSLATE, irr::KEY_RBUTTON));
+		KeyMap.push_back(SKeyMap2(EK_ZOOM, irr::KEY_MBUTTON));
     }
     else
     {
@@ -162,7 +162,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 	f32 nRotY = RotY;
 	f32 nZoom = CurrentZoom;
 
-	if (ActionKeys[EKA_ZOOM])
+	if (ActionKeys[EK_ZOOM])
 	{
 		if (!Zooming)
 		{
@@ -205,7 +205,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 	tvectY = tvectY.crossProduct(upVector.Y > 0 ? pos - target : target - pos);
 	tvectY.normalize();
 
-	if (ActionKeys[EKA_TRANSLATE] && !Zooming)
+	if (ActionKeys[EK_TRANSLATE] && !Zooming)
 	{
 		if (!Translating)
 		{
@@ -228,7 +228,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 
 	// Rotation ------------------------------------
 
-	if (ActionKeys[EKA_ROTATE] && !Zooming)
+	if (ActionKeys[EK_ROTATE] && !Zooming)
 	{
 		if (!Rotating)
 		{
@@ -276,7 +276,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 
 void CSceneNodeAnimatorCameraMaya::allKeysUp()
 {
-	for (u32 i=0; i<EKA_COUNT; ++i)
+	for (u32 i=0; i<EK_COUNT; ++i)
 		ActionKeys[i] = false;
 }
 

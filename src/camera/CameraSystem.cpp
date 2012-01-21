@@ -18,7 +18,10 @@ CameraSystem::CameraSystem()
 	lightset=false;
 	gameCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
 	gameCam->setFarValue(5000);
-	editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
+	// Irrlicht based camera
+	// editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
+	// New patched camera
+	editCamMaya = addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
 	editCamMaya->setFarValue(16000);
 	setCamera(camera);
 }
@@ -83,6 +86,28 @@ void CameraSystem::setCamera(int tempCamera)
 int CameraSystem::getCamera()
 {
 	return camera;
+}
+
+// Note: Taken directly from IRRlicht
+//! Adds a camera scene node which is able to be controlled with the mouse similar
+//! to in the 3D Software Maya by Alias Wavefront.
+//! The returned pointer must not be dropped.
+ICameraSceneNode* CameraSystem::addCameraSceneNodeMaya(ISceneNode* parent,
+	f32 rotateSpeed, f32 zoomSpeed, f32 translationSpeed, s32 id, f32 distance,
+	bool makeActive)
+{
+	ICameraSceneNode* node = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode(parent, core::vector3df(),
+			core::vector3df(0,0,100), id, makeActive);
+	if (node)
+	{
+		ISceneNodeAnimator* anm = new CSceneNodeAnimatorCameraMaya(App::getInstance()->getDevice()->getCursorControl(),
+			rotateSpeed, zoomSpeed, translationSpeed, distance);
+
+		node->addAnimator(anm);
+		anm->drop();
+	}
+
+	return node;
 }
 
 void CameraSystem::setCameraHeight(irr::f32 increments)
