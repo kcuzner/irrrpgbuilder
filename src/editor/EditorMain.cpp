@@ -10,17 +10,41 @@ IMPLEMENT_APP(CIrrApp)
 bool CIrrApp::OnInit()
 {
 	
-	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - January 2012"), wxPoint(0,0), wxSize(1024,768) );
+	CIrrFrame *frame = new CIrrFrame( _T("IRR RPG Builder (SVN Release 0.2 Alpha) - January 2012"), wxPoint(0,0), wxSize(10,10) );
 	frame->Show(TRUE);
 	
+	//App::getInstance()->loadConfig();
+
+	// create a NULL device to detect screen resolution
+	core::dimension2d<u32> deskres=core::dimension2d<u32>(0,0);
+	if (App::getInstance()->fullScreen)
+	{
+		IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
+		deskres = nulldevice->getVideoModeList()->getDesktopResolution();
+		nulldevice -> drop();
+		deskres.Height-=30;
+		deskres.Width-=8;
+		frame->SetSize(deskres.Width,deskres.Height);
+	}
+	else
+	{
+		frame->SetSize(App::getInstance()->getScreenSize().Width, App::getInstance()->getScreenSize().Height);
+		deskres.Height=(u32)frame->GetScreenRect().GetHeight()-60;
+		deskres.Width=(u32)frame->GetScreenRect().GetWidth()-16;
+	}
+
+
 	frame->Centre();
 	SetTopWindow(frame);
+	frame->Show(TRUE);
+	
 	if (App::getInstance()->getDevice()->run()==true)
 	{
+		App::getInstance()->setScreenSize(deskres);
 		App::getInstance()->hideEditGui();
 		App::getInstance()->initialize();
 		App::getInstance()->run();	
-	}
+	}	
 	return TRUE;
 }
 
@@ -88,23 +112,13 @@ END_EVENT_TABLE()
 
 CIrrFrame::CIrrFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
 {
-	/* m_ribbon = new wxRibbonBar(this, wxID_ANY);
-	m_ribbon1 = new wxRibbonBar(this, wxID_ANY);
-    m_ribbon2 = new wxRibbonBar(this, wxID_ANY); */
-
-	//this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
-	
-	// Try to set the instance
-	//static instance=this;
-
-
 	SetIcon(wxICON(sample));
 	wxBoxSizer* bSizer1;
 	wxBoxSizer* bSizer2;
 
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
+
 
 	window3D = new wxCIWindow( this, wxID_ANY, style, irr::video::EDT_OPENGL, true );
 	App::getInstance()->setupDevice(window3D->getDevice());

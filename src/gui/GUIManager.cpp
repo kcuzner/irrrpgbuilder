@@ -781,7 +781,8 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->addItem(L"NPC");
-	guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
+	//Since they are not yet implemented, theses will be off for the moment.
+	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	guiDynamicObjects_Category->addItem(L"PROPS");
 
 

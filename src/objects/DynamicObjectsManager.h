@@ -59,6 +59,7 @@ class DynamicObjectsManager
 		DynamicObject* getDialogCaller();
 
         void initializeAllScripts();
+		void displayShadow(bool visible);
         void updateAll();
         void clearAllScripts();
 

@@ -61,7 +61,8 @@ Vegetation::Vegetation(int type)
     trunk->setMaterialFlag(EMF_FOG_ENABLE,true);
     fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
-    trunk->setDebugDataVisible(true);
+	// Temporary down, evaluating the need to display debug data for this
+    //trunk->setDebugDataVisible(true);
 }
 
 Vegetation::~Vegetation()

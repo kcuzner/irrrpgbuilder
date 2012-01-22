@@ -55,6 +55,8 @@ namespace irr
 			//! sets the color of the progress bar border 
 			virtual void setBorderColor(video::SColor color); 
 
+			virtual void setVisible (bool visible);
+
 
 		private: 
 

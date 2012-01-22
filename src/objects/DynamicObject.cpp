@@ -185,8 +185,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
+			fakeShadow->setScale(vector3df(0.75f,0.75f,0.75f));
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
+			
 			// Temporary fix. Need to have a shadow scaled to the size of the object.
 			// This need to be calculated proportionnaly to the object.
 		
@@ -224,6 +226,7 @@ DynamicObject* DynamicObject::clone()
 	newObj->setTemplate(false);
 	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
 
+	fakeShadow->setVisible(false);
 	// Preset telling the die animation is present (will be tested for this)
     return newObj;
 }
@@ -282,7 +285,8 @@ vector3df DynamicObject::getPosition()
 	}
 	else
 	{
-		return vector3df(0,0,0);
+		return node->getAbsolutePosition();
+		//return vector3df(0,0,0);
 	}
 
 	//return node->getPosition();

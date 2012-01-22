@@ -20,6 +20,7 @@ CameraSystem::CameraSystem()
 	gameCam->setFarValue(5000);
 	// Irrlicht based camera
 	// editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
+
 	// New patched camera
 	editCamMaya = addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
 	editCamMaya->setFarValue(16000);
@@ -53,6 +54,7 @@ void CameraSystem::setCamera(int tempCamera)
 				cameraHeight = 350.0f;
 				currentCam = gameCam;
 				currentCam->setPosition(vector3df(0,cameraHeight,0));
+				gameCam->setFarValue(50000);
 				break;
 
 		// Camera 2 - Editing
@@ -132,7 +134,16 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	if (cameraHeight<min)
 		cameraHeight=min;
 	if (camera==2 && cameraHeight!=min && cameraHeight!=max)
-		editCamMaya->setPosition(vector3df(editCamMaya->getPosition().X,cameraHeight,editCamMaya->getPosition().Z+(increments*0.1f)));
+	{
+		core::list<ISceneNodeAnimator*>::ConstIterator anims=editCamMaya->getAnimators().begin(); 
+		CSceneNodeAnimatorCameraMaya* anm=(CSceneNodeAnimatorCameraMaya*)*anims;
+
+		f32 distance = anm->getDistance();
+		distance=distance+(increments*10.0f);
+		anm->setDistance(distance);
+		//anm->drop();
+
+	}
 	else
 		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
 

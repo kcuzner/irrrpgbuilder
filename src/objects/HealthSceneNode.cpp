@@ -31,7 +31,7 @@ namespace irr
 			BorderColor(BorderColorIn), 
 			m_gDim( width, height ), 
 			m_bBorder(1), 
-			isVisible(1), 
+			isVisible(false), 
 			m_s32Percent(100) 
 		{ 
 #ifdef _DEBUG 
@@ -52,6 +52,12 @@ namespace irr
 		HealthSceneNode::~HealthSceneNode() 
 		{ 
 		} 
+
+
+		void HealthSceneNode::setVisible(bool visible)
+		{
+			isVisible=visible;
+		}
 
 		void HealthSceneNode::OnRegisterSceneNode() 
 		{ 

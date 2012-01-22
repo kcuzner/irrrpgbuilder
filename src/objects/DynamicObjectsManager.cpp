@@ -638,6 +638,22 @@ void DynamicObjectsManager::initializeAllScripts()
     }
 }
 
+void DynamicObjectsManager::displayShadow(bool visible)
+{
+	for(int i=0;i<(int)objects.size();i++)
+    {
+		// Non interactive objects will not be refreshed (update callback)
+		// Should help with performance and allow for more NPC/Interactive objects.
+		if (objects[i])
+		{
+			if (objects[i]->getType()!=OBJECT_TYPE_EDITOR)
+			{
+				((DynamicObject*)objects[i])->getShadow()->setVisible(visible);
+			}
+		}
+    }
+}
+
 void DynamicObjectsManager::updateAll()
 {
 

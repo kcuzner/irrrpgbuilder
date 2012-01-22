@@ -2,10 +2,10 @@
 <IrrRPG_Builder_DynamicObjects version="1.0">
 	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="80.0">
 		<animation name="idle"  start="1" end="300" />
-		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="6.5"/>
-		<animation name="run" start="333" end="362" speed="40.0" movespeed="17"/>
+		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="12"/>
+		<animation name="run" start="333" end="362" speed="40.0" movespeed="28"/>
 		<animation name="attack" start="365" end="396" speed="30.0" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>
 		<animation name="die" start="396" end="420" speed="30" loop="false" soundevent="397" sound="player/44262__Erdie__male_fight02.ogg"/>
-		<animation name="hurt" start="427" end="433" loop="false" soundevent="429" sound="player/44268__Erdie__male_fight08.ogg"/>
+		<animation name="hurt" start="427" end="457" loop="false" soundevent="428" sound="player/44268__Erdie__male_fight08.ogg"/>
 	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>

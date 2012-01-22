@@ -120,6 +120,7 @@ class App
 
 		void saveProjectToXML(stringc filename);
         bool loadProjectFromXML(stringc filename);
+		bool loadConfig();
 
 		// Used by wxWidget to retrieve the color and text of the console events
 		std::vector<stringw> getConsoleText();
@@ -134,7 +135,8 @@ class App
 
 		bool wxSystemState;
 
-
+		//temporary made public for the wxWidget system to determine if the config is fullscreen
+		bool fullScreen;
 
 		// used for the logger
 		std::vector<core::stringw> textevent;
@@ -150,6 +152,7 @@ class App
 
         bool cursorIsInEditArea();
 		vector3df oldcampos;
+		vector3df oldcamtar;
 	
         IrrlichtDevice *device;
         IVideoDriver* driver;
@@ -161,11 +164,13 @@ class App
 		u32 timer3;
 		
 		dimension2d<u32> screensize;
-		bool fullScreen;
+
+		//temporary made public
+		//bool fullScreen;
 		bool resizable;
 		
 		stringc language;
-		bool loadConfig();
+		
 		
         APP_STATE app_state;
 		APP_STATE old_state;

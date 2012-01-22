@@ -144,7 +144,6 @@ void App::drawBrush()
 	  pos2.Z+=sin(degInRad2)*radius;
 	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
 	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
-	  //printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos.Y,pos.Z);
 	}
 
 	// Center circle for the brush give the center
@@ -174,12 +173,6 @@ bool App::cursorIsInEditArea()
     bool condition = true;
 	if (GUIManager::getInstance()->isGuiPresent(device->getCursorControl()->getPosition()))
 		condition = false;
-
-    // Perhaps remove this (nov 2011)...
-	#ifndef _WXMSW
-	//is over the main toolbar??
-    if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
-	#endif
 
 	// New code (nov 2011)
 	if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
@@ -395,7 +388,7 @@ void App::eventGuiButton(s32 id)
 
 		case BT_ID_NEW_PROJECT:
             //
-			#ifdef wxWIDGET
+			#ifdef _wxWIDGET
 			appFrame->OnNew();
 			#else
 			this->createNewProject();
@@ -404,7 +397,7 @@ void App::eventGuiButton(s32 id)
         case BT_ID_LOAD_PROJECT:
 
             //
-			#ifdef wxWIDGET
+			#ifdef _wxWIDGET
 			appFrame->OnLoad();
 			#else
 			this->loadProject();
@@ -412,7 +405,7 @@ void App::eventGuiButton(s32 id)
 			this->setAppState(APP_EDIT_LOOK);
             break;
         case BT_ID_SAVE_PROJECT:
-			#ifdef wxWIDGET
+			#ifdef _wxWIDGET
             appFrame->OnSave();
 			#else
 			this->saveProject();
@@ -779,8 +772,17 @@ void App::eventMouseWheel(f32 value)
     {
 		if (app_state < 100)
 		{
-			f32 height = CameraSystem::getInstance()->getPosition().Y;
-			CameraSystem::getInstance()->setCameraHeight(value * (height*0.25f));
+			// not in viewdrag mode then enable the cam, then set the camera height then disable it again
+			if (app_state != APP_EDIT_VIEWDRAG)
+			{
+				//This part doesnt seem to work ATM.
+				CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(true);
+				CameraSystem::getInstance()->setCameraHeight(value);
+				CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
+			}
+			else
+				CameraSystem::getInstance()->setCameraHeight(value);
+
 		}
 		else
 			CameraSystem::getInstance()->setCameraHeight(value * 50);
@@ -868,10 +870,11 @@ bool App::loadConfig()
 #endif
 
 #ifdef EDITOR
+	// File to load if it's the editor
 	TiXmlDocument doc("config.xml");
 #else
+	// File to load if it's the player build
 	TiXmlDocument doc("gameconfig.xml");
-	printf("Loaded gameconfig for the player app\n");
 #endif
 
 	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
@@ -896,13 +899,26 @@ bool App::loadConfig()
         TiXmlElement* resXML = root->FirstChildElement( "screen" );
         if ( resXML )
         {
-#ifndef _WXMSW
 			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
 			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
-#endif
+			#ifdef _wxWIDGET
+				screensize.Width-=16;
+				screensize.Height-=60;
+			#endif
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
+			{
+				/*#ifdef _wxWIDGET
+				// create a NULL device to detect screen resolution
+				IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
+				core::dimension2d<u32> deskres = nulldevice->getVideoModeList()->getDesktopResolution();
+				nulldevice -> drop();
+				deskres.Height-=30;
+				deskres.Width-=8;
+				screensize=deskres;
+				#endif*/
 				fullScreen=true;
+			}
 			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
@@ -980,7 +996,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
 
 	loadConfig();
-
+	
 	if (!IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
@@ -1017,19 +1033,28 @@ void App::playGame()
 {
 	if (app_state<APP_STATE_CONTROL)
 	{
-		oldcampos = Player::getInstance()->getObject()->getPosition();
+		//oldcampos = Player::getInstance()->getObject()->getPosition();
+		oldcampos = CameraSystem::getInstance()->editCamMaya->getPosition();
+		oldcamtar = CameraSystem::getInstance()->editCamMaya->getTarget();
+		LuaGlobalCaller::getInstance()->storeGlobalParams();
+
+		DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(1);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
 		this->setAppState(APP_GAMEPLAY_NORMAL);
-		LuaGlobalCaller::getInstance()->storeGlobalParams();
+		
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
-		DynamicObjectsManager::getInstance()->showDebugData(false);
+		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
+		//DynamicObjectsManager::getInstance()->showDebugData(false);
+		//TerrainManager::getInstance()->showDebugData(false);
+		
 		DynamicObjectsManager::getInstance()->startCollisions();
 		//DynamicObjectsManager::getInstance()->initializeCollisions();
-		TerrainManager::getInstance()->showDebugData(false);
+		
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
 		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+		
 	}
 }
 
@@ -1037,19 +1062,30 @@ void App::stopGame()
 {
 	if (app_state>APP_STATE_CONTROL)
 	{
+		LuaGlobalCaller::getInstance()->restoreGlobalParams();
+		GlobalMap::getInstance()->clearGlobals();
+
 		DynamicObjectsManager::getInstance()->clearAllScripts();
 		DynamicObjectsManager::getInstance()->clearCollisions();
-		DynamicObjectsManager::getInstance()->showDebugData(true);
+		DynamicObjectsManager::getInstance()->displayShadow(false);
+		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
+		// DynamicObjectsManager::getInstance()->showDebugData(true);
+		// TerrainManager::getInstance()->showDebugData(true);
 		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-		TerrainManager::getInstance()->showDebugData(true);
-		LuaGlobalCaller::getInstance()->restoreGlobalParams();
+		
+		
 		SoundManager::getInstance()->stopSounds();
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
-		GlobalMap::getInstance()->clearGlobals();
+		
 		this->setAppState(APP_EDIT_LOOK);
+		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(oldcampos));
+		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(oldcamtar));
 		CameraSystem::getInstance()->setCamera(2);
-		CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+		
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+
+		
 	}
 }
 
@@ -1194,9 +1230,9 @@ void App::updateEditMode()
 						old_state = app_state;
 
 					setAppState(APP_EDIT_VIEWDRAG);
-					if(EventReceiver::getInstance()->isMousePressed(0))
+					
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
-						vector3df camPosition = this->getMousePosition3D(100).pickedPos;
+						// vector3df camPosition = this->getMousePosition3D(100).pickedPos;
 						// Unlock the maya camera (Need to be improved)
 						if (!CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
 							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(true);
