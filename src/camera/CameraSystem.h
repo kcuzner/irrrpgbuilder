@@ -3,7 +3,7 @@
 
 #include "../App.h"
 #include "../objects/Player.h"
-#include "CSceneNodeAnimatorCameraMaya.h"
+#include "CSceneNodeAnimatorCameraMayaIRB.h"
 #include <irrlicht.h>
 
 using namespace irr;
@@ -34,7 +34,7 @@ class CameraSystem
 
         void moveCamera(vector3df pos);
         void setPosition(vector3df pos);
-		
+
 		ICameraSceneNode* getNode();
 
         vector3df getPosition();
@@ -53,7 +53,7 @@ class CameraSystem
         CameraSystem();
 
         ICameraSceneNode* gameCam;
-		
+
 		ICameraSceneNode* editCamFPS;
 		ICameraSceneNode* currentCam;
 		//static const irr::f32 cameraHeight;

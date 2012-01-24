@@ -82,10 +82,10 @@ void CameraSystem::setCamera(int tempCamera)
 
 	currentCam->setFOV(fov);
 	currentCam->setTarget(getTarget());
-	
-	
-	
-	
+
+
+
+
     //cam->setNearValue(12.0f);
 	// Add a specular light to the camera.
 	if (!lightset)
@@ -114,7 +114,7 @@ ICameraSceneNode* CameraSystem::addCameraSceneNodeMaya(ISceneNode* parent,
 			core::vector3df(0,0,100), id, makeActive);
 	if (node)
 	{
-		ISceneNodeAnimator* anm = new CSceneNodeAnimatorCameraMaya(App::getInstance()->getDevice()->getCursorControl(),
+		ISceneNodeAnimator* anm = new CSceneNodeAnimatorCameraMayaIRB(App::getInstance()->getDevice()->getCursorControl(),
 			rotateSpeed, zoomSpeed, translationSpeed, distance);
 
 		node->addAnimator(anm);
@@ -132,23 +132,23 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	switch (camera)
 	{
 		/*case 1: max = 6;
-				min = 2;	
+				min = 2;
 				break;*/
 		case 1: max = 800;
-				min = 100;	
+				min = 100;
 				break;
 		case 2: max = 10000;
 				min = 100;
 				break;
 	}
-	if (cameraHeight>max) 
+	if (cameraHeight>max)
 		cameraHeight=max;
 	if (cameraHeight<min)
 		cameraHeight=min;
 	if (camera==2 && cameraHeight!=min && cameraHeight!=max)
 	{
-		core::list<ISceneNodeAnimator*>::ConstIterator anims=editCamMaya->getAnimators().begin(); 
-		CSceneNodeAnimatorCameraMaya* anm=(CSceneNodeAnimatorCameraMaya*)*anims;
+		core::list<ISceneNodeAnimator*>::ConstIterator anims=editCamMaya->getAnimators().begin();
+		CSceneNodeAnimatorCameraMayaIRB* anm=(CSceneNodeAnimatorCameraMayaIRB*)*anims;
 
 		f32 distance = anm->getDistance();
 		distance=distance+(increments*10.0f);
