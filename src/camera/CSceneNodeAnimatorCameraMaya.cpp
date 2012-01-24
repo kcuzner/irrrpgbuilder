@@ -156,6 +156,7 @@ void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
 		RotX = -InitialRotation.Y;
 		RotY = -InitialRotation.X;
 		CurrentZoom = camera->getPosition().getDistanceFrom(camera->getTarget());
+		MousePos==core::position2df(0.5f,0.5f);
 	}
 
 	f32 nRotX = RotX;

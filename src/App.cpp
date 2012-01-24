@@ -30,6 +30,8 @@ App::App()
  wxSystemState=false;
  app_state=APP_EDIT_LOOK;
  textevent.clear();
+ lastScannedPick.pickedNode=NULL;
+ lastPickedNodeName="";
  timer=0;
  timer2=0;
  timer3=0;
@@ -93,7 +95,7 @@ void App::drawBrush()
 
 
 	// Render the size of the brush.
-	f32 framesize = 3;
+	f32 framesize = 5;
 	int step=10;
 	for (int i=0; i<(360); i=i+step)
 	{
@@ -101,13 +103,13 @@ void App::drawBrush()
 		vector3df pos=position;
 		pos.X+=cos(degInRad)*radius;
 		pos.Z+=sin(degInRad)*radius;
-		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
+		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
 
 		float degInRad2 = (i+step)*DEG2RAD;
 		vector3df pos2=position;
 		pos2.X+=cos(degInRad2)*radius;
 		pos2.Z+=sin(degInRad2)*radius;
-		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
+		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
 		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 		vector3df pos3=position;
@@ -123,11 +125,42 @@ void App::drawBrush()
 		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
 		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
 
-	  // printf ("Here are the coordinates %d %f,%f,%f \n",i,pos.X,pos3.X,pos.Z);
 	}
 
-
+	// Center circle for the brush give the center
 	radius=5;
+	framesize = 2;
+	step=15;
+	for (int i=0; i<(360); i=i+step)
+	{
+		float degInRad = i*DEG2RAD;
+		vector3df pos=position;
+		pos.X+=cos(degInRad)*radius;
+		pos.Z+=sin(degInRad)*radius;
+		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+
+		float degInRad2 = (i+step)*DEG2RAD;
+		vector3df pos2=position;
+		pos2.X+=cos(degInRad2)*radius;
+		pos2.Z+=sin(degInRad2)*radius;
+		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+
+		vector3df pos3=position;
+		pos3.X+=cos(degInRad)*(radius+framesize);
+		pos3.Z+=sin(degInRad)*(radius+framesize);
+		pos3.Y=pos.Y;
+
+		vector3df pos4=position;
+		pos4.X+=cos(degInRad2)*(radius+framesize);
+		pos4.Z+=sin(degInRad2)*(radius+framesize);
+		pos4.Y=pos2.Y;
+
+		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
+		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
+
+	}
+	/*radius=5;
 	step=30;
 	for (int i=0; i<(360-step); i=i+step)
 	{
@@ -135,16 +168,16 @@ void App::drawBrush()
 	  vector3df pos=position;
 	  pos.X+=cos(degInRad)*radius;
 	  pos.Z+=sin(degInRad)*radius;
-	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+2;
+	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
 
 
 	  float degInRad2 = (i+step)*DEG2RAD;
 	  vector3df pos2=position;
 	  pos2.X+=cos(degInRad2)*radius;
 	  pos2.Z+=sin(degInRad2)*radius;
-	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+2;
+	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
 	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
-	}
+	}*/
 
 	// Center circle for the brush give the center
 
@@ -387,7 +420,9 @@ void App::eventGuiButton(s32 id)
 	#ifdef EDITOR
 
 		case BT_ID_NEW_PROJECT:
-            //
+            
+			lastScannedPick.pickedNode=NULL;
+			//
 			#ifdef _wxWIDGET
 			appFrame->OnNew();
 			#else
@@ -468,7 +503,12 @@ void App::eventGuiButton(s32 id)
         case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
-            setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			
+			// remove the object for the selection
+			lastScannedPick.pickedNode=NULL;
+			lastMousePick.pickedNode=NULL;
+            
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
         case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -701,7 +741,7 @@ void App::eventMousePressed(s32 mouse)
 {
     switch(mouse)
     {///TODO: colocar acoes mais comuns acima e menos comuns nos elses
-        case 0://LB
+        case 0://Left button (default)
             if( cursorIsInEditArea())
             {
                 if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -743,7 +783,51 @@ void App::eventMousePressed(s32 mouse)
                 }
             }
             break;
-        case 3:
+		case 2:
+			// Right button (Action the same as the left button)
+			if( cursorIsInEditArea())
+            {
+                if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
+                {
+					TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+                }
+                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+                {
+                    MousePick mousePick = getMousePosition3D();
+
+					lastMousePick = mousePick;
+					stringc nodeName = "";
+					// Check for a node to prevent a crash (need to get the name of the node)
+					if (mousePick.pickedNode != NULL)
+					{
+						nodeName = mousePick.pickedNode->getName();
+
+						//if you click on a Dynamic Object then open his properties
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+						{
+							cout << "PROP:" << nodeName.c_str() << endl;
+
+							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
+							App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+						}
+						else//create a new copy of active dynamic object at the clicked position
+						{
+							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+
+							#ifdef APP_DEBUG
+							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
+							#endif
+						}
+					}
+                }
+                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+                {
+                    setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+                }
+            }
+            break;
+
+        case 3: //Mousewheel pressed
             break;
     }
 }
@@ -835,6 +919,40 @@ MousePick App::getMousePosition3D(int id)
 
         return result;
     }
+}
+
+
+void App::setPreviewSelection()
+{   
+	// Will get a toggle selection
+	MousePick mousePick = getMousePosition3D();
+
+	
+	stringc nodeName = "";
+	// Check for a node to prevent a crash (need to get the name of the node)
+	if (mousePick.pickedNode != NULL)
+	{
+		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			nodeName = mousePick.pickedNode->getName();
+			//If the mouse hover the object it will be toggled in debug data (bounding box, etc)
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+			{
+				if (nodeName!=lastPickedNodeName && lastScannedPick.pickedNode!=NULL)
+					lastScannedPick.pickedNode->setDebugDataVisible(0);
+
+				lastScannedPick = mousePick;
+				lastPickedNodeName=nodeName;
+				if (mousePick.pickedNode!=NULL)
+					mousePick.pickedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+			}
+			//if the mouse is not over the object anymore then it will "deselect" it
+			else if (lastScannedPick.pickedNode!=NULL)
+			{
+				lastScannedPick.pickedNode->setDebugDataVisible(0);
+			}
+		}
+	} 
 }
 
 bool App::loadConfig()
@@ -1038,7 +1156,7 @@ void App::playGame()
 		oldcamtar = CameraSystem::getInstance()->editCamMaya->getTarget();
 		LuaGlobalCaller::getInstance()->storeGlobalParams();
 
-		DynamicObjectsManager::getInstance()->displayShadow(true);
+		//DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(1);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
@@ -1067,7 +1185,7 @@ void App::stopGame()
 
 		DynamicObjectsManager::getInstance()->clearAllScripts();
 		DynamicObjectsManager::getInstance()->clearCollisions();
-		DynamicObjectsManager::getInstance()->displayShadow(false);
+		//DynamicObjectsManager::getInstance()->displayShadow(false);
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		// DynamicObjectsManager::getInstance()->showDebugData(true);
 		// TerrainManager::getInstance()->showDebugData(true);
@@ -1078,9 +1196,12 @@ void App::stopGame()
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
 		
 		this->setAppState(APP_EDIT_LOOK);
-		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(oldcampos));
-		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(oldcamtar));
+		
+
+		CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
 		CameraSystem::getInstance()->setCamera(2);
+		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f)); 
+		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f)); 
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 		
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
@@ -1213,6 +1334,11 @@ void App::updateEditMode()
 	
 	if ((timer-timer2)>17) // 1/60th second refresh interval
 	{
+
+		// Trie to display the node as we go with the mouse cursor in edit mode
+		setPreviewSelection();
+
+
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{

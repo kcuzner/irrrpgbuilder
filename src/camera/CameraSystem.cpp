@@ -18,12 +18,18 @@ CameraSystem::CameraSystem()
 	lightset=false;
 	gameCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
 	gameCam->setFarValue(5000);
+	gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 	// Irrlicht based camera
 	// editCamMaya = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
 
 	// New patched camera
 	editCamMaya = addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
 	editCamMaya->setFarValue(16000);
+	editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
+	editCamMaya->setPosition(vector3df(0,1000,-1000));
+	editCamMaya->setTarget(vector3df(0,0,0));
 	setCamera(camera);
 }
 
@@ -51,6 +57,8 @@ void CameraSystem::setCamera(int tempCamera)
 	{
 		// Camera 1 - Gameplay
 		case 1: fov=0.65f;
+			gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				cameraHeight = 350.0f;
 				currentCam = gameCam;
 				currentCam->setPosition(vector3df(0,cameraHeight,0));
@@ -62,7 +70,11 @@ void CameraSystem::setCamera(int tempCamera)
 				cameraHeight = 1000.0f;
 				currentCam = editCamMaya;
 				editCamMaya->setInputReceiverEnabled(false);
-				editCamMaya->setPosition(vector3df(1000,cameraHeight,-1000));
+				//editCamMaya->setPosition(vector3df(1000,cameraHeight,-1000));
+				editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
+				editCamMaya->setInputReceiverEnabled(true);
+				editCamMaya->setInputReceiverEnabled(false);
 				//editCamMaya->setFarValue(cameraHeight*3.0f);
 				break;
 	}

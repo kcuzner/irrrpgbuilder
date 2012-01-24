@@ -48,7 +48,7 @@ EffectsManager::EffectsManager()
     mainParticleSystem->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     //default particle texture -> media/rain.png
-    //mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
+    mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
 
     mainParticleSystem->setVisible(false);
 

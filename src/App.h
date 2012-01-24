@@ -151,6 +151,8 @@ class App
 		//ConsoleDialog * console_dialog;
 
         bool cursorIsInEditArea();
+		void setPreviewSelection();
+
 		vector3df oldcampos;
 		vector3df oldcamtar;
 	
@@ -179,11 +181,14 @@ class App
 
         stringc currentProjectName;
 
+		stringc lastPickedNodeName;
+
 // Used to load the startup map when the game start (only the player app)
 #ifndef EDITOR
 		stringc mapname;
 #endif
         MousePick lastMousePick;
+		MousePick lastScannedPick;
 
 		// The "appFrame" object contain the most of the wxWidget controls and are accessible from there.
 		CIrrFrame * appFrame;

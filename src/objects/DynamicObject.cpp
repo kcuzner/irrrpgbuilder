@@ -272,24 +272,23 @@ void DynamicObject::setPosition(vector3df pos)
 {
 
 	node->setPosition(pos);
-	vector3df pos2 = node->getAbsolutePosition();
 	node->updateAbsolutePosition();
 }
 
 vector3df DynamicObject::getPosition()
 {
-	if (fakeShadow)
+	//Fakeshadow seem to cause problems... Let put this off while we investigate
+	/*if (fakeShadow)
 	{
 		vector3df pos = fakeShadow->getAbsolutePosition();
 		return pos;
 	}
 	else
+	*/
 	{
 		return node->getAbsolutePosition();
 		//return vector3df(0,0,0);
 	}
-
-	//return node->getPosition();
 }
 
 void DynamicObject::setRotation(vector3df rot)
