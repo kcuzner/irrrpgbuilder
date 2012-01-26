@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-	<dynamic_object name="peasant" mesh="npc/peasant.b3d" type="npc" script="generic_follower.lua" scale="60" materialType="solid">
-		<animation name="idle" start="0" end="0" speed="1.0"/>
-		<animation name="walk" start="1" end="25" speed="25.0" movespeed="10"/>
+	<dynamic_object name="Archer" mesh="npc/Archer.b3d" type="npc" script="" scale="0.75" materialType="transparent_1bit">
+		<animation name="idle" start="0" end="0" speed="30"/>
+	</dynamic_object>
+	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="36" materialType="solid">
+		<animation name="idle" start="0" end="0" speed="30"/>
+		<animation name="attack" start="16" end="20" speed="15" attackevent="17" soundevent="17" sound="frog/frog_croak_b.ogg"/>
+		<animation name="hurt" start="16" end="20" speed="15"/>
+		<animation name="walk" start="1" end="15" speed="30.0" movespeed="2.5" soundevent="5" sound="frog/frog_croak.ogg"/>
 	</dynamic_object>
 	<dynamic_object name="goblin" mesh="npc/goblin_anims.b3d" type="npc" script="ai_goblin.lua" scale="46" materialType="solid">
 		<animation name="idle" start="1" end="240" speed="30.0"/>
@@ -12,20 +17,18 @@
 		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>
 		<animation name="despawn" start="346" end="370" speed="5.0" loop="false" />
 	</dynamic_object>
-	<dynamic_object name="Giant goblin" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid">
+	<dynamic_object name="goblin giant version" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid">
 		<animation name="idle" start="1" end="1" speed="10"/>
 		<animation name="walk" start="1" end="100" speed="30.0" movespeed="9"/>
+	</dynamic_object>
+	<dynamic_object name="peasant" mesh="npc/peasant.b3d" type="npc" script="generic_follower.lua" scale="60" materialType="solid">
+		<animation name="idle" start="0" end="0" speed="1.0"/>
+		<animation name="walk" start="1" end="25" speed="25.0" movespeed="10"/>
 	</dynamic_object>
 	<dynamic_object name="wizard" mesh="npc/mago.b3d" type="npc" script="ai_goblin.lua" scale="60" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="1.0"/>
 		<animation name="attack" start="26" end="36" speed="25.0" attackevent="30" soundevent="30"/>
 		<animation name="die" start="37" end="47" speed="25.0" loop="false"/>
 		<animation name="walk" start="0" end="25" speed="25.0" movespeed="6.5"/>
-	</dynamic_object>
-	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="36" materialType="solid">
-		<animation name="idle" start="0" end="0" speed="30"/>
-		<animation name="attack" start="16" end="20" speed="15" attackevent="17" soundevent="17" sound="frog/frog_croak_b.ogg"/>
-		<animation name="hurt" start="16" end="20" speed="15"/>
-		<animation name="walk" start="1" end="15" speed="30.0" movespeed="2.5" soundevent="5" sound="frog/frog_croak.ogg"/>
 	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>
