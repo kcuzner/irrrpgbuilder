@@ -693,6 +693,9 @@ void DynamicObjectsManager::updateAll()
 			}
 		}
     }
+
+	//Update player code (Will need to investigate to not update 2 times the player)
+	Player::getInstance()->update(); // This one is timed now.
 	
 	if (createcollisions)
 		initializeCollisions();

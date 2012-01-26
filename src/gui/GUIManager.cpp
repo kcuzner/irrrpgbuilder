@@ -1291,7 +1291,7 @@ void GUIManager::setupGameplayGUI()
 
 	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiPlayerNodePreview->setNode(Player::getInstance()->getNodeRef());
-	DynamicObjectsManager::getInstance()->setActiveObject("peasant");
+	DynamicObjectsManager::getInstance()->setActiveObject("Archer");
 	//printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
 	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 

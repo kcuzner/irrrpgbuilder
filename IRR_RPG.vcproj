@@ -721,11 +721,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMaya.cpp"
+					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMayaIRB.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMaya.h"
+					RelativePath=".\src\camera\CSceneNodeAnimatorCameraMayaIRB.h"
 					>
 				</File>
 			</Filter>
