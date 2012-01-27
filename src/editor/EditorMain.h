@@ -18,10 +18,6 @@
 #include "wx/frame.h"
 //#include "wx/textctrl.h"
 #include <wx/listctrl.h> 
-//#include "wx/ribbon/bar.h"
-//#include "wx/ribbon/buttonbar.h"
-//#include "wx/ribbon/gallery.h"
-//#include "wx/ribbon/toolbar.h"
 #include "wx/sizer.h"
 #include "wx/menu.h"
 #include "wx/dcbuffer.h"
@@ -112,7 +108,6 @@ class CIrrFrame : public wxFrame
 
 		CIrrFrame getInstance();
 		void OnProgressTimer(wxTimerEvent& event);
-		//void OnQuit(wxRibbonButtonBarEvent& WXUNUSED(evt));
 		void OnClose (wxCloseEvent& e);
 		void OnAbout(wxCommandEvent &event);
 		void OnStartUpdate(wxCommandEvent &event);
@@ -125,28 +120,10 @@ class CIrrFrame : public wxFrame
 		void OnLoad();
 
 		void MessageStatus(core::stringw message);
-		
-		//Were called by the ribbon, removed in this version
-		//void OnNew(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnSave(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnLoad(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnPlay(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnStop(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnAbout(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnLog(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnObjectEditMode(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnPlayerEdit(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnScriptGlobal(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnScriptPlayer(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnTerrainSegment(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnTerrainTransform(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnTerrainTree(wxRibbonButtonBarEvent& WXUNUSED(evt));
-		//void OnDisplayConsole(wxRibbonButtonBarEvent& WXUNUSED(evt));
 
 		int MessageBox(core::stringw message, core::stringw message2, int buttons);
 		core::stringw FileOpen(core::stringw message);
 		core::stringw FileSave();
-		void UncheckAllButtons();
 		ConsoleDialog * console_dialog;
 
 		DECLARE_EVENT_TABLE()
@@ -155,20 +132,8 @@ class CIrrFrame : public wxFrame
 		wxIDevice *device3D;
 		wxCIWindow *window3D;
 
-/*		wxRibbonBar* m_ribbon;
-		wxRibbonBar* m_ribbon1;
-		wxRibbonBar* m_ribbon2;
 
-		wxRibbonButtonBar *test_button;
-		wxRibbonButtonBar *project;
-		wxRibbonButtonBar *terrain_button;
-		wxRibbonButtonBar *terrain_buttonv;
-		wxRibbonButtonBar *dynobject_button;
-		wxRibbonButtonBar *script_button;
-		wxRibbonButtonBar *tools_button;
-		wxRibbonButtonBar *option_button; */
 	private:
-		//ConsoleDialog * console_dialog;
 };
 
 #endif // WXIRRHELLOAPP_H

@@ -58,6 +58,8 @@ class DynamicObjectsManager
 		void setDialogCaller(DynamicObject* object);
 		DynamicObject* getDialogCaller();
 
+		void updateAnimationBlend();
+		void objectsToIdle();
         void initializeAllScripts();
 		void displayShadow(bool visible);
         void updateAll();

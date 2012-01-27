@@ -578,7 +578,7 @@ void DynamicObjectsManager::freezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
 		{
 			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
 			nodeanim->setAnimationSpeed(0);
@@ -591,7 +591,7 @@ void DynamicObjectsManager::unFreezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC)
+		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
 		{
 			DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
 			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
@@ -694,7 +694,7 @@ void DynamicObjectsManager::updateAll()
 		}
     }
 
-	//Update player code (Will need to investigate to not update 2 times the player)
+	//Update player code
 	Player::getInstance()->update(); // This one is timed now.
 	
 	if (createcollisions)
@@ -724,6 +724,39 @@ void DynamicObjectsManager::showDebugData(bool show)
 			{
 				((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 				objects[i]->objectLabelSetVisible(false);
+			}
+		}
+	}
+}
+
+void DynamicObjectsManager::updateAnimationBlend()
+{
+	 for(int i=0;i<(int)objects.size();i++)
+	{
+		// We don't need to have bounding box and other data over the player
+		if (objects[i])
+		{
+			if (objects[i]->getType()==OBJECT_TYPE_PLAYER || objects[i]->getType()==OBJECT_TYPE_NPC)
+			{
+				((IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode())->animateJoints();
+			}
+		}
+	}
+}
+
+
+void DynamicObjectsManager::objectsToIdle()
+{
+	 for(int i=0;i<(int)objects.size();i++)
+	{
+		// We don't need to have bounding box and other data over the player
+		if (objects[i])
+		{
+			if (objects[i]->getType()==OBJECT_TYPE_PLAYER || objects[i]->getType()==OBJECT_TYPE_NPC)
+			{
+				((DynamicObject*)objects[i])->setAnimation("idle");
+				((DynamicObject*)objects[i])->objectLabelSetVisible(false);
+
 			}
 		}
 	}

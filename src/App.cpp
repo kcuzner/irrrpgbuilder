@@ -1180,6 +1180,7 @@ void App::stopGame()
 {
 	if (app_state>APP_STATE_CONTROL)
 	{
+		DynamicObjectsManager::getInstance()->objectsToIdle();
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
 		GlobalMap::getInstance()->clearGlobals();
 
@@ -1251,6 +1252,9 @@ void App::update()
 		// Check for events of the logger
 		GUIManager::getInstance()->setConsoleLogger(textevent);
 
+		// This will calculate the animation blending for the nodes
+		DynamicObjectsManager::getInstance()->updateAnimationBlend();
+
 		smgr->drawAll();
 
 		// Tries to do an post FX
@@ -1280,7 +1284,7 @@ void App::run()
 {
 // Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
-    this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+    this->setAppState(APP_EDIT_LOOK);
 #else
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
@@ -1492,7 +1496,10 @@ void App::updateGameplay()
 		// It would be interesting to put this for the "player controls"
 		// As I would like to define other ways to control the targeting of the player
 
-		Player::getInstance()->update(); // This one is timed now.
+		//Player::getInstance()->update(); // This one is timed now.
+
+		// This update the camera position.
+		// We could define something to track gradually (get the position of the player as a target and try to follow it)
 		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
@@ -1818,7 +1825,7 @@ void App::initialize()
     this->currentProjectName = "irb_temp_project";
 // Hide the loading windows if the WX Widget is present
 #ifdef _wxWIDGET
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	this->setAppState(APP_EDIT_LOOK);
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 #endif
 }

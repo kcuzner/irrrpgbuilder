@@ -1194,7 +1194,7 @@ void DynamicObject::saveToXML(TiXmlElement* parentElement)
 void DynamicObject::update()
 {
 
-	// Check for an event in the current animation.
+	// Check for an event in the current animation. This will be done at the fastest speed possible
 	checkAnimationEvent();
 
 	// Check for collision with another node
@@ -1215,10 +1215,12 @@ void DynamicObject::update()
 	bool culled = false;
 	//check if the node is culled
 	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
+	if (culled) 
+		setAnimation("idle");
 
 	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 	//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (objectType!=OBJECT_TYPE_PLAYER)) 
+	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) 
 	{ // timerLUA=17
 		updateWalk();
 		if (currentSpeed!=0)
@@ -1289,6 +1291,8 @@ void DynamicObject::update()
 		}
 	}
 
+	// Call the animation blending ending loop (Wow! This really work!)	
+	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);	
 }
 
 void DynamicObject::updateWalk()

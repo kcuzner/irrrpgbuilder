@@ -1500,10 +1500,10 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
-   /* switch(id)///TODO: fazer metodo getElement by ID!!!
+	///TODO: fazer metodo getElement by ID!!!
+   switch(id)
     {
 #ifdef EDITOR
-
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);
@@ -1540,6 +1540,11 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiEditCharacter->setEnabled(enable);
 			guiEditCharacter->setPressed(!enable);
             break;
+		case BT_ID_PLAYER_EDIT_SCRIPT:
+			//This has been added and need to be testes more.
+			guiPlayerEditScript->setEnabled(enable);
+			guiPlayerEditScript->setPressed(!enable);
+			break;
         case BT_ID_EDIT_SCRIPT_GLOBAL:
             guiEditScriptGlobal->setEnabled(enable);
 			guiEditScriptGlobal->setPressed(!enable);
@@ -1555,7 +1560,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiHelpButton->setPressed(!enable);
             break;
 
-    }*/
+    }
 }
 
 void GUIManager::setElementVisible(GUI_ID id, bool visible)
