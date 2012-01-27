@@ -6,8 +6,8 @@ function setProperties()
 	setPropertie("life",10) -- current life of the NPC
 	setPropertie("maxlife",10) -- current Maximum life of this NPC
 	setPropertie("experience",5) -- given experience to attacker if killed
-	setPropertie("mindamage",0) -- minimum damage inflicted
-	setPropertie("maxdamage",1) -- maximum damage inflicted
+	setPropertie("mindamage",2) -- minimum damage inflicted
+	setPropertie("maxdamage",4) -- maximum damage inflicted
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 	setPropertie("hit_prob",50)
 	setPropertie("dodge_prob",12)
@@ -32,10 +32,10 @@ function onUpdate()
   end
   local x,y,z = getObjectPosition("player")
    if(distanceFrom(x,y,z) < 288 and getPlayerLife()>0) then 
-    if(distanceFrom(x,y,z) < 66) then
+    if(distanceFrom(x,y,z) < 56) then
 	  setAnimation("attack")
 	else
-      chaseObject("player",0.8,66,800)
+      chaseObject("player",0.8,56,800)
     end
 	setObjectLabel(name)
     showObjectLabel()

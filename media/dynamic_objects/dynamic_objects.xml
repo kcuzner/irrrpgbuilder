@@ -3,5 +3,4 @@
 	<dynamic_object set="../media/editor/editor.xml" />
 	<dynamic_object set="../media/dynamic_objects/npc.xml" />
 	<dynamic_object set="../media/dynamic_objects/props.xml" />
-	<dynamic_object set="../media/player/player.xml" />
 </IrrRPG_Builder_DynamicObjects>

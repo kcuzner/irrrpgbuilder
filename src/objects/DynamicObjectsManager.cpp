@@ -187,6 +187,10 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				else
 					currAnim.endFrame=currAnim.startFrame;
 
+				// Quick patch.. There something wrong with the loading here
+				if (currAnim.endFrame==0)
+					currAnim.endFrame=300;
+
 				// TODO: Not totally implemented,
 				// Sound file name to play when the animation event start
 				currAnim.sound = currentAnimXML->ToElement()->Attribute("sound");

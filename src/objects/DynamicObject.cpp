@@ -782,23 +782,6 @@ bool DynamicObject::setAnimation(stringc animName)
 void DynamicObject::checkAnimationEvent()
 {
 
-	// Temporary.. .Print the player animation frames because of a problem
-	if (getType()==OBJECT_TYPE_PLAYER && currentAnimation==OBJECT_ANIMATION_DIE)
-	{
-		stringw temptext="";
-		s32 frm = 0;
-		frm = (s32)nodeAnim->getFrameNr();
-		// Names
-		
-		temptext="This is the current frame:";
-		temptext+=stringw(frm);
-		
-		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
-	
-	}
-
-
-
 	// Check if the character is hurt and tell the combat manager to stop the attack while the character play all the animation
 	// Need to update this to support more specific animation that MUST not be stopped
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_INJURED)
@@ -862,10 +845,7 @@ void DynamicObject::checkAnimationEvent()
 			if (getType()!=OBJECT_TYPE_PLAYER)
 			{
 				Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-				attackActivated=false;
-				GUIManager::getInstance()->setConsoleText(L"Ennemy try to attack",SColor(255,128,0,128));
-
-				
+				attackActivated=false;				
 			}
 		}
 	}
@@ -890,9 +870,9 @@ void DynamicObject::checkAnimationEvent()
 			stringc soundName = "../media/sound/";
 			soundName += sound.c_str();
 			irrklang::vec3df pos = this->getNode()->getPosition();
-			if (currentAnim.name=="walk" || currentAnim.name=="run")
-				soundfx = SoundManager::getInstance()->playSound3D(soundName.c_str(),pos,false);
-			else
+			//if (currentAnim.name=="walk" || currentAnim.name=="run")
+			//	soundfx = SoundManager::getInstance()->playSound3D(soundName.c_str(),pos,false);
+			//else
 				soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
 		}
 	}
@@ -1292,7 +1272,7 @@ void DynamicObject::update()
 	}
 
 	// Call the animation blending ending loop (Wow! This really work!)	
-	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);	
+	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
 }
 
 void DynamicObject::updateWalk()
