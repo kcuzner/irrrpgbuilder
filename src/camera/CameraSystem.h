@@ -58,6 +58,8 @@ class CameraSystem
 
 		ICameraSceneNode* editCamFPS;
 		ICameraSceneNode* currentCam;
+
+		CSceneNodeAnimatorCameraMayaIRB* anm;
 		//static const irr::f32 cameraHeight;
 		static irr::f32 cameraHeight;
 

@@ -36,6 +36,7 @@ CameraSystem::CameraSystem()
 
 CameraSystem::~CameraSystem()
 {
+	anm->drop();
     //dtor
 }
 
@@ -115,11 +116,11 @@ ICameraSceneNode* CameraSystem::addCameraSceneNodeMaya(ISceneNode* parent,
 			core::vector3df(0,0,100), id, makeActive);
 	if (node)
 	{
-		ISceneNodeAnimator* anm = new CSceneNodeAnimatorCameraMayaIRB(App::getInstance()->getDevice()->getCursorControl(),
+		anm = new CSceneNodeAnimatorCameraMayaIRB(App::getInstance()->getDevice()->getCursorControl(),
 			rotateSpeed, zoomSpeed, translationSpeed, distance);
 
-		node->addAnimator(anm);
-		anm->drop();
+		node->addAnimator((ISceneNodeAnimator*)anm);
+		
 	}
 
 	return node;
@@ -129,7 +130,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 {
 	f32 max = 0;
 	f32 min = 0;
-	cameraHeight-=(increments/10);
+	
 	switch (camera)
 	{
 		/*case 1: max = 6;
@@ -148,19 +149,21 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		cameraHeight=min;
 	if (camera==2 && cameraHeight!=min && cameraHeight!=max)
 	{
-		core::list<ISceneNodeAnimator*>::ConstIterator anims=editCamMaya->getAnimators().begin();
-		CSceneNodeAnimatorCameraMayaIRB* anm=(CSceneNodeAnimatorCameraMayaIRB*)*anims;
-
+		// Get the distance and set it on the edit camera
 		f32 distance = anm->getDistance();
-		distance=distance+(increments*10.0f);
+		distance=distance+(increments*(distance/10));
 		anm->setDistance(distance);
-		//anm->drop();
-
 	}
 	else
-		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
+	{
+		// Get the distance and set it on the ingame camera (point & click)
+		f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
+		cameraHeight-=(increments*(distance/10));
 
-    gameCam->setFarValue(cameraHeight*3.0f);
+		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
+	}
+
+    gameCam->setFarValue(cameraHeight*20.0f);
 	//vector3df newtarget = this->getTarget();
 	//newtarget.Y = newtarget.Y;
 	//cam->setTarget(newtarget);
@@ -189,8 +192,6 @@ void CameraSystem::setPosition(vector3df pos)
 // This method update the point&click camera
 void CameraSystem::updatePointClickCam()
 {
-
-
 	// Get the player and find a "reference" position based on it.
 	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
 	camrefpos.Y=currentCam->getPosition().Y;
@@ -202,10 +203,19 @@ void CameraSystem::updatePointClickCam()
 	// Distance from what the camera start to move and follow the player
 	if (camdistance>20)
 	{
-		f32 camdistance2 = 2400/camdistance;
+		// Offset for the camera position
+		f32 camdistance2 = 2400.0f/camdistance;
+
+		// Offset for the target position
+		f32 camdistance3 = 1600.0f/camdistance;
+
+		// Calculate the new camera position
 		vector3df result = (camrefpos-currentCam->getPosition());
 		currentCam->setPosition(currentCam->getPosition()+(result/camdistance2));
-		currentCam->setTarget(getTarget());
+
+		// Calculate the new target position 
+		vector3df result_target = (getTarget()-currentCam->getTarget());
+		currentCam->setTarget(currentCam->getTarget()+(result_target/camdistance3));
 	}
 
 
@@ -213,6 +223,7 @@ void CameraSystem::updatePointClickCam()
 	if (camdistance>250)
 	{
 		setPosition(Player::getInstance()->getObject()->getPosition());
+		currentCam->setTarget(this->getTarget());
 	}
 }
 
@@ -224,8 +235,10 @@ ICameraSceneNode* CameraSystem::getNode()
 vector3df CameraSystem::getTarget()
 {
 	vector3df playerpos = Player::getInstance()->getObject()->getPosition();
-	vector3df target = vector3df(currentCam->getPosition() + vector3df(0,-currentCam->getPosition().Y+playerpos.Y+36,currentCam->getPosition().Y) );
-	return target;
+	//vector3df target = vector3df(currentCam->getPosition() + vector3df(0,-currentCam->getPosition().Y+playerpos.Y+36,currentCam->getPosition().Y) );
+	//return target;
+	playerpos.Y+=36;
+	return playerpos;
 }
 
 void CameraSystem::fixRatio(IVideoDriver * driver)

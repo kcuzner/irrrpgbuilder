@@ -24,6 +24,8 @@ CSceneNodeAnimatorCameraMayaIRB::CSceneNodeAnimatorCameraMayaIRB(gui::ICursorCon
 	CurrentZoom(distance), RotX(0.0f), RotY(0.0f),
 	Zooming(false), Rotating(false), Moving(false), Translating(false)
 {
+
+	bypass_switch=false;
 	#ifdef _DEBUG
 	setDebugName("CSceneNodeAnimatorCameraMayaIRB");
 	#endif
@@ -129,12 +131,14 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 
 
 	// If the camera isn't the active camera, and receiving input, then don't process it.
-	if (!camera->isInputReceiverEnabled())
+	if (!camera->isInputReceiverEnabled() && !bypass_switch)
 	{
 		// If the input receiver is down, then reset the camera, so it take the new position to start
 		FirstUpdate=true;
 		return;
 	}
+	//reset the bypass switch
+	bypass_switch=false;
 
 	scene::ISceneManager * smgr = camera->getSceneManager();
 	if (smgr && smgr->getActiveCamera() != camera)
@@ -310,6 +314,7 @@ void CSceneNodeAnimatorCameraMayaIRB::setZoomSpeed(f32 speed)
 void CSceneNodeAnimatorCameraMayaIRB::setDistance(f32 distance)
 {
 	CurrentZoom=distance;
+	bypass_switch=true;
 }
 
 

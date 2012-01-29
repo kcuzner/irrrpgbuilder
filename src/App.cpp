@@ -741,7 +741,7 @@ void App::eventMousePressed(s32 mouse)
 {
     switch(mouse)
     {///TODO: colocar acoes mais comuns acima e menos comuns nos elses
-        case 0://Left button (default)
+        case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
             if( cursorIsInEditArea())
             {
                 if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -783,7 +783,7 @@ void App::eventMousePressed(s32 mouse)
                 }
             }
             break;
-		case 2:
+		case EMIE_RMOUSE_PRESSED_DOWN:
 			// Right button (Action the same as the left button)
 			if( cursorIsInEditArea())
             {
@@ -859,17 +859,15 @@ void App::eventMouseWheel(f32 value)
 			// not in viewdrag mode then enable the cam, then set the camera height then disable it again
 			if (app_state != APP_EDIT_VIEWDRAG)
 			{
-				//This part doesnt seem to work ATM.
-				CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(true);
-				CameraSystem::getInstance()->setCameraHeight(value);
-				CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
+				// Go directly
+				CameraSystem::getInstance()->setCameraHeight(-value);
 			}
-			else
-				CameraSystem::getInstance()->setCameraHeight(value);
+			else// in viewdrag mode
+				CameraSystem::getInstance()->setCameraHeight(-value);
 
 		}
-		else
-			CameraSystem::getInstance()->setCameraHeight(value * 50);
+		else // ingame camera
+			CameraSystem::getInstance()->setCameraHeight(value);
 	}
 }
 
@@ -1170,6 +1168,9 @@ void App::playGame()
 		
 		DynamicObjectsManager::getInstance()->startCollisions();
 		//DynamicObjectsManager::getInstance()->initializeCollisions();
+
+		// Reset the last "walk target" as the game restart.
+		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getObject()->getPosition());
 		
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
 		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);

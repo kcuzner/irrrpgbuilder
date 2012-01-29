@@ -76,18 +76,21 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 
 	enemyUnderAttack=NULL;
 
+	// initialize the timers
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timerLUA = timerAnimation;
+	timer_display = timerAnimation;
 
+	// Flags initialisation
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
 	soundActivated = false;
 	attackActivated = false;
+	stunstate=false;
 
 	oldpos=vector3df(0,0,0);
 
-	stunstate=false;
 	currentAnimation=OBJECT_ANIMATION_CUSTOM;
 	oldAnimation=OBJECT_ANIMATION_CUSTOM;
 	this->setAnimation("prespawn");
@@ -133,7 +136,6 @@ cproperty DynamicObject::initProperties()
 void DynamicObject::setupObj(stringc name, IMesh* mesh)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-//	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
     this->mesh = mesh;
     this->name = name;
@@ -143,14 +145,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
 
         nodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
-		// bone transition test
-		//nodeAnim->setJointMode(irr::scene::EJUOR_CONTROL);
-	    //nodeAnim->setTransitionTime(0.5f);
 		this->node = nodeAnim;
 		if (node)
 		{
 			this->selector = smgr->createOctreeTriangleSelector((IAnimatedMesh*)mesh, node);
-			//this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 			this->node->setTriangleSelector(selector);
 		}
 
@@ -584,13 +582,19 @@ int DynamicObject::getMoney()
 // Label
 void DynamicObject::setObjectLabel(stringc label)
 {
-    objLabel->setText(stringw(label).c_str());
-	s32 percent = (properties.life * 100);
-	s32 p2 = percent / 100;
-	if (properties.maxlife>0)
-		p2 = percent / properties.maxlife;
+	u32 currenttime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+	// Will update the display at each 1/10 second, so we have the time to see what is written 
+	if (currenttime-timer_display>100)
+	{
+		timer_display=currenttime;
+		objLabel->setText(stringw(label).c_str());
+		s32 percent = (properties.life * 100);
+		s32 p2 = percent / 100;
+		if (properties.maxlife>0)
+			p2 = percent / properties.maxlife;
 
-	Healthbar->setProgress(p2);
+		Healthbar->setProgress(p2);
+	}
 }
 
 void DynamicObject::objectLabelSetVisible(bool visible)

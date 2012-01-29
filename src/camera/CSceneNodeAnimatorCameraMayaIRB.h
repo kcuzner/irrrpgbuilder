@@ -152,6 +152,7 @@ namespace scene
 		bool Moving;
 		bool Translating;
 		bool FirstUpdate;
+		bool bypass_switch;
 
 		core::array<SKeyMap2> KeyMap;
 		bool ActionKeys[EK_COUNT];

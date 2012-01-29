@@ -302,6 +302,7 @@ class DynamicObject
 		u32 timerStun;
 		// Timer to delay the sound (do it's not repeating too fast)
 		u32 lastTime;
+		u32 timer_display;
 
 		bool soundActivated;
 		bool attackActivated;
