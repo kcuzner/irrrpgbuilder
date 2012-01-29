@@ -233,6 +233,11 @@ void EffectsManager::update()
 		postProcessManager->render(postEffect);
 		postProcessManager->update();
 	}
+
+	
+	// bring back the gui after the RTT is done
+	video::SMaterial mat;
+	App::getInstance()->getDevice()->getVideoDriver()->setMaterial(mat);
 }
 
 void EffectsManager::preparePostFX(bool depth)

@@ -38,7 +38,7 @@ Combat* Combat::getInstance()
     return instance;
 }
 
-void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
+int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 {
 	
 	cproperty attacker_prop = attacker->getProperties();
@@ -47,12 +47,14 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Retrieve the current life meter on the defender
 	int life=defender->getLife();
 
-	dumpProperties(attacker);
-	dumpProperties(defender);
+	//dumpProperties(attacker);
+	//dumpProperties(defender);
 	
 
-	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	
+
+	// This give the expected damage the character will have on another
 	int damage = chances(attacker_prop.mindamage,attacker_prop.maxdamage);
 
 	
@@ -78,10 +80,13 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	temptext+="% dodge probability.";
 	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 */	
+
+	// This one determine the hit and dodge probability, so will have the damage full or missed the hit.
 	if (!percent(attacker_prop.hit_prob-defender_prop.dodge_prop))
 	{
 		damage = 0;
-		defender->setObjectLabel("Miss!");
+		
+		//defender->update();
 		#ifdef _MSC_VER
 		// Missed!
 		temptext=stringw(attacker->getName().c_str());
@@ -114,14 +119,16 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	// Example: attacker attack another attacker, who will win the attack?
 	if (damage>0)
 	{	//if (defender->AI_State==AI_STATE_IDLE)
-			defender->setAnimation("hurt");
+			//defender->setAnimation("hurt");
 	}
 	
 	// limit the damage to the life of the defender.
 	if (life<0) 
 			life=0;
 	
-	defender->setLife(life);
+	// need to do the damage at the damage event
+	//defender->setLife(life);
+		
 	// Position the target to the defender (Apply only on the player
 	if (attacker->getName()==Player::getInstance()->getObject()->getName())
 		DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
@@ -149,10 +156,10 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		
 		// Set the animation for the attacker when the defender is dead
 		//defender=NULL;
-		attacker->setAnimation("idle");
-		attacker->clearEnemy();
-		defender->setAnimation("die");
-		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		//attacker->setAnimation("idle");
+		//attacker->clearEnemy();
+		//defender->setAnimation("die");
+		//DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			
 	}
 	
@@ -168,7 +175,8 @@ void Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	GUIManager::getInstance()->setConsoleText("  COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT",SColor(255,128,0,128));
 	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	
-	Player::getInstance()->updateDisplay();
+	//Player::getInstance()->updateDisplay();
+	return damage;
 }
 
 void Combat::updateLevel(DynamicObject* object)

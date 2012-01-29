@@ -32,7 +32,7 @@ class Combat
 		~Combat();
 
 		static Combat* getInstance();
-		void attack(DynamicObject* attacker, DynamicObject* defender);
+		int attack(DynamicObject* attacker, DynamicObject* defender);
 		void updateLevel(DynamicObject* object);
 		void dot(DynamicObject* victim, int duration, int damage);
 		void dumpProperties (DynamicObject* object);

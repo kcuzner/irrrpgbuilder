@@ -50,6 +50,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	soundActivated = false;
 	attackActivated = false;
 	stunstate=false;
+
+	attackresult=0;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -121,6 +123,7 @@ cproperty DynamicObject::initProperties()
 	prop.money=0;
 	prop.regenlife=0;
 	prop.regenmana=0;
+	
 	return prop;
 
 }
@@ -265,7 +268,9 @@ void DynamicObject::lookAt(vector3df pos)
     rot.X=0;
     rot.Z=0;
 
-    node->setRotation(rot);
+	// Will rotate the node only if it still "alive"
+	if (properties.life>0)
+		node->setRotation(rot);
 }
 
 void DynamicObject::setPosition(vector3df pos)
@@ -546,6 +551,8 @@ vector3df DynamicObject::getScale()
 
 void DynamicObject::setLife(int life)
 {
+	if (life<0)
+		life=0;
     this->properties.life = life;
 	if (objectType==OBJECT_TYPE_PLAYER)
 		Player::getInstance()->updateDisplay();
@@ -649,8 +656,46 @@ bool DynamicObject::setAnimation(stringc animName)
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
-	
 
+	// Don't call the animation if the result is not positive (result coming from the combat class)
+	if (animName=="attack" && oldAnimName!="attack")
+	{
+		//When the attack animation is triggered, the class interrogate the combat class and check
+		//that the attack is successful before starting it
+		if (objectType==OBJECT_TYPE_PLAYER)
+		{
+			if (enemyUnderAttack)
+			{
+				attackresult=Combat::getInstance()->attack(this,enemyUnderAttack);
+				if (attackresult>0)
+					enemyUnderAttack->setObjectLabel("Miss!");
+				else
+				{
+					//stringc textdam = "-";
+					//textdam.append(stringc(attackresult));
+					//enemyUnderAttack->setObjectLabel(textdam.c_str());
+				}
+			}
+		} 
+			
+		if (objectType!=OBJECT_TYPE_PLAYER)
+		{
+				attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
+				if (attackresult>0)
+					Player::getInstance()->getObject()->setObjectLabel("Miss!");
+		}
+		// Check to see if the attack was successful. if not, then put idle from the previous attack move
+		// or use the old animation
+		if (!attackresult)
+		{ 
+			if (oldAnimName=="attack")
+				animName="idle";
+			else
+				animName=oldAnimName;
+		} else
+			this->setWalkTarget(this->getPosition());
+	
+	}
 	if (animName=="die")
 	{
 		// debug output to the console
@@ -740,10 +785,14 @@ bool DynamicObject::setAnimation(stringc animName)
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
-				
+				if (animName=="idle")
+				{
+					this->setWalkTarget(this->getPosition());
+				}
 				// Special case for the idle animation (randomisation)
 				if (animName=="idle" && randomize)
 				{
+					
 					printf ("if you drop a character on the map this should display!");
 					// Fix a random frame so the idle for different character are not the same.
 					if (tempAnim.endFrame>0)
@@ -803,49 +852,68 @@ void DynamicObject::checkAnimationEvent()
 	// Check if the current animation have an attack event
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
+		//This set the animation back to idle when it's played
+		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-2)
+			this->setAnimation("idle");
+
 		// Set a default attack event if there is none defined.
 		if (currentAnim.attackevent==-1)
-			currentAnim.attackevent = currentAnim.startFrame; 
-		
-		// Should do something if the animation can start
-		// This is required
-		if (((s32)nodeAnim->getFrameNr() == currentAnim.startFrame))
 		{
-			// Set the AI State to busy, so the combat manager won't call animations
-			AI_State=AI_STATE_BUSY;
+			currentAnim.attackevent = currentAnim.startFrame+1;
 		}
 
-		// should do something when the animation can reach the end
-		// This is required
-		if (((s32)nodeAnim->getFrameNr() == currentAnim.endFrame))
-		{
-			AI_State=AI_STATE_IDLE;
-		}
-
-		// Set up a "default" attack frame in case the user forgot to define one
-		if (currentAnim.attackevent=-1)
-			currentAnim.attackevent=currentAnim.startFrame+1;
-
-		if (nodeAnim->getFrameNr()<currentAnim.attackevent) 
+		// This only mean that the attack animation is still looking for the event
+		if (nodeAnim->getFrameNr() < currentAnim.attackevent) 
 			attackActivated=true;
 		
 		if ((nodeAnim->getFrameNr() > currentAnim.attackevent) && attackActivated)
 		{
 
-		 // Init the combat for the player, check also that there is a enemy defined
-			if (getType()==OBJECT_TYPE_PLAYER)
+			// Attack result is precalculated, if the animation of attack is played, them it was sucessful
+			// the damage will then be done at the "impact" frame from the animation
+			// If the character health rise 0, then call the die animation.
+
+			// The logic might be moved inside the combat manager... Not sure at the moment.
+			attackActivated = false;
+			if (attackresult>0)
 			{
-				if (enemyUnderAttack)
+				if (objectType==OBJECT_TYPE_PLAYER)
 				{
-					Combat::getInstance()->attack(this,enemyUnderAttack);
-					attackActivated=false;
-				}
-			} // Init the combat for the NPC (enemy at the moment), will attack the player. Anim is called from lua
+
+					printf("\n\nDebug: here is the attack frame: %d start frame:%d current frame %d\n",currentAnim.attackevent,currentAnim.startFrame,(s32)nodeAnim->getFrameNr());
+					if (enemyUnderAttack)
+					{
+						printf("Debug---> Attacking the ennemy!\n");
+						int resultlife = enemyUnderAttack->getLife()-attackresult;
+						enemyUnderAttack->setLife(resultlife);
+						
+						if (resultlife>0)
+						{
+							enemyUnderAttack->setAnimation("hurt");
+						}
+						else
+						{
+							enemyUnderAttack->setAnimation("die");
+							this->setAnimation("idle");
+							enemyUnderAttack=NULL;
+						}
+
+					}
+				} 
 			
-			if (getType()!=OBJECT_TYPE_PLAYER)
-			{
-				Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-				attackActivated=false;				
+				if (objectType!=OBJECT_TYPE_PLAYER)
+				{
+					int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
+					Player::getInstance()->getObject()->setLife(resultlife);
+					
+					if (resultlife>0)
+					{
+						Player::getInstance()->getObject()->setAnimation("hurt");
+					}
+					else
+						Player::getInstance()->getObject()->setAnimation("die");
+						
+				}
 			}
 		}
 	}
@@ -919,7 +987,12 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
         this->lookAt(obj->getPosition());
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 		{
-			this->setAnimation("attack");
+			attackresult=Combat::getInstance()->attack(this,obj);
+			if (attackresult>0) 
+				this->setAnimation("attack");
+			else
+				this->setAnimation("idle");
+			
 			obj->notifyClick();
 		}
     }
@@ -1173,43 +1246,53 @@ void DynamicObject::saveToXML(TiXmlElement* parentElement)
 // Update the node, for animation event, collision check, lua refresh, etc.
 void DynamicObject::update()
 {
-
-	// Check for an event in the current animation. This will be done at the fastest speed possible
-	checkAnimationEvent();
-
-	// Check for collision with another node
-	if (animator && animator->collisionOccurred())
-	{
-		//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
-		collided=true;
-		notifyCollision();
-		namecollide = animator->getCollisionNode()->getName();
-	}
-
-	// timed interface an culling check.
-	// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
-	// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
-	// Check for culling on a node and don't update it if it's culled.
-
-	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	// Used for culling check
 	bool culled = false;
-	//check if the node is culled
-	culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-	if (culled) 
-		setAnimation("idle");
 
-	// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
-	//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-	if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) 
-	{ // timerLUA=17
-		updateWalk();
-		if (currentSpeed!=0)
+	// Reference timer for the update loop
+	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	
+	// Check for an event in the current animation. This will be done at the fastest speed possible
+	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
+		checkAnimationEvent();
+
+	if (timerobject-timerLUA>17)
+	{
+		// Check for collision with another node
+		if (animator && animator->collisionOccurred())
+		{
+			//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
+			collided=true;
+			notifyCollision();
+			namecollide = animator->getCollisionNode()->getName();
+			this->setAnimation("idle");
+			this->setWalkTarget(this->getPosition());
+		}
+
+		// timed interface an culling check.
+		// Added a timed call to the lua but only a 1/4 sec intervals. (Should be used for decision making)
+		// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
+		// Check for culling on a node and don't update it if it's culled.
+
+	
+		//check if the node is culled
+		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
+		if (!nodeLuaCulling && culled) 
+			setAnimation("idle");
+
+		// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
+		//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN)&& !culled) 
+		{ // timerLUA=17
+			updateWalk();
+			if (currentSpeed!=0)
 			//currentObject->moveObject(currentSpeed);
-		timerLUA=timerobject;
+			timerLUA=timerobject;
+		}
 	}
-	// Tries out animation blending.
-	//nodeAnim->animateJoints();
-	if((timerobject-timerAnimation>250) && enabled) // Lua UPdate to 1/4 second
+
+		//nodeAnim->animateJoints();
+	if((timerobject-timerAnimation>300) && enabled) // Lua UPdate to 1/4 second
 	{
 
 		if (!nodeLuaCulling)
@@ -1271,8 +1354,9 @@ void DynamicObject::update()
 		}
 	}
 
-	// Call the animation blending ending loop (Wow! This really work!)	
-	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
+	// Call the animation blending ending loop 
+	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
+		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
 }
 
 void DynamicObject::updateWalk()
@@ -1280,16 +1364,24 @@ void DynamicObject::updateWalk()
 	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
 	f32 meshScale = this->getScale().X;
 
+	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
+	{
 		// Walk until in range
-		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
+		// testing
+		//if( (this->getPosition().getDistanceFrom(walkTarget) > ((meshScale*meshSize)*2)) &&  (this->getLife()!=0))
+		if( (this->getPosition().getDistanceFrom(walkTarget) > 0) &&  (this->getLife()!=0))
 		{
-			TerrainManager::getInstance()->getHeightAt(walkTarget);
+			if (objectType==OBJECT_TYPE_NPC)
+				printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
+				this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
+				this->walkTarget.X,this->walkTarget.Y,this->walkTarget.Z);
+
+
 			if (runningMode)
 			{
 				if (this->getAnimation()!=OBJECT_ANIMATION_RUN)
 				{
 					this->setAnimation("run");
-					//printf("Hey the object specifically asked for a run state!\n");
 				}
 			}
 			else
@@ -1297,19 +1389,21 @@ void DynamicObject::updateWalk()
 				if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
 				{
 					this->setAnimation("walk");
-					//printf("Hey the object specifically asked for a walk state!\n");
 				}
 			}
 
 			this->walkTo(walkTarget);
 			return;
 		}
+	
 
 		// Stop the walk when in range
-		if (this->getAnimation()==OBJECT_ANIMATION_WALK && this->getPosition().getDistanceFrom(walkTarget)==0)
+		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))
+
+		if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < 0 || collided))
 			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
 		{
-			//printf("Hey the object specifically asked  for a idle state!\n");
+
 			this->setWalkTarget(this->getPosition());
 			this->setAnimation("idle");
 			if (objectType==OBJECT_TYPE_PLAYER)
@@ -1322,6 +1416,7 @@ void DynamicObject::updateWalk()
 		{
 			this->setWalkTarget(this->getPosition());
 		}
+	}
 
 }
 
@@ -1634,6 +1729,9 @@ int DynamicObject::lookToObject(lua_State *LS)
     return 0;
 }
 
+
+// LUA command "attack("object name")
+// Will use the combat manager
 int DynamicObject::attackObj(lua_State *LS)
 {
 	stringc otherObjName = lua_tostring(LS, -1);
@@ -1654,8 +1752,14 @@ int DynamicObject::attackObj(lua_State *LS)
 	}
 	if (tempObj)
 	{
+		DynamicObject* tempObj2 = NULL;
+		tempObj2 = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 		//printf("The LUA use attack with that target: %s\n",tempObj->getName().c_str());
-		Combat::getInstance()->attack(DynamicObjectsManager::getInstance()->getObjectByName(objName),tempObj);
+		tempObj2->attackresult=Combat::getInstance()->attack(DynamicObjectsManager::getInstance()->getObjectByName(objName),tempObj);
+		if (tempObj2->attackresult>0) 
+			tempObj2->setAnimation("attack");
+		else
+			tempObj2->setAnimation("idle");
 	}
 
 	return 0;

@@ -289,6 +289,7 @@ class DynamicObject
 
 		bool templateobject;
 		bool stunstate;
+		int attackresult;
 
 		// delay timers needed
 		u32 timerAnimation;

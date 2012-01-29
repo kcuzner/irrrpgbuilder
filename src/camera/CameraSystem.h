@@ -35,6 +35,8 @@ class CameraSystem
         void moveCamera(vector3df pos);
         void setPosition(vector3df pos);
 
+		void updatePointClickCam();
+
 		ICameraSceneNode* getNode();
 
         vector3df getPosition();
@@ -67,6 +69,8 @@ class CameraSystem
 		bool lightset;
 
 		f32 fov;
+
+		u32 refreshdelay;
 };
 
 #endif // CameraSystem_H

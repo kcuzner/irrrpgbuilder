@@ -17,6 +17,9 @@ using namespace std;
 Player::Player()
 {
 
+	timer1=App::getInstance()->getDevice()->getTimer()->getRealTime();;
+	timer2=timer1;
+	timer3=timer1;
 	playerObject = DynamicObjectsManager::getInstance()->getPlayer();
 	playerObject->getNode()->setVisible(true);
 	playerObject->setEnabled(true);
@@ -94,17 +97,19 @@ DynamicObject* Player::getObject()
 void Player::update()
 {
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	vector3df walkTarget = playerObject->getWalkTarget();
-	if (timercheck-timer1>17) //(17) 1/60 sec aprx.
+
+	
+	// Standard checks updated by timer (update the tagged object, the range etc.
+	if (timercheck-timer3>17)
 	{
-		// Update the combat system (mostly for damage over time management (dot))
-		Combat::getInstance()->update();
-		timer1 = timercheck;
+		timer3=timercheck;
 		//printf("current state of animation is %i\n",playerObject->getAnimation());
 		// Calculate the size of the mesh, and multiplicate it with the scale
 		// Will give the real size on the map
 		f32 sizePlayer = playerObject->getNode()->getBoundingBox().getExtent().X;
 		f32 meshScale = playerObject->getScale().X;
+
+		vector3df walkTarget = playerObject->getWalkTarget();
 
 		// With this the target reticle will follow the target that has been selected (app.cpp)
 		if (taggedObject)
@@ -117,7 +122,7 @@ void Player::update()
 		{
 			SoundManager::getInstance()->setListenerPosition(this->getObject()->getPosition(),this->getObject()->getRotation());
 			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 120)
+			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 121)
 			{
 				if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
 				{
@@ -142,8 +147,6 @@ void Player::update()
 					//printf("Hey the player specifically asked for a run state!\n");
 				}
 			}
-
-			this->playerObject->walkTo(walkTarget);
 			return;
 		}
 
@@ -163,17 +166,22 @@ void Player::update()
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
 
+
 		// This should trigger the player attack if the enemy is in range.
-		if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)
+		if (timercheck-timer1>300) // 1 attack per 1/2 sec
 		{
-			//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
-			if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
+			timer1 = timercheck;
+			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)
 			{
-				playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
-				if (playerObject->getLife()!=0)
-					playerObject->setAnimation("attack");
-				else
-					playerObject->setAnimation("die");
+				//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
+				if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
+				{
+					playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
+					if (playerObject->getLife()!=0)
+						playerObject->setAnimation("attack");
+					else
+						playerObject->setAnimation("die");
+				}
 			}
 		}
 		//updateDisplay();

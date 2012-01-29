@@ -279,6 +279,7 @@ void GUIManager::setupEditorGUI()
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 	guiMainToolWindow->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	
 
 	
 
@@ -757,6 +758,7 @@ void GUIManager::setupEditorGUI()
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
 	guiDynamicObjectsWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	guiDynamicObjectsWindowChooser->setVisible(false);
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
@@ -1701,6 +1703,10 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 // The function manage up to 2000 lines before clearing the buffer
 // Using "forcedisplay" will toggle the display of the GUI
 {
+	//Temporary disable of this method to gain speed
+	//Will have a toggle to use/not use this in the future
+	
+	
 	u32 maxitem = 2000;
 	// If the GUI is not displayed, accumulate the info in a buffer
 	if (textevent.size()<maxitem)

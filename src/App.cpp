@@ -1220,15 +1220,14 @@ void App::update()
 			this->setScreenSize(driver->getScreenSize());
 
 		driver->beginScene(true, true, SColor(0,200,200,200));
+
+		// Terrain transform mode MUSt use all the CPU/Refresh it can get for performance
 		if(app_state < APP_STATE_CONTROL)
 		{
 
-			device->yield();
+			if (app_state!=APP_EDIT_TERRAIN_TRANSFORM)
+				device->yield();
 
-			// This is needed for wxWidget event management
-#ifdef _wxWIDGET
-			//wxYield();
-#endif
 #ifdef EDITOR
 			 
 			updateEditMode();//editMode
@@ -1236,33 +1235,24 @@ void App::update()
 		}
 		else
 		{
-			// This is needed for wxWidget event management
-#ifdef _wxWIDGET
-			//wxYield();
-#endif
 			// Do not update the gameplay if we "paused" the game for a reason
 			if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
     		updateGameplay();
 		}
 
 
-		// Prepare the RTT for the postFX
-		EffectsManager::getInstance()->preparePostFX(false);
-
 		// Check for events of the logger
-		GUIManager::getInstance()->setConsoleLogger(textevent);
+		//GUIManager::getInstance()->setConsoleLogger(textevent);
 
 		// This will calculate the animation blending for the nodes
 		DynamicObjectsManager::getInstance()->updateAnimationBlend();
 
+		// Prepare the post FX before rendering all
+		EffectsManager::getInstance()->preparePostFX(false);
 		smgr->drawAll();
 
 		// Tries to do an post FX
 		EffectsManager::getInstance()->update();
-
-		// bring back the gui after the RTT is done
-		video::SMaterial mat;
-        driver->setMaterial(mat);
 
 		guienv->drawAll();
 		draw2DImages();
@@ -1309,6 +1299,7 @@ void App::run()
 //	u32 timer2 = device->getTimer()->getRealTime();
 	bool activated=false;
 
+	// This is the core loop
     while(device->run())
     {
 		this->update();
@@ -1320,7 +1311,14 @@ void App::run()
 			str += " FPS:";
 			str += fps;
 
+			
+#ifdef _wxWIDGET
+			appFrame->MessageStatus(str.c_str());
+#else			
 			device->setWindowCaption(str.c_str());
+#endif
+
+			
 			lastFPS = fps;
 		}
     }
@@ -1332,17 +1330,18 @@ void App::run()
 void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
+
+	// Draw the brush in realtime
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 		this->drawBrush();
 
-	
-	if ((timer-timer2)>17) // 1/60th second refresh interval
-	{
-
-		// Trie to display the node as we go with the mouse cursor in edit mode
+	// Trie to display the node as we go with the mouse cursor in edit mode
+	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
 		setPreviewSelection();
 
-
+	// Enter the refresh after a timer duration OR if the terrain transform is used
+	if ((timer-timer2)>17 || APP_EDIT_TERRAIN_TRANSFORM) // (17)1/60th second refresh interval
+	{
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{
@@ -1447,6 +1446,7 @@ void App::updateEditMode()
 			{
 
 				//Update Editor Camera Position
+				// Enabled again with the new editor camera
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
 				{
 					CameraSystem::getInstance()->moveCamera(vector3df(-10.0f,0,0));
@@ -1475,33 +1475,28 @@ void App::updateGameplay()
 {
 
 	timer = device->getTimer()->getRealTime();
-	//DynamicObjectsManager::getInstance()->updateAnimators();
-	//DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
-
 	// Refresh the NPC loop
 	if ((timer-timer3)>0) // (17 )1/60 second (0 value seem ok for now)
 	{
 		// Update the NPc refresh
 		timer3 = device->getTimer()->getRealTime();
-		DynamicObjectsManager::getInstance()->updateAll(); // This one should be timed now.
+		
+		// Update all the NPC on the map (including the player)
+		DynamicObjectsManager::getInstance()->updateAll(); 
+		
+		// Update the Point&Click camera setup
+		CameraSystem::getInstance()->updatePointClickCam();
+		
+		// Update the combat system (mostly for damage over time management (dot))
+		Combat::getInstance()->update();
 	}
 
 
 	// This update the player events and controls at specific time intervals
-    if ((timer-timer2)>34) // (34)1/30 second (17ms was 1/60)
+    if ((timer-timer2)>34) 
 	{
 		timer2 = device->getTimer()->getRealTime();
-
-		// the update for the player. It's a dynamic object now.
-		// It would be interesting to put this for the "player controls"
-		// As I would like to define other ways to control the targeting of the player
-
-		//Player::getInstance()->update(); // This one is timed now.
-
-		// This update the camera position.
-		// We could define something to track gradually (get the position of the player as a target and try to follow it)
-		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
-
+		
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
 			MousePick mousePick = getMousePosition3D();

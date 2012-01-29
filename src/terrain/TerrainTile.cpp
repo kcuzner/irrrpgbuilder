@@ -44,6 +44,9 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
+	
+	//Testing if I can use Irrlicht generated mesh for base
+	//ocean=smgr->addMeshSceneNode(smgr->addHillPlaneMesh("water",dimension2df(scale/nodescale,scale/nodescale),dimension2du(1,1)),node,0);
 
     node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
 
@@ -84,14 +87,12 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     node->setMaterialTexture(3,layer3);
 
     //Assign GLSL Shader
-	node->getMaterial(0).setFlag(EMF_LIGHTING,true);
+	node->getMaterial(0).setFlag(EMF_LIGHTING,false);
 	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
 
     node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
 
-
-
-    //Create a Custom GLSL Material (Terrain Splatting)
+    //Create a Custom GLSL Material (Water shader)
    static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_4,
@@ -102,12 +103,11 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     //Assign GLSL Shader
     ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean); 
-
+	
     //Assign Textures
     ocean->setMaterialTexture(0,oceanLayer0);
     ocean->setMaterialTexture(1,oceanLayer1); 
 
-    node->setMaterialFlag(EMF_FOG_ENABLE,true);
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
 	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
 

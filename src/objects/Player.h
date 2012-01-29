@@ -57,6 +57,7 @@ class Player
 		u32 oldtime;
 		u32 timer1;
 		u32 timer2;
+		u32 timer3;
 
 		bool collided;
 
