@@ -85,6 +85,8 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	soundActivated = false;
 	attackActivated = false;
 
+	oldpos=vector3df(0,0,0);
+
 	stunstate=false;
 	currentAnimation=OBJECT_ANIMATION_CUSTOM;
 	oldAnimation=OBJECT_ANIMATION_CUSTOM;
@@ -345,7 +347,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 		speed=1.0f;
 		
 
-	 vector3df pos=this->getPosition();
+	vector3df pos=this->getPosition();
+	oldpos=pos;
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
@@ -1266,6 +1269,7 @@ void DynamicObject::update()
 			notifyCollision();
 			namecollide = animator->getCollisionNode()->getName();
 			this->setAnimation("idle");
+			this->setPosition(oldpos);
 			this->setWalkTarget(this->getPosition());
 		}
 

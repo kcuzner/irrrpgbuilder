@@ -275,6 +275,7 @@ class DynamicObject
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;
+		vector3df oldpos;
 		int original_life;
 		int original_maxlife;
 		vector<stringc> items;

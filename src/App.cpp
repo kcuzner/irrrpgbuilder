@@ -696,7 +696,7 @@ void App::setScreenSize(dimension2d<u32> size)
 		text.append(L",");
 		text.append((stringw)screensize.Height);
 		// Correct the aspect ratio of the camera when the screen is changed.
-#ifndef _WXMSW
+#ifndef _wxWIDGET
 		CameraSystem::getInstance()->fixRatio(driver);
 #endif
 		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,0,255));
@@ -957,7 +957,7 @@ void App::setPreviewSelection()
 
 bool App::loadConfig()
 {
-#ifndef _WXMSW
+#ifndef _wxWIDGET
 	screensize.Height = 768;
 	screensize.Width = 1024;
 
@@ -1040,7 +1040,7 @@ bool App::loadConfig()
 			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
-#ifndef _WXMSW
+#ifndef _wxWIDGET
 			if (resizable && fullScreen)
 			{
 				IrrlichtDevice * tempdevice = createDevice(EDT_NULL,dimension2d<u32>(640,480), 16, false, false, false, 0);
@@ -1565,7 +1565,7 @@ void App::createNewProject()
 {
     APP_STATE old_state = getAppState();
     setAppState(APP_EDIT_WAIT_GUI);
-#ifndef _WXMSW
+#ifndef _wxWIDGET
     stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
     GUIManager::getInstance()->flush();
 
