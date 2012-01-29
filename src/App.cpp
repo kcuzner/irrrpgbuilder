@@ -1160,6 +1160,7 @@ void App::playGame()
 		CameraSystem::getInstance()->setCamera(1);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
+		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
 		
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
@@ -1196,7 +1197,7 @@ void App::stopGame()
 		SoundManager::getInstance()->stopSounds();
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
 		
-		this->setAppState(APP_EDIT_LOOK);
+		this->setAppState(old_state); //APP_EDIT_LOOK
 		
 
 		CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
