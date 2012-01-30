@@ -1398,6 +1398,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
     switch(window)
     {
+#ifdef EDITOR
         case GCW_DYNAMIC_OBJECT_CHOOSER:
             guiDynamicObjectsWindowChooser->setVisible(visible);
             break;
@@ -1413,6 +1414,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
         case GCW_TERRAIN_TOOLBAR:
             guiTerrainToolbar->setVisible(visible);
             break;
+#endif
         case GCW_GAMEPLAY_ITEMS:
             this->updateItemsList();
 			if (guiWindowItems)
@@ -1571,30 +1573,32 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
     {
         case BT_ID_PLAY_GAME:
             guiPlayGame->setVisible(visible);
-
             break;
+
         case BT_ID_STOP_GAME:
             guiStopGame->setVisible(visible);
 #ifdef EDITOR
-			//if (App::getInstance()->wxSystemState==false)
-				guiMainWindow->setVisible(!visible);
+			guiMainWindow->setVisible(!visible);
 #endif
-			// the bar_image should be made into an element too
-			// gameplay_bar_image->setVisible(visible);
             break;
+
         case ST_ID_PLAYER_LIFE:
             guiPlayerLife->setVisible(visible);
             guiPlayerLife_Shadow->setVisible(visible);
             break;
+
         case BT_ID_PLAYER_EDIT_SCRIPT:
             //guiPlayerEditScript->setVisible(visible);
             break;
+
 		case IMG_BAR:
 			gameplay_bar_image->setVisible(visible);
 			break;
+
 		case CONSOLE:
 			consolewin->setVisible(visible);
 			break;
+
 		case BT_ID_VIEW_ITEMS:
             guiBtViewItems->setVisible(visible);
 			// Update the gold items

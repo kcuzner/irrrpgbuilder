@@ -230,7 +230,7 @@ void App::setAppState(APP_STATE newAppState)
 
     app_state = newAppState;
 
-	#ifdef EDITOR
+#ifdef EDITOR
     if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
@@ -274,6 +274,7 @@ void App::setAppState(APP_STATE newAppState)
     //if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
     if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+#endif
 
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
     {
@@ -287,17 +288,13 @@ void App::setAppState(APP_STATE newAppState)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
         GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
-    }
-
+	}
+#ifdef EDITOR
     if(app_state != APP_EDIT_ABOUT)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
     }
 
-	if (app_state == APP_EDIT_VIEWDRAG)
-#ifdef _wxWIDGET
-		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
-#endif
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
     {
         GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
@@ -309,24 +306,17 @@ void App::setAppState(APP_STATE newAppState)
 
     if(app_state == APP_EDIT_CHARACTER)
     {
-		//if (!wxSystemState==true)
-		//{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
-		//}
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
+		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);		
         Player::getInstance()->setHighLight(true);
         CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
     }
     else
     {
-		//if (!wxSystemState==true)
-		//{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
-			GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
-		//}
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
+		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
 		Player::getInstance()->setHighLight(false);
-
     }
 
     if(app_state == APP_EDIT_SCRIPT_GLOBAL)
@@ -344,8 +334,6 @@ void App::setAppState(APP_STATE newAppState)
         GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
 		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
 			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
-
-
     }
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
@@ -363,10 +351,7 @@ void App::setAppState(APP_STATE newAppState)
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
 			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
 	}
-
-
-
-	#endif
+#endif
 
     if(app_state == APP_GAMEPLAY_NORMAL)
     {
@@ -401,81 +386,83 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
-
 	}
+
+#ifdef _wxWIDGET
+	if (app_state == APP_EDIT_VIEWDRAG)
+		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
+#endif
 }
 
 void App::eventGuiButton(s32 id)
 {
-	#ifdef EDITOR
-
     DynamicObject* selectedObject;
-
-	#endif
-
 	oldcampos = vector3df(0,0,0);
     switch (id)
     {
 
-	#ifdef EDITOR
-
 		case BT_ID_NEW_PROJECT:
-            
 			lastScannedPick.pickedNode=NULL;
-			//
 			#ifdef _wxWIDGET
-			appFrame->OnNew();
+				appFrame->OnNew();
 			#else
-			this->createNewProject();
+				this->createNewProject();
 			#endif
-            break;
-        case BT_ID_LOAD_PROJECT:
 
-            //
+            break;
+        
+		case BT_ID_LOAD_PROJECT:
 			#ifdef _wxWIDGET
-			appFrame->OnLoad();
+				appFrame->OnLoad();
 			#else
-			this->loadProject();
+				this->loadProject();
 			#endif
+
 			this->setAppState(APP_EDIT_LOOK);
             break;
+
         case BT_ID_SAVE_PROJECT:
 			#ifdef _wxWIDGET
-            appFrame->OnSave();
+				appFrame->OnSave();
 			#else
-			this->saveProject();
+				this->saveProject();
 			#endif
+
 			this->setAppState(APP_EDIT_LOOK);
             break;
+#ifdef EDITOR
         case BT_ID_TERRAIN_ADD_SEGMENT:
             this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
             break;
+
         case BT_ID_TERRAIN_PAINT_VEGETATION:
             this->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
             break;
+
         case BT_ID_TERRAIN_TRANSFORM:
             this->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
             break;
+
         case BT_ID_DYNAMIC_OBJECTS_MODE:
 			{
 				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-				
 			}
             break;
+
         case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
 			GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
+
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
-
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
             GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
             GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-
-            setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
+			
+            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
             break;
+
         case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
             //if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
             {
@@ -500,6 +487,7 @@ void App::eventGuiButton(s32 id)
                 GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
             }
             break;
+
         case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
@@ -510,6 +498,7 @@ void App::eventGuiButton(s32 id)
             
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
+
         case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
@@ -537,26 +526,30 @@ void App::eventGuiButton(s32 id)
             }
             GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
             break;
+
 		case BT_ID_EDIT_CHARACTER:
             this->setAppState(APP_EDIT_CHARACTER);
             break;
+
         case BT_ID_PLAYER_EDIT_SCRIPT:
 			this->setAppState(APP_EDIT_PLAYER_SCRIPT);
             break;
+
 		case BT_ID_EDIT_SCRIPT_GLOBAL:
 			this->setAppState(APP_EDIT_SCRIPT_GLOBAL);
             break;
+
 		case BT_ID_CONFIG:
             GUIManager::getInstance()->showConfigWindow();
             break;
-
-		#endif
-
+#endif
         case BT_ID_PLAY_GAME:
 			playGame();
             break;
+
         case BT_ID_STOP_GAME:
 			stopGame();
+			printf("asked to stop the game/n");
             break;
 
         case BT_ID_CLOSE_PROGRAM:
