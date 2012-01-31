@@ -187,9 +187,10 @@ bool DynamicObjectsManager::processFile(stringc filename)
 				else
 					currAnim.endFrame=currAnim.startFrame;
 
+
 				// Quick patch.. There something wrong with the loading here
 				if (currAnim.endFrame==0)
-					currAnim.endFrame=300;
+					currAnim.endFrame=1;
 
 				// TODO: Not totally implemented,
 				// Sound file name to play when the animation event start
@@ -410,14 +411,71 @@ DynamicObject* DynamicObjectsManager::getTarget()
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 {
     //write header
-    TiXmlElement* dynamicObjectsXML = new TiXmlElement("dynamic_objects");
+    TiXmlElement* dynamicObjectsXML2 = new TiXmlElement("dynamic_objects");
 
     for ( int i = 0 ; i < (int)objects.size() ; i++ )
     {
-        objects[i]->saveToXML(dynamicObjectsXML);
+        //objects[i]->saveToXML(dynamicObjectsXML);
+		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
+		//dynamicObjectXML->SetAttribute("name",name.c_str());
+		dynamicObjectXML->SetAttribute("type",(int)objects[i]->getType());
+		dynamicObjectXML->SetAttribute("x",stringc(this->objects[i]->getPosition().X).c_str());
+		dynamicObjectXML->SetAttribute("y",stringc(this->objects[i]->getPosition().Y).c_str());
+		dynamicObjectXML->SetAttribute("z",stringc(this->objects[i]->getPosition().Z).c_str());
+
+		dynamicObjectXML->SetAttribute("s",stringc(this->objects[i]->getScale().X).c_str());
+
+		dynamicObjectXML->SetAttribute("r",stringc(this->objects[i]->getRotation().Y).c_str());
+
+		dynamicObjectXML->SetAttribute("template",objects[i]->templateObjectName.c_str());
+
+		if (objects[i]->script.size()>0)
+			dynamicObjectXML->SetAttribute("script",objects[i]->getScript().c_str());
+		
+		if (objects[i]->properties.life>0)
+			dynamicObjectXML->SetAttribute("life",objects[i]->properties.life);
+		
+		if (objects[i]->properties.maxlife>0)
+			dynamicObjectXML->SetAttribute("maxlife",objects[i]->properties.maxlife);
+		
+		if (objects[i]->properties.mana>0 && objects[i]->properties.mana<101)
+			dynamicObjectXML->SetAttribute("mana",objects[i]->properties.mana);
+		
+		if (objects[i]->properties.maxmana>0 && objects[i]->properties.maxmana<101)
+			dynamicObjectXML->SetAttribute("maxmana",objects[i]->properties.maxmana);
+		
+		if (objects[i]->properties.level>0 && objects[i]->properties.level<101)
+			dynamicObjectXML->SetAttribute("level",objects[i]->properties.level);
+		
+		if (objects[i]->properties.experience>0)
+			dynamicObjectXML->SetAttribute("XP",objects[i]->properties.experience);
+		
+		if (objects[i]->properties.mindamage>0)
+			dynamicObjectXML->SetAttribute("mindamage",objects[i]->properties.mindamage);
+		
+		if (objects[i]->properties.maxdamage>0)
+			dynamicObjectXML->SetAttribute("maxdamage",objects[i]->properties.maxdamage);
+		
+		if (objects[i]->properties.hurt_resist>0 && objects[i]->properties.hurt_resist<101)
+			dynamicObjectXML->SetAttribute("hurtresist",objects[i]->properties.hurt_resist);
+		
+		if (objects[i]->properties.dodge_prop>0 && objects[i]->properties.dodge_prop<101)
+			dynamicObjectXML->SetAttribute("dodgechance",stringc(objects[i]->properties.dodge_prop).c_str());
+		
+		if (objects[i]->properties.hit_prob>0 && objects[i]->properties.hit_prob<101)
+			dynamicObjectXML->SetAttribute("hitchance",stringc(objects[i]->properties.hit_prob).c_str());
+
+		if (objects[i]->properties.regenlife>0 && objects[i]->properties.regenlife<101)
+			dynamicObjectXML->SetAttribute("regenlife",stringc(objects[i]->properties.regenlife).c_str());
+
+		if (objects[i]->properties.regenmana>0 && objects[i]->properties.regenmana<101)
+			dynamicObjectXML->SetAttribute("regenmana",stringc(objects[i]->properties.regenmana).c_str());
+
+		dynamicObjectsXML2->LinkEndChild(dynamicObjectXML);
+
     }
 
-    parentElement->LinkEndChild(dynamicObjectsXML);
+    parentElement->LinkEndChild(dynamicObjectsXML2);
 }
 
 bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
@@ -639,6 +697,7 @@ void DynamicObjectsManager::initializeAllScripts()
     {
 		if (objects[i])
 			((DynamicObject*)objects[i])->doScript();
+			
     }
 }
 

@@ -1153,6 +1153,7 @@ void App::playGame()
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
+		DynamicObjectsManager::getInstance()->showDebugData(false);
 		
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
@@ -1689,8 +1690,8 @@ void App::saveProjectToXML(stringc filename)
 	quickUpdate();
     DynamicObjectsManager::getInstance()->saveToXML(irb_project);
 
-
-    Player::getInstance()->getObject()->saveToXML(irb_project);
+	// Old command should be removed.
+    //Player::getInstance()->getObject()->saveToXML(irb_project);
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
 	quickUpdate();

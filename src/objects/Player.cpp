@@ -46,7 +46,9 @@ Player::Player()
 	playerprop.maxlife = 100;
 	playerprop.dodge_prop = 16;
 	playerprop.hit_prob = 60;
+	playerprop.money=100;
 	playerObject->setProperties(playerprop);
+	
 
 	// Set the upgradable properties (properties that will increase automatically at each level)
 	player_base.maxlife=95; // Starting at level 0 with 95 hp
@@ -117,6 +119,14 @@ void Player::update()
 			DynamicObjectsManager::getInstance()->getTarget()->setPosition(taggedObject->getPosition()+vector3df(0,0.1f,0));
 		}
 
+
+		// New code to test (should only define run and walk mode)
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 121)
+			this->playerObject->setRunningMode(false);
+		else
+			this->playerObject->setRunningMode(true);
+
+		/*
 		// Walk until in range
 		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
 		{
@@ -151,7 +161,7 @@ void Player::update()
 		}
 
 		// Stop the walk when in range
-		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer))
+		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer)+20)
 		{
 			//printf("Hey the player specifically asked for a idle state!\n");
 			this->playerObject->setWalkTarget(playerObject->getPosition());
@@ -166,9 +176,9 @@ void Player::update()
 			this->playerObject->setWalkTarget(playerObject->getPosition());
 		}
 
-
+		*/
 		// This should trigger the player attack if the enemy is in range.
-		if (timercheck-timer1>300) // 1 attack per 1/2 sec
+		if (timercheck-timer1>200) // 1 attack per 1/4 sec
 		{
 			timer1 = timercheck;
 			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)
@@ -215,4 +225,10 @@ void Player::setTaggedTarget(DynamicObject* object)
 DynamicObject* Player::getTaggedTarget()
 {
 	return taggedObject;
+}
+
+
+void Player::displayTarget(bool visible)
+{
+	DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(visible);
 }

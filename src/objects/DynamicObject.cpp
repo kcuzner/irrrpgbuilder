@@ -1,4 +1,4 @@
-#include "DynamicObject.h"
+
 
 #include "../App.h"
 #include "DynamicObjectsManager.h"
@@ -7,6 +7,8 @@
 #include "../LuaGlobalCaller.h"
 #include "Player.h"
 
+
+#include "DynamicObject.h"
 
 using namespace irr;
 using namespace core;
@@ -58,6 +60,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	// Set the animation and AI state to idle (default)
 	this->setAnimation("idle");
+	this->walkTarget=this->getPosition();
 	this->AI_State=AI_STATE_IDLE;
 	// Init the timedelay taken for a loop
 	lastTime=0;
@@ -385,8 +388,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 	{
-		if (objectType==OBJECT_TYPE_PLAYER)
-			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		
 		walkTarget = this->getPosition();
 		if (enemyUnderAttack)
@@ -664,6 +665,9 @@ bool DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
 
+	if (animName=="idle")
+		this->setWalkTarget(this->getPosition());
+
 	// Don't call the animation if the result is not positive (result coming from the combat class)
 	if (animName=="attack" && oldAnimName!="attack")
 	{
@@ -718,6 +722,11 @@ bool DynamicObject::setAnimation(stringc animName)
 			DynamicObjectsManager::getInstance()->updateMetaSelector();
 		// disable the stun state if present. Dying takes over
 		stunstate=false;
+
+		if (objectType!=OBJECT_TYPE_PLAYER)
+			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		   
+			
 	}
 
 	// Return if the character is stunned
@@ -792,10 +801,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
-				if (animName=="idle")
-				{
-					this->setWalkTarget(this->getPosition());
-				}
+				
 				// Special case for the idle animation (randomisation)
 				if (animName=="idle" && randomize)
 				{
@@ -1187,69 +1193,6 @@ void DynamicObject::restoreParams()
 	this->setAnimation("prespawn");
 }
 
-void DynamicObject::saveToXML(TiXmlElement* parentElement)
-{
-	//if (this->getType()!=OBJECT_TYPE_PLAYER)
-	//{
-		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
-		//dynamicObjectXML->SetAttribute("name",name.c_str());
-		dynamicObjectXML->SetAttribute("type",(int)getType());
-		dynamicObjectXML->SetAttribute("x",stringc(this->getPosition().X).c_str());
-		dynamicObjectXML->SetAttribute("y",stringc(this->getPosition().Y).c_str());
-		dynamicObjectXML->SetAttribute("z",stringc(this->getPosition().Z).c_str());
-
-		dynamicObjectXML->SetAttribute("s",stringc(this->getScale().X).c_str());
-
-		dynamicObjectXML->SetAttribute("r",stringc(this->getRotation().Y).c_str());
-
-		dynamicObjectXML->SetAttribute("template",templateObjectName.c_str());
-
-		if (script.size()>0)
-			dynamicObjectXML->SetAttribute("script",getScript().c_str());
-		
-		if (properties.life>0)
-			dynamicObjectXML->SetAttribute("life",this->properties.life);
-		
-		if (properties.maxlife>0)
-			dynamicObjectXML->SetAttribute("maxlife",this->properties.maxlife);
-		
-		if (properties.mana>0 && properties.mana<101)
-			dynamicObjectXML->SetAttribute("mana",this->properties.mana);
-		
-		if (properties.maxmana>0 && properties.maxmana<101)
-			dynamicObjectXML->SetAttribute("maxmana",this->properties.maxmana);
-		
-		if (properties.level>0 && properties.level<101)
-			dynamicObjectXML->SetAttribute("level",this->properties.level);
-		
-		if (properties.experience>0)
-			dynamicObjectXML->SetAttribute("XP",this->properties.experience);
-		
-		if (properties.mindamage>0)
-			dynamicObjectXML->SetAttribute("mindamage",this->properties.mindamage);
-		
-		if (properties.maxdamage>0)
-			dynamicObjectXML->SetAttribute("maxdamage",this->properties.maxdamage);
-		
-		if (properties.hurt_resist>0 && properties.hurt_resist<101)
-			dynamicObjectXML->SetAttribute("hurtresist",this->properties.hurt_resist);
-		
-		if (properties.dodge_prop>0 && properties.dodge_prop<101)
-			dynamicObjectXML->SetAttribute("dodgechance",stringc(this->properties.dodge_prop).c_str());
-		
-		if (properties.hit_prob>0 && properties.hit_prob<101)
-			dynamicObjectXML->SetAttribute("hitchance",stringc(this->properties.hit_prob).c_str());
-
-		if (properties.regenlife>0 && properties.regenlife<101)
-			dynamicObjectXML->SetAttribute("regenlife",stringc(this->properties.regenlife).c_str());
-
-		if (properties.regenmana>0 && properties.regenmana<101)
-			dynamicObjectXML->SetAttribute("regenmana",stringc(this->properties.regenmana).c_str());
-
-		parentElement->LinkEndChild(dynamicObjectXML);
-	//}
-}
-
 // Update the node, for animation event, collision check, lua refresh, etc.
 void DynamicObject::update()
 {
@@ -1372,12 +1315,32 @@ void DynamicObject::updateWalk()
 	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
 	f32 meshScale = this->getScale().X;
 
+	
 	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
 	{
+		// Stop the walk when in range
+		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))
+
+		if (((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)  && (this->getPosition().getDistanceFrom(walkTarget) < 5)) ) //|| collided)
+			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
+		{
+
+			this->setWalkTarget(this->getPosition());
+			this->setAnimation("idle");
+			if (objectType==OBJECT_TYPE_PLAYER)
+				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		}
+
+		// Cancel the move if another animation is triggered
+		//if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()!=OBJECT_ANIMATION_RUN || this->getAnimation()==OBJECT_ANIMATION_IDLE)
+		//{
+		//	this->setWalkTarget(this->getPosition());
+		//}
+
 		// Walk until in range
 		// testing
 		//if( (this->getPosition().getDistanceFrom(walkTarget) > ((meshScale*meshSize)*2)) &&  (this->getLife()!=0))
-		if( (this->getPosition().getDistanceFrom(walkTarget) > 0) &&  (this->getLife()!=0))
+		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
 		{
 			if (objectType==OBJECT_TYPE_NPC)
 				printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
@@ -1400,31 +1363,15 @@ void DynamicObject::updateWalk()
 				}
 			}
 
+		}
+
+		// Move the character only if this character is doing the walk or run animation
+		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 			this->walkTo(walkTarget);
-			return;
-		}
-	
 
-		// Stop the walk when in range
-		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))
-
-		if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < 0 || collided))
-			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
-		{
-
-			this->setWalkTarget(this->getPosition());
-			this->setAnimation("idle");
-			if (objectType==OBJECT_TYPE_PLAYER)
-				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-			return;
-		}
-
-		// Cancel the move if another animation is triggered
-		if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_IDLE)
-		{
-			this->setWalkTarget(this->getPosition());
-		}
 	}
+
+	
 
 }
 

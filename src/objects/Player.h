@@ -39,6 +39,8 @@ class Player
 		
 		//set shadow green to highlight player
         void setHighLight(bool highlight);
+
+		void displayTarget(bool visible);
 		
 		ISceneNode* getNode() { return playerObject->getNode(); };
 		ISceneNode* getNodeRef() {return player_ref; };

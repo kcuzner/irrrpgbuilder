@@ -87,4 +87,5 @@ end
 function onLoad()
 	setProperties()
 	setStrings()
+	setName("Follower")
  end

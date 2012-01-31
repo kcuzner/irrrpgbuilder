@@ -986,7 +986,8 @@ void CGUIEditBoxIRB::draw()
 				int height = font->getDimension(L"0").Height;
 
 				setTextRect(i);
-				while (CurrentTextRect.LowerRightCorner.Y < AbsoluteRect.UpperLeftCorner.Y) {
+				while (CurrentTextRect.LowerRightCorner.Y < AbsoluteRect.UpperLeftCorner.Y) 
+				{
 					setTextRect(++i);
 				}
 				if (numberStartY == -1)
@@ -1990,7 +1991,13 @@ void CGUIEditBoxIRB::setTextRect(s32 line)
 	const u32 lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
 	if (WordWrap || MultiLine)
 	{
-		d = font->getDimension(BrokenText[line].c_str());
+		// Must not return 0. Quick fix (should investigate further why I have some 0 value return sometimes)
+		// For some reasons the line return the index and it's not allowed.
+		//core::stringw textblock = BrokenText[line].c_str();
+		//if (textblock.size()>0)
+		//	d = font->getDimension(textblock.c_str());
+		//else
+			d = font->getDimension(L"O");
 	}
 	else
 	{

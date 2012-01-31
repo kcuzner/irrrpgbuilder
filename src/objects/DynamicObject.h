@@ -3,8 +3,6 @@
 
 #include <irrlicht.h>
 
-#include "../tinyXML/tinyxml.h"
-
 #include "../terrain/TerrainManager.h"
 #include "HealthSceneNode.h"
 #include "../gui/GUIManager.h"
@@ -179,7 +177,6 @@ class DynamicObject
 		void doScript();//called when the game starts
 		void storeParams(); // Store the original position and rotation before gameplay (used when you start the game)
 		void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
-        void saveToXML(TiXmlElement* parentElement);    
         void update();//run "step" lua function
 
         void notifyClick();
@@ -195,12 +192,21 @@ class DynamicObject
 		// Needed in other classes
 		DynamicObject_Animation currentAnim;
 		AI_INFO AI_State;
+
+		// WAs protected before
+		stringc templateObjectName;//The original object name
+		stringw script;
+
+		cproperty prop_base;
+		cproperty prop_level;
+		cproperty properties;
+
       
     protected:
 
         bool enabled;//disabled objects aren't rendered and step() function isn't processed during gameplay
 
-        stringc templateObjectName;//The original object name
+        
 
         DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations = vector<DynamicObject_Animation>());
 
@@ -251,7 +257,7 @@ class DynamicObject
 		
         ISceneNode* fakeShadow;
 		scene::HealthSceneNode* Healthbar;
-		stringw script;
+		
 
 		OBJECT_ANIMATION currentAnimation;
 		OBJECT_ANIMATION oldAnimation;
@@ -284,10 +290,7 @@ class DynamicObject
 		vector<DynamicObject_Animation> animations;
 		
 
-		cproperty prop_base;
-		cproperty prop_level;
-		cproperty properties;
-
+	
 		bool templateobject;
 		bool stunstate;
 		int attackresult;
