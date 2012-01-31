@@ -178,7 +178,7 @@ void Player::update()
 
 		*/
 		// This should trigger the player attack if the enemy is in range.
-		if (timercheck-timer1>200) // 1 attack per 1/4 sec
+		if (timercheck-timer1>300) // 1 attack per 1/4 sec
 		{
 			timer1 = timercheck;
 			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<72.0f)

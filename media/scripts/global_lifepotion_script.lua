@@ -1,5 +1,8 @@
 -- Global script for the potions
 function HealthPotion()
-   setPlayerLife(getPLayerLife()+10)
-   removePlayerItem(HealthPotion)
+     -- Increase the player life
+   setPlayerLife(getPlayerLife()+10)
+
+   -- Remove the item from the inventory as it's being used.   
+   removePlayerItem("HealthPotion")
 end
