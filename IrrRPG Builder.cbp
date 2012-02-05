@@ -5,7 +5,7 @@
 		<Option title="IrrRPG Builder" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="App/;App/;App/tinyxml/;App/Effects/;" />
+		<Option virtualFolders="App/;App/;App/tinyxml/;App/fx/;App/camera/;App/events/;App/gui/;App/objects/;App/sound/;App/terrain/;" />
 		<Build>
 			<Target title="Player Debug">
 				<Option output="bin/IrrRPG_Builder_Linux_player_debug" prefix_auto="1" extension_auto="1" />
@@ -173,74 +173,150 @@
 		<Unit filename="src/XMLManager.h">
 			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp" />
-		<Unit filename="src/camera/CSceneNodeAnimatorCameraMayaIRB.h" />
-		<Unit filename="src/camera/CameraSystem.cpp" />
-		<Unit filename="src/camera/CameraSystem.h" />
-		<Unit filename="src/events/EventReceiver.cpp" />
-		<Unit filename="src/events/EventReceiver.h" />
+		<Unit filename="src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/camera/CSceneNodeAnimatorCameraMayaIRB.h">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/camera/CameraSystem.cpp">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/camera/CameraSystem.h">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/events/EventReceiver.cpp">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/events/EventReceiver.h">
+			<Option virtualFolder="App/events/" />
+		</Unit>
 		<Unit filename="src/fx/EffectsManager.cpp">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/EffectsManager.h">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
-		<Unit filename="src/fx/ShaderCallBack.cpp" />
-		<Unit filename="src/fx/ShaderCallBack.h" />
+		<Unit filename="src/fx/ShaderCallBack.cpp">
+			<Option virtualFolder="App/camera/" />
+		</Unit>
+		<Unit filename="src/fx/ShaderCallBack.h">
+			<Option virtualFolder="App/fx/" />
+		</Unit>
 		<Unit filename="src/fx/postprocess/IPostProcess.h">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/PostProcessManager.cpp">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/PostProcessManager.h">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/ShaderMaterial.cpp">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/ShaderMaterial.h">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.cpp">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.h">
-			<Option virtualFolder="App/Effects/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
-		<Unit filename="src/gui/CGUIEditBoxIRB.cpp" />
-		<Unit filename="src/gui/CGUIEditBoxIRB.h" />
-		<Unit filename="src/gui/CGUIGfxStatus.cpp" />
-		<Unit filename="src/gui/CGUIGfxStatus.h" />
-		<Unit filename="src/gui/GUIConfigWindow.cpp" />
-		<Unit filename="src/gui/GUIConfigWindow.h" />
-		<Unit filename="src/gui/GUIManager.cpp" />
-		<Unit filename="src/gui/GUIManager.h" />
-		<Unit filename="src/gui/NodePreview.cpp" />
-		<Unit filename="src/gui/NodePreview.h" />
+		<Unit filename="src/gui/CGUIEditBoxIRB.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/CGUIEditBoxIRB.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/CGUIGfxStatus.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/CGUIGfxStatus.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/GUIConfigWindow.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/GUIConfigWindow.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/GUIManager.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/GUIManager.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/NodePreview.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/NodePreview.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
 		<Unit filename="src/main.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
-		<Unit filename="src/objects/DynamicObject.cpp" />
-		<Unit filename="src/objects/DynamicObject.h" />
-		<Unit filename="src/objects/DynamicObjectsManager.cpp" />
-		<Unit filename="src/objects/DynamicObjectsManager.h" />
-		<Unit filename="src/objects/HealthSceneNode.cpp" />
-		<Unit filename="src/objects/HealthSceneNode.h" />
-		<Unit filename="src/objects/Item.cpp" />
-		<Unit filename="src/objects/Item.h" />
-		<Unit filename="src/objects/Player.cpp" />
-		<Unit filename="src/objects/Player.h" />
-		<Unit filename="src/objects/combat.cpp" />
-		<Unit filename="src/objects/combat.h" />
-		<Unit filename="src/sound/SoundManager.cpp" />
-		<Unit filename="src/sound/SoundManager.h" />
-		<Unit filename="src/terrain/TerrainManager.cpp" />
-		<Unit filename="src/terrain/TerrainManager.h" />
-		<Unit filename="src/terrain/TerrainTile.cpp" />
-		<Unit filename="src/terrain/TerrainTile.h" />
-		<Unit filename="src/terrain/Vegetation.cpp" />
-		<Unit filename="src/terrain/Vegetation.h" />
+		<Unit filename="src/objects/DynamicObject.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/DynamicObject.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/DynamicObjectsManager.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/DynamicObjectsManager.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/HealthSceneNode.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/HealthSceneNode.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/Item.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/Item.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/Player.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/Player.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/combat.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/combat.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/sound/SoundManager.cpp">
+			<Option virtualFolder="App/sound/" />
+		</Unit>
+		<Unit filename="src/sound/SoundManager.h">
+			<Option virtualFolder="App/sound/" />
+		</Unit>
+		<Unit filename="src/terrain/TerrainManager.cpp">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
+		<Unit filename="src/terrain/TerrainManager.h">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
+		<Unit filename="src/terrain/TerrainTile.cpp">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
+		<Unit filename="src/terrain/TerrainTile.h">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
+		<Unit filename="src/terrain/Vegetation.cpp">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
+		<Unit filename="src/terrain/Vegetation.h">
+			<Option virtualFolder="App/terrain/" />
+		</Unit>
 		<Unit filename="src/tinyXML/convert.cpp">
 			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
