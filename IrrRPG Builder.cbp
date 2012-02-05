@@ -7,8 +7,59 @@
 		<Option compiler="gcc" />
 		<Option virtualFolders="App/;App/;App/tinyxml/;App/Effects/;" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/IrrRPG_Builder_Linux_d" prefix_auto="1" extension_auto="1" />
+			<Target title="Player Debug">
+				<Option output="bin/IrrRPG_Builder_Linux_player_debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/" />
+				<Option object_output="obj/PlayDeb/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-m32" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="lib" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+					<Add library="src/lua/liblua.a" />
+					<Add library="GL" />
+					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpFlac.so" />
+					<Add library="./ikpMP3.so" />
+					<Add directory="irrlicht-engine/lib/Linux" />
+					<Add directory="irrKlang-1.3.0/lib/Linux" />
+					<Add directory="lib" />
+				</Linker>
+			</Target>
+			<Target title="Player Release">
+				<Option output="bin/IrrRPG_Builder_Linux_player_release" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/" />
+				<Option object_output="obj/PlayRel/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-m32" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="lib" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+					<Add library="src/lua/liblua.a" />
+					<Add library="GL" />
+					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpFlac.so" />
+					<Add library="./ikpMP3.so" />
+					<Add directory="irrlicht-engine/lib/Linux" />
+					<Add directory="irrKlang-1.3.0/lib/Linux" />
+					<Add directory="lib" />
+				</Linker>
+			</Target>
+			<Target title="Standard Debug">
+				<Option output="bin/IrrRPG_Builder_Linux_standard_debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -26,17 +77,44 @@
 					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
 					<Add library="src/lua/liblua.a" />
 					<Add library="GL" />
-					<Add library="./ikpFlac.so" />
 					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpFlac.so" />
 					<Add library="./ikpMP3.so" />
 					<Add directory="irrlicht-engine/lib/Linux" />
+					<Add directory="irrKlang-1.3.0/lib/Linux" />
 					<Add directory="lib" />
 				</Linker>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/IrrRPG_Builder_Linux" prefix_auto="1" extension_auto="1" />
+			<Target title="Standard Release">
+				<Option output="bin/IrrRPG_Builder_Linux_standard_release" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/" />
 				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-m32" />
+					<Add option="-DEDITOR" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="lib" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+					<Add library="src/lua/liblua.a" />
+					<Add library="GL" />
+					<Add library="./libIrrKlang.so" />
+					<Add library="./ikpFlac.so" />
+					<Add library="./ikpMP3.so" />
+					<Add directory="irrlicht-engine/lib/Linux" />
+					<Add directory="irrKlang-1.3.0/lib/Linux" />
+					<Add directory="lib" />
+				</Linker>
+			</Target>
+			<Target title="Wx Debug">
+				<Option output="bin/Wx_IrrRPG_Builder_Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/" />
+				<Option object_output="obj/WXDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
