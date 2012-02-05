@@ -1,5 +1,5 @@
 #include "EditorMain.h"
-#include "../app.h"
+#include "../App.h"
 #include "wxIWindow.h"
 #include "wx/wx.h"
 #include "wx/aboutdlg.h"

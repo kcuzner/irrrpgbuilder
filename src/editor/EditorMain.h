@@ -28,7 +28,7 @@
 #include "wxIWindow.h"
 
 
-#include "../app.h"
+#include "../App.h"
 
 //class CIrrApp;
 //class CIrrFrame;

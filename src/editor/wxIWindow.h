@@ -6,7 +6,7 @@ class wxCIWindow;
 
 #include "wxIrrlicht.h"
 
-#include "../app.h"
+#include "../App.h"
 
 class wxCIDevice
 {
