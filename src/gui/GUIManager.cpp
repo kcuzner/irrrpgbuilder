@@ -1,4 +1,5 @@
 #include "GUIManager.h"
+
 #include "../LANGManager.h"
 #include "../objects/DynamicObjectsManager.h"
 #include "../events/EventReceiver.h"

@@ -3,10 +3,12 @@
 #include "camera/CameraSystem.h"
 #include "events/EventReceiver.h"
 #include "gui/GUIManager.h"
+#include "gui/GUIRequestManager.h"
 #include "terrain/TerrainManager.h"
 #include "fx/EffectsManager.h"
 #include "LANGManager.h"
 #include "objects/DynamicObjectsManager.h"
+
 
 #include "sound/SoundManager.h"
 #include "objects/Player.h"
@@ -398,6 +400,8 @@ void App::eventGuiButton(s32 id)
 {
     DynamicObject* selectedObject;
 	oldcampos = vector3df(0,0,0);
+
+	
     switch (id)
     {
 
@@ -415,10 +419,15 @@ void App::eventGuiButton(s32 id)
 			#ifdef _wxWIDGET
 				appFrame->OnLoad();
 			#else
-				this->loadProject();
+			
+			//this->loadProject();
+			GUIRequestManager::getInstance()->FileSelector();
+			old_state=app_state;
+			app_state=APP_WAIT_FILEREQUEST;
+			
 			#endif
 
-			this->setAppState(APP_EDIT_LOOK);
+			//this->setAppState(APP_EDIT_LOOK);
             break;
 
         case BT_ID_SAVE_PROJECT:
@@ -553,10 +562,13 @@ void App::eventGuiButton(s32 id)
             break;
 
         case BT_ID_CLOSE_PROGRAM:
-			this->cleanWorkspace();
+			this->shutdown();
+			
+			/*this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
-            device->drop();
-		    exit(0);
+			device->closeDevice();
+            //device->drop();
+		    //exit(0);*/
             break;
 
 		case BT_ID_HELP:
@@ -1209,6 +1221,7 @@ void App::stopGame()
 
 void App::update()
 {
+	if (app_state!=APP_WAIT_FILEREQUEST)
 	//while (app_state<APP_STATE_CONTROL)
 	{
 		// Attempt to do automatic rezise detection
@@ -1254,6 +1267,28 @@ void App::update()
 		draw2DImages();
 
 		driver->endScene();
+	}
+	else
+	{
+		if (!GUIRequestManager::getInstance()->isComplete())
+		{
+			GUIRequestManager::getInstance()->update();
+		} else
+		{
+			printf ("This one should be called once as the GUI is complete!\n");
+			// There was an event on the file requester
+			this->app_state = APP_EDIT_DYNAMIC_OBJECTS_MODE;
+				//this->old_state;
+			
+			stringc result=(stringc)GUIRequestManager::getInstance()->getFilename();
+			if (result.size()>2)
+			{
+				this->cleanWorkspace();
+				this->loadProjectFromXML((stringc)GUIRequestManager::getInstance()->getFilename());
+			}
+			
+		}
+
 	}
 }
 
@@ -1787,11 +1822,14 @@ void App::initialize()
 {
 	// Initialize the GUI class first
 	GUIManager::getInstance();
+
+	// Set the ambient light
 	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
+	
 	// Set the fog to be very far when not in gameplay
     driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
+	
 	quickUpdate();
-
 	screensize=driver->getScreenSize();
 
 	#ifdef EDITOR
@@ -1828,6 +1866,8 @@ void App::shutdown()
 	cleanWorkspace();
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
+	device->drop();
+	exit(0);
 
 }
 
