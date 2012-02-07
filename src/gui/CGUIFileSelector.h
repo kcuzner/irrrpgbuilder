@@ -2,8 +2,9 @@
 #define INC_CGUIFILESELECTOR_H
 
 #include <irrlicht.h>
-#ifdef _IRR_WINDOWS_
+#ifdef WIN32
    #include <windows.h>
+	#include <Shlobj.h>
    #include <iostream>
 #endif
 
@@ -98,6 +99,13 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
           else DirectoryIconIdx = -1;
           fillListBox();
         }
+
+		// Set icons for the "places"
+		inline void setCustomPlacesIcon(video::ITexture* texture) {
+          if (texture) PlacesIconIdx = addIcon(texture);
+          else PlacesIconIdx = -1;
+          fillListBox();
+        }
         
         /**
         \brief Sets whether directories can be chosen as the 'file' to open
@@ -173,12 +181,14 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
       bool IsDirectoryChoosable;
       s32 FileIconIdx;
       s32 DirectoryIconIdx;
+	  s32 PlacesIconIdx;
       IGUIButton* CloseButton;
       IGUIButton* OKButton;
       IGUIButton* CancelButton;
       IGUIEditBox* FileNameText;
       IGUIListBox* FileBox;
 	  IGUIListBox* PlacesBox;
+	  IGUIListBox* PlacesBoxReal;
       IGUIComboBox* DriveBox;
       IGUIComboBox* FilterComboBox;
       IGUIElement* EventParent;

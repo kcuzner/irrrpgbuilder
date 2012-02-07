@@ -78,12 +78,12 @@ void GUIRequestManager::update()
 	{
 		if (selector->isComplete())
 		{
-			printf("Set the filename...\n");
+			
 			filename=(irr::core::stringw)selector->getFileName();
-			printf("Set the filename to %s\n",((stringc)filename.c_str()));
+			
 			iscomplete=true;
 			//selector->drop();
-			printf("Will close the device now...\n");
+			
 			filedevice->minimizeWindow();
 			filedevice->clearSystemMessages();
 			filedevice->closeDevice();
@@ -92,12 +92,12 @@ void GUIRequestManager::update()
 			filedevice->run();
 			
 			//filedevice->drop();
-			printf("device closed...\n");
+			
 			selector->drop();
 		}
 		else
 		{
-			printf("Gui update...\n");
+			
 			filedevice->run();
 			filedevice->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
 			filedevice->getSceneManager()->drawAll();
