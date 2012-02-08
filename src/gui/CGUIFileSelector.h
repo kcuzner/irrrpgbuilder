@@ -12,7 +12,8 @@ using namespace irr;
 using namespace gui;
 
 /** Class for opening/saving files. */
-class CGUIFileSelector : public IGUIFileOpenDialog {
+//class CGUIFileSelector : public IGUIFileOpenDialog {
+class CGUIFileSelector : public IGUIElement {
       
    public:
         /** Enum to specify the usage of the instance of the class */   
@@ -186,7 +187,9 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
       IGUIButton* OKButton;
       IGUIButton* CancelButton;
       IGUIEditBox* FileNameText;
+	  IGUIEditBox* PathNameText;
       IGUIListBox* FileBox;
+	  IGUITreeView* TreeBox;
 	  IGUIListBox* PlacesBox;
 	  IGUIListBox* PlacesBoxReal;
       IGUIComboBox* DriveBox;
@@ -198,6 +201,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
       core::array<SFileFilter> FileFilters;
       E_FILESELECTOR_TYPE DialogType;
       core::stringc prev_working_dir;
+	  core::stringw fullpathname; 
       
       static s32 numFileSelectors;
 

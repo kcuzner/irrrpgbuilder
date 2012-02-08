@@ -5,20 +5,24 @@ const s32 FOD_HEIGHT = 400;
 
 s32 CGUIFileSelector::numFileSelectors = 0;
 
-wchar_t *returnMultiByte_FromString(std::string sIn) {  // return a multibyte from a string
-   wchar_t *tempBuff = new wchar_t[sIn.length() + 1];
-   mbstowcs(tempBuff,sIn.c_str(),sIn.length() + 1);
-   return tempBuff;
-}
 
 //! constructor
 CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type)
-: IGUIFileOpenDialog(environment, parent, id,
- core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
+: IGUIElement(EGUIET_FILE_OPEN_DIALOG, environment, parent, id, 
+			  core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
                (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,   
-               (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
-               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),   
-  Dragging(false), FileNameText(0), FileList(0), DialogType(type) {   
+              (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
+               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),
+			  
+			   Dragging(false), FileNameText(0), FileList(0), DialogType(type) {
+
+
+//IGUIFileOpenDialog(environment, parent, id,
+// core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
+//               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,   
+//               (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
+//               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),   
+//  Dragging(false), FileNameText(0), FileList(0), DialogType(type) {   
     #ifdef _DEBUG
      IGUIElement::setDebugName("CGUIFileSelector");
    #endif    
@@ -40,25 +44,10 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
    s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
-   /*CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1, 
-      L"", L"Close");
-   CloseButton->setSubElement(true);
-   CloseButton->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-   if (sprites) {
-      CloseButton->setSpriteBank(sprites);
-      CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
-      CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
-   }
-   CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   CloseButton->grab();
-	*/
-
-    
-
    // ---------------------------------------------------------------
 
    OKButton = Environment->addButton(
-		// core::rect<s32>(RelativeRect.getWidth()-80, 30, RelativeRect.getWidth()-10, 50), 
+   // core::rect<s32>(RelativeRect.getWidth()-80, 30, RelativeRect.getWidth()-10, 50), 
       core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10), 
       this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
    OKButton->setSubElement(true);
@@ -72,27 +61,40 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    CancelButton->grab();
 
-   irr::gui::IGUIButton* but0 = Environment->addButton(core::rect<s32>(180,20,RelativeRect.getWidth()-10,38),0,-1,L"Files",L"");
-   but0->setEnabled(false);
-   but0->setDrawBorder(false);
-   but0->setPressed(true);
+   // Treebox is experimental... Will be used for the second type of file requester (2 variants will be implemented)
+   TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200),0,-1,true, true, false);
+   TreeBox->setSubElement(true);
+   TreeBox->setLinesVisible(false);
+   irr::gui::IGUITreeViewNode * fv=TreeBox->getRoot()->addChildBack(L"Favorites");
+   irr::gui::IGUITreeViewNode * ld=TreeBox->getRoot()->addChildBack(L"Local drives");
+   fv->setExpanded(true);
+   ld->setExpanded(true);
+   fv->addChildBack(L"Desktop");
+   fv->addChildBack(L"My documents");
+   fv->addChildBack(L"My pictures");
+   fv->addChildBack(L"My music");
+   ld->addChildBack(L"C:\\");
+   ld->addChildBack(L"D:\\");
+   ld->addChildBack(L"E:\\");
 
    //FileBox = Environment->addListBox(core::rect<s32>(10, 80, RelativeRect.getWidth()-90, 230), this, -1, true);
-   FileBox = Environment->addListBox(core::rect<s32>(180, 40, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
+   FileBox = Environment->addListBox(core::rect<s32>(180, 50, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
    FileBox->setSubElement(true);
    FileBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    FileBox->grab();
 
-   irr::gui::IGUIButton* but1 = Environment->addButton(core::rect<s32>(10,20,170,38),0,-1,L"Places -יטאח",L"");
-   but1->setEnabled(false);
-   but1->setDrawBorder(false);
+   //irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35,170,48),false,false,0,-1);
+   irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35,300,48),false,false,0,-1);
 
-   PlacesBox = Environment->addListBox(core::rect<s32>(10, 40, 170, RelativeRect.getHeight()-60), this, -1, true);
+
+   // Contain the names of the favorites folders
+   PlacesBox = Environment->addListBox(core::rect<s32>(10, 210, 170, RelativeRect.getHeight()-60), this, -1, true);
    PlacesBox->setSubElement(true);
    PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    PlacesBox->grab();
 
-   PlacesBoxReal = Environment->addListBox(core::rect<s32>(10, 40, 170, RelativeRect.getHeight()-60), this, -1, true);
+   // Contain the real location of those favorites folder (lazy programming :) )
+   PlacesBoxReal = Environment->addListBox(core::rect<s32>(10, 50, 170, RelativeRect.getHeight()-60), this, -1, true);
    PlacesBoxReal->setSubElement(true);
    PlacesBoxReal->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    PlacesBoxReal->grab();
@@ -112,9 +114,16 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    FileNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    FileNameText->grab();
    
+	//FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
+   PathNameText = Environment->addEditBox(0, core::rect<s32>(180, 10, RelativeRect.getWidth()-10, 30), true, this, -1);
+   PathNameText->setSubElement(true);
+   PathNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   PathNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   PathNameText->grab();
+
    FilterComboBox = Environment->addComboBox(core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-55, RelativeRect.getWidth()-10, RelativeRect.getHeight()-35), this, -1);
    FilterComboBox->setSubElement(true);
-   FilterComboBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   FilterComboBox->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    FilterComboBox->grab();
     FilterComboBox->addItem(L"All Files");
    
@@ -322,8 +331,8 @@ CGUIFileSelector::~CGUIFileSelector() {
 //! returns the filename of the selected file. Returns NULL, if no file was selected.
 const wchar_t* CGUIFileSelector::getFileName() const {
 	irr::core::stringc text="";
-	text=(irr::core::stringc)FileNameText->getText();
-   return FileNameText->getText();
+	//text=(irr::core::stringc)FileNameText->getText();
+	return fullpathname.c_str();
    //
 }
 
@@ -343,7 +352,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
              if (FileSystem) {
             FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
             fillListBox();
-            FileNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+            PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
             }
              return true;
          }
@@ -401,12 +410,15 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
 				s32 selected = FileBox->getSelected();
 				if (FileList && FileSystem)
 				{
+					this->fullpathname=FileSystem->getWorkingDirectory();
 					core::stringw strw;
 					strw = FileSystem->getWorkingDirectory();
-					if (strw[strw.size()-1] != '\\')
-						strw += "\\";
-					strw += FileBox->getListItem(selected);
-					FileNameText->setText(strw.c_str());
+					if (strw[strw.size()-1] != '/')
+						strw += "/";
+					
+					fullpathname = strw+FileBox->getListItem(selected);
+					FileNameText->setText(FileBox->getListItem(selected));
+					PathNameText->setText(strw.c_str());
 				}
             }
 			if (event.GUIEvent.Caller == PlacesBox)
@@ -429,17 +441,21 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
 					if (FileList->isDirectory(selected)) 
 					{
 						FileSystem->changeWorkingDirectoryTo(FileList->getFileName(selected));
+						PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
 						fillListBox();
-						FileNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+						FileNameText->setText(L"");
 					}
 					else
 					{
+						this->fullpathname=FileSystem->getWorkingDirectory();
 						core::stringw strw;
 						strw = FileSystem->getWorkingDirectory();
-						if (strw[strw.size()-1] != '\\')
-							strw += "\\";
-						strw += FileBox->getListItem(selected);
-						FileNameText->setText(strw.c_str());
+						if (strw[strw.size()-1] != '/')
+							strw += "/";
+						
+						fullpathname = strw+FileBox->getListItem(selected);
+						FileNameText->setText(FileBox->getListItem(selected));
+						PathNameText->setText(strw.c_str());
 						return true;
 					}
 				}
@@ -507,6 +523,9 @@ void CGUIFileSelector::draw() {
 
    rect = skin->draw3DWindowBackground(this, false, skin->getColor(EGDC_ACTIVE_BORDER), 
       rect, &AbsoluteClippingRect);
+
+   this->recalculateAbsolutePosition(true);
+   this->AbsoluteRect=AbsoluteRect;
 
   /* if (Text.size()) {
       rect.UpperLeftCorner.X += 2;
@@ -593,9 +612,9 @@ void CGUIFileSelector::fillListBox() {
 
    }
 
-   if (FileNameText) {
+   if (PathNameText) {
       s = FileSystem->getWorkingDirectory();
-      FileNameText->setText(s.c_str());
+      PathNameText->setText(s.c_str());
    }
 }
 
