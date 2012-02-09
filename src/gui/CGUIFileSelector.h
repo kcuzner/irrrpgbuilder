@@ -31,8 +31,7 @@ class CGUIFileSelector : public IGUIElement {
       \param id - The ID of the dialog
       \param type - The type of dialog
       */
-      CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type);
-
+      CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, const core::rect<s32>& rectangle, E_FILESELECTOR_TYPE type);
       /**
         \brief Destructor
         */
@@ -180,6 +179,7 @@ class CGUIFileSelector : public IGUIElement {
       core::position2d<s32> DragStart;
       bool Dragging;
       bool IsDirectoryChoosable;
+	  irr::core::rect<s32> rectangle;
       s32 FileIconIdx;
       s32 DirectoryIconIdx;
 	  s32 PlacesIconIdx;

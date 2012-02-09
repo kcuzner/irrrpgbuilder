@@ -421,7 +421,7 @@ void App::eventGuiButton(s32 id)
 			#else
 			
 			//this->loadProject();
-			GUIRequestManager::getInstance()->FileSelector();
+			GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
 			old_state=app_state;
 			app_state=APP_WAIT_FILEREQUEST;
 			

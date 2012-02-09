@@ -7,26 +7,16 @@ s32 CGUIFileSelector::numFileSelectors = 0;
 
 
 //! constructor
-CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type)
-: IGUIElement(EGUIET_FILE_OPEN_DIALOG, environment, parent, id, 
-			  core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
-               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,   
-              (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
-               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),
-			  
-			   Dragging(false), FileNameText(0), FileList(0), DialogType(type) {
+CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, const core::rect<s32>& rectangle, E_FILESELECTOR_TYPE type)
+:IGUIElement(EGUIET_FILE_OPEN_DIALOG, environment, parent, id, rectangle), Dragging(false), FileNameText(0), FileList(0), DialogType(type) 
 
+{
 
-//IGUIFileOpenDialog(environment, parent, id,
-// core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
-//               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,   
-//               (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
-//               (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),   
-//  Dragging(false), FileNameText(0), FileList(0), DialogType(type) {   
     #ifdef _DEBUG
      IGUIElement::setDebugName("CGUIFileSelector");
    #endif    
     
+
     Text = title;
     IsDirectoryChoosable = false;
 
@@ -44,10 +34,9 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
    s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
-   // ---------------------------------------------------------------
+
 
    OKButton = Environment->addButton(
-   // core::rect<s32>(RelativeRect.getWidth()-80, 30, RelativeRect.getWidth()-10, 50), 
       core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10), 
       this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
    OKButton->setSubElement(true);
@@ -58,13 +47,14 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
       core::rect<s32>(RelativeRect.getWidth()-80, RelativeRect.getHeight()-30, RelativeRect.getWidth()-10, RelativeRect.getHeight()-10), 
       this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
    CancelButton->setSubElement(true);
-   CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    CancelButton->grab();
 
    // Treebox is experimental... Will be used for the second type of file requester (2 variants will be implemented)
    TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200),0,-1,true, true, false);
    TreeBox->setSubElement(true);
    TreeBox->setLinesVisible(false);
+   TreeBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    irr::gui::IGUITreeViewNode * fv=TreeBox->getRoot()->addChildBack(L"Favorites");
    irr::gui::IGUITreeViewNode * ld=TreeBox->getRoot()->addChildBack(L"Local drives");
    fv->setExpanded(true);
@@ -90,13 +80,13 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    // Contain the names of the favorites folders
    PlacesBox = Environment->addListBox(core::rect<s32>(10, 210, 170, RelativeRect.getHeight()-60), this, -1, true);
    PlacesBox->setSubElement(true);
-   PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+   PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    PlacesBox->grab();
 
    // Contain the real location of those favorites folder (lazy programming :) )
    PlacesBoxReal = Environment->addListBox(core::rect<s32>(10, 50, 170, RelativeRect.getHeight()-60), this, -1, true);
    PlacesBoxReal->setSubElement(true);
-   PlacesBoxReal->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+   PlacesBoxReal->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    PlacesBoxReal->grab();
    PlacesBoxReal->setEnabled(false);
    PlacesBoxReal->setVisible(false);
@@ -104,13 +94,13 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    //DriveBox = Environment->addComboBox(core::rect<s32>(10, 55, RelativeRect.getWidth()-90, 75), this, -1);
    DriveBox = Environment->addComboBox(core::rect<s32>(10, RelativeRect.getHeight()-55, 170, RelativeRect.getHeight()-35), this, -1);
    DriveBox->setSubElement(true);
-   DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    DriveBox->grab();   
 
    //FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
    FileNameText = Environment->addEditBox(0, core::rect<s32>(10, RelativeRect.getHeight()-30, RelativeRect.getWidth()-180, RelativeRect.getHeight()-10), true, this, -1);
    FileNameText->setSubElement(true);
-   FileNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   FileNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    FileNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    FileNameText->grab();
    
@@ -125,7 +115,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    FilterComboBox->setSubElement(true);
    FilterComboBox->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    FilterComboBox->grab();
-    FilterComboBox->addItem(L"All Files");
+   FilterComboBox->addItem(L"All Files");
    
 
    core::stringc str = "FileSelectorIcons";
@@ -148,10 +138,16 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
       //printf("working directory saved: %s\n", prev_working_dir.c_str());
 
    }
+
+   // Desired starting path (Need to have this as a parameter
    FileSystem->changeWorkingDirectoryTo("../projects");
    fillListBox();
 
-// This will fill the drive list (still buggy) 
+   updateAbsolutePosition();
+
+ 
+   // This will fill the drive list (still buggy)
+   // Only working for the WIN32 platform
 #ifdef WIN32
    
 	int dr_type=99;
@@ -201,105 +197,98 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 
 	// Get the desktop shortcut (places)
    // String buffer for holding the path.
-TCHAR strPath[ MAX_PATH ];
+	TCHAR strPath[ MAX_PATH ];
 
-// Get the special folder path. (Desktop)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_DESKTOPDIRECTORY, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"Desktop",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_desktop.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (Desktop)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_DESKTOPDIRECTORY, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"Desktop",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_desktop.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (My documents)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_PERSONAL, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"My documents",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_documents.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (My documents)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_PERSONAL, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"My documents",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_documents.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (My pictures)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_MYPICTURES, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"My pictures",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_pictures.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (My pictures)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_MYPICTURES, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"My pictures",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_pictures.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (My music)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_MYMUSIC, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"My music",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (My music)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_MYMUSIC, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"My music",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (My video)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_MYVIDEO, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"My videos",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (My video)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_MYVIDEO, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"My videos",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (Public documents)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_COMMON_DOCUMENTS, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"Public documents",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (Public documents)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_COMMON_DOCUMENTS, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"Public documents",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (Public pictures)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_COMMON_PICTURES, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"Public pictures",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (Public pictures)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_COMMON_PICTURES, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"Public pictures",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
-// Get the special folder path. (Public music)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_COMMON_MUSIC, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"Public music",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
-
-
-// Get the special folder path. (Public videos)
-SHGetSpecialFolderPath(
-    0,       // Hwnd
-    strPath, // String buffer.
-    CSIDL_COMMON_VIDEO, // CSLID of folder
-    FALSE ); // Create if doesn't exists?
-PlacesBox->addItem(L"Public videos",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
+	// Get the special folder path. (Public music)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_COMMON_MUSIC, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"Public music",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 
 
-
-
-
-
+	// Get the special folder path. (Public videos)
+	SHGetSpecialFolderPath(
+		0,       // Hwnd
+		strPath, // String buffer.
+		CSIDL_COMMON_VIDEO, // CSLID of folder
+		FALSE ); // Create if doesn't exists?
+	PlacesBox->addItem(L"Public videos",this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	PlacesBoxReal->addItem(((irr::core::stringw)strPath).c_str());
 #endif
 
 }
 
-
-
 //! destructor
-CGUIFileSelector::~CGUIFileSelector() {
-//   if (CloseButton)
-//      CloseButton->drop();
+CGUIFileSelector::~CGUIFileSelector() 
+{
+  //   if (CloseButton)
+  //      CloseButton->drop();
 
    if (OKButton)
       OKButton->drop();
@@ -516,37 +505,16 @@ void CGUIFileSelector::draw() {
 
    IGUISkin* skin = Environment->getSkin();
 
-   AbsoluteRect.LowerRightCorner.Y=Environment->getVideoDriver()->getScreenSize().Height;
-   AbsoluteRect.LowerRightCorner.X=Environment->getVideoDriver()->getScreenSize().Width;
-   AbsoluteClippingRect = AbsoluteRect;
-   core::rect<s32> rect = AbsoluteRect;
+   core::rect<s32>* clipRect = 0;
 
-   rect = skin->draw3DWindowBackground(this, false, skin->getColor(EGDC_ACTIVE_BORDER), 
-      rect, &AbsoluteClippingRect);
+	// draw background
+   core::rect<s32> frameRect(AbsoluteRect);
+   core::rect<s32> clientClip(AbsoluteRect);
 
-   this->recalculateAbsolutePosition(true);
-   this->AbsoluteRect=AbsoluteRect;
-
-  /* if (Text.size()) {
-      rect.UpperLeftCorner.X += 2;
-      rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
-
-      IGUIFont* font = skin->getFont(EGDF_WINDOW);
-      if (font)
-         font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true, 
-         &AbsoluteClippingRect);
-   }*/
+   core::rect<s32> rect = skin->draw3DWindowBackground(this, false, skin->getColor(EGDC_ACTIVE_BORDER),frameRect, &AbsoluteClippingRect);
 
    IGUIElement::draw();
 }
-
-//bool CGUIFileSelector::matchesFileFilter(core::stringw s) {
-//  if (FilterComboBox->getSelected() >= FileFilters.size()) return true; // 'All Files' selectable
-//  else {
-//    s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-//    return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])); 
-//  }
-//}
 
 bool CGUIFileSelector::matchesFileFilter(core::stringw s) { 
    if (FileFilters.size() > 1) {
@@ -636,29 +604,13 @@ void CGUIFileSelector::sendCancelEvent() {
    event.GUIEvent.Caller = this;
    event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
    Parent->OnEvent(event);
+
+   // Erase the name since it was cancelled
+   fullpathname=L"";
+   // "usecomplete" is a flag that will tell the caller that the requester have completed it's task
    usecomplete=true;
 }
 
-//void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture) {
-//  SFileFilter filter(name, ext, texture);
-//  
-//  filter.FileIconIdx = addIcon(texture);
-//  
-//  FileFilters.push_back(filter);  
-//  
-//  FilterComboBox->clear();
-//  core::stringw strw;
-//  for (u32 i = 0 ; i < FileFilters.size() ; i++) {
-//    strw = FileFilters[i].FilterName;
-//    strw += " (*.";
-//    strw += FileFilters[i].FileExtension;
-//    strw += ")";
-//    FilterComboBox->addItem(strw.c_str());
-//  }
-//  FilterComboBox->addItem(L"All Files");
-//  
-//  fillListBox();
-//}
 void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture) {
   SFileFilter filter(name, ext, texture);
  

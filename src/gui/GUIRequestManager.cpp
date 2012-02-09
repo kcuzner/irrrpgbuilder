@@ -1,5 +1,6 @@
 #include "GUIRequestManager.h"
 
+
 GUIRequestManager::GUIRequestManager()
 {
 
@@ -21,8 +22,9 @@ GUIRequestManager* GUIRequestManager::getInstance()
     return instance;
 }
  
-void GUIRequestManager::FileSelector()
+void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::stringw title)
 {
+
 	iscomplete=false;
 	if (filedevice)
 	{
@@ -33,9 +35,10 @@ void GUIRequestManager::FileSelector()
 	// Create the new window
 	if (!filedevice)
 	{
-		filedevice = irr::createDevice(video::EDT_BURNINGSVIDEO, irr::core::dimension2d<u32>(640,400), 32, false,false,false);
+		filedevice = irr::createDevice(video::EDT_BURNINGSVIDEO, size, 32, false,false,false);
 		filedevice->setResizable(true);
-		filedevice->setWindowCaption(L"IRB: Load a project file...");
+		filedevice->setWindowCaption(title.c_str());
+		filedevice->setEventReceiver(EventReceiver::getInstance());
 		
 	} 
 	
@@ -65,10 +68,12 @@ void GUIRequestManager::FileSelector()
 	}
 
 	// Create the file selector
-	selector =	new CGUIFileSelector(L"File Selector", filedevice->getGUIEnvironment(), filedevice->getGUIEnvironment()->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
+	selector =	new CGUIFileSelector(L"File Selector", filedevice->getGUIEnvironment(), filedevice->getGUIEnvironment()->getRootGUIElement(), -1, core::rect<s32>(0,0,size.Width,size.Height), CGUIFileSelector::EFST_OPEN_DIALOG);
 	selector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
     selector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
 	selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+	// Allow scaling to be used on the GUI element. In all directions.
+	selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 	update();
 }
 
@@ -99,7 +104,7 @@ void GUIRequestManager::update()
 		{
 			
 			filedevice->run();
-			filedevice->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
+			filedevice->getVideoDriver()->beginScene(true, true, SColor(0,0,0,0));
 			filedevice->getSceneManager()->drawAll();
 			filedevice->getGUIEnvironment()->drawAll();
 			filedevice->getVideoDriver()->endScene();

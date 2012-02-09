@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "CGUIFileSelector.h"
+#include "../events/EventReceiver.h"
 
 using namespace irr;
 using namespace core;
@@ -22,7 +23,7 @@ class GUIRequestManager
 		GUIRequestManager();
 		~GUIRequestManager();
         static GUIRequestManager* getInstance();
-		void FileSelector();
+		void FileSelector(irr::core::dimension2d<u32> size, core::stringw title);
 		void update();
 		inline bool isComplete() {return iscomplete;}
 		inline stringw getFilename() {return filename;}
