@@ -12,7 +12,7 @@ EventReceiver::EventReceiver()
 {
 	memset(mouse, 0x00, sizeof mouse);
 	memset(keys, 0x00, sizeof keys);
-	
+
 	//mouse = {0};
 	//keys = {0};
 }
@@ -105,6 +105,9 @@ bool EventReceiver::OnEvent(const SEvent& event)
             case EGET_COMBO_BOX_CHANGED:
                 App::getInstance()->eventGuiCombobox(id);
                 break;
+
+            default :
+                break;
 #endif
         }
     }
@@ -114,7 +117,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
 		text += L"Log>>";
         text += stringw(event.LogEvent.Text).c_str();
 		App::getInstance()->textevent.push_back(text.c_str());
-		
+
 	}
     return false;
 }

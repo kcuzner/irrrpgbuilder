@@ -336,7 +336,7 @@ void CGUIEditBoxIRB::setElementText(u32 index, core::stringw text)
 		menustring[index]=text.c_str();
 
 	// If the Element is the tooltip of the toggle of linecount, set it at the same time.
-	if (index=BT_LINECOUNT)
+	if (index==BT_LINECOUNT)
 		LineToggle->setToolTipText(text.c_str());
 }
 
@@ -358,10 +358,10 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 		switch(event.EventType)
 		{
 		case EET_GUI_EVENT:
-			if (event.GUIEvent.EventType == irr::gui::EGET_MENU_ITEM_SELECTED) 
+			if (event.GUIEvent.EventType == irr::gui::EGET_MENU_ITEM_SELECTED)
 			{
 				int sel = static_cast<IGUIContextMenu*>(event.GUIEvent.Caller)->getSelectedItem();
-				
+
 				if (sel == CM_CUT)
 					cut();
 				else if (sel == CM_COPY)
@@ -435,7 +435,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 					}
 
 					else
-					{						
+					{
 						LineNumbering=true;
 						breakText();
 						LeftSpace=60;
@@ -986,7 +986,7 @@ void CGUIEditBoxIRB::draw()
 				int height = font->getDimension(L"0").Height;
 
 				setTextRect(i);
-				while (CurrentTextRect.LowerRightCorner.Y < AbsoluteRect.UpperLeftCorner.Y) 
+				while (CurrentTextRect.LowerRightCorner.Y < AbsoluteRect.UpperLeftCorner.Y)
 				{
 					setTextRect(++i);
 				}
@@ -1040,7 +1040,7 @@ void CGUIEditBoxIRB::draw()
 					}
 				}
 
-				
+
 				bool endFound = false;
 				bool startFound = false;
 				bool multiLine = false;
@@ -1074,11 +1074,11 @@ void CGUIEditBoxIRB::draw()
 
 							// Check normal keywords
 							if (KeywordList[v].type == 0) {
-							     
-								
+
+
 								//Keywords[v] problem retrieve
 								//core::stringc test = Keywords[v].text;
-									
+
 								if ((end-u) == Keywords[v].text.size()) {
 									// Compare the strings
 									bool same = true;
@@ -1114,7 +1114,7 @@ void CGUIEditBoxIRB::draw()
 
 							// Check group keywords
 							else if (KeywordList[v].type == 1) {
-							
+
 								// Only check if there is enough space left for there to be the keyword
 								if (u+GroupKeywords[index2].text.size() <= lineCStr.size()) {
 									bool match = true;
@@ -1188,7 +1188,7 @@ void CGUIEditBoxIRB::draw()
 
 									}
 								}
-							
+
 								index2++;
 							}
 							else if (KeywordList[v].type == 2) {
@@ -1232,14 +1232,14 @@ void CGUIEditBoxIRB::draw()
 
 
 
-					
+
 
 
 					}
 				}
 
 
-				
+
 
 				// If we haven't found the end of the group we last had, keep looking
 				if (SearchingForEndOfGroup) {
@@ -1316,7 +1316,7 @@ void CGUIEditBoxIRB::draw()
 					EndOfGroupText = endText;
 				}
 
-			
+
 				// Draw line numbering
 				if (LineNumbering)
 				{
@@ -1383,7 +1383,7 @@ void CGUIEditBoxIRB::draw()
 					irr::video::SColor SelColor =  SelectionBackColor;
 						//selColor(255,70,70,180);
 					if (InMenu)
-						SelColor = SelectionBackColor1; 
+						SelColor = SelectionBackColor1;
 						//irr::video::SColor(255,130,130,180);
 
 					skin->draw2DRectangle(this, SelColor, CurrentTextRect, &localClipRect);
@@ -1433,7 +1433,7 @@ void CGUIEditBoxIRB::draw()
 				blinkRect.LowerRightCorner.X = blinkRect.UpperLeftCorner.X + font->getDimension(L"_").Width;
 				Environment->getVideoDriver()->draw2DRectangle(irr::video::SColor(100,100,100,100),blinkRect,&localClipRect);
 			}
-			
+
 			/*font->draw(L"_", CurrentTextRect,
 				OverrideColorEnabled ? OverrideColor : skin->getColor(EGDC_BUTTON_TEXT),
 				false, true, &localClipRect);*/
@@ -1522,7 +1522,7 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 
 		if (MultiLine || (WordWrap && BrokenText.size() > 1) )
 		{
-			
+
 			int realVal = value;
 			if (Scrollbar->getPos()+value < Scrollbar->getMin())
 				realVal = (Scrollbar->getMin()-Scrollbar->getPos());
@@ -1629,15 +1629,15 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 			menu = Environment->addContextMenu(rect,this);
 			OldMarkBegin = MarkBegin;
 			OldMarkEnd = MarkEnd;
-			
+
 			menu->addItem(menustring[CM_CUT].c_str());
 			menu->addItem(menustring[CM_COPY].c_str());
 			menu->addItem(menustring[CM_PASTE].c_str());
 			menu->addItem(menustring[CM_DELETE].c_str());
 			menu->addSeparator();
 			menu->addItem(menustring[CM_UNDO].c_str());
-			menu->addItem(menustring[CM_REDO].c_str());	
-			
+			menu->addItem(menustring[CM_REDO].c_str());
+
 			InMenu = true;
 			return true;
 			break;
@@ -1655,7 +1655,7 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 
 			for (int i = CursorPos; i > 0; i--) {
 				char character;
-				wcstombs(&character,&Text.c_str()[i],1);	
+				wcstombs(&character,&Text.c_str()[i],1);
 				if (!isalnum(character)) {
 
 					start = i+1;
@@ -2112,7 +2112,7 @@ void CGUIEditBoxIRB::inputChar(wchar_t c)
 			else
 			{
 				// add new character
-				if (Inserting && CursorPos+1 <= (s32)Text.size()-1) 
+				if (Inserting && CursorPos+1 <= (s32)Text.size()-1)
 					replaceText(CursorPos,CursorPos+1,input);
 				else
 					replaceText(CursorPos,CursorPos,input);
@@ -2339,7 +2339,7 @@ irr::core::recti CGUIEditBoxIRB::myRect(int x, int y, int w, int h)
 }
 
 //! returns whether a point is within the selection
-bool CGUIEditBoxIRB::isPointInSelection(core::position2di pos) 
+bool CGUIEditBoxIRB::isPointInSelection(core::position2di pos)
 {
 	return (getCursorPos(pos.X,pos.Y) > std::min(MarkBegin,MarkEnd) && getCursorPos(pos.X,pos.Y) < std::max(MarkBegin,MarkEnd));
 }
@@ -2446,7 +2446,7 @@ void CGUIEditBoxIRB::addLUAKeywords(irr::video::SColor keywordColor, irr::video:
 }
 
 //! adds keyword info
-void CGUIEditBoxIRB::addKeywordInfo(int size, int type) 
+void CGUIEditBoxIRB::addKeywordInfo(int size, int type)
 {
 	for (u32 i = 0; i < KeywordList.size(); i++) {
 		if (size >= KeywordList[i].size) {

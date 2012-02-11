@@ -192,8 +192,8 @@ void App::displayGuiConsole()
 	// This was the old console (might be needed for the player app
 	//bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
 	//GUIManager::getInstance()->setElementVisible(CONSOLE,result);
-	
-	
+
+
 	//GUIManager::getInstance()->setConsoleText(L"",true);
 #ifdef _wxWIDGET
 	// This is the new console used via wxWidget console window
@@ -309,7 +309,7 @@ void App::setAppState(APP_STATE newAppState)
     if(app_state == APP_EDIT_CHARACTER)
     {
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);		
+		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
         Player::getInstance()->setHighLight(true);
         CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -373,7 +373,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
         GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
     }
-    else if(app_state < 100) 
+    else if(app_state < 100)
     {
         GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
         GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
@@ -401,7 +401,7 @@ void App::eventGuiButton(s32 id)
     DynamicObject* selectedObject;
 	oldcampos = vector3df(0,0,0);
 
-	
+
     switch (id)
     {
 
@@ -414,17 +414,17 @@ void App::eventGuiButton(s32 id)
 			#endif
 
             break;
-        
+
 		case BT_ID_LOAD_PROJECT:
 			#ifdef _wxWIDGET
 				appFrame->OnLoad();
 			#else
-			
+
 			//this->loadProject();
 			GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
 			old_state=app_state;
 			app_state=APP_WAIT_FILEREQUEST;
-			
+
 			#endif
 
 			//this->setAppState(APP_EDIT_LOOK);
@@ -468,7 +468,7 @@ void App::eventGuiButton(s32 id)
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
             GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-			
+
             this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
             break;
 
@@ -500,11 +500,11 @@ void App::eventGuiButton(s32 id)
         case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
             GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
             DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
-			
+
 			// remove the object for the selection
 			lastScannedPick.pickedNode=NULL;
 			lastMousePick.pickedNode=NULL;
-            
+
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
             break;
 
@@ -563,7 +563,7 @@ void App::eventGuiButton(s32 id)
 
         case BT_ID_CLOSE_PROGRAM:
 			this->shutdown();
-			
+
 			/*this->cleanWorkspace();
 			SoundManager::getInstance()->stopEngine();
 			device->closeDevice();
@@ -631,7 +631,8 @@ void App::eventGuiButton(s32 id)
 				GUIManager::getInstance()->stopDialogSound();
 			}
 			break;
-
+        default:
+            break;
     }
 }
 
@@ -657,6 +658,8 @@ void App::eventGuiCheckbox(s32 id)
         case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA:
             ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
             break;
+        default:
+            break;
     }
 }
 
@@ -668,13 +671,14 @@ void App::eventGuiCombobox(s32 id)
             DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
             GUIManager::getInstance()->updateDynamicObjectPreview();
             break;
+
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
 			std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
 			TYPE choice = OBJECT_TYPE_NPC;
-			
+
 			if (result.find("NPC") != std::string::npos)
 				choice = OBJECT_TYPE_NPC;
-			
+
 			if (result.find("INTERACTIVE OBJECTS") != std::string::npos)
 				choice = OBJECT_TYPE_INTERACTIVE;
 
@@ -685,6 +689,7 @@ void App::eventGuiCombobox(s32 id)
 			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 			GUIManager::getInstance()->updateDynamicObjectPreview();
 			break;
+
     }
 }
 
@@ -738,6 +743,9 @@ void App::eventKeyPressed(s32 key)
 			break;
         case KEY_ESCAPE:
             //device->drop();
+            break;
+
+        default:
             break;
     }
 }
@@ -818,10 +826,6 @@ void App::eventMousePressed(s32 mouse)
 						else//create a new copy of active dynamic object at the clicked position
 						{
 							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-
-							#ifdef APP_DEBUG
-							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
-							#endif
 						}
 					}
                 }
@@ -834,12 +838,15 @@ void App::eventMousePressed(s32 mouse)
 
         case 3: //Mousewheel pressed
             break;
+
+        default:
+            break;
     }
 }
 
 void App::eventMouseWheel(f32 value)
 {
-	
+
     if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
     {
         vector3df oldRot = lastMousePick.pickedNode->getRotation();
@@ -890,7 +897,7 @@ MousePick App::getMousePosition3D(int id)
 	// Fix to a proper position on wxWidget;
 	pos=pos+position2d<s32>(0,22);
 #endif
-	
+
 	// For the ray test, we should hide the player
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 
@@ -926,11 +933,11 @@ MousePick App::getMousePosition3D(int id)
 
 
 void App::setPreviewSelection()
-{   
+{
 	// Will get a toggle selection
 	MousePick mousePick = getMousePosition3D();
 
-	
+
 	stringc nodeName = "";
 	// Check for a node to prevent a crash (need to get the name of the node)
 	if (mousePick.pickedNode != NULL)
@@ -955,7 +962,7 @@ void App::setPreviewSelection()
 				lastScannedPick.pickedNode->setDebugDataVisible(0);
 			}
 		}
-	} 
+	}
 }
 
 bool App::loadConfig()
@@ -1117,7 +1124,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
 
 	loadConfig();
-	
+
 	if (!IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
@@ -1166,21 +1173,21 @@ void App::playGame()
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
 		DynamicObjectsManager::getInstance()->showDebugData(false);
-		
+
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		//DynamicObjectsManager::getInstance()->showDebugData(false);
 		//TerrainManager::getInstance()->showDebugData(false);
-		
+
 		DynamicObjectsManager::getInstance()->startCollisions();
 		//DynamicObjectsManager::getInstance()->initializeCollisions();
 
 		// Reset the last "walk target" as the game restart.
 		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getObject()->getPosition());
-		
+
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
 		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
-		
+
 	}
 }
 
@@ -1199,23 +1206,23 @@ void App::stopGame()
 		// DynamicObjectsManager::getInstance()->showDebugData(true);
 		// TerrainManager::getInstance()->showDebugData(true);
 		DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-		
-		
+
+
 		SoundManager::getInstance()->stopSounds();
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
-		
+
 		this->setAppState(old_state); //APP_EDIT_LOOK
-		
+
 
 		CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
 		CameraSystem::getInstance()->setCamera(2);
-		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f)); 
-		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f)); 
+		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
+		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
-		
+
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
 
-		
+
 	}
 }
 
@@ -1238,7 +1245,7 @@ void App::update()
 				device->yield();
 
 #ifdef EDITOR
-			 
+
 			updateEditMode();//editMode
 #endif
 		}
@@ -1279,14 +1286,14 @@ void App::update()
 			// There was an event on the file requester
 			this->app_state = APP_EDIT_DYNAMIC_OBJECTS_MODE;
 				//this->old_state;
-			
+
 			stringc result=(stringc)GUIRequestManager::getInstance()->getFilename();
 			if (result.size()>2)
 			{
 				this->cleanWorkspace();
 				this->loadProjectFromXML((stringc)GUIRequestManager::getInstance()->getFilename());
 			}
-			
+
 		}
 
 	}
@@ -1342,14 +1349,14 @@ void App::run()
 			str += " FPS:";
 			str += fps;
 
-			
+
 #ifdef _wxWIDGET
 			appFrame->MessageStatus(str.c_str());
-#else			
+#else
 			device->setWindowCaption(str.c_str());
 #endif
 
-			
+
 			lastFPS = fps;
 		}
     }
@@ -1390,7 +1397,7 @@ void App::updateEditMode()
 						old_state = app_state;
 
 					setAppState(APP_EDIT_VIEWDRAG);
-					
+
 					{// TODO: Move the cam based on the cursor position. Current method is buggy.
 						// vector3df camPosition = this->getMousePosition3D(100).pickedPos;
 						// Unlock the maya camera (Need to be improved)
@@ -1511,23 +1518,23 @@ void App::updateGameplay()
 	{
 		// Update the NPc refresh
 		timer3 = device->getTimer()->getRealTime();
-		
+
 		// Update all the NPC on the map (including the player)
-		DynamicObjectsManager::getInstance()->updateAll(); 
-		
+		DynamicObjectsManager::getInstance()->updateAll();
+
 		// Update the Point&Click camera setup
 		CameraSystem::getInstance()->updatePointClickCam();
-		
+
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();
 	}
 
 
 	// This update the player events and controls at specific time intervals
-    if ((timer-timer2)>34) 
+    if ((timer-timer2)>34)
 	{
 		timer2 = device->getTimer()->getRealTime();
-		
+
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
 			MousePick mousePick = getMousePosition3D();
@@ -1635,7 +1642,7 @@ void App::createNewProject()
 void App::loadProject()
 {
     APP_STATE old_state = getAppState();
-    
+
 	// Have to rethink how to do it. It used the gameplay dialog.
     //bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
     //GUIManager::getInstance()->flush();
@@ -1825,10 +1832,10 @@ void App::initialize()
 
 	// Set the ambient light
 	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
-	
+
 	// Set the fog to be very far when not in gameplay
     driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
-	
+
 	quickUpdate();
 	screensize=driver->getScreenSize();
 
@@ -1892,7 +1899,7 @@ void App::clearConsole()
 // Get the pointer to the wxFrame from the wxWidget system
 void App::setFramePointer(wxFrame * frm)
 {
-	appFrame = (CIrrFrame*)frm; 
+	appFrame = (CIrrFrame*)frm;
 }
 #endif
 

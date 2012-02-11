@@ -46,7 +46,7 @@ GUIManager::GUIManager()
 	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
 	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
 
-	
+
 }
 
 GUIManager::~GUIManager()
@@ -155,6 +155,8 @@ bool GUIManager::getCheckboxState(GUI_ID id)
         case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA :
             return guiTerrainShowPlayableArea->isChecked();
             break;
+        default:
+            break;
     }
     return false;
 }
@@ -193,6 +195,8 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
                 return (f32)guiVegetationBrushStrength->getPos();
             }
             break;
+        default:
+            break;
     }
     return 0;
 }
@@ -209,6 +213,8 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 			break;
         case CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
             return stringc(guiDynamicObjects_LoadScriptTemplateCB->getItem(guiDynamicObjects_LoadScriptTemplateCB->getSelected()));
+            break;
+        default:
             break;
     }
     return "";
@@ -272,7 +278,7 @@ void GUIManager::setupEditorGUI()
 	guiMainWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 	guiLoaderWindow->bringToFront(guiMainWindow);
-	
+
 
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
 	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,120),false);
@@ -280,9 +286,9 @@ void GUIManager::setupEditorGUI()
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 	guiMainToolWindow->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
 
-	
+
+
 
 	guiBackImage2=guienv->addImage(backtexture,vector2d<s32>(0,0),true,guiMainToolWindow);
 	guiBackImage2->setScaleImage(true);
@@ -310,11 +316,11 @@ void GUIManager::setupEditorGUI()
 	// Tool tab
 	mainToolCtrl = guienv->addTabControl(myRect(2,2,164,112),guiMainToolWindow,true,true);
 	IGUITab * tabPlayTool = mainToolCtrl->addTab(LANGManager::getInstance()->getText("txt_tool_des4").c_str());
-	
+
 	// Tools TAB
 	mainTabCtrl = guienv->addTabControl(myRect(260,2,displaywidth-435,112),guiMainWindow,true,true);
 	mainTabCtrl->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
+
 	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
 	IGUITab * tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
@@ -460,7 +466,7 @@ void GUIManager::setupEditorGUI()
 	terrainTText->setOverrideColor(video::SColor(255,65,66,174));
 	terrainTText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainTText->setOverrideFont(guiFont9);
-    
+
      x+= 70;
 
     //Terrain Add Segment
@@ -858,17 +864,17 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Script->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     //guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
     guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
-	
+
 	//Old code now changed to setElementText()
 	//guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
 	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->BT_LINECOUNT,LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
 
 	// Set the IRB commands Highlights
-	
+
 	// Allow the code editor to use syntax highlighting based on LUA keywords
 	guiDynamicObjects_Script->addLUAKeywords();
 
-	
+
 	// Define custom "Group" keywords, here are "dictionnary" for IRB specific keywords
 	guiDynamicObjects_Script->addKeyword("setObjectName",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("chaseObject",SColor(255,128,0,255),true);
@@ -893,7 +899,7 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setTimeOfDay",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("setAmbientLight",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("getAmbientColor",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("getAmbientColor",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setFogColor",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getFogColor",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setFogRange",SColor(255,128,0,255),true);
@@ -904,37 +910,37 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setSoundListenerPosition",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setPlayerLife",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setSoundVolume",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("getPlayerLife",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setPlayerMoney",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("getPlayerMoney",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("addPlayerItem",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("stopSounds",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setSoundListenerPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPlayerLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setSoundVolume",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getPlayerLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPlayerMoney",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getPlayerMoney",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("addPlayerItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("stopSounds",SColor(255,128,0,255),true);
 
-	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("showDialogMessage",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("showDialogQuestion",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("saveGame",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("loadGame",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("showObjectLabel",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("showDialogMessage",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("showDialogQuestion",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("saveGame",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("loadGame",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("showObjectLabel",SColor(255,128,0,255),true);
 
-	guiDynamicObjects_Script->addKeyword("hideObjectLabel",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setObjectLabel",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setPosition",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("getPosition",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("setRotation",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("getRotation",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("turn",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("move",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("walkTo",SColor(255,128,0,255),true);	
-	guiDynamicObjects_Script->addKeyword("lookAt",SColor(255,128,0,255),true);	
+	guiDynamicObjects_Script->addKeyword("hideObjectLabel",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectLabel",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setRotation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getRotation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("turn",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("move",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("walkTo",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("lookAt",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("lookToObject",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getName",SColor(255,128,0,255),true);
@@ -1047,7 +1053,7 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 		if (mousepos.Y>startpos)
 			return true;
 	}
-		
+
 
 	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
 		return true;
@@ -1431,6 +1437,9 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			this->guidialog->setVisible(visible);
 			break;
 
+        default:
+            break;
+
     }
 }
 
@@ -1477,6 +1486,9 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
         case EB_ID_DYNAMIC_OBJECT_SCRIPT:
             return stringc(guiDynamicObjects_Script->getText());
             break;
+
+        default:
+            break;
     }
 	return "";
 }
@@ -1498,6 +1510,8 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
             break;
         case EB_ID_DYNAMIC_OBJECT_SCRIPT:
             guiDynamicObjects_Script->setText(text.c_str());
+            break;
+        default:
             break;
     }
 }
@@ -1565,6 +1579,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiHelpButton->setPressed(!enable);
             break;
 
+        default:
+            break;
+
     }
 }
 
@@ -1601,14 +1618,19 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			break;
 
 		case BT_ID_VIEW_ITEMS:
+		{
+
+
             guiBtViewItems->setVisible(visible);
 			// Update the gold items
 			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 			playerMoney += Player::getInstance()->getObject()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
-            break;
+		}
+        break;
 
-
+        default:
+           break;
 
     }
 }
@@ -1621,6 +1643,8 @@ void GUIManager::showMessage(GUI_MSG_TYPE msgType, stringc msg)
     {
         case GUI_MSG_TYPE_ERROR:
             msg_type = LANGManager::getInstance()->getText("msg_error");
+            break;
+        default:
             break;
     }
 
@@ -1700,6 +1724,9 @@ void GUIManager::setStaticTextText(GUI_ID id, stringc text)
         case ST_ID_PLAYER_MONEY:
             guiPlayerMoney->setText(stringw(text).c_str());
             break;
+
+        default:
+            break;
     }
 }
 
@@ -1710,8 +1737,8 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 {
 	//Temporary disable of this method to gain speed
 	//Will have a toggle to use/not use this in the future
-	
-	
+
+
 	u32 maxitem = 2000;
 	// If the GUI is not displayed, accumulate the info in a buffer
 	if (textevent.size()<maxitem)

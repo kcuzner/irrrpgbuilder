@@ -217,7 +217,11 @@ void CPostProcessManager::loadRTTConfig()
 				}
 			}
 			break;
+
+        default:
+            break;
 		}
+
 	}
 	delete xmlReader;
 }
@@ -244,6 +248,8 @@ void CPostProcessManager::loadEffectConfig()
     {
 		switch(xmlReader->getNodeType())
 		{
+
+
 		case io::EXN_ELEMENT:
 			{
 				// we are in the effect section and we find a effect to parse
@@ -413,7 +419,10 @@ void CPostProcessManager::loadEffectConfig()
 				}
 				break;
 			}
+			default:
+            break;
 		}
+
 	}
 	delete xmlReader;
 }
