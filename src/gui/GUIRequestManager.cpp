@@ -12,6 +12,11 @@ GUIRequestManager::GUIRequestManager()
 
 GUIRequestManager::~GUIRequestManager()
 {
+  if (filedevice)
+  {
+	filedevice->closeDevice();
+	filedevice->drop();
+  }
 
 }
 
@@ -25,8 +30,16 @@ GUIRequestManager* GUIRequestManager::getInstance()
 void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::stringw title)
 {
 
+	// Will return if the selector is not complete yet and as been opened
+	if (selector && !iscomplete)
+		return;
+
 	iscomplete=false;
-	if (filedevice)
+
+	// WARNING!! Experimental
+	// Since opening in another device is unstable and does not work on Linux, get the main device instead
+	filedevice=App::getInstance()->getDevice();
+	/*if (filedevice)
 	{
 		filedevice->closeDevice();
 		filedevice->drop();
@@ -35,6 +48,7 @@ void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::str
 	// Create the new window
 	if (!filedevice)
 	{
+		//video:EDT_BURNINGSVIDEO
 		filedevice = irr::createDevice(video::EDT_BURNINGSVIDEO, size, 32, false,false,false);
 		filedevice->setResizable(true);
 		filedevice->setWindowCaption(title.c_str());
@@ -42,10 +56,13 @@ void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::str
 		
 	} 
 	
+	//guienv=App::getInstance()->getDevice()->getGUIEnvironment();
+	//irr::video::IVideoDriver* driver=App::getInstance()->getDevice()->getVideoDriver();
+*/
+	// This is a reference to the gui and driver that are needed
 	guienv=filedevice->getGUIEnvironment();
 	irr::video::IVideoDriver* driver =filedevice->getVideoDriver();
-	
-	
+/*		
 	// Set up the environment
 	for (s32 i=0; i<irr::gui::EGDC_COUNT ; ++i)
     {
@@ -53,6 +70,7 @@ void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::str
             col.setAlpha(230);
             guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
+
 
 	// Fake office style skin colors
 	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
@@ -66,37 +84,38 @@ void GUIRequestManager::FileSelector(irr::core::dimension2d<u32> size, core::str
 		guienv->getSkin()->setFont(Font);
 		Font->drop();
 	}
-
+*/
+	
 	// Create the file selector
-	selector =	new CGUIFileSelector(L"File Selector", filedevice->getGUIEnvironment(), filedevice->getGUIEnvironment()->getRootGUIElement(), -1, core::rect<s32>(0,0,size.Width,size.Height), CGUIFileSelector::EFST_OPEN_DIALOG);
+	selector =	new CGUIFileSelector(title.c_str(), filedevice->getGUIEnvironment(), filedevice->getGUIEnvironment()->getRootGUIElement(), -1, core::rect<s32>(0,0,size.Width,size.Height), CGUIFileSelector::EFST_OPEN_DIALOG);
 	selector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
     selector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
 	selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
 	// Allow scaling to be used on the GUI element. In all directions.
-	selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	//selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 	update();
 }
 
 void GUIRequestManager::update()
 {
-	if (filedevice->isWindowFocused())
-	{
+	//if (filedevice->isWindowFocused())
+	//{
 		if (selector->isComplete())
 		{
 			
 			filename=(irr::core::stringw)selector->getFileName();
 			
 			iscomplete=true;
-			//selector->drop();
-			
-			filedevice->minimizeWindow();
-			filedevice->clearSystemMessages();
+				
+			// WARNING!! Experimental
+			// Close the device and open a NULL device
+			/*filedevice->clearSystemMessages();
 			filedevice->closeDevice();
 			filedevice->drop();
 			filedevice=irr::createDevice(video::EDT_NULL);
-			filedevice->run();
+			filedevice->run();*/
 			
-			//filedevice->drop();
+			
 			
 			selector->drop();
 		}
@@ -110,6 +129,6 @@ void GUIRequestManager::update()
 			filedevice->getVideoDriver()->endScene();
 		}
 
-	}
+	//}
 
 }

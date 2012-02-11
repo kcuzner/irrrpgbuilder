@@ -20,6 +20,8 @@ class CGUIFileSelector : public IGUIElement {
         enum E_FILESELECTOR_TYPE {
           EFST_OPEN_DIALOG, //<! For opening files
           EFST_SAVE_DIALOG, //<! For saving files
+		  EFST_WARNING, //<! For warning dialogs>
+		  EFST_ERRORS, //<!For Error dialogs>
           EFST_NUM_TYPES    //<! Not used, just specifies how many possible types there are
         };
                   
@@ -201,11 +203,15 @@ class CGUIFileSelector : public IGUIElement {
       core::array<SFileFilter> FileFilters;
       E_FILESELECTOR_TYPE DialogType;
       core::stringc prev_working_dir;
+	  core::stringc default_project_dir;
 	  core::stringw fullpathname; 
       
       static s32 numFileSelectors;
 
 	  bool usecomplete;
+
+	  private:
+		  core::stringw translateDOS(core::stringw input);
          
 };
 

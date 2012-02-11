@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "CGUIFileSelector.h"
+#include "../App.h"
 #include "../events/EventReceiver.h"
 
 using namespace irr;

@@ -1,8 +1,5 @@
 #include "CGUIFileSelector.h"
 
-const s32 FOD_WIDTH = 640;
-const s32 FOD_HEIGHT = 400;
-
 s32 CGUIFileSelector::numFileSelectors = 0;
 
 
@@ -12,11 +9,13 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 
 {
 
+	// This is a spacer when the window title is displayed
+	irr::s32 yoffset = 10;
+
     #ifdef _DEBUG
      IGUIElement::setDebugName("CGUIFileSelector");
    #endif    
     
-
     Text = title;
     IsDirectoryChoosable = false;
 
@@ -31,11 +30,23 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
       color = skin->getColor(EGDC_WINDOW_SYMBOL);
    }
 
+   // Close button for the window
    s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
    s32 posx = RelativeRect.getWidth() - buttonw - 4;
+   
+   CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1, 
+      L"", L"Close");
+   CloseButton->setSubElement(true);
+   if (sprites) {
+      CloseButton->setSpriteBank(sprites);
+      CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
+      CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
+   }
+   CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+   CloseButton->grab();
 
 
-
+   // Ok button
    OKButton = Environment->addButton(
       core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10), 
       this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
@@ -46,14 +57,16 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    CancelButton = Environment->addButton(
       core::rect<s32>(RelativeRect.getWidth()-80, RelativeRect.getHeight()-30, RelativeRect.getWidth()-10, RelativeRect.getHeight()-10), 
       this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
+
    CancelButton->setSubElement(true);
    CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
    CancelButton->grab();
-
+/*
    // Treebox is experimental... Will be used for the second type of file requester (2 variants will be implemented)
-   TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200),0,-1,true, true, false);
+   TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200), this,-1,true, true, false);
    TreeBox->setSubElement(true);
    TreeBox->setLinesVisible(false);
+   TreeBox->setSubElement(true);
    TreeBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    irr::gui::IGUITreeViewNode * fv=TreeBox->getRoot()->addChildBack(L"Favorites");
    irr::gui::IGUITreeViewNode * ld=TreeBox->getRoot()->addChildBack(L"Local drives");
@@ -66,19 +79,22 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    ld->addChildBack(L"C:\\");
    ld->addChildBack(L"D:\\");
    ld->addChildBack(L"E:\\");
+  */ 
 
    //FileBox = Environment->addListBox(core::rect<s32>(10, 80, RelativeRect.getWidth()-90, 230), this, -1, true);
-   FileBox = Environment->addListBox(core::rect<s32>(180, 50, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
+   FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
    FileBox->setSubElement(true);
    FileBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+   
    FileBox->grab();
 
-   //irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35,170,48),false,false,0,-1);
-   irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35,300,48),false,false,0,-1);
-
+   irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
+   irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
+   but1->setSubElement(true);
+   but2->setSubElement(true);
 
    // Contain the names of the favorites folders
-   PlacesBox = Environment->addListBox(core::rect<s32>(10, 210, 170, RelativeRect.getHeight()-60), this, -1, true);
+   PlacesBox = Environment->addListBox(core::rect<s32>(10, 50+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
    PlacesBox->setSubElement(true);
    PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
    PlacesBox->grab();
@@ -105,7 +121,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    FileNameText->grab();
    
 	//FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
-   PathNameText = Environment->addEditBox(0, core::rect<s32>(180, 10, RelativeRect.getWidth()-10, 30), true, this, -1);
+   PathNameText = Environment->addEditBox(0, core::rect<s32>(180, 10+yoffset, RelativeRect.getWidth()-10, 30+yoffset), true, this, -1);
    PathNameText->setSubElement(true);
    PathNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
    PathNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
@@ -133,16 +149,19 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
    
    if (FileSystem) 
    {
-      FileSystem->grab();
-       prev_working_dir = FileSystem->getWorkingDirectory();
-      //printf("working directory saved: %s\n", prev_working_dir.c_str());
-
+	   FileSystem->grab();
+	   prev_working_dir = FileSystem->getWorkingDirectory();
+	   //printf("working directory saved: %s\n", prev_working_dir.c_str());
+	   // Desired starting path (Need to have this as a parameter
+	   FileSystem->changeWorkingDirectoryTo("../projects");
+	   default_project_dir = FileSystem->getWorkingDirectory();
    }
 
-   // Desired starting path (Need to have this as a parameter
-   FileSystem->changeWorkingDirectoryTo("../projects");
+   irr::core::dimension2d<u32> screen=Environment->getVideoDriver()->getScreenSize();
+   core::vector2d<s32> movement = core::vector2d<s32>((screen.Width/2)-(this->AbsoluteRect.getWidth()/2),(screen.Height/2)-(this->AbsoluteRect.getHeight()/2));
+   this->move(movement);
+  
    fillListBox();
-
    updateAbsolutePosition();
 
  
@@ -198,6 +217,14 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	// Get the desktop shortcut (places)
    // String buffer for holding the path.
 	TCHAR strPath[ MAX_PATH ];
+
+	// Default dir for project (want to change this later)
+	core::stringw testtt = L"IRB Project, éàçÉÀÇöÖ end";
+	core::stringw test2 = testtt.c_str();
+	PlacesBox->addItem(testtt.c_str(),this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	core::stringc defaultpath="../projects";
+	PlacesBoxReal->addItem(((core::stringw)default_project_dir).c_str());
+
 
 	// Get the special folder path. (Desktop)
 	SHGetSpecialFolderPath(
@@ -287,8 +314,8 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 //! destructor
 CGUIFileSelector::~CGUIFileSelector() 
 {
-  //   if (CloseButton)
-  //      CloseButton->drop();
+     if (CloseButton)
+        CloseButton->drop();
 
    if (OKButton)
       OKButton->drop();
@@ -357,7 +384,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
 		 if (event.GUIEvent.Caller == DriveBox)
 		 {  // change drive
             if (FileSystem) {    
-				printf("Combo box changed!\n");
+				
                FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
                fillListBox();
             } else 
@@ -374,7 +401,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
             event.GUIEvent.Caller == CancelButton) {
                 if (FileSystem) {
               FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-              //printf("working directory reset to: %s\n", prev_working_dir.c_str());
+              
             }
             sendCancelEvent();
             remove();
@@ -384,7 +411,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
          if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
             if (FileSystem) {
               FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-              //printf("working directory reset to: %s\n", prev_working_dir.c_str());
+              
             }
             sendSelectedEvent();
             remove();
@@ -474,7 +501,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event) {
          return true;
       case EMIE_MOUSE_MOVED:
 		 // Disable the drag function
-		 Dragging=false;
+		 //Dragging=false;
          if (Dragging) {
             // gui window should not be dragged outside its parent
             if (Parent)
@@ -511,7 +538,19 @@ void CGUIFileSelector::draw() {
    core::rect<s32> frameRect(AbsoluteRect);
    core::rect<s32> clientClip(AbsoluteRect);
 
-   core::rect<s32> rect = skin->draw3DWindowBackground(this, false, skin->getColor(EGDC_ACTIVE_BORDER),frameRect, &AbsoluteClippingRect);
+  core::rect<s32> rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),frameRect, &AbsoluteClippingRect);
+
+   if (Text.size()) {
+      rect.UpperLeftCorner.X += 2;
+      rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
+
+      IGUIFont* font = skin->getFont(EGDF_WINDOW);
+      if (font)
+         font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true, 
+         &AbsoluteClippingRect);
+   }
+
+   
 
    IGUIElement::draw();
 }
@@ -563,10 +602,12 @@ void CGUIFileSelector::fillListBox() {
 
    for (u32 i=0; i<FileList->getFileCount(); ++i) {
       s = FileList->getFileName(i);
+	 core::stringw test2=translateDOS(FileList->getFileName(i));
+	  s = test2;
       // We just want a list of directories and those matching the file filter
       if (FileList->isDirectory(i))
-          if (DirectoryIconIdx != -1) FileBox->addItem(s.c_str(), DirectoryIconIdx);
-          else                        FileBox->addItem(s.c_str());
+		  if (DirectoryIconIdx != -1) FileBox->addItem(s.c_str(), DirectoryIconIdx);
+		  else                        FileBox->addItem(s.c_str());
       else if (matchesFileFilter(s))
         if (FilterComboBox->getSelected() >= (s32)FileFilters.size())
             if (FileIconIdx != -1) {
@@ -574,15 +615,15 @@ void CGUIFileSelector::fillListBox() {
               for (u32 i = 0 ; i < FileFilters.size() ; i++) 
                 if (matchesFileFilter(s, FileFilters[i].FileExtension))
                   iconIdx = FileFilters[i].FileIconIdx;
-              FileBox->addItem(s.c_str(), iconIdx);
-            } else  FileBox->addItem(s.c_str());
-        else FileBox->addItem(s.c_str(), FileFilters[FilterComboBox->getSelected()].FileIconIdx);        
+			  FileBox->addItem(core::stringw(s).c_str(), iconIdx);
+			} else  FileBox->addItem(s.c_str());
+		else FileBox->addItem(s.c_str(), FileFilters[FilterComboBox->getSelected()].FileIconIdx);        
 
    }
 
    if (PathNameText) {
       s = FileSystem->getWorkingDirectory();
-      PathNameText->setText(s.c_str());
+	  PathNameText->setText(s.c_str());
    }
 }
 
@@ -597,7 +638,7 @@ void CGUIFileSelector::sendSelectedEvent() {
    usecomplete=true;
 }
 
-//! sends the event that the file choose process has been canceld
+//! sends the event that the file choose process has been cancelled
 void CGUIFileSelector::sendCancelEvent() {
    SEvent event;
    event.EventType = EET_GUI_EVENT;
@@ -672,4 +713,58 @@ u32 CGUIFileSelector::addIcon(video::ITexture* texture) {
    SpriteBank->getSprites().push_back(sprite);  
 
    return textureIndex;
+}
+
+
+// !translateDOS, will try to convert accents from the received string and send them back, as they seem corrupted 
+// from the way it was received. (Testing to be done Linux Side)
+core::stringw CGUIFileSelector::translateDOS(core::stringw input)
+{
+	core::stringw result=L"";
+	
+	u32 a2=0;
+	for (u32 a=0; a <= input.size(); a++)
+	{
+		core::stringc test=input.subString(a,1);
+		
+		int code = int(test[0]);
+
+		// If the "ascii" code is "normal then append the letter only
+		if (code>0)
+			result.append(test);
+
+		// if the result give < 0 then it look like an accented letter, then convert
+		if (code==-55)
+			result.append(L"É");
+
+		if (code==-23)
+			result.append(L"é");
+
+		if (code==-64)
+			result.append(L"À");
+
+		if (code==-32)
+			result.append(L"à");
+
+		if (code==-57)
+			result.append(L"Ç");
+
+		if (code==-25)
+			result.append(L"ç");
+
+		if (code==-42)
+			result.append(L"Ö");
+
+		if (code==-10)
+			result.append(L"ö");
+
+		if (code==-39)
+			result.append(L"Ù");
+
+		if (code==-7)
+			result.append(L"ù");
+
+				
+	}
+	return result;
 }
