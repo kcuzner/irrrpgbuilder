@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <IrrRPG_Builder_Config version="1.0">
-    <screen screen_width="800" screen_height="600" fullscreen="false" resizeable="true" />
-    <language type="en-us" />
+    <screen screen_width="720" screen_height="450" fullscreen="false" resizeable="true" />
+    <language type="fr-ca" />
     <terrain mesh="../media/land.obj" layer0="../media/L1.jpg" layer1="../media/L2.jpg" layer2="../media/L3.jpg" layer3="../media/L4.jpg" scale="1024" />
     <ocean mesh="../media/land.obj" normalmap="../media/waveNM.png" reflection="../media/sky.jpg" />
 </IrrRPG_Builder_Config>

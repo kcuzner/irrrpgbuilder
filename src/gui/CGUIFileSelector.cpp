@@ -19,8 +19,8 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 
 	Text = title;
 	IsDirectoryChoosable = false;
-	
-	strechtvertical=false; 
+
+	strechtvertical=false;
 	stretchhorizontal=false;
 
 	//simple flag to know when the requester has finished
@@ -111,11 +111,16 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	PlacesBoxReal->setEnabled(false);
 	PlacesBoxReal->setVisible(false);
 
+	#ifdef WIN32
+
 	//DriveBox = Environment->addComboBox(core::rect<s32>(10, 55, RelativeRect.getWidth()-90, 75), this, -1);
 	DriveBox = Environment->addComboBox(core::rect<s32>(10, RelativeRect.getHeight()-55, 170, RelativeRect.getHeight()-35), this, -1);
 	DriveBox->setSubElement(true);
 	DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	DriveBox->grab();
+	#else
+	DriveBox=NULL;
+	#endif
 
 	//FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
 	FileNameText = Environment->addEditBox(0, core::rect<s32>(10, RelativeRect.getHeight()-30, RelativeRect.getWidth()-180, RelativeRect.getHeight()-10), true, this, -1);
@@ -169,6 +174,13 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	Environment->setFocus(this);
 	//updateAbsolutePosition();
 
+// This applies to both version of the program
+// Default dir for project (want to change this later)
+	core::stringw testtt = L"IRB Project folder";
+	core::stringw test2 = testtt.c_str();
+	PlacesBox->addItem(testtt.c_str(),this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
+	core::stringc defaultpath="../projects";
+	PlacesBoxReal->addItem(((core::stringw)default_project_dir).c_str());
 
 	// This will fill the drive list (still buggy)
 	// Only working for the WIN32 platform
@@ -222,13 +234,6 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	// Get the desktop shortcut (places)
 	// String buffer for holding the path.
 	TCHAR strPath[ MAX_PATH ];
-
-	// Default dir for project (want to change this later)
-	core::stringw testtt = L"IRB Project folder";
-	core::stringw test2 = testtt.c_str();
-	PlacesBox->addItem(testtt.c_str(),this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
-	core::stringc defaultpath="../projects";
-	PlacesBoxReal->addItem(((core::stringw)default_project_dir).c_str());
 
 
 	// Get the special folder path. (Desktop)
@@ -390,11 +395,20 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 		}
 		break;
 
+
+
 		// Gui events check
 		case EET_GUI_EVENT:
 		{
+
 			switch(event.GUIEvent.EventType)
 			{
+
+			    case EGET_ELEMENT_HOVERED:
+			    printf("Element was hovered\n");
+                    return true;
+                    break;
+
 				case EGET_COMBO_BOX_CHANGED:
 				{
 					if (event.GUIEvent.Caller == FilterComboBox)
@@ -406,16 +420,17 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					if (event.GUIEvent.Caller == DriveBox)
 					{  // change drive
 						printf ("Drive box changed!\n");
-						if (FileSystem) 
+						if (FileSystem)
 						{
 							FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
 							fillListBox();
-						} 
+						}
 						else
 						{
 							printf("The file system is not readable at the moment...\n");
 						}
 					}
+					return true;
 				}
 				break;
 
@@ -424,10 +439,11 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					Dragging = false;
 					//printf ("Focus lost!\n");
 				}
+				return true;
 				break;
 
 				case EGET_BUTTON_CLICKED:
-				{	
+				{
 					//printf ("Button clicked!\n");
 					if (event.GUIEvent.Caller == CloseButton ||
 						event.GUIEvent.Caller == CancelButton)
@@ -440,7 +456,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 						sendCancelEvent();
 						remove();
 						return true;
-						
+
 					}
 					else
 					if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText())))
@@ -524,11 +540,10 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				}
 				break;
 
-				default:
-				break;
 			}
+
 		}
-		
+
 		// Mouse input
 		case EET_MOUSE_INPUT_EVENT:
 		{
@@ -540,7 +555,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					DragStart.X = event.MouseInput.X;
 					DragStart.Y = event.MouseInput.Y;
 					Dragging = true;
-					Environment->setFocus(this);
+					//Environment->setFocus(this);
 					return true;
 				}
 				break;
@@ -550,21 +565,21 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					Dragging = false;
 					this->strechtvertical=false;
 					this->stretchhorizontal=false;
-					Environment->removeFocus(this);
+					//Environment->removeFocus(this);
 					//printf ("Mouse up event!\n");
 					return true;
-					
+
 				}
 				break;
 
-				case EMIE_MOUSE_MOVED:
+				/*case EMIE_MOUSE_MOVED:
 				{
 					// This only work from INSIDE the gui.
 				}
-				break;
+				break;*/
 
 				default:
-					return true;
+					return false;
 				break;
 
 			}
@@ -576,6 +591,9 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 
 //! draws the element and its children
 void CGUIFileSelector::draw() {
+
+    printf("This gui is draw\n");
+
 	if (!IsVisible)
 		return;
 
@@ -599,7 +617,7 @@ void CGUIFileSelector::draw() {
 	}
 
 	// Get the current mousecursor position;
-	
+
 	if (!Dragging)
 	{
 		//printf("mode is not drag...\n");
@@ -617,7 +635,7 @@ void CGUIFileSelector::draw() {
 		}
 		else
 			this->strechtvertical=false;
-	} 
+	}
 	else
 	{
 		if (!stretchhorizontal && !strechtvertical)
@@ -633,17 +651,17 @@ void CGUIFileSelector::draw() {
 					IGUIElement::draw();
 					return;
 				}
-			} 
+			}
 
-			
+
 			move(core::position2d<s32>(mousepos.X - DragStart.X, mousepos.Y - DragStart.Y));
 			updateAbsolutePosition();
 			DragStart.X = mousepos.X;
 			DragStart.Y = mousepos.Y;
 			IGUIElement::draw();
 			return;
-		}		
-		
+		}
+
 		if (stretchhorizontal)
 		{
 			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>200)
@@ -651,7 +669,7 @@ void CGUIFileSelector::draw() {
 				AbsoluteRect.LowerRightCorner.X=mousepos.X+5;
 			}
 			this->AbsoluteClippingRect=this->AbsoluteRect;
-			this->DesiredRect=AbsoluteRect;						
+			this->DesiredRect=AbsoluteRect;
 			this->updateAbsolutePosition();
 		}
 		if (strechtvertical)
@@ -661,7 +679,7 @@ void CGUIFileSelector::draw() {
 				AbsoluteRect.LowerRightCorner.Y=mousepos.Y+5;
 			}
 			this->AbsoluteClippingRect=this->AbsoluteRect;
-			this->DesiredRect=AbsoluteRect;						
+			this->DesiredRect=AbsoluteRect;
 			this->updateAbsolutePosition();
 		}
 	}
@@ -669,15 +687,15 @@ void CGUIFileSelector::draw() {
 	IGUIElement::draw();
 }
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s) 
+bool CGUIFileSelector::matchesFileFilter(core::stringw s)
 {
 	//printf("Filters: %s\n",core::stringc(s).c_str());
-	if (FileFilters.size() > 1) 
+	if (FileFilters.size() > 1)
 	{
 		s32 selected = FilterComboBox->getSelected();
-		if (selected == 0) 
+		if (selected == 0)
 		{
-			for (s32 i = 0; i < (s32)FileFilters.size(); i++) 
+			for (s32 i = 0; i < (s32)FileFilters.size(); i++)
 			{
 				s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 				if (FileFilters[i].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])))
@@ -686,19 +704,19 @@ bool CGUIFileSelector::matchesFileFilter(core::stringw s)
 			return false;
 		}
 		selected--;
-		if (selected >= (s32)FileFilters.size()) 
+		if (selected >= (s32)FileFilters.size())
 			return true; // 'All Files' selectable
-		else 
+		else
 		{
 			s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 			//printf("Extension to check is %s\n",core::stringc(FileFilters[selected].FileExtension).c_str());
 			return FileFilters[selected].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
-			
+
 		}
 	}
-	if (FilterComboBox->getSelected() >= (s32)FileFilters.size()) 
+	if (FilterComboBox->getSelected() >= (s32)FileFilters.size())
 		return true; // 'All Files' selectable
-	else 
+	else
 	{
 		s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 		//printf("Extension to check is %s\n",core::stringc(FileFilters[FilterComboBox->getSelected()].FileExtension).c_str());
@@ -706,14 +724,14 @@ bool CGUIFileSelector::matchesFileFilter(core::stringw s)
 	}
 }
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f) 
+bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f)
 {
 	s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 	return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 }
 
 //! fills the listbox with files.
-void CGUIFileSelector::fillListBox() 
+void CGUIFileSelector::fillListBox()
 {
 	IGUISkin *skin = Environment->getSkin();
 
@@ -745,17 +763,17 @@ void CGUIFileSelector::fillListBox()
 		{
 			if (FilterComboBox->getSelected() >= (s32)FileFilters.size())
 			{
-				if (FileIconIdx != -1) 
+				if (FileIconIdx != -1)
 				{
 					s32 iconIdx = FileIconIdx;
-					for (u32 i = 0 ; i < FileFilters.size() ; i++) 
-					{ 
+					for (u32 i = 0 ; i < FileFilters.size() ; i++)
+					{
 						if (matchesFileFilter(s, FileFilters[i].FileExtension))
 						iconIdx = FileFilters[i].FileIconIdx;
 					}
 					FileBox->addItem(s.c_str(), iconIdx);
-				} 
-				else  
+				}
+				else
 				{
 					FileBox->addItem(s.c_str());
 				}
@@ -763,7 +781,7 @@ void CGUIFileSelector::fillListBox()
 		}
 	}
 
-	if (PathNameText) 
+	if (PathNameText)
 	{
 		s = FileSystem->getWorkingDirectory();
 		PathNameText->setText(s.c_str());
@@ -772,7 +790,7 @@ void CGUIFileSelector::fillListBox()
 
 
 //! sends the event that the file has been selected.
-void CGUIFileSelector::sendSelectedEvent() 
+void CGUIFileSelector::sendSelectedEvent()
 {
 	SEvent event;
 	event.EventType = EET_GUI_EVENT;
@@ -783,7 +801,7 @@ void CGUIFileSelector::sendSelectedEvent()
 }
 
 //! sends the event that the file choose process has been cancelled
-void CGUIFileSelector::sendCancelEvent() 
+void CGUIFileSelector::sendCancelEvent()
 {
 	SEvent event;
 	event.EventType = EET_GUI_EVENT;
@@ -797,7 +815,7 @@ void CGUIFileSelector::sendCancelEvent()
 	usecomplete=true;
 }
 
-void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture) 
+void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture)
 {
 	SFileFilter filter(name, ext, texture);
 	filter.FileIconIdx = addIcon(texture);
@@ -805,10 +823,10 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 	FilterComboBox->clear();
 	core::stringw strw;
 
-	if (FileFilters.size() > 1) 
+	if (FileFilters.size() > 1)
 	{
 		strw = "Supported ";
-		for (u32 i = 0 ; i < FileFilters.size() ; i++) 
+		for (u32 i = 0 ; i < FileFilters.size() ; i++)
 		{
 			strw += ".";
 			strw += FileFilters[i].FileExtension;
@@ -817,7 +835,7 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 		FilterComboBox->addItem(strw.c_str());
 	}
 
-	for (u32 i = 0 ; i < FileFilters.size() ; i++) 
+	for (u32 i = 0 ; i < FileFilters.size() ; i++)
 	{
 		strw = FileFilters[i].FilterName;
 		strw += " (*.";
@@ -829,7 +847,7 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 	fillListBox();
 }
 
-u32 CGUIFileSelector::addIcon(video::ITexture* texture) 
+u32 CGUIFileSelector::addIcon(video::ITexture* texture)
 {
 	if (!SpriteBank || !texture) return 0;
 

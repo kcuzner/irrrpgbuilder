@@ -230,6 +230,12 @@
 		<Unit filename="src/gui/CGUIEditBoxIRB.h">
 			<Option virtualFolder="App/gui/" />
 		</Unit>
+		<Unit filename="src/gui/CGUIFileSelector.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/CGUIFileSelector.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
 		<Unit filename="src/gui/CGUIGfxStatus.cpp">
 			<Option virtualFolder="App/gui/" />
 		</Unit>

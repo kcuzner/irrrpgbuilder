@@ -1237,6 +1237,9 @@ void App::update()
 	//if (app_state!=APP_WAIT_FILEREQUEST)
 	//while (app_state<APP_STATE_CONTROL)
 	{
+
+
+	    	    printf("App update\n");
 		// Attempt to do automatic rezise detection
 		if (screensize != driver->getScreenSize())
 			this->setScreenSize(driver->getScreenSize());
@@ -1649,7 +1652,7 @@ void App::createNewProject()
 
 void App::loadProject()
 {
-    APP_STATE old_state = getAppState();
+    old_state = getAppState();
 
 	// Have to rethink how to do it. It used the gameplay dialog.
     //bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
@@ -1715,11 +1718,11 @@ void App::loadProject(stringc filename)
 void App::loadProjectFile(bool value)
 {
 	if (value)
-	{	
+	{
 		// Close and drop the file selector
 		selector->drop();
 		selector->remove();
-		
+
 
 		//Clean up the current world and load the scene
 		cleanWorkspace();

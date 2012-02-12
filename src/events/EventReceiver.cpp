@@ -43,6 +43,7 @@ bool EventReceiver::isKeyPressed(int key)
 
 bool EventReceiver::OnEvent(const SEvent& event)
 {
+    	    printf("Master Event is triggered\n");
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
     {
         App::getInstance()->eventKeyPressed(event.KeyInput.Key);
@@ -112,9 +113,6 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 			case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
 				App::getInstance()->loadProjectFile(false);
-
-            default :
-                break;
 #endif
         }
     }
