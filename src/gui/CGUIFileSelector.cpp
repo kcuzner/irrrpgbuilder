@@ -13,161 +13,165 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	// This is a spacer when the window title is displayed
 	irr::s32 yoffset = 10;
 
-    #ifdef _DEBUG
-     IGUIElement::setDebugName("CGUIFileSelector");
-   #endif
+#ifdef _DEBUG
+	IGUIElement::setDebugName("CGUIFileSelector");
+#endif
 
-    Text = title;
-    IsDirectoryChoosable = false;
+	Text = title;
+	IsDirectoryChoosable = false;
+	
+	strechtvertical=false; 
+	stretchhorizontal=false;
 
 	//simple flag to know when the requester has finished
 	usecomplete = false;
 
-   IGUISkin* skin = Environment->getSkin();
-   IGUISpriteBank* sprites = 0;
-   video::SColor color(255,255,255,255);
-   if (skin) {
-      sprites = skin->getSpriteBank();
-      color = skin->getColor(EGDC_WINDOW_SYMBOL);
-   }
+	IGUISkin* skin = Environment->getSkin();
+	IGUISpriteBank* sprites = 0;
+	video::SColor color(255,255,255,255);
+	if (skin) {
+		sprites = skin->getSpriteBank();
+		color = skin->getColor(EGDC_WINDOW_SYMBOL);
+	}
 
-   // Close button for the window
-   s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
-   s32 posx = RelativeRect.getWidth() - buttonw - 4;
+	// Close button for the window
+	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
+	s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
-   CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-      L"", L"Close");
-   CloseButton->setSubElement(true);
-   if (sprites) {
-      CloseButton->setSpriteBank(sprites);
-      CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
-      CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
-   }
-   CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   CloseButton->grab();
+	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
+		L"", L"Close");
+	CloseButton->setSubElement(true);
+	if (sprites) {
+		CloseButton->setSpriteBank(sprites);
+		CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
+		CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
+	}
+	CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	CloseButton->grab();
 
 
-   // Ok button
-   OKButton = Environment->addButton(
-      core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10),
-      this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
-   OKButton->setSubElement(true);
-   OKButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-   OKButton->grab();
+	// Ok button
+	OKButton = Environment->addButton(
+		core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10),
+		this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
+	OKButton->setSubElement(true);
+	OKButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	OKButton->grab();
 
-   CancelButton = Environment->addButton(
-      core::rect<s32>(RelativeRect.getWidth()-80, RelativeRect.getHeight()-30, RelativeRect.getWidth()-10, RelativeRect.getHeight()-10),
-      this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
+	CancelButton = Environment->addButton(
+		core::rect<s32>(RelativeRect.getWidth()-80, RelativeRect.getHeight()-30, RelativeRect.getWidth()-10, RelativeRect.getHeight()-10),
+		this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
 
-   CancelButton->setSubElement(true);
-   CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-   CancelButton->grab();
-/*
-   // Treebox is experimental... Will be used for the second type of file requester (2 variants will be implemented)
-   TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200), this,-1,true, true, false);
-   TreeBox->setSubElement(true);
-   TreeBox->setLinesVisible(false);
-   TreeBox->setSubElement(true);
-   TreeBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   irr::gui::IGUITreeViewNode * fv=TreeBox->getRoot()->addChildBack(L"Favorites");
-   irr::gui::IGUITreeViewNode * ld=TreeBox->getRoot()->addChildBack(L"Local drives");
-   fv->setExpanded(true);
-   ld->setExpanded(true);
-   fv->addChildBack(L"Desktop");
-   fv->addChildBack(L"My documents");
-   fv->addChildBack(L"My pictures");
-   fv->addChildBack(L"My music");
-   ld->addChildBack(L"C:\\");
-   ld->addChildBack(L"D:\\");
-   ld->addChildBack(L"E:\\");
-  */
+	CancelButton->setSubElement(true);
+	CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	CancelButton->grab();
+	/*
+	// Treebox is experimental... Will be used for the second type of file requester (2 variants will be implemented)
+	TreeBox = Environment->addTreeView(irr::core::rect<s32>(10,10,170,200), this,-1,true, true, false);
+	TreeBox->setSubElement(true);
+	TreeBox->setLinesVisible(false);
+	TreeBox->setSubElement(true);
+	TreeBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	irr::gui::IGUITreeViewNode * fv=TreeBox->getRoot()->addChildBack(L"Favorites");
+	irr::gui::IGUITreeViewNode * ld=TreeBox->getRoot()->addChildBack(L"Local drives");
+	fv->setExpanded(true);
+	ld->setExpanded(true);
+	fv->addChildBack(L"Desktop");
+	fv->addChildBack(L"My documents");
+	fv->addChildBack(L"My pictures");
+	fv->addChildBack(L"My music");
+	ld->addChildBack(L"C:\\");
+	ld->addChildBack(L"D:\\");
+	ld->addChildBack(L"E:\\");
+	*/
 
-   //FileBox = Environment->addListBox(core::rect<s32>(10, 80, RelativeRect.getWidth()-90, 230), this, -1, true);
-   FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
-   FileBox->setSubElement(true);
-   FileBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	//FileBox = Environment->addListBox(core::rect<s32>(10, 80, RelativeRect.getWidth()-90, 230), this, -1, true);
+	FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
+	FileBox->setSubElement(true);
+	FileBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 
-   FileBox->grab();
+	FileBox->grab();
 
-   irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
-   irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
-   but1->setSubElement(true);
-   but2->setSubElement(true);
+	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
+	irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
+	but1->setSubElement(true);
+	but2->setSubElement(true);
 
-   // Contain the names of the favorites folders
-   PlacesBox = Environment->addListBox(core::rect<s32>(10, 50+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
-   PlacesBox->setSubElement(true);
-   PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
-   PlacesBox->grab();
+	// Contain the names of the favorites folders
+	PlacesBox = Environment->addListBox(core::rect<s32>(10, 50+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
+	PlacesBox->setSubElement(true);
+	PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	PlacesBox->grab();
 
-   // Contain the real location of those favorites folder (lazy programming :) )
-   PlacesBoxReal = Environment->addListBox(core::rect<s32>(10, 50, 170, RelativeRect.getHeight()-60), this, -1, true);
-   PlacesBoxReal->setSubElement(true);
-   PlacesBoxReal->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
-   PlacesBoxReal->grab();
-   PlacesBoxReal->setEnabled(false);
-   PlacesBoxReal->setVisible(false);
+	// Contain the real location of those favorites folder (lazy programming :) )
+	PlacesBoxReal = Environment->addListBox(core::rect<s32>(10, 50, 170, RelativeRect.getHeight()-60), this, -1, true);
+	PlacesBoxReal->setSubElement(true);
+	PlacesBoxReal->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	PlacesBoxReal->grab();
+	PlacesBoxReal->setEnabled(false);
+	PlacesBoxReal->setVisible(false);
 
-   //DriveBox = Environment->addComboBox(core::rect<s32>(10, 55, RelativeRect.getWidth()-90, 75), this, -1);
-   DriveBox = Environment->addComboBox(core::rect<s32>(10, RelativeRect.getHeight()-55, 170, RelativeRect.getHeight()-35), this, -1);
-   DriveBox->setSubElement(true);
-   DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-   DriveBox->grab();
-
-   //FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
-   FileNameText = Environment->addEditBox(0, core::rect<s32>(10, RelativeRect.getHeight()-30, RelativeRect.getWidth()-180, RelativeRect.getHeight()-10), true, this, -1);
-   FileNameText->setSubElement(true);
-   FileNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-   FileNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   FileNameText->grab();
+	//DriveBox = Environment->addComboBox(core::rect<s32>(10, 55, RelativeRect.getWidth()-90, 75), this, -1);
+	DriveBox = Environment->addComboBox(core::rect<s32>(10, RelativeRect.getHeight()-55, 170, RelativeRect.getHeight()-35), this, -1);
+	DriveBox->setSubElement(true);
+	DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	DriveBox->grab();
 
 	//FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
-   PathNameText = Environment->addEditBox(0, core::rect<s32>(180, 10+yoffset, RelativeRect.getWidth()-10, 30+yoffset), true, this, -1);
-   PathNameText->setSubElement(true);
-   PathNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   PathNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-   PathNameText->grab();
+	FileNameText = Environment->addEditBox(0, core::rect<s32>(10, RelativeRect.getHeight()-30, RelativeRect.getWidth()-180, RelativeRect.getHeight()-10), true, this, -1);
+	FileNameText->setSubElement(true);
+	FileNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	FileNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	FileNameText->grab();
 
-   FilterComboBox = Environment->addComboBox(core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-55, RelativeRect.getWidth()-10, RelativeRect.getHeight()-35), this, -1);
-   FilterComboBox->setSubElement(true);
-   FilterComboBox->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-   FilterComboBox->grab();
-   FilterComboBox->addItem(L"All Files");
+	//FileNameText = Environment->addEditBox(0, core::rect<s32>(10, 30, RelativeRect.getWidth()-90, 50), true, this, -1);
+	PathNameText = Environment->addEditBox(0, core::rect<s32>(180, 10+yoffset, RelativeRect.getWidth()-10, 30+yoffset), true, this, -1);
+	PathNameText->setSubElement(true);
+	PathNameText->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	PathNameText->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	PathNameText->grab();
 
-
-   core::stringc str = "FileSelectorIcons";
-    str += numFileSelectors++;
-    SpriteBank = Environment->addEmptySpriteBank(str.c_str());
-    if (SpriteBank) {
-      SpriteBank->grab();
-      FileBox->setSpriteBank(SpriteBank);
-	  PlacesBox->setSpriteBank(SpriteBank);
-    }
-    DirectoryIconIdx = -1;
-    FileIconIdx = -1;
-
-   FileSystem = Environment->getFileSystem();
-
-   if (FileSystem)
-   {
-	   FileSystem->grab();
-	   prev_working_dir = FileSystem->getWorkingDirectory();
-	   //printf("working directory saved: %s\n", prev_working_dir.c_str());
-	   // Desired starting path (Need to have this as a parameter
-	   FileSystem->changeWorkingDirectoryTo("../projects");
-	   default_project_dir = FileSystem->getWorkingDirectory();
-   }
-
-   irr::core::dimension2d<u32> screen=Environment->getVideoDriver()->getScreenSize();
-   core::vector2d<s32> movement = core::vector2d<s32>((screen.Width/2)-(this->AbsoluteRect.getWidth()/2),(screen.Height/2)-(this->AbsoluteRect.getHeight()/2));
-   this->move(movement);
-
-   fillListBox();
-   updateAbsolutePosition();
+	FilterComboBox = Environment->addComboBox(core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-55, RelativeRect.getWidth()-10, RelativeRect.getHeight()-35), this, -1);
+	FilterComboBox->setSubElement(true);
+	FilterComboBox->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
+	FilterComboBox->grab();
+	FilterComboBox->addItem(L"All Files");
 
 
-   // This will fill the drive list (still buggy)
-   // Only working for the WIN32 platform
+	core::stringc str = "FileSelectorIcons";
+	str += numFileSelectors++;
+	SpriteBank = Environment->addEmptySpriteBank(str.c_str());
+	if (SpriteBank) {
+		SpriteBank->grab();
+		FileBox->setSpriteBank(SpriteBank);
+		PlacesBox->setSpriteBank(SpriteBank);
+	}
+	DirectoryIconIdx = -1;
+	FileIconIdx = -1;
+
+	FileSystem = Environment->getFileSystem();
+
+	if (FileSystem)
+	{
+		FileSystem->grab();
+		prev_working_dir = FileSystem->getWorkingDirectory();
+		//printf("working directory saved: %s\n", prev_working_dir.c_str());
+		// Desired starting path (Need to have this as a parameter
+		FileSystem->changeWorkingDirectoryTo("../projects");
+		default_project_dir = FileSystem->getWorkingDirectory();
+	}
+
+	irr::core::dimension2d<u32> screen=Environment->getVideoDriver()->getScreenSize();
+	core::vector2d<s32> movement = core::vector2d<s32>((screen.Width/2)-(this->AbsoluteRect.getWidth()/2),(screen.Height/2)-(this->AbsoluteRect.getHeight()/2));
+	this->move(movement);
+
+	fillListBox();
+	Environment->setFocus(this);
+	//updateAbsolutePosition();
+
+
+	// This will fill the drive list (still buggy)
+	// Only working for the WIN32 platform
 #ifdef WIN32
 
 	int dr_type=99;
@@ -179,48 +183,48 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 		dr_type=GetDriveType((LPWSTR)temp);
 		switch(dr_type) {
 			case 0: // Unknown
-			printf("%s : Unknown Drive type\n",temp);
-			break;
+				printf("%s : Unknown Drive type\n",temp);
+				break;
 
 			case 1: // Invalid
-			printf("%s : Drive is invalid\n",temp);
-			break;
+				printf("%s : Drive is invalid\n",temp);
+				break;
 
 			case 2: // Removable Drive
-			printf("%s : Removable Drive\n",temp);
-			DriveBox->addItem(temp);
-			break;
+				printf("%s : Removable Drive\n",temp);
+				DriveBox->addItem(temp);
+				break;
 
 			case 3: // Fixed
-			printf("%s : Hard Disk (Fixed)\n",temp);
-			DriveBox->addItem(temp);
-			break;
+				printf("%s : Hard Disk (Fixed)\n",temp);
+				DriveBox->addItem(temp);
+				break;
 
 			case 4: // Remote
-			printf("%s : Remote (Network) Drive\n",temp);
-			DriveBox->addItem(temp);
-			break;
+				printf("%s : Remote (Network) Drive\n",temp);
+				DriveBox->addItem(temp);
+				break;
 
 			case 5: // CDROM
-			printf("%s : CD-Rom/DVD-Rom\n",temp);
-			DriveBox->addItem(temp);
-			break;
+				printf("%s : CD-Rom/DVD-Rom\n",temp);
+				DriveBox->addItem(temp);
+				break;
 
 			case 6: // RamDrive
-			printf("%s : Ram Drive\n",temp);
-			DriveBox->addItem(temp);
-			break;
+				printf("%s : Ram Drive\n",temp);
+				DriveBox->addItem(temp);
+				break;
 
 		}
 		temp += lstrlen((LPCWSTR)temp) +1; // incriment the buffer
 	}
 
 	// Get the desktop shortcut (places)
-   // String buffer for holding the path.
+	// String buffer for holding the path.
 	TCHAR strPath[ MAX_PATH ];
 
 	// Default dir for project (want to change this later)
-	core::stringw testtt = L"IRB Project, éàçÉÀÇöÖ end";
+	core::stringw testtt = L"IRB Project folder";
 	core::stringw test2 = testtt.c_str();
 	PlacesBox->addItem(testtt.c_str(),this->addIcon(Environment->getVideoDriver()->getTexture("../media/art/places_folder.png")));
 	core::stringc defaultpath="../projects";
@@ -315,32 +319,32 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 //! destructor
 CGUIFileSelector::~CGUIFileSelector()
 {
-     if (CloseButton)
-        CloseButton->drop();
+	if (CloseButton)
+		CloseButton->drop();
 
-   if (OKButton)
-      OKButton->drop();
+	if (OKButton)
+		OKButton->drop();
 
-   if (CancelButton)
-      CancelButton->drop();
+	if (CancelButton)
+		CancelButton->drop();
 
-   if (FileBox)
-      FileBox->drop();
+	if (FileBox)
+		FileBox->drop();
 
-   if (FileNameText)
-      FileNameText->drop();
+	if (FileNameText)
+		FileNameText->drop();
 
-   if (FileSystem)
-      FileSystem->drop();
+	if (FileSystem)
+		FileSystem->drop();
 
-   if (FileList)
-      FileList->drop();
+	if (FileList)
+		FileList->drop();
 
-   if (FilterComboBox)
-       FilterComboBox->drop();
+	if (FilterComboBox)
+		FilterComboBox->drop();
 
-    if (SpriteBank)
-        SpriteBank->drop();
+	if (SpriteBank)
+		SpriteBank->drop();
 
 }
 
@@ -350,7 +354,7 @@ const wchar_t* CGUIFileSelector::getFileName() const {
 	irr::core::stringc text="";
 	//text=(irr::core::stringc)FileNameText->getText();
 	return fullpathname.c_str();
-   //
+	//
 }
 
 //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
@@ -363,393 +367,502 @@ const io::path& CGUIFileSelector::getDirectoryName()
 //! called if an event happened.
 bool CGUIFileSelector::OnEvent(const SEvent& event)
 {
-   switch(event.EventType)
-   {
-        case EET_KEY_INPUT_EVENT:
-            switch (event.KeyInput.Key)
-            {
-            case KEY_RETURN:
-                if (FileSystem)
-                {
-                    FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
-                    fillListBox();
-                    PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
-                }
-                return true;
-                break;
+	switch(event.EventType)
+	{
+		// Keyboard input check
+		case EET_KEY_INPUT_EVENT:
+		{
+			switch (event.KeyInput.Key)
+			{
+				case KEY_RETURN:
+					if (FileSystem)
+					{
+						FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
+						fillListBox();
+						PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+					}
+					return true;
+					break;
 
-                default:
-                break;
-            }
-            break;
-        case EET_GUI_EVENT:
-            switch(event.GUIEvent.EventType)
-            {
-                case EGET_COMBO_BOX_CHANGED:
+				default:
+					break;
+			}
+		}
+		break;
 
-                if (event.GUIEvent.Caller == FilterComboBox)
-                {
-                    fillListBox();
-                }
+		// Gui events check
+		case EET_GUI_EVENT:
+		{
+			switch(event.GUIEvent.EventType)
+			{
+				case EGET_COMBO_BOX_CHANGED:
+				{
+					if (event.GUIEvent.Caller == FilterComboBox)
+					{
+						fillListBox();
+						//printf ("Combo box changed filter!\n");
+					}
 
-                if (event.GUIEvent.Caller == DriveBox)
-                {  // change drive
-                    if (FileSystem) {
+					if (event.GUIEvent.Caller == DriveBox)
+					{  // change drive
+						printf ("Drive box changed!\n");
+						if (FileSystem) 
+						{
+							FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
+							fillListBox();
+						} 
+						else
+						{
+							printf("The file system is not readable at the moment...\n");
+						}
+					}
+				}
+				break;
 
-                    FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
-                    fillListBox();
-                } else
-                {
-                    printf("The file system is not readable at the moment...\n");
-                }
-            }
-            break;
-        case EGET_ELEMENT_FOCUS_LOST:
-            Dragging = false;
-            break;
+				case EGET_ELEMENT_FOCUS_LOST:
+				{
+					Dragging = false;
+					//printf ("Focus lost!\n");
+				}
+				break;
 
-        case EGET_BUTTON_CLICKED:
-            if (event.GUIEvent.Caller == CloseButton ||
-                event.GUIEvent.Caller == CancelButton)
-            {
-                if (FileSystem)
-                {
-                    FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-                }
-                sendCancelEvent();
-                remove();
-                return true;
-            }
-            else
-            if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText())))
-            {
-                if (FileSystem)
-                {
-                    FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-                }
-                sendSelectedEvent();
-                remove();
-                return true;
-            }
-        break;
+				case EGET_BUTTON_CLICKED:
+				{	
+					//printf ("Button clicked!\n");
+					if (event.GUIEvent.Caller == CloseButton ||
+						event.GUIEvent.Caller == CancelButton)
+					{
+						if (FileSystem)
+						{
+							FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
+						}
+						//printf ("Cancel event sent!\n");
+						sendCancelEvent();
+						remove();
+						return true;
+						
+					}
+					else
+					if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText())))
+					{
+						if (FileSystem)
+						{
+							FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
+						}
+						//printf ("Select event sent!\n");
+						sendSelectedEvent();
+						remove();
+						return true;
+					}
+				}
+				break;
 
-        case EGET_LISTBOX_CHANGED:
-        {
-            if (event.GUIEvent.Caller == FileBox)
-            {
-                s32 selected = FileBox->getSelected();
-                if (FileList && FileSystem)
-                {
-                    this->fullpathname=FileSystem->getWorkingDirectory();
-                    core::stringw strw;
-                    strw = FileSystem->getWorkingDirectory();
-                    if (strw[strw.size()-1] != '/')
-                        strw += "/";
+				case EGET_LISTBOX_CHANGED:
+				{
+					//printf ("Listbox changed!\n");
+					if (event.GUIEvent.Caller == FileBox)
+					{
+						s32 selected = FileBox->getSelected();
+						if (FileList && FileSystem)
+						{
+							this->fullpathname=FileSystem->getWorkingDirectory();
+							core::stringw strw;
+							strw = FileSystem->getWorkingDirectory();
+							if (strw[strw.size()-1] != '/')
+								strw += "/";
+								fullpathname = strw+FileBox->getListItem(selected);
+							FileNameText->setText(FileBox->getListItem(selected));
+							PathNameText->setText(strw.c_str());
+						}
+					}
+					if (event.GUIEvent.Caller == PlacesBox)
+					{
+						s32 selected = PlacesBox->getSelected();
+						FileSystem->changeWorkingDirectoryTo(PlacesBoxReal->getListItem(selected));
+						fillListBox();
+						//printf("The placebox item has been pressed!\n");
+					}
+				}
+				break;
 
-                    fullpathname = strw+FileBox->getListItem(selected);
-                    FileNameText->setText(FileBox->getListItem(selected));
-                    PathNameText->setText(strw.c_str());
-                }
-            }
-            if (event.GUIEvent.Caller == PlacesBox)
-            {
-                s32 selected = PlacesBox->getSelected();
-                FileSystem->changeWorkingDirectoryTo(PlacesBoxReal->getListItem(selected));
-                fillListBox();
-                printf("The placebox item has been pressed!\n");
-            }
+				case EGET_LISTBOX_SELECTED_AGAIN:
+				{
+					//printf("Listbox selected again!\n");
+					if (event.GUIEvent.Caller == FileBox)
+					{
+						s32 selected = FileBox->getSelected();
+						if (FileList && FileSystem)
+						{
+							if (FileList->isDirectory(selected))
+							{
+								FileSystem->changeWorkingDirectoryTo(FileList->getFileName(selected));
+								PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+								fillListBox();
+								FileNameText->setText(L"");
+							}
+							else
+							{
+								this->fullpathname=FileSystem->getWorkingDirectory();
+								core::stringw strw;
+								strw = FileSystem->getWorkingDirectory();
+								if (strw[strw.size()-1] != '/')
+									strw += "/";
+								fullpathname = strw+FileBox->getListItem(selected);
+								FileNameText->setText(FileBox->getListItem(selected));
+								PathNameText->setText(strw.c_str());
+								return true;
+							}
+						}
+					}
+					if (event.GUIEvent.Caller == PlacesBox)
+					{
+						s32 selected = PlacesBox->getSelected();
+						FileSystem->changeWorkingDirectoryTo(PlacesBoxReal->getListItem(selected));
+						fillListBox();
+						//printf("The placebox item has been pressed!\n");
+					}
+				}
+				break;
 
-        }
-        break;
+				default:
+				break;
+			}
+		}
+		
+		// Mouse input
+		case EET_MOUSE_INPUT_EVENT:
+		{
+			//printf("Mouse event!\n");
+			switch(event.MouseInput.Event)
+			{
+				case EMIE_LMOUSE_PRESSED_DOWN:
+				{
+					DragStart.X = event.MouseInput.X;
+					DragStart.Y = event.MouseInput.Y;
+					Dragging = true;
+					Environment->setFocus(this);
+					return true;
+				}
+				break;
 
-        case EGET_LISTBOX_SELECTED_AGAIN:
-        {
-            if (event.GUIEvent.Caller == FileBox)
-            {
-                s32 selected = FileBox->getSelected();
-                if (FileList && FileSystem)
-                {
-                    if (FileList->isDirectory(selected))
-                    {
-                        FileSystem->changeWorkingDirectoryTo(FileList->getFileName(selected));
-                        PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
-                        fillListBox();
-                        FileNameText->setText(L"");
-                    }
-                    else
-                    {
-                        this->fullpathname=FileSystem->getWorkingDirectory();
-                        core::stringw strw;
-                        strw = FileSystem->getWorkingDirectory();
-                        if (strw[strw.size()-1] != '/')
-                            strw += "/";
+				case EMIE_LMOUSE_LEFT_UP:
+				{
+					Dragging = false;
+					this->strechtvertical=false;
+					this->stretchhorizontal=false;
+					Environment->removeFocus(this);
+					//printf ("Mouse up event!\n");
+					return true;
+					
+				}
+				break;
 
-                        fullpathname = strw+FileBox->getListItem(selected);
-                        FileNameText->setText(FileBox->getListItem(selected));
-                        PathNameText->setText(strw.c_str());
-                        return true;
-                    }
-                }
-            }
-            if (event.GUIEvent.Caller == PlacesBox)
-            {
-                s32 selected = PlacesBox->getSelected();
-                FileSystem->changeWorkingDirectoryTo(PlacesBoxReal->getListItem(selected));
-                fillListBox();
-                printf("The placebox item has been pressed!\n");
-            }
-        }
-        break;
+				case EMIE_MOUSE_MOVED:
+				{
+					// This only work from INSIDE the gui.
+				}
+				break;
 
-        default:
-        break;
+				default:
+					return true;
+				break;
 
-    }
-    case EET_MOUSE_INPUT_EVENT:
-        switch(event.MouseInput.Event)
-        {
-            case EMIE_LMOUSE_PRESSED_DOWN:
-                DragStart.X = event.MouseInput.X;
-                DragStart.Y = event.MouseInput.Y;
-                Dragging = true;
-                Environment->setFocus(this);
-                return true;
-                break;
-
-            case EMIE_LMOUSE_LEFT_UP:
-                Dragging = false;
-                Environment->removeFocus(this);
-                return true;
-                break;
-
-            case EMIE_MOUSE_MOVED:
-                // Disable the drag function
-                //Dragging=false;
-                if (Dragging)
-                {
-                    // gui window should not be dragged outside its parent
-                    if (Parent)
-                        if (event.MouseInput.X < Parent->getAbsolutePosition().UpperLeftCorner.X +1 ||
-                            event.MouseInput.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +1 ||
-                            event.MouseInput.X > Parent->getAbsolutePosition().LowerRightCorner.X -1 ||
-                            event.MouseInput.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -1)
-                            return true;
-
-                    move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
-                    DragStart.X = event.MouseInput.X;
-                    DragStart.Y = event.MouseInput.Y;
-                    return true;
-                }
-                break;
-
-            default:
-            break;
-
-        }
-        default:
-        break;
-   }
-
-   return Parent ? Parent->OnEvent(event) : false;
+			}
+		}
+	}
+	return Parent ? Parent->OnEvent(event) : false;
 }
 
 
 //! draws the element and its children
 void CGUIFileSelector::draw() {
-   if (!IsVisible)
-      return;
+	if (!IsVisible)
+		return;
 
-   IGUISkin* skin = Environment->getSkin();
+	IGUISkin* skin = Environment->getSkin();
+	irr::video::IVideoDriver* driver = Environment->getVideoDriver();
+	core::vector2d<s32> mousepos=device->getCursorControl()->getPosition();
 
-  	// draw background
-   core::rect<s32> frameRect(AbsoluteRect);
-   core::rect<s32> clientClip(AbsoluteRect);
+	// draw background
+	core::rect<s32> frameRect(AbsoluteRect);
 
-  core::rect<s32> rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),frameRect, &AbsoluteClippingRect);
+	core::rect<s32> rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),frameRect, &AbsoluteClippingRect);
 
-   if (Text.size()) {
-      rect.UpperLeftCorner.X += 2;
-      rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
+	if (Text.size()) {
+		rect.UpperLeftCorner.X += 2;
+		rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
 
-      IGUIFont* font = skin->getFont(EGDF_WINDOW);
-      if (font)
-         font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true,
-         &AbsoluteClippingRect);
-   }
+		IGUIFont* font = skin->getFont(EGDF_WINDOW);
+		if (font)
+			font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true,
+			&AbsoluteClippingRect);
+	}
 
+	// Get the current mousecursor position;
+	
+	if (!Dragging)
+	{
+		//printf("mode is not drag...\n");
+		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-10) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X-2))
+		{
+			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
+			this->stretchhorizontal=true;
+		} else
+			this->stretchhorizontal=false;
 
+		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-10) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y-2))
+		{
+			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
+			this->strechtvertical=true;
+		}
+		else
+			this->strechtvertical=false;
+	} 
+	else
+	{
+		if (!stretchhorizontal && !strechtvertical)
+		{
+			// gui window should not be dragged outside its parent
+			if (Parent)
+			{
+				if (mousepos.X < Parent->getAbsolutePosition().UpperLeftCorner.X +30 ||
+					mousepos.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +30 ||
+					mousepos.X > Parent->getAbsolutePosition().LowerRightCorner.X -30 ||
+					mousepos.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -30)
+				{
+					IGUIElement::draw();
+					return;
+				}
+			} 
 
-   IGUIElement::draw();
+			
+			move(core::position2d<s32>(mousepos.X - DragStart.X, mousepos.Y - DragStart.Y));
+			updateAbsolutePosition();
+			DragStart.X = mousepos.X;
+			DragStart.Y = mousepos.Y;
+			IGUIElement::draw();
+			return;
+		}		
+		
+		if (stretchhorizontal)
+		{
+			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>200)
+			{
+				AbsoluteRect.LowerRightCorner.X=mousepos.X+5;
+			}
+			this->AbsoluteClippingRect=this->AbsoluteRect;
+			this->DesiredRect=AbsoluteRect;						
+			this->updateAbsolutePosition();
+		}
+		if (strechtvertical)
+		{
+			if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)>200)
+			{
+				AbsoluteRect.LowerRightCorner.Y=mousepos.Y+5;
+			}
+			this->AbsoluteClippingRect=this->AbsoluteRect;
+			this->DesiredRect=AbsoluteRect;						
+			this->updateAbsolutePosition();
+		}
+	}
+
+	IGUIElement::draw();
 }
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s) {
-   if (FileFilters.size() > 1) {
-      s32 selected = FilterComboBox->getSelected();
-      if (selected == 0) {
-         for (s32 i = 0; i < (s32)FileFilters.size(); i++) {
-            s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-            if (FileFilters[i].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])))
-               return true;
-         }
-         return false;
-      }
-      selected--;
-      if (selected >= (s32)FileFilters.size()) return true; // 'All Files' selectable
-      else {
-         s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-         return FileFilters[selected].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
-      }
-   }
-   if (FilterComboBox->getSelected() >= (s32)FileFilters.size()) return true; // 'All Files' selectable
-   else {
-      s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-      return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
-   }
+bool CGUIFileSelector::matchesFileFilter(core::stringw s) 
+{
+	//printf("Filters: %s\n",core::stringc(s).c_str());
+	if (FileFilters.size() > 1) 
+	{
+		s32 selected = FilterComboBox->getSelected();
+		if (selected == 0) 
+		{
+			for (s32 i = 0; i < (s32)FileFilters.size(); i++) 
+			{
+				s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
+				if (FileFilters[i].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])))
+					return true;
+			}
+			return false;
+		}
+		selected--;
+		if (selected >= (s32)FileFilters.size()) 
+			return true; // 'All Files' selectable
+		else 
+		{
+			s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
+			//printf("Extension to check is %s\n",core::stringc(FileFilters[selected].FileExtension).c_str());
+			return FileFilters[selected].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
+			
+		}
+	}
+	if (FilterComboBox->getSelected() >= (s32)FileFilters.size()) 
+		return true; // 'All Files' selectable
+	else 
+	{
+		s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
+		//printf("Extension to check is %s\n",core::stringc(FileFilters[FilterComboBox->getSelected()].FileExtension).c_str());
+		return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
+	}
 }
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f) {
-  s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-  return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
+bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f) 
+{
+	s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
+	return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 }
 
 //! fills the listbox with files.
-void CGUIFileSelector::fillListBox() {
-   IGUISkin *skin = Environment->getSkin();
+void CGUIFileSelector::fillListBox() 
+{
+	IGUISkin *skin = Environment->getSkin();
 
-   if (!FileSystem || !FileBox || !skin)
-      return;
+	if (!FileSystem || !FileBox || !skin)
+		return;
 
-   if (FileList)
-      FileList->drop();
+	if (FileList)
+		FileList->drop();
 
-   FileBox->clear();
+	FileBox->clear();
 
-   FileList = FileSystem->createFileList();
-   core::stringw s;
+	FileList = FileSystem->createFileList();
+	core::stringw s;
 
-   for (u32 i=0; i<FileList->getFileCount(); ++i)
-   {
-        s = FileList->getFileName(i);
-        core::stringw test2=translateDOS(FileList->getFileName(i));
-        s = test2;
-      // We just want a list of directories and those matching the file filter
-        if (FileList->isDirectory(i))
-		  {
-		      if (DirectoryIconIdx != -1)
-                FileBox->addItem(s.c_str(), DirectoryIconIdx);
-            else
-                FileBox->addItem(s.c_str());
-		  }
-        else if (matchesFileFilter(s))
-        {
-            if (FilterComboBox->getSelected() >= (s32)FileFilters.size())
-            {
-                if (FileIconIdx != -1)
-                {
-                    s32 iconIdx = FileIconIdx;
-                    for (u32 i = 0 ; i < FileFilters.size() ; i++)
-                    if (matchesFileFilter(s, FileFilters[i].FileExtension))
-                        iconIdx = FileFilters[i].FileIconIdx;
-                        FileBox->addItem(core::stringw(s).c_str(), iconIdx);
-                } else  FileBox->addItem(s.c_str());
-            }
-        }
-		else FileBox->addItem(s.c_str(), FileFilters[FilterComboBox->getSelected()].FileIconIdx);
+	for (u32 i=0; i<FileList->getFileCount(); ++i)
+	{
+		s = FileList->getFileName(i);
+		core::stringw test2=translateDOS(FileList->getFileName(i));
+		s = test2;
+		// We just want a list of directories and those matching the file filter
+		if (FileList->isDirectory(i))
+		{
+			if (DirectoryIconIdx != -1)
+				FileBox->addItem(s.c_str(), DirectoryIconIdx);
+			else
+				FileBox->addItem(s.c_str());
+		}
+		else if (matchesFileFilter(s))
+		{
+			if (FilterComboBox->getSelected() >= (s32)FileFilters.size())
+			{
+				if (FileIconIdx != -1) 
+				{
+					s32 iconIdx = FileIconIdx;
+					for (u32 i = 0 ; i < FileFilters.size() ; i++) 
+					{ 
+						if (matchesFileFilter(s, FileFilters[i].FileExtension))
+						iconIdx = FileFilters[i].FileIconIdx;
+					}
+					FileBox->addItem(s.c_str(), iconIdx);
+				} 
+				else  
+				{
+					FileBox->addItem(s.c_str());
+				}
+			} else FileBox->addItem(s.c_str(), FileFilters[FilterComboBox->getSelected()].FileIconIdx);
+		}
+	}
 
-   }
-
-   if (PathNameText) {
-      s = FileSystem->getWorkingDirectory();
-	  PathNameText->setText(s.c_str());
-   }
+	if (PathNameText) 
+	{
+		s = FileSystem->getWorkingDirectory();
+		PathNameText->setText(s.c_str());
+	}
 }
 
 
 //! sends the event that the file has been selected.
-void CGUIFileSelector::sendSelectedEvent() {
-   SEvent event;
-   event.EventType = EET_GUI_EVENT;
-   event.GUIEvent.Caller = this;
-   event.GUIEvent.EventType = EGET_FILE_SELECTED;
-   Parent->OnEvent(event);
-   usecomplete=true;
+void CGUIFileSelector::sendSelectedEvent() 
+{
+	SEvent event;
+	event.EventType = EET_GUI_EVENT;
+	event.GUIEvent.Caller = this;
+	event.GUIEvent.EventType = EGET_FILE_SELECTED;
+	Parent->OnEvent(event);
+	usecomplete=true;
 }
 
 //! sends the event that the file choose process has been cancelled
-void CGUIFileSelector::sendCancelEvent() {
-   SEvent event;
-   event.EventType = EET_GUI_EVENT;
-   event.GUIEvent.Caller = this;
-   event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
-   Parent->OnEvent(event);
+void CGUIFileSelector::sendCancelEvent() 
+{
+	SEvent event;
+	event.EventType = EET_GUI_EVENT;
+	event.GUIEvent.Caller = this;
+	event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
+	Parent->OnEvent(event);
 
-   // Erase the name since it was cancelled
-   fullpathname=L"";
-   // "usecomplete" is a flag that will tell the caller that the requester have completed it's task
-   usecomplete=true;
+	// Erase the name since it was cancelled
+	fullpathname=L"";
+	// "usecomplete" is a flag that will tell the caller that the requester have completed it's task
+	usecomplete=true;
 }
 
-void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture) {
-  SFileFilter filter(name, ext, texture);
+void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture) 
+{
+	SFileFilter filter(name, ext, texture);
+	filter.FileIconIdx = addIcon(texture);
+	FileFilters.push_back(filter);
+	FilterComboBox->clear();
+	core::stringw strw;
 
-  filter.FileIconIdx = addIcon(texture);
+	if (FileFilters.size() > 1) 
+	{
+		strw = "Supported ";
+		for (u32 i = 0 ; i < FileFilters.size() ; i++) 
+		{
+			strw += ".";
+			strw += FileFilters[i].FileExtension;
+			strw += " ";
+		}
+		FilterComboBox->addItem(strw.c_str());
+	}
 
-  FileFilters.push_back(filter);
-
-  FilterComboBox->clear();
-  core::stringw strw;
-
-  if (FileFilters.size() > 1) {
-     strw = "Supported ";
-     for (u32 i = 0 ; i < FileFilters.size() ; i++) {
-      strw += ".";
-      strw += FileFilters[i].FileExtension;
-      strw += " ";
-     }
-     FilterComboBox->addItem(strw.c_str());
-  }
-
-  for (u32 i = 0 ; i < FileFilters.size() ; i++) {
-    strw = FileFilters[i].FilterName;
-    strw += " (*.";
-    strw += FileFilters[i].FileExtension;
-    strw += ")";
-    FilterComboBox->addItem(strw.c_str());
-  }
-  FilterComboBox->addItem(L"All Files");
-
-  fillListBox();
+	for (u32 i = 0 ; i < FileFilters.size() ; i++) 
+	{
+		strw = FileFilters[i].FilterName;
+		strw += " (*.";
+		strw += FileFilters[i].FileExtension;
+		strw += ")";
+		FilterComboBox->addItem(strw.c_str());
+	}
+	FilterComboBox->addItem(L"All Files");
+	fillListBox();
 }
 
-u32 CGUIFileSelector::addIcon(video::ITexture* texture) {
-   if (!SpriteBank || !texture) return 0;
+u32 CGUIFileSelector::addIcon(video::ITexture* texture) 
+{
+	if (!SpriteBank || !texture) return 0;
 
-   // load and add the texture to the bank
-   SpriteBank->addTexture(texture);
-   u32 textureIndex = SpriteBank->getTextureCount() - 1;
-   // now lets get the sprite bank's rectangles and add some for our animation
-   core::array<core::rect<s32> >& rectangles = SpriteBank->getPositions();
-   u32 firstRect = rectangles.size();
-   // remember that rectangles are not in pixels, they enclose pixels!
-   // to draw a rectangle around the pixel at 0,0, it would rect<s32>(0,0, 1,1)
-   rectangles.push_back(core::rect<s32>(0,0, 16,16));
+	// load and add the texture to the bank
+	SpriteBank->addTexture(texture);
+	u32 textureIndex = SpriteBank->getTextureCount() - 1;
+
+	// now lets get the sprite bank's rectangles and add some for our animation
+	core::array<core::rect<s32> >& rectangles = SpriteBank->getPositions();
+	u32 firstRect = rectangles.size();
+
+	// remember that rectangles are not in pixels, they enclose pixels!
+	// to draw a rectangle around the pixel at 0,0, it would rect<s32>(0,0, 1,1)
+	rectangles.push_back(core::rect<s32>(0,0, 16,16));
 
 
-   // now we make a sprite..
-   SGUISprite sprite;
-   sprite.frameTime = 30;
-   // add some frames of animation.
-   SGUISpriteFrame frame;
-   frame.rectNumber = firstRect;
-   frame.textureNumber = textureIndex;
+	// now we make a sprite..
+	SGUISprite sprite;
+	sprite.frameTime = 30;
 
-   // add this frame
-   sprite.Frames.push_back(frame);
-   // add the sprite
-   //u32 spriteIndex = SpriteBank->getSprites().size();
-   SpriteBank->getSprites().push_back(sprite);
+	// add some frames of animation.
+	SGUISpriteFrame frame;
+	frame.rectNumber = firstRect;
+	frame.textureNumber = textureIndex;
 
-   return textureIndex;
+	// add this frame
+	sprite.Frames.push_back(frame);
+
+	// add the sprite
+	//u32 spriteIndex = SpriteBank->getSprites().size();
+	SpriteBank->getSprites().push_back(sprite);
+
+	return textureIndex;
 }
 
 
@@ -800,7 +913,7 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		if (code==-7)
 			result.append(L"ù");
 #else
-// if the result give < 0 then it look like an accented letter, then convert
+		// if the result give < 0 then it look like an accented letter, then convert
 		if (code==-55)
 			result.append("É");
 

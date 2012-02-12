@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "gui/CGUIFileSelector.h"
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -21,6 +23,7 @@ static const float APP_VERSION = 1.0;
 
 #include "LuaGlobalCaller.h"
 #include "tinyXML/tinyxml.h"
+
 #ifdef _wxWIDGET
 #include "editor/EditorMain.h"
 #endif
@@ -109,6 +112,7 @@ class App
 		void createNewProject();
         void loadProject();
         void loadProject(stringc filename);
+		void loadProjectFile(bool value);
         void saveProject();
 		stringc getProjectName();
 
@@ -193,6 +197,9 @@ class App
 
 		// The "appFrame" object contain the most of the wxWidget controls and are accessible from there.
 		CIrrFrame * appFrame;
+
+
+		CGUIFileSelector * selector;
 };
 
 #endif // APP_H

@@ -117,6 +117,8 @@ class CGUIFileSelector : public IGUIElement {
 
 		inline bool isComplete() {return usecomplete;}
 
+		inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
+
    protected:
 
         /**
@@ -212,6 +214,9 @@ class CGUIFileSelector : public IGUIElement {
 
 	  private:
 		  core::stringw translateDOS(core::stringw input);
+		  bool strechtvertical, stretchhorizontal;
+		  irr::IrrlichtDevice * device;
+		  bool dragmode;
          
 };
 

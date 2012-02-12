@@ -106,6 +106,13 @@ bool EventReceiver::OnEvent(const SEvent& event)
                 App::getInstance()->eventGuiCombobox(id);
                 break;
 
+			case EGET_FILE_SELECTED:
+				App::getInstance()->loadProjectFile(true);
+				break;
+
+			case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
+				App::getInstance()->loadProjectFile(false);
+
             default :
                 break;
 #endif

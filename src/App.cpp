@@ -3,7 +3,7 @@
 #include "camera/CameraSystem.h"
 #include "events/EventReceiver.h"
 #include "gui/GUIManager.h"
-#include "gui/GUIRequestManager.h"
+#include "gui/CGUIFileSelector.h"
 #include "terrain/TerrainManager.h"
 #include "fx/EffectsManager.h"
 #include "LANGManager.h"
@@ -30,6 +30,7 @@ const float DEG2RAD = 3.14159f/180;
 App::App()
 {
  wxSystemState=false;
+ selector=NULL;
  app_state=APP_EDIT_LOOK;
  textevent.clear();
  lastScannedPick.pickedNode=NULL;
@@ -420,10 +421,14 @@ void App::eventGuiButton(s32 id)
 				appFrame->OnLoad();
 			#else
 
-			//this->loadProject();
-			GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
-			old_state=app_state;
-			app_state=APP_WAIT_FILEREQUEST;
+			this->loadProject();
+			/* // Load a new project but not when the loader window is visible
+			if (!GUIManager::getInstance()->guiLoaderWindow->isVisible())
+			{
+				GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
+				old_state=app_state;
+				app_state=APP_WAIT_FILEREQUEST;
+			}*/
 
 			#endif
 
@@ -631,6 +636,7 @@ void App::eventGuiButton(s32 id)
 				GUIManager::getInstance()->stopDialogSound();
 			}
 			break;
+
         default:
             break;
     }
@@ -1228,7 +1234,7 @@ void App::stopGame()
 
 void App::update()
 {
-	if (app_state!=APP_WAIT_FILEREQUEST)
+	//if (app_state!=APP_WAIT_FILEREQUEST)
 	//while (app_state<APP_STATE_CONTROL)
 	{
 		// Attempt to do automatic rezise detection
@@ -1275,16 +1281,18 @@ void App::update()
 
 		driver->endScene();
 	}
-	else
+	//else
+	if (app_state==APP_WAIT_FILEREQUEST)
 	{
-		if (!GUIRequestManager::getInstance()->isComplete())
+		/*if (!GUIRequestManager::getInstance()->isComplete())
 		{
-			GUIRequestManager::getInstance()->update();
+			//GUIRequestManager::getInstance()->update();
 		} else
 		{
 			printf ("This one should be called once as the GUI is complete!\n");
 			// There was an event on the file requester
-			this->app_state = APP_EDIT_DYNAMIC_OBJECTS_MODE;
+			this->app_state = old_state;
+				//APP_EDIT_DYNAMIC_OBJECTS_MODE;
 				//this->old_state;
 
 			stringc result=(stringc)GUIRequestManager::getInstance()->getFilename();
@@ -1294,7 +1302,7 @@ void App::update()
 				this->loadProjectFromXML((stringc)GUIRequestManager::getInstance()->getFilename());
 			}
 
-		}
+		}*/
 
 	}
 }
@@ -1646,7 +1654,7 @@ void App::loadProject()
 	// Have to rethink how to do it. It used the gameplay dialog.
     //bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
     //GUIManager::getInstance()->flush();
-	bool ansSave=false;
+	/*bool ansSave=false;
     if(ansSave)
     {
 		stringc filename = "../projects/";
@@ -1676,7 +1684,22 @@ void App::loadProject()
 
     //this->loadProject("");
 	setAppState(old_state);
-    //setAppState(APP_STATE_CONTROL);
+    //setAppState(APP_STATE_CONTROL);*/
+	setAppState(APP_WAIT_FILEREQUEST);
+	if (!selector)
+	{
+		selector =	new CGUIFileSelector(L"What project to load?", device->getGUIEnvironment(), device->getGUIEnvironment()->getRootGUIElement(), 777, core::rect<s32>(0,0,640,400), CGUIFileSelector::EFST_OPEN_DIALOG);
+		selector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
+		selector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
+		selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+		// Allow scaling to be used on the GUI element. In all directions.
+		selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+		//selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+
+		// This is required for the window stretching feature
+		selector->setDevice(device);
+	}
+
 }
 
 /*
@@ -1686,6 +1709,25 @@ void App::loadProject(stringc filename)
     if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewProject("temp_project");
 }
 */
+
+// This will load the project contained in the selector
+// Call is coming directly from the event manager
+void App::loadProjectFile(bool value)
+{
+	if (value)
+	{	
+		// Close and drop the file selector
+		selector->drop();
+		selector->remove();
+		
+
+		//Clean up the current world and load the scene
+		cleanWorkspace();
+		this->loadProjectFromXML(selector->getFileName());
+	}
+	selector=NULL;
+	setAppState(old_state);
+}
 
 void App::saveProject()
 {
