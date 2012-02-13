@@ -65,6 +65,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-w" />
 					<Add option="-g" />
 					<Add option="-m32" />
 					<Add option="-DEDITOR" />

@@ -11,26 +11,26 @@ s32 CGUIFileSelector::numFileSelectors = 0;
 CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type)
 : IGUIFileOpenDialog(environment, parent, id,
 					 core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
-					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,   
+					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,
 					 (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
-					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),   
+					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT)),
 					 Dragging(false), FileNameText(0), FileList(0), DialogType(type)
-{   
+{
 #ifdef _DEBUG
 	IGUIElement::setDebugName("CGUIFileSelector");
-#endif    
+#endif
 
 	Text = title;
 	IsDirectoryChoosable = false;
 	device=NULL;
 	PlacesBox=NULL;
 	default_project_dir=L"";
-	
+
 
 	IGUISkin* skin = Environment->getSkin();
 	IGUISpriteBank* sprites = 0;
 	video::SColor color(255,255,255,255);
-	if (skin) 
+	if (skin)
 	{
 		sprites = skin->getSpriteBank();
 		color = skin->getColor(EGDC_WINDOW_SYMBOL);
@@ -39,7 +39,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
 	s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
-	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1, 
+	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
 		L"", L"Close");
 	CloseButton->setSubElement(true);
 	if (sprites) {
@@ -101,7 +101,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	DriveBox = Environment->addComboBox(core::rect<s32>(10, RelativeRect.getHeight()-55, 170, RelativeRect.getHeight()-35), this, -1);
 	DriveBox->setSubElement(true);
 	DriveBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
-	DriveBox->grab();   
+	DriveBox->grab();
 	populatePCDrives();
 #endif
 
@@ -162,7 +162,7 @@ CGUIFileSelector::~CGUIFileSelector()
 
 	if (FilterComboBox)
 		FilterComboBox->drop();
-	
+
 	if (PlacesBox)
 		PlacesBox->drop();
 
@@ -173,7 +173,7 @@ CGUIFileSelector::~CGUIFileSelector()
 
 
 //! returns the filename of the selected file. Returns NULL, if no file was selected.
-const wchar_t* CGUIFileSelector::getFileName() const 
+const wchar_t* CGUIFileSelector::getFileName() const
 {
 	return fullpathname.c_str();
 	//return FileNameText->getText();
@@ -184,13 +184,13 @@ const wchar_t* CGUIFileSelector::getFileName() const
 //! called if an event happened.
 bool CGUIFileSelector::OnEvent(const SEvent& event)
 {
-	switch(event.EventType) 
+	switch(event.EventType)
 	{
 	case EET_KEY_INPUT_EVENT:
-		switch (event.KeyInput.Key) 
+		switch (event.KeyInput.Key)
 		{
 		case KEY_RETURN:
-			if (FileSystem) 
+			if (FileSystem)
 			{
 				FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
 				fillListBox();
@@ -200,14 +200,14 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 		}
 		break;
 	case EET_GUI_EVENT:
-		switch(event.GUIEvent.EventType) 
+		switch(event.GUIEvent.EventType)
 		{
 		case EGET_COMBO_BOX_CHANGED:
-			if (event.GUIEvent.Caller == FilterComboBox) 
+			if (event.GUIEvent.Caller == FilterComboBox)
 			{
 				fillListBox();
 			} else {  // change drive
-				if (FileSystem) {      
+				if (FileSystem) {
 					FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
 					fillListBox();
 				}
@@ -220,9 +220,9 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 
 		case EGET_BUTTON_CLICKED:
 			if (event.GUIEvent.Caller == CloseButton ||
-				event.GUIEvent.Caller == CancelButton) 
+				event.GUIEvent.Caller == CancelButton)
 			{
-				if (FileSystem) 
+				if (FileSystem)
 				{
 					FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
 					//printf("working directory reset to: %s\n", prev_working_dir.c_str());
@@ -233,7 +233,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			}
 			else
 				if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
-					if (FileSystem) 
+					if (FileSystem)
 					{
 						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
 						//printf("working directory reset to: %s\n", prev_working_dir.c_str());
@@ -271,8 +271,8 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			}
 			break;
 
-		case EGET_LISTBOX_SELECTED_AGAIN: 
-			{         
+		case EGET_LISTBOX_SELECTED_AGAIN:
+			{
 				s32 selected = FileBox->getSelected();
 				if (event.GUIEvent.Caller == FileBox)
 				{
@@ -325,7 +325,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			Environment->removeFocus(this);
 			return true;
 		case EMIE_MOUSE_MOVED:
-			if (Dragging && !strechtvertical && !stretchhorizontal) 
+			if (Dragging && !strechtvertical && !stretchhorizontal)
 			{
 				// gui window should not be dragged outside its parent
 				if (Parent)
@@ -361,25 +361,25 @@ void CGUIFileSelector::draw()
 	irr::video::IVideoDriver* driver = Environment->getVideoDriver();
 	if (device)
 		mousepos=device->getCursorControl()->getPosition();
-	
+
 	core::rect<s32> rect = AbsoluteRect;
 
-	rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER), 
+	rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),
 		rect, &AbsoluteClippingRect);
 
-	if (Text.size()) 
+	if (Text.size())
 	{
 		rect.UpperLeftCorner.X += 2;
 		rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
 
 		IGUIFont* font = skin->getFont(EGDF_WINDOW);
 		if (font)
-			font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true, 
+			font->draw(Text.c_str(), rect, skin->getColor(EGDC_ACTIVE_CAPTION), false, true,
 			&AbsoluteClippingRect);
 	}
 
 	// Get the current mousecursor position;
-	
+
 	if (!Dragging)
 	{
 		//printf("mode is not drag...\n");
@@ -453,18 +453,18 @@ void CGUIFileSelector::draw()
 //  if (FilterComboBox->getSelected() >= FileFilters.size()) return true; // 'All Files' selectable
 //  else {
 //    s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-//    return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])); 
+//    return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 //  }
 //}
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s) 
-{ 
-	if (FileFilters.size() > 1) 
+bool CGUIFileSelector::matchesFileFilter(core::stringw s)
+{
+	if (FileFilters.size() > 1)
 	{
 		s32 selected = FilterComboBox->getSelected();
-		if (selected == 0) 
+		if (selected == 0)
 		{
-			for (u32 i = 0; i < FileFilters.size(); i++) 
+			for (u32 i = 0; i < FileFilters.size(); i++)
 			{
 				s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 				if (FileFilters[i].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1])))
@@ -484,16 +484,16 @@ bool CGUIFileSelector::matchesFileFilter(core::stringw s)
 		s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
 		return FileFilters[FilterComboBox->getSelected()].FileExtension.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 	}
-} 
+}
 
-bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f) 
+bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f)
 {
 	s32 pos = s.findLast('.'); // Find the last '.' so we can check the file extension
-	return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1])); 
+	return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 }
 
 //! fills the listbox with files.
-void CGUIFileSelector::fillListBox() 
+void CGUIFileSelector::fillListBox()
 {
 	IGUISkin *skin = Environment->getSkin();
 
@@ -562,7 +562,7 @@ void CGUIFileSelector::sendSelectedEvent()
 }
 
 //! sends the event that the file choose process has been canceld
-void CGUIFileSelector::sendCancelEvent() 
+void CGUIFileSelector::sendCancelEvent()
 {
 	SEvent event;
 	event.EventType = EET_GUI_EVENT;
@@ -603,36 +603,36 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 	FilterComboBox->addItem(L"All Files");
 
 	fillListBox();
-} 
+}
 
-u32 CGUIFileSelector::addIcon(video::ITexture* texture) 
+u32 CGUIFileSelector::addIcon(video::ITexture* texture)
 {
 	if (!SpriteBank || !texture) return 0;
 
-	// load and add the texture to the bank     
-	SpriteBank->addTexture(texture); 
-	u32 textureIndex = SpriteBank->getTextureCount() - 1; 
-	// now lets get the sprite bank's rectangles and add some for our animation 
-	core::array<core::rect<s32> >& rectangles = SpriteBank->getPositions(); 
-	u32 firstRect = rectangles.size(); 
-	// remember that rectangles are not in pixels, they enclose pixels! 
-	// to draw a rectangle around the pixel at 0,0, it would rect<s32>(0,0, 1,1) 
-	rectangles.push_back(core::rect<s32>(0,0, 16,16)); 
+	// load and add the texture to the bank
+	SpriteBank->addTexture(texture);
+	u32 textureIndex = SpriteBank->getTextureCount() - 1;
+	// now lets get the sprite bank's rectangles and add some for our animation
+	core::array<core::rect<s32> >& rectangles = SpriteBank->getPositions();
+	u32 firstRect = rectangles.size();
+	// remember that rectangles are not in pixels, they enclose pixels!
+	// to draw a rectangle around the pixel at 0,0, it would rect<s32>(0,0, 1,1)
+	rectangles.push_back(core::rect<s32>(0,0, 16,16));
 
 
-	// now we make a sprite.. 
-	SGUISprite sprite; 
-	sprite.frameTime = 30; 
-	// add some frames of animation. 
-	SGUISpriteFrame frame; 
-	frame.rectNumber = firstRect; 
-	frame.textureNumber = textureIndex; 
+	// now we make a sprite..
+	SGUISprite sprite;
+	sprite.frameTime = 30;
+	// add some frames of animation.
+	SGUISpriteFrame frame;
+	frame.rectNumber = firstRect;
+	frame.textureNumber = textureIndex;
 
-	// add this frame 
-	sprite.Frames.push_back(frame); 
-	// add the sprite 
-	u32 spriteIndex = SpriteBank->getSprites().size(); 
-	SpriteBank->getSprites().push_back(sprite);  
+	// add this frame
+	sprite.Frames.push_back(frame);
+	// add the sprite
+	u32 spriteIndex = SpriteBank->getSprites().size();
+	SpriteBank->getSprites().push_back(sprite);
 
 	return textureIndex;
 }
@@ -640,7 +640,7 @@ u32 CGUIFileSelector::addIcon(video::ITexture* texture)
 // This will add items in the favorites folders lists (or places)
 void CGUIFileSelector::addPlacePaths(wchar_t* name, wchar_t* path, video::ITexture* texture)
 {
-	
+
 	if (texture)
 		PlacesBox->addItem(name, addIcon(texture));
 	else
@@ -655,9 +655,9 @@ void CGUIFileSelector::addPlacePaths(wchar_t* name, wchar_t* path, video::ITextu
 		fillListBox();
 		FileSystem->changeWorkingDirectoryTo(core::stringc(prev_working_dir).c_str());
 	}
-	
+
 	placespaths.push_back(newpath);
-} 
+}
 
 //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
 const io::path& CGUIFileSelector::getDirectoryName()
@@ -669,6 +669,7 @@ const io::path& CGUIFileSelector::getDirectoryName()
 
 void CGUIFileSelector::populatePCDrives()
 {
+    #ifdef WIN32
 	int dr_type=99;
 	wchar_t dr_avail[1024];
 	wchar_t *temp=dr_avail;
@@ -713,59 +714,62 @@ void CGUIFileSelector::populatePCDrives()
 		}
 		temp += lstrlen((LPCWSTR)temp) +1; // incriment the buffer
 	}
+	#endif
 
 }
 
 void CGUIFileSelector::populateWindowsFAV()
 {
+    #ifdef WIN32
 	// Get the desktop shortcut (places)
 	// String buffer for holding the path.
 	TCHAR strPath[ MAX_PATH ];
-	
+
 	irr::video::IVideoDriver * driver = Environment->getVideoDriver();
 
 	// Get the special folder path. (Desktop)
-	SHGetSpecialFolderPath(	0, strPath, CSIDL_DESKTOPDIRECTORY, FALSE ); 
+	SHGetSpecialFolderPath(	0, strPath, CSIDL_DESKTOPDIRECTORY, FALSE );
 	addPlacePaths(L"Desktop",(wchar_t *)strPath,driver->getTexture("../media/art/places_desktop.png"));
 
 	// Get the special folder path. (My documents)
-	SHGetSpecialFolderPath(	0, strPath, CSIDL_PERSONAL, FALSE ); 
+	SHGetSpecialFolderPath(	0, strPath, CSIDL_PERSONAL, FALSE );
 	addPlacePaths(L"My documents",(wchar_t *)strPath,driver->getTexture("../media/art/places_documents.png"));
 
 	// Get the special folder path. (My pictures)
-	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYPICTURES, FALSE ); 
+	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYPICTURES, FALSE );
 	addPlacePaths(L"My pictures",(wchar_t *)strPath,driver->getTexture("../media/art/places_pictures.png"));
-	
+
 	// Get the special folder path. (My music)
-	SHGetSpecialFolderPath(	0, strPath, CSIDL_MYMUSIC, FALSE ); 
+	SHGetSpecialFolderPath(	0, strPath, CSIDL_MYMUSIC, FALSE );
 	addPlacePaths(L"My music",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (My video)
-	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYVIDEO, FALSE ); 
+	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYVIDEO, FALSE );
 	addPlacePaths(L"My videos",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
-	
+
 	// Get the special folder path. (Public documents)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_DOCUMENTS, FALSE );
 	addPlacePaths(L"Public documents",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public pictures)
-	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_PICTURES, FALSE ); 
+	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_PICTURES, FALSE );
 	addPlacePaths(L"Public pictures",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
-	
+
 	// Get the special folder path. (Public music)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_MUSIC, FALSE );
 	addPlacePaths(L"Public music",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public videos)
-	SHGetSpecialFolderPath( 0, strPath, CSIDL_COMMON_VIDEO, FALSE ); 
+	SHGetSpecialFolderPath( 0, strPath, CSIDL_COMMON_VIDEO, FALSE );
 	addPlacePaths(L"Public videos",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	#endif
 
 }
 
 void CGUIFileSelector::populateLinuxFAV()
 {
 	// Get the desktop shortcut (places)
-	
+
 	irr::video::IVideoDriver * driver = Environment->getVideoDriver();
 
 	addPlacePaths(L"Root folder",L"/root",driver->getTexture("../media/art/places_desktop.png"));
