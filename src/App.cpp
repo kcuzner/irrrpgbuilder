@@ -29,56 +29,56 @@ const float DEG2RAD = 3.14159f/180;
 
 App::App()
 {
- wxSystemState=false;
- selector=NULL;
- app_state=APP_EDIT_LOOK;
- textevent.clear();
- lastScannedPick.pickedNode=NULL;
- lastPickedNodeName="";
- timer=0;
- timer2=0;
- timer3=0;
+	wxSystemState=false;
+	selector=NULL;
+	app_state=APP_EDIT_LOOK;
+	textevent.clear();
+	lastScannedPick.pickedNode=NULL;
+	lastPickedNodeName="";
+	timer=0;
+	timer2=0;
+	timer3=0;
 }
 
 App::~App()
 {
 	this->cleanWorkspace();
 	SoundManager::getInstance()->stopEngine();
-    device->drop();
+	device->drop();
 	exit(0);
 }
 
 void App::draw2DImages()
 {
 #ifdef EDITOR
-    if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
-    {
-        GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
+	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
+	{
+		GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
 
-    }
+	}
 
-    if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
-    {
-        GUIManager::getInstance()->drawHelpImage(HELP_VEGETATION_PAINT);
-    }
+	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
+	{
+		GUIManager::getInstance()->drawHelpImage(HELP_VEGETATION_PAINT);
+	}
 
-    if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
-    {
-        GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_SEGMENTS);
-    }
+	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
+	{
+		GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_SEGMENTS);
+	}
 
-    if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-    {
+	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	{
 
-    }
+	}
 
 	if (app_state > APP_STATE_CONTROL)
 	{
 		//GUIManager::getInstance()->drawPlayerStats();
 	}
-    #ifdef APP_DEBUG
-      //GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
-    #endif
+#ifdef APP_DEBUG
+	//GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
+#endif
 #endif
 }
 
@@ -167,19 +167,19 @@ void App::drawBrush()
 	step=30;
 	for (int i=0; i<(360-step); i=i+step)
 	{
-      float degInRad = i*DEG2RAD;
-	  vector3df pos=position;
-	  pos.X+=cos(degInRad)*radius;
-	  pos.Z+=sin(degInRad)*radius;
-	  pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+	float degInRad = i*DEG2RAD;
+	vector3df pos=position;
+	pos.X+=cos(degInRad)*radius;
+	pos.Z+=sin(degInRad)*radius;
+	pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
 
 
-	  float degInRad2 = (i+step)*DEG2RAD;
-	  vector3df pos2=position;
-	  pos2.X+=cos(degInRad2)*radius;
-	  pos2.Z+=sin(degInRad2)*radius;
-	  pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
-	  driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
+	float degInRad2 = (i+step)*DEG2RAD;
+	vector3df pos2=position;
+	pos2.X+=cos(degInRad2)*radius;
+	pos2.Z+=sin(degInRad2)*radius;
+	pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+	driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
 	}*/
 
 	// Center circle for the brush give the center
@@ -206,7 +206,7 @@ void App::displayGuiConsole()
 // Would be nice to only check the tools windows we have opened and check their position / scale
 bool App::cursorIsInEditArea()
 {
-    bool condition = true;
+	bool condition = true;
 	if (GUIManager::getInstance()->isGuiPresent(device->getCursorControl()->getPosition()))
 		condition = false;
 
@@ -218,126 +218,126 @@ bool App::cursorIsInEditArea()
 
 APP_STATE App::getAppState()
 {
-    return app_state;
+	return app_state;
 }
 
 void App::setAppState(APP_STATE newAppState)
 {
 
-    //just record the state before changing..
-    APP_STATE old_app_state = app_state;
+	//just record the state before changing..
+	APP_STATE old_app_state = app_state;
 
-    #ifdef APP_DEBUG
-    cout << "NEW APP_STATE: " << app_state << endl;
-    #endif
-
-    app_state = newAppState;
-
-#ifdef EDITOR
-    if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
-        ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
-    }
-    else
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
-        ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
-    }
-
-    if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
-    }
-    else
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
-    }
-
-    if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
-    }
-    else
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
-    }
-
-    if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
-    }
-    else
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
-    }
-
-    //if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
-    if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+#ifdef APP_DEBUG
+	cout << "NEW APP_STATE: " << app_state << endl;
 #endif
 
-    if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+	app_state = newAppState;
+
+#ifdef EDITOR
+	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
+		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+	}
+	else
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
+		ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+	}
+
+	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
+	}
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+	}
+
+	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
+	}
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
+	}
+
+	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+	}
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+	}
+
+	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
+	if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+#endif
+
+	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 #ifdef _wxWIDGET
 		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 #endif
-    }
-    else
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
+	}
+	else
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 	}
 #ifdef EDITOR
-    if(app_state != APP_EDIT_ABOUT)
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
-    }
+	if(app_state != APP_EDIT_ABOUT)
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
+	}
 
-    if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
-    }
-    else
-    {
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
-    }
+	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+	}
+	else
+	{
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
+	}
 
-    if(app_state == APP_EDIT_CHARACTER)
-    {
+	if(app_state == APP_EDIT_CHARACTER)
+	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
 		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
-        Player::getInstance()->setHighLight(true);
-        CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+		Player::getInstance()->setHighLight(true);
+		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-    }
-    else
-    {
+	}
+	else
+	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
 		Player::getInstance()->setHighLight(false);
-    }
+	}
 
-    if(app_state == APP_EDIT_SCRIPT_GLOBAL)
-    {
+	if(app_state == APP_EDIT_SCRIPT_GLOBAL)
+	{
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
 			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
 
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
-        GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-        GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
 	}
-    else
-    {
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
 		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
 			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
-    }
+	}
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
 	{
@@ -356,36 +356,36 @@ void App::setAppState(APP_STATE newAppState)
 	}
 #endif
 
-    if(app_state == APP_GAMEPLAY_NORMAL)
-    {
-        GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,false);
-        GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
+	if(app_state == APP_GAMEPLAY_NORMAL)
+	{
+		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,false);
+		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
-        GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
-    }
-    else if(app_state < 100)
-    {
-        GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
-        GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,true);
-        GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
+		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
+	}
+	else if(app_state < 100)
+	{
+		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
+		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
-        GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
-    } else if(app_state == APP_WAIT_DIALOG)
+		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
+	} else if(app_state == APP_WAIT_DIALOG)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
@@ -399,247 +399,246 @@ void App::setAppState(APP_STATE newAppState)
 
 void App::eventGuiButton(s32 id)
 {
-    DynamicObject* selectedObject;
+	DynamicObject* selectedObject;
 	oldcampos = vector3df(0,0,0);
 
 
-    switch (id)
-    {
+	switch (id)
+	{
 
-		case BT_ID_NEW_PROJECT:
-			lastScannedPick.pickedNode=NULL;
-			#ifdef _wxWIDGET
-				appFrame->OnNew();
-			#else
-				this->createNewProject();
-			#endif
-
-            break;
-
-		case BT_ID_LOAD_PROJECT:
-			#ifdef _wxWIDGET
-				appFrame->OnLoad();
-			#else
-
-			this->loadProject();
-			/* // Load a new project but not when the loader window is visible
-			if (!GUIManager::getInstance()->guiLoaderWindow->isVisible())
-			{
-				GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
-				old_state=app_state;
-				app_state=APP_WAIT_FILEREQUEST;
-			}*/
-
-			#endif
-
-			//this->setAppState(APP_EDIT_LOOK);
-            break;
-
-        case BT_ID_SAVE_PROJECT:
-			#ifdef _wxWIDGET
-				appFrame->OnSave();
-			#else
-				this->saveProject();
-			#endif
-
-			this->setAppState(APP_EDIT_LOOK);
-            break;
-#ifdef EDITOR
-        case BT_ID_TERRAIN_ADD_SEGMENT:
-            this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
-            break;
-
-        case BT_ID_TERRAIN_PAINT_VEGETATION:
-            this->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
-            break;
-
-        case BT_ID_TERRAIN_TRANSFORM:
-            this->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
-            break;
-
-        case BT_ID_DYNAMIC_OBJECTS_MODE:
-			{
-				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-			}
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
-			GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
-            selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
-            GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
-            GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-
-            this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
-            //if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
-            {
-                stringc newScript = "";
-
-                stringc filename = "../media/scripts/";
-                filename += GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
-
-                std::string line;
-                ifstream fileScript (filename.c_str());
-                if (fileScript.is_open())
-                {
-                    while (! fileScript.eof() )
-                    {
-                        getline (fileScript,line);
-                        newScript += line.c_str();
-                        newScript += '\n';
-                    }
-                    fileScript.close();
-                }
-
-                GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
-            }
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
-            GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-            DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
-
-			// remove the object for the selection
-			lastScannedPick.pickedNode=NULL;
-			lastMousePick.pickedNode=NULL;
-
-			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
-            GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-            setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT:
-            LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
-            break;
-
-        case BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
-            if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
-            {
-                DynamicObjectsManager::getInstance()->getObjectByName(lastMousePick.pickedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
-                setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            }
-            else if(app_state == APP_EDIT_PLAYER_SCRIPT)
-            {
-                Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
-				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            }
-            else if(app_state == APP_EDIT_SCRIPT_GLOBAL)
-            {
-                scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
-                setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            }
-            GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
-            break;
-
-		case BT_ID_EDIT_CHARACTER:
-            this->setAppState(APP_EDIT_CHARACTER);
-            break;
-
-        case BT_ID_PLAYER_EDIT_SCRIPT:
-			this->setAppState(APP_EDIT_PLAYER_SCRIPT);
-            break;
-
-		case BT_ID_EDIT_SCRIPT_GLOBAL:
-			this->setAppState(APP_EDIT_SCRIPT_GLOBAL);
-            break;
-
-		case BT_ID_CONFIG:
-            GUIManager::getInstance()->showConfigWindow();
-            break;
+	case BT_ID_NEW_PROJECT:
+		lastScannedPick.pickedNode=NULL;
+#ifdef _wxWIDGET
+		appFrame->OnNew();
+#else
+		this->createNewProject();
 #endif
-        case BT_ID_PLAY_GAME:
-			playGame();
-            break;
 
-        case BT_ID_STOP_GAME:
-			stopGame();
-			printf("asked to stop the game/n");
-            break;
+		break;
 
-        case BT_ID_CLOSE_PROGRAM:
-			this->shutdown();
+	case BT_ID_LOAD_PROJECT:
+#ifdef _wxWIDGET
+		appFrame->OnLoad();
+#else
 
-			/*this->cleanWorkspace();
-			SoundManager::getInstance()->stopEngine();
-			device->closeDevice();
-            //device->drop();
-		    //exit(0);*/
-            break;
+		this->loadProject();
+		/* // Load a new project but not when the loader window is visible
+		if (!GUIManager::getInstance()->guiLoaderWindow->isVisible())
+		{
+		GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
+		old_state=app_state;
+		app_state=APP_WAIT_FILEREQUEST;
+		}*/
 
-		case BT_ID_HELP:
-			this->displayGuiConsole();
-			break;
+#endif
 
-        case BT_ID_ABOUT:
-            GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
-            setAppState(APP_EDIT_ABOUT);
-            break;
+		//this->setAppState(APP_EDIT_LOOK);
+		break;
 
-        case BT_ID_ABOUT_WINDOW_CLOSE:
-            GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
-            setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-            break;
+	case BT_ID_SAVE_PROJECT:
+#ifdef _wxWIDGET
+		appFrame->OnSave();
+#else
+		this->saveProject();
+#endif
 
-        case BT_ID_VIEW_ITEMS:
-            setAppState(APP_GAMEPLAY_VIEW_ITEMS);
-			DynamicObjectsManager::getInstance()->freezeAll();
-            GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
-			GUIManager::getInstance()->drawPlayerStats();
-            break;
+		this->setAppState(APP_EDIT_LOOK);
+		break;
+#ifdef EDITOR
+	case BT_ID_TERRAIN_ADD_SEGMENT:
+		this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
+		break;
 
-        case BT_ID_USE_ITEM:
-            LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
-            GUIManager::getInstance()->updateItemsList();
-            break;
+	case BT_ID_TERRAIN_PAINT_VEGETATION:
+		this->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
+		break;
 
-        case BT_ID_DROP_ITEM:
-			Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
-            GUIManager::getInstance()->updateItemsList();
-            break;
+	case BT_ID_TERRAIN_TRANSFORM:
+		this->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
+		break;
 
-        case BT_ID_CLOSE_ITEMS_WINDOW:
-            setAppState(APP_GAMEPLAY_NORMAL);
-            GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
-			DynamicObjectsManager::getInstance()->unFreezeAll();
-            break;
+	case BT_ID_DYNAMIC_OBJECTS_MODE:
+		{
+			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		}
+		break;
 
-		case BT_ID_DIALOG_YES:
-			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			if (app_state> APP_STATE_CONTROL)
+	case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
+		selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
+		//if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
+		{
+			stringc newScript = "";
+
+			stringc filename = "../media/scripts/";
+			filename += GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
+
+			std::string line;
+			ifstream fileScript (filename.c_str());
+			if (fileScript.is_open())
 			{
-				//Player::getInstance()->getObject()->notifyAnswer(true);
-				if (DynamicObjectsManager::getInstance()->getDialogCaller())
-					DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
-				setAppState(APP_GAMEPLAY_NORMAL);
-				GUIManager::getInstance()->stopDialogSound();
+				while (! fileScript.eof() )
+				{
+					getline (fileScript,line);
+					newScript += line.c_str();
+					newScript += '\n';
+				}
+				fileScript.close();
 			}
-			break;
 
-		case BT_ID_DIALOG_CANCEL:
-			GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
-			if (app_state> APP_STATE_CONTROL)
-			{
-				//Player::getInstance()->getObject()->notifyAnswer(false);
-				if (DynamicObjectsManager::getInstance()->getDialogCaller())
-					DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
-				setAppState(APP_GAMEPLAY_NORMAL);
-				GUIManager::getInstance()->stopDialogSound();
-			}
-			break;
+			GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
+		}
+		break;
 
-        default:
-            break;
-    }
+	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+
+		// remove the object for the selection
+		lastScannedPick.pickedNode=NULL;
+		lastMousePick.pickedNode=NULL;
+
+		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT:
+		LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
+		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
+		{
+			DynamicObjectsManager::getInstance()->getObjectByName(lastMousePick.pickedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		}
+		else if(app_state == APP_EDIT_PLAYER_SCRIPT)
+		{
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		}
+		else if(app_state == APP_EDIT_SCRIPT_GLOBAL)
+		{
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		}
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
+		break;
+
+	case BT_ID_EDIT_CHARACTER:
+		this->setAppState(APP_EDIT_CHARACTER);
+		break;
+
+	case BT_ID_PLAYER_EDIT_SCRIPT:
+		this->setAppState(APP_EDIT_PLAYER_SCRIPT);
+		break;
+
+	case BT_ID_EDIT_SCRIPT_GLOBAL:
+		this->setAppState(APP_EDIT_SCRIPT_GLOBAL);
+		break;
+
+	case BT_ID_CONFIG:
+		GUIManager::getInstance()->showConfigWindow();
+		break;
+#endif
+	case BT_ID_PLAY_GAME:
+		playGame();
+		break;
+
+	case BT_ID_STOP_GAME:
+		stopGame();
+		break;
+
+	case BT_ID_CLOSE_PROGRAM:
+		this->shutdown();
+
+		/*this->cleanWorkspace();
+		SoundManager::getInstance()->stopEngine();
+		device->closeDevice();
+		//device->drop();
+		//exit(0);*/
+		break;
+
+	case BT_ID_HELP:
+		this->displayGuiConsole();
+		break;
+
+	case BT_ID_ABOUT:
+		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
+		setAppState(APP_EDIT_ABOUT);
+		break;
+
+	case BT_ID_ABOUT_WINDOW_CLOSE:
+		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
+		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		break;
+
+	case BT_ID_VIEW_ITEMS:
+		setAppState(APP_GAMEPLAY_VIEW_ITEMS);
+		DynamicObjectsManager::getInstance()->freezeAll();
+		GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
+		GUIManager::getInstance()->drawPlayerStats();
+		break;
+
+	case BT_ID_USE_ITEM:
+		LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
+		GUIManager::getInstance()->updateItemsList();
+		break;
+
+	case BT_ID_DROP_ITEM:
+		Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
+		GUIManager::getInstance()->updateItemsList();
+		break;
+
+	case BT_ID_CLOSE_ITEMS_WINDOW:
+		setAppState(APP_GAMEPLAY_NORMAL);
+		GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
+		DynamicObjectsManager::getInstance()->unFreezeAll();
+		break;
+
+	case BT_ID_DIALOG_YES:
+		GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+		if (app_state> APP_STATE_CONTROL)
+		{
+			//Player::getInstance()->getObject()->notifyAnswer(true);
+			if (DynamicObjectsManager::getInstance()->getDialogCaller())
+				DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(true);
+			setAppState(APP_GAMEPLAY_NORMAL);
+			GUIManager::getInstance()->stopDialogSound();
+		}
+		break;
+
+	case BT_ID_DIALOG_CANCEL:
+		GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+		if (app_state> APP_STATE_CONTROL)
+		{
+			//Player::getInstance()->getObject()->notifyAnswer(false);
+			if (DynamicObjectsManager::getInstance()->getDialogCaller())
+				DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
+			setAppState(APP_GAMEPLAY_NORMAL);
+			GUIManager::getInstance()->stopDialogSound();
+		}
+		break;
+
+	default:
+		break;
+	}
 }
 
 // Stuff in editor only
@@ -659,44 +658,44 @@ std::vector<stringw> App::getAbout()
 
 void App::eventGuiCheckbox(s32 id)
 {
-    switch (id)
-    {
-        case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA:
-            ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
-            break;
-        default:
-            break;
-    }
+	switch (id)
+	{
+	case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA:
+		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
+		break;
+	default:
+		break;
+	}
 }
 
 void App::eventGuiCombobox(s32 id)
 {
-    switch (id)
-    {
-        case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
-            DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-            GUIManager::getInstance()->updateDynamicObjectPreview();
-            break;
+	switch (id)
+	{
+	case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		GUIManager::getInstance()->updateDynamicObjectPreview();
+		break;
 
-		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
-			std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
-			TYPE choice = OBJECT_TYPE_NPC;
+	case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
+		std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
+		TYPE choice = OBJECT_TYPE_NPC;
 
-			if (result.find("NPC") != std::string::npos)
-				choice = OBJECT_TYPE_NPC;
+		if (result.find("NPC") != std::string::npos)
+			choice = OBJECT_TYPE_NPC;
 
-			if (result.find("INTERACTIVE OBJECTS") != std::string::npos)
-				choice = OBJECT_TYPE_INTERACTIVE;
+		if (result.find("INTERACTIVE OBJECTS") != std::string::npos)
+			choice = OBJECT_TYPE_INTERACTIVE;
 
-			if (result.find("PROPS") != std::string::npos)
-				choice = OBJECT_TYPE_NON_INTERACTIVE;
+		if (result.find("PROPS") != std::string::npos)
+			choice = OBJECT_TYPE_NON_INTERACTIVE;
 
-			GUIManager::getInstance()->UpdateGUIChooser(choice);
-			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-			GUIManager::getInstance()->updateDynamicObjectPreview();
-			break;
+		GUIManager::getInstance()->UpdateGUIChooser(choice);
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		GUIManager::getInstance()->updateDynamicObjectPreview();
+		break;
 
-    }
+	}
 }
 
 #endif
@@ -726,138 +725,137 @@ dimension2d<u32> App::getScreenSize()
 
 void App::eventKeyPressed(s32 key)
 {
-    switch (key)
-    {
-        case KEY_LEFT:
-            break;
-        case KEY_UP:
-            break;
-        case KEY_RIGHT:
-            break;
-        case KEY_DOWN:
-            break;
+	switch (key)
+	{
+	case KEY_LEFT:
+		break;
+	case KEY_UP:
+		break;
+	case KEY_RIGHT:
+		break;
+	case KEY_DOWN:
+		break;
 
-        case KEY_F5:
-            if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))
-                LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
-            break;
+	case KEY_F5:
+		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))
+			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+		break;
 
 
-		case KEY_RETURN:
-			if (app_state == APP_WAIT_DIALOG)
-				printf ("pressed enter in this mode!");
+	case KEY_RETURN:
+		if (app_state == APP_WAIT_DIALOG)
 			break;
-        case KEY_ESCAPE:
-            //device->drop();
-            break;
+	case KEY_ESCAPE:
+		//device->drop();
+		break;
 
-        default:
-            break;
-    }
+	default:
+		break;
+	}
 }
 
 void App::eventMousePressed(s32 mouse)
 {
-    switch(mouse)
-    {///TODO: colocar acoes mais comuns acima e menos comuns nos elses
-        case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
-            if( cursorIsInEditArea())
-            {
-                if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
-                {
-					TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
-                }
-                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-                {
-                    MousePick mousePick = getMousePosition3D();
+	switch(mouse)
+	{///TODO: colocar acoes mais comuns acima e menos comuns nos elses
+	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
+		if( cursorIsInEditArea())
+		{
+			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
+			{
+				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+			}
+			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+			{
+				MousePick mousePick = getMousePosition3D();
 
-					lastMousePick = mousePick;
-					stringc nodeName = "";
-					// Check for a node to prevent a crash (need to get the name of the node)
-					if (mousePick.pickedNode != NULL)
+				lastMousePick = mousePick;
+				stringc nodeName = "";
+				// Check for a node to prevent a crash (need to get the name of the node)
+				if (mousePick.pickedNode != NULL)
+				{
+					nodeName = mousePick.pickedNode->getName();
+
+					//if you click on a Dynamic Object then open his properties
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 					{
-						nodeName = mousePick.pickedNode->getName();
+						cout << "PROP:" << nodeName.c_str() << endl;
 
-						//if you click on a Dynamic Object then open his properties
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
-						{
-							cout << "PROP:" << nodeName.c_str() << endl;
-
-							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
-							App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
-						}
-						else//create a new copy of active dynamic object at the clicked position
-						{
-							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-
-							#ifdef APP_DEBUG
-							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
-							#endif
-						}
+						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
+						App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
 					}
-                }
-                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
-                {
-                    setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-                }
-            }
-            break;
-		case EMIE_RMOUSE_PRESSED_DOWN:
-			// Right button (Action the same as the left button)
-			if( cursorIsInEditArea())
-            {
-                if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
-                {
-					TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
-                }
-                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-                {
-                    MousePick mousePick = getMousePosition3D();
-
-					lastMousePick = mousePick;
-					stringc nodeName = "";
-					// Check for a node to prevent a crash (need to get the name of the node)
-					if (mousePick.pickedNode != NULL)
+					else//create a new copy of active dynamic object at the clicked position
 					{
-						nodeName = mousePick.pickedNode->getName();
+						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
 
-						//if you click on a Dynamic Object then open his properties
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
-						{
-							cout << "PROP:" << nodeName.c_str() << endl;
-
-							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
-							App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
-						}
-						else//create a new copy of active dynamic object at the clicked position
-						{
-							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-						}
+#ifdef APP_DEBUG
+						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
+#endif
 					}
-                }
-                else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
-                {
-                    setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-                }
-            }
-            break;
+				}
+			}
+			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+			{
+				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			}
+		}
+		break;
+	case EMIE_RMOUSE_PRESSED_DOWN:
+		// Right button (Action the same as the left button)
+		if( cursorIsInEditArea())
+		{
+			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
+			{
+				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+			}
+			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+			{
+				MousePick mousePick = getMousePosition3D();
 
-        case 3: //Mousewheel pressed
-            break;
+				lastMousePick = mousePick;
+				stringc nodeName = "";
+				// Check for a node to prevent a crash (need to get the name of the node)
+				if (mousePick.pickedNode != NULL)
+				{
+					nodeName = mousePick.pickedNode->getName();
 
-        default:
-            break;
-    }
+					//if you click on a Dynamic Object then open his properties
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+					{
+						cout << "PROP:" << nodeName.c_str() << endl;
+
+						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
+						App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+					}
+					else//create a new copy of active dynamic object at the clicked position
+					{
+						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+					}
+				}
+			}
+			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+			{
+				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			}
+		}
+		break;
+
+	case 3: //Mousewheel pressed
+		break;
+
+	default:
+		break;
+	}
 }
 
 void App::eventMouseWheel(f32 value)
 {
 
-    if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
-    {
-        vector3df oldRot = lastMousePick.pickedNode->getRotation();
-        lastMousePick.pickedNode->setRotation(vector3df(0,value*10,0)+oldRot);
-    }
+	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+	{
+		vector3df oldRot = lastMousePick.pickedNode->getRotation();
+		lastMousePick.pickedNode->setRotation(vector3df(0,value*10,0)+oldRot);
+	}
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		vector3df oldRot = Player::getInstance()->getObject()->getRotation();
@@ -871,7 +869,7 @@ void App::eventMouseWheel(f32 value)
 		app_state != APP_EDIT_SCRIPT_GLOBAL &&
 		app_state != APP_EDIT_PLAYER_SCRIPT &&
 		cursorIsInEditArea())
-    {
+	{
 		if (app_state < 100)
 		{
 			// not in viewdrag mode then enable the cam, then set the camera height then disable it again
@@ -891,14 +889,14 @@ void App::eventMouseWheel(f32 value)
 
 App* App::getInstance()
 {
-    static App *instance = 0;
-    if (!instance) instance = new App();
-    return instance;
+	static App *instance = 0;
+	if (!instance) instance = new App();
+	return instance;
 }
 
 MousePick App::getMousePosition3D(int id)
 {
-    position2d<s32> pos=device->getCursorControl()->getPosition();
+	position2d<s32> pos=device->getCursorControl()->getPosition();
 #ifdef _wxWIDGET
 	// Fix to a proper position on wxWidget;
 	pos=pos+position2d<s32>(0,22);
@@ -907,34 +905,34 @@ MousePick App::getMousePosition3D(int id)
 	// For the ray test, we should hide the player
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 
-    line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
+	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
-    core::vector3df intersection;
-    core::triangle3df hitTriangle;
+	core::vector3df intersection;
+	core::triangle3df hitTriangle;
 
-    ISceneNode* tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
-                                                                                                  intersection,
-                                                                                                  hitTriangle,
-                                                                                                  id);
-    MousePick result;
+	ISceneNode* tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
+		intersection,
+		hitTriangle,
+		id);
+	MousePick result;
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
 
-    if(tempNode!=NULL)
-    {
-        result.pickedPos = intersection;
-        result.pickedNode = tempNode;
+	if(tempNode!=NULL)
+	{
+		result.pickedPos = intersection;
+		result.pickedNode = tempNode;
 
-        return result;
-    }
-    else
-    {
-        result.pickedPos = vector3df(0,0,0);
-        result.pickedNode = NULL;
+		return result;
+	}
+	else
+	{
+		result.pickedPos = vector3df(0,0,0);
+		result.pickedNode = NULL;
 
-        return result;
-    }
+		return result;
+	}
 }
 
 
@@ -979,10 +977,10 @@ bool App::loadConfig()
 
 # else
 
-//	if (device->run())
-//	{
-//		screensize = device->getVideoDriver()->getScreenSize();
-//	}
+	//	if (device->run())
+	//	{
+	//		screensize = device->getVideoDriver()->getScreenSize();
+	//	}
 	// for some reasons IRRlicht open in 20,20 when used inside a wxWindow
 	if (screensize.Height<100)
 	{
@@ -998,7 +996,7 @@ bool App::loadConfig()
 	TerrainManager::getInstance()->setTerrainTexture(2,"../media/L2.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(3,"../media/L3.jpg");
 	TerrainManager::getInstance()->setTerrainTexture(4,"../media/L4.jpg");
-// Define a default mapname only for the player application
+	// Define a default mapname only for the player application
 #ifndef EDITOR
 	mapname="";
 #endif
@@ -1013,32 +1011,32 @@ bool App::loadConfig()
 
 	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
 
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
-    #endif
+#ifdef APP_DEBUG
+	cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
+#endif
 
-    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
+	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
 
-    if ( root )
+	if ( root )
 	{
-        if( atof(root->Attribute("version"))!=APP_VERSION )
-        {
-            #ifdef APP_DEBUG
-            cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
-            #endif
+		if( atof(root->Attribute("version"))!=APP_VERSION )
+		{
+#ifdef APP_DEBUG
+			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
+#endif
 
-            return false;
-        }
+			return false;
+		}
 
-        TiXmlElement* resXML = root->FirstChildElement( "screen" );
-        if ( resXML )
-        {
+		TiXmlElement* resXML = root->FirstChildElement( "screen" );
+		if ( resXML )
+		{
 			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
 			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
-			#ifdef _wxWIDGET
-				screensize.Width-=16;
-				screensize.Height-=60;
-			#endif
+#ifdef _wxWIDGET
+			screensize.Width-=16;
+			screensize.Height-=60;
+#endif
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 			{
@@ -1064,18 +1062,18 @@ bool App::loadConfig()
 				tempdevice->closeDevice();
 			}
 #endif
-        }
+		}
 		//Language
 		TiXmlElement* langXML = root->FirstChildElement( "language" );
-        if ( langXML )
-        {
+		if ( langXML )
+		{
 			language=stringc(langXML->ToElement()->Attribute("type")).c_str();
 
-        }
+		}
 		TiXmlElement* groundXML = root->FirstChildElement( "terrain" );
-        if ( groundXML )
-        {
-            stringc meshname = groundXML->ToElement()->Attribute("mesh");
+		if ( groundXML )
+		{
+			stringc meshname = groundXML->ToElement()->Attribute("mesh");
 			TerrainManager::getInstance()->setTileMeshName(meshname);
 			stringc layer0 = groundXML->ToElement()->Attribute("layer0");
 			stringc layer1 = groundXML->ToElement()->Attribute("layer1");
@@ -1088,42 +1086,42 @@ bool App::loadConfig()
 			TerrainManager::getInstance()->setTerrainTexture(4,layer3);
 			TerrainManager::getInstance()->setScale(scale);
 
-        }
+		}
 		TiXmlElement* waterXML = root->FirstChildElement( "ocean" );
-        if ( waterXML )
-        {
-            stringc meshname = waterXML->ToElement()->Attribute("mesh");
+		if ( waterXML )
+		{
+			stringc meshname = waterXML->ToElement()->Attribute("mesh");
 			stringc normalmap = waterXML->ToElement()->Attribute("normalmap");
 			stringc reflection = waterXML->ToElement()->Attribute("reflection");
-            ///TODO: we are just loading ocean seetings, we need to set it!
+			///TODO: we are just loading ocean seetings, we need to set it!
 		}
-// Player app. Load the default map from "gameconfig.xml"
+		// Player app. Load the default map from "gameconfig.xml"
 #ifndef EDITOR
 		TiXmlElement* mapXML = root->FirstChildElement( "map" );
-        if ( mapXML )
-        {
-            mapname = mapXML->ToElement()->Attribute("name");
+		if ( mapXML )
+		{
+			mapname = mapXML->ToElement()->Attribute("name");
 			printf("The map name is: %s\n",mapname.c_str());
-            ///TODO: we are just loading ocean seetings, we need to set it!
+			///TODO: we are just loading ocean seetings, we need to set it!
 		}
 #endif
-    }
-    else
-    {
-        #ifdef APP_DEBUG
-        cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
-        #endif
+	}
+	else
+	{
+#ifdef APP_DEBUG
+		cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
+#endif
 
-        return false;
-    }
+		return false;
+	}
 
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
-    #endif
+#ifdef APP_DEBUG
+	cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
+#endif
 
-    ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
+	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 
-    return true;
+	return true;
 }
 
 void App::setupDevice(IrrlichtDevice* IRRdevice)
@@ -1139,11 +1137,11 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	} else
 		device = IRRdevice;
 
-    driver = device->getVideoDriver();
-    smgr = device->getSceneManager();
-    guienv = device->getGUIEnvironment();
+	driver = device->getVideoDriver();
+	smgr = device->getSceneManager();
+	guienv = device->getGUIEnvironment();
 
-    device->setEventReceiver(EventReceiver::getInstance());
+	device->setEventReceiver(EventReceiver::getInstance());
 	timer = device->getTimer()->getRealTime();
 	timer2 = device->getTimer()->getRealTime();
 	timer3 = device->getTimer()->getRealTime();
@@ -1154,12 +1152,12 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 IrrlichtDevice* App::getDevice()
 {
-    if(!device)
-    {
-        printf("ERROR: Device is NULL, please call SetupDevice first!");
-        exit(0);
-    }
-    return device;
+	if(!device)
+	{
+		printf("ERROR: Device is NULL, please call SetupDevice first!");
+		exit(0);
+	}
+	return device;
 }
 
 
@@ -1234,80 +1232,50 @@ void App::stopGame()
 
 void App::update()
 {
-	//if (app_state!=APP_WAIT_FILEREQUEST)
-	//while (app_state<APP_STATE_CONTROL)
+
+	// Attempt to do automatic rezise detection
+	if (screensize != driver->getScreenSize())
+		this->setScreenSize(driver->getScreenSize());
+
+	driver->beginScene(true, true, SColor(0,200,200,200));
+
+	// Terrain transform mode MUSt use all the CPU/Refresh it can get for performance
+	if(app_state < APP_STATE_CONTROL)
 	{
 
-
-	    	    printf("App update\n");
-		// Attempt to do automatic rezise detection
-		if (screensize != driver->getScreenSize())
-			this->setScreenSize(driver->getScreenSize());
-
-		driver->beginScene(true, true, SColor(0,200,200,200));
-
-		// Terrain transform mode MUSt use all the CPU/Refresh it can get for performance
-		if(app_state < APP_STATE_CONTROL)
-		{
-
-			if (app_state!=APP_EDIT_TERRAIN_TRANSFORM)
-				device->yield();
+		if (app_state!=APP_EDIT_TERRAIN_TRANSFORM)
+			device->yield();
 
 #ifdef EDITOR
 
-			updateEditMode();//editMode
+		updateEditMode();//editMode
 #endif
-		}
-		else
-		{
-			// Do not update the gameplay if we "paused" the game for a reason
-			if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
-    		updateGameplay();
-		}
-
-
-		// Check for events of the logger
-		//GUIManager::getInstance()->setConsoleLogger(textevent);
-
-		// This will calculate the animation blending for the nodes
-		DynamicObjectsManager::getInstance()->updateAnimationBlend();
-
-		// Prepare the post FX before rendering all
-		EffectsManager::getInstance()->preparePostFX(false);
-		smgr->drawAll();
-
-		// Tries to do an post FX
-		EffectsManager::getInstance()->update();
-
-		guienv->drawAll();
-		draw2DImages();
-
-		driver->endScene();
 	}
-	//else
-	if (app_state==APP_WAIT_FILEREQUEST)
+	else
 	{
-		/*if (!GUIRequestManager::getInstance()->isComplete())
-		{
-			//GUIRequestManager::getInstance()->update();
-		} else
-		{
-			printf ("This one should be called once as the GUI is complete!\n");
-			// There was an event on the file requester
-			this->app_state = old_state;
-				//APP_EDIT_DYNAMIC_OBJECTS_MODE;
-				//this->old_state;
-
-			stringc result=(stringc)GUIRequestManager::getInstance()->getFilename();
-			if (result.size()>2)
-			{
-				this->cleanWorkspace();
-				this->loadProjectFromXML((stringc)GUIRequestManager::getInstance()->getFilename());
-			}
-
-		}*/
-
+		// Do not update the gameplay if we "paused" the game for a reason
+		if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
+			updateGameplay();
 	}
+
+
+	// Check for events of the logger
+	//GUIManager::getInstance()->setConsoleLogger(textevent);
+
+	// This will calculate the animation blending for the nodes
+	DynamicObjectsManager::getInstance()->updateAnimationBlend();
+
+	// Prepare the post FX before rendering all
+	EffectsManager::getInstance()->preparePostFX(false);
+	smgr->drawAll();
+
+	// Tries to do an post FX
+	EffectsManager::getInstance()->update();
+
+	guienv->drawAll();
+	draw2DImages();
+
+	driver->endScene();
 }
 
 void App::quickUpdate()
@@ -1321,38 +1289,38 @@ void App::quickUpdate()
 
 void App::run()
 {
-// Set the proper state if in the EDITOR or only the player application
+	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
-    this->setAppState(APP_EDIT_LOOK);
+	this->setAppState(APP_EDIT_LOOK);
 #else
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
 	CameraSystem::getInstance()->setCamera(1);
-    this->setAppState(APP_GAMEPLAY_NORMAL);
-    //Player::getInstance()->getObject()->doScript();
-    LuaGlobalCaller::getInstance()->storeGlobalParams();
-    DynamicObjectsManager::getInstance()->initializeAllScripts();
-    DynamicObjectsManager::getInstance()->showDebugData(false);
+	this->setAppState(APP_GAMEPLAY_NORMAL);
+	//Player::getInstance()->getObject()->doScript();
+	LuaGlobalCaller::getInstance()->storeGlobalParams();
+	DynamicObjectsManager::getInstance()->initializeAllScripts();
+	DynamicObjectsManager::getInstance()->showDebugData(false);
 	DynamicObjectsManager::getInstance()->startCollisions();
-    //DynamicObjectsManager::getInstance()->initializeCollisions();
-    TerrainManager::getInstance()->showDebugData(false);
-    GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-    LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+	//DynamicObjectsManager::getInstance()->initializeCollisions();
+	TerrainManager::getInstance()->showDebugData(false);
+	GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 #endif
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
-    int lastFPS = -1;
-//	u32 timer = device->getTimer()->getRealTime();
-//	u32 timer2 = device->getTimer()->getRealTime();
+	int lastFPS = -1;
+	//	u32 timer = device->getTimer()->getRealTime();
+	//	u32 timer2 = device->getTimer()->getRealTime();
 	bool activated=false;
 
 	// This is the core loop
-    while(device->run())
-    {
+	while(device->run())
+	{
 		this->update();
-        // display frames per second in window title
+		// display frames per second in window title
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
@@ -1370,7 +1338,7 @@ void App::run()
 
 			lastFPS = fps;
 		}
-    }
+	}
 }
 
 
@@ -1424,7 +1392,7 @@ void App::updateEditMode()
 			{
 				// lock the maya camera (Need to be improved)
 				if (CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
-							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
+					CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
 				setAppState(old_state);
 			}
 			// --- End of code for drag of view
@@ -1436,9 +1404,9 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
-                                                                           GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-                                                                           GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
-																		   GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
 					}
 				}
 				else
@@ -1446,14 +1414,14 @@ void App::updateEditMode()
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-																	 GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 					else if(EventReceiver::getInstance()->isMousePressed(1) )
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-                                                                     GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-                                                                     -GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							-GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 				}
 			}
@@ -1486,12 +1454,12 @@ void App::updateEditMode()
 
 
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS ||
-			app_state == APP_EDIT_TERRAIN_TRANSFORM ||
-			app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
-			app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
-			app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
-			app_state == APP_EDIT_CHARACTER ||
-			app_state == APP_EDIT_LOOK)
+				app_state == APP_EDIT_TERRAIN_TRANSFORM ||
+				app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
+				app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
+				app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
+				app_state == APP_EDIT_CHARACTER ||
+				app_state == APP_EDIT_LOOK)
 			{
 
 				//Update Editor Camera Position
@@ -1542,7 +1510,7 @@ void App::updateGameplay()
 
 
 	// This update the player events and controls at specific time intervals
-    if ((timer-timer2)>34)
+	if ((timer-timer2)>34)
 	{
 		timer2 = device->getTimer()->getRealTime();
 
@@ -1601,106 +1569,126 @@ void App::updateGameplay()
 
 void App::cleanWorkspace()
 {
-    CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
+	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 
-    TerrainManager::getInstance()->clean();
+	TerrainManager::getInstance()->clean();
 
-    DynamicObjectsManager::getInstance()->clean(false);
+	DynamicObjectsManager::getInstance()->clean(false);
 
-    scriptGlobal="";
+	scriptGlobal="";
 }
 
 void App::createNewProject()
 {
-    APP_STATE old_state = getAppState();
-    setAppState(APP_EDIT_WAIT_GUI);
+	APP_STATE old_state = getAppState();
+	setAppState(APP_EDIT_WAIT_GUI);
 #ifndef _wxWIDGET
-    stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
-    GUIManager::getInstance()->flush();
+	stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
+	GUIManager::getInstance()->flush();
 
-    while(name == stringc(""))
-    {
-        name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
-        GUIManager::getInstance()->flush();
-    }
+	while(name == stringc(""))
+	{
+		name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
+		GUIManager::getInstance()->flush();
+	}
 
-    name += ".XML";
+	name += ".XML";
 
-    stringc filename = "../projects/";
-    filename += name;
+	stringc filename = "../projects/";
+	filename += name;
 #else
 	stringc name="irb_temp_project.XML";
 #endif
 
-    this->cleanWorkspace();
+	this->cleanWorkspace();
 
-    CameraSystem::getInstance();
+	CameraSystem::getInstance();
 
-    TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+	TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 
-    //smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
-    //driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
+	//smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
+	//driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 
-    Player::getInstance();
+	Player::getInstance();
 
-    this->currentProjectName = name;
+	this->currentProjectName = name;
 
-    //this->saveProject();
+	//this->saveProject();
 
-    setAppState(old_state);
+	setAppState(old_state);
 }
 
 void App::loadProject()
 {
-    old_state = getAppState();
+	old_state = getAppState();
 
 	// Have to rethink how to do it. It used the gameplay dialog.
-    //bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
-    //GUIManager::getInstance()->flush();
+	//bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
+	//GUIManager::getInstance()->flush();
 	/*bool ansSave=false;
-    if(ansSave)
-    {
-		stringc filename = "../projects/";
-		filename += currentProjectName;
-        saveProjectToXML(filename);
-        GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
-        GUIManager::getInstance()->flush();
-    }
+	if(ansSave)
+	{
+	stringc filename = "../projects/";
+	filename += currentProjectName;
+	saveProjectToXML(filename);
+	GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
+	GUIManager::getInstance()->flush();
+	}
 
-    stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
-    GUIManager::getInstance()->flush();
+	stringc name = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name").c_str());
+	GUIManager::getInstance()->flush();
 
 	this->cleanWorkspace();
 
-    stringc filename = "../projects/";
-    filename += name;
-    filename += ".XML";
+	stringc filename = "../projects/";
+	filename += name;
+	filename += ".XML";
 
-    currentProjectName = name;
-    currentProjectName += ".XML";
+	currentProjectName = name;
+	currentProjectName += ".XML";
 
 	setAppState(APP_EDIT_WAIT_GUI);
-    if(this->loadProjectFromXML(filename))
-        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_ok"));
-    else
-        GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_error"));
+	if(this->loadProjectFromXML(filename))
+	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_ok"));
+	else
+	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_error"));
 
-    //this->loadProject("");
+	//this->loadProject("");
 	setAppState(old_state);
-    //setAppState(APP_STATE_CONTROL);*/
+	//setAppState(APP_STATE_CONTROL);*/
+
+
+	// (2/12/12) new filerequester method
+	// The event manager will receive the event and load the file.
 	setAppState(APP_WAIT_FILEREQUEST);
 	if (!selector)
 	{
-		selector =	new CGUIFileSelector(L"What project to load?", device->getGUIEnvironment(), device->getGUIEnvironment()->getRootGUIElement(), 777, core::rect<s32>(0,0,640,400), CGUIFileSelector::EFST_OPEN_DIALOG);
+		// Create a load file selector
+		selector = new CGUIFileSelector(L"File Selector", guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
+		// Create a base icon for the files
 		selector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
+		// Create a base icon for the folders
 		selector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
+		// Add a new file filters (Normally for what is required to load)
 		selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
-		// Allow scaling to be used on the GUI element. In all directions.
-		selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-		//selector->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 
 		// This is required for the window stretching feature
 		selector->setDevice(device);
+
+		// Create a "favorite places" 
+		selector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+#ifdef WIN32
+
+		// Populate with standard windows favorites paths
+		selector->populateWindowsFAV();
+#else
+		// Add some common linux paths
+		selector->populateLinuxFAV();
+#endif
+
+		// Define in what path the request will open (it accept full or relative paths)
+		selector->setStartingPath(L"../projects");
+
 	}
 
 }
@@ -1708,8 +1696,8 @@ void App::loadProject()
 /*
 void App::loadProject(stringc filename)
 {
-    this->cleanWorkspace();
-    if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewProject("temp_project");
+this->cleanWorkspace();
+if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewProject("temp_project");
 }
 */
 
@@ -1720,9 +1708,6 @@ void App::loadProjectFile(bool value)
 	if (value)
 	{
 		// Close and drop the file selector
-		selector->drop();
-		selector->remove();
-
 
 		//Clean up the current world and load the scene
 		cleanWorkspace();
@@ -1734,24 +1719,24 @@ void App::loadProjectFile(bool value)
 
 void App::saveProject()
 {
-    APP_STATE old_state = getAppState();
-    setAppState(APP_EDIT_WAIT_GUI);
+	APP_STATE old_state = getAppState();
+	setAppState(APP_EDIT_WAIT_GUI);
 
-    if(currentProjectName == stringc("irb_temp_project"))
-    {
-        currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
-        GUIManager::getInstance()->flush();
-        EventReceiver::getInstance()->flushKeys();
-        currentProjectName += ".XML";
-    }
+	if(currentProjectName == stringc("irb_temp_project"))
+	{
+		currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
+		GUIManager::getInstance()->flush();
+		EventReceiver::getInstance()->flushKeys();
+		currentProjectName += ".XML";
+	}
 
 	stringc filename = "../projects/";
-    filename += currentProjectName;
-    this->saveProjectToXML(filename);
-    GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok"));
-    GUIManager::getInstance()->flush();
+	filename += currentProjectName;
+	this->saveProjectToXML(filename);
+	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok"));
+	GUIManager::getInstance()->flush();
 
-    setAppState(old_state);
+	setAppState(old_state);
 }
 
 stringc App::getProjectName()
@@ -1763,7 +1748,7 @@ void App::saveProjectToXML(stringc filename)
 {
 
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
-    TiXmlDocument doc;
+	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
 
 	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
@@ -1771,103 +1756,103 @@ void App::saveProjectToXML(stringc filename)
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the terrain");
 	quickUpdate();
-    TerrainManager::getInstance()->saveToXML(irb_project);
+	TerrainManager::getInstance()->saveToXML(irb_project);
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the active dynamic objects");
 	quickUpdate();
-    DynamicObjectsManager::getInstance()->saveToXML(irb_project);
+	DynamicObjectsManager::getInstance()->saveToXML(irb_project);
 
 	// Old command should be removed.
-    //Player::getInstance()->getObject()->saveToXML(irb_project);
+	//Player::getInstance()->getObject()->saveToXML(irb_project);
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
 	quickUpdate();
-    TiXmlElement* globalScript = new TiXmlElement("global_script");
-    globalScript->SetAttribute("script",scriptGlobal.c_str());
+	TiXmlElement* globalScript = new TiXmlElement("global_script");
+	globalScript->SetAttribute("script",scriptGlobal.c_str());
 
-    irb_project->LinkEndChild(globalScript);
+	irb_project->LinkEndChild(globalScript);
 
 	doc.LinkEndChild( decl );
 	doc.LinkEndChild( irb_project );
 	doc.SaveFile( filename.c_str() );
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
-    #endif
+#ifdef APP_DEBUG
+	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
+#endif
 }
 
 bool App::loadProjectFromXML(stringc filename)
 {
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	printf ("Trying to load this map: %s \n",filename.c_str());
-    TiXmlDocument doc(filename.c_str());
+	TiXmlDocument doc(filename.c_str());
 	if (!doc.LoadFile()) return false;
 
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
-    #endif
+#ifdef APP_DEBUG
+	cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
+#endif
 
-    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
+	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
 
-    if ( root )
-    {
-        if( atof(root->Attribute("version"))!=APP_VERSION )
-        {
-            #ifdef APP_DEBUG
-            cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
-            #endif
+	if ( root )
+	{
+		if( atof(root->Attribute("version"))!=APP_VERSION )
+		{
+#ifdef APP_DEBUG
+			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
+#endif
 
-            return false;
-        }
+			return false;
+		}
 
-        TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
-        if ( globalScriptXML )
-        {
+		TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
+		if ( globalScriptXML )
+		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
 			quickUpdate();
-            scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
-        }
+			scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
+		}
 
-        TiXmlElement* terrain = root->FirstChildElement( "terrain" );
-        if ( terrain )
-        {
+		TiXmlElement* terrain = root->FirstChildElement( "terrain" );
+		if ( terrain )
+		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the terrain");
 			quickUpdate();
-            TerrainManager::getInstance()->loadFromXML(terrain);
-        }
+			TerrainManager::getInstance()->loadFromXML(terrain);
+		}
 
-        TiXmlElement* dynamicObjs = root->FirstChildElement( "dynamic_objects" );
-        if ( dynamicObjs )
-        {
+		TiXmlElement* dynamicObjs = root->FirstChildElement( "dynamic_objects" );
+		if ( dynamicObjs )
+		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the dynamic objects");
 			quickUpdate();
-            DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
-        }
+			DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
+		}
 
-        TiXmlElement* playerXML = root->FirstChildElement( "player" );
-        if(playerXML)
-        {
+		TiXmlElement* playerXML = root->FirstChildElement( "player" );
+		if(playerXML)
+		{
 			// Player is a dynamic object now.
 			// There is no need for now to load from this
-        }
-    }
-    else
-    {
-        #ifdef APP_DEBUG
-        cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
-        #endif
+		}
+	}
+	else
+	{
+#ifdef APP_DEBUG
+		cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
+#endif
 		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-        return false;
-    }
+		return false;
+	}
 
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
-    #endif
+#ifdef APP_DEBUG
+	cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
+#endif
 
-    ///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
+	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-    return true;
+	return true;
 }
 
 void App::initialize()
@@ -1879,16 +1864,16 @@ void App::initialize()
 	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
 
 	// Set the fog to be very far when not in gameplay
-    driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
+	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
 
 	quickUpdate();
 	screensize=driver->getScreenSize();
 
-	#ifdef EDITOR
-		GUIManager::getInstance()->setupEditorGUI();
-		TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
-		quickUpdate();
-	#endif
+#ifdef EDITOR
+	GUIManager::getInstance()->setupEditorGUI();
+	TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+	quickUpdate();
+#endif
 
 	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
 
@@ -1899,12 +1884,12 @@ void App::initialize()
 
 
 
-    Player::getInstance();
+	Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
 
 
-    this->currentProjectName = "irb_temp_project";
-// Hide the loading windows if the WX Widget is present
+	this->currentProjectName = "irb_temp_project";
+	// Hide the loading windows if the WX Widget is present
 #ifdef _wxWIDGET
 	this->setAppState(APP_EDIT_LOOK);
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);

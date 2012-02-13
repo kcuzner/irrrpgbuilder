@@ -1,27 +1,25 @@
 #ifndef INC_CGUIFILESELECTOR_H
 #define INC_CGUIFILESELECTOR_H
 
-#include <irrlicht.h>
 #ifdef WIN32
    #include <windows.h>
 	#include <Shlobj.h>
    #include <iostream>
 #endif
 
+#include <irrlicht.h>
+
 using namespace irr;
 using namespace gui;
 
 /** Class for opening/saving files. */
-//class CGUIFileSelector : public IGUIFileOpenDialog {
-class CGUIFileSelector : public IGUIElement {
+class CGUIFileSelector : public IGUIFileOpenDialog {
       
    public:
         /** Enum to specify the usage of the instance of the class */   
         enum E_FILESELECTOR_TYPE {
           EFST_OPEN_DIALOG, //<! For opening files
           EFST_SAVE_DIALOG, //<! For saving files
-		  EFST_WARNING, //<! For warning dialogs>
-		  EFST_ERRORS, //<!For Error dialogs>
           EFST_NUM_TYPES    //<! Not used, just specifies how many possible types there are
         };
                   
@@ -33,7 +31,8 @@ class CGUIFileSelector : public IGUIElement {
       \param id - The ID of the dialog
       \param type - The type of dialog
       */
-      CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, const core::rect<s32>& rectangle, E_FILESELECTOR_TYPE type);
+      CGUIFileSelector(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, E_FILESELECTOR_TYPE type);
+
       /**
         \brief Destructor
         */
@@ -56,10 +55,7 @@ class CGUIFileSelector : public IGUIElement {
       \brief Render function
       */
       virtual void draw();
-
-	  //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
-	  virtual const io::path& getDirectoryName();
-
+      
       /**
       \brief Returns the current file filter selected or "All Files" if no filter is applied
       \return a stringw
@@ -82,6 +78,9 @@ class CGUIFileSelector : public IGUIElement {
         \param texture - The icon texture
         */
         void addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture);
+
+		// To add to the list of prefered paths
+		void addPlacePaths(wchar_t* name, wchar_t* path, video::ITexture* texture);
         
         /**
         \brief Set an icon to use to display unknown files
@@ -101,13 +100,6 @@ class CGUIFileSelector : public IGUIElement {
           else DirectoryIconIdx = -1;
           fillListBox();
         }
-
-		// Set icons for the "places"
-		inline void setCustomPlacesIcon(video::ITexture* texture) {
-          if (texture) PlacesIconIdx = addIcon(texture);
-          else PlacesIconIdx = -1;
-          fillListBox();
-        }
         
         /**
         \brief Sets whether directories can be chosen as the 'file' to open
@@ -115,9 +107,18 @@ class CGUIFileSelector : public IGUIElement {
         */
         inline void setDirectoryChoosable(bool choosable) { IsDirectoryChoosable = choosable; }
 
-		inline bool isComplete() {return usecomplete;}
+		//! Returns the directory of the selected file. Returns NULL, if no directory was selected.
+	  virtual const io::path& getDirectoryName();
 
-		inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
+	  // Device 
+	  inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
+
+	  void populateWindowsFAV();
+
+	  void populateLinuxFAV();
+
+	  void setStartingPath(core::stringw path);
+
 
    protected:
 
@@ -151,6 +152,10 @@ class CGUIFileSelector : public IGUIElement {
       void sendCancelEvent();
       
       u32 addIcon(video::ITexture* texture);
+
+	  void populatePCDrives();
+
+	 
             
       /** Struct to describe file filters to use when displaying files in directories */
         struct SFileFilter {
@@ -178,24 +183,18 @@ class CGUIFileSelector : public IGUIElement {
           u32 FileIconIdx;
         };
 
-	 io::path FileDirectory;
-
       core::position2d<s32> DragStart;
       bool Dragging;
       bool IsDirectoryChoosable;
-	  irr::core::rect<s32> rectangle;
       s32 FileIconIdx;
       s32 DirectoryIconIdx;
-	  s32 PlacesIconIdx;
       IGUIButton* CloseButton;
       IGUIButton* OKButton;
       IGUIButton* CancelButton;
       IGUIEditBox* FileNameText;
 	  IGUIEditBox* PathNameText;
       IGUIListBox* FileBox;
-	  IGUITreeView* TreeBox;
 	  IGUIListBox* PlacesBox;
-	  IGUIListBox* PlacesBoxReal;
       IGUIComboBox* DriveBox;
       IGUIComboBox* FilterComboBox;
       IGUIElement* EventParent;
@@ -208,15 +207,15 @@ class CGUIFileSelector : public IGUIElement {
 	  core::stringc default_project_dir;
 	  core::stringw fullpathname; 
       
+	  core::array<core::stringw> placespaths;
       static s32 numFileSelectors;
 
-	  bool usecomplete;
+	  io::path FileDirectory;
 
 	  private:
 		  core::stringw translateDOS(core::stringw input);
 		  bool strechtvertical, stretchhorizontal;
 		  irr::IrrlichtDevice * device;
-		  bool dragmode;
          
 };
 

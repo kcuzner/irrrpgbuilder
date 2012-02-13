@@ -277,7 +277,7 @@ void GUIManager::setupEditorGUI()
 	guiMainWindow->setDrawBackground(false);
 	guiMainWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-	guiLoaderWindow->bringToFront(guiMainWindow);
+	//guiLoaderWindow->bringToFront(guiMainWindow);
 
 
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);

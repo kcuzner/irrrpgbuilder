@@ -836,8 +836,6 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 		lua_pop(LS,1);
 	}
-
-    printf ("Life for object %s is changed to %i\n",objName,life);
     stringc dynamicObjName = "";
     if( stringc( objName.subString(0,14)) == "dynamic_object" )
 		dynamicObjName = objName.c_str();
@@ -845,7 +843,6 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
 		dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
-	printf("Here is the current life for object %s: %d\n",objName.c_str(),life);
     tempObj->setLife(life);
 
     #endif
