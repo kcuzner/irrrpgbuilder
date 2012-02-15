@@ -37,8 +37,13 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	}
 
 	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
-	s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
+	// Position the close button Windows or Linux style
+#ifdef WIN32
+	s32 posx = RelativeRect.getWidth() - buttonw - 4;
+#else
+	s32 posx = 4;
+#endif
 	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
 		L"", L"Close");
 	CloseButton->setSubElement(true);
@@ -47,7 +52,11 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 		CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
 		CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
 	}
+#ifdef WIN32
 	CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+#else
+	CloseButton->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+#endif
 	CloseButton->grab();
 
 	// Ok button
@@ -65,6 +74,10 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	CancelButton->setSubElement(true);
 	CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	CancelButton->grab();
+
+	//Description
+	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
+	irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
 
 	FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
 	FileBox->setSubElement(true);
@@ -325,6 +338,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			Environment->removeFocus(this);
 			return true;
 		case EMIE_MOUSE_MOVED:
+			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft) 
 			if (Dragging && !strechtvertical && !stretchhorizontal)
 			{
 				// gui window should not be dragged outside its parent
@@ -361,15 +375,21 @@ void CGUIFileSelector::draw()
 	irr::video::IVideoDriver* driver = Environment->getVideoDriver();
 	if (device)
 		mousepos=device->getCursorControl()->getPosition();
-
+	
+	
 	core::rect<s32> rect = AbsoluteRect;
 
+	rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER), 
 	rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),
 		rect, &AbsoluteClippingRect);
 
 	if (Text.size())
 	{
+#ifdef WIN32
 		rect.UpperLeftCorner.X += 2;
+#else
+		rect.UpperLeftCorner.X += CloseButton->getAbsoluteClippingRect().getWidth()+10;
+#endif
 		rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
 
 		IGUIFont* font = skin->getFont(EGDF_WINDOW);
@@ -382,25 +402,43 @@ void CGUIFileSelector::draw()
 
 	if (!Dragging)
 	{
-		//printf("mode is not drag...\n");
+		//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-10) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X-2))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
-			this->stretchhorizontal=true;
+			this->stretchright=true;
 		} else
-			this->stretchhorizontal=false;
+			this->stretchright=false;
 
+		//Hinting and detection for stretch on the left side
+		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X+2) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+10))
+		{
+			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
+			this->stretchleft=true;
+		} else
+			this->stretchleft=false;
+
+		//Hinting and detection for stretch on the bottom
 		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-10) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y-2))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
-			this->strechtvertical=true;
+			this->stretchbottom=true;
 		}
 		else
-			this->strechtvertical=false;
+			this->stretchbottom=false;
+
+		//Hinting and detection for stretch on the top
+		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+5) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y+1))
+		{
+			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
+			this->stretchtop=true;
+		}
+		else
+			this->stretchtop=false;
 	}
 	else
 	{
-		if (!stretchhorizontal && !strechtvertical)
+		if (!stretchtop && !stretchbottom && !stretchright && !stretchleft)
 		{
 			// gui window should not be dragged outside its parent
 			if (Parent)
@@ -424,8 +462,14 @@ void CGUIFileSelector::draw()
 			return;
 		}
 
-		if (stretchhorizontal)
+		if (stretchright)
 		{
+			if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
+			{
+				IGUIElement::draw();
+				return;
+			}
+
 			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>200)
 			{
 				AbsoluteRect.LowerRightCorner.X=mousepos.X+5;
@@ -434,11 +478,49 @@ void CGUIFileSelector::draw()
 			this->DesiredRect=AbsoluteRect;
 			this->updateAbsolutePosition();
 		}
-		if (strechtvertical)
+		if (stretchleft)
 		{
+			if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
+			{
+				IGUIElement::draw();
+				return;
+			}
+
+			if ((AbsoluteRect.LowerRightCorner.X-mousepos.X)>200)
+			{
+				AbsoluteRect.UpperLeftCorner.X=mousepos.X-5;
+			}
+			this->AbsoluteClippingRect=this->AbsoluteRect;
+			this->DesiredRect=AbsoluteRect;
+			this->updateAbsolutePosition();
+		}
+		if (stretchbottom)
+		{
+			if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
+			{
+				IGUIElement::draw();
+				return;
+			}
+
 			if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)>200)
 			{
 				AbsoluteRect.LowerRightCorner.Y=mousepos.Y+5;
+			}
+			this->AbsoluteClippingRect=this->AbsoluteRect;
+			this->DesiredRect=AbsoluteRect;
+			this->updateAbsolutePosition();
+		}
+		if (stretchtop)
+		{
+			if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
+			{
+				IGUIElement::draw();
+				return;
+			}
+
+			if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>200)
+			{
+				AbsoluteRect.UpperLeftCorner.Y=mousepos.Y-5;
 			}
 			this->AbsoluteClippingRect=this->AbsoluteRect;
 			this->DesiredRect=AbsoluteRect;
@@ -768,13 +850,26 @@ void CGUIFileSelector::populateWindowsFAV()
 
 void CGUIFileSelector::populateLinuxFAV()
 {
-	// Get the desktop shortcut (places)
 
+
+	// Some commoms places on Linux as seen on https://help.ubuntu.com/community/LinuxFilesystemTreeOverview
+	
 	irr::video::IVideoDriver * driver = Environment->getVideoDriver();
 
-	addPlacePaths(L"Root folder",L"/root",driver->getTexture("../media/art/places_desktop.png"));
+	// Get current user home folder(places)
+	// Can't get the other subfolders as they are translated for each language.
+	addPlacePaths(L"User Home folder",L"~/",driver->getTexture("../media/art/places_folder.png"));
 
 	addPlacePaths(L"Home folder",L"/home",driver->getTexture("../media/art/places_folder.png"));
+
+	addPlacePaths(L"Media folder",L"/media",driver->getTexture("../media/art/places_folder.png"));
+
+	addPlacePaths(L"Usr folder",L"/usr",driver->getTexture("../media/art/places_folder.png"));
+
+	addPlacePaths(L"Dev folder",L"/dev",driver->getTexture("../media/art/places_folder.png"));
+
+	addPlacePaths(L"Mnt folder",L"/mnt",driver->getTexture("../media/art/places_folder.png"));
+
 
 }
 

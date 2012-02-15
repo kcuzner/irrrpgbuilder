@@ -214,7 +214,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
 
 	  private:
 		  core::stringw translateDOS(core::stringw input);
-		  bool strechtvertical, stretchhorizontal;
+		  bool stretchbottom, stretchtop, stretchright, stretchleft;
 		  irr::IrrlichtDevice * device;
          
 };
