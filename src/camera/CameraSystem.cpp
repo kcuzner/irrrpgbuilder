@@ -25,7 +25,12 @@ CameraSystem::CameraSystem()
 	
 
 	// New edit camera
+#ifdef _wxWINDOW_
 	editCamMaya = addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
+#else
+	editCamMaya = addCameraSceneNodeMaya(0, -450.0f, 800.0f, 400.0f);
+#endif
+
 	editCamMaya->setFarValue(16000);
 	editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
