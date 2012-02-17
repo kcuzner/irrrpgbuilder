@@ -34,6 +34,8 @@ App::App()
 	app_state=APP_EDIT_LOOK;
 	textevent.clear();
 	lastScannedPick.pickedNode=NULL;
+	selector=NULL;
+	saveselector=NULL;
 	lastPickedNodeName="";
 	timer=0;
 	timer2=0;
@@ -1710,10 +1712,24 @@ void App::loadProjectFile(bool value)
 		// Close and drop the file selector
 
 		//Clean up the current world and load the scene
-		cleanWorkspace();
-		this->loadProjectFromXML(selector->getFileName());
+		
+		if (selector)
+		{ 
+			stringc file=selector->getFileName();
+			selector->remove();
+			selector=NULL;
+			cleanWorkspace();
+			this->loadProjectFromXML(file);
+		}
+		else if (saveselector)
+		{
+			this->saveProjectToXML(saveselector->getFileName());
+			
+			saveselector->remove();
+			saveselector=NULL;
+		}
 	}
-	selector=NULL;
+	
 	setAppState(old_state);
 }
 
@@ -1722,6 +1738,8 @@ void App::saveProject()
 	APP_STATE old_state = getAppState();
 	setAppState(APP_EDIT_WAIT_GUI);
 
+	// Old method of request for save file (only a text input)
+/*
 	if(currentProjectName == stringc("irb_temp_project"))
 	{
 		currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
@@ -1734,7 +1752,37 @@ void App::saveProject()
 	filename += currentProjectName;
 	this->saveProjectToXML(filename);
 	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok"));
-	GUIManager::getInstance()->flush();
+	GUIManager::getInstance()->flush();*/
+
+	if (!saveselector)
+	{
+		// Create a save file selector // EFST_OPEN_DIALOG // EFST_SAVE_DIALOG
+		saveselector = new CGUIFileSelector(L"File Selector", guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_SAVE_DIALOG);
+		// Create a base icon for the files
+		saveselector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
+		// Create a base icon for the folders
+		saveselector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
+		// Add a new file filters (Normally for what is required to load)
+		saveselector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+
+		// This is required for the window stretching feature
+		saveselector->setDevice(device);
+
+		// Create a "favorite places" 
+		saveselector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+#ifdef WIN32
+
+		// Populate with standard windows favorites paths
+		saveselector->populateWindowsFAV();
+#else
+		// Add some common linux paths
+		saveselector->populateLinuxFAV();
+#endif
+
+		// Define in what path the request will open (it accept full or relative paths)
+		saveselector->setStartingPath(L"../projects");
+	}
+
 
 	setAppState(old_state);
 }

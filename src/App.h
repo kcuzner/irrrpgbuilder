@@ -200,6 +200,7 @@ class App
 
 
 		CGUIFileSelector * selector;
+		CGUIFileSelector * saveselector;
 };
 
 #endif // APP_H
