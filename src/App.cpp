@@ -1715,19 +1715,58 @@ void App::loadProjectFile(bool value)
 		
 		if (selector)
 		{ 
-			stringc file=selector->getFileName();
+			core::stringc file=(core::stringc)selector->getFileName();
+
+		
+			// This is a file loader
+			if (selector->isSaver()==false)
+			{
+				printf("Loading project now!\n");
+				cleanWorkspace();
+				this->loadProjectFromXML(file);
+			}
+			// This is a file saver
+			if (selector->isSaver()==true)
+			{
+				printf("Saving project now!\n");
+				this->saveProjectToXML(file);
+			}
+
+			//Destroy the selector
 			selector->remove();
 			selector=NULL;
-			cleanWorkspace();
-			this->loadProjectFromXML(file);
+			printf ("The returned string is %s\n",file);
 		}
 		else if (saveselector)
 		{
-			this->saveProjectToXML(saveselector->getFileName());
+			core::stringc file = (core::stringc)saveselector->getFileName();
+
+			//for (u32 i=0; i<file.size(); ++i)
+			//if (file[i] == '/')
+			//	file[i] = '\\';
+			
+			file.replace('/','\\');
+			
+			printf ("The returned cricri string is %s\n",file.c_str());
+			this->saveProjectToXML(file);
 			
 			saveselector->remove();
 			saveselector=NULL;
 		}
+	}
+
+	else
+	{
+		if (selector)
+		{
+			selector->remove();
+			selector=NULL;
+		}
+		if (saveselector)
+		{
+			saveselector->remove();
+			saveselector=NULL;
+		}			
 	}
 	
 	setAppState(old_state);
@@ -1795,6 +1834,8 @@ stringc App::getProjectName()
 void App::saveProjectToXML(stringc filename)
 {
 
+	printf("Saving project now!: %s\n",filename);
+
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
@@ -1822,7 +1863,8 @@ void App::saveProjectToXML(stringc filename)
 
 	doc.LinkEndChild( decl );
 	doc.LinkEndChild( irb_project );
-	doc.SaveFile( filename.c_str() );
+	bool result = doc.SaveFile( filename.c_str() );
+	if (result) printf("Save OK!\n");
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 #ifdef APP_DEBUG

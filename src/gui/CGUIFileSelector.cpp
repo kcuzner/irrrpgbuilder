@@ -138,6 +138,8 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	}
 
 	fillListBox();
+	// Will set the focus on the text box on initialisation.
+	Environment->setFocus(FileNameText);
 
 
 
@@ -188,8 +190,7 @@ CGUIFileSelector::~CGUIFileSelector()
 //! returns the filename of the selected file. Returns NULL, if no file was selected.
 const wchar_t* CGUIFileSelector::getFileName() const
 {
-	return fullpathname.c_str();
-	//return FileNameText->getText();
+	return (fullpathname.c_str());
 }
 
 
@@ -205,9 +206,35 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 		case KEY_RETURN:
 			if (FileSystem)
 			{
+				
 				FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
 				fillListBox();
-				FileNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+				PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+				printf ("Enter key being pressed\n");
+				if (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))
+				{
+					// Will save the file if the user press enter key.
+					core::stringw strw = FileSystem->getWorkingDirectory();
+					if (strw[strw.size()-1] != '/')
+						strw += "/";
+					fullpathname = strw+FileNameText->getText();
+					sendSelectedEvent();
+					remove();
+					return true;
+				} else
+				{
+					// If the user did not enter the extension, will add it automaticaly
+					u32 i = FilterComboBox->getSelected();
+					core::stringw strw = FileSystem->getWorkingDirectory();
+					if (strw[strw.size()-1] != '/')
+						strw += "/";
+					fullpathname = strw+FileNameText->getText();
+					fullpathname+=".";
+					fullpathname+=FileFilters[i].FileExtension;
+					sendSelectedEvent();
+					remove();
+					return true;
+				}
 			}
 			return true;
 		}
@@ -245,12 +272,34 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				return true;
 			}
 			else
+				// If the user enter the complete extension of the filename (mostly for loading)
 				if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
 					if (FileSystem)
 					{
 						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
 						//printf("working directory reset to: %s\n", prev_working_dir.c_str());
 					}
+					if (DialogType==EFST_SAVE_DIALOG)
+					{
+						core::stringw strw = FileSystem->getWorkingDirectory();
+						if (strw[strw.size()-1] != '/')
+							strw += "/";
+						fullpathname = strw+FileNameText->getText();
+					}
+					sendSelectedEvent();
+					remove();
+					return true;
+				} else
+				// In case the user did not enter the extension (assumed it would not enter it)
+				if (DialogType==EFST_SAVE_DIALOG)
+				{
+					u32 i = FilterComboBox->getSelected();
+					core::stringw strw = FileSystem->getWorkingDirectory();
+					if (strw[strw.size()-1] != '/')
+						strw += "/";
+					fullpathname = strw+FileNameText->getText();
+					fullpathname+=".";
+					fullpathname+=FileFilters[i].FileExtension;
 					sendSelectedEvent();
 					remove();
 					return true;
@@ -638,6 +687,7 @@ void CGUIFileSelector::sendSelectedEvent()
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.EventType = EGET_FILE_SELECTED;
 	Parent->OnEvent(event);
+	this->setVisible(false);
 }
 
 //! sends the event that the file choose process has been canceld
@@ -648,6 +698,7 @@ void CGUIFileSelector::sendCancelEvent()
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
 	Parent->OnEvent(event);
+	this->setVisible(false);
 }
 
 
@@ -895,13 +946,28 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		// If the "ascii" code is "normal then append the letter only
 		if (code>0)
 			result.append(test);
+		if (code<0)
+			printf("============================\nThe code is: %d\n==============================\n",code);
 #ifdef WIN32
 		// if the result give < 0 then it look like an accented letter, then convert
+		
+		if (code==-56)
+			result.append(L"È");
+
 		if (code==-55)
 			result.append(L"É");
 
+		if (code==-53)
+			result.append(L"Ë");
+
+		if (code==-24)
+			result.append(L"è");
+
 		if (code==-23)
 			result.append(L"é");
+
+		if (code==-21)
+			result.append(L"ë");
 
 		if (code==-64)
 			result.append(L"À");
@@ -928,35 +994,9 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 			result.append(L"ù");
 #else
 		// if the result give < 0 then it look like an accented letter, then convert
-		if (code==-55)
-			result.append("É");
-
-		if (code==-23)
-			result.append("é");
-
-		if (code==-64)
-			result.append("À");
-
-		if (code==-32)
-			result.append("à");
-
-		if (code==-57)
-			result.append("Ç");
-
-		if (code==-25)
-			result.append("ç");
-
-		if (code==-42)
-			result.append("Ö");
-
-		if (code==-10)
-			result.append("ö");
-
-		if (code==-39)
-			result.append("Ù");
-
-		if (code==-7)
-			result.append("ù");
+		// Have to find a way on Linux for converting the accented characters to a irrlicht displayable character
+		// Not implemented on Linux.
+		
 #endif
 
 

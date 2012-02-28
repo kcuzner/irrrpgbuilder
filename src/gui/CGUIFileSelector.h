@@ -44,6 +44,8 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         */
       virtual const wchar_t* getFileName() const;
 
+	  inline core::stringw getResultFile() { fullpathname.replace(L'/','\\'); return fullpathname;}
+
       /**
         \brief called if an event happened.
         \param even - the event that happened
@@ -112,6 +114,8 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
 
 	  // Device 
 	  inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
+
+	  inline bool isSaver() { if (DialogType==EFST_SAVE_DIALOG) return true; else return false;}
 
 	  void populateWindowsFAV();
 
