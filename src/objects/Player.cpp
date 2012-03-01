@@ -121,9 +121,10 @@ void Player::update()
 
 
 		// New code to test (should only define run and walk mode)
-		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 121)
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 120) 
 			this->playerObject->setRunningMode(false);
-		else
+		
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 140)
 			this->playerObject->setRunningMode(true);
 
 		/*
