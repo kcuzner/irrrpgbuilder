@@ -31,7 +31,7 @@ CameraSystem::CameraSystem()
 	editCamMaya = addCameraSceneNodeMaya(0, -450.0f, 800.0f, 400.0f);
 #endif
 
-	editCamMaya->setFarValue(16000);
+	editCamMaya->setFarValue(5000);
 	editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 	editCamMaya->setPosition(vector3df(0,1000,-1000));
@@ -60,6 +60,9 @@ vector3df CameraSystem::getPosition()
 void CameraSystem::setCamera(int tempCamera)
 {
 	camera = tempCamera;
+
+	// Get the distance from the current cam
+	f32 camdist = 0.0f;
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
@@ -69,7 +72,6 @@ void CameraSystem::setCamera(int tempCamera)
 				cameraHeight = 350.0f;
 				currentCam = gameCam;
 				currentCam->setPosition(vector3df(0,cameraHeight,0));
-				gameCam->setFarValue(50000);
 				break;
 
 		// Camera 2 - Editing
@@ -142,10 +144,10 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 				min = 2;
 				break;*/
 		case 1: max = 800;
-				min = 100;
+				min = 288;
 				break;
 		case 2: max = 10000;
-				min = 100;
+				min = 144;
 				break;
 	}
 	if (cameraHeight>max)
@@ -158,6 +160,8 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		f32 distance = anm->getDistance();
 		distance=distance+(increments*(distance/10));
 		anm->setDistance(distance);
+		if (distance>144)
+			editCamMaya->setFarValue(distance*4.0f);
 	}
 	else
 	{
@@ -166,9 +170,13 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		cameraHeight-=(increments*(distance/10));
 
 		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
+		f32 camdist = currentCam->getPosition().getDistanceFrom(currentCam->getTarget());
+		if (camdist>144)
+			gameCam->setFarValue(camdist*2.5f);
 	}
 
-    gameCam->setFarValue(cameraHeight*20.0f);
+	
+    //gameCam->setFarValue(cameraHeight*20.0f);
 	//vector3df newtarget = this->getTarget();
 	//newtarget.Y = newtarget.Y;
 	//cam->setTarget(newtarget);

@@ -4,5 +4,5 @@
     <language type="en-us" />
     <terrain mesh="../media/land.obj" layer0="../media/L1.jpg" layer1="../media/L2.jpg" layer2="../media/L3.jpg" layer3="../media/L4.jpg" scale="1024" />
     <ocean mesh="../media/land.obj" normalmap="../media/waveNM.png" reflection="../media/sky.jpg" />
-	<map name="../projects/TEST.XML" />
+	<map name="../projects/IGDA_Demo.XML" />
 </IrrRPG_Builder_Config>

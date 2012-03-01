@@ -168,6 +168,8 @@ class GUIManager
         void flush();
 
         void showConfigWindow();
+
+		inline void setStatusText(core::stringw text) {if (guiStatusText) {guiStatusText->setText(text.c_str());}}
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
 
@@ -227,6 +229,8 @@ class GUIManager
         IGUIButton* guiHelpButton;
         IGUIButton* guiConfigButton;
         GUIConfigWindow* configWindow;
+		IGUIWindow* guiStatus;
+		IGUIStaticText* guiStatusText;
 
 		IGUIListBox* console;
 		IGUIWindow * consolewin;

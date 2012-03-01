@@ -169,6 +169,9 @@ CGUIFileSelector::~CGUIFileSelector()
 	if (FileNameText)
 		FileNameText->drop();
 
+	if (PathNameText)
+		FileNameText->drop();
+
 	if (FileSystem)
 		FileSystem->drop();
 
@@ -180,6 +183,9 @@ CGUIFileSelector::~CGUIFileSelector()
 
 	if (PlacesBox)
 		PlacesBox->drop();
+
+	if (DriveBox)
+		DriveBox->drop();
 
 	if (SpriteBank)
 		SpriteBank->drop();

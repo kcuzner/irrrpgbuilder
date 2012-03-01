@@ -241,35 +241,42 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
 		ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
@@ -285,6 +292,7 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 #ifdef _wxWIDGET
 		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 #endif
@@ -393,10 +401,15 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
 	}
 
-#ifdef _wxWIDGET
+	
+
 	if (app_state == APP_EDIT_VIEWDRAG)
+	{
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_drag").c_str());
+#ifdef _wxWIDGET
 		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
 #endif
+	}
 }
 
 void App::eventGuiButton(s32 id)
@@ -1135,7 +1148,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	{
 		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.2 (January 2012)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha release 0.21 (February 2012)");
 	} else
 		device = IRRdevice;
 
@@ -1326,11 +1339,11 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.2 (january 2012)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.21 (february 2012)";
 			str += " FPS:";
 			str += fps;
 
-
+			//GUIManager::getInstance()->setStatusText(str.c_str());
 #ifdef _wxWIDGET
 			appFrame->MessageStatus(str.c_str());
 #else
@@ -1705,6 +1718,8 @@ if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewPr
 
 // This will load the project contained in the selector
 // Call is coming directly from the event manager
+// Since we're using our new file selector and the method uses the events
+// It will be useful to rename that method (obsolete name)
 void App::loadProjectFile(bool value)
 {
 	if (value)
@@ -1713,6 +1728,7 @@ void App::loadProjectFile(bool value)
 
 		//Clean up the current world and load the scene
 		
+		// Here if it's the load file selector
 		if (selector)
 		{ 
 			core::stringc file=(core::stringc)selector->getFileName();
@@ -1723,11 +1739,13 @@ void App::loadProjectFile(bool value)
 			{
 				printf("Loading project now!\n");
 				cleanWorkspace();
+				selector->setVisible(false);
 				this->loadProjectFromXML(file);
 			}
 			// This is a file saver
 			if (selector->isSaver()==true)
 			{
+				selector->setVisible(false);
 				printf("Saving project now!\n");
 				this->saveProjectToXML(file);
 			}
@@ -1735,28 +1753,33 @@ void App::loadProjectFile(bool value)
 			//Destroy the selector
 			selector->remove();
 			selector=NULL;
+			setAppState(old_state);
 			printf ("The returned string is %s\n",file);
 		}
+
+		// Here is the save file selector
 		else if (saveselector)
 		{
 			core::stringc file = (core::stringc)saveselector->getFileName();
 
-			//for (u32 i=0; i<file.size(); ++i)
-			//if (file[i] == '/')
-			//	file[i] = '\\';
-			
+// For windows put as backslash.
+#ifdef WIN32
 			file.replace('/','\\');
+#endif
+			saveselector->setVisible(false);
 			
-			printf ("The returned cricri string is %s\n",file.c_str());
 			this->saveProjectToXML(file);
 			
 			saveselector->remove();
 			saveselector=NULL;
+			setAppState(old_state);
 		}
 	}
 
 	else
+	// User cancelled the file selector. remove them
 	{
+		setAppState(old_state);
 		if (selector)
 		{
 			selector->remove();
@@ -1769,7 +1792,7 @@ void App::loadProjectFile(bool value)
 		}			
 	}
 	
-	setAppState(old_state);
+	//setAppState(old_state);
 }
 
 void App::saveProject()
@@ -1823,7 +1846,7 @@ void App::saveProject()
 	}
 
 
-	setAppState(old_state);
+	//setAppState(old_state);
 }
 
 stringc App::getProjectName()
@@ -1833,8 +1856,6 @@ stringc App::getProjectName()
 
 void App::saveProjectToXML(stringc filename)
 {
-
-	printf("Saving project now!: %s\n",filename);
 
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	TiXmlDocument doc;

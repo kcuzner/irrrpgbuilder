@@ -115,8 +115,9 @@
 		<text id="msg_dlg_yes" str="&Yes" />
 		<text id="msg_dlg_no" str="&No" />
 		<text id="msg_dlg_cancel" str="Cancel" />
-		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
+		<about str="IrrRPG Builder v0.21 Alpha" />
 		<about str="    by Andres Jesse Porfirio" />
+		<about str="    and Christian Clavet" />
 		<about str=" " />
 		<about str="Programming and scripting by:" />
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
@@ -263,8 +264,9 @@
 		<text id="msg_dlg_yes" str="&Sim" />
 		<text id="msg_dlg_no" str="&Não" />
 		<text id="msg_dlg_cancel" str="Cancelar" />
-		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
-		<about str="    por Andres Jesse Porfirio" />
+		<about str="IrrRPG Builder v0.21 Alpha" />
+		<about str="    por Andres Jesse Porfirio," />
+		<about str="    Christian Clavet" />
 		<about str=" " />
 		<about str="Programacao e scripts de:"/>
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
@@ -412,8 +414,9 @@
 		<text id="msg_dlg_yes" str="&Oui" />
 		<text id="msg_dlg_no" str="&Non" />
 		<text id="msg_dlg_cancel" str="Annuler" />
-		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha"/>
+		<about str="IrrRPG Builder v0.21 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
+		<about str="    et Christian Clavet"/>
 		<about str=" "/>
 		<about str="Programmation et scripts par:"/>
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)"/>
@@ -561,8 +564,9 @@
 		<text id="msg_dlg_yes" str="&Ja" />
 		<text id="msg_dlg_no" str="&Nein" />
 		<text id="msg_dlg_cancel" str="Abbrechen" />
-		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
-		<about str="    von Andres Jesse Porfirio" />
+		<about str="IrrRPG Builder v0.21 Alpha" />
+		<about str="    von Andres Jesse Porfirio," />
+		<about str="   Christian Clavet" />
 		<about str=" " />
 		<about str="Programmierung & Scripte von:" />
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
@@ -710,8 +714,9 @@
 		<text id="msg_dlg_yes" str="&Sí" />
 		<text id="msg_dlg_no" str="&No" />
 		<text id="msg_dlg_cancel" str="Cancelar" />
-		<about str="IrrRPG Builder v0.2 ['Feijoada'] Alpha" />
-		<about str="    por Andres Jesse Porfirio" />
+		<about str="IrrRPG Builder v0.21 Alpha" />
+		<about str="    por Andres Jesse Porfirio," />
+		<about str="    Christian Clavet" />
 		<about str=" " />
 		<about str="Programación y scripting by:" />
 		<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />

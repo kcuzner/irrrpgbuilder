@@ -126,17 +126,17 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
     switch(img)
     {
         case HELP_TERRAIN_TRANSFORM:
-            driver->draw2DImage(helpTerrainTransform, position2di(0,screensize.Height - helpTerrainTransform->getSize().Height),
+            driver->draw2DImage(helpTerrainTransform, position2di(0,screensize.Height-20 - helpTerrainTransform->getSize().Height),
 				myRect(0,0,helpTerrainTransform->getSize().Width,helpTerrainTransform->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
         case HELP_TERRAIN_SEGMENTS:
-            driver->draw2DImage(helpTerrainSegments, position2di(0,screensize.Height - helpTerrainSegments->getSize().Height),
+            driver->draw2DImage(helpTerrainSegments, position2di(0,screensize.Height-20 - helpTerrainSegments->getSize().Height),
 				myRect(0,0,helpTerrainSegments->getSize().Width,helpTerrainSegments->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
         case HELP_VEGETATION_PAINT:
-            driver->draw2DImage(helpVegetationPaint, position2di(0,screensize.Height - helpVegetationPaint->getSize().Height),
+            driver->draw2DImage(helpVegetationPaint, position2di(0,screensize.Height-20 - helpVegetationPaint->getSize().Height),
 				myRect(0,0,helpVegetationPaint->getSize().Width,helpVegetationPaint->getSize().Height), 0,
 				video::SColor(255,255,255,255), true);
             break;
@@ -266,9 +266,20 @@ void GUIManager::setupEditorGUI()
 	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
 
 
-	// Standard toolbar
+	
     mainToolbarPos = position2di(2,2);
+	
+	// Status bar
+	guiStatus = guienv->addWindow(myRect(0,displayheight-20,displaywidth,displayheight),false);
+	guiStatus->setDraggable(false);
+	guiStatus->setDrawTitlebar(false);
+	guiStatus->getCloseButton()->setVisible(false);
+	guiStatus->setDrawBackground(true);
+	guiStatus->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
+	guiStatusText = guienv->addStaticText(L"Welcome to IRR RPG Builder!",myRect(10,2,displaywidth-20,18),false,false,guiStatus);
+
+	// Standard toolbar
     //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
 	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-170,122),false);
     guiMainWindow->setDraggable(false);
@@ -660,7 +671,7 @@ void GUIManager::setupEditorGUI()
 		//myRect(driver->getScreenSize().Width - 170,
 		myRect(displaywidth - 170,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()-20,
 		170,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
 		displayheight-guiMainToolWindow->getClientRect().getHeight()),
@@ -755,7 +766,7 @@ void GUIManager::setupEditorGUI()
 		myRect(displaywidth - 170, 120, 170, displayheight);
 #else
 		myRect(displaywidth - 170,
-		guiMainToolWindow->getClientRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()-20,
 		170,
 		displayheight-guiMainToolWindow->getClientRect().getHeight());
 #endif
@@ -1597,6 +1608,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             guiStopGame->setVisible(visible);
 #ifdef EDITOR
 			guiMainWindow->setVisible(!visible);
+			guiStatus->setVisible(!visible);
 #endif
             break;
 
