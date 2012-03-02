@@ -401,7 +401,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
 	}
 
-	
+
 
 	if (app_state == APP_EDIT_VIEWDRAG)
 	{
@@ -1690,7 +1690,7 @@ void App::loadProject()
 		// This is required for the window stretching feature
 		selector->setDevice(device);
 
-		// Create a "favorite places" 
+		// Create a "favorite places"
 		selector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
 #ifdef WIN32
 
@@ -1727,13 +1727,13 @@ void App::loadProjectFile(bool value)
 		// Close and drop the file selector
 
 		//Clean up the current world and load the scene
-		
+
 		// Here if it's the load file selector
 		if (selector)
-		{ 
+		{
 			core::stringc file=(core::stringc)selector->getFileName();
 
-		
+
 			// This is a file loader
 			if (selector->isSaver()==false)
 			{
@@ -1754,7 +1754,7 @@ void App::loadProjectFile(bool value)
 			selector->remove();
 			selector=NULL;
 			setAppState(old_state);
-			printf ("The returned string is %s\n",file);
+			//printf ("The returned string is %s\n",file);
 		}
 
 		// Here is the save file selector
@@ -1767,9 +1767,9 @@ void App::loadProjectFile(bool value)
 			file.replace('/','\\');
 #endif
 			saveselector->setVisible(false);
-			
+
 			this->saveProjectToXML(file);
-			
+
 			saveselector->remove();
 			saveselector=NULL;
 			setAppState(old_state);
@@ -1789,9 +1789,9 @@ void App::loadProjectFile(bool value)
 		{
 			saveselector->remove();
 			saveselector=NULL;
-		}			
+		}
 	}
-	
+
 	//setAppState(old_state);
 }
 
@@ -1830,7 +1830,7 @@ void App::saveProject()
 		// This is required for the window stretching feature
 		saveselector->setDevice(device);
 
-		// Create a "favorite places" 
+		// Create a "favorite places"
 		saveselector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
 #ifdef WIN32
 

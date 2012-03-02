@@ -2,36 +2,6 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Standard Release" />
 	<File name="src/App.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="23942" topLine="769" />
-	</File>
-	<File name="src/events/EventReceiver.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="2226" topLine="78" />
-	</File>
-	<File name="src/fx/postprocess/PostProcessManager.cpp" open="0" top="0" tabpos="4">
-		<Cursor position="7384" topLine="208" />
-	</File>
-	<File name="src/gui/CGUIEditBoxIRB.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="23263" topLine="945" />
-	</File>
-	<File name="src/gui/CGUIEditBoxIRB.h" open="0" top="0" tabpos="7">
-		<Cursor position="7899" topLine="216" />
-	</File>
-	<File name="src/gui/CGUIFileSelector.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="26654" topLine="838" />
-	</File>
-	<File name="src/gui/GUIManager.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="12059" topLine="304" />
-	</File>
-	<File name="src/main.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="176" topLine="0" />
-	</File>
-	<File name="src/objects/DynamicObject.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="43471" topLine="1482" />
-	</File>
-	<File name="src/objects/DynamicObjectsManager.cpp" open="0" top="0" tabpos="9">
-		<Cursor position="26771" topLine="831" />
-	</File>
-	<File name="src/terrain/TerrainManager.h" open="0" top="0" tabpos="3">
-		<Cursor position="0" topLine="0" />
+		<Cursor position="25047" topLine="782" />
 	</File>
 </CodeBlocks_layout_file>

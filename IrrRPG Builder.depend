@@ -3022,14 +3022,14 @@
 1328411209 source:/home/christian/IRR_RPG/src/editor/wxIWindow.cpp
 	"wxIWindow.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/LANGManager.cpp
+1330723551 source:/home/christian/IRR_RPG_BUILDER/src/LANGManager.cpp
 	"LANGManager.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/LANGManager.h
+1330723551 /home/christian/IRR_RPG_BUILDER/src/LANGManager.h
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/gui/GUIManager.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -4000,7 +4000,7 @@
 	"matrix4.h"
 	"IVideoDriver.h"
 
-1329056466 /home/christian/IRR_RPG_BUILDER/src/App.h
+1330723551 /home/christian/IRR_RPG_BUILDER/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -4010,7 +4010,7 @@
 	"tinyXML/tinyxml.h"
 	"editor/EditorMain.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/LuaGlobalCaller.h
+1330723552 /home/christian/IRR_RPG_BUILDER/src/LuaGlobalCaller.h
 	<irrlicht.h>
 	<iostream>
 	<map>
@@ -4018,12 +4018,12 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/lua/lua.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/lua/lua.h
 	<stdarg.h>
 	<stddef.h>
 	"luaconf.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/lua/luaconf.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/lua/luaconf.h
 	<limits.h>
 	<stddef.h>
 	<unistd.h>
@@ -4036,15 +4036,15 @@
 	<math.h>
 	<unistd.h>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/lua/lualib.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/lua/lualib.h
 	"lua.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/lua/lauxlib.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/lua/lauxlib.h
 	<stddef.h>
 	<stdio.h>
 	"lua.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxml.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxml.h
 	<irrlicht.h>
 	<ctype.h>
 	<stdio.h>
@@ -4058,14 +4058,14 @@
 	<sstream>
 	"tinystr.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/tinyXML/convert.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/tinyXML/convert.h
 	<irrlicht.h>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/tinyXML/tinystr.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/tinyXML/tinystr.h
 	<assert.h>
 	<string.h>
 
-1328418766 /home/christian/IRR_RPG_BUILDER/src/editor/EditorMain.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/editor/EditorMain.h
 	<wx/wx.h>
 	"wx/app.h"
 	"wx/frame.h"
@@ -4079,19 +4079,19 @@
 	"wxIWindow.h"
 	"../App.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/editor/wxIrrlicht.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/editor/wxIrrlicht.h
 	<wx/wx.h>
 	<irrlicht.h>
 
-1328418766 /home/christian/IRR_RPG_BUILDER/src/editor/wxIWindow.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/editor/wxIWindow.h
 	"wxIrrlicht.h"
 	"../App.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/gui/NodePreview.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/NodePreview.h
 	<irrlicht.h>
 	"IGUIElement.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.h
 	"IrrCompileConfig.h"
 	"IrrlichtDevice.h"
 	"IGUIEditBox.h"
@@ -4102,15 +4102,15 @@
 	"IGUIButton.h"
 	"IGUIContextMenu.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.h
 	"IrrlichtDevice.h"
 	"IGUIElement.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.h
 	<irrlicht.h>
 	<vector>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/sound/SoundManager.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/sound/SoundManager.h
 	<irrKlang.h>
 	<iostream>
 
@@ -4210,7 +4210,7 @@
 	"ik_IRefCounted.h"
 	"ik_ISoundSource.h"
 
-1329098397 source:/home/christian/IRR_RPG_BUILDER/src/LuaGlobalCaller.cpp
+1330723551 source:/home/christian/IRR_RPG_BUILDER/src/LuaGlobalCaller.cpp
 	"LuaGlobalCaller.h"
 	"gui/GUIManager.h"
 	"LANGManager.h"
@@ -4221,7 +4221,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
@@ -4229,7 +4229,7 @@
 	"Player.h"
 	"../tinyXML/tinyxml.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/DynamicObject.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/DynamicObject.h
 	<irrlicht.h>
 	"../terrain/TerrainManager.h"
 	"HealthSceneNode.h"
@@ -4238,12 +4238,12 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/terrain/TerrainManager.h
+1330723614 /home/christian/IRR_RPG_BUILDER/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"../App.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/terrain/TerrainTile.h
+1330723614 /home/christian/IRR_RPG_BUILDER/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -4251,20 +4251,20 @@
 	"Vegetation.h"
 	"../tinyXML/tinyxml.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/ShaderCallBack.h
+1330723618 /home/christian/IRR_RPG_BUILDER/src/fx/ShaderCallBack.h
 	<irrlicht.h>
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/terrain/Vegetation.h
+1330723614 /home/christian/IRR_RPG_BUILDER/src/terrain/Vegetation.h
 	<irrlicht.h>
 	<vector>
 	"../App.h"
 	"../tinyXML/tinyxml.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/HealthSceneNode.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/HealthSceneNode.h
 	"ISceneNode.h"
 	"ISceneCollisionManager.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/Player.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/Player.h
 	<irrlicht.h>
 	<vector>
 	"../LuaGlobalCaller.h"
@@ -4273,7 +4273,7 @@
 	"combat.h"
 	"../sound/SoundManager.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/combat.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/combat.h
 	<vector>
 	<irrlicht.h>
 	"../gui/GUIManager.h"
@@ -4282,87 +4282,87 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/camera/CameraSystem.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/camera/CameraSystem.h
 	"../App.h"
 	"../objects/Player.h"
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	<irrlicht.h>
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
 	"ISceneNodeAnimatorCameraMaya.h"
 	"ICameraSceneNode.h"
 	"vector2d.h"
 	"Keycodes.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/EffectsManager.h
+1330723618 /home/christian/IRR_RPG_BUILDER/src/fx/EffectsManager.h
 	<irrlicht.h>
 	"postprocess/PostProcessManager.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.h
+1330723617 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.h
 	<irrlicht.h>
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/XMLManager.cpp
+1330723552 source:/home/christian/IRR_RPG_BUILDER/src/XMLManager.cpp
 	"XMLManager.h"
 	"tinyXML/tinyxml.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/XMLManager.h
+1330723551 /home/christian/IRR_RPG_BUILDER/src/XMLManager.h
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	"ICursorControl.h"
 	"ICameraSceneNode.h"
 	"SViewFrustum.h"
 	"ISceneManager.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/camera/CameraSystem.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/camera/CameraSystem.cpp
 	"CameraSystem.h"
 	"../sound/SoundManager.h"
 
-1329098393 source:/home/christian/IRR_RPG_BUILDER/src/events/EventReceiver.cpp
+1330723614 source:/home/christian/IRR_RPG_BUILDER/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/events/EventReceiver.h
+1330723614 /home/christian/IRR_RPG_BUILDER/src/events/EventReceiver.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/fx/EffectsManager.cpp
+1330723618 source:/home/christian/IRR_RPG_BUILDER/src/fx/EffectsManager.cpp
 	"EffectsManager.h"
 	<iostream>
 	"postprocess/PostProcessManager.h"
 	"../App.h"
 	"../camera/CameraSystem.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/fx/ShaderCallBack.cpp
+1330723618 source:/home/christian/IRR_RPG_BUILDER/src/fx/ShaderCallBack.cpp
 	"ShaderCallBack.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
 	"../gui/GUIManager.h"
 	"../App.h"
 
-1328994830 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.cpp
+1330723617 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.cpp
 	"PostProcessManager.h"
 	"IPostProcess.h"
 	"ShaderPostProcess.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/IPostProcess.h
+1330723617 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/IPostProcess.h
 	<irrlicht.h>
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.h
+1330723617 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.h
 	"IPostProcess.h"
 	"ShaderMaterial.h"
 
-1328401067 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.h
+1330723617 /home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.h
 	<irrlicht.h>
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.cpp
+1330723617 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.cpp
 	"ShaderMaterial.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.cpp
+1330723617 source:/home/christian/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.cpp
 	"ShaderPostProcess.h"
 
-1328998310 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.cpp
 	"CGUIEditBoxIRB.h"
 	"IGUIScrollBar.h"
 	"IGUISkin.h"
@@ -4376,7 +4376,7 @@
 	<vector>
 	<sstream>
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.cpp
 	"CGUIGfxStatus.h"
 	"IGUIElement.h"
 	"IGUISkin.h"
@@ -4385,22 +4385,22 @@
 	"IVideoDriver.h"
 	"rect.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.cpp
 	"GUIConfigWindow.h"
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/gui/NodePreview.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/NodePreview.cpp
 	"NodePreview.h"
 	"../terrain/TerrainManager.h"
 	"../objects/Player.h"
 
-1328418766 source:/home/christian/IRR_RPG_BUILDER/src/main.cpp
+1330723551 source:/home/christian/IRR_RPG_BUILDER/src/main.cpp
 	"App.h"
 	<iostream>
 	<fstream>
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/DynamicObject.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/DynamicObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"HealthSceneNode.h"
@@ -4409,31 +4409,31 @@
 	"Player.h"
 	"DynamicObject.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"DynamicObject.h"
 	"../camera/CameraSystem.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/HealthSceneNode.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/HealthSceneNode.cpp
 	"irrlicht.h"
 	"HealthSceneNode.h"
 	"ISceneManager.h"
 	"IVideoDriver.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/Item.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/Item.cpp
 	"Item.h"
 
-1328401066 /home/christian/IRR_RPG_BUILDER/src/objects/Item.h
+1330723613 /home/christian/IRR_RPG_BUILDER/src/objects/Item.h
 	<irrlicht.h>
 	"../LuaGlobalCaller.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/Player.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/Player.cpp
 	"Player.h"
 	"../App.h"
 	"../tinyXML/tinyxml.h"
 	"DynamicObjectsManager.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/objects/combat.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/objects/combat.cpp
 	"combat.h"
 	"../App.h"
 	"DynamicObject.h"
@@ -4441,44 +4441,44 @@
 	"../LuaGlobalCaller.h"
 	"Player.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/sound/SoundManager.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/terrain/TerrainManager.cpp
+1330723614 source:/home/christian/IRR_RPG_BUILDER/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
 	<sstream>
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/terrain/TerrainTile.cpp
+1330723614 source:/home/christian/IRR_RPG_BUILDER/src/terrain/TerrainTile.cpp
 	"TerrainTile.h"
 	"../App.h"
 	"TerrainManager.h"
 	"../gui/GUIManager.h"
 
-1328401067 source:/home/christian/IRR_RPG_BUILDER/src/terrain/Vegetation.cpp
+1330723614 source:/home/christian/IRR_RPG_BUILDER/src/terrain/Vegetation.cpp
 	"Vegetation.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/convert.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/convert.cpp
 	"convert.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinystr.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinystr.cpp
 	"tinystr.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxml.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxml.cpp
 	<ctype.h>
 	<sstream>
 	<iostream>
 	"tinyxml.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxmlerror.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxmlerror.cpp
 	"tinyxml.h"
 
-1328401066 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxmlparser.cpp
+1330723613 source:/home/christian/IRR_RPG_BUILDER/src/tinyXML/tinyxmlparser.cpp
 	<ctype.h>
 	<stddef.h>
 	"tinyxml.h"
 	<windows.h>
 
-1329098397 source:/home/christian/IRR_RPG_BUILDER/src/App.cpp
+1330723728 source:/home/christian/IRR_RPG_BUILDER/src/App.cpp
 	"App.h"
 	"camera/CameraSystem.h"
 	"events/EventReceiver.h"
@@ -4498,16 +4498,16 @@
 	"../App.h"
 	"../events/EventReceiver.h"
 
-1329098392 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.h
+1330723612 /home/christian/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.h
 	<windows.h>
 	<Shlobj.h>
 	<iostream>
 	<irrlicht.h>
 
-1329059514 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.cpp
 	"CGUIFileSelector.h"
 
-1328998614 source:/home/christian/IRR_RPG_BUILDER/src/gui/GUIManager.cpp
+1330723612 source:/home/christian/IRR_RPG_BUILDER/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
