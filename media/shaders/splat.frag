@@ -46,7 +46,8 @@ void main()
 	else
 	{
 	  tex10 = mix( tex1, tex2, min(1-normal.y-0.2,1.0));
-	  tex10 = mix( tex10, tex0, min(1,-pos2));
+          //Need to refine
+	  tex10 = mix( tex10, tex0, -(position.y/scale)*5);
 	}
 	
 	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain) tex10*=vec4(1.0,0.6,0.4,1.0);

@@ -4518,7 +4518,7 @@
 1328993523 source:/home/christian/IRR_RPG_BUILDER/src/gui/GUIRequestManager.cpp
 	"GUIRequestManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/App.cpp
+1330803883 source:/home/christian/Public/IRR_RPG_BUILDER/src/App.cpp
 	"App.h"
 	"camera/CameraSystem.h"
 	"events/EventReceiver.h"
@@ -4531,7 +4531,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/App.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -4541,7 +4541,7 @@
 	"tinyXML/tinyxml.h"
 	"editor/EditorMain.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrlicht.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrlicht.h
 	"IrrCompileConfig.h"
 	"aabbox3d.h"
 	"CDynamicMeshBuffer.h"
@@ -4698,16 +4698,16 @@
 	"vector3d.h"
 	"SIrrCreationParameters.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IrrCompileConfig.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IrrCompileConfig.h
 	<stdio.h>
 	<xtl.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/aabbox3d.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/aabbox3d.h
 	"irrMath.h"
 	"plane3d.h"
 	"line3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrMath.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrMath.h
 	"IrrCompileConfig.h"
 	"irrTypes.h"
 	<math.h>
@@ -4715,7 +4715,7 @@
 	<stdlib.h>
 	<limits.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrTypes.h
 	"IrrCompileConfig.h"
 	<wchar.h>
 	<crtdbg.h>
@@ -4723,28 +4723,28 @@
 	<stdlib.h>
 	<crtdbg.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/plane3d.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/plane3d.h
 	"irrMath.h"
 	"vector3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/vector3d.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/vector3d.h
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/line3d.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/line3d.h
 	"irrTypes.h"
 	"vector3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CDynamicMeshBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CDynamicMeshBuffer.h
 	"IDynamicMeshBuffer.h"
 	"CVertexBuffer.h"
 	"CIndexBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IDynamicMeshBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IDynamicMeshBuffer.h
 	"IMeshBuffer.h"
 	"IVertexBuffer.h"
 	"IIndexBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshBuffer.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"aabbox3d.h"
@@ -4753,10 +4753,10 @@
 	"EHardwareBufferFlags.h"
 	"EPrimitiveTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IReferenceCounted.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IReferenceCounted.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMaterial.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMaterial.h
 	"SColor.h"
 	"matrix4.h"
 	"irrArray.h"
@@ -4765,11 +4765,11 @@
 	"EMaterialFlags.h"
 	"SMaterialLayer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SColor.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SColor.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/matrix4.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/matrix4.h
 	"irrMath.h"
 	"vector3d.h"
 	"vector2d.h"
@@ -4779,23 +4779,23 @@
 	"irrString.h"
 	<windows.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/vector2d.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/vector2d.h
 	"irrMath.h"
 	"dimension2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/dimension2d.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/dimension2d.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/rect.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/rect.h
 	"irrTypes.h"
 	"dimension2d.h"
 	"position2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/position2d.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/position2d.h
 	"vector2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrString.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrString.h
 	"irrTypes.h"
 	"irrAllocator.h"
 	"irrMath.h"
@@ -4803,130 +4803,130 @@
 	<string.h>
 	<stdlib.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrAllocator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrAllocator.h
 	"irrTypes.h"
 	<new>
 	<memory.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrArray.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrArray.h
 	"irrTypes.h"
 	"heapsort.h"
 	"irrAllocator.h"
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/heapsort.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/heapsort.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMaterialTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMaterialTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMaterialFlags.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMaterialFlags.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMaterialLayer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMaterialLayer.h
 	"matrix4.h"
 	"irrAllocator.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/S3DVertex.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/S3DVertex.h
 	"vector3d.h"
 	"vector2d.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SVertexIndex.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SVertexIndex.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EHardwareBufferFlags.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EHardwareBufferFlags.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EPrimitiveTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EPrimitiveTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVertexBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVertexBuffer.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"S3DVertex.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IIndexBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IIndexBuffer.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"SVertexIndex.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CVertexBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CVertexBuffer.h
 	"IVertexBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CIndexBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CIndexBuffer.h
 	"IIndexBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CMeshBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/CMeshBuffer.h
 	"irrArray.h"
 	"IMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/coreutil.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/coreutil.h
 	"irrString.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/path.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/path.h
 	"irrString.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ECullingTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ECullingTypes.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDebugSceneTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDebugSceneTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDriverFeatures.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDriverFeatures.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDriverTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDriverTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EGUIAlignment.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EGUIAlignment.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EGUIElementTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EGUIElementTypes.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMeshWriterEnums.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMeshWriterEnums.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMessageBoxFlags.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EMessageBoxFlags.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ESceneNodeTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ESceneNodeTypes.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ETerrainElements.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ETerrainElements.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/fast_atof.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/fast_atof.h
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMesh.h
 	"aabbox3d.h"
 	"IMesh.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMesh.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"EHardwareBufferFlags.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshMD2.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshMD2.h
 	"IAnimatedMesh.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshMD3.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshMD3.h
 	"IAnimatedMesh.h"
 	"IQ3Shader.h"
 	"quaternion.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IQ3Shader.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IQ3Shader.h
 	"irrArray.h"
 	"fast_atof.h"
 	"IFileSystem.h"
 	"IVideoDriver.h"
 	"coreutil.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileSystem.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileSystem.h
 	"IReferenceCounted.h"
 	"IXMLReader.h"
 	"IFileArchive.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IXMLReader.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IXMLReader.h
 	"IReferenceCounted.h"
 	"irrXML.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrXML.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrXML.h
 	<stdio.h>
 	"IrrCompileConfig.h"
 	<irrXML.h>
@@ -4935,19 +4935,19 @@
 	<irrXML.h>
 	<irrXML.h>
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileArchive.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileArchive.h
 	"IReadFile.h"
 	"IFileList.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IReadFile.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IReadFile.h
 	"IReferenceCounted.h"
 	"coreutil.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileList.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IFileList.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVideoDriver.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVideoDriver.h
 	"rect.h"
 	"SColor.h"
 	"ITexture.h"
@@ -4963,7 +4963,7 @@
 	"EDriverFeatures.h"
 	"SExposedVideoData.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITexture.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITexture.h
 	"IReferenceCounted.h"
 	"IImage.h"
 	"dimension2d.h"
@@ -4971,33 +4971,33 @@
 	"path.h"
 	"matrix4.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImage.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImage.h
 	"IReferenceCounted.h"
 	"position2d.h"
 	"rect.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/triangle3d.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/triangle3d.h
 	"vector3d.h"
 	"line3d.h"
 	"plane3d.h"
 	"aabbox3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SExposedVideoData.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SExposedVideoData.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/quaternion.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/quaternion.h
 	"irrTypes.h"
 	"irrMath.h"
 	"matrix4.h"
 	"vector3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAnimatedMeshSceneNode.h
 	"ISceneNode.h"
 	"IBoneSceneNode.h"
 	"IAnimatedMeshMD2.h"
 	"IAnimatedMeshMD3.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNode.h
 	"IAttributeExchangingObject.h"
 	"ESceneNodeTypes.h"
 	"ECullingTypes.h"
@@ -5011,39 +5011,39 @@
 	"irrList.h"
 	"IAttributes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAttributeExchangingObject.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAttributeExchangingObject.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimator.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"ESceneNodeAnimatorTypes.h"
 	"IAttributeExchangingObject.h"
 	"IEventReceiver.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IEventReceiver.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IEventReceiver.h
 	"ILogger.h"
 	"Keycodes.h"
 	"irrString.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILogger.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILogger.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/Keycodes.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/Keycodes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITriangleSelector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITriangleSelector.h
 	"IReferenceCounted.h"
 	"triangle3d.h"
 	"aabbox3d.h"
 	"matrix4.h"
 	"line3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrList.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrList.h
 	"irrTypes.h"
 	"irrAllocator.h"
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAttributes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IAttributes.h
 	"IReferenceCounted.h"
 	"SColor.h"
 	"vector3d.h"
@@ -5064,51 +5064,51 @@
 	"IXMLReader.h"
 	"EAttributes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/line2d.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/line2d.h
 	"irrTypes.h"
 	"vector2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EAttributes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EAttributes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBoneSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBoneSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBillboardSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBillboardSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBillboardTextSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IBillboardTextSceneNode.h
 	"IBillboardSceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ICameraSceneNode.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ICameraSceneNode.h
 	"ISceneNode.h"
 	"IEventReceiver.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ICursorControl.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ICursorControl.h
 	"IReferenceCounted.h"
 	"position2d.h"
 	"rect.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IDummyTransformationSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IDummyTransformationSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGeometryCreator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGeometryCreator.h
 	"IReferenceCounted.h"
 	"IMesh.h"
 	"IImage.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGPUProgrammingServices.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGPUProgrammingServices.h
 	"EShaderTypes.h"
 	"EMaterialTypes.h"
 	"EPrimitiveTypes.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EShaderTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EShaderTypes.h
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIButton.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIButton.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIElement.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIElement.h
 	"IAttributeExchangingObject.h"
 	"irrList.h"
 	"rect.h"
@@ -5118,27 +5118,27 @@
 	"EGUIAlignment.h"
 	"IAttributes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUICheckBox.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUICheckBox.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIColorSelectDialog.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIColorSelectDialog.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIComboBox.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIComboBox.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIContextMenu.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIContextMenu.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIEditBox.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIEditBox.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIElementFactory.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIElementFactory.h
 	"IReferenceCounted.h"
 	"EGUIElementTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIEnvironment.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIEnvironment.h
 	"IReferenceCounted.h"
 	"IGUISkin.h"
 	"rect.h"
@@ -5147,118 +5147,118 @@
 	"IXMLReader.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISkin.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISkin.h
 	"IAttributeExchangingObject.h"
 	"EGUIAlignment.h"
 	"SColor.h"
 	"rect.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFileOpenDialog.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFileOpenDialog.h
 	"IGUIElement.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFont.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFont.h
 	"IReferenceCounted.h"
 	"SColor.h"
 	"rect.h"
 	"irrString.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFontBitmap.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIFontBitmap.h
 	"IGUIFont.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIImage.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIImage.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIInOutFader.h
-	"IGUIElement.h"
-	"SColor.h"
-
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIListBox.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIInOutFader.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIMeshViewer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIListBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIMeshViewer.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIScrollBar.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIScrollBar.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISpinBox.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISpinBox.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISpriteBank.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUISpriteBank.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"SColor.h"
 	"rect.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIStaticText.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIStaticText.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITabControl.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITabControl.h
 	"IGUIElement.h"
 	"SColor.h"
 	"IGUISkin.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITable.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITable.h
 	"IGUIElement.h"
 	"irrTypes.h"
 	"SColor.h"
 	"IGUISkin.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIToolbar.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIToolbar.h
 	"IGUIElement.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIWindow.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIWindow.h
 	"IGUIElement.h"
 	"EMessageBoxFlags.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITreeView.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUITreeView.h
 	"IGUIElement.h"
 	"IGUIImageList.h"
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIImageList.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IGUIImageList.h
 	"IGUIElement.h"
 	"rect.h"
 	"irrTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImageLoader.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImageLoader.h
 	"IReferenceCounted.h"
 	"IImage.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImageWriter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IImageWriter.h
 	"IReferenceCounted.h"
 	"irrString.h"
 	"coreutil.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILightSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILightSceneNode.h
 	"ISceneNode.h"
 	"SLight.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SLight.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SLight.h
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMaterialRenderer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMaterialRenderer.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"S3DVertex.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMaterialRendererServices.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMaterialRendererServices.h
 	"SMaterial.h"
 	"S3DVertex.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshCache.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshCache.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshLoader.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshLoader.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshManipulator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshManipulator.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"aabbox3d.h"
@@ -5267,24 +5267,24 @@
 	"IMeshBuffer.h"
 	"SVertexManipulator.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SVertexManipulator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SVertexManipulator.h
 	"S3DVertex.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshWriter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMeshWriter.h
 	"IReferenceCounted.h"
 	"EMeshWriterEnums.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMetaTriangleSelector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IMetaTriangleSelector.h
 	"ITriangleSelector.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IOSOperator.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IOSOperator.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleSystemSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleSystemSceneNode.h
 	"ISceneNode.h"
 	"IParticleAnimatedMeshSceneNodeEmitter.h"
 	"IParticleBoxEmitter.h"
@@ -5298,57 +5298,57 @@
 	"IParticleRotationAffector.h"
 	"dimension2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
 	"IParticleEmitter.h"
 	"IAnimatedMeshSceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleEmitter.h
 	"IAttributeExchangingObject.h"
 	"SParticle.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SParticle.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SParticle.h
 	"vector3d.h"
 	"dimension2d.h"
 	"SColor.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleBoxEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleBoxEmitter.h
 	"IParticleEmitter.h"
 	"aabbox3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleCylinderEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleCylinderEmitter.h
 	"IParticleEmitter.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleMeshEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleMeshEmitter.h
 	"IParticleEmitter.h"
 	"IMesh.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleRingEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleRingEmitter.h
 	"IParticleEmitter.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleSphereEmitter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleSphereEmitter.h
 	"IParticleEmitter.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAttractionAffector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAttractionAffector.h
 	"IParticleAffector.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAffector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleAffector.h
 	"IAttributeExchangingObject.h"
 	"SParticle.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleFadeOutAffector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleFadeOutAffector.h
 	"IParticleAffector.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleGravityAffector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleGravityAffector.h
 	"IParticleAffector.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleRotationAffector.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IParticleRotationAffector.h
 	"IParticleAffector.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IQ3LevelMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IQ3LevelMesh.h
 	"IAnimatedMesh.h"
 	"IQ3Shader.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IrrlichtDevice.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IrrlichtDevice.h
 	"IReferenceCounted.h"
 	"dimension2d.h"
 	"IVideoDriver.h"
@@ -5360,27 +5360,27 @@
 	"ITimer.h"
 	"IOSOperator.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDeviceTypes.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/EDeviceTypes.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVideoModeList.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVideoModeList.h
 	"IReferenceCounted.h"
 	"dimension2d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITimer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITimer.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrMap.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/irrMap.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneCollisionManager.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneCollisionManager.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"triangle3d.h"
 	"position2d.h"
 	"line3d.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneManager.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneManager.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"irrString.h"
@@ -5396,105 +5396,105 @@
 	"IGeometryCreator.h"
 	"ISkinnedMesh.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SceneParameters.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SceneParameters.h
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISkinnedMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISkinnedMesh.h
 	"irrArray.h"
 	"IBoneSceneNode.h"
 	"IAnimatedMesh.h"
 	"SSkinMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SSkinMeshBuffer.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SSkinMeshBuffer.h
 	"IMeshBuffer.h"
 	"S3DVertex.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
 	"ISceneNodeAnimator.h"
 	"IEventReceiver.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
 	"ISceneNodeAnimator.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
 	"IReferenceCounted.h"
 	"ESceneNodeAnimatorTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeFactory.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneNodeFactory.h
 	"IReferenceCounted.h"
 	"ESceneNodeTypes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneUserDataSerializer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ISceneUserDataSerializer.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IShaderConstantSetCallBack.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IShaderConstantSetCallBack.h
 	"IReferenceCounted.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IShadowVolumeSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IShadowVolumeSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITerrainSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITerrainSceneNode.h
 	"ETerrainElements.h"
 	"ISceneNode.h"
 	"IDynamicMeshBuffer.h"
 	"irrArray.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITextSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ITextSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVolumeLightSceneNode.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IVolumeLightSceneNode.h
 	"ISceneNode.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IWriteFile.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IWriteFile.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IXMLWriter.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/IXMLWriter.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"irrString.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILightManager.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/ILightManager.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SAnimatedMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SAnimatedMesh.h
 	"IAnimatedMesh.h"
 	"IMesh.h"
 	"aabbox3d.h"
 	"irrArray.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SIrrCreationParameters.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SIrrCreationParameters.h
 	"EDriverTypes.h"
 	"EDeviceTypes.h"
 	"dimension2d.h"
 	"ILogger.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SKeyMap.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SKeyMap.h
 	"Keycodes.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMesh.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMesh.h
 	"IMesh.h"
 	"IMeshBuffer.h"
 	"aabbox3d.h"
 	"irrArray.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBuffer.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBuffer.h
 	"CMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBufferLightMap.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBufferLightMap.h
 	"CMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBufferTangents.h
+1330790418 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SMeshBufferTangents.h
 	"CMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SSharedMeshBuffer.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SSharedMeshBuffer.h
 	"irrArray.h"
 	"IMeshBuffer.h"
 
-1329194707 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SViewFrustum.h
+1330806898 /home/christian/Public/IRR_RPG_BUILDER/irrlicht-engine/include/SViewFrustum.h
 	"plane3d.h"
 	"vector3d.h"
 	"line3d.h"
@@ -5502,13 +5502,13 @@
 	"matrix4.h"
 	"IVideoDriver.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.h
 	<windows.h>
 	<Shlobj.h>
 	<iostream>
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/LuaGlobalCaller.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/LuaGlobalCaller.h
 	<irrlicht.h>
 	<iostream>
 	<map>
@@ -5516,12 +5516,12 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1329194736 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lua.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lua.h
 	<stdarg.h>
 	<stddef.h>
 	"luaconf.h"
 
-1329194736 /home/christian/Public/IRR_RPG_BUILDER/src/lua/luaconf.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/lua/luaconf.h
 	<limits.h>
 	<stddef.h>
 	<unistd.h>
@@ -5534,15 +5534,15 @@
 	<math.h>
 	<unistd.h>
 
-1329194736 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lualib.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lualib.h
 	"lua.h"
 
-1329194736 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lauxlib.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/lua/lauxlib.h
 	<stddef.h>
 	<stdio.h>
 	"lua.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxml.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxml.h
 	<irrlicht.h>
 	<ctype.h>
 	<stdio.h>
@@ -5556,14 +5556,14 @@
 	<sstream>
 	"tinystr.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/convert.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/convert.h
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinystr.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinystr.h
 	<assert.h>
 	<string.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/editor/EditorMain.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/editor/EditorMain.h
 	<wx/wx.h>
 	"wx/app.h"
 	"wx/frame.h"
@@ -5577,21 +5577,21 @@
 	"wxIWindow.h"
 	"../App.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/editor/wxIrrlicht.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/editor/wxIrrlicht.h
 	<wx/wx.h>
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/editor/wxIWindow.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/editor/wxIWindow.h
 	"wxIrrlicht.h"
 	"../App.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/camera/CameraSystem.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/camera/CameraSystem.h
 	"../App.h"
 	"../objects/Player.h"
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/Player.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/Player.h
 	<irrlicht.h>
 	<vector>
 	"../LuaGlobalCaller.h"
@@ -5600,11 +5600,11 @@
 	"combat.h"
 	"../sound/SoundManager.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/LANGManager.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/LANGManager.h
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIManager.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -5614,11 +5614,11 @@
 	"GUIConfigWindow.h"
 	"../sound/SoundManager.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/NodePreview.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/NodePreview.h
 	<irrlicht.h>
 	"IGUIElement.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.h
 	"IrrCompileConfig.h"
 	"IrrlichtDevice.h"
 	"IGUIEditBox.h"
@@ -5629,19 +5629,19 @@
 	"IGUIButton.h"
 	"IGUIContextMenu.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.h
 	"IrrlichtDevice.h"
 	"IGUIElement.h"
 
-1329273738 /home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.h
+1330790447 /home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.h
 	<irrlicht.h>
 	<vector>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/sound/SoundManager.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/sound/SoundManager.h
 	<irrKlang.h>
 	<iostream>
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/irrKlang.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/irrKlang.h
 	"ik_irrKlangTypes.h"
 	"ik_vec3d.h"
 	"ik_IRefCounted.h"
@@ -5663,28 +5663,28 @@
 	"ik_IAudioRecorder.h"
 	"ik_ISoundMixedOutputReceiver.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_irrKlangTypes.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_irrKlangTypes.h
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_vec3d.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_vec3d.h
 	<math.h>
 	"ik_irrKlangTypes.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IRefCounted.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IRefCounted.h
 	"ik_irrKlangTypes.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IVirtualRefCounted.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IVirtualRefCounted.h
 	"ik_irrKlangTypes.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ESoundOutputDrivers.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ESoundOutputDrivers.h
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ESoundEngineOptions.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ESoundEngineOptions.h
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_EStreamModes.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_EStreamModes.h
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_SAudioStreamFormat.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_SAudioStreamFormat.h
 	"ik_IRefCounted.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundEngine.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundEngine.h
 	"ik_IRefCounted.h"
 	"ik_vec3d.h"
 	"ik_ISoundSource.h"
@@ -5693,51 +5693,51 @@
 	"ik_IFileFactory.h"
 	"ik_ISoundMixedOutputReceiver.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundSource.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundSource.h
 	"ik_IVirtualRefCounted.h"
 	"ik_vec3d.h"
 	"ik_EStreamModes.h"
 	"ik_SAudioStreamFormat.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISound.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISound.h
 	"ik_IVirtualRefCounted.h"
 	"ik_ISoundEffectControl.h"
 	"ik_vec3d.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundEffectControl.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundEffectControl.h
 	"ik_IVirtualRefCounted.h"
 	"ik_vec3d.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IFileFactory.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IFileFactory.h
 	"ik_IRefCounted.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundMixedOutputReceiver.h
-	"ik_IRefCounted.h"
-	"ik_SAudioStreamFormat.h"
-
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioStream.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundMixedOutputReceiver.h
 	"ik_IRefCounted.h"
 	"ik_SAudioStreamFormat.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioStreamLoader.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioStream.h
+	"ik_IRefCounted.h"
+	"ik_SAudioStreamFormat.h"
+
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioStreamLoader.h
 	"ik_IRefCounted.h"
 	"ik_IFileReader.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IFileReader.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IFileReader.h
 	"ik_IRefCounted.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundStopEventReceiver.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundStopEventReceiver.h
 	"ik_IRefCounted.h"
 	"ik_SAudioStreamFormat.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundDeviceList.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_ISoundDeviceList.h
 	"ik_IRefCounted.h"
 
-1329194801 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioRecorder.h
+1330790509 /home/christian/Public/IRR_RPG_BUILDER/irrKlang-1.3.0/include/ik_IAudioRecorder.h
 	"ik_IRefCounted.h"
 	"ik_ISoundSource.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObject.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObject.h
 	<irrlicht.h>
 	"../terrain/TerrainManager.h"
 	"HealthSceneNode.h"
@@ -5746,12 +5746,12 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainManager.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"../App.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainTile.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -5759,20 +5759,20 @@
 	"Vegetation.h"
 	"../tinyXML/tinyxml.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/ShaderCallBack.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/ShaderCallBack.h
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/Vegetation.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/terrain/Vegetation.h
 	<irrlicht.h>
 	<vector>
 	"../App.h"
 	"../tinyXML/tinyxml.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/HealthSceneNode.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/HealthSceneNode.h
 	"ISceneNode.h"
 	"ISceneCollisionManager.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/combat.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/combat.h
 	<vector>
 	<irrlicht.h>
 	"../gui/GUIManager.h"
@@ -5781,25 +5781,25 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
 	"ISceneNodeAnimatorCameraMaya.h"
 	"ICameraSceneNode.h"
 	"vector2d.h"
 	"Keycodes.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/events/EventReceiver.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/events/EventReceiver.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/EffectsManager.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/EffectsManager.h
 	<irrlicht.h>
 	"postprocess/PostProcessManager.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.h
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
@@ -5807,10 +5807,10 @@
 	"Player.h"
 	"../tinyXML/tinyxml.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/LANGManager.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/LANGManager.cpp
 	"LANGManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/LuaGlobalCaller.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/LuaGlobalCaller.cpp
 	"LuaGlobalCaller.h"
 	"gui/GUIManager.h"
 	"LANGManager.h"
@@ -5821,63 +5821,63 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/XMLManager.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/XMLManager.cpp
 	"XMLManager.h"
 	"tinyXML/tinyxml.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/XMLManager.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/XMLManager.h
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	"ICursorControl.h"
 	"ICameraSceneNode.h"
 	"SViewFrustum.h"
 	"ISceneManager.h"
 
-1329273664 source:/home/christian/Public/IRR_RPG_BUILDER/src/camera/CameraSystem.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/camera/CameraSystem.cpp
 	"CameraSystem.h"
 	"../sound/SoundManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/events/EventReceiver.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/EffectsManager.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/EffectsManager.cpp
 	"EffectsManager.h"
 	<iostream>
 	"postprocess/PostProcessManager.h"
 	"../App.h"
 	"../camera/CameraSystem.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/ShaderCallBack.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/ShaderCallBack.cpp
 	"ShaderCallBack.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
 	"../gui/GUIManager.h"
 	"../App.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/PostProcessManager.cpp
 	"PostProcessManager.h"
 	"IPostProcess.h"
 	"ShaderPostProcess.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/IPostProcess.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/IPostProcess.h
 	<irrlicht.h>
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.h
 	"IPostProcess.h"
 	"ShaderMaterial.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.h
+1330790449 /home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.h
 	<irrlicht.h>
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderMaterial.cpp
 	"ShaderMaterial.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/fx/postprocess/ShaderPostProcess.cpp
 	"ShaderPostProcess.h"
 
-1329273738 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.cpp
+1330790447 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIEditBoxIRB.cpp
 	"CGUIEditBoxIRB.h"
 	"IGUIScrollBar.h"
 	"IGUISkin.h"
@@ -5891,10 +5891,10 @@
 	<vector>
 	<sstream>
 
-1329194736 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.cpp
+1330803883 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIFileSelector.cpp
 	"CGUIFileSelector.h"
 
-1329194736 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.cpp
+1330790447 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/CGUIGfxStatus.cpp
 	"CGUIGfxStatus.h"
 	"IGUIElement.h"
 	"IGUISkin.h"
@@ -5903,12 +5903,12 @@
 	"IVideoDriver.h"
 	"rect.h"
 
-1329194736 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.cpp
+1330790447 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIConfigWindow.cpp
 	"GUIConfigWindow.h"
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1329194736 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIManager.cpp
+1330790447 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
@@ -5916,17 +5916,17 @@
 	"../sound/SoundManager.h"
 	"../objects/Player.h"
 
-1329194736 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/NodePreview.cpp
+1330790447 source:/home/christian/Public/IRR_RPG_BUILDER/src/gui/NodePreview.cpp
 	"NodePreview.h"
 	"../terrain/TerrainManager.h"
 	"../objects/Player.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/main.cpp
+1330790449 source:/home/christian/Public/IRR_RPG_BUILDER/src/main.cpp
 	"App.h"
 	<iostream>
 	<fstream>
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObject.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"HealthSceneNode.h"
@@ -5935,31 +5935,31 @@
 	"Player.h"
 	"DynamicObject.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"DynamicObject.h"
 	"../camera/CameraSystem.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/HealthSceneNode.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/HealthSceneNode.cpp
 	"irrlicht.h"
 	"HealthSceneNode.h"
 	"ISceneManager.h"
 	"IVideoDriver.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/Item.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/Item.cpp
 	"Item.h"
 
-1329194737 /home/christian/Public/IRR_RPG_BUILDER/src/objects/Item.h
+1330790448 /home/christian/Public/IRR_RPG_BUILDER/src/objects/Item.h
 	<irrlicht.h>
 	"../LuaGlobalCaller.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/Player.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/Player.cpp
 	"Player.h"
 	"../App.h"
 	"../tinyXML/tinyxml.h"
 	"DynamicObjectsManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/combat.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/objects/combat.cpp
 	"combat.h"
 	"../App.h"
 	"DynamicObject.h"
@@ -5967,38 +5967,38 @@
 	"../LuaGlobalCaller.h"
 	"Player.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/sound/SoundManager.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainManager.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
 	<sstream>
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainTile.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/TerrainTile.cpp
 	"TerrainTile.h"
 	"../App.h"
 	"TerrainManager.h"
 	"../gui/GUIManager.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/Vegetation.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/terrain/Vegetation.cpp
 	"Vegetation.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/convert.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/convert.cpp
 	"convert.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinystr.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinystr.cpp
 	"tinystr.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxml.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxml.cpp
 	<ctype.h>
 	<sstream>
 	<iostream>
 	"tinyxml.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxmlerror.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxmlerror.cpp
 	"tinyxml.h"
 
-1329194737 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxmlparser.cpp
+1330790448 source:/home/christian/Public/IRR_RPG_BUILDER/src/tinyXML/tinyxmlparser.cpp
 	<ctype.h>
 	<stddef.h>
 	"tinyxml.h"
