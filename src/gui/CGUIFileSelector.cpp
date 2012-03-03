@@ -910,7 +910,7 @@ void CGUIFileSelector::populateLinuxFAV()
 
 	// Get current user home folder(places)
 	// Can't get the other subfolders as they are translated for each language.
-	addPlacePaths(L"User Home folder",L"~/",driver->getTexture("../media/art/places_folder.png"));
+	//addPlacePaths(L"User Home folder",L"~/",driver->getTexture("../media/art/places_folder.png"));
 
 	addPlacePaths(L"Home folder",L"/home",driver->getTexture("../media/art/places_folder.png"));
 

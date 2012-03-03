@@ -1339,7 +1339,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.21 (february 2012)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.21 (march 2012)";
 			str += " FPS:";
 			str += fps;
 
@@ -1679,7 +1679,7 @@ void App::loadProject()
 	if (!selector)
 	{
 		// Create a load file selector
-		selector = new CGUIFileSelector(L"File Selector", guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
+		selector = new CGUIFileSelector(getLangText("msg_prj_lp0").c_str(), guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
 		// Create a base icon for the files
 		selector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
 		// Create a base icon for the folders
@@ -1737,7 +1737,7 @@ void App::loadProjectFile(bool value)
 			// This is a file loader
 			if (selector->isSaver()==false)
 			{
-				printf("Loading project now!\n");
+				//printf("Loading project now!\n");
 				cleanWorkspace();
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
@@ -1746,7 +1746,7 @@ void App::loadProjectFile(bool value)
 			if (selector->isSaver()==true)
 			{
 				selector->setVisible(false);
-				printf("Saving project now!\n");
+				//printf("Saving project now!\n");
 				this->saveProjectToXML(file);
 			}
 
@@ -1819,7 +1819,7 @@ void App::saveProject()
 	if (!saveselector)
 	{
 		// Create a save file selector // EFST_OPEN_DIALOG // EFST_SAVE_DIALOG
-		saveselector = new CGUIFileSelector(L"File Selector", guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_SAVE_DIALOG);
+		saveselector = new CGUIFileSelector(getLangText("msg_prj_sp0").c_str(), guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_SAVE_DIALOG);
 		// Create a base icon for the files
 		saveselector->setCustomFileIcon(driver->getTexture("../media/art/file.png"));
 		// Create a base icon for the folders

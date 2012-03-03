@@ -1,4 +1,44 @@
-Changes since AlphaRelease 1
+
+Changes since AlphaRelease 2 (Release 0.21)
+March 2012
+- NEW: Reworked the interface so it mimic the wxWidget prototype we had
+- NEW: edit camera, based on the IRRlicht Maya Camera. Editing is much improved.
+- NEW: Dynamic object highlighting improve precision when moving and placing objects on the map.
+- NEW: All Characters now go to "pause" when the player look it's inventory/status window.
+- NEW: Animation transitions! Animations look much better.
+- NEW: File selector GUI with windows stretching, drive widget and favorite folders
+- NEW: New scripts (Potion vendor, etc.)
+- NEW: New example projects (IGDA Demo, big map example etc.)
+
+- Update: Updated the script editor with the version from the IRRext repository
+- Update: Restructuration of the project folders so it's easier to edit
+- Update: The game camera is now following the player and not directly attached to it. Better feeling of movement now.
+- Update: Linux project can build the editor and the player (Release and Debug version)
+
+- Fix: Animation events are properly detected (were missing a lot of event before the fix). Animation is much improved now.
+- Fix: Water and terrain shaders have been checked to compile on recent ATI, NVIDIA & INTEL hardware (Intel has clipping issue due to a problematic driver)
+- Fix: Animation jitter from player when going from walk to run animation
+- Fix: Uppercase/Lowercase typos in filenames for the Linux build
+- Fix: Check the for death animation, then if the "despawn" animation is not present, dispose of the character properly.
+- Fix: Healthbar was displayed for a split second when the character was put on the map.
+
+- Removed: Removed some old meshes and textures that were no longer needed (have already been replaced with better assets)
+
+Changes since AlphaRelease 1 (Release 0.2)
+November 2011
+- wxPrototype gone from 2.9 to 2.8
+- Doing the wxWidget ribbon component with Irrlicht GUI
+- Added rain & snow postFX
+- Occtree collision on static objects 
+- Added more languages
+- Improved the wxWidget prototype
+- Categories added to the dynamic object selections
+- Fixes on the script editor
+- Player and Editor builds, player now use "gameconfig.xml" that can start a map at startup
+- Improvement in combat calculation and damage
+- Put all animations of the character in a single file since, the "swap" animation command was improperly used.
+- Improved the game loops (mostly for some ingame requesters)
+
 January/February 2011
 - Improved the Script EDITOR gui, added the scrollbar and more control with the mouse
 - Script EDITOR has now line count ability
