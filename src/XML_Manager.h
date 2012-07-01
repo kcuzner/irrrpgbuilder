@@ -1,0 +1,30 @@
+#ifndef XMLMANAGER_H
+#define XMLMANAGER_H
+
+#include "App.h"
+//#include "LANGManager.h"
+
+using namespace irr;
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
+
+class xmldata
+{
+	public:
+
+		static xmldata * getInstance();
+		core::stringw winconvert(core::stringw str);
+		void loadBlock(IrrlichtDevice * device, core::stringc file );
+		void loadSet(IrrlichtDevice * device);
+		void loadLang(IrrlichtDevice * device);
+	
+
+	private:
+		xmldata();
+		~xmldata();
+};
+
+#endif // XMLMANAGER_H

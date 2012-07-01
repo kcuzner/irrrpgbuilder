@@ -14,21 +14,23 @@ class LANGManager
     public:
         static LANGManager* getInstance();
 		void setAboutText(IGUIListBox* guiAboutText);
-		vector<stringw> getAboutText();
+		vector<core::stringw> getAboutText();
 		irr::core::stringw getText(irr::core::stringc node);
 		irr::core::stringc getLanguage();
 		bool Load();
 		void setDefaultLanguage(irr::core::stringc language);
-        virtual ~LANGManager();
+		vector<Lang> language;
+		vector<Lang> aboutext;	
+		irr::core::stringc defaultLanguage;	
+        
 		
 
     protected:
 
     private:
         LANGManager();
-		irr::core::stringc defaultLanguage;
-		vector<Lang> language;
-		vector<Lang> aboutext;		
+		virtual ~LANGManager();
+		
 };
 
 #endif // LANGMANAGER_H

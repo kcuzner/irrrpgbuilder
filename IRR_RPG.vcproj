@@ -566,6 +566,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\src\XML_Manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\XML_Manager.h"
+				>
+			</File>
 			<Filter
 				Name="gui"
 				>

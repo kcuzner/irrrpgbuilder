@@ -1,4 +1,5 @@
 #include "LANGManager.h"
+#include "XML_Manager.h"
 
 
 LANGManager::LANGManager()
@@ -25,7 +26,8 @@ irr::core::stringc LANGManager::getLanguage()
 	return defaultLanguage;
 }
 
-// -- Put the active language in memory for later retrieval 
+// -- Put the active language in memory for later retrieval
+// -- This function is no longer used (Because using irrXML)
 bool LANGManager::Load()
 {
 
@@ -62,7 +64,7 @@ bool LANGManager::Load()
 		vector<irr::core::stringc> objsIDs;
 		
 
-        //Iterate language file
+		//Iterate language file
 		TiXmlNode* currentObjXML = root->FirstChild( "language" );
         while( currentObjXML != NULL )
         {
@@ -107,6 +109,7 @@ bool LANGManager::Load()
 		}
 	}
 
+	    
 	return true;
 }
 
@@ -151,5 +154,7 @@ void LANGManager::setDefaultLanguage(irr::core::stringc languagetext)
 {
 	defaultLanguage = languagetext.c_str();
 	language.clear();
-	Load();
+	// Load the data from the new XMLManager (irrXML instead of TinyXML)
+	xmldata::getInstance()->loadLang(App::getInstance()->getDevice());
+	//Load();
 }

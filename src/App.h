@@ -23,6 +23,7 @@ static const float APP_VERSION = 1.0;
 
 #include "LuaGlobalCaller.h"
 #include "tinyXML/tinyxml.h"
+#include "XML_Manager.h"
 
 #ifdef _wxWIDGET
 #include "editor/EditorMain.h"
