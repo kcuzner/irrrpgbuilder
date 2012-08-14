@@ -130,6 +130,7 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="src\tinyXML;src\lua;&quot;irrKlang-1.3.0\include&quot;;&quot;irrlicht-engine\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;EDITOR;_CRT_SECURE_NO_WARNINGS"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -148,12 +149,13 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="irrlicht.lib lualib.lib irrKlang.lib"
 				OutputFile="bin(msvc)\IrrRPG_Builder_win32.exe"
-				LinkIncremental="2"
+				LinkIncremental="0"
 				AdditionalLibraryDirectories="src\lua;&quot;irrlicht-engine\lib\Win32-visualstudio&quot;;&quot;irrKlang-1.3.0\lib\Win32-visualStudio&quot;"
 				IgnoreDefaultLibraryNames=""
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				SubSystem="2"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				OptimizeForWindows98="0"
 				LinkTimeCodeGeneration="1"
 				TargetMachine="1"
 			/>
@@ -373,6 +375,7 @@
 				PreprocessorDefinitions="WIN32;DEBUG;_CONSOLE; EDITOR"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
+				ProgramDataBaseFileName="$(TargetDir)$(TargetName).pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -391,13 +394,13 @@
 				AdditionalOptions="/NODEFAULTLIB:libcmt.lib &#x0D;&#x0A;"
 				AdditionalDependencies="irrlicht.lib lualibd.lib irrKlang.lib"
 				OutputFile="bin(msvc)\IrrRPG_Builder_win32_debug.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="src\lua;&quot;irrlicht-engine\lib\Win32-visualstudio&quot;;&quot;irrKlang-1.3.0\lib\Win32-visualStudio&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="0"
 				LinkTimeCodeGeneration="1"
 				TargetMachine="1"
 			/>
@@ -549,22 +552,6 @@
 			<File
 				RelativePath=".\src\main.cpp"
 				>
-				<FileConfiguration
-					Name="wx_Full_Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="wx_Full_Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\src\XML_Manager.cpp"
@@ -659,14 +646,6 @@
 				</File>
 				<File
 					RelativePath=".\src\tinyXML\tinyxmlparser.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\XMLManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\XMLManager.h"
 					>
 				</File>
 			</Filter>

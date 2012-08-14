@@ -1,5 +1,5 @@
-#ifndef XMLMANAGER_H
-#define XMLMANAGER_H
+#ifndef XML_MANAGER_H
+#define XML_MANAGER_H
 
 #include "App.h"
 //#include "LANGManager.h"
@@ -27,4 +27,4 @@ class xmldata
 		~xmldata();
 };
 
-#endif // XMLMANAGER_H
+#endif // XML_MANAGER_H

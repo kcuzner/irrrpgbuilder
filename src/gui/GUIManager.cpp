@@ -1716,10 +1716,18 @@ void GUIManager::loadFonts()
 	guiFont12 = guienv->getFont("../media/fonts/Arial12.xml");
 	guiFont14 = guienv->getFont("../media/fonts/Arial14.xml");
 
-	guiFont10->setKerningWidth(-1);
-	guiFont9->setKerningWidth(-2);
-	guiFont8->setKerningWidth(-1);
-	guiFont8->setKerningHeight(-6);
+	if (guiFont10)
+		guiFont10->setKerningWidth(-1);
+
+	if (guiFont9)
+		guiFont9->setKerningWidth(-2);
+
+
+	if (guiFont8)
+	{
+		guiFont8->setKerningWidth(-1);
+	    guiFont8->setKerningHeight(-6);
+	}
 }
 
 void GUIManager::setStaticTextText(GUI_ID id, stringc text)

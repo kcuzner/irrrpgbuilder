@@ -47,7 +47,7 @@ App::~App()
 	this->cleanWorkspace();
 	SoundManager::getInstance()->stopEngine();
 	device->drop();
-	exit(0);
+	// exit(0);
 }
 
 void App::draw2DImages()
