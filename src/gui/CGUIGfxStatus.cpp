@@ -42,7 +42,8 @@ void CGUIGfxStatus::draw()
 	{
 
 		this->getParent()->getAbsolutePosition();
-//core::rect<s32> myRect (s32 x, s32 y, s32 w, s32 h);
+		//Redefenition seem not needed on MSVC
+		//core::rect<s32> myRect (s32 x, s32 y, s32 w, s32 h);
 		core::rect<s32> parent = this->getParent()->getAbsolutePosition();
 		core::rect<s32> destination = this->myRect(parent.UpperLeftCorner.X+rect.UpperLeftCorner.X,
 			parent.UpperLeftCorner.Y+rect.UpperLeftCorner.Y,

@@ -18,6 +18,11 @@ DynamicObjectsManager::DynamicObjectsManager()
 	stringc pathFile = "../media/dynamic_objects/";
     //Load all objects from xml file
 
+
+	// Test loading of templates data only
+	 this->loadSet();
+
+
     TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
 
     //try to parse the XML
@@ -79,6 +84,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 	createcollisions=true;
 	 cout << "DEBUG : XML : finished!" << endl;
 
+  
 }
 
 DynamicObjectsManager::~DynamicObjectsManager()
@@ -317,8 +323,298 @@ bool DynamicObjectsManager::processFile(stringc filename)
 
 bool DynamicObjectsManager::loadTemplates()
 {
+
+	//io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8(file);
 	return true;
 }
+
+
+bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc file )
+{
+	// --> Loader code
+	// read configuration from xml file
+
+        io::IXMLReaderUTF8* xml = device->getFileSystem()->createXMLReaderUTF8(file);
+		if (!xml)
+			return false;
+
+		core::stringc  MessageText = "";
+		// Data blocks defining the object itself
+		core::stringc  objectName = "";
+		core::stringc  objectMesh = "";
+		core::stringc  objectType = "";
+		core::stringc  objectScript = "";
+		core::stringc  objectScale = "";
+		core::stringc  objectMaterial = "";
+
+		// Inner data block that define the object animations
+		core::stringc  animName = "";
+		core::stringc  animStart = "";
+		core::stringc  animEnd = "";
+		core::stringc  animSpeed = "";
+		core::stringc  animLoop = "";
+		core::stringc  animMoveSpeed = "";
+		core::stringc  animAttackEvent = "";
+		core::stringc  animSoundEvent = "";
+		core::stringc  animSound = "";
+		core::stringw  result = L"";
+
+		bool inside = false;
+
+		// Language counter (using the XML hierachy)
+		u32 count = 0;
+		u32 linecount = 0;
+		u32 npccount = 0;
+		u32 playercount = 0;
+		u32 propscount = 0;
+		u32 editorcount = 0;
+
+
+        while(xml && xml->read())
+        {
+                switch(xml->getNodeType())
+                {
+                case io::EXN_TEXT:		
+                        break;
+
+                case io::EXN_ELEMENT:
+                {
+					if (core::stringw("dynamic_object") == xml->getNodeName())
+					{
+						if (!inside) 
+						{
+							printf ("Inside the requested block (object)!\n");
+							inside=true;
+						}
+							
+						objectName = xml->getAttributeValue("name");
+						printf ("Template object name: %s\n",objectName.c_str());
+						objectMesh = (core::stringc)"    Object mesh: " +xml->getAttributeValue("mesh");
+						objectType = xml->getAttributeValue("type");
+
+						// simply count the object types for the statistics
+						if (objectType==(core::stringc)"npc")
+							npccount++;
+						if (objectType==(core::stringc)"non-interactive")
+							propscount++;
+						if (objectType==(core::stringc)"editor")
+							editorcount++;
+						if (objectType==(core::stringc)"player")
+							playercount++;
+
+						linecount++;
+
+						//non-interactive
+						objectScript = (core::stringc)"    Object script: " + xml->getAttributeValue("script");
+						objectScale = (core::stringc)"    Object scale: " + xml->getAttributeValue("scale");
+						objectMaterial = (core::stringc)"    Object material: " + xml->getAttributeValue("materialType");
+						result=(core::stringw)objectMesh;
+							
+						/*list->addItem(winconvert((core::stringc)"Object name: " + objectName).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,128,128,200));
+						list->addItem(winconvert(result).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
+						list->addItem(winconvert((core::stringc)"    Object type: " +objectType).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
+						list->addItem(winconvert(objectScript).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
+						list->addItem(winconvert(objectScale).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
+						list->addItem(winconvert(objectMaterial).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
+						stats->addItem(((core::stringw)L"  "+objectName).c_str());*/
+						
+					}
+
+					if (core::stringw("animation") == xml->getNodeName())
+					{
+						animName = (core::stringc)"    Anim name: " +xml->getAttributeValue("name");
+
+						result=(core::stringw)animName;
+						/*list->addItem(result.c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,178,178,0));*/
+
+						animStart = (core::stringc)"        Anim start: " +xml->getAttributeValue("start");
+						/*list->addItem(winconvert(animStart).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animEnd = (core::stringc)"        Anim end: " +xml->getAttributeValue("end");
+						/*list->addItem(winconvert(animEnd).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animSpeed = (core::stringc)"        Anim speed: " +xml->getAttributeValue("speed");
+						/*list->addItem(winconvert(animSpeed).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animLoop = (core::stringc)"        Anim loop: " +xml->getAttributeValue("loop");
+						/*list->addItem(winconvert(animLoop).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animSound = (core::stringc)"        Anim sound: " +xml->getAttributeValue("sound");
+						result=(core::stringw)animSound;
+						/*list->addItem(winconvert(result).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animMoveSpeed = (core::stringc)"        Anim walk move speed: " +xml->getAttributeValue("movespeed");
+						/*list->addItem(winconvert(animMoveSpeed).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animAttackEvent = (core::stringc)"        Anim attack event frame: " +xml->getAttributeValue("attackevent");
+						/*list->addItem(winconvert(animAttackEvent).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+
+						animSoundEvent = (core::stringc)"        Anim sound event frame: " +xml->getAttributeValue("soundevent");
+						/*list->addItem(winconvert(animSoundEvent).c_str());
+						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+						
+					}
+					
+				}
+                break;
+
+				case io::EXN_ELEMENT_END:
+					if (inside)
+					{
+						count++;
+					}
+					inside = false;
+					printf("The element has ended\n\n");
+					break;
+                
+				default:
+                        break;
+                }
+        }
+
+		if (playercount>0)
+		{
+			//stats->addItem(((core::stringw)L"Players in this set: "+(core::stringw)playercount).c_str());
+			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+		}
+
+		if (npccount>0)
+		{
+			//stats->addItem(((core::stringw)L"NPC`s in this set: "+(core::stringw)npccount).c_str());
+			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+		}
+
+		if (propscount)
+		{
+			//stats->addItem(((core::stringw)L"Props this set: "+(core::stringw)propscount).c_str());
+			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+		}
+
+		if (editorcount>0)
+		{
+			//stats->addItem(((core::stringw)L"Editor special objects: "+(core::stringw)editorcount).c_str());
+			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+		}
+
+		core::stringw countstr = ((core::stringw)L"-->Total items in set: ")+(core::stringw)(linecount);
+		//stats->addItem(countstr.c_str());
+
+        if (xml)
+                xml->drop(); // don't forget to delete the xml reader
+	// <-- Loader code
+
+		return true;
+}
+
+
+bool DynamicObjectsManager::loadSet()
+{
+// File to seek is: dynamic_objects.xml
+	// Will provide the path and "sets" to load
+	// --> Loader code
+	// read configuration from xml file
+
+	const u32 starttime = App::getInstance()->getDevice()->getTimer()->getRealTime();
+
+	io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/dynamic_objects/dynamic_objects.xml");
+	if (!xml)
+	{
+		printf ("Failed to load the dynamic object template list!\n");
+		return false;
+	}
+
+	core::stringc  MessageText = "";
+	core::stringc  set = "";
+	core::stringc  id = "";
+	core::stringc  str = "";
+	core::stringw  result = L"";
+
+	bool inside = false;
+
+	// Language counter (using the XML hierachy)
+	u32 count = 0;
+	u32 linecount = 0;
+        while(xml && xml->read())
+        {
+			switch(xml->getNodeType())
+            {
+				case io::EXN_TEXT:		
+					break;
+
+                case io::EXN_ELEMENT:
+                {
+					// Look for a specified node
+					if (core::stringw("dynamic_object") == xml->getNodeName())
+					{
+						if (!inside) 
+						{
+							printf ("Inside the requested block!\n");
+							inside=true;
+						}
+							
+						set = xml->getAttributeValue("set");
+						printf ("--- Set: %s\n",set);
+						//list->addItem(winconvert((core::stringc)"Current set: " + set).c_str());
+						//list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,0,0,255));
+
+						linecount++;
+
+						//stats->addItem(winconvert((core::stringc)"Set #" + (core::stringc)linecount + ", model list: ").c_str());
+						//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,255));
+
+							// Load the block of data
+						loadBlock (device, set);
+						
+						
+
+
+					}
+				}
+                break;
+
+				case io::EXN_ELEMENT_END:
+						if (inside)
+							count++;
+						inside = false;
+						printf("The element has ended\n\n");
+						break;
+
+                default:
+                        break;
+                }
+        }
+
+		core::stringw countstr = ((core::stringw)L"Object set count: ")+(core::stringw)(linecount);
+		//stats->addItem(countstr.c_str());
+
+		const u32 endtime = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		u32 time = endtime-starttime;
+
+		//stats->addItem(((core::stringw)L"Parse time used: "+(core::stringw)time+L" ms.").c_str());
+
+
+        if (xml)
+                xml->drop(); // don't forget to delete the xml reader
+
+		return true;
+
+}
+
+
 
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {

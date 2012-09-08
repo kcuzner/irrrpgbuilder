@@ -899,6 +899,7 @@ void CGUIEditBoxIRB::draw()
 	}
 	InMenu = menuOpen;
 
+	// Redefinition seem not needed on MSVC
 	//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
 	FrameRect = AbsoluteRect;

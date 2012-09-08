@@ -29,6 +29,8 @@ class DynamicObjectsManager
 
 		bool processFile(stringc filename);
 		bool loadTemplates();
+		bool loadBlock(IrrlichtDevice * device, core::stringc file);
+		bool loadSet();
         DynamicObject* createActiveObjectAt(vector3df pos);
         void removeObject(stringc uniqueName);
 
