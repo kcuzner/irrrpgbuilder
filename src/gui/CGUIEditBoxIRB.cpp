@@ -108,7 +108,7 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 		FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
 		FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
 	}
-	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
 	SelectionTextColor=skin->getColor(EGDC_HIGH_LIGHT_TEXT);
 	ScrollbarH = Environment->addScrollBar(true,this->myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
@@ -308,7 +308,7 @@ void CGUIEditBoxIRB::setDisplayLineCount(bool display)
 		{
 			LineNumbering=false;
 			LeftSpace=0;
-			irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+			//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 			core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 			localClipRect.clipAgainst(AbsoluteClippingRect);
 			breakText();
@@ -318,7 +318,7 @@ void CGUIEditBoxIRB::setDisplayLineCount(bool display)
 		{
 			LineNumbering=true;
 			LeftSpace=60;
-			irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+			//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 			core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 			localClipRect.clipAgainst(AbsoluteClippingRect);
 			breakText();
@@ -429,7 +429,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 						LineNumbering=false;
 						breakText();
 						LeftSpace=0;
-						irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+						//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 						core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 						localClipRect.clipAgainst(AbsoluteClippingRect);
 					}
@@ -439,7 +439,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 						LineNumbering=true;
 						breakText();
 						LeftSpace=60;
-						irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+						//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 						core::rect<s32> localClipRect = this->myRect(FrameRect.UpperLeftCorner.X+LeftSpace,FrameRect.UpperLeftCorner.Y,FrameRect.getWidth()-(LeftSpace/2),FrameRect.getHeight());
 						localClipRect.clipAgainst(AbsoluteClippingRect);
 					}
@@ -899,7 +899,7 @@ void CGUIEditBoxIRB::draw()
 	}
 	InMenu = menuOpen;
 
-	irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+	//irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
 	FrameRect = AbsoluteRect;
 	// draw the border
@@ -1655,7 +1655,8 @@ bool CGUIEditBoxIRB::processMouse(const SEvent& event)
 
 			for (int i = CursorPos; i > 0; i--) {
 				char character;
-				wcstombs(&character,&Text.c_str()[i],1);
+				//wcstombs
+				wcstombs(&character, &Text.c_str()[i],1);
 				if (!isalnum(character)) {
 
 					start = i+1;

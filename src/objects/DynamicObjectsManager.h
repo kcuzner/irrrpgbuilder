@@ -28,6 +28,7 @@ class DynamicObjectsManager
         static DynamicObjectsManager* getInstance();
 
 		bool processFile(stringc filename);
+		bool loadTemplates();
         DynamicObject* createActiveObjectAt(vector3df pos);
         void removeObject(stringc uniqueName);
 

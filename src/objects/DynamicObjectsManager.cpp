@@ -315,6 +315,11 @@ bool DynamicObjectsManager::processFile(stringc filename)
 	return true;
 }
 
+bool DynamicObjectsManager::loadTemplates()
+{
+	return true;
+}
+
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
     DynamicObject* newObj = activeObject->clone();
