@@ -1968,7 +1968,14 @@ void CGUIEditBoxIRB::breakText()
 	int maxLines = BrokenText.size();
 	int linecount=int(textframe/linesize);
 
-	Scrollbar->setMax(maxLines-linecount);
+	//Calculation is wrong, Scrollbar max is not set at the moment, this could cause other problems.
+	//This bug started to appear from revision 260. I wonder, how I haven't seen it sooner.(rev 315 now)
+
+	// linecount calculation or how it's applied is wrong.
+	// Keeping only the maxline now so the user can edit his full script.
+	//Scrollbar->setMax(maxLines-linecount);
+	Scrollbar->setMax(maxLines);
+
 	linenumber += (core::stringw)BrokenText.size() + L"\n";
 	//Linecounter->setText(linenumber.c_str());
 	//Linecounter->move(core::vector2di(0,10));

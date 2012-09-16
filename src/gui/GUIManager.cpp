@@ -792,8 +792,10 @@ void GUIManager::setupEditorGUI()
 	ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
 	ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
+	// Temporary disabled until the new object templates are in place.
    	guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,40,160,180),-1);
-    guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+    //guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	//guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->findActiveObject()->getNode());
 	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiDynamicObjectsWindowChooser_Y += 220;
@@ -811,8 +813,6 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
 	UpdateGUIChooser(1);
-
-
 
     guiDynamicObjectsWindowChooser_Y += 25;
 
@@ -1311,7 +1311,7 @@ void GUIManager::setupGameplayGUI()
 
 	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
 	guiPlayerNodePreview->setNode(Player::getInstance()->getNodeRef());
-	DynamicObjectsManager::getInstance()->setActiveObject("Archer");
+	//DynamicObjectsManager::getInstance()->setActiveObject("Archer");
 	//printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
 	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
@@ -1487,7 +1487,10 @@ void GUIManager::loadScriptTemplates()
 
 void GUIManager::updateDynamicObjectPreview()
 {
-    guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	// Temporary disabled until the new template system is in place.
+	scene::ISceneNode* node = DynamicObjectsManager::getInstance()->findActiveObject();
+	if (node)
+		guiDynamicObjects_NodePreview->setNode(node);
 }
 
 stringc GUIManager::getEditBoxText(GUI_ID id)

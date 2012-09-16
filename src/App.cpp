@@ -1339,7 +1339,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha release 0.21 (march 2012)";
+			core::stringw str = L"IrrRPG Builder - Alpha release 0.21 (september 2012)";
 			str += " FPS:";
 			str += fps;
 

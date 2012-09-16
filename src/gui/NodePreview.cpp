@@ -63,7 +63,8 @@ NodePreview::~NodePreview()
 
 void NodePreview::draw()
 {
-    if(!node || !smgr) return;
+    if(!smgr) return;
+	//if(!node || !smgr) return;
 	
 	IGUISkin* skin = Environment->getSkin();
 	core::rect<s32> frameRect(AbsoluteRect);
@@ -77,15 +78,24 @@ void NodePreview::draw()
 	core::rect<s32> originalViewport = driver->getViewPort();
 	scene::ICameraSceneNode * oldcam = smgr->getActiveCamera();
 	
-	// Determine the best distance for the camera also find the center of the model.
-	f32 scale1 = (node->getBoundingBox().getExtent().Y)/2;
-	f32 distance = scale1*2;
-	f32 scale2 = (node->getBoundingBox().getExtent().X)/2;
-	f32 scale3 = (node->getBoundingBox().getExtent().Z)/2;
-	if (scale2>distance)
-		distance=scale2*2;
-	if (scale3>distance)
-		distance=scale3*2;
+	//init values
+	f32 scale1 = 1.0f;
+	f32 distance = 1.0f;
+	f32 scale2 = 1.0f;
+	f32 scale3 = 1.0f;
+
+	if (node)
+	{
+		// Determine the best distance for the camera also find the center of the model.
+		scale1 = (node->getBoundingBox().getExtent().Y)/2;
+		distance = scale1*2;
+		scale2 = (node->getBoundingBox().getExtent().X)/2;
+		scale3 = (node->getBoundingBox().getExtent().Z)/2;
+		if (scale2>distance)
+			distance=scale2*2;
+		if (scale3>distance)
+			distance=scale3*2;
+	}
 
 	// Define the aspect ratio for the "camera"
 	f32 aspect = ((f32)frameRect.getWidth()/frameRect.getHeight()); 
@@ -98,9 +108,12 @@ void NodePreview::draw()
 		rotation=0;
 
 	//the camera have also the scale factor
-	scale1=scale1*node->getScale().Y;
-	scale2=scale2*node->getScale().X;
-	scale3=scale3*node->getScale().Z;
+	if (node)
+	{
+		scale1=scale1*node->getScale().Y;
+		scale2=scale2*node->getScale().X;
+		scale3=scale3*node->getScale().Z;
+	}
 
 	// Now find the best distance
 	distance=scale1;
@@ -113,22 +126,34 @@ void NodePreview::draw()
 		smgr->setActiveCamera(fakecam);
 	
 	fakecam->setFarValue(distance*5);
-	
-	node->setPosition(vector3df(0,-1000,0));
-	fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
-	fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
-	fakecam->setAspectRatio(aspect);
+	if (node)
+	{
+		//node->setPosition(vector3df(0,-1000,0));
+		fakecam->setPosition(node->getPosition()+vector3df(0,scale1,0)+vector3df(0,rotation,0).rotationToDirection()*(distance*2.5f));
+		fakecam->setTarget(node->getPosition()+vector3df(0,scale1,0));
+		fakecam->setAspectRatio(aspect);
+	}
+	else
+	{	// IF there is no target to display (doesnt seem to be activated when there are not object that are still loaded)
+		fakecam->setPosition(vector3df(0.0f,-1000.0f,0.0f));
+		fakecam->setTarget(vector3df(0.0f,-1000.0f,10.0f));
+	}
 
 	// Hide the terrain
-	TerrainManager::getInstance()->setVisible(false);
+	TerrainManager::getInstance()->setVisible(true);
 
-		
-	if (!node->isVisible())
+	if (node)
 	{
-		node->setVisible(true);
-		//node2->render();
-		smgr->drawAll();
-		node->setVisible(false);
+		if (!node->isVisible())
+		{
+			node->setVisible(true);
+			//node2->render();
+			//smgr->drawAll();
+			node->render();
+			node->setVisible(false);
+		} else
+			smgr->drawAll();
+			//node->render();
 	}
 	else
 		//node2->render();
@@ -146,9 +171,14 @@ void NodePreview::draw()
 
 void NodePreview::setNode(ISceneNode* node)
 {
-	this->node=node;
+	if (node)
+	{
+		this->node=node;
 	
-	smgr = node->getSceneManager();
+		smgr = node->getSceneManager();
+	} else
+		this->node=NULL;
+
 	if (!fakecam)
 		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
 }

@@ -1,12 +1,11 @@
 #ifndef DYNAMICOBJECT_H
 #define DYNAMICOBJECT_H
 
+#include <vector>
 #include <irrlicht.h>
-
-#include "../terrain/TerrainManager.h"
 #include "HealthSceneNode.h"
-#include "../gui/GUIManager.h"
 
+using namespace std; // for the vector class
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -14,7 +13,7 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-extern "C" {
+extern "C" { // Access to the LUA library
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
@@ -22,13 +21,13 @@ extern "C" {
 
 enum OBJECT_ANIMATION
 {
-    OBJECT_ANIMATION_IDLE = 0,
-    OBJECT_ANIMATION_WALK = 1,
+	OBJECT_ANIMATION_IDLE = 0,
+	OBJECT_ANIMATION_WALK = 1,
 	OBJECT_ANIMATION_RUN = 2,
-    OBJECT_ANIMATION_ATTACK = 3,
+	OBJECT_ANIMATION_ATTACK = 3,
 	OBJECT_ANIMATION_INJURED = 4,
 	OBJECT_ANIMATION_KNOCKBACK = 5,
-    OBJECT_ANIMATION_DIE = 6,
+	OBJECT_ANIMATION_DIE = 6,
 	OBJECT_ANIMATION_DIE_KNOCKBACK = 7,
 	OBJECT_ANIMATION_SPAWN = 7,
 	OBJECT_ANIMATION_DESPAWN = 8,
@@ -38,6 +37,7 @@ enum OBJECT_ANIMATION
 	OBJECT_ANIMATION_PRESPAWN = 12,
 	OBJECT_ANIMATION_CUSTOM = 99
 };
+
 enum TYPE
 {
 	OBJECT_TYPE_NONE = 0,
@@ -54,22 +54,22 @@ enum AI_INFO
 	AI_STATE_BUSY
 };
 
-typedef struct Animation{
-    stringc name;
+typedef struct data_anim{
+	stringc name;
 	stringc meshname;
 	IAnimatedMesh* mesh;
 	stringc sound;
 	s32 startFrame;
-    s32 endFrame;
+	s32 endFrame;
 	s32 attackevent;
 	s32 soundevent;
-    f32 speed;
+	f32 speed;
 	f32 walkspeed;
 	bool loop;
 
 }DynamicObject_Animation;
 
-typedef struct Propertie{
+typedef struct data_properties{
 	int life;
 	int mana;
 	int maxlife;
@@ -94,7 +94,8 @@ typedef struct Propertie{
 class DynamicObject
 {
     public:
-        DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations);
+
+		DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations);
 		virtual ~DynamicObject();
 
         DynamicObject* clone();
@@ -118,6 +119,7 @@ class DynamicObject
 		void setEnabled(bool enabled);
 		bool isEnabled();
 		void setType(stringc name);
+		void setType(TYPE type);
 		TYPE getType();
 		
 		void setName(stringc name);

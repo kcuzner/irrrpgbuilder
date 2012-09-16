@@ -13,68 +13,13 @@ DynamicObjectsManager::DynamicObjectsManager()
 {
 	device = App::getInstance()->getDevice();
 
-	// Load the definition for all dynamic objects
-	//ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-	stringc pathFile = "../media/dynamic_objects/";
-    //Load all objects from xml file
+	newObj=new TemplateObject("");
 
-
-	// Test loading of templates data only
-	 this->loadSet();
-
-
-    TiXmlDocument doc("../media/dynamic_objects/dynamic_objects.xml");
-
-    //try to parse the XML
-	if (!doc.LoadFile())
-    {
-        cout << "ERROR LOADING DYNAMIC_OBJECTS.XML" << endl;
-        exit(0);
-    }
-
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : LOADING DYNAMIC_OBJECTS.XML" << endl;
-    #endif
-
-    //locate root node
-    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_DynamicObjects" );
-
-    if ( root )
-    {
-        //check file version
-        if( atof(root->Attribute("version"))!= APP_VERSION )
-        {
-            #ifdef APP_DEBUG
-            cout << "DEBUG : XML : INCORRECT DYNAMIC_OBJECTS.XML VERSION!" << endl;
-            #endif
-
-            exit(0);
-        }
-
-        vector<stringc> objsIDs;
-
-        TiXmlNode* currentObjXML = root->FirstChild( "dynamic_object" );
-
-        //Iterate dynamic_objects
-		GUIManager::getInstance()->setTextLoader(L"Loading Dynamic objects lists...");
-        while( currentObjXML != NULL )
-        {
-            //Get Dynamic Object Attributes
-            stringc set = currentObjXML->ToElement()->Attribute("set");
-			currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
-
-			//Process and parse the files if the set are found into the XML
-			if (set.size()>0)
-				processFile(set.c_str());
-
-		}
-	}
+	this->loadTemplates();
 
 	//set the initial active object - the list must be 1 or more objs!
-    activeObject = objectsTemplate[0];
-
-
-    //just initialize var
+	activeObject = this->searchTemplate("frog");
+	 //just initialize var
     objsCounter = 0;
 	objectCounter = 0;
 	dialogCaller = NULL;
@@ -82,9 +27,6 @@ DynamicObjectsManager::DynamicObjectsManager()
 	// Collision creation (in steps)
 	collisionCounter = 0;
 	createcollisions=true;
-	 cout << "DEBUG : XML : finished!" << endl;
-
-  
 }
 
 DynamicObjectsManager::~DynamicObjectsManager()
@@ -92,242 +34,79 @@ DynamicObjectsManager::~DynamicObjectsManager()
     //dtor
 }
 
-
-bool DynamicObjectsManager::processFile(stringc filename)
-{
-	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-	stringc pathFile = "../media/dynamic_objects/";
-    //Load all objects from xml file
-    TiXmlDocument doc(filename.c_str());
-
-    //try to parse the XML
-	if (!doc.LoadFile())
-    {
-        cout << "ERROR LOADING DYNAMIC_OBJECTS.XML" << endl;
-        exit(0);
-    }
-
-    #ifdef APP_DEBUG
-    cout << "DEBUG : XML : LOADING DYNAMIC_OBJECTS.XML" << endl;
-    #endif
-
-    //locate root node
-    TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_DynamicObjects" );
-
-    if ( root )
-    {
-        //check file version
-        if( atof(root->Attribute("version"))!= APP_VERSION )
-        {
-            #ifdef APP_DEBUG
-            cout << "DEBUG : XML : INCORRECT DYNAMIC_OBJECTS.XML VERSION!" << endl;
-            #endif
-
-            exit(0);
-        }
-
-        vector<stringc> objsIDs;
-
-        TiXmlNode* currentObjXML = root->FirstChild( "dynamic_object" );
-
-        //Iterate dynamic_objects
-
-        while( currentObjXML != NULL )
-        {
-            //Get Dynamic Object Attributes
-            stringc name = currentObjXML->ToElement()->Attribute("name");
-            stringc mesh = currentObjXML->ToElement()->Attribute("mesh");
-            stringc scriptname = currentObjXML->ToElement()->Attribute("script");
-			stringc type = currentObjXML->ToElement()->Attribute("type");
-            stringc scale = currentObjXML->ToElement()->Attribute("scale");
-            stringc materialType = currentObjXML->ToElement()->Attribute("materialType");
-
-			// Update the GUI with a description of the current loading task
-			stringw nametext="Loading Dynamic object: ";
-			nametext.append(name.c_str());
-			GUIManager::getInstance()->setTextLoader(nametext);
-
-
-			//Read Object Animations
-            TiXmlNode* currentAnimXML = currentObjXML->FirstChild( "animation" );
-
-            vector<DynamicObject_Animation> animations;
-
-            //Iterate animations
-            while( currentAnimXML != NULL )
-            {
-                DynamicObject_Animation currAnim;
-
-                currAnim.name = currentAnimXML->ToElement()->Attribute("name");
-				stringw nametextanim = nametext;
-				nametextanim.append(L", adding animation:");
-				nametextanim.append(currAnim.name.c_str());
-				GUIManager::getInstance()->setTextLoader(nametextanim);
-
-				//GUIManager::getInstance()->setTextLoader(L"Loading Dynamic objects animation...");
-
-				// Load the name of the animation mesh (if there is any)
-				// If there is no mesh name, then will be "undefined"
-				currAnim.meshname = currentAnimXML->ToElement()->Attribute("mesh");
-				if (currAnim.meshname.size()==0)
-				{
-					currAnim.meshname = L"undefined";
-					currAnim.mesh = NULL;
-				}
-				else
-					currAnim.mesh = smgr->getMesh(pathFile+currAnim.meshname);
-
-				// load the startframe for the current animation name
-				// Default value is 0 as the first frame of animation
-                stringc s_start = currentAnimXML->ToElement()->Attribute("start");
-				if (s_start.size()>0)
-					currAnim.startFrame = atoi(s_start.c_str());
-				else
-					currAnim.startFrame=0;
-
-				// load the endframe for the current animation name
-				// Default value is the start frame
-                stringc s_end = currentAnimXML->ToElement()->Attribute("end");
-				if (s_end.size()>0)
-					currAnim.endFrame = atoi(s_end.c_str());
-				else
-					currAnim.endFrame=currAnim.startFrame;
-
-
-				// Quick patch.. There something wrong with the loading here
-				if (currAnim.endFrame==0)
-					currAnim.endFrame=1;
-
-				// TODO: Not totally implemented,
-				// Sound file name to play when the animation event start
-				currAnim.sound = currentAnimXML->ToElement()->Attribute("sound");
-
-				// TODO: Not totally implemented
-				// Specify at what frame the audio will start on the animation
-				// the default value will be the first frame of animation
-				// The audio string will determine is there sound to be played back
-				stringc s_sound = currentAnimXML->ToElement()->Attribute("soundevent");
-				if (s_sound.size()>0)
-					currAnim.soundevent = atoi(s_sound.c_str());
-				else
-					currAnim.soundevent = currAnim.startFrame;
-
-				// TODO: Not totally implemented, need to be redone in the dynamic object check
-				// Specify at what frame the attack will occur (causing damage/impact)
-				// -1 is the default value (not defined)
-				// A value will trigger the combat system to cause damage
-				stringc s_attack = currentAnimXML->ToElement()->Attribute("attackevent");
-				if (s_attack.size()>0)
-					currAnim.attackevent = atoi(s_attack.c_str());
-				else
-					currAnim.attackevent= -1;
-
-				// Retrieve the speed of the animation, default to 30fps
-				stringc a_speed = currentAnimXML->ToElement()->Attribute("speed");
-				if (a_speed.size()>0)
-					currAnim.speed = (f32)atof(a_speed.c_str());
-				else
-					currAnim.speed = 30.0f;
-
-				// Load the walking speed of the NPC or Player (unit by 1/60th of a second)
-				// Current default will move 60 inches (default unit) per second.
-				// Something is strange, ATOF function round the number on the wxWidget build.
-				stringc s_wspeed = currentAnimXML->ToElement()->Attribute("movespeed");
-				if (s_wspeed.size()>0)
-					currAnim.walkspeed = (f32)atof(s_wspeed.c_str());
-				else
-					currAnim.walkspeed = 0.0f;
-
-
-
-				// Check for an defined animation loop mode. Default is set to true (looping)
-				stringc s_loop = currentAnimXML->ToElement()->Attribute("loop");
-				if (s_loop.size()>0 && s_loop==L"false")
-					currAnim.loop = false;
-				else
-					currAnim.loop = true;
-
-                currentAnimXML = currentObjXML->IterateChildren( "animation", currentAnimXML );
-                animations.push_back(currAnim);
-
-				// Update the gui while loading
-
-            }
-
-            // -- Create Dynamic Object --
-            DynamicObject* newObj = new DynamicObject(name, mesh, animations);
-			newObj->setType(type);
-
-			// Load the script if it was defined in the XML
-		    if (scriptname.size()>1)
-			{
-				stringc newScript = "";
-				stringc filename = "../media/scripts/";
-				filename += scriptname;
-
-				std::string line;
-				ifstream fileScript (filename.c_str());
-				if (fileScript.is_open())
-				{
-					while (! fileScript.eof() )
-					{
-						getline (fileScript,line);
-						newScript += line.c_str();
-						newScript += '\n';
-					}
-					fileScript.close();
-				}
-				newObj->setScript(newScript);
-			}
-
-            //setup material
-            E_MATERIAL_TYPE mat = EMT_SOLID;
-            if(materialType == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
-            if(materialType == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
-
-            newObj->setMaterialType(mat);
-			newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
-
-			// Set the scale only if it was written
-			if (scale.size()>0)
-					newObj->setScale(vector3df((f32)atof(scale.c_str()),(f32)atof(scale.c_str()),(f32)atof(scale.c_str())));
-
-			// For the player class. The player is not a template. Could be used for other non template objects (editor objects)
-			if (type=="player")
-			{
-				playerObject=newObj; // Shortcut for directly accessing the player dynamic object
-				playerObject->setTemplate(true);
-				objects.push_back(newObj);  // The player object is added to the list of the active dynamic objects (refresh)
-			} else if(type=="editor" && name=="target")
-			{
-				targetObject=newObj;
-				targetObject->setTemplate(true);
-				targetObject->getNode()->setVisible(false);
-				targetObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
-			}
-			else
-			{	// other objects that are used as templates
-				newObj->setTemplateObjectName(name);
-				newObj->getNode()->setVisible(false);
-				newObj->setTemplate(true);
-				//store the new object
-				objectsTemplate.push_back(newObj);
-				objsIDs.push_back(name);
-			}
-            currentObjXML = root->IterateChildren( "dynamic_object", currentObjXML );
-		}//while
-
-    }//root
-	return true;
-}
-
 bool DynamicObjectsManager::loadTemplates()
 {
+	// Test loading of templates data only
+	this->loadSet();
 
-	//io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8(file);
+	// Create the 2 needed objects at startup
+	TemplateObject* pObject = searchTemplate("player_normal");
+	
+	//Create the player avatar needed in the game
+	if (pObject->getName()=="player_normal")	
+	{
+		playerObject = new DynamicObject(pObject->getName(), pObject->meshFile, pObject->animations);
+		playerObject->setScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
+		playerObject->setType(pObject->getType());
+			
+		playerObject->setTemplate(true);
+		objects.push_back(playerObject);
+		//setup material
+		playerObject->setMaterialType(pObject->getMaterialType());
+		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+		// Load the script if it was defined in the XML
+		if (pObject->script.size()>1)
+		{
+			stringc newScript = "";
+			stringc filename = "../media/scripts/";
+			filename += pObject->script;
+
+			std::string line;
+			ifstream fileScript (filename.c_str());
+			if (fileScript.is_open())
+			{
+				while (! fileScript.eof() )
+				{
+					getline (fileScript,line);
+					newScript += line.c_str();
+					newScript += '\n';
+				}
+				fileScript.close();
+			}
+			playerObject->setScript(newScript);
+		}
+	}
+
+	// Create the target object needed for the point&click gameplay
+	TemplateObject* tObject = searchTemplate("target");	
+	if (tObject->getName()=="target")
+	{
+		targetObject = new DynamicObject(tObject->getName(), tObject->meshFile, tObject->animations);
+		targetObject->setTemplate(true);
+		targetObject->getNode()->setVisible(false);
+		targetObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+		 //setup material
+		targetObject->setMaterialType(tObject->getMaterialType());
+		targetObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+	}
 	return true;
 }
 
+TemplateObject* DynamicObjectsManager::searchTemplate(stringc name)
+{
+	for (int i=0 ; i< (int)objTemplate.size() ; i++)
+    {
+		if (objTemplate[i])
+		{
+			if( (stringc)objTemplate[i]->getName() == name )
+			{	
+				return objTemplate[i];
+			}
+		}
+    }
+	printf ("Warning: Failed to find the proper object: %s\n",name.c_str());
+    return NULL;
+}
 
 bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc file )
 {
@@ -360,6 +139,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		core::stringw  result = L"";
 
 		bool inside = false;
+		bool inside2 = false;
 
 		// Language counter (using the XML hierachy)
 		u32 count = 0;
@@ -369,6 +149,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		u32 propscount = 0;
 		u32 editorcount = 0;
 
+		core::stringc oldName = "";
+
+		core::stringw currentNodeName = L"";
 
         while(xml && xml->read())
         {
@@ -387,10 +170,26 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							inside=true;
 						}
 							
-						objectName = xml->getAttributeValue("name");
-						printf ("Template object name: %s\n",objectName.c_str());
-						objectMesh = (core::stringc)"    Object mesh: " +xml->getAttributeValue("mesh");
+						objectName = (core::stringw)xml->getAttributeValue("name");
+						if (oldName!=(core::stringc)newObj->getName())
+						{
+							
+							oldName=(core::stringc)newObj->getName();
+
+							// Add the old object to the list,only the pointer is stored
+							this->objTemplate.push_back(newObj);
+
+							// Create the new object 
+							newObj = new TemplateObject(objectName);
+						}
+						
+						newObj->setName((core::stringw)objectName);
+						
+						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
+						newObj->meshFile=objectMesh;
+
 						objectType = xml->getAttributeValue("type");
+						newObj->setType(objectType);
 
 						// simply count the object types for the statistics
 						if (objectType==(core::stringc)"npc")
@@ -405,68 +204,97 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						linecount++;
 
 						//non-interactive
-						objectScript = (core::stringc)"    Object script: " + xml->getAttributeValue("script");
-						objectScale = (core::stringc)"    Object scale: " + xml->getAttributeValue("scale");
+						objectScript = (core::stringc)xml->getAttributeValue("script");
+						newObj->script=(core::stringw)objectScript;
+
+						objectScale = (core::stringc)xml->getAttributeValue("scale");
+						newObj->setScale((irr::f32)atof(objectScale.c_str()));
+						
 						objectMaterial = (core::stringc)"    Object material: " + xml->getAttributeValue("materialType");
-						result=(core::stringw)objectMesh;
-							
-						/*list->addItem(winconvert((core::stringc)"Object name: " + objectName).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,128,128,200));
-						list->addItem(winconvert(result).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
-						list->addItem(winconvert((core::stringc)"    Object type: " +objectType).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
-						list->addItem(winconvert(objectScript).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
-						list->addItem(winconvert(objectScale).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
-						list->addItem(winconvert(objectMaterial).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,255));
-						stats->addItem(((core::stringw)L"  "+objectName).c_str());*/
+						
+						E_MATERIAL_TYPE mat = EMT_SOLID;
+            			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
+						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
+						newObj->setMaterialType(mat);
 						
 					}
 
-					if (core::stringw("animation") == xml->getNodeName())
+					if (core::stringw("animation") == (core::stringw)xml->getNodeName())
 					{
-						animName = (core::stringc)"    Anim name: " +xml->getAttributeValue("name");
 
-						result=(core::stringw)animName;
-						/*list->addItem(result.c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,178,178,0));*/
 
-						animStart = (core::stringc)"        Anim start: " +xml->getAttributeValue("start");
-						/*list->addItem(winconvert(animStart).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+						DynamicObject_Animation currAnim;
+						// Initialize the data
+						currAnim.name = "";
+						currAnim.startFrame = 0;
+						currAnim.endFrame = 0;
+						currAnim.speed = 0.0f;
+						currAnim.loop = true;
+						currAnim.sound = "";
+						currAnim.walkspeed = 0.0f;
+						currAnim.attackevent = 0;
+						currAnim.soundevent = 0;
+						currAnim.meshname="";
+						currAnim.mesh=NULL;
 
-						animEnd = (core::stringc)"        Anim end: " +xml->getAttributeValue("end");
-						/*list->addItem(winconvert(animEnd).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+						if (!inside2) 
+						{
+							printf ("Inside the requested block (animation)!\n");
+							inside2=true;
+						}
+						currAnim.name = (core::stringc)xml->getAttributeValue("name");
 
-						animSpeed = (core::stringc)"        Anim speed: " +xml->getAttributeValue("speed");
-						/*list->addItem(winconvert(animSpeed).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
-
-						animLoop = (core::stringc)"        Anim loop: " +xml->getAttributeValue("loop");
-						/*list->addItem(winconvert(animLoop).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
-
-						animSound = (core::stringc)"        Anim sound: " +xml->getAttributeValue("sound");
-						result=(core::stringw)animSound;
-						/*list->addItem(winconvert(result).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
-
-						animMoveSpeed = (core::stringc)"        Anim walk move speed: " +xml->getAttributeValue("movespeed");
-						/*list->addItem(winconvert(animMoveSpeed).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
-
-						animAttackEvent = (core::stringc)"        Anim attack event frame: " +xml->getAttributeValue("attackevent");
-						/*list->addItem(winconvert(animAttackEvent).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
-
-						animSoundEvent = (core::stringc)"        Anim sound event frame: " +xml->getAttributeValue("soundevent");
-						/*list->addItem(winconvert(animSoundEvent).c_str());
-						list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,255,255,0));*/
+						animStart = (core::stringc)xml->getAttributeValue("start");
+						currAnim.startFrame = (irr::s32) atoi(animStart.c_str());
 						
+						animEnd = (core::stringc)xml->getAttributeValue("end");
+						currAnim.endFrame = (irr::s32) atoi(animEnd.c_str());
+
+						animSpeed = (core::stringc)xml->getAttributeValue("speed");
+						currAnim.speed = (irr::f32)atof(animSpeed.c_str());
+
+						animLoop = (core::stringc)xml->getAttributeValue("loop");
+						if (animLoop=="false") currAnim.loop = false;
+						else
+							currAnim.loop = true;
+
+
+						animSound = (core::stringc)xml->getAttributeValue("sound");
+						currAnim.sound = animSound;
+
+
+						animMoveSpeed = (core::stringc)xml->getAttributeValue("movespeed");
+						currAnim.walkspeed = (irr::f32) atof(animMoveSpeed.c_str());
+						
+						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent");
+						currAnim.attackevent = (irr::s32)atoi(animAttackEvent.c_str());
+
+						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent");
+						currAnim.soundevent = (irr::s32)atoi(animSoundEvent.c_str());
+
+						
+						
+						newObj->animations.push_back(currAnim); //add the new animation to the template data
+	
+						/*
+						printf (">>> Added animation %s for %s. S:%d, E:%d\n",currAnim.name.c_str(),objectName.c_str(),
+							currAnim.startFrame, currAnim.endFrame);
+
+						if ((currAnim.soundevent>0) && (currAnim.sound!=""))
+							printf (">>>>> Sound %s will be triggered at frame %d\n",currAnim.sound,currAnim.soundevent);
+						
+						if (currAnim.attackevent>0)
+							printf (">>>>> Damage will be done from frame %d\n",currAnim.attackevent);
+
+						if (currAnim.speed>0) 
+							printf (">>>>> Framerate of anim: %f\n",(float)currAnim.speed);
+						else 
+							printf (">>>>> WARNING! No animation framerate defined!!!\n");
+
+						if (currAnim.walkspeed>0)
+							printf (">>>>> Walkspeed of anim: %f\n",(float)currAnim.walkspeed);
+
+						printf("\n"); */
 					}
 					
 				}
@@ -478,6 +306,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						count++;
 					}
 					inside = false;
+					inside2 = false;
 					printf("The element has ended\n\n");
 					break;
                 
@@ -488,34 +317,28 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 		if (playercount>0)
 		{
-			//stats->addItem(((core::stringw)L"Players in this set: "+(core::stringw)playercount).c_str());
-			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+			printf (">>>>> Current player count is: %d\n",playercount);
 		}
 
 		if (npccount>0)
 		{
-			//stats->addItem(((core::stringw)L"NPC`s in this set: "+(core::stringw)npccount).c_str());
-			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+			printf (">>>>> Current npc count is: %d\n",npccount);
 		}
 
 		if (propscount)
 		{
-			//stats->addItem(((core::stringw)L"Props this set: "+(core::stringw)propscount).c_str());
-			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+			printf (">>>>> Current prop count is: %d\n",propscount);
 		}
 
 		if (editorcount>0)
 		{
-			//stats->addItem(((core::stringw)L"Editor special objects: "+(core::stringw)editorcount).c_str());
-			//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,200));
+			printf (">>>>> Current editor object count is: %d\n",editorcount);
 		}
 
-		core::stringw countstr = ((core::stringw)L"-->Total items in set: ")+(core::stringw)(linecount);
-		//stats->addItem(countstr.c_str());
+		printf (">>>>> Total objects in this set: %d\n",linecount);
 
         if (xml)
                 xml->drop(); // don't forget to delete the xml reader
-	// <-- Loader code
 
 		return true;
 }
@@ -523,9 +346,8 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 bool DynamicObjectsManager::loadSet()
 {
-// File to seek is: dynamic_objects.xml
+	// File to seek is: dynamic_objects.xml
 	// Will provide the path and "sets" to load
-	// --> Loader code
 	// read configuration from xml file
 
 	const u32 starttime = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -544,6 +366,7 @@ bool DynamicObjectsManager::loadSet()
 	core::stringw  result = L"";
 
 	bool inside = false;
+	bool inside2 = false;
 
 	// Language counter (using the XML hierachy)
 	u32 count = 0;
@@ -567,21 +390,12 @@ bool DynamicObjectsManager::loadSet()
 						}
 							
 						set = xml->getAttributeValue("set");
-						printf ("--- Set: %s\n",set);
-						//list->addItem(winconvert((core::stringc)"Current set: " + set).c_str());
-						//list->setItemOverrideColor(list->getItemCount()-1,video::SColor(255,0,0,255));
+						//printf ("--- Set: %s\n",set);
 
 						linecount++;
 
-						//stats->addItem(winconvert((core::stringc)"Set #" + (core::stringc)linecount + ", model list: ").c_str());
-						//stats->setItemOverrideColor(stats->getItemCount()-1,video::SColor(255,0,0,255));
-
-							// Load the block of data
-						loadBlock (device, set);
-						
-						
-
-
+						// Load the block of data (A 'block' is a xml file containing the objects)
+						loadBlock(device, set);
 					}
 				}
                 break;
@@ -599,37 +413,59 @@ bool DynamicObjectsManager::loadSet()
         }
 
 		core::stringw countstr = ((core::stringw)L"Object set count: ")+(core::stringw)(linecount);
-		//stats->addItem(countstr.c_str());
 
 		const u32 endtime = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		u32 time = endtime-starttime;
-
-		//stats->addItem(((core::stringw)L"Parse time used: "+(core::stringw)time+L" ms.").c_str());
-
 
         if (xml)
                 xml->drop(); // don't forget to delete the xml reader
 
 		return true;
-
 }
-
-
 
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
-    DynamicObject* newObj = activeObject->clone();
+  	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);
+	newObj->setScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
+	newObj->setType(activeObject->getType());
+	newObj->setTemplate(true);
+	//setup material
+	newObj->setMaterialType(activeObject->getMaterialType());
+	newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+	// Load the script if it was defined in the XML
+	if (activeObject->script.size()>1)
+	{
+		stringc newScript = "";
+		stringc filename = "../media/scripts/";
+		filename += activeObject->script;
+
+		std::string line;
+		ifstream fileScript (filename.c_str());
+		if (fileScript.is_open())
+		{
+			while (! fileScript.eof() )
+			{
+				getline (fileScript,line);
+				newScript += line.c_str();
+				newScript += '\n';
+			}
+			fileScript.close();
+		}
+		newObj->setScript(newScript);
+	}
 
     cout << "TEMPLATE NAME:" << activeObject->getName().c_str() << endl;
 
     newObj->setPosition(pos);
 
-	// Add to the dynamic object list.
-	objects.push_back(newObj);
-
     //the unique name of an dynamic object contains his index at the objects vector
     newObj->setName(this->createUniqueName());
-	newObj->setScript(activeObject->getScript());
+	newObj->setTemplateObjectName(activeObject->getName());
+
+	// Add to the dynamic object list.
+	objects.push_back(newObj);
+	activeObject2=newObj;
+	GUIManager::getInstance()->updateDynamicObjectPreview();
 
     return newObj;
 }
@@ -654,36 +490,40 @@ DynamicObjectsManager* DynamicObjectsManager::getInstance()
     return instance;
 }
 
-DynamicObject* DynamicObjectsManager::getActiveObject()
+TemplateObject* DynamicObjectsManager::getActiveObject()
 {
     return activeObject;
 }
 
 void DynamicObjectsManager::setActiveObject(stringc name)
 {
-    for (int i=0 ; i<(int)objectsTemplate.size() ; i++)
+    for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-    	if( ((DynamicObject*)objectsTemplate[i])->getName() == name )
+		core::stringw templateName=objTemplate[i]->getName();
+		if((core::stringc)templateName == name )
     	{
-    	    activeObject = ((DynamicObject*)objectsTemplate[i]);
+    	    activeObject = ((TemplateObject*)objTemplate[i]);
     	    break;
     	}
     }
 }
 
+//! Provide a list of template objects names for the GUI (Templates) based on the object type/category
+//! Used the GUI system to provide a list from the objects in the templates
 vector<stringc> DynamicObjectsManager::getObjectsList(TYPE objectType)
 {
     vector<stringc> listObjs;
 
-    for (int i=0 ; i<(int)objectsTemplate.size() ; i++)
+    for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objectsTemplate[i]->getType()==objectType)
-    		listObjs.push_back( objectsTemplate[i]->getName() );
+		if (objTemplate[i]->getType()==objectType)
+    		listObjs.push_back( objTemplate[i]->getName() );
     }
 
     return listObjs;
 }
 
+//! Return a searched dynamic object based on it's name
 DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 {
     for (int i=0 ; i< (int)objects.size() ; i++)
@@ -699,16 +539,37 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
     return NULL;
 }
 
+//! Return the player dynamic object pointer
 DynamicObject* DynamicObjectsManager::getPlayer()
 {
 	return playerObject;
 }
 
+// Return the target dynamic object pointer
 DynamicObject* DynamicObjectsManager::getTarget()
 {
 	return targetObject;
 }
 
+// Will try to find the matching name in the dynamic objects 
+// and return the first dynamic object pointer that has that template name
+// Used by the node preview GUI
+scene::ISceneNode* DynamicObjectsManager::findActiveObject(void)
+{
+	for (int i=0 ; i< (int)objects.size() ; i++)
+    {
+		if (objects[i])
+		{
+			printf("this object is number %d and it's name is: %s\n",i,objects[i]->getTemplateObjectName());
+			if( objects[i]->getTemplateObjectName() == activeObject->getName() )
+				return objects[i]->getNode();
+		}
+    }
+
+	return NULL;
+}
+
+// Save the dynamic objects configuration to XML (TinyXML)
 void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 {
     //write header
@@ -779,6 +640,7 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
     parentElement->LinkEndChild(dynamicObjectsXML2);
 }
 
+//! Load back data from XML into the dynamic objects (TinyXML)
 bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 {
     TiXmlNode* dynamicObjectXML = parentElement->FirstChild( "obj" );
@@ -936,8 +798,8 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 	return true;
 }
 
+//! Freeze all the NPC and the player object (not moving) on the screen when asked to pause
 void DynamicObjectsManager::freezeAll()
-// Freeze all NPC on the screen when asked to pause
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
@@ -949,8 +811,8 @@ void DynamicObjectsManager::freezeAll()
     }
 }
 
+//! Unfreeze all NPC on the screen when asked to pause
 void DynamicObjectsManager::unFreezeAll()
-// Unfreeze all NPC on the screen when asked to pause
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
@@ -974,7 +836,8 @@ void DynamicObjectsManager::setDialogCaller(DynamicObject* object)
 }
 
 
-// This function give back the last DynamicObject that called the dialog
+//! This function give back the last DynamicObject that called the dialog
+//! if not defined then return the pointer to the player dynamic object pointer
 DynamicObject* DynamicObjectsManager::getDialogCaller()
 {
 	if (dialogCaller)
@@ -983,15 +846,16 @@ DynamicObject* DynamicObjectsManager::getDialogCaller()
 		return getPlayer();
 }
 
+//!the unique name of an dynamic object contains his index at the objects vector
 stringc DynamicObjectsManager::createUniqueName()
 {
-    //the unique name of an dynamic object contains his index at the objects vector
     stringc uniqueName = "dynamic_object_";
     uniqueName += objsCounter++;
 
     return uniqueName;
 }
 
+//! Initialize the scripts (execute) in all the dynamic object list.
 void DynamicObjectsManager::initializeAllScripts()
 {
     for(int i=0;i<(int)objects.size();i++)
@@ -1002,6 +866,7 @@ void DynamicObjectsManager::initializeAllScripts()
     }
 }
 
+//! Will display or hide the shadow object under the dynamic objects (used for play/edit)
 void DynamicObjectsManager::displayShadow(bool visible)
 {
 	for(int i=0;i<(int)objects.size();i++)
@@ -1018,32 +883,9 @@ void DynamicObjectsManager::displayShadow(bool visible)
     }
 }
 
+//! Main update loop for all the dynamic objects
 void DynamicObjectsManager::updateAll()
 {
-
-	// New method.. Should be more efficient.
-
-	// Use an object counter
-	// each iteration will update a specific object, one by one
-	// So at each cycle only one object is refreshed.
-	/*objectCounter++;
-	if (objectCounter>(int)objects.size()-1)
-	{
-		objectCounter=0;
-		Player::getInstance()->update(); // This one is timed now.
-	}
-
-	if (objects[objectCounter])
-	{
-		if (objects[objectCounter]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
-		{
-			((DynamicObject*)objects[objectCounter])->update();
-		}
-	}*/
-
-	// Have to redo this. This is less than efficient for a game!
-	// This will refresh the objects in a single "strike", but will remove control for other things.
-	// Will be bad.
 
     for(int i=0;i<(int)objects.size();i++)
     {
@@ -1093,6 +935,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 	}
 }
 
+//! This is used for animation blending, need to be called at each refresh
 void DynamicObjectsManager::updateAnimationBlend()
 {
 	 for(int i=0;i<(int)objects.size();i++)
@@ -1109,6 +952,7 @@ void DynamicObjectsManager::updateAnimationBlend()
 }
 
 
+// Put all the object in the idle animation mode. (Play/Edit mode)
 void DynamicObjectsManager::objectsToIdle()
 {
 	 for(int i=0;i<(int)objects.size();i++)
@@ -1126,8 +970,8 @@ void DynamicObjectsManager::objectsToIdle()
 	}
 }
 
-IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 // Create a meta selector for the collision response animation
+IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 	meta=smgr->createMetaTriangleSelector();
@@ -1154,6 +998,7 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	return meta;
 }
 
+// Set the flag to re-create the collisions
 void DynamicObjectsManager::startCollisions()
 {
 	collisionCounter=0;
@@ -1230,7 +1075,9 @@ void DynamicObjectsManager::updateMetaSelector()
 	createcollisions=true;
 	collisionCounter=0;
 }
-
+//! Clean up the screen by removing everything.
+// Might have to fix some details
+// Used mostly when the application is closing
 void DynamicObjectsManager::clean(bool full)
 {
 
@@ -1291,5 +1138,14 @@ void DynamicObjectsManager::clean(bool full)
     }
 
    objects.clear();
+
+   // Clearing all template data, need to update
+   for(int i=0;i<(int)objTemplate.size();i++)
+    {
+        TemplateObject* d = objTemplate[i];
+		delete d;
+        objTemplate.erase(objTemplate.begin() + i);
+    }
+   objTemplate.clear();
 
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
 	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="80.0">
-		<animation name="idle"  start="1" end="300" />
+		<animation name="idle"  start="1" end="300" speed="30.0" />
 		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="6"/>
 		<animation name="run" start="333" end="362" speed="40.0" movespeed="28"/>
 		<animation name="attack" start="365" end="396" speed="30.0" loop="false" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>
-		<animation name="die" start="396" end="420" speed="30" loop="false" soundevent="397" sound="player/44262__Erdie__male_fight02.ogg"/>
-		<animation name="hurt" start="427" end="457" loop="false" soundevent="428" sound="player/44268__Erdie__male_fight08.ogg"/>
+		<animation name="die" start="396" end="420" speed="30.0" loop="false" soundevent="397" sound="player/44262__Erdie__male_fight02.ogg"/>
+		<animation name="hurt" start="427" end="457" speed="30.0" loop="false" soundevent="428" sound="player/44268__Erdie__male_fight08.ogg"/>
 	</dynamic_object>
 	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="36" materialType="solid">
 		<animation name="idle" start="0" end="0" speed="1"/>
@@ -19,7 +19,7 @@
 	<dynamic_object name="goblin" mesh="npc/goblin_anims.b3d" type="npc" script="ai_goblin.lua" scale="46" materialType="solid">
 		<animation name="idle" start="1" end="240" speed="30.0"/>
 		<animation name="attack" start="281" end="295" speed="18.0" attackevent="282" loop="false" soundevent="282" sound="goblin/goblin_attack.ogg"/>
-		<animation name="walk" start="241" end="270" speed="30.0" movespeed="5.0"/>
+		<animation name="walk" start="241" end="270" speed="30.0" movespeed="25.0"/>
 		<animation name="hurt"  start="306" end="317" speed="30.0" loop="false" soundevent="307" sound="goblin/goblin_hurt.ogg"/>
 		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>
 		<animation name="despawn" start="346" end="370" speed="5.0" loop="false" />

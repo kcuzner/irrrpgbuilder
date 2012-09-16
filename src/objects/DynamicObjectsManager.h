@@ -6,6 +6,7 @@
 #include "../App.h"
 
 #include "DynamicObject.h"
+#include "TemplateObject.h"
 
 #include "Player.h"
 
@@ -20,26 +21,27 @@ using namespace gui;
 
 using namespace std;
 
-
-
 class DynamicObjectsManager
 {
     public:
         static DynamicObjectsManager* getInstance();
 
-		bool processFile(stringc filename);
 		bool loadTemplates();
+		TemplateObject* searchTemplate(stringc name);
+
 		bool loadBlock(IrrlichtDevice * device, core::stringc file);
 		bool loadSet();
         DynamicObject* createActiveObjectAt(vector3df pos);
         void removeObject(stringc uniqueName);
 
-        DynamicObject* getActiveObject();
+        TemplateObject* getActiveObject();
         void setActiveObject(stringc name);
 
         DynamicObject* getObjectByName(stringc name);
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
+
+		scene::ISceneNode* findActiveObject(void);
 
 		vector<stringc> getObjectsList(TYPE objectType);
 
@@ -80,16 +82,20 @@ class DynamicObjectsManager
 		
 		IrrlichtDevice *device;
 
-        DynamicObject* activeObject;
+        TemplateObject* activeObject;
+		DynamicObject* activeObject2;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
 
 		DynamicObject* dialogCaller;
 		
 
-        vector<DynamicObject*> objectsTemplate;
+        vector<DynamicObject*> objectsTemplate; // Temporary -> Contain all the templates as dynamic objects
 
-        vector<DynamicObject*> objects;
+        vector<DynamicObject*> objects; // List of all the dynamic objects
+
+		TemplateObject* newObj;
+		vector<TemplateObject*> objTemplate; // List of all the dynamic object template data 
         int objsCounter;
 		int collisionCounter;
 		bool createcollisions;

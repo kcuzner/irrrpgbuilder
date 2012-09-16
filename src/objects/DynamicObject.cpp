@@ -2,11 +2,10 @@
 
 #include "../App.h"
 #include "DynamicObjectsManager.h"
-#include "HealthSceneNode.h"
 #include "combat.h"
 #include "../LuaGlobalCaller.h"
 #include "Player.h"
-
+#include "../terrain/TerrainManager.h"
 
 #include "DynamicObject.h"
 
@@ -143,6 +142,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     this->mesh = mesh;
     this->name = name;
 
+	printf("Object in dynamic object: %s should be loaded now!\n",name);
+
 	if(hasAnimation())
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
@@ -195,17 +196,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 			
-			// Temporary fix. Need to have a shadow scaled to the size of the object.
-			// This need to be calculated proportionnaly to the object.
-		
-			//(may 13 2011, the player was scaled to 1 unit, so commented that "hack" to have a proper shadow.
-			//if (name=="player_normal")
-			//	fakeShadow->setScale(vector3df(32,32,32));
-
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
-			//if(hasAnimation()) this->setFrameLoop(0,0);
+			if(hasAnimation()) this->setFrameLoop(0,0);
 		}
 		
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
@@ -515,6 +509,11 @@ void DynamicObject::setType(stringc name)
 	this->typeText = name;
 }
 
+void DynamicObject::setType(TYPE type)
+{
+	objectType=type;
+}
+
 TYPE DynamicObject::getType()
 {
 	return objectType;
@@ -533,7 +532,7 @@ stringc DynamicObject::getName()
 
 void DynamicObject::setMaterialType(E_MATERIAL_TYPE mType)
 {
-    node->setMaterialType(mType);
+	node->getMaterial(0).MaterialType=mType;
 }
 
 E_MATERIAL_TYPE DynamicObject::getMaterialType()
@@ -806,18 +805,12 @@ bool DynamicObject::setAnimation(stringc animName)
 				if (animName=="idle" && randomize)
 				{
 					
-					printf ("if you drop a character on the map this should display!");
 					// Fix a random frame so the idle for different character are not the same.
 					if (tempAnim.endFrame>0)
 					{
 						f32 random = (f32)(rand() % tempAnim.endFrame+1);
 						this->nodeAnim->setCurrentFrame(random+1);
 					}
-
-					stringw text2 = L"idle animation for character: ";
-					text2.append(getNode()->getName());
-					text2.append(L" encountered.");
-					GUIManager::getInstance()->setConsoleText(text2.c_str(),SColor(255,0,128,0));
 				}
 			}
             return true;
@@ -893,10 +886,8 @@ void DynamicObject::checkAnimationEvent()
 				if (objectType==OBJECT_TYPE_PLAYER)
 				{
 
-					printf("\n\nDebug: here is the attack frame: %d start frame:%d current frame %d\n",currentAnim.attackevent,currentAnim.startFrame,(s32)nodeAnim->getFrameNr());
 					if (enemyUnderAttack)
 					{
-						printf("Debug---> Attacking the ennemy!\n");
 						int resultlife = enemyUnderAttack->getLife()-attackresult;
 						enemyUnderAttack->setLife(resultlife);
 						
@@ -996,7 +987,6 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 
 	if(obj)
     {
-		//printf("Attack for this enemy asked %s\n",obj->getName().c_str());
         this->lookAt(obj->getPosition());
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 		{
@@ -1926,7 +1916,6 @@ int DynamicObject::distanceFrom(lua_State *LS)
 		if(otherName.c_str() == "player")
         {
             otherPos = Player::getInstance()->getObject()->getPosition();
-			//printf("Asked the distance from the player: %f,%f,%f\n",otherPos.X,otherPos.Y,otherPos.Z);
         }
         else
         {

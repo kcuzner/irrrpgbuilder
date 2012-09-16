@@ -22,6 +22,7 @@ Player::Player()
 	timer3=timer1;
 	playerObject = DynamicObjectsManager::getInstance()->getPlayer();
 	playerObject->getNode()->setVisible(true);
+
 	playerObject->setEnabled(true);
 	playerObject->getNode()->setDebugDataVisible( false ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 	//playerObject->setAnimation("idle");
@@ -95,7 +96,12 @@ DynamicObject* Player::getObject()
 	return playerObject;
 }
 
+//! Main player update loop
+// Define the distance needed to walk or run (when clicking on the map)
+// Might have to place some of the code there into the dynamic object class (so all characters have this ability)
+// The player have a "walktarget" that is defined by the coordinate given by the mouse pointer when clicked on the map
 
+// Determine also the attack rate(animation) and the distance the player can attack an object that was found.
 void Player::update()
 {
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -199,11 +205,13 @@ void Player::update()
 	}
 }
 
+// Update the player stats (from the GUI Manager)
 void Player::updateDisplay()
 {
 	GUIManager::getInstance()->drawPlayerStats();
 }
 
+// Display the shadow object of another color for highlighting the player. Used mostly for moving the player in editor mode
 void Player::setHighLight(bool highlight)
 {
     if(!highlight)
@@ -218,17 +226,19 @@ void Player::setHighLight(bool highlight)
     }
 }
 
+// Define a "tagged" object, selected by the player in play mode when the cursor found a dynamic object
 void Player::setTaggedTarget(DynamicObject* object)
 {
 	taggedObject = object;
 }
 
+// Will return the last object that was "tagged"
 DynamicObject* Player::getTaggedTarget()
 {
 	return taggedObject;
 }
 
-
+//! Show/Hide the target object
 void Player::displayTarget(bool visible)
 {
 	DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(visible);
