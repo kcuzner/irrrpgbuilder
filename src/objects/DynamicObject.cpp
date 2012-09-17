@@ -336,8 +336,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
 	// Temporary removed the distance interval as numbers are
-	f32 speed = currentAnim.walkspeed/10;
-	//f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
+	//f32 speed = currentAnim.walkspeed/10;
+	f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
 	if (speed == 0)
 		speed=1.0f;
 		
