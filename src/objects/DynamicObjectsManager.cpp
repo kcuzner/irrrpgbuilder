@@ -1013,6 +1013,7 @@ void DynamicObjectsManager::initializeCollisions()
 	// Done at each update until the list is completed. Should give some time for other tasks.
 
 	// Could perhaps do the meta the same way (Meta creation and this take the longest time)
+
 	if (objects[collisionCounter])
 	{
 		if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)

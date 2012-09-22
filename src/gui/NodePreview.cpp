@@ -63,6 +63,8 @@ NodePreview::~NodePreview()
 
 void NodePreview::draw()
 {
+
+	/*
     if(!smgr) return;
 	//if(!node || !smgr) return;
 	
@@ -163,7 +165,8 @@ void NodePreview::draw()
 		
     driver->setViewPort(originalViewport);	
 	smgr->setActiveCamera(oldcam);
-		
+	
+	*/
 	// draw children
 	IGUIElement::draw();
 

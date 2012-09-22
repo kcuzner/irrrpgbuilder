@@ -335,9 +335,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
-	// Temporary removed the distance interval as numbers are
-	//f32 speed = currentAnim.walkspeed/10;
-	f32 speed = (currentAnim.walkspeed*(f32)delay)/170; //(170 value seem ok for the setting done)
+	// Calculate the distance based on time (delay)
+	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(170 value seem ok for the setting done)
 	if (speed == 0)
 		speed=1.0f;
 		
@@ -664,12 +663,22 @@ bool DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
 
+	// Reset the walktimer if the walk anim is triggered (for the time delay calculation)
+	if (animName=="walk" || animName=="run")
+		lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+
+
 	if (animName=="idle")
+	{
+		// Stop moving
 		this->setWalkTarget(this->getPosition());
+		//node->removeAnimator(animator);
+	}
 
 	// Don't call the animation if the result is not positive (result coming from the combat class)
 	if (animName=="attack" && oldAnimName!="attack")
 	{
+		
 		//When the attack animation is triggered, the class interrogate the combat class and check
 		//that the attack is successful before starting it
 		if (objectType==OBJECT_TYPE_PLAYER)
@@ -708,6 +717,8 @@ bool DynamicObject::setAnimation(stringc animName)
 	}
 	if (animName=="die")
 	{
+		// REmove the collision animator
+		node->removeAnimator(animator);
 		// debug output to the console
 		stringw text = L"Die animation for character: ";
 		text.append(getNode()->getName());
@@ -1317,6 +1328,8 @@ void DynamicObject::updateWalk()
 
 			this->setWalkTarget(this->getPosition());
 			this->setAnimation("idle");
+
+			// For the player, hides the target if get to the destination
 			if (objectType==OBJECT_TYPE_PLAYER)
 				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 		}
