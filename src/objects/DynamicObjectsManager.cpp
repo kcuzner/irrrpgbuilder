@@ -210,7 +210,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						objectScale = (core::stringc)xml->getAttributeValue("scale");
 						newObj->setScale((irr::f32)atof(objectScale.c_str()));
 						
-						objectMaterial = (core::stringc)"    Object material: " + xml->getAttributeValue("materialType");
+						objectMaterial = (core::stringc)xml->getAttributeValue("materialType");
 						
 						E_MATERIAL_TYPE mat = EMT_SOLID;
             			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
@@ -985,7 +985,9 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 			if (objects[i]->isEnabled())
 			//if (objects[i]->getLife()>0)
 			{
-				if ((objects[i]->getType()==OBJECT_TYPE_NPC && objects[i]->getLife()>0) || (objects[i]->getType()!=OBJECT_TYPE_NPC))
+				if (objects[i]->getType()!=OBJECT_TYPE_NPC)
+				//Temporary change, won't allow NPC to get into the meta selector
+				//if ((objects[i]->getType()==OBJECT_TYPE_NPC && objects[i]->getLife()>0) || (objects[i]->getType()!=OBJECT_TYPE_NPC))
 				{
 					triangle = objects[i]->getNode()->getTriangleSelector();
 					s32 number = triangle->getTriangleCount();
@@ -1023,6 +1025,7 @@ void DynamicObjectsManager::initializeCollisions()
 			{
 				createMeta();
 
+				// This should remove the own triangle selector from the NPC but disabled for the moment.
 				meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
 
 				ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
@@ -1039,6 +1042,7 @@ void DynamicObjectsManager::initializeCollisions()
 		collisionCounter=0;
 		createcollisions=false;
 	}
+
 }
 
 void DynamicObjectsManager::clearCollisions()
@@ -1086,6 +1090,7 @@ void DynamicObjectsManager::clean(bool full)
 	vector<DynamicObject*> object_backup;
 	object_backup.clear();
 
+	/*
 	// Remove all non-templates
 	for(int i=0;i<(int)objects.size();i++)
     {
@@ -1101,7 +1106,7 @@ void DynamicObjectsManager::clean(bool full)
 			} else
 				object_backup.push_back(d);
 		}
-    }
+    }*/
 	// Cleanup
 	objects.clear();
 	objects=object_backup;

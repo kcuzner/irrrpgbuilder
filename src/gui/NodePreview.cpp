@@ -64,6 +64,9 @@ NodePreview::~NodePreview()
 void NodePreview::draw()
 {
 
+	// To fix (09/22/2012)
+	// Crash if the reference is removed. Need to find a better way to get a reference object.
+
 	/*
     if(!smgr) return;
 	//if(!node || !smgr) return;
