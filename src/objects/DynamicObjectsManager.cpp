@@ -523,6 +523,16 @@ vector<stringc> DynamicObjectsManager::getObjectsList(TYPE objectType)
     return listObjs;
 }
 
+void DynamicObjectsManager::setObjectsID(TYPE objectType, s32 ID)
+{
+    for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+		if (objects[i]->getType()==objectType)
+			objects[i]->getNode()->setID(ID);
+    }
+
+}
+
 //! Return a searched dynamic object based on it's name
 DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 {
@@ -1009,6 +1019,7 @@ void DynamicObjectsManager::startCollisions()
 
 void DynamicObjectsManager::initializeCollisions()
 {
+	/*
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
 	// Create the collision response animator for each NPC & Player.
@@ -1042,6 +1053,8 @@ void DynamicObjectsManager::initializeCollisions()
 		collisionCounter=0;
 		createcollisions=false;
 	}
+
+	*/
 
 }
 

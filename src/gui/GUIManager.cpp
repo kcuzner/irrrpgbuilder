@@ -232,8 +232,7 @@ void GUIManager::setupEditorGUI()
 
 // NEW Create display size since IRRlicht return wrong values
 
-	// Check the current screen size (normally reported by wxWidget or the configuration)
-
+	// Check the current screen size
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
 
@@ -762,14 +761,10 @@ void GUIManager::setupEditorGUI()
 
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
-#ifdef _wxWIDGET
-		myRect(displaywidth - 170, 120, 170, displayheight);
-#else
-		myRect(displaywidth - 170,
-		guiMainToolWindow->getClientRect().getHeight()-20,
-		170,
-		displayheight-guiMainToolWindow->getClientRect().getHeight());
-#endif
+	myRect(displaywidth - 170,
+	guiMainToolWindow->getClientRect().getHeight()-20,
+	170,
+	displayheight-guiMainToolWindow->getClientRect().getHeight());
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -1130,8 +1125,7 @@ void GUIManager::setupGameplayGUI()
     fader->setVisible(false);
 
 	// NEW Create display size since IRRlicht return wrong values
-	// Check the current screen size (normally reported by wxWidget or the configuration)
-
+	// Check the current screen size 
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
 
@@ -1768,11 +1762,6 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 	{
 		textevent.push_back(text);
 		texteventcolor.push_back(color);
-#ifdef _wxWIDGET
-		// This is sent to the APP Class for the wxWidget console
-		App::getInstance()->console_event.push_back(text);
-		App::getInstance()->console_event_color.push_back(color);
-#endif
 	}
 
 	// This part will update the IRRlicht type console
@@ -1792,7 +1781,7 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 
 }
 
-void GUIManager::clearConsole() // The APP Class can clear the buffer because the wxWidget console need it.
+void GUIManager::clearConsole() 
 {
 	textevent.clear();
 	texteventcolor.clear();

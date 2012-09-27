@@ -47,6 +47,8 @@ class TerrainManager
 
         void showDebugData(bool show);
 
+		void drawBrush();
+
     protected:
     private:
         f32 scale;

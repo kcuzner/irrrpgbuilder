@@ -160,18 +160,19 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     else
 	{
 		this->mesh->setHardwareMappingHint(EHM_STATIC);
+		//Keep this for reference.
         //this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
-		// Would like to load non-animated meshes as occtrees, but something is crashing.
 
 		// Check the size of the mesh and create it as an octree if it's big. (200 unit min)
 		if (mesh->getBoundingBox().getExtent().X>200 && mesh->getBoundingBox().getExtent().Y>200 && mesh->getBoundingBox().getExtent().Z>200)
-			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,0x0010);
+			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,100);
 		else
-			this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,100);
 		if (node)
 		{
-			//this->selector = smgr->createTriangleSelector((IAnimatedMesh*)mesh,node);
-			this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
+			// Select the triangle selector for more precision
+			this->selector = smgr->createTriangleSelector((IMesh*)mesh,node);
+			//this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
 			//this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 			this->node->setTriangleSelector(selector);
 		}
@@ -359,6 +360,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
 	f32 height4 = TerrainManager::getInstance()->getHeightAt(posback);
 	f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
+
+	// Cliff is returning the angle of the slope, should not walk on slope that are too angular.
 	f32 cliff =  height3 - height5; 
 	if (cliff<0) 
 		cliff = -cliff;
@@ -690,9 +693,9 @@ bool DynamicObject::setAnimation(stringc animName)
 					enemyUnderAttack->setObjectLabel("Miss!");
 				else
 				{
-					//stringc textdam = "-";
-					//textdam.append(stringc(attackresult));
-					//enemyUnderAttack->setObjectLabel(textdam.c_str());
+					stringc textdam = "-";
+					textdam.append(stringc(attackresult));
+					enemyUnderAttack->setObjectLabel(textdam.c_str());
 				}
 			}
 		} 

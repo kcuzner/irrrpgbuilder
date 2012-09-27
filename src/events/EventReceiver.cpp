@@ -62,10 +62,6 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 		mouse[event.MouseInput.Event] = 1;
 
-// Seem to crash when used with WXWidget
-#ifndef _wxWIDGET
-    mouse[event.MouseInput.Event] = 1;
-#endif
 		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
 			mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;

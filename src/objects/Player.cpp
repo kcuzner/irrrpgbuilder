@@ -133,57 +133,7 @@ void Player::update()
 		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 140)
 			this->playerObject->setRunningMode(true);
 
-		/*
-		// Walk until in range
-		if( (this->playerObject->getPosition().getDistanceFrom(walkTarget) > (meshScale*sizePlayer)) &&  (this->playerObject->getLife()!=0))
-		{
-			SoundManager::getInstance()->setListenerPosition(this->getObject()->getPosition(),this->getObject()->getRotation());
-			TerrainManager::getInstance()->getHeightAt(walkTarget);
-			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 121)
-			{
-				if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_WALK)
-				{
-					this->playerObject->setRunningMode(false);
-					this->playerObject->setAnimation("walk");
-					//printf("Hey the player specifically asked for a walk state!\n");
-				}
-			}
-			if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 120)
-			{
-				if (this->playerObject->getAnimation()!=OBJECT_ANIMATION_RUN)
-				{
-					this->playerObject->setRunningMode(true);
-					bool result=this->playerObject->setAnimation("run");
-					// in case the run animation is not present
-					if (!result)
-					{
-						this->playerObject->setRunningMode(false);
-						this->playerObject->setAnimation("walk");
-					}
-
-					//printf("Hey the player specifically asked for a run state!\n");
-				}
-			}
-			return;
-		}
-
-		// Stop the walk when in range
-		if (playerObject->getAnimation()==OBJECT_ANIMATION_WALK && this->playerObject->getPosition().getDistanceFrom(walkTarget) < (meshScale*sizePlayer)+20)
-		{
-			//printf("Hey the player specifically asked for a idle state!\n");
-			this->playerObject->setWalkTarget(playerObject->getPosition());
-			this->playerObject->setAnimation("idle");
-			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-			return;
-		}
-
-		// Cancel the move if another animation is triggered
-		if (playerObject->getAnimation()!=OBJECT_ANIMATION_WALK || playerObject->getAnimation()==OBJECT_ANIMATION_IDLE)
-		{
-			this->playerObject->setWalkTarget(playerObject->getPosition());
-		}
-
-		*/
+		
 		// This should trigger the player attack if the enemy is in range.
 		if (timercheck-timer1>300) // 1 attack per 1/4 sec
 		{

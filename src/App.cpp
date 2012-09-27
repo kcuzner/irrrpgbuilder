@@ -56,7 +56,6 @@ void App::draw2DImages()
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
-
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
@@ -84,125 +83,13 @@ void App::draw2DImages()
 #endif
 }
 
-void App::drawBrush()
-{
-#ifdef EDITOR
-
-	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
-	vector3df position = this->getMousePosition3D(100).pickedPos;
-	if (position==vector3df(0,0,0))
-		return;
-
-	SMaterial m;
-	m.Lighting=false;
-	driver->setMaterial(m);
-	driver->setTransform(video::ETS_WORLD, core::matrix4());
-
-
-	// Render the size of the brush.
-	f32 framesize = 5;
-	int step=10;
-	for (int i=0; i<(360); i=i+step)
-	{
-		float degInRad = i*DEG2RAD;
-		vector3df pos=position;
-		pos.X+=cos(degInRad)*radius;
-		pos.Z+=sin(degInRad)*radius;
-		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
-
-		float degInRad2 = (i+step)*DEG2RAD;
-		vector3df pos2=position;
-		pos2.X+=cos(degInRad2)*radius;
-		pos2.Z+=sin(degInRad2)*radius;
-		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
-		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-
-		vector3df pos3=position;
-		pos3.X+=cos(degInRad)*(radius+framesize);
-		pos3.Z+=sin(degInRad)*(radius+framesize);
-		pos3.Y=pos.Y;
-
-		vector3df pos4=position;
-		pos4.X+=cos(degInRad2)*(radius+framesize);
-		pos4.Z+=sin(degInRad2)*(radius+framesize);
-		pos4.Y=pos2.Y;
-
-		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
-		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
-
-	}
-
-	// Center circle for the brush give the center
-	radius=5;
-	framesize = 2;
-	step=15;
-	for (int i=0; i<(360); i=i+step)
-	{
-		float degInRad = i*DEG2RAD;
-		vector3df pos=position;
-		pos.X+=cos(degInRad)*radius;
-		pos.Z+=sin(degInRad)*radius;
-		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
-
-		float degInRad2 = (i+step)*DEG2RAD;
-		vector3df pos2=position;
-		pos2.X+=cos(degInRad2)*radius;
-		pos2.Z+=sin(degInRad2)*radius;
-		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
-		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-
-		vector3df pos3=position;
-		pos3.X+=cos(degInRad)*(radius+framesize);
-		pos3.Z+=sin(degInRad)*(radius+framesize);
-		pos3.Y=pos.Y;
-
-		vector3df pos4=position;
-		pos4.X+=cos(degInRad2)*(radius+framesize);
-		pos4.Z+=sin(degInRad2)*(radius+framesize);
-		pos4.Y=pos2.Y;
-
-		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
-		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
-
-	}
-	/*radius=5;
-	step=30;
-	for (int i=0; i<(360-step); i=i+step)
-	{
-	float degInRad = i*DEG2RAD;
-	vector3df pos=position;
-	pos.X+=cos(degInRad)*radius;
-	pos.Z+=sin(degInRad)*radius;
-	pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
-
-
-	float degInRad2 = (i+step)*DEG2RAD;
-	vector3df pos2=position;
-	pos2.X+=cos(degInRad2)*radius;
-	pos2.Z+=sin(degInRad2)*radius;
-	pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
-	driver->draw3DLine(pos,pos2,video::SColor(255,255,255,255));
-	}*/
-
-	// Center circle for the brush give the center
-
-
-#endif
-}
 
 void App::displayGuiConsole()
 {
 	// This was the old console (might be needed for the player app
 	//bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
 	//GUIManager::getInstance()->setElementVisible(CONSOLE,result);
-
-
 	//GUIManager::getInstance()->setConsoleText(L"",true);
-#ifdef _wxWIDGET
-	// This is the new console used via wxWidget console window
-	if (appFrame)
-		appFrame->console_dialog->Show();
-#endif
 }
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
@@ -236,8 +123,18 @@ void App::setAppState(APP_STATE newAppState)
 	app_state = newAppState;
 
 #ifdef EDITOR
+
+	if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM && app_state != APP_EDIT_TERRAIN_TRANSFORM)
+	{
+		// Change the props to be collidable with the ray test
+		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+	}
+
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
+		// Change the props to be non-collidable with the ray test
+		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
@@ -293,9 +190,6 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-#ifdef _wxWIDGET
-		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-#endif
 	}
 	else
 	{
@@ -406,9 +300,6 @@ void App::setAppState(APP_STATE newAppState)
 	if (app_state == APP_EDIT_VIEWDRAG)
 	{
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_drag").c_str());
-#ifdef _wxWIDGET
-		appFrame->MessageStatus(LANGManager::getInstance()->getText("info_drag").c_str());
-#endif
 	}
 }
 
@@ -423,19 +314,10 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_NEW_PROJECT:
 		lastScannedPick.pickedNode=NULL;
-#ifdef _wxWIDGET
-		appFrame->OnNew();
-#else
 		this->createNewProject();
-#endif
-
 		break;
 
 	case BT_ID_LOAD_PROJECT:
-#ifdef _wxWIDGET
-		appFrame->OnLoad();
-#else
-
 		this->loadProject();
 		/* // Load a new project but not when the loader window is visible
 		if (!GUIManager::getInstance()->guiLoaderWindow->isVisible())
@@ -445,18 +327,11 @@ void App::eventGuiButton(s32 id)
 		app_state=APP_WAIT_FILEREQUEST;
 		}*/
 
-#endif
-
 		//this->setAppState(APP_EDIT_LOOK);
 		break;
 
 	case BT_ID_SAVE_PROJECT:
-#ifdef _wxWIDGET
-		appFrame->OnSave();
-#else
 		this->saveProject();
-#endif
-
 		this->setAppState(APP_EDIT_LOOK);
 		break;
 #ifdef EDITOR
@@ -726,9 +601,9 @@ void App::setScreenSize(dimension2d<u32> size)
 		text.append(L",");
 		text.append((stringw)screensize.Height);
 		// Correct the aspect ratio of the camera when the screen is changed.
-#ifndef _wxWIDGET
+
 		CameraSystem::getInstance()->fixRatio(driver);
-#endif
+
 		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,0,255));
 	}
 }
@@ -912,10 +787,6 @@ App* App::getInstance()
 MousePick App::getMousePosition3D(int id)
 {
 	position2d<s32> pos=device->getCursorControl()->getPosition();
-#ifdef _wxWIDGET
-	// Fix to a proper position on wxWidget;
-	pos=pos+position2d<s32>(0,22);
-#endif
 
 	// For the ray test, we should hide the player
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
@@ -986,23 +857,10 @@ void App::setPreviewSelection()
 
 bool App::loadConfig()
 {
-#ifndef _wxWIDGET
+
 	screensize.Height = 768;
 	screensize.Width = 1024;
 
-# else
-
-	//	if (device->run())
-	//	{
-	//		screensize = device->getVideoDriver()->getScreenSize();
-	//	}
-	// for some reasons IRRlicht open in 20,20 when used inside a wxWindow
-	if (screensize.Height<100)
-	{
-		screensize.Width = 1008;
-		screensize.Height = 596+112; // 112 is added because before it was used for a window separation. Now it use the full screen.
-	}
-#endif
 	fullScreen = false;
 	resizable = false;
 	language = "en-us";
@@ -1048,35 +906,22 @@ bool App::loadConfig()
 		{
 			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
 			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
-#ifdef _wxWIDGET
-			screensize.Width-=16;
-			screensize.Height-=60;
-#endif
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 			{
-				/*#ifdef _wxWIDGET
-				// create a NULL device to detect screen resolution
-				IrrlichtDevice *nulldevice = createDevice(video::EDT_NULL);
-				core::dimension2d<u32> deskres = nulldevice->getVideoModeList()->getDesktopResolution();
-				nulldevice -> drop();
-				deskres.Height-=30;
-				deskres.Width-=8;
-				screensize=deskres;
-				#endif*/
 				fullScreen=true;
 			}
 			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
-#ifndef _wxWIDGET
+
 			if (resizable && fullScreen)
 			{
 				IrrlichtDevice * tempdevice = createDevice(EDT_NULL,dimension2d<u32>(640,480), 16, false, false, false, 0);
 				screensize = tempdevice->getVideoModeList()->getDesktopResolution();
 				tempdevice->closeDevice();
 			}
-#endif
+
 		}
 		//Language
 		TiXmlElement* langXML = root->FirstChildElement( "language" );
@@ -1344,13 +1189,7 @@ void App::run()
 			str += fps;
 
 			//GUIManager::getInstance()->setStatusText(str.c_str());
-#ifdef _wxWIDGET
-			appFrame->MessageStatus(str.c_str());
-#else
 			device->setWindowCaption(str.c_str());
-#endif
-
-
 			lastFPS = fps;
 		}
 	}
@@ -1365,7 +1204,7 @@ void App::updateEditMode()
 
 	// Draw the brush in realtime
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
-		this->drawBrush();
+		TerrainManager::getInstance()->drawBrush();
 
 	// Trie to display the node as we go with the mouse cursor in edit mode
 	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
@@ -1458,7 +1297,11 @@ void App::updateEditMode()
 
 			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
 			{
+				// Change the ID of the moved mesh so it's won't collision with the ray.
+				irr::s32 oldID=lastMousePick.pickedNode->getID();
+				lastMousePick.pickedNode->setID(0x0010);
 				lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+				lastMousePick.pickedNode->setID(oldID);
 			}
 
 			if(app_state == APP_EDIT_CHARACTER)
@@ -1531,7 +1374,17 @@ void App::updateGameplay()
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
-			MousePick mousePick = getMousePosition3D();
+			// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
+
+			// Filter only object with the ID=100 to get the resulting node
+			MousePick mousePick = getMousePosition3D(100);
+
+			// Set back to the defaults
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
+
 			stringc nodeName = "";
 			// Check for a node to prevent a crash (need to get the name of the node)
 			if (mousePick.pickedNode != NULL)
@@ -1597,7 +1450,7 @@ void App::createNewProject()
 {
 	APP_STATE old_state = getAppState();
 	setAppState(APP_EDIT_WAIT_GUI);
-#ifndef _wxWIDGET
+
 	stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
 	GUIManager::getInstance()->flush();
 
@@ -1611,9 +1464,6 @@ void App::createNewProject()
 
 	stringc filename = "../projects/";
 	filename += name;
-#else
-	stringc name="irb_temp_project.XML";
-#endif
 
 	this->cleanWorkspace();
 
@@ -2000,11 +1850,7 @@ void App::initialize()
 
 
 	this->currentProjectName = "irb_temp_project";
-	// Hide the loading windows if the WX Widget is present
-#ifdef _wxWIDGET
-	this->setAppState(APP_EDIT_LOOK);
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-#endif
+
 }
 
 void App::shutdown()
@@ -2036,15 +1882,14 @@ void App::clearConsole()
 	GUIManager::getInstance()->clearConsole();
 }
 
-#ifdef _wxWIDGET
-// Get the pointer to the wxFrame from the wxWidget system
-void App::setFramePointer(wxFrame * frm)
-{
-	appFrame = (CIrrFrame*)frm;
-}
-#endif
-
 stringw App::getLangText(irr::core::stringc node)
 {
 	return LANGManager::getInstance()->getText(node);
+}
+
+
+irr::f32 App::getBrushRadius()
+{
+	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+	return radius;
 }

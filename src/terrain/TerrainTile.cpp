@@ -504,10 +504,14 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
+	// Check from the top of the character
+	irr::f32 maxRayHeight = 1000.0f;
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
-    ray.start = pos+vector3df(0,+250,0);
-    ray.end = ray.start + (pos+vector3df(0,-250.0f,0) - ray.start).normalize() * 1000.0f;
+
+	// Start the ray 500 unit from the character, ray lenght is 1000 unit.
+    ray.start = pos+vector3df(0,+(maxRayHeight/2),0);
+    ray.end = ray.start + (pos+vector3df(0,-50.0f,0) - ray.start).normalize() * maxRayHeight;
 
 	// Tracks the current intersection point with the level or a mesh
 	core::vector3df intersection;
@@ -518,37 +522,17 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 		ray,
 		intersection,
 		hitTriangle,
-		100,
+		100, //100 is the default ID for walkable (ground obj + props)
 		0); // Check the entire scene (this is actually the implicit default)
 
 	if (selectedSceneNode)
 	{
-		//printf("Test was successful! value=%f ,%s\n",intersection.Y,selectedSceneNode->getName());
+		// return the height found. 
 		return intersection.Y;
 	}
 	else
+		// if not return 0
 		return 0;
-
-	// This stuff is not used anymore.. Keep for the moment in case of problems...
-    IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
-
-	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
-
-	f32 height = 0;
-	vector3df nearestVertex = vector3df(1000,1000,1000);
-
-	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
-	{
-	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
-
-	    if(pos.getDistanceFrom(vector3df(realPos.X,0,realPos.Z) ) < pos.getDistanceFrom( vector3df(nearestVertex.X,0,nearestVertex.Z) ))
-	    {
-	        nearestVertex = realPos;
-	        height = realPos.Y;
-	    }
-	}
-
-	return height;
 }
 
 void TerrainTile::showDebugData(bool show)

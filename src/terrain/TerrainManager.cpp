@@ -11,6 +11,8 @@ using namespace gui;
 
 using namespace std;
 
+const float DEG2RAD = 3.14159f/180;
+
 TerrainManager::TerrainManager()
 {
     terrainEmptySegmentsMap.clear();
@@ -399,4 +401,91 @@ void TerrainManager::showDebugData(bool show)
 
         t->showDebugData(show);
     }
+}
+
+void TerrainManager::drawBrush()
+{
+#ifdef EDITOR
+
+
+	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	
+	f32 radius = App::getInstance()->getBrushRadius();
+	vector3df position = App::getInstance()->getMousePosition3D(100).pickedPos;
+	if (position==vector3df(0,0,0))
+		return;
+
+	SMaterial m;
+	m.Lighting=false;
+	driver->setMaterial(m);
+	driver->setTransform(video::ETS_WORLD, core::matrix4());
+
+
+	// Render the size of the brush.
+	f32 framesize = 5;
+	int step=10;
+	for (int i=0; i<(360); i=i+step)
+	{
+		float degInRad = i*DEG2RAD;
+		vector3df pos=position;
+		pos.X+=cos(degInRad)*radius;
+		pos.Z+=sin(degInRad)*radius;
+		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+
+		float degInRad2 = (i+step)*DEG2RAD;
+		vector3df pos2=position;
+		pos2.X+=cos(degInRad2)*radius;
+		pos2.Z+=sin(degInRad2)*radius;
+		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+
+		vector3df pos3=position;
+		pos3.X+=cos(degInRad)*(radius+framesize);
+		pos3.Z+=sin(degInRad)*(radius+framesize);
+		pos3.Y=pos.Y;
+
+		vector3df pos4=position;
+		pos4.X+=cos(degInRad2)*(radius+framesize);
+		pos4.Z+=sin(degInRad2)*(radius+framesize);
+		pos4.Y=pos2.Y;
+
+		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
+		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
+
+	}
+
+	// Center circle for the brush give the center
+	radius=5;
+	framesize = 2;
+	step=15;
+	for (int i=0; i<(360); i=i+step)
+	{
+		float degInRad = i*DEG2RAD;
+		vector3df pos=position;
+		pos.X+=cos(degInRad)*radius;
+		pos.Z+=sin(degInRad)*radius;
+		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+
+		float degInRad2 = (i+step)*DEG2RAD;
+		vector3df pos2=position;
+		pos2.X+=cos(degInRad2)*radius;
+		pos2.Z+=sin(degInRad2)*radius;
+		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+
+		vector3df pos3=position;
+		pos3.X+=cos(degInRad)*(radius+framesize);
+		pos3.Z+=sin(degInRad)*(radius+framesize);
+		pos3.Y=pos.Y;
+
+		vector3df pos4=position;
+		pos4.X+=cos(degInRad2)*(radius+framesize);
+		pos4.Z+=sin(degInRad2)*(radius+framesize);
+		pos4.Y=pos2.Y;
+
+		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
+		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
+
+	}
+#endif
 }

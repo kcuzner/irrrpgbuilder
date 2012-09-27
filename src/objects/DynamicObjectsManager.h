@@ -45,6 +45,8 @@ class DynamicObjectsManager
 
 		vector<stringc> getObjectsList(TYPE objectType);
 
+		void setObjectsID(TYPE objectType, s32 ID);
+
         void showDebugData(bool show);
 
 		void startCollisions();

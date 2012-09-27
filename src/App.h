@@ -25,9 +25,6 @@ static const float APP_VERSION = 1.0;
 #include "tinyXML/tinyxml.h"
 #include "XML_Manager.h"
 
-#ifdef _wxWIDGET
-#include "editor/EditorMain.h"
-#endif
 // try to force the class to be remembered for the compiler
 class CIrrFrame;
 
@@ -84,7 +81,6 @@ class App
 
         static App* getInstance();
 		
-		void drawBrush();
 		void displayGuiConsole();
         void draw2DImages();
 	
@@ -128,26 +124,23 @@ class App
         bool loadProjectFromXML(stringc filename);
 		bool loadConfig();
 
-		// Used by wxWidget to retrieve the color and text of the console events
 		std::vector<stringw> getConsoleText();
 		std::vector<SColor> getConsoleColor();
 		
-#ifdef _wxWIDGET
-		// Function related to the wxWidget classes
-		void setFramePointer(wxFrame * frm);
-#endif
-
 		void clearConsole();
 
 		bool wxSystemState;
 
-		//temporary made public for the wxWidget system to determine if the config is fullscreen
+		//temporary made public to determine if the config is fullscreen
 		bool fullScreen;
 
 		// used for the logger
 		std::vector<core::stringw> textevent;
 		std::vector<core::stringw> console_event;
 		std::vector<video::SColor> console_event_color;
+
+		// This check in the GUI manager to get the radius of the Brush in the GUI;
+		irr::f32 getBrushRadius();
 		
     private:
 
@@ -195,9 +188,6 @@ class App
 #endif
         MousePick lastMousePick;
 		MousePick lastScannedPick;
-
-		// The "appFrame" object contain the most of the wxWidget controls and are accessible from there.
-		CIrrFrame * appFrame;
 
 
 		CGUIFileSelector * selector;
