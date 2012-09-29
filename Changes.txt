@@ -1,5 +1,14 @@
 
 Changes since AlphaRelease 2 (Release 0.21)
+
+September 2012
+- NEW: Loading of most XML files are done via irrXML (Projects are still loaded/saved with TinyXML) 
+- NEW: Template objects are no longer loaded on startup, but on demand.
+- NEW: Objects (Player-NPC`s) can walk over other objects (Bridges, custom terrains, castle interiors, dungeons)
+- Fix: All dynamic objects have their walk/run distance based on unit per seconds.
+- Update: Changing the most of the way the collisions work within the system for less chances of being stuck
+- Removed: All wxWidget dependancies were removed from the project since they are no longer needed. All GUI's are now done using Irrlicht.
+
 March 2012
 - NEW: Reworked the interface so it mimic the wxWidget prototype we had
 - NEW: edit camera, based on the IRRlicht Maya Camera. Editing is much improved.
@@ -15,7 +24,7 @@ March 2012
 - Update: The game camera is now following the player and not directly attached to it. Better feeling of movement now.
 - Update: Linux project can build the editor and the player (Release and Debug version)
 
-- Fix: Animation events are properly detected (were missing a lot of event before the fix). Animation is much improved now.
+- Fix: Animation events are properly detected (were missing a lot of events before the fix). Animation is much improved now.
 - Fix: Water and terrain shaders have been checked to compile on recent ATI, NVIDIA & INTEL hardware (Intel has clipping issue due to a problematic driver)
 - Fix: Animation jitter from player when going from walk to run animation
 - Fix: Uppercase/Lowercase typos in filenames for the Linux build
