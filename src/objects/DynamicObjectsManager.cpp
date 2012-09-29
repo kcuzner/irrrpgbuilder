@@ -1103,7 +1103,7 @@ void DynamicObjectsManager::clean(bool full)
 	vector<DynamicObject*> object_backup;
 	object_backup.clear();
 
-	/*
+	
 	// Remove all non-templates
 	for(int i=0;i<(int)objects.size();i++)
     {
@@ -1119,7 +1119,7 @@ void DynamicObjectsManager::clean(bool full)
 			} else
 				object_backup.push_back(d);
 		}
-    }*/
+    }
 	// Cleanup
 	objects.clear();
 	objects=object_backup;
@@ -1148,7 +1148,7 @@ void DynamicObjectsManager::clean(bool full)
     }*/
 
 	//objectsTemplate.clear();
-
+	/*
 	for(int i=0;i<(int)objects.size();i++)
     {
         DynamicObject* d = objects[i];
@@ -1157,7 +1157,7 @@ void DynamicObjectsManager::clean(bool full)
     }
 
    objects.clear();
-
+	*/
    // Clearing all template data, need to update
    for(int i=0;i<(int)objTemplate.size();i++)
     {

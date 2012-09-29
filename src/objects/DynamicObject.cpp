@@ -1002,6 +1002,7 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 	if(obj)
     {
         this->lookAt(obj->getPosition());
+		// This need to be improved for a better distance evaluation. '72' is just too approximate as monsters could be smaller or bigger
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 		{
 			attackresult=Combat::getInstance()->attack(this,obj);
@@ -1210,7 +1211,7 @@ void DynamicObject::update()
 	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 		checkAnimationEvent();
 
-	if (timerobject-timerLUA>17)
+	if (timerobject-timerLUA>17) // Evaluated at each 17ms or more.
 	{
 		// Check for collision with another node
 		if (animator && animator->collisionOccurred())
@@ -1237,16 +1238,18 @@ void DynamicObject::update()
 
 		// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 		//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
+		
+		// 
+		// Check and update the walking of the object
 		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN)&& !culled) 
 		{ // timerLUA=17
 			updateWalk();
 			if (currentSpeed!=0)
-			//currentObject->moveObject(currentSpeed);
 			timerLUA=timerobject;
 		}
 	}
 
-		//nodeAnim->animateJoints();
+	//300ms second evaluate the LUA scripts
 	if((timerobject-timerAnimation>300) && enabled) // Lua UPdate to 1/4 second
 	{
 
@@ -1285,6 +1288,8 @@ void DynamicObject::update()
 		return;
 	}
 
+
+	// Check and update after the despawn of the character. 
 	if ((this->currentAnimation==OBJECT_ANIMATION_DESPAWN && this->isEnabled()))
 	{	
 		if (timerobject-timerDespawn>5000)
@@ -1297,6 +1302,7 @@ void DynamicObject::update()
 		}
 	}
 
+	// Stun state of the character, evaluation and refresh
 	if (stunstate)
 	{
 		// 400 ms default delay for hurt
