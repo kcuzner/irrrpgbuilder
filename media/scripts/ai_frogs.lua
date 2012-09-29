@@ -9,7 +9,7 @@ function setProperties()
 	setPropertie("mindamage",2) -- minimum damage inflicted
 	setPropertie("maxdamage",4) -- maximum damage inflicted
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
-	setPropertie("hit_prob",50)
+	setPropertie("hit_prob",60)
 	setPropertie("dodge_prob",12)
 end
 
@@ -32,10 +32,11 @@ function onUpdate()
   end
   local x,y,z = getObjectPosition("player")
    if(distanceFrom(x,y,z) < 288 and getPlayerLife()>0) then 
-    if(distanceFrom(x,y,z) < 56) then
+    if(distanceFrom(x,y,z) < 36) then
+	  print("Frog now attack!")
 	  setAnimation("attack")
 	else
-      chaseObject("player",0.8,56,800)
+      chaseObject("player",0.8,36,800)
     end
 	setObjectLabel(name)
     showObjectLabel()
