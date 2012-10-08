@@ -169,7 +169,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							printf ("Inside the requested block (object)!\n");
 							inside=true;
 						}
-							
+
 						objectName = (core::stringw)xml->getAttributeValue("name");
 						if (oldName!=(core::stringc)newObj->getName())
 						{
@@ -216,6 +216,10 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
             			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
 						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
 						newObj->setMaterialType(mat);
+
+						newObj->author = xml->getAttributeValue("author");
+						newObj->description = xml->getAttributeValue("description");
+						newObj->licence = xml->getAttributeValue("licence");
 						
 					}
 

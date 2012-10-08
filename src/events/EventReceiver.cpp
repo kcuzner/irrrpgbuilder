@@ -108,6 +108,16 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 			case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
 				App::getInstance()->loadProjectFile(false);
+
+			case EGET_LISTBOX_CHANGED:
+				App::getInstance()->eventGuiCombobox(id);
+				break;
+
+			// Perhaps create a real function for this
+			// At the moment it share the id with the Combo Box
+			case  EGET_LISTBOX_SELECTED_AGAIN:
+				App::getInstance()->eventGuiCombobox(id);
+				break;
 #endif
         }
     }

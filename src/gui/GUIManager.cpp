@@ -205,8 +205,10 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 {
     switch(id)
     {
-        case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
-            return stringc(guiDynamicObjects_OBJChooser->getItem(guiDynamicObjects_OBJChooser->getSelected()));
+	
+		case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
+			printf("Here received the listbox event!\n");
+			return stringc(guiDynamicObjects_OBJChooser->getListItem(guiDynamicObjects_OBJChooser->getSelected()));
             break;
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
 			return stringc(guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected()));
@@ -762,9 +764,9 @@ void GUIManager::setupEditorGUI()
     // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect =
 	myRect(displaywidth - 170,
-	guiMainToolWindow->getClientRect().getHeight()-20,
+	guiMainToolWindow->getClientRect().getHeight(),
 	170,
-	displayheight-guiMainToolWindow->getClientRect().getHeight());
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-20);
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -805,11 +807,15 @@ void GUIManager::setupEditorGUI()
 
 	guiDynamicObjectsWindowChooser_Y += 40;
 	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
-	guiDynamicObjectsWindowChooser_Y += 20;
-	guiDynamicObjects_OBJChooser = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER);
+	
+	guiDynamicObjectsWindowChooser_Y += 25;
+	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,240),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	
 	UpdateGUIChooser(1);
-
+	
     guiDynamicObjectsWindowChooser_Y += 25;
+	//guienv->addStaticText(L"Description:",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 
 
 	// --- Contextual menu for the dynamic objects
@@ -1097,13 +1103,15 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 
 void GUIManager::UpdateGUIChooser(int objType)
 {
+	
 	guiDynamicObjects_OBJChooser->clear();
 	std::vector<stringc> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)objType);
 
     for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
     {
-    	guiDynamicObjects_OBJChooser->addItem( stringw( listDynamicObjs[i] ).c_str() );
+		guiDynamicObjects_OBJChooser->addItem( stringw( listDynamicObjs[i] ).c_str() );
     }
+	guiDynamicObjects_OBJChooser->setSelected(0);
 }
 
 void GUIManager::setTextLoader(stringw text)

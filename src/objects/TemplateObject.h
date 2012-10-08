@@ -40,6 +40,10 @@ class TemplateObject
 		DynamicObject_Animation currentAnim;
 		vector<DynamicObject_Animation> animations; // Animations in the template
 		core::stringw script; // Pre-defined script in the template object
+
+		stringw description; //Contain the description of the template
+		stringw author; // Contain the author name of the template
+		stringw licence; // Contain the licence type for the model
       
     private:
 

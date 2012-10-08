@@ -276,7 +276,7 @@ class GUIManager
         IGUIWindow* guiDynamicObjectsWindowChooser;
         IGUIWindow* guiDynamicObjectsWindowEditAction;
 
-        IGUIComboBox* guiDynamicObjects_OBJChooser;
+        IGUIListBox* guiDynamicObjects_OBJChooser;
 		IGUIComboBox* guiDynamicObjects_Category;
         NodePreview* guiDynamicObjects_NodePreview;
 		NodePreview* guiPlayerNodePreview;

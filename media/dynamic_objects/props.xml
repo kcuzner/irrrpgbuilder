@@ -1,17 +1,21 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-    <dynamic_object name="barrel" 		mesh="props/barrel.x" 		type="non-interactive"	scale="30" 	materialType="solid"/>
-	<dynamic_object name="horse" 		mesh="npc/horse.b3d" 	type="non-interactive"	scale="86" 	materialType="solid"/>
-	<dynamic_object name="horse_animated" mesh="npc/horse2.b3d" type="non-interactive" scale="86" materialType="solid">
+    <dynamic_object name="barrel" 			mesh="props/barrel.x" 				type="non-interactive"	scale="30" 	materialType="solid"
+					author="Christian Clavet"/>
+	<dynamic_object name="horse" 			mesh="npc/horse.b3d" 				type="non-interactive"	scale="86" 	materialType="solid"
+					author="Andres Jesse Portfirio"/>
+	<dynamic_object name="horse_animated" mesh="npc/horse2.b3d" type="non-interactive" scale="86" materialType="solid"
+					author="Christian Clavet" >
 		<animation name="idle" start="1" end="600" speed="30"/>
 	</dynamic_object>
-	<dynamic_object name="Test_Bridge" 		mesh="props/IRB_Test_Bridge.x" 		type="non-interactive" scale="1" 	materialType="solid"/>
+	<dynamic_object name="Test_Bridge" 		mesh="props/IRB_Test_Bridge.x" 		type="non-interactive" 	scale="1" 	materialType="solid"
+					description="Object for testing custom mesh walk" author="Christian Clavet" />
     <dynamic_object name="horse_food" 		mesh="props/horse_food.b3d" 		type="non-interactive"	scale="18" 	materialType="solid"/>
 	<dynamic_object name="horse_food_empty" 	mesh="props/horse_food_empty.b3d" 	type="non-interactive" scale="18" 	materialType="solid"/>
     <dynamic_object name="tropical1"		mesh="plants/tropical1.b3d" 		type="non-interactive"	scale="50.4" 	materialType="transparent_1bit"/>
     <dynamic_object name="tropical2" 		mesh="plants/tropical2.b3d" 		type="non-interactive"	scale="36" 	materialType="transparent_1bit"/>
     <dynamic_object name="tropical3" 		mesh="plants/tropical3.b3d" 		type="non-interactive"	scale="72" 	materialType="transparent_1bit"/>
-	<dynamic_object name="well" 		mesh="props/well.x" 		type="non-interactive"	scale="80" 	materialType="solid"/>
-	<dynamic_object name="wood_fence" 		mesh="props/wood_fence.b3d" 		type="non-interactive" scale="30" 	materialType="solid"/>
-	<dynamic_object name="empty" 		mesh="" 		type="non-interactive" scale="30" 	materialType="solid"/>
+	<dynamic_object name="well" 			mesh="props/well.x" 				type="non-interactive"	scale="80" 	materialType="solid"/>
+	<dynamic_object name="wood_fence" 		mesh="props/wood_fence.b3d" 		type="non-interactive" 	scale="30" 	materialType="solid"/>
+	<dynamic_object name="empty" 			mesh="" 							type="non-interactive" 	scale="30" 	materialType="solid"/>
 </IrrRPG_Builder_DynamicObjects>

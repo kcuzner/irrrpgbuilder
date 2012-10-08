@@ -86,10 +86,11 @@ void App::draw2DImages()
 
 void App::displayGuiConsole()
 {
-	// This was the old console (might be needed for the player app
-	//bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
-	//GUIManager::getInstance()->setElementVisible(CONSOLE,result);
-	//GUIManager::getInstance()->setConsoleText(L"",true);
+	// This was the old console
+	// This need to be improved with scaling.
+	bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
+	GUIManager::getInstance()->setElementVisible(CONSOLE,result);
+	GUIManager::getInstance()->setConsoleText(L"",true);
 }
 ///TODO: mover isso para GUIManager
 // Would be nice to only check the tools windows we have opened and check their position / scale
@@ -274,7 +275,8 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
+		//This current button is for the console
+		//GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
 	}
