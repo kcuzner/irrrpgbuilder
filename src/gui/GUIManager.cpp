@@ -785,17 +785,17 @@ void GUIManager::setupEditorGUI()
 	ObjectText0->setOverrideFont(guiFontCourier12);
 	ObjectText0->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	IGUIStaticText * ObjectText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcur")).c_str(),core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
-	ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
-	ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+	//IGUIStaticText * ObjectText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcur")).c_str(),core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
+	//ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
+	//ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
 	// Temporary disabled until the new object templates are in place.
-   	guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,40,160,180),-1);
-    //guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
-	//guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->findActiveObject()->getNode());
-	guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+   	// guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,40,160,180),-1);
+    // guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
+	// guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->findActiveObject()->getNode());
+	// guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-    guiDynamicObjectsWindowChooser_Y += 220;
+    guiDynamicObjectsWindowChooser_Y += 40;
 	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
@@ -804,12 +804,19 @@ void GUIManager::setupEditorGUI()
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	guiDynamicObjects_Category->addItem(L"PROPS");
 
+	guiDynamicObjectsWindowChooser_Y += 25;
+	
+	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,160),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
 
-	guiDynamicObjectsWindowChooser_Y += 40;
+	guiDynamicObjectsWindowChooser_Y += 165;
 	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	
 	guiDynamicObjectsWindowChooser_Y += 25;
-	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,240),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+160);
+	if (boxend<10)
+		boxend=10;
+
+	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,boxend),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
 	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	
 	UpdateGUIChooser(1);
@@ -1104,14 +1111,52 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 void GUIManager::UpdateGUIChooser(int objType)
 {
 	
+	this->currentObjType=objType;
+	// Create the category list first
+	guiDynamicObjects_OBJCategory->clear();
+	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories((TYPE)objType);
+	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+    {
+		guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+    }
+	guiDynamicObjects_OBJCategory->setSelected(0);
+
+
+
+
+	// Then the list of objects
 	guiDynamicObjects_OBJChooser->clear();
-	std::vector<stringc> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)objType);
+	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)objType,"");
 
     for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
     {
-		guiDynamicObjects_OBJChooser->addItem( stringw( listDynamicObjs[i] ).c_str() );
+		guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
     }
 	guiDynamicObjects_OBJChooser->setSelected(0);
+}
+
+void GUIManager::updateCurrentCategory()
+{
+
+	core::stringw text="";
+	u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+	text=guiDynamicObjects_OBJCategory->getListItem(selected);
+
+	// check if "all" is selected, as it's the first choice
+	// and empty string mean, that will check for all
+	if (selected==0)
+		text="";
+
+	guiDynamicObjects_OBJChooser->clear();
+	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)currentObjType,text);
+
+    for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+    {
+		guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+    }
+	guiDynamicObjects_OBJChooser->setSelected(0);
+	// Set the "active" object to the selection
+	DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 }
 
 void GUIManager::setTextLoader(stringw text)

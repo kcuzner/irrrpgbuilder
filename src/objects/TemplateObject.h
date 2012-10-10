@@ -44,6 +44,7 @@ class TemplateObject
 		stringw description; //Contain the description of the template
 		stringw author; // Contain the author name of the template
 		stringw licence; // Contain the licence type for the model
+		stringw category; // Category of the item
       
     private:
 

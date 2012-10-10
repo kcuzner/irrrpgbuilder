@@ -569,6 +569,10 @@ void App::eventGuiCombobox(s32 id)
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
+	case CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY:
+		GUIManager::getInstance()->updateCurrentCategory();
+		break;
+
 	case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
 		std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
 		TYPE choice = OBJECT_TYPE_NPC;

@@ -220,6 +220,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						newObj->author = xml->getAttributeValue("author");
 						newObj->description = xml->getAttributeValue("description");
 						newObj->licence = xml->getAttributeValue("licence");
+						newObj->category = xml->getAttributeValue("category");
 						
 					}
 
@@ -469,7 +470,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	// Add to the dynamic object list.
 	objects.push_back(newObj);
 	activeObject2=newObj;
-	GUIManager::getInstance()->updateDynamicObjectPreview();
+	//GUIManager::getInstance()->updateDynamicObjectPreview();
 
     return newObj;
 }
@@ -514,14 +515,48 @@ void DynamicObjectsManager::setActiveObject(stringc name)
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
-vector<stringc> DynamicObjectsManager::getObjectsList(TYPE objectType)
+vector<stringw> DynamicObjectsManager::getObjectsList(TYPE objectType, core::stringw category)
 {
-    vector<stringc> listObjs;
+    vector<stringw> listObjs;
+
+    for (int i=0 ; i<(int)objTemplate.size() ; i++)
+    {
+		if (objTemplate[i]->getType()==objectType && category=="")
+				listObjs.push_back( objTemplate[i]->getName() );
+		else
+
+		if (objTemplate[i]->getType()==objectType && objTemplate[i]->category==category)
+		{
+			listObjs.push_back( objTemplate[i]->getName() ); 
+		}
+
+    }
+
+    return listObjs;
+}
+
+//! Create a list of the categories from the XML data in the templates.
+vector<stringw> DynamicObjectsManager::getObjectsListCategories(TYPE objectType)
+{
+    vector<stringw> listObjs;
+	listObjs.push_back((core::stringw)"All");
+	bool found = false;
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		if (objTemplate[i]->getType()==objectType)
-    		listObjs.push_back( objTemplate[i]->getName() );
+		{ 
+			for (int a=0 ; a<(int)listObjs.size(); a++)
+			{
+				if (objTemplate[i]->category == listObjs[a])
+				{
+					found=true;
+				}
+			}
+			if (!found && objTemplate[i]->category!="")
+					listObjs.push_back( objTemplate[i]->category );
+			found=false;
+		}
     }
 
     return listObjs;

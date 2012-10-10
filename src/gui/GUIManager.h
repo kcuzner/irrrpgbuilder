@@ -33,6 +33,7 @@ enum GUI_ID
     BT_ID_DYNAMIC_OBJECTS_MODE = 16,
     CB_ID_DYNAMIC_OBJECT_HAS_ACTION = 17,
     CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER = 18,
+	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY,
     BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS = 19,
     BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE= 20,
     BT_ID_DYNAMIC_OBJECT_BT_REMOVE= 21,
@@ -69,7 +70,7 @@ enum GUI_ID
 	BT_ID_DIALOG_NO = 52,
 	IMG_BAR = 53,
 	CONSOLE = 54,
-	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY
+	CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -112,6 +113,7 @@ class GUIManager
 
         void setupGameplayGUI();
 		void UpdateGUIChooser(int objType);
+		void updateCurrentCategory();
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
 
@@ -277,6 +279,7 @@ class GUIManager
         IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
+		IGUIListBox* guiDynamicObjects_OBJCategory;
 		IGUIComboBox* guiDynamicObjects_Category;
         NodePreview* guiDynamicObjects_NodePreview;
 		NodePreview* guiPlayerNodePreview;
@@ -339,6 +342,8 @@ class GUIManager
         rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 		s32 displayheight;
 		s32 displaywidth;
+
+		int currentObjType;
 
         void loadFonts();
 
