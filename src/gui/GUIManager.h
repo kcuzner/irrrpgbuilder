@@ -11,6 +11,9 @@
 #include "GUIConfigWindow.h"
 #include "../sound/SoundManager.h"
 
+// Stretching window class
+#include "CGUIStretchWindow.h"
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -235,12 +238,10 @@ class GUIManager
 		IGUIStaticText* guiStatusText;
 
 		IGUIListBox* console;
-		IGUIWindow * consolewin;
+		CGUIStretchWindow* consolewin;//IGUIWindow * consolewin;
 
 		// Loader window
-
 		IGUIStaticText* guiLoaderDescription;
-
 
         ///Main window (like a toolbar on the top...)
         IGUIWindow* guiMainWindow;
@@ -276,7 +277,7 @@ class GUIManager
         ///Dynamic Objects
         IGUIButton* guiDynamicObjectsMode;
         IGUIWindow* guiDynamicObjectsWindowChooser;
-        IGUIWindow* guiDynamicObjectsWindowEditAction;
+        CGUIStretchWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
 		IGUIListBox* guiDynamicObjects_OBJCategory;

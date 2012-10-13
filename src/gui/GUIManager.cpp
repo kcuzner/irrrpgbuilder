@@ -58,6 +58,10 @@ GUIManager::~GUIManager()
 	delete guiPlayerNodePreview;
 	delete guiDynamicObjects_Script;
 	delete configWindow;
+	if (consolewin)
+		delete consolewin;
+	if (guiDynamicObjectsWindowEditAction)
+		delete guiDynamicObjectsWindowEditAction;
 
     //dtor
 }
@@ -858,14 +862,22 @@ void GUIManager::setupEditorGUI()
 
 
 
+	// ---
 	// --- Edit scripts window
+	// ---
 
-    //guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(100,100,driver->getScreenSize().Width-200,driver->getScreenSize().Height-100),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
-	guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(25,25,displaywidth-50,displayheight-50),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
+	// Old way of opening the window (fixed size)
+	/*guiDynamicObjectsWindowEditAction = guienv->addWindow(myRect(25,25,displaywidth-50,displayheight-50),false,L"",0,GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT);
     guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
     guiDynamicObjectsWindowEditAction->setDrawTitlebar(false);
     guiDynamicObjectsWindowEditAction->setDraggable(false);
+	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);*/
+
+	// NEW (oct 2012) Create a stretching windows for the script editor
+	guiDynamicObjectsWindowEditAction=new CGUIStretchWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(25,130,displaywidth-50,displayheight-150));
+	guiDynamicObjectsWindowEditAction->setDevice(App::getInstance()->getDevice());
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
 
 	//scripts editor box
     guiDynamicObjects_Script = new CGUIEditBoxIRB(L"",
@@ -874,8 +886,8 @@ void GUIManager::setupEditorGUI()
                        guienv,
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
-                       //myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-260),
-					   myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-130),
+                       myRect(10,40,driver->getScreenSize().Width-220,driver->getScreenSize().Height-310),
+					   //myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-130),
 					   App::getInstance()->getDevice());
 
     guiDynamicObjects_Script->setMultiLine(true);
@@ -983,8 +995,8 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_Script->addKeyword("onCollision",SColor(255,128,0,255),true);
 
 	// Bottom tabcontrol
-	//IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-220,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
-	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-90,displaywidth-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,driver->getScreenSize().Height-270,driver->getScreenSize().Width-220,110),guiDynamicObjectsWindowEditAction,true,false);
+	//IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(10,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-90,displaywidth-220,110),guiDynamicObjectsWindowEditAction,true,false);
 	IGUITab * tab1 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_debug").c_str());
 	IGUITab * tab2 = tabctrl1->addTab(LANGManager::getInstance()->getText("tab_script_templates").c_str());
 
@@ -1016,7 +1028,8 @@ void GUIManager::setupEditorGUI()
 	validate->setOverrideFont(guiFontC12);
 	validate->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-	IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-90,10,82,20),
+	//IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-90,10,82,20),
+	IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(driver->getScreenSize().Width-170,30,82,20),
                       guiDynamicObjectsWindowEditAction,
                       BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE,
                       stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_close_script")).c_str() );
@@ -1287,11 +1300,16 @@ void GUIManager::setupGameplayGUI()
 
 	// ---------------------------------------
 	#endif
-	consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
+
+	// Console window
+	// consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
+	consolewin = new CGUIStretchWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(20,20,800,400));
+	consolewin->setDevice(App::getInstance()->getDevice());
 	consolewin->getCloseButton()->setVisible(false);
 	console = guienv->addListBox(myRect(10,30,700,325),consolewin,0,true);
 	console->setAutoScrollEnabled(false);
 	console->setItemHeight(20);
+	console->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	consolewin->setVisible(false);
 
 	// --- Active game menu during play
