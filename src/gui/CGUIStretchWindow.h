@@ -6,7 +6,14 @@
 using namespace irr;
 using namespace gui;
 
-/** Class for opening/saving files. */
+/** Class for have stretchable windows
+	Will be used for most of the application windows, as sub-editor will require this
+	
+	Note for the stretching to be activated, the class will need to access the Irrlicht device (cursor pos)
+	This is done using the "setDevice()" command
+	*/
+
+
 class CGUIStretchWindow : public IGUIElement {
       
    public:
@@ -48,19 +55,21 @@ class CGUIStretchWindow : public IGUIElement {
 	  core::rect<s32> getClientRect();
 
    protected:
-
-	   void updateClientRect();
-
-		bool Dragging;
-		core::position2d<s32> DragStart;
-		core::rect<s32> ClientRect;
-      IGUIElement* EventParent;
-	  IGUIButton* CloseButton;
+	   
+	   core::position2d<s32> DragStart;
+	   core::rect<s32> ClientRect;
+	   
+	   IGUIElement* EventParent;IGUIButton* CloseButton;
 
 	  private:
 
-		  bool stretchbottom, stretchtop, stretchright, stretchleft;
-		  irr::IrrlichtDevice * device;
+		bool stretchbottom, stretchtop, stretchright, stretchleft;
+		irr::IrrlichtDevice * device;
+
+		bool Dragging, IsDraggable;
+        bool DrawBackground;
+        bool DrawTitlebar;
+		bool IsActive;
 		  
          
 };

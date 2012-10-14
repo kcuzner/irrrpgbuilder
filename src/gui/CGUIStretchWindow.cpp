@@ -7,14 +7,7 @@ const s32 yoffset = 10;
 
 //! constructor
 CGUIStretchWindow::CGUIStretchWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-: IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle),
-					 Dragging(false)
-
-					 /*core::rect<s32>((parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2,
-					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2,
-					 (parent->getAbsolutePosition().getWidth()-FOD_WIDTH)/2+FOD_WIDTH,
-					 (parent->getAbsolutePosition().getHeight()-FOD_HEIGHT)/2+FOD_HEIGHT))*/
-					 //IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle) {}
+: IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false)
 {
 #ifdef _DEBUG
 	IGUIElement::setDebugName("CGUIStretchWindow");
@@ -81,14 +74,27 @@ bool CGUIStretchWindow::OnEvent(const SEvent& event)
 	{
 	
 	case EET_GUI_EVENT:
-		switch(event.GUIEvent.EventType)
+		if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
 		{
-		
-		case EGET_ELEMENT_FOCUS_LOST:
 			Dragging = false;
-			break;
-
-		case EGET_BUTTON_CLICKED:
+			IsActive = false;
+		}
+		else
+		if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
+		{
+			if (Parent && ((event.GUIEvent.Caller == this) || isMyChild(event.GUIEvent.Caller)))
+			{
+				Parent->bringToFront(this);
+				IsActive = true;
+			}
+			else
+			{
+				IsActive = false;
+			}
+		}
+		else
+		if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+		{
 			if (event.GUIEvent.Caller == CloseButton)
 			{
 				remove();
@@ -105,12 +111,12 @@ bool CGUIStretchWindow::OnEvent(const SEvent& event)
 			DragStart.X = event.MouseInput.X;
 			DragStart.Y = event.MouseInput.Y;
 			Dragging = true;
-			Environment->setFocus(this);
 			return true;
+
 		case EMIE_LMOUSE_LEFT_UP:
 			Dragging = false;
-			Environment->removeFocus(this);
 			return true;
+
 		case EMIE_MOUSE_MOVED:
 			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
 			{
@@ -143,18 +149,21 @@ void CGUIStretchWindow::draw()
 	if (!IsVisible)
 		return;
 
-	// update each time because the skin is allowed to change this always.
-	updateClientRect();
+	// Update the size of the client rectangle if changed
+	ClientRect = core::rect<s32>(0,0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
 
 	core::vector2d<s32> mousepos = core::vector2d<s32>(0,0);
 	IGUISkin* skin = Environment->getSkin();
 	irr::video::IVideoDriver* driver = Environment->getVideoDriver();
+	
+	// Get the cursor position
+	// For this, the device need to be set
 	if (device)
 		mousepos=device->getCursorControl()->getPosition();
 
 	core::rect<s32> rect = AbsoluteRect;
 
-	rect = skin->draw3DWindowBackground(this, true, skin->getColor(EGDC_ACTIVE_BORDER),
+	rect = skin->draw3DWindowBackground(this, true, skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
 		rect, &AbsoluteClippingRect);
 
 	if (Text.size())
@@ -177,7 +186,7 @@ void CGUIStretchWindow::draw()
 	if (!Dragging)
 	{
 		//Hinting and detection for stretch on the right side
-		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-10) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X-2))
+		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X+5))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchright=true;
@@ -185,7 +194,7 @@ void CGUIStretchWindow::draw()
 			this->stretchright=false;
 
 		//Hinting and detection for stretch on the left side
-		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X+2) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+10))
+		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X-5) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+5))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchleft=true;
@@ -193,7 +202,7 @@ void CGUIStretchWindow::draw()
 			this->stretchleft=false;
 
 		//Hinting and detection for stretch on the bottom
-		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-10) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y-2))
+		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-5) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y+5))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchbottom=true;
@@ -202,7 +211,7 @@ void CGUIStretchWindow::draw()
 			this->stretchbottom=false;
 
 		//Hinting and detection for stretch on the top
-		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+5) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y+1))
+		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+5) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y-5))
 		{
 			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
 			this->stretchtop=true;
@@ -303,22 +312,6 @@ void CGUIStretchWindow::draw()
 	}
 
 	IGUIElement::draw();
-}
-
-void CGUIStretchWindow::updateClientRect()
-{
-	/*if (! DrawBackground )
-	{
-		ClientRect = core::rect<s32>(0,0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
-		return;
-	}
-	IGUISkin* skin = Environment->getSkin();
-	skin->draw3DWindowBackground(this, DrawTitlebar,
-			skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
-			AbsoluteRect, &AbsoluteClippingRect, &ClientRect);*/
-	ClientRect -= AbsoluteRect.UpperLeftCorner;
-
-	//ClientRect = core::rect<s32>(0,0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
 }
 
 //! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
