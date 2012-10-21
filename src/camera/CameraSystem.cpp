@@ -25,11 +25,8 @@ CameraSystem::CameraSystem()
 	
 
 	// New edit camera
-#ifdef _wxWINDOW_
-	editCamMaya = addCameraSceneNodeMaya(0, -45.0f, 200.0f, 100.0f);
-#else
+
 	editCamMaya = addCameraSceneNodeMaya(0, -450.0f, 800.0f, 400.0f);
-#endif
 
 	editCamMaya->setFarValue(5000);
 	editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
@@ -144,7 +141,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 				min = 2;
 				break;*/
 		case 1: max = 800;
-				min = 288;
+				min = 180;
 				break;
 		case 2: max = 10000;
 				min = 144;
@@ -169,7 +166,8 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
 		cameraHeight-=(increments*(distance/10));
 
-		gameCam->setPosition(vector3df(gameCam->getPosition().X,cameraHeight,gameCam->getPosition().Z));
+		gameCam->setPosition(vector3df(gameCam->getPosition().X,Player::getInstance()->getNode()->getAbsolutePosition().Y+cameraHeight,
+			gameCam->getPosition().Z));
 		f32 camdist = currentCam->getPosition().getDistanceFrom(currentCam->getTarget());
 		if (camdist>144)
 			gameCam->setFarValue(camdist*2.5f);
@@ -207,7 +205,7 @@ void CameraSystem::updatePointClickCam()
 {
 	// Get the player and find a "reference" position based on it.
 	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
-	camrefpos.Y=currentCam->getPosition().Y;
+	camrefpos.Y=Player::getInstance()->getNode()->getAbsolutePosition().Y+cameraHeight;
 	camrefpos.Z=camrefpos.Z-cameraHeight;
 
 	// Find the distance between the current camera and the reference position
