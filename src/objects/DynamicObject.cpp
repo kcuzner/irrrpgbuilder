@@ -101,9 +101,14 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 
 DynamicObject::~DynamicObject()
 {
-    selector->drop();
-	Healthbar->remove();
-    node->remove();
+	if (selector)
+		selector->drop();
+
+	if (Healthbar)
+		Healthbar->remove();
+
+	if (node)
+		node->remove();
 	
 }
 
@@ -200,7 +205,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
-			if(hasAnimation()) this->setFrameLoop(0,0);
+			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
 		
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
@@ -672,7 +677,7 @@ OBJECT_ANIMATION DynamicObject::getAnimation(void)
 bool DynamicObject::setAnimation(stringc animName)
 {
 	//define if we use a random frame in the idle animation
-	bool randomize=false;
+	bool randomize=true;
 
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
 	ISkinnedMesh* skin = NULL;
