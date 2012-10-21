@@ -49,6 +49,7 @@ enum GUI_ID
     BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT = 27,
     EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE = 28,
     BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE = 29,
+	BT_ID_DYNAMIC_OBJECT_INFO = 210,
     BT_ID_PLAY_GAME = 30,
     BT_ID_STOP_GAME = 31,
     BT_ID_EDIT_CHARACTER = 32,
@@ -88,7 +89,8 @@ enum GUI_CUSTOM_WINDOW
     GCW_ABOUT = 6,
     GCW_TERRAIN_PAINT_VEGETATION = 7,
 	GCW_DIALOG = 8,
-	GCW_CONSOLE = 9
+	GCW_CONSOLE = 9,
+	GCW_DYNAMIC_OBJECT_INFO = 10
 };
 
 enum GUI_HELP_IMAGE
@@ -124,15 +126,16 @@ class GUIManager
     	void drawPlayerStats();
 		bool isGuiPresent(vector2d<s32> mousepos);
 
-		#ifdef EDITOR
+#ifdef EDITOR
 		void setupEditorGUI();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
+		bool getVisibleStatus(s32 ID);
 
-		#endif
+#endif
 
 
 		void updateGuiPositions(dimension2d<u32> screensize);
@@ -277,6 +280,7 @@ class GUIManager
         ///Dynamic Objects
         IGUIButton* guiDynamicObjectsMode;
         IGUIWindow* guiDynamicObjectsWindowChooser;
+		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIStretchWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
@@ -284,6 +288,7 @@ class GUIManager
 		IGUIComboBox* guiDynamicObjects_Category;
         NodePreview* guiDynamicObjects_NodePreview;
 		NodePreview* guiPlayerNodePreview;
+		IGUIButton* guiDynamicObjectsInfo;
 
         IGUIComboBox* guiDynamicObjects_LoadScriptTemplateCB;
         IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;

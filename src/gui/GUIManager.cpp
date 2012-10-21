@@ -298,7 +298,7 @@ void GUIManager::setupEditorGUI()
 
 	// Standard toolbar
     //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
-	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-170,122),false);
+	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-220,122),false);
     guiMainWindow->setDraggable(false);
     guiMainWindow->setDrawTitlebar(false);
 	guiMainWindow->getCloseButton()->setVisible(false);
@@ -309,7 +309,7 @@ void GUIManager::setupEditorGUI()
 
 
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
-	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-170,0,170,120),false);
+	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-220,0,220,120),false);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
@@ -773,12 +773,38 @@ void GUIManager::setupEditorGUI()
     guiVegetationBrushStrength->setMax(200);
     guiVegetationBrushStrength->setPos(100);
 
-    // --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
+    // --- Dynamic Objects Info panel (display info about the current selected template object)
     rect<s32> windowRect =
-	myRect(displaywidth - 170,
-	guiMainToolWindow->getClientRect().getHeight(),
-	170,
-	displayheight-guiMainToolWindow->getClientRect().getHeight()-20);
+	myRect(displaywidth - 540,
+	guiMainToolWindow->getClientRect().getHeight()+4,
+	320,
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-24);
+
+	guiDynamicObjectsWindowInfo = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_INFO);
+	guiDynamicObjectsWindowInfo->setDraggable(false);
+    guiDynamicObjectsWindowInfo->getCloseButton()->setVisible(false);
+    guiDynamicObjectsWindowInfo->setDrawTitlebar(false);
+	guiDynamicObjectsWindowInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(1,1,318,39),false,true,guiDynamicObjectsWindowInfo,-1);
+	infotext->setDrawBackground(true);
+	infotext->setDrawBorder(true);
+	infotext->setBackgroundColor(video::SColor(255,237,242,248));
+	infotext->setOverrideColor(video::SColor(255,65,66,174));
+	infotext->setOverrideFont(guiFontCourier12);
+	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+
+
+
+	guienv->getRootGUIElement()->bringToFront(guiDynamicObjectsWindowInfo);
+	guiDynamicObjectsWindowInfo->setVisible(false);
+
+	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
+    windowRect = myRect(displaywidth - 220,
+	guiMainToolWindow->getClientRect().getHeight()+4,
+	220,
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-24);
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -789,7 +815,7 @@ void GUIManager::setupEditorGUI()
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
 
-	IGUIStaticText * ObjectText0 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),core::rect<s32>(1,1,168,39),false,true,guiDynamicObjectsWindowChooser,-1);
+	IGUIStaticText * ObjectText0 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),core::rect<s32>(1,1,218,39),false,true,guiDynamicObjectsWindowChooser,-1);
 	ObjectText0->setDrawBackground(true);
 	ObjectText0->setDrawBorder(true);
 	ObjectText0->setBackgroundColor(video::SColor(255,237,242,248));
@@ -808,28 +834,39 @@ void GUIManager::setupEditorGUI()
 	// guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiDynamicObjectsWindowChooser_Y += 40;
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guienv->addStaticText(L"Object type",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
-	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
+	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->addItem(L"NPC");
 	//Since they are not yet implemented, theses will be off for the moment.
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	guiDynamicObjects_Category->addItem(L"PROPS");
-
-	guiDynamicObjectsWindowChooser_Y += 25;
 	
-	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,160),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
 
-	guiDynamicObjectsWindowChooser_Y += 165;
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	
-	guiDynamicObjectsWindowChooser_Y += 25;
-	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+160);
+	guiDynamicObjectsWindowChooser_Y += 40;
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guiDynamicObjectsWindowChooser_Y += 20;
+	
+	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,160),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
+
+	guiDynamicObjectsWindowChooser_Y += 185;
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	
+	guiDynamicObjectsWindowChooser_Y += 20;
+	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+180);
 	if (boxend<10)
 		boxend=10;
 
-	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,150,boxend),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,boxend),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
 	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	guiDynamicObjectsInfo= guienv->addButton(myRect(10,guiDynamicObjectsWindowChooser_Y+boxend+10,200,20),
+                                                           guiDynamicObjectsWindowChooser,
+                                                           BT_ID_DYNAMIC_OBJECT_INFO,
+                                                           L"<< Information panel" );
+	guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
+	guiDynamicObjectsInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 	
 	UpdateGUIChooser(1);
 	
@@ -1082,6 +1119,20 @@ void GUIManager::setupEditorGUI()
 
 }
 
+bool GUIManager::getVisibleStatus(s32 ID)
+{
+	if (ID==GCW_DYNAMIC_OBJECT_INFO)
+		return guiDynamicObjectsWindowInfo->isVisible();
+
+	if (ID==GCW_CONSOLE)
+		return consolewin->isVisible();
+
+	if (ID==GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT)
+		return guiDynamicObjectsWindowEditAction->isVisible();
+
+	return false;
+}
+
 #endif
 
 bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
@@ -1107,6 +1158,8 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 		return true;
 #ifdef EDITOR
 	if (guiDynamicObjectsWindowChooser->isVisible() && guiDynamicObjectsWindowChooser->isPointInside(mousepos))
+		return true;
+	if (guiDynamicObjectsWindowInfo->isVisible() && guiDynamicObjectsWindowInfo->isPointInside(mousepos))
 		return true;
 	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
 	{
@@ -1496,6 +1549,10 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
     switch(window)
     {
 #ifdef EDITOR
+		case GCW_DYNAMIC_OBJECT_INFO:
+			guiDynamicObjectsWindowInfo->setVisible(visible);
+			break;
+
         case GCW_DYNAMIC_OBJECT_CHOOSER:
             guiDynamicObjectsWindowChooser->setVisible(visible);
             break;
@@ -1653,7 +1710,6 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			guiEditCharacter->setPressed(!enable);
             break;
 		case BT_ID_PLAYER_EDIT_SCRIPT:
-			//This has been added and need to be testes more.
 			guiPlayerEditScript->setEnabled(enable);
 			guiPlayerEditScript->setPressed(!enable);
 			break;

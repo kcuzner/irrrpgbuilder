@@ -354,6 +354,12 @@ void App::eventGuiButton(s32 id)
 		}
 		break;
 
+	case BT_ID_DYNAMIC_OBJECT_INFO:
+		{
+			bool result = GUIManager::getInstance()->getVisibleStatus(GCW_DYNAMIC_OBJECT_INFO);
+			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,!result);
+		}
+
 	case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
