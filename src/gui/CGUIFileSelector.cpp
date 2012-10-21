@@ -692,7 +692,8 @@ void CGUIFileSelector::sendSelectedEvent()
 	event.EventType = EET_GUI_EVENT;
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.EventType = EGET_FILE_SELECTED;
-	Parent->OnEvent(event);
+	if (Parent) 
+		Parent->OnEvent(event);
 	this->setVisible(false);
 }
 
@@ -703,7 +704,8 @@ void CGUIFileSelector::sendCancelEvent()
 	event.EventType = EET_GUI_EVENT;
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.EventType = EGET_FILE_CHOOSE_DIALOG_CANCELLED;
-	Parent->OnEvent(event);
+	if (Parent)
+		Parent->OnEvent(event);
 	this->setVisible(false);
 }
 

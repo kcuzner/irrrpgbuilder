@@ -36,7 +36,7 @@ function onUpdate()
 	  print("Frog now attack!")
 	  setAnimation("attack")
 	else
-      chaseObject("player",0.8,36,800)
+      chaseObject("player",0.8,100,800)
     end
 	setObjectLabel(name)
     showObjectLabel()

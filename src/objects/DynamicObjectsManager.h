@@ -50,10 +50,6 @@ class DynamicObjectsManager
 
         void showDebugData(bool show);
 
-		void startCollisions();
-        void clearCollisions();
-
-		void updateMetaSelector();
 		IMetaTriangleSelector* getMeta();
 		IMetaTriangleSelector* createMeta();
 	
@@ -77,9 +73,6 @@ class DynamicObjectsManager
 
         virtual ~DynamicObjectsManager();
 
-	protected:
-		void initializeCollisions();
-
     private:
         DynamicObjectsManager();
 		
@@ -100,10 +93,8 @@ class DynamicObjectsManager
 		TemplateObject* newObj;
 		vector<TemplateObject*> objTemplate; // List of all the dynamic object template data 
         int objsCounter;
-		int collisionCounter;
-		bool createcollisions;
 
-        vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
+		vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
 		
 		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;

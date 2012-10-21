@@ -24,9 +24,6 @@ DynamicObjectsManager::DynamicObjectsManager()
 	objectCounter = 0;
 	dialogCaller = NULL;
 
-	// Collision creation (in steps)
-	collisionCounter = 0;
-	createcollisions=true;
 }
 
 DynamicObjectsManager::~DynamicObjectsManager()
@@ -211,8 +208,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						newObj->setScale((irr::f32)atof(objectScale.c_str()));
 						
 						objectMaterial = (core::stringc)xml->getAttributeValue("materialType");
-						
+			
 						E_MATERIAL_TYPE mat = EMT_SOLID;
+				
             			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
 						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
 						newObj->setMaterialType(mat);
@@ -433,9 +431,10 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
   	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);
 	newObj->setScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setType(activeObject->getType());
-	newObj->setTemplate(true);
+	newObj->setTemplate(false);
+
 	//setup material
-	newObj->setMaterialType(activeObject->getMaterialType());
+	newObj->getNode()->setMaterialType(activeObject->getMaterialType());
 	newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
 	// Load the script if it was defined in the XML
 	if (activeObject->script.size()>1)
@@ -465,12 +464,12 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
     //the unique name of an dynamic object contains his index at the objects vector
     newObj->setName(this->createUniqueName());
+	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(activeObject->getName());
 
 	// Add to the dynamic object list.
 	objects.push_back(newObj);
 	activeObject2=newObj;
-	//GUIManager::getInstance()->updateDynamicObjectPreview();
 
     return newObj;
 }
@@ -488,6 +487,8 @@ void DynamicObjectsManager::removeObject(stringc uniqueName)
     }
 }
 
+// Singleton style of keeping the pointer of the manager.
+// Can be used to recall the pointer of the manager
 DynamicObjectsManager* DynamicObjectsManager::getInstance()
 {
     static DynamicObjectsManager *instance = 0;
@@ -495,11 +496,16 @@ DynamicObjectsManager* DynamicObjectsManager::getInstance()
     return instance;
 }
 
+// The "active" object is the current template that is used to create items on the map.
 TemplateObject* DynamicObjectsManager::getActiveObject()
 {
     return activeObject;
 }
 
+
+//Find the name in the template as use it as "active" one.
+//This will be used to create the character or object on the map by the user.
+//Normally the "name" is provided by a list.
 void DynamicObjectsManager::setActiveObject(stringc name)
 {
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
@@ -741,7 +747,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
         
 		cproperty a=newObj->initProperties();
 		
-		// Default values for the player and the NPCS
+		// Default properties values for the player and the NPCS
 		if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
 		{
 			// If LUA or a loaded value redefine a properties, it will override thoses values
@@ -952,8 +958,6 @@ void DynamicObjectsManager::updateAll()
 	//Update player code
 	Player::getInstance()->update(); // This one is timed now.
 	
-	if (createcollisions)
-		initializeCollisions();
 }
 
 void DynamicObjectsManager::clearAllScripts()
@@ -984,7 +988,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 	}
 }
 
-//! This is used for animation blending, need to be called at each refresh
+//! This is used for animation blending, need to be called at each update refresh
 void DynamicObjectsManager::updateAnimationBlend()
 {
 	 for(int i=0;i<(int)objects.size();i++)
@@ -1020,6 +1024,8 @@ void DynamicObjectsManager::objectsToIdle()
 }
 
 // Create a meta selector for the collision response animation
+// Also needed for every ray collision test (pool of triangle to test from)
+// This is used for the enviromment, the NPC will be evaluated by distance (faster)
 IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 {
 	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -1049,101 +1055,24 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 	return meta;
 }
 
-// Set the flag to re-create the collisions
-void DynamicObjectsManager::startCollisions()
-{
-	collisionCounter=0;
-	createcollisions=true;
-}
 
-void DynamicObjectsManager::initializeCollisions()
-{
-	/*
-	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
-
-	// Create the collision response animator for each NPC & Player.
-	// Done at each update until the list is completed. Should give some time for other tasks.
-
-	// Could perhaps do the meta the same way (Meta creation and this take the longest time)
-
-	if (objects[collisionCounter])
-	{
-		if (objects[collisionCounter]->getType()==OBJECT_TYPE_NPC || objects[collisionCounter]->getType()==OBJECT_TYPE_PLAYER)
-		{
-			//if (objects[collisionCounter]->isEnabled())
-			if (objects[collisionCounter]->getLife()>0)
-			{
-				createMeta();
-
-				// This should remove the own triangle selector from the NPC but disabled for the moment.
-				meta->removeTriangleSelector(objects[collisionCounter]->getNode()->getTriangleSelector());
-
-				ISceneNodeAnimatorCollisionResponse* coll = smgr->createCollisionResponseAnimator(meta,objects[collisionCounter]->getNode(),vector3df(32.0f,72.0f,32.0f),vector3df(0,0,0));
-				objects[collisionCounter]->getNode()->addAnimator(coll);
-				objects[collisionCounter]->setAnimator(coll);
-
-				meta->drop();
-			}
-		}
-	}
-	collisionCounter++;
-	if (collisionCounter>=(int)objects.size())
-	{
-		collisionCounter=0;
-		createcollisions=false;
-	}
-
-	*/
-
-}
-
-void DynamicObjectsManager::clearCollisions()
-{
-
-	// Remove the collision animators from the objects
-	for(int i=0;i<(int)objects.size();i++)
-    {
-		if (objects[i])
-		{
-			core::list<ISceneNodeAnimator*>::ConstIterator begin = objects[i]->getNode()->getAnimators().begin();
-			core::list<ISceneNodeAnimator*>::ConstIterator end = objects[i]->getNode()->getAnimators().end();
-
-			for(int it=0; begin != end; ++it )
-			{
-				ISceneNodeAnimator* pAnim = *begin;
-				if( pAnim->getType() == ESNAT_COLLISION_RESPONSE )
-				{
-					objects[i]->getNode()->removeAnimator(*begin);
-					break;
-				}
-			}
-		}
-	}
-}
 IMetaTriangleSelector* DynamicObjectsManager::getMeta()
 {
 	return meta;
 }
 
-void DynamicObjectsManager::updateMetaSelector()
-{
-	// Update all the collision object (Mostly caused by an object being removed
-	clearCollisions();
-	createcollisions=true;
-	collisionCounter=0;
-}
+
 //! Clean up the screen by removing everything.
 // Might have to fix some details
 // Used mostly when the application is closing
 void DynamicObjectsManager::clean(bool full)
 {
 
-	collisionResponseAnimators.clear();
-	vector<DynamicObject*> object_backup;
-	object_backup.clear();
-
-	
-	// Remove all non-templates
+	// Remove all non-templates (old name)
+	// "template object" in this term mean, an object that should be kept until 
+	// we close the game (player, target object, etc)
+	// Will have to change the naming convention as it's now using another approach 
+	// (templates are loaded on demand now)
 	for(int i=0;i<(int)objects.size();i++)
     {
         DynamicObject* d = objects[i];
@@ -1155,48 +1084,22 @@ void DynamicObjectsManager::clean(bool full)
 				delete d;
           		objects[i]=NULL;
 
-			} else
-				object_backup.push_back(d);
+			}
+			// else
+			//	object_backup.push_back(d);
 		}
     }
 	// Cleanup
 	objects.clear();
-	objects=object_backup;
-	object_backup.clear();
-
-
+	
 	if (!full)
 		return;
     objsCounter = 0;
-	// Temporarily commented out, was crashing when closing the game in play mode
-	// This doesnt seem to cause a memory leak for now.
-  /*  for(int i=0;collisionResponseAnimators.size();i++)
-    {
-        ISceneNodeAnimatorCollisionResponse* sc = collisionResponseAnimators[i];
-
-        sc->drop();
-    }*/
+	
 
     activeObject = NULL;
-	 /*
-    for(int i=0;i<objectsTemplate.size();i++)
-    {
-        DynamicObject* d = objectsTemplate[i];
-
-        delete d;
-    }*/
-
-	//objectsTemplate.clear();
-	/*
-	for(int i=0;i<(int)objects.size();i++)
-    {
-        DynamicObject* d = objects[i];
-		delete d;
-        objects.erase(objects.begin() + i);
-    }
-
-   objects.clear();
-	*/
+	
+	
    // Clearing all template data, need to update
    for(int i=0;i<(int)objTemplate.size();i++)
     {

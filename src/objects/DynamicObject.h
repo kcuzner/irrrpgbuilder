@@ -107,6 +107,7 @@ class DynamicObject
 
 		void lookAt(vector3df pos);
 		void setPosition(vector3df pos);
+		void setOldPos();
         vector3df getPosition();
 		void setRotation(vector3df rot);
         vector3df getRotation();

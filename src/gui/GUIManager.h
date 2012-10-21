@@ -27,7 +27,7 @@ enum GUI_ID
 {
     BT_ID_TERRAIN_TRANSFORM = 1,
     BT_ID_TERRAIN_ADD_SEGMENT = 2,
-    CB_ID_TERRAIN_SHOW_PLAYABLE_AREA = 3,
+  
     SC_ID_TERRAIN_BRUSH_STRENGTH = 5,
 	SC_ID_TERRAIN_BRUSH_RADIUS = 6,
 	SC_ID_TERRAIN_BRUSH_PLATEAU = 7,
@@ -36,7 +36,8 @@ enum GUI_ID
     BT_ID_DYNAMIC_OBJECTS_MODE = 16,
     CB_ID_DYNAMIC_OBJECT_HAS_ACTION = 17,
     CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER = 18,
-	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY,
+	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY = 202,
+	BT_ID_DYNAMIC_OBJECT_BT_SPAWN = 201,
     BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS = 19,
     BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE= 20,
     BT_ID_DYNAMIC_OBJECT_BT_REMOVE= 21,
@@ -256,7 +257,6 @@ class GUIManager
 
         ///Terrain Toolbar
         IGUIWindow* guiTerrainToolbar;
-        IGUICheckBox* guiTerrainShowPlayableArea;
         IGUIScrollBar* guiTerrainBrushStrength;
         IGUIStaticText* guiTerrainBrushStrengthLabel;
 		IGUIScrollBar* guiTerrainBrushPlateau;
@@ -293,6 +293,7 @@ class GUIManager
         IGUIButton* guiDynamicObjects_Context_btMoveRotate;
         IGUIButton* guiDynamicObjects_Context_btRemove;
         IGUIButton* guiDynamicObjects_Context_btCancel;
+		IGUIButton* guiDynamicObjects_Context_btSpawn;
 
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;

@@ -52,14 +52,27 @@ GUIManager::GUIManager()
 GUIManager::~GUIManager()
 {
 
-	delete managauge;
-	delete lifegauge;
-	delete guiDynamicObjects_NodePreview;
-	delete guiPlayerNodePreview;
-	delete guiDynamicObjects_Script;
-	delete configWindow;
+	if (managauge)
+		delete managauge;
+
+	if (lifegauge)
+		delete lifegauge;
+
+	if (guiDynamicObjects_NodePreview)
+		delete guiDynamicObjects_NodePreview;
+
+	if (guiPlayerNodePreview)
+		delete guiPlayerNodePreview;
+
+	if (guiDynamicObjects_Script)
+		delete guiDynamicObjects_Script;
+
+	if (configWindow)
+		delete configWindow;
+
 	if (consolewin)
 		delete consolewin;
+
 	if (guiDynamicObjectsWindowEditAction)
 		delete guiDynamicObjectsWindowEditAction;
 
@@ -154,14 +167,13 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 
 bool GUIManager::getCheckboxState(GUI_ID id)
 {
+	/*
     switch(id)
     {
-        case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA :
-            return guiTerrainShowPlayableArea->isChecked();
-            break;
         default:
             break;
     }
+	*/
     return false;
 }
 
@@ -692,10 +704,6 @@ void GUIManager::setupEditorGUI()
 
 	//Show Playable Area (areas with no Y == 0 will be red)
 	mainToolbarPos.Y=20;
-    guiTerrainShowPlayableArea = guienv->addCheckBox(true,myRect(10,mainToolbarPos.Y,160,20),
-                                                     guiTerrainToolbar,
-                                                     CB_ID_TERRAIN_SHOW_PLAYABLE_AREA,
-                                                     stringw(LANGManager::getInstance()->getText("bt_show_playable_area")).c_str());
 
 	// Display the brush strength
 	guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
@@ -830,31 +838,37 @@ void GUIManager::setupEditorGUI()
 
 
 	// --- Contextual menu for the dynamic objects
-    guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(100,100,200,105),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
+    guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(100,100,200,160),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
     guiDynamicObjects_Context_Menu_Window->getCloseButton()->setVisible(false);
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window->setVisible(false);
 
-    guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,5,190,20),
+	guiDynamicObjects_Context_btSpawn = guienv->addButton(myRect(5,5,190,20),
+                                                           guiDynamicObjects_Context_Menu_Window,
+                                                           BT_ID_DYNAMIC_OBJECT_BT_SPAWN,
+                                                           L"Create item here");
+	guiDynamicObjects_Context_btSpawn->setOverrideFont(guiFontC12);
+
+    guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,30,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 	guiDynamicObjects_Context_btEditScript->setOverrideFont(guiFontC12);
 
-    guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,30,190,20),
+    guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,55,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_move_rotate")).c_str() );
 	guiDynamicObjects_Context_btMoveRotate->setOverrideFont(guiFontC12);
 
-    guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,55,190,20),
+    guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,80,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 	guiDynamicObjects_Context_btRemove->setOverrideFont(guiFontC12);
 
-    guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,80,190,20),
+    guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,105,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_CANCEL,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
@@ -1488,7 +1502,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y;
-            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,105));
+            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,130));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
             break;
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
@@ -1554,8 +1568,8 @@ void GUIManager::updateDynamicObjectPreview()
 {
 	// Temporary disabled until the new template system is in place.
 	scene::ISceneNode* node = DynamicObjectsManager::getInstance()->findActiveObject();
-	if (node)
-		guiDynamicObjects_NodePreview->setNode(node);
+	//if (node)
+	//	guiDynamicObjects_NodePreview->setNode(node);
 }
 
 stringc GUIManager::getEditBoxText(GUI_ID id)

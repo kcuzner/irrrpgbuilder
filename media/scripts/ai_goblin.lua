@@ -36,11 +36,11 @@ function onUpdate()
   if(distanceFrom(x,y,z) < 288 and getPlayerLife()>0) then 
     setObjectLabel(name)
     showObjectLabel()
-    if(distanceFrom(x,y,z) < 66) then
+    if(distanceFrom(x,y,z) < 90) then
 		setAnimation("attack")
 		lookAt(x,y,z)
       else
-        chaseObject("player",2,66,800)
+        chaseObject("player",2,90,800)
       end
   else
     -- Lost the player or killed the player. Goes around

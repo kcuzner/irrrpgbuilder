@@ -149,8 +149,6 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
         //clear and load global vars
         this->clearGlobals();
 
-        DynamicObjectsManager::getInstance()->clearCollisions();
-
         TiXmlNode* globalVarsXML = root->FirstChild( "global_vars" );
 
         TiXmlNode* globalVarXML = globalVarsXML->FirstChild( "global" );
@@ -189,8 +187,6 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
                 playerItemXML = playerXML->IterateChildren( "item", playerItemXML );
             }
         }
-
-        //DynamicObjectsManager::getInstance()->initializeCollisions();
 
         return true;
     }
@@ -980,7 +976,6 @@ bool result = false;
 		stringc filename = "../projects/";
 		filename += name;
 		//App::getInstance()->setAppState(APP_WAIT_DIALOG);
-		//DynamicObjectsManager::getInstance()->clearCollisions();
 		App::getInstance()->stopGame();
 		App::getInstance()->cleanWorkspace();
 		//result = App::getInstance()->loadProjectFromXML(filename);

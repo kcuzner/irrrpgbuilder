@@ -34,10 +34,11 @@ function onUpdate()
   if(distanceFrom(x,y,z) < 288) then 
     setObjectLabel(name)
     showObjectLabel()
-    if(distanceFrom(x,y,z) < 66) then
+    if(distanceFrom(x,y,z) < 100) then
 	  setAnimation("attack")
+	  lookAt(x,y,z)
 	else
-      chaseObject("player",0.8,66,800)
+      chaseObject("player",0.8,100,800)
     end
   else
     hideObjectLabel()

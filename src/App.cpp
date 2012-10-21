@@ -137,7 +137,6 @@ void App::setAppState(APP_STATE newAppState)
 		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
-		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
@@ -360,6 +359,17 @@ void App::eventGuiButton(s32 id)
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
+	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN:
+
+		printf ("User call the spawn menu!\n");
+
+		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+
+		break;
+
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
 		selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -539,8 +549,7 @@ void App::eventGuiButton(s32 id)
 void App::hideEditGui()
 {
 	wxSystemState=true;
-	GUIManager::getInstance()->setConsoleText(L"Ready now for WXwidget!",SColor(255,0,0,255));
-	//GUIManager::getInstance()->setElementVisible(BT_ID_WXEditor,false);
+	GUIManager::getInstance()->setConsoleText(L"Console ready!",SColor(255,0,0,255));
 }
 
 std::vector<stringw> App::getAbout()
@@ -550,14 +559,13 @@ std::vector<stringw> App::getAbout()
 
 void App::eventGuiCheckbox(s32 id)
 {
+	/*
 	switch (id)
 	{
-	case CB_ID_TERRAIN_SHOW_PLAYABLE_AREA:
-		ShaderCallBack::getInstance()->setFlagEditingTerrain(GUIManager::getInstance()->getCheckboxState(CB_ID_TERRAIN_SHOW_PLAYABLE_AREA));
-		break;
 	default:
 		break;
 	}
+	*/
 }
 
 void App::eventGuiCombobox(s32 id)
@@ -1049,9 +1057,6 @@ void App::playGame()
 		//DynamicObjectsManager::getInstance()->showDebugData(false);
 		//TerrainManager::getInstance()->showDebugData(false);
 
-		DynamicObjectsManager::getInstance()->startCollisions();
-		//DynamicObjectsManager::getInstance()->initializeCollisions();
-
 		// Reset the last "walk target" as the game restart.
 		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getObject()->getPosition());
 
@@ -1070,7 +1075,6 @@ void App::stopGame()
 		GlobalMap::getInstance()->clearGlobals();
 
 		DynamicObjectsManager::getInstance()->clearAllScripts();
-		DynamicObjectsManager::getInstance()->clearCollisions();
 		//DynamicObjectsManager::getInstance()->displayShadow(false);
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		// DynamicObjectsManager::getInstance()->showDebugData(true);
@@ -1168,8 +1172,6 @@ void App::run()
 	LuaGlobalCaller::getInstance()->storeGlobalParams();
 	DynamicObjectsManager::getInstance()->initializeAllScripts();
 	DynamicObjectsManager::getInstance()->showDebugData(false);
-	DynamicObjectsManager::getInstance()->startCollisions();
-	//DynamicObjectsManager::getInstance()->initializeCollisions();
 	TerrainManager::getInstance()->showDebugData(false);
 	GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
 	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
@@ -1259,8 +1261,10 @@ void App::updateEditMode()
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
-				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
+				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
 				{
+					// Activate the "plateau" display in the shader
+					ShaderCallBack::getInstance()->setFlagEditingTerrain(true);
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
@@ -1271,6 +1275,8 @@ void App::updateEditMode()
 				}
 				else
 				{
+					// De-Activate the "plateau" display in the shader
+					ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 					if(EventReceiver::getInstance()->isMousePressed(0))
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
@@ -1392,7 +1398,7 @@ void App::updateGameplay()
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
 
 			stringc nodeName = "";
-			// Check for a node to prevent a crash (need to get the name of the node)
+			// Check for a node(need to get the name of the node)
 			if (mousePick.pickedNode != NULL)
 			{
 				stringc nodeName = mousePick.pickedNode->getName();
@@ -1432,6 +1438,7 @@ void App::updateGameplay()
 						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
 						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 						Player::getInstance()->setTaggedTarget(NULL);
+						Player::getInstance()->getObject()->clearEnemy();
 					}
 					//Player::getInstance()->getObject()->clearEnemy();
 					return;

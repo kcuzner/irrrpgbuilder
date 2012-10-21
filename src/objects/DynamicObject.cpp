@@ -278,6 +278,12 @@ void DynamicObject::setPosition(vector3df pos)
 	node->updateAbsolutePosition();
 }
 
+void DynamicObject::setOldPos()
+{
+	node->setPosition(oldpos);
+	node->updateAbsolutePosition();
+}
+
 vector3df DynamicObject::getPosition()
 {
 	//Fakeshadow seem to cause problems... Let put this off while we investigate
@@ -321,10 +327,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 {
 	// Will have the object walk to the targetposition at the current speed.
 	// Walk can be interrupted by:
-	// - A collision with another object
+	// - A collision with another object (need to be updated as collision is down)
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
-	
-	
+
 	if (getType()==OBJECT_TYPE_PLAYER && Player::getInstance()->getTaggedTarget())
 		targetPos = Player::getInstance()->getTaggedTarget()->getPosition();
 	else
@@ -337,13 +342,14 @@ void DynamicObject::walkTo(vector3df targetPos)
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
 	// Calculate the distance based on time (delay)
-	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(170 value seem ok for the setting done)
+	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(based on seconds (1000 for 1000ms)
 	if (speed == 0)
 		speed=1.0f;
 		
 
 	vector3df pos=this->getPosition();
 	oldpos=pos;
+
     pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
@@ -367,6 +373,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 		cliff = -cliff;
 
 	//printf ("Here are the height: front: %f, middle: %f, back: %f, cliff: %f\n",height2,height,height3,cliff);
+	
 	
 
 	//TODO: Fix the problem with custom scaling of the objects
@@ -396,15 +403,22 @@ void DynamicObject::walkTo(vector3df targetPos)
 				lookAt(enemyUnderAttack->getPosition());
 				setAnimation("attack");
 			} else
+			{
 				this->setAnimation("idle");
+			}
 
 		} else
+		{
 			this->setAnimation("idle");
+		}
 
-		printf("Collision detected..\n");
+		printf("Cliff too high for walking..\n");
 		
 		collided=false; // reset the collision flag
 	}
+
+	f32 distance = 0.0f;
+
 }
 
 void DynamicObject::setWalkTarget(vector3df newTarget)
@@ -483,8 +497,6 @@ void DynamicObject::setEnabled(bool enabled)
     this->enabled = enabled;
 
     this->node->setVisible(enabled);
-	//if (!enabled)
-	//	DynamicObjectsManager::getInstance()->updateMetaSelector();
 	if (this->getNode()->isVisible()==false && this==Player::getInstance()->getObject()->getCurrentEnemy())
 	{
 		Player::getInstance()->getObject()->clearEnemy();
@@ -730,9 +742,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		// If the current animation is DIE, then remove the collision on the object
-		if (this->currentAnimation!=OBJECT_ANIMATION_DIE && this->getType()!=OBJECT_TYPE_PLAYER)
-			DynamicObjectsManager::getInstance()->updateMetaSelector();
+		
 		// disable the stun state if present. Dying takes over
 		stunstate=false;
 
@@ -1214,6 +1224,8 @@ void DynamicObject::update()
 	if (timerobject-timerLUA>17) // Evaluated at each 17ms or more.
 	{
 		// Check for collision with another node
+		// This is not working anymore (oct 2012) as the collision response animator is removed
+		// A new methode should be implemented in the dynamic object manager (using oldpos)
 		if (animator && animator->collisionOccurred())
 		{
 			//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
@@ -1331,17 +1343,46 @@ void DynamicObject::updateWalk()
 		// Stop the walk when in range
 		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))
 
-		if (((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)  && (this->getPosition().getDistanceFrom(walkTarget) < 5)) ) //|| collided)
-			//this->getPosition().getDistanceFrom(walkTarget) < (meshScale*meshSize))
+		//This will find the size of the ennemy and calculate a proper distance before the attack.
+		f32 enemysize = 0;
+		if (enemyUnderAttack)
 		{
-
-			this->setWalkTarget(this->getPosition());
-			this->setAnimation("idle");
-
-			// For the player, hides the target if get to the destination
-			if (objectType==OBJECT_TYPE_PLAYER)
-				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+			f32 enemybasesize=0;
+			enemybasesize = enemyUnderAttack->getNode()->getBoundingBox().getExtent().X;
+			f32 enemyscale=0;
+			enemyscale = enemyUnderAttack->getNode()->getScale().X;
+			f32 enemysize = enemybasesize * enemyscale;
+			//printf ("DB=====>>>>> size of ennemy is: %f units!\n",enemysize);
 		}
+
+		// This tries to stop the NPC or player if it reach the proper distance
+		// This is needed to stop the character before combat or when it reach the destination
+		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN) 
+		{
+			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType==OBJECT_TYPE_PLAYER) //Mostly for the reticle
+			{
+				this->setWalkTarget(this->getPosition());
+				this->setAnimation("idle");
+				
+				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+			}
+			else if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType!=OBJECT_TYPE_PLAYER) // NPC
+			{
+				this->setWalkTarget(this->getPosition());
+				this->setAnimation("idle");
+			}
+
+			else if (this->getPosition().getDistanceFrom(walkTarget) < enemysize ) // both types if they have a "ennemy" in sight
+			{
+				this->setWalkTarget(this->getPosition());
+				this->setAnimation("idle");
+
+				// For the player, hides the target if get to the destination
+				if (objectType==OBJECT_TYPE_PLAYER)
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+			}
+		}
+			
 
 		// Cancel the move if another animation is triggered
 		//if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()!=OBJECT_ANIMATION_RUN || this->getAnimation()==OBJECT_ANIMATION_IDLE)
@@ -1354,10 +1395,10 @@ void DynamicObject::updateWalk()
 		//if( (this->getPosition().getDistanceFrom(walkTarget) > ((meshScale*meshSize)*2)) &&  (this->getLife()!=0))
 		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
 		{
-			if (objectType==OBJECT_TYPE_NPC)
-				printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
-				this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
-				this->walkTarget.X,this->walkTarget.Y,this->walkTarget.Z);
+			//if (objectType==OBJECT_TYPE_NPC)
+				//printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
+				//this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
+				//this->walkTarget.X,this->walkTarget.Y,this->walkTarget.Z);
 
 
 			if (runningMode)
@@ -1634,6 +1675,11 @@ int DynamicObject::walkToLUA(lua_State *LS)
 				tempObj->setAnimation("walk");
 		}
 		tempObj->setWalkTarget(vector3df(x,y,z));
+
+		// Determine if the object is the player or the NPC (will set the player as target)
+		// Code need to be reworked as the NPCs are blocked
+		/*if (tempObj->getType()!=OBJECT_TYPE_PLAYER)
+			tempObj->enemyUnderAttack=Player::getInstance()->getObject();*/
     }
 
     return 0;
