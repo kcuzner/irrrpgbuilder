@@ -16,6 +16,7 @@ class EffectsManager
     public:
         static EffectsManager* getInstance();
 
+		void initPostProcess();
         void setWeather(int maxParticles, float particlesSpeed, stringc textureFile);
         void setTimeOfDay(int newTime);
 		void update();

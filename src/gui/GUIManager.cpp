@@ -18,6 +18,7 @@ using namespace irrklang;
 GUIManager::GUIManager()
 {
     guienv = App::getInstance()->getDevice()->getGUIEnvironment();
+	driver = App::getInstance()->getDevice()->getVideoDriver();
 	screensize = App::getInstance()->getScreenSize();
 
     loadFonts();
@@ -138,8 +139,6 @@ rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
 
 void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 {
-    IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
-
     switch(img)
     {
         case HELP_TERRAIN_TRANSFORM:
@@ -240,7 +239,6 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 
 void GUIManager::setupEditorGUI()
 {
-	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 //    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
     //guienv->getSkin()->setFont(guiFontC12);
@@ -266,26 +264,28 @@ void GUIManager::setupEditorGUI()
 	// quick update of the Irrlicht display while loading.
 	App::getInstance()->quickUpdate();
 
-	// loading others
-	ITexture* backtexture = driver->getTexture("../media/art/back.png");
-	ITexture* imgNewProject = driver->getTexture("../media/art/bt_new_project.png");
-	ITexture* imgNewProject1 = driver->getTexture("../media/art/bt_new_project_ghost.png");
-	ITexture* imgLoadProject = driver->getTexture("../media/art/bt_load_project.png");
-	ITexture* imgLoadProject1 = driver->getTexture("../media/art/bt_load_project_ghost.png");
-	ITexture* imgSaveProject = driver->getTexture("../media/art/bt_save_project.png");
-	ITexture* imgSaveProject1 = driver->getTexture("../media/art/bt_save_project_ghost.png");
-	ITexture* imgCloseProgram = driver->getTexture("../media/art/bt_close_program.png");
-	ITexture* imgAbout = driver->getTexture("../media/art/bt_about.png");
-	ITexture* imgAbout1 = driver->getTexture("../media/art/bt_about_ghost.png");
-	ITexture* imgHelp = driver->getTexture("../media/art/bt_help.png");
-	ITexture* imgHelp1 = driver->getTexture("../media/art/bt_help_ghost.png");
-	ITexture* imgConfig = driver->getTexture("../media/art/bt_config.png");
-	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
+	// loading others images (mostly for buttons)
+	backtexture = driver->getTexture("../media/art/back.png");
+	imgNewProject = driver->getTexture("../media/art/bt_new_project.png");
+	imgNewProject1 = driver->getTexture("../media/art/bt_new_project_ghost.png");
 
+	App::getInstance()->quickUpdate();
 
-	
-    mainToolbarPos = position2di(2,2);
-	
+	imgLoadProject = driver->getTexture("../media/art/bt_load_project.png");
+	imgLoadProject1 = driver->getTexture("../media/art/bt_load_project_ghost.png");
+	imgSaveProject = driver->getTexture("../media/art/bt_save_project.png");
+	imgSaveProject1 = driver->getTexture("../media/art/bt_save_project_ghost.png");
+	imgCloseProgram = driver->getTexture("../media/art/bt_close_program.png");
+
+	App::getInstance()->quickUpdate();
+
+	imgAbout = driver->getTexture("../media/art/bt_about.png");
+	imgAbout1 = driver->getTexture("../media/art/bt_about_ghost.png");
+	imgHelp = driver->getTexture("../media/art/bt_help.png");
+	imgHelp1 = driver->getTexture("../media/art/bt_help_ghost.png");
+	imgConfig = driver->getTexture("../media/art/bt_config.png");
+	imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
+
 	// Status bar
 	guiStatus = guienv->addWindow(myRect(0,displayheight-20,displaywidth,displayheight),false);
 	guiStatus->setDraggable(false);
@@ -296,7 +296,55 @@ void GUIManager::setupEditorGUI()
 
 	guiStatusText = guienv->addStaticText(L"Welcome to IRR RPG Builder!",myRect(10,2,displaywidth-20,18),false,false,guiStatus);
 
-	// Standard toolbar
+	// Update and refresh the display
+	App::getInstance()->quickUpdate();
+
+	//Create the main toolbar GUI;
+	createMainToolbar();
+		
+	// Update and refresh the display
+	App::getInstance()->quickUpdate();
+
+	// Create the about Window GUI
+	createAboutWindowGUI();
+
+	// Create the terrain toolbar GUI
+	createTerrainToolbar();
+
+	// Create the Dynamic Object Info panel GUI
+	createDynamicObjectInfoGUI();
+	
+	// Create the Dynamic Object Chooser GUI
+	createDynamicObjectChooserGUI();
+	
+	// Create the Editor context menu GUI
+	createContextMenuGUI();
+
+	// Create the Code Editor GUI
+	createCodeEditorGUI();
+
+    ///LOAD HELP IMAGES
+    helpTerrainTransform = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_transform.png");
+    helpVegetationPaint = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_vegetation_paint.png");
+    helpTerrainSegments = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_segments.png");
+    
+	// Get the logo
+	if (imgLogo)
+		logo1 = imgLogo;
+	else
+		logo1 = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/logo1.png");
+
+	// Create the Configuration window (Need to be updated)
+    configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+
+	// Update and refresh the display
+	App::getInstance()->quickUpdate();
+
+}
+
+void GUIManager::createMainToolbar()
+{
+	// Standard Main toolbar
     //guiMainWindow = guienv->addWindow(myRect(0,0,driver->getScreenSize().Width-170,92),false);
 	guiMainWindow = guienv->addWindow(myRect(0,0,displaywidth-220,122),false);
     guiMainWindow->setDraggable(false);
@@ -305,18 +353,12 @@ void GUIManager::setupEditorGUI()
 	guiMainWindow->setDrawBackground(false);
 	guiMainWindow->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-	//guiLoaderWindow->bringToFront(guiMainWindow);
-
-
 	//guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
 	guiMainToolWindow = guienv->addWindow(myRect(displaywidth-220,0,220,120),false);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
 	guiMainToolWindow->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-
-
-
 
 	guiBackImage2=guienv->addImage(backtexture,vector2d<s32>(0,0),true,guiMainToolWindow);
 	guiBackImage2->setScaleImage(true);
@@ -329,32 +371,17 @@ void GUIManager::setupEditorGUI()
 	guiBackImage->setMaxSize(dimension2du(2048,120));
 	guiBackImage->setMinSize(dimension2du(2048,120));
 	guiBackImage->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	
+	// Create the tabs of the main toolbar
+	createMainTabs();
+	
+}
 
-    //this var is used to set X position to the buttons in mainWindow (at each button this value is incresed,
-    //so the next button will be positioned at the right side of the previous button)
-    s32 x = 0;
-
-    ///MAIN FUNCTIONS
-	//mainTabCtrl = guienv->addTabControl(myRect(0,0,driver->getScreenSize().Width-160,92),guiMainWindow,false,false);
-
+void GUIManager::createProjectTab()
+{
 	// project TAB
 	prjTabCtrl = guienv->addTabControl(myRect(5,2,250,112),guiMainWindow,true,true);
-	IGUITab * tabProject = prjTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
-
-	// Tool tab
-	mainToolCtrl = guienv->addTabControl(myRect(2,2,164,112),guiMainToolWindow,true,true);
-	IGUITab * tabPlayTool = mainToolCtrl->addTab(LANGManager::getInstance()->getText("txt_tool_des4").c_str());
-
-	// Tools TAB
-	mainTabCtrl = guienv->addTabControl(myRect(260,2,displaywidth-435,112),guiMainWindow,true,true);
-	mainTabCtrl->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-
-	IGUITab * tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
-	IGUITab * tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
-	IGUITab * tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
-	IGUITab * tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
-	//mainTabCtrl->setTabExtraWidth(25);
-	mainTabCtrl->setActiveTab(1);
+	tabProject = prjTabCtrl->addTab(LANGManager::getInstance()->getText("tab_project").c_str());
 
 	// Tab description box text
 	IGUIStaticText * projectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des0")).c_str(),
@@ -364,36 +391,8 @@ void GUIManager::setupEditorGUI()
 	projectTabText->setOverrideFont(guiFont10);
 	projectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	// Tab description box text
-	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
-		core::rect<s32>(0,64,120,80),false,true,tabEnv,-1);
-	environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
-	environmentTabText->setOverrideFont(guiFont10);
-	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-
-	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
-		core::rect<s32>(130,64,250,80),false,true,tabEnv,-1);
-	vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
-	vegetationTabText->setOverrideFont(guiFont10);
-	vegetationTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-
-	// Tab description box text
-	IGUIStaticText * objectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des1")).c_str(),
-		core::rect<s32>(0,64,120,80),false,true,tabObject,-1);
-	objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	objectTabText->setOverrideColor(video::SColor(255,65,66,174));
-	objectTabText->setOverrideFont(guiFont10);
-	objectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-
-	// Tab description box text
-	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
-		core::rect<s32>(130,64,250,80),false,true,tabObject,-1);
-	objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
-	objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
-	objectTabText2->setOverrideFont(guiFont10);
-	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+	// Buttons
+	 s32 x = 0;
 
 	mainToolbarPos.Y=5;
 	// Close program
@@ -461,9 +460,96 @@ void GUIManager::setupEditorGUI()
 	savePText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	savePText->setOverrideFont(guiFont9);
 
+}
 
-    //Transform Terrain
-	x=12;
+void GUIManager::createPlayTab()
+{
+	// Play TAB
+	mainToolCtrl = guienv->addTabControl(myRect(2,2,164,112),guiMainToolWindow,true,true);
+	tabPlayTool = mainToolCtrl->addTab(LANGManager::getInstance()->getText("txt_tool_des4").c_str());
+
+	//Play Game
+	s32 x = 12;
+	mainToolbarPos.Y=5;
+    guiPlayGame= guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
+                                     BT_ID_PLAY_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
+
+    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
+
+	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	playGText->setOverrideColor(video::SColor(255,65,66,174));
+	playGText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	playGText->setOverrideFont(guiFont9);
+
+
+    //Stop Game
+    guiStopGame= guienv->addButton(myRect(+x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
+                                     BT_ID_STOP_GAME,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
+
+    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
+    guiStopGame->setVisible(false);
+
+
+
+    //ABOUT BUTTON
+	x += 50;
+    guiAbout = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
+                                     BT_ID_ABOUT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
+
+    guiAbout->setImage(imgAbout);
+	guiAbout->setPressedImage(imgAbout1);
+
+	IGUIStaticText * aboutBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_about")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	aboutBText->setOverrideColor(video::SColor(255,65,66,174));
+	aboutBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	aboutBText->setOverrideFont(guiFont9);
+
+	// Help Button
+	x += 50;
+    guiHelpButton = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
+                                     tabPlayTool,
+                                     BT_ID_HELP,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
+
+    guiHelpButton->setImage(imgHelp);
+    guiHelpButton->setPressedImage(imgHelp1);
+
+	IGUIStaticText * helpBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_help")).c_str(),
+		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
+	helpBText->setOverrideColor(video::SColor(255,65,66,174));
+	helpBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+
+}
+
+void GUIManager::createEnvironmentTab()
+{
+	tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
+	// Tab description box text
+	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
+		core::rect<s32>(0,64,120,80),false,true,tabEnv,-1);
+	environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
+	environmentTabText->setOverrideFont(guiFont10);
+	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
+		core::rect<s32>(130,64,250,80),false,true,tabEnv,-1);
+	vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
+	vegetationTabText->setOverrideFont(guiFont10);
+	vegetationTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	//Buttons
+	//Transform Terrain
+	s32 x=12;
     //Terrain Add Segment
     guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
@@ -511,10 +597,30 @@ void GUIManager::setupEditorGUI()
 	paintVText->setOverrideColor(video::SColor(255,65,66,174));
 	paintVText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	paintVText->setOverrideFont(guiFont9);
+}
 
+void GUIManager::createObjectTab()
+{
+	tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
+	// Tab description box text
+	IGUIStaticText * objectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des1")).c_str(),
+		core::rect<s32>(0,64,120,80),false,true,tabObject,-1);
+	objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	objectTabText->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText->setOverrideFont(guiFont10);
+	objectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-    //Dynamic Objects
-	x = 12;
+	// Tab description box text
+	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
+		core::rect<s32>(130,64,250,80),false,true,tabObject,-1);
+	objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
+	objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText2->setOverrideFont(guiFont10);
+	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	// Buttons
+	//Dynamic Objects
+	s32 x = 12;
     guiDynamicObjectsMode= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabObject,
                                      BT_ID_DYNAMIC_OBJECTS_MODE,L"",
@@ -587,8 +693,30 @@ void GUIManager::setupEditorGUI()
 	editGlobSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	editGlobSText->setOverrideFont(guiFont9);
 
-     //CONFIG BUTTON
-	x=12;
+}
+
+void GUIManager::createMainTabs()
+{
+	createProjectTab();
+	createPlayTab();
+
+	mainToolbarPos = position2di(2,2);
+
+	// Main tools TAB
+	mainTabCtrl = guienv->addTabControl(myRect(260,2,displaywidth-435,112),guiMainWindow,true,true);
+	mainTabCtrl->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+
+	createEnvironmentTab();
+
+	createObjectTab();
+
+	tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
+	tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
+	//mainTabCtrl->setTabExtraWidth(25);
+	mainTabCtrl->setActiveTab(1);
+
+	//CONFIG BUTTON
+	s32 x=12;
     guiConfigButton = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabConfig,
                                      BT_ID_CONFIG,L"",
@@ -596,69 +724,11 @@ void GUIManager::setupEditorGUI()
 
     guiConfigButton->setImage(imgConfig);
 	guiConfigButton->setPressedImage(imgConfig1);
+	
+}
 
-    //Play Game
-	x = 12;
-	mainToolbarPos.Y=5;
-    guiPlayGame= guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
-                                     tabPlayTool,
-                                     BT_ID_PLAY_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
-
-    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
-
-	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str(),
-		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	playGText->setOverrideColor(video::SColor(255,65,66,174));
-	playGText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	playGText->setOverrideFont(guiFont9);
-
-
-    //Stop Game
-    guiStopGame= guienv->addButton(myRect(+x,mainToolbarPos.Y,32,32),
-                                     tabPlayTool,
-                                     BT_ID_STOP_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
-
-    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
-    guiStopGame->setVisible(false);
-
-
-
-    //ABOUT BUTTON
-	x += 50;
-    guiAbout = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
-                                     tabPlayTool,
-                                     BT_ID_ABOUT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
-
-    guiAbout->setImage(imgAbout);
-	guiAbout->setPressedImage(imgAbout1);
-
-	IGUIStaticText * aboutBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_about")).c_str(),
-		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	aboutBText->setOverrideColor(video::SColor(255,65,66,174));
-	aboutBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	aboutBText->setOverrideFont(guiFont9);
-
-	// Help Button
-	x += 50;
-    guiHelpButton = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
-                                     tabPlayTool,
-                                     BT_ID_HELP,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
-
-    guiHelpButton->setImage(imgHelp);
-    guiHelpButton->setPressedImage(imgHelp1);
-
-	IGUIStaticText * helpBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_help")).c_str(),
-		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	helpBText->setOverrideColor(video::SColor(255,65,66,174));
-	helpBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-
-		// Update the display
-	App::getInstance()->quickUpdate();
-
+void GUIManager::createAboutWindowGUI()
+{
 	//ABOUT WINDOW
     //guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
 	guiAboutWindow = guienv->addWindow(myRect(displaywidth/2 - 300,displayheight/2 - 200,600,400),false);
@@ -682,8 +752,11 @@ void GUIManager::setupEditorGUI()
 
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
+}
 
-    ///TERRAIN TOOLBAR
+void GUIManager::createTerrainToolbar()
+{
+	///TERRAIN TOOLBAR
     guiTerrainToolbar = guienv->addWindow(
 		//myRect(driver->getScreenSize().Width - 170,
 		myRect(displaywidth - 170,
@@ -772,8 +845,11 @@ void GUIManager::setupEditorGUI()
     guiVegetationBrushStrength->setMin(0);
     guiVegetationBrushStrength->setMax(200);
     guiVegetationBrushStrength->setPos(100);
+}
 
-    // --- Dynamic Objects Info panel (display info about the current selected template object)
+void GUIManager::createDynamicObjectInfoGUI()
+{
+	// --- Dynamic Objects Info panel (display info about the current selected template object)
     rect<s32> windowRect =
 	myRect(displaywidth - 540,
 	guiMainToolWindow->getClientRect().getHeight()+4,
@@ -794,14 +870,15 @@ void GUIManager::setupEditorGUI()
 	infotext->setOverrideFont(guiFontCourier12);
 	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-
-
-
 	guienv->getRootGUIElement()->bringToFront(guiDynamicObjectsWindowInfo);
 	guiDynamicObjectsWindowInfo->setVisible(false);
 
+}
+
+void GUIManager::createDynamicObjectChooserGUI()
+{
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
-    windowRect = myRect(displaywidth - 220,
+    rect<s32> windowRect = myRect(displaywidth - 220,
 	guiMainToolWindow->getClientRect().getHeight()+4,
 	220,
 	displayheight-guiMainToolWindow->getClientRect().getHeight()-24);
@@ -867,13 +944,12 @@ void GUIManager::setupEditorGUI()
                                                            L"<< Information panel" );
 	guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
 	guiDynamicObjectsInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	
+
 	UpdateGUIChooser(1);
-	
-    guiDynamicObjectsWindowChooser_Y += 25;
-	//guienv->addStaticText(L"Description:",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,160,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+}
 
-
+void GUIManager::createContextMenuGUI()
+{
 	// --- Contextual menu for the dynamic objects
     guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(100,100,200,160),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
     guiDynamicObjects_Context_Menu_Window->getCloseButton()->setVisible(false);
@@ -911,8 +987,10 @@ void GUIManager::setupEditorGUI()
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 
+}
 
-
+void GUIManager::createCodeEditorGUI()
+{
 	// ---
 	// --- Edit scripts window
 	// ---
@@ -925,7 +1003,7 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);*/
 
 	// NEW (oct 2012) Create a stretching windows for the script editor
-	guiDynamicObjectsWindowEditAction=new CGUIStretchWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(25,130,displaywidth-50,displayheight-150));
+	guiDynamicObjectsWindowEditAction=new CGUIStretchWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
 	guiDynamicObjectsWindowEditAction->setDevice(App::getInstance()->getDevice());
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
@@ -1104,19 +1182,6 @@ void GUIManager::setupEditorGUI()
 	guiDynamicObjects_LoadScriptTemplateCB->bringToFront(guiDynamicObjects_LoadScriptTemplateCB);
 	guiDynamicObjectsWindowEditAction->setVisible(false);
 
-
-
-    ///LOAD HELP IMAGES
-    helpTerrainTransform = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_transform.png");
-
-    helpVegetationPaint = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_vegetation_paint.png");
-
-    helpTerrainSegments = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_segments.png");
-
-    logo1 = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/logo1.png");
-
-    configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
-
 }
 
 bool GUIManager::getVisibleStatus(s32 ID)
@@ -1250,9 +1315,6 @@ void GUIManager::setTextLoader(stringw text)
 
 void GUIManager::setupGameplayGUI()
 {
-
-    IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
-
     fader=guienv->addInOutFader();
 	fader->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     fader->setVisible(false);

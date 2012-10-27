@@ -15,14 +15,9 @@ using namespace gui;
 EffectsManager::EffectsManager()
 {
 
-	// Temporary disable the post FX to check the shaders
-	
-	// Init the postProcess FX manager
-	postProcessManager = new CPostProcessManager(App::getInstance()->getDevice());
-	if (postProcessManager == 0)
-		printf ("Success initialized the postprocess manager.\n");
-	//postProcessManager->prepare(false);
-	postProcessMode = 0;
+	// Init the post process manager (27 oct 2012, temporary disabled to improve loading speed, because of compiling shaders)
+	// Will activate it later using the "initPostProcess()" command
+	//initPostProcess();
 
     //get main app scenemanager pointer
     ISceneManager* smgr=App::getInstance()->getDevice()->getSceneManager();
@@ -56,7 +51,8 @@ EffectsManager::EffectsManager()
 
 EffectsManager::~EffectsManager()
 {
-	delete postProcessManager;
+	if (postProcessManager)
+		delete postProcessManager;
 
     emitter->drop();
 }
@@ -66,6 +62,18 @@ EffectsManager* EffectsManager::getInstance()
     static EffectsManager *instance = 0;
     if (!instance) instance = new EffectsManager();
     return instance;
+}
+
+void EffectsManager::initPostProcess()
+{
+	// Temporary disable the post FX to check the shaders
+	// Init the postProcess FX manager
+	postProcessManager = new CPostProcessManager(App::getInstance()->getDevice());
+	if (postProcessManager == 0)
+		printf ("Success initialized the postprocess manager.\n");
+	//postProcessManager->prepare(false);
+	postProcessMode = 0;
+
 }
 
 void EffectsManager::setWeather(int maxParticles, float particlesSpeed, stringc textureFile="")

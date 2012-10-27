@@ -128,6 +128,19 @@ class GUIManager
 
 #ifdef EDITOR
 		void setupEditorGUI();
+		void createProjectTab();
+		void createPlayTab();
+		void createEnvironmentTab();
+		void createObjectTab();
+		void createMainToolbar();
+		void createMainTabs();
+
+		void createAboutWindowGUI();
+		void createTerrainToolbar();
+		void createDynamicObjectInfoGUI();
+		void createDynamicObjectChooserGUI();
+		void createContextMenuGUI();
+		void createCodeEditorGUI();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
@@ -185,6 +198,7 @@ class GUIManager
 	    virtual ~GUIManager();
     private:
         IGUIEnvironment* guienv;
+		IVideoDriver* driver;
 		dimension2d<u32> screensize;
 
         int mouseX;
@@ -206,6 +220,13 @@ class GUIManager
 		IGUITabControl * mainToolCtrl;
 		IGUITabControl * prjTabCtrl;
 		IGUITabControl * gameTabCtrl;
+
+		IGUITab * tabProject;
+		IGUITab * tabPlayTool;
+		IGUITab * tabEnv;
+		IGUITab * tabObject;
+		IGUITab * tabTools;
+		IGUITab * tabConfig;
 
         IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
@@ -343,6 +364,22 @@ class GUIManager
 		IGUIStaticText* txt_dialog;
 		IGUIButton* guiBtDialogYes;
 		IGUIButton* guiBtDialogCancel;
+
+		// Textures
+		ITexture* backtexture;
+		ITexture* imgNewProject;
+		ITexture* imgNewProject1;
+		ITexture* imgLoadProject; 
+		ITexture* imgLoadProject1; 
+		ITexture* imgSaveProject; 
+		ITexture* imgSaveProject1; 
+		ITexture* imgCloseProgram; 
+		ITexture* imgAbout; 
+		ITexture* imgAbout1;
+		ITexture* imgHelp; 
+		ITexture* imgHelp1; 
+		ITexture* imgConfig; 
+		ITexture* imgConfig1;
 
 
         GUIManager();

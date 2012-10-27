@@ -9,6 +9,8 @@ SoundManager::SoundManager()
 
 SoundManager::~SoundManager()
 {
+	if (engine)
+		delete engine;
     //dtor
 }
 

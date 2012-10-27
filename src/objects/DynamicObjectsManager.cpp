@@ -167,7 +167,14 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							inside=true;
 						}
 
+						
 						objectName = (core::stringw)xml->getAttributeValue("name");
+
+						core::stringw uptext = L"Loading template object: ";
+						uptext += objectName;
+						GUIManager::getInstance()->setTextLoader(uptext);
+						
+
 						if (oldName!=(core::stringc)newObj->getName())
 						{
 							

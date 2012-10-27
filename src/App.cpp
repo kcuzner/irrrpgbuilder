@@ -1183,7 +1183,12 @@ void App::run()
 	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 #endif
+
+	// Loading is complete
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
+	// Start the post process in the FX Manager
+	EffectsManager::getInstance()->initPostProcess();
 
 	int lastFPS = -1;
 	//	u32 timer = device->getTimer()->getRealTime();
@@ -1837,6 +1842,10 @@ bool App::loadProjectFromXML(stringc filename)
 
 void App::initialize()
 {
+
+	// Initialize the sound engine
+	SoundManager::getInstance();
+
 	// Initialize the GUI class first
 	GUIManager::getInstance();
 
@@ -1869,6 +1878,7 @@ void App::initialize()
 
 
 	this->currentProjectName = "irb_temp_project";
+	
 
 }
 
