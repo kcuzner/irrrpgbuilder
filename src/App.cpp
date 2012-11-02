@@ -580,11 +580,13 @@ void App::eventGuiCombobox(s32 id)
 	{
 	case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
 	case CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY:
 		GUIManager::getInstance()->updateCurrentCategory();
+		GUIManager::getInstance()->getInfoAboutModel();
 		break;
 
 	case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
@@ -602,6 +604,7 @@ void App::eventGuiCombobox(s32 id)
 
 		GUIManager::getInstance()->UpdateGUIChooser(choice);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
@@ -1189,6 +1192,9 @@ void App::run()
 
 	// Start the post process in the FX Manager
 	EffectsManager::getInstance()->initPostProcess();
+
+	// Update the info panel with the current "active object"
+	GUIManager::getInstance()->getInfoAboutModel();
 
 	int lastFPS = -1;
 	//	u32 timer = device->getTimer()->getRealTime();

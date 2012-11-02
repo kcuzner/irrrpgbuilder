@@ -147,6 +147,7 @@ class GUIManager
         stringc getComboBoxItem(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
 		bool getVisibleStatus(s32 ID);
+		void getInfoAboutModel();
 
 #endif
 
@@ -325,6 +326,13 @@ class GUIManager
         IGUIEditBox* guiDynamicObjects_Script_Console;
         IGUIButton* guiDynamicObjects_Script_Close;
 
+
+		// Information bar
+		IGUIStaticText * mdl_name;
+		IGUIStaticText * mdl_desc;
+		IGUIStaticText * mdl_auth;
+		IGUIStaticText * mdl_lic;
+
         ///IrrRPG Builder LOGO
         ITexture* logo1;
 
@@ -339,7 +347,6 @@ class GUIManager
 
         ///GAMEPLAY
 		stringc playerLifeText;
-
 
         IGUIInOutFader* fader;
         IGUIStaticText* guiPlayerLife;

@@ -862,6 +862,10 @@ void GUIManager::createDynamicObjectInfoGUI()
     guiDynamicObjectsWindowInfo->setDrawTitlebar(false);
 	guiDynamicObjectsWindowInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
+	IGUIScrollBar * infoscroll = guienv->addScrollBar(false, rect<s32>(300,40,318,driver->getScreenSize().Height-150),guiDynamicObjectsWindowInfo,-1);
+	infoscroll->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	infoscroll->setVisible(false);
+
 	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(1,1,318,39),false,true,guiDynamicObjectsWindowInfo,-1);
 	infotext->setDrawBackground(true);
 	infotext->setDrawBorder(true);
@@ -869,6 +873,52 @@ void GUIManager::createDynamicObjectInfoGUI()
 	infotext->setOverrideColor(video::SColor(255,65,66,174));
 	infotext->setOverrideFont(guiFontCourier12);
 	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	u32 posy = 260;
+	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(10,posy,290,posy+39),false,true,guiDynamicObjectsWindowInfo,-1);
+	infotext1->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_name = guienv->addStaticText(L"",core::rect<s32>(10,posy,290,posy+20),true,true,guiDynamicObjectsWindowInfo,-1);
+	mdl_name->setDrawBackground(true);
+	mdl_name->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_name->setOverrideFont(guiFont10);
+	mdl_name->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+
+	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(10,posy,290,posy+39),false,true,guiDynamicObjectsWindowInfo,-1);
+	infotext2->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_desc = guienv->addStaticText(L"",core::rect<s32>(10,posy,290,posy+100),true,true,guiDynamicObjectsWindowInfo,-1);
+	mdl_desc->setDrawBackground(true);
+	mdl_desc->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_desc->setOverrideFont(guiFont10);
+
+	posy+=110;
+	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(10,posy,290,posy+39),false,true,guiDynamicObjectsWindowInfo,-1);
+	infotext3->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_auth = guienv->addStaticText(L"",core::rect<s32>(10,posy,290,posy+20),true,true,guiDynamicObjectsWindowInfo,-1);
+	mdl_auth->setDrawBackground(true);
+	mdl_auth->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_auth->setOverrideFont(guiFont10);
+	mdl_auth->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(10,posy,290,posy+39),false,true,guiDynamicObjectsWindowInfo,-1);
+	infotext4->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_lic = guienv->addStaticText(L"",core::rect<s32>(10,posy,290,posy+20),true,true,guiDynamicObjectsWindowInfo,-1);
+	mdl_lic->setDrawBackground(true);
+	mdl_lic->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_lic->setOverrideFont(guiFont10);
+	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+
 
 	guienv->getRootGUIElement()->bringToFront(guiDynamicObjectsWindowInfo);
 	guiDynamicObjectsWindowInfo->setVisible(false);
@@ -1198,7 +1248,20 @@ bool GUIManager::getVisibleStatus(s32 ID)
 	return false;
 }
 
+// Update the Info panel GUI with the information contained in the template name
+void GUIManager::getInfoAboutModel()
+{
+
+	// Text will return the current item basec on the Dynamic Objects manager "active" object.
+	mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
+	mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
+	mdl_auth->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
+	mdl_lic->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
+}
+
 #endif
+
+
 
 bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 // will tell the caller if he's clicked inside a IRB window

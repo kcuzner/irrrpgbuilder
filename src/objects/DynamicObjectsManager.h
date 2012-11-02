@@ -71,6 +71,9 @@ class DynamicObjectsManager
 
         void clean(bool full);
 
+		// Data object for the current template
+		 TemplateObject* activeObject;
+
         virtual ~DynamicObjectsManager();
 
     private:
@@ -78,7 +81,7 @@ class DynamicObjectsManager
 		
 		IrrlichtDevice *device;
 
-        TemplateObject* activeObject;
+       
 		DynamicObject* activeObject2;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
