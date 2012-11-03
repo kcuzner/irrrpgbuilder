@@ -188,11 +188,13 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
+		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 	}

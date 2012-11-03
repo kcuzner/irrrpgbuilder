@@ -31,6 +31,8 @@ GUIManager::GUIManager()
 	guiWindowItems=NULL;
 	consolewin=NULL;
 	guiLoaderDescription = NULL;
+	info_none=NULL;
+	info_current=NULL;
 
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
@@ -245,6 +247,9 @@ void GUIManager::setupEditorGUI()
 	guienv->getSkin()->setFont(guiFont10);
 	// Load textures
 	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+	ITexture* info_none = driver->getTexture("../media/dynamic_objects/info_none.jpg");
+	if (info_none)
+		info_current=info_none;
 
 // NEW Create display size since IRRlicht return wrong values
 
@@ -874,6 +879,8 @@ void GUIManager::createDynamicObjectInfoGUI()
 	infotext->setOverrideFont(guiFontCourier12);
 	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
+	thumbnail=guienv->addImage(info_current,vector2d<s32>(10,50),true,guiDynamicObjectsWindowInfo);
+
 	u32 posy = 260;
 	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(10,posy,290,posy+39),false,true,guiDynamicObjectsWindowInfo,-1);
 	infotext1->setOverrideFont(guiFont12);
@@ -1257,6 +1264,20 @@ void GUIManager::getInfoAboutModel()
 	mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
 	mdl_auth->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
 	mdl_lic->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
+
+
+	core::stringc filename = "../media/dynamic_objects/";
+	filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
+
+	this->info_current=driver->getTexture(filename.c_str());
+	
+	
+	if (info_current)
+		this->thumbnail->setImage(info_current);
+	else
+		this->thumbnail->setImage(info_none);
+		
+		
 }
 
 #endif

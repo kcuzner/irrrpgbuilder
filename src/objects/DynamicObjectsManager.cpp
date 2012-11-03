@@ -226,6 +226,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						newObj->description = xml->getAttributeValue("description");
 						newObj->licence = xml->getAttributeValue("licence");
 						newObj->category = xml->getAttributeValue("category");
+						newObj->thumbnail = xml->getAttributeValue("thumbnail");
 						
 					}
 

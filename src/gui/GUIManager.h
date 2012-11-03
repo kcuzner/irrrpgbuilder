@@ -388,6 +388,11 @@ class GUIManager
 		ITexture* imgConfig; 
 		ITexture* imgConfig1;
 
+		// Default textures for the info panel
+		ITexture* info_none; // no texture in the template
+		ITexture* info_current; // current assigned texture
+		gui::IGUIImage * thumbnail; // GUI item that will have the content
+
 
         GUIManager();
         rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
