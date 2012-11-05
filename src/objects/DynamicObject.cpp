@@ -360,6 +360,7 @@ void DynamicObject::walkTo(vector3df targetPos)
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	
 	// Sampling points on the ground
+	// The sampling point should be spaced based on the character size and not fixed values
 	vector3df posfront1 = pos+(targetPos.normalize()*20);
 	vector3df posfront = pos+(targetPos.normalize()*10);
 	vector3df posback1 = pos-(targetPos.normalize()*20);
@@ -373,7 +374,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
 
 	// Cliff is returning the angle of the slope, should not walk on slope that are too angular.
-	f32 cliff =  height3 - height5; 
+	//f32 cliff =  height3 - height5; 
+	f32 cliff =  height3 - height; 
 	if (cliff<0) 
 		cliff = -cliff;
 
@@ -381,13 +383,10 @@ void DynamicObject::walkTo(vector3df targetPos)
 	
 	
 
-	//TODO: Fix the problem with custom scaling of the objects
-	// old terrain values
-	// (height>-(0.09f*72) && height<(0.05f*72)
-
 	// The "cliff" is the number of unit of difference from one point to another
 	// The limit in the water is to get to -80 (legs into water)
-	if (height>-80 && (cliff < 55) && !collided)
+	// This number should be based on the height of the character and not fixed values
+	if (height>-80 && (cliff < 30) && !collided)
 	{
 		//pos.Y = height;
 		pos.Y=((height+height2+height3+height4+height5)/5)+2;

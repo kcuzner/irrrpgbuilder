@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-	<dynamic_object set="../media/editor/editor.xml" />
-	<dynamic_object set="../media/dynamic_objects/npc.xml" />
-	<dynamic_object set="../media/dynamic_objects/props.xml" />
+	<dynamic_object name="" set="../media/editor/editor.xml" />
+	<dynamic_object name="npc" set="../media/dynamic_objects/npc.xml" />
+	<dynamic_object name="props" set="../media/dynamic_objects/props.xml" />
+	<dynamic_object name="buildings" set="../media/dynamic_objects/buildings.xml" />
 </IrrRPG_Builder_DynamicObjects>
