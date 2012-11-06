@@ -23,6 +23,7 @@ DynamicObjectsManager::DynamicObjectsManager()
     objsCounter = 0;
 	objectCounter = 0;
 	dialogCaller = NULL;
+	setname=L"";
 
 }
 
@@ -188,6 +189,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						}
 						
 						newObj->setName((core::stringw)objectName);
+
+						// Get the current set name and save it in the object
+						newObj->type=setname;
 						
 						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
 						newObj->meshFile=objectMesh;
@@ -401,6 +405,9 @@ bool DynamicObjectsManager::loadSet()
 						}
 							
 						set = xml->getAttributeValue("set");
+						setname = (core::stringw)xml->getAttributeValue("name");
+						if (setname!="")
+							meshtypename.push_back(setname);
 						//printf ("--- Set: %s\n",set);
 
 						linecount++;
@@ -529,17 +536,17 @@ void DynamicObjectsManager::setActiveObject(stringc name)
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
-vector<stringw> DynamicObjectsManager::getObjectsList(TYPE objectType, core::stringw category)
+vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category)
 {
     vector<stringw> listObjs;
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->getType()==objectType && category=="")
+		if (objTemplate[i]->type==objectType && category=="")
 				listObjs.push_back( objTemplate[i]->getName() );
 		else
 
-		if (objTemplate[i]->getType()==objectType && objTemplate[i]->category==category)
+		if (objTemplate[i]->type==objectType && objTemplate[i]->category==category)
 		{
 			listObjs.push_back( objTemplate[i]->getName() ); 
 		}
@@ -550,7 +557,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(TYPE objectType, core::str
 }
 
 //! Create a list of the categories from the XML data in the templates.
-vector<stringw> DynamicObjectsManager::getObjectsListCategories(TYPE objectType)
+vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType)
 {
     vector<stringw> listObjs;
 	listObjs.push_back((core::stringw)"All");
@@ -558,7 +565,7 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(TYPE objectType)
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->getType()==objectType)
+		if (objTemplate[i]->type==objectType)
 		{ 
 			for (int a=0 ; a<(int)listObjs.size(); a++)
 			{

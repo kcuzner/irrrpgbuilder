@@ -592,19 +592,7 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
-		std::string result = (std::string)GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY).c_str();
-		TYPE choice = OBJECT_TYPE_NPC;
-
-		if (result.find("NPC") != std::string::npos)
-			choice = OBJECT_TYPE_NPC;
-
-		if (result.find("INTERACTIVE OBJECTS") != std::string::npos)
-			choice = OBJECT_TYPE_INTERACTIVE;
-
-		if (result.find("PROPS") != std::string::npos)
-			choice = OBJECT_TYPE_NON_INTERACTIVE;
-
-		GUIManager::getInstance()->UpdateGUIChooser(choice);
+		GUIManager::getInstance()->UpdateGUIChooser();
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();

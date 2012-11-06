@@ -395,7 +395,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 	{
-		
+		// This will be activated if there is a collision (collided=true)
+		// Since we're not using IRRlicht collision response animators now for this,
+		// Collision detection between NPC will have to be is not implemented (simple radius detection)
 		walkTarget = this->getPosition();
 		if (enemyUnderAttack)
 		{

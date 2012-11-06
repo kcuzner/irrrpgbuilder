@@ -118,7 +118,7 @@ class GUIManager
 
 
         void setupGameplayGUI();
-		void UpdateGUIChooser(int objType);
+		void UpdateGUIChooser();
 		void updateCurrentCategory();
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);

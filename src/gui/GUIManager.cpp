@@ -971,10 +971,14 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guienv->addStaticText(L"Object type",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
-	guiDynamicObjects_Category->addItem(L"NPC");
+	
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->meshtypename.size() ; i++)
+	{
+		guiDynamicObjects_Category->addItem(DynamicObjectsManager::getInstance()->meshtypename[i].c_str());
+	}
 	//Since they are not yet implemented, theses will be off for the moment.
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
-	guiDynamicObjects_Category->addItem(L"PROPS");
+	//guiDynamicObjects_Category->addItem(L"PROPS");
 	
 
 	
@@ -1002,7 +1006,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
 	guiDynamicObjectsInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	UpdateGUIChooser(1);
+	UpdateGUIChooser();
 }
 
 void GUIManager::createContextMenuGUI()
@@ -1337,13 +1341,14 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	return false;
 }
 
-void GUIManager::UpdateGUIChooser(int objType)
+void GUIManager::UpdateGUIChooser()
 {
+	core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
 	
-	this->currentObjType=objType;
 	// Create the category list first
 	guiDynamicObjects_OBJCategory->clear();
-	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories((TYPE)objType);
+
+	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
 	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
     {
 		guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -1355,7 +1360,7 @@ void GUIManager::UpdateGUIChooser(int objType)
 
 	// Then the list of objects
 	guiDynamicObjects_OBJChooser->clear();
-	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)objType,"");
+	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"");
 
     for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
     {
@@ -1369,6 +1374,7 @@ void GUIManager::updateCurrentCategory()
 
 	core::stringw text="";
 	u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+	core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
 	text=guiDynamicObjects_OBJCategory->getListItem(selected);
 
 	// check if "all" is selected, as it's the first choice
@@ -1377,7 +1383,7 @@ void GUIManager::updateCurrentCategory()
 		text="";
 
 	guiDynamicObjects_OBJChooser->clear();
-	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList((TYPE)currentObjType,text);
+	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text);
 
     for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
     {

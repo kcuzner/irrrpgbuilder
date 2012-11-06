@@ -34,5 +34,4 @@
 					thumbnail="props/info_well.jpg" />
 	<dynamic_object name="wood_fence" 		mesh="props/wood_fence.b3d" 		type="non-interactive" 	scale="30" 	materialType="solid"
 					thumbnail="props/info_wood_fence.jpg"/>
-	<dynamic_object name="empty" 			mesh="" 							type="non-interactive" 	scale="30" 	materialType="solid"/>
 </IrrRPG_Builder_DynamicObjects>

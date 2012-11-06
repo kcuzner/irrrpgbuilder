@@ -41,6 +41,8 @@ class TemplateObject
 		vector<DynamicObject_Animation> animations; // Animations in the template
 		core::stringw script; // Pre-defined script in the template object
 
+		stringw type; // Contain the type "text" of the object (referenced in the "set" XML name.
+
 		stringw description; //Contain the description of the template
 		stringw author; // Contain the author name of the template
 		stringw licence; // Contain the licence type for the model

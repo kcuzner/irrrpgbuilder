@@ -43,8 +43,8 @@ class DynamicObjectsManager
 
 		scene::ISceneNode* findActiveObject(void);
 
-		vector<stringw> getObjectsList(TYPE objectType, core::stringw category);
-		vector<stringw> getObjectsListCategories(TYPE objectType);
+		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category);
+		vector<stringw> getObjectsListCategories(stringw objectType);
 
 		void setObjectsID(TYPE objectType, s32 ID);
 
@@ -73,6 +73,9 @@ class DynamicObjectsManager
 
 		// Data object for the current template
 		 TemplateObject* activeObject;
+		 vector<core::stringw> meshtypename;
+
+
 
         virtual ~DynamicObjectsManager();
 
@@ -104,6 +107,7 @@ class DynamicObjectsManager
 
         stringc createUniqueName();
 		int objectCounter;
+		core::stringw setname;
 };
 
 #endif // DYNAMICOBJECTSMANAGER_H
