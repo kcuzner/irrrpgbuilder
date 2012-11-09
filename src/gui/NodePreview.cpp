@@ -177,16 +177,17 @@ void NodePreview::draw()
 
 void NodePreview::setNode(ISceneNode* node)
 {
-	if (node)
+	/*if (node)
 	{
-		this->node=node;
+		//this->node=node;
 	
-		smgr = node->getSceneManager();
+		//smgr = node->getSceneManager();
 	} else
 		this->node=NULL;
 
 	if (!fakecam)
 		fakecam=smgr->addCameraSceneNode(0,vector3df(72,36,72),vector3df(0,36,0),-1,false);
+		*/
 }
 
 ISceneNode* NodePreview::getNode()

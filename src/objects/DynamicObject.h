@@ -248,6 +248,8 @@ class DynamicObject
 
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
+		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
+
         stringc name;
 	
         IMesh* mesh;
@@ -280,6 +282,7 @@ class DynamicObject
 		bool diePresent;
 		bool despawnPresent;
 		bool runningMode;
+		bool reached; // check if reached the walktarget
 		
 		vector3df walkTarget;
 		vector3df originalPosition;

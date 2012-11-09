@@ -219,6 +219,9 @@ walkTo(float x,float y,float z)
 	Set the destination of the object and the object will walk there
 	with the current speed defined in the XML file 
 
+bool = hasReached()
+	Return true if the character has reached it's walking/running destination
+
 lookAt(float x,float y,float z)
 	The object turn to face the specified coordinates
 

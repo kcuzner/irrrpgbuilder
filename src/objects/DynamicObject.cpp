@@ -51,6 +51,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	soundActivated = false;
 	attackActivated = false;
 	stunstate=false;
+	reached=false;
 
 	attackresult=0;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -399,6 +400,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 		// Since we're not using IRRlicht collision response animators now for this,
 		// Collision detection between NPC will have to be is not implemented (simple radius detection)
 		walkTarget = this->getPosition();
+		reached=true;
+
 		if (enemyUnderAttack)
 		{
 			stringc currentenemy = enemyUnderAttack->getNode()->getName();
@@ -430,6 +433,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 void DynamicObject::setWalkTarget(vector3df newTarget)
 {
     walkTarget = newTarget;
+	reached=false;
 }
 
 vector3df DynamicObject::getWalkTarget()
@@ -693,6 +697,7 @@ bool DynamicObject::setAnimation(stringc animName)
 	{
 		// Stop moving
 		this->setWalkTarget(this->getPosition());
+		reached=true;
 		//node->removeAnimator(animator);
 	}
 
@@ -733,7 +738,10 @@ bool DynamicObject::setAnimation(stringc animName)
 			else
 				animName=oldAnimName;
 		} else
+		{
 			this->setWalkTarget(this->getPosition());
+			reached=true;
+		}
 	
 	}
 	if (animName=="die")
@@ -1163,6 +1171,9 @@ void DynamicObject::doScript()
 
     lua_register(L,"setEnabled",setEnabled);
 
+	lua_register(L,"hasReached",hasReached);
+		
+
     //register basic functions
     LuaGlobalCaller::getInstance()->registerBasicFunctions(L);
 
@@ -1241,6 +1252,7 @@ void DynamicObject::update()
 			this->setAnimation("idle");
 			this->setPosition(oldpos);
 			this->setWalkTarget(this->getPosition());
+			reached=true;
 		}
 
 		// timed interface an culling check.
@@ -1268,7 +1280,7 @@ void DynamicObject::update()
 	}
 
 	//300ms second evaluate the LUA scripts
-	if((timerobject-timerAnimation>300) && enabled) // Lua UPdate to 1/4 second
+	if((timerobject-timerAnimation>300) && enabled) // Lua UPdate to 1/4 second (300)
 	{
 
 		if (!nodeLuaCulling)
@@ -1506,6 +1518,22 @@ int DynamicObject::setEnabled(lua_State *LS)
     tempObj->setEnabled(enabled);
 
 	return 0;
+}
+
+int DynamicObject::hasReached(lua_State *LS)
+{
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+    if(tempObj)
+    {
+		lua_pushboolean(LS, tempObj->reached);
+    }
+
+    return 1;
 }
 
 int DynamicObject::setPosition(lua_State *LS)

@@ -68,7 +68,7 @@ namespace gui
 CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	IGUIEnvironment* environment, IGUIElement* parent, s32 id,
 	const core::rect<s32>& rectangle, IrrlichtDevice* device)
-	: IGUIEditBox(environment, parent, id, rectangle), MouseMarking(false),
+	: IGUIElement(EGUIET_EDIT_BOX, environment, parent, id, rectangle), MouseMarking(false),
 	Border(border), LineNumbering(lines), OverrideColorEnabled(false), MarkBegin(0), MarkEnd(0),
 	OverrideColor(video::SColor(101,255,255,255)), OverrideFont(0), LastBreakFont(0),
 	Operator(0), BlinkStartTime(0), CursorPos(0), HScrollPos(0), VScrollPos(0), Max(0),
@@ -2314,14 +2314,14 @@ void CGUIEditBoxIRB::serializeAttributes(io::IAttributes* out, io::SAttributeRea
 	out->addEnum  ("HTextAlign",          HAlign, GUIAlignmentNames);
 	out->addEnum  ("VTextAlign",          VAlign, GUIAlignmentNames);
 
-	IGUIEditBox::serializeAttributes(out,options);
+	//IGUIEditBoxIRB::serializeAttributes(out,options);
 }
 
 
 //! Reads attributes of the element
 void CGUIEditBoxIRB::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
 {
-	IGUIEditBox::deserializeAttributes(in,options);
+	//IGUIEditBox::deserializeAttributes(in,options);
 
 	setOverrideColor(in->getAttributeAsColor("OverrideColor"));
 	enableOverrideColor(in->getAttributeAsBool("OverrideColorEnabled"));

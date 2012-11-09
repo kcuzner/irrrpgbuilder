@@ -28,7 +28,7 @@ Player::Player()
 	//playerObject->setAnimation("idle");
 	playerObject->setName("player");
 	
-	player_ref=playerObject->getNode()->clone();
+	player_ref=playerObject->getNode()->clone(App::getInstance()->getDevice()->getSceneManager()->getRootSceneNode(),App::getInstance()->getDevice()->getSceneManager());
 	player_ref->setVisible(false);
 
 	// Specific properties for the player (hardcoded for now)

@@ -49,7 +49,7 @@ namespace irr
 {
 	namespace gui
 	{
-		class CGUIEditBoxIRB : public IGUIEditBox
+		class CGUIEditBoxIRB : public IGUIElement//IGUIEditBox
 		{
 		public:
 
