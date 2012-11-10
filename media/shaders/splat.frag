@@ -8,7 +8,7 @@ uniform float plateau;
 uniform int terrainTextureScale;
 uniform int terrainScale;
 
-uniform bool editingTerrain;
+uniform int editingTerrain;
 
 uniform vec4 AmbientLight;
 uniform vec3 mLightPos;
@@ -49,7 +49,7 @@ void main()
 	  tex10 = mix( tex10, tex0, min(1.0,-(position.y/float(scale))*10.0));
 	}
 	
-	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain) tex10*=vec4(1.0,0.6,0.4,1.0);
+	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain==1) tex10*=vec4(1.0,0.6,0.4,1.0);
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
 	gl_FragColor = mix(gl_Fog.color,tex10, fog);
 }

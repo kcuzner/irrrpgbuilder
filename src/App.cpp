@@ -933,6 +933,7 @@ bool App::loadConfig()
 				IrrlichtDevice * tempdevice = createDevice(EDT_NULL,dimension2d<u32>(640,480), 16, false, false, false, 0);
 				screensize = tempdevice->getVideoModeList()->getDesktopResolution();
 				tempdevice->closeDevice();
+				tempdevice->drop();
 			}
 
 		}
@@ -1886,6 +1887,9 @@ void App::shutdown()
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
 	device->drop();
+	printf("Helloo");
+	exit(0);
+	printf("Drop?");
 	exit(0);
 
 }

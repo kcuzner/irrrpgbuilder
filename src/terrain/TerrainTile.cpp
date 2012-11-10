@@ -81,19 +81,19 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         ShaderCallBack::getInstance(), video::EMT_SOLID); 
 
     //Assign Textures
-    /*node->setMaterialTexture(0,layer0);
+    node->setMaterialTexture(0,layer0);
     node->setMaterialTexture(1,layer1);
     node->setMaterialTexture(2,layer2);
-    node->setMaterialTexture(3,layer3);*/
+    node->setMaterialTexture(3,layer3);
 
-	 node->setMaterialTexture(0,layer1);
+	 //node->setMaterialTexture(0,layer1);
 
     //Assign GLSL Shader
-	//node->getMaterial(0).setFlag(EMF_LIGHTING,false);
+	node->getMaterial(0).setFlag(EMF_LIGHTING,false);
 	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
 
-    //node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
-/*
+    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
+
     //Create a Custom GLSL Material (Water shader)
    static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
@@ -104,14 +104,14 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
 
     //Assign GLSL Shader
-    //ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean); 
+    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean); 
 	
     //Assign Textures
     ocean->setMaterialTexture(0,oceanLayer0);
     ocean->setMaterialTexture(1,oceanLayer1); 
 
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
-	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());*/
+	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
 
 }
 
