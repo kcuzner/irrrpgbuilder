@@ -158,7 +158,7 @@ void CShaderMaterial::OnSetConstants(video::IMaterialRendererServices* services,
 		for (u32 i=0; i<video::MATERIAL_MAX_TEXTURES; ++i)
 		{
 			if(Material.TextureLayer[i].Texture != NULL)
-				services->setPixelShaderConstant(TextureName[i].c_str(), (f32*) &i, 1);
+				services->setPixelShaderConstant(TextureName[i].c_str(), (int*) &i, 1);
 		}
 	}
 }

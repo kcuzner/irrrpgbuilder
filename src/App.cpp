@@ -1886,12 +1886,9 @@ void App::shutdown()
 	cleanWorkspace();
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
+	device->run();
 	device->drop();
-	printf("Helloo");
 	exit(0);
-	printf("Drop?");
-	exit(0);
-
 }
 
 std::vector<stringw> App::getConsoleText()

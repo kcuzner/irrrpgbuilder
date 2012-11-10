@@ -45,10 +45,9 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setPixelShaderConstant("terrainLayer4",(int*)&layer,1);
 
     services->setPixelShaderConstant("editingTerrain",(int*)&editingTerrain,1);
-#ifdef EDITOR
+
 	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
 	services->setPixelShaderConstant("plateau",(float*)&plateau,1);
-#endif
 
     layer=10;
     services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
@@ -57,9 +56,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
 	
 	services->setPixelShaderConstant("terrainScale",(int*)&layer,1);
-		
-	//services->setPixelShaderConstant("terrainScale",(float*)&layer,1);
-
+	
     //layer=100;
     //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);
 

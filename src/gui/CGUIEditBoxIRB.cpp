@@ -68,7 +68,7 @@ namespace gui
 CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	IGUIEnvironment* environment, IGUIElement* parent, s32 id,
 	const core::rect<s32>& rectangle, IrrlichtDevice* device)
-	: IGUIElement(EGUIET_EDIT_BOX, environment, parent, id, rectangle), MouseMarking(false),
+	: IGUIElement(EGUIET_ELEMENT, environment, parent, id, rectangle), MouseMarking(false),
 	Border(border), LineNumbering(lines), OverrideColorEnabled(false), MarkBegin(0), MarkEnd(0),
 	OverrideColor(video::SColor(101,255,255,255)), OverrideFont(0), LastBreakFont(0),
 	Operator(0), BlinkStartTime(0), CursorPos(0), HScrollPos(0), VScrollPos(0), Max(0),
