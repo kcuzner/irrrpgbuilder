@@ -28,9 +28,6 @@ Player::Player()
 	//playerObject->setAnimation("idle");
 	playerObject->setName("player");
 	
-	player_ref=playerObject->getNode()->clone(App::getInstance()->getDevice()->getSceneManager()->getRootSceneNode(),App::getInstance()->getDevice()->getSceneManager());
-	player_ref->setVisible(false);
-
 	// Specific properties for the player (hardcoded for now)
 	cproperty playerprop = playerObject->initProperties();
 	cproperty player_base = playerObject->initProperties();
@@ -106,7 +103,6 @@ DynamicObject* Player::getObject()
 void Player::update()
 {
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
-
 	
 	// Standard checks updated by timer (update the tagged object, the range etc.
 	if (timercheck-timer3>17)

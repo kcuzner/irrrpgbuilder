@@ -356,7 +356,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	if (speed == 0)
 		speed=1.0f;
 		
-
 	vector3df pos=this->getPosition();
 	oldpos=pos;
 

@@ -69,6 +69,8 @@ class DynamicObjectsManager
         void updateAll();
         void clearAllScripts();
 
+		void setPlayer();
+
         void clean(bool full);
 
 		// Data object for the current template

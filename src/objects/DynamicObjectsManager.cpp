@@ -1079,6 +1079,13 @@ IMetaTriangleSelector* DynamicObjectsManager::getMeta()
 	return meta;
 }
 
+void DynamicObjectsManager::setPlayer()
+{
+	// Will add the player object to the list if the list is "live"
+	//if (objects.size()>0)
+		objects.push_back(playerObject);
+}
+
 
 //! Clean up the screen by removing everything.
 // Might have to fix some details

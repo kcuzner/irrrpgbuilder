@@ -318,6 +318,8 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_NEW_PROJECT:
 		lastScannedPick.pickedNode=NULL;
 		this->createNewProject();
+		// Put back the player object in the list of the dynamic objects
+		DynamicObjectsManager::getInstance()->setPlayer();
 		break;
 
 	case BT_ID_LOAD_PROJECT:
@@ -1612,6 +1614,9 @@ void App::loadProjectFile(bool value)
 				cleanWorkspace();
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
+
+				// Put back the player object in the list of the dynamic objects
+				DynamicObjectsManager::getInstance()->setPlayer();
 			}
 			// This is a file saver
 			if (selector->isSaver()==true)
@@ -1620,7 +1625,7 @@ void App::loadProjectFile(bool value)
 				//printf("Saving project now!\n");
 				this->saveProjectToXML(file);
 			}
-
+			guienv->setFocus(0);
 			//Destroy the selector
 			selector->remove();
 			selector=NULL;
@@ -1641,6 +1646,7 @@ void App::loadProjectFile(bool value)
 
 			this->saveProjectToXML(file);
 
+			guienv->setFocus(0);
 			saveselector->remove();
 			saveselector=NULL;
 			setAppState(old_state);
@@ -1653,11 +1659,13 @@ void App::loadProjectFile(bool value)
 		setAppState(old_state);
 		if (selector)
 		{
+			guienv->setFocus(0);
 			selector->remove();
 			selector=NULL;
 		}
 		if (saveselector)
 		{
+			guienv->setFocus(0);
 			saveselector->remove();
 			saveselector=NULL;
 		}
@@ -1831,7 +1839,7 @@ bool App::loadProjectFromXML(stringc filename)
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
 #endif
-
+	
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 	return true;
