@@ -48,6 +48,7 @@ Player::Player()
 	playerprop.dodge_prop = 16;
 	playerprop.hit_prob = 60;
 	playerprop.money=100;
+	playerprop.attackdelay=800;
 	playerObject->setProperties(playerprop);
 	
 

@@ -40,7 +40,7 @@ class Combat
 
 	protected:
 		bool percent(f32 percent);
-		int chances(int min, int max);
+		u32 chances(u32 min, u32 max);
 
 	private:
 

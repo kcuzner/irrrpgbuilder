@@ -48,9 +48,11 @@ function chaseObject(name, speed, near, far)
   if(near == nil) then near = 36 end
   
   if( (distanceFrom(x,y,z) < far) and (distanceFrom(x,y,z) > near) ) then
-    walkTo(x,y,z);
-	--move(speed)
-	animation = "walk"
+  	if (hasReached()) then 
+  		walkTo(x,y,z);
+		--move(speed)
+		animation = "walk"
+	end
   end
   
   if ((distanceFrom(x,y,z) < near) and animation=="walk") then
@@ -83,8 +85,9 @@ function walkRandomly(radius, speed)
     randomPointX = IRBOriginalPositionX
     randomPointZ = IRBOriginalPositionZ
   end
-  
-  walkTo(randomPointX,0,randomPointZ)
+  if (hasReached()) then
+  	walkTo(randomPointX,0,randomPointZ)
+    end
   
   --lookAt(randomPointX,0,randomPointZ)
   --move(speed)

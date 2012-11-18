@@ -187,24 +187,29 @@ void CGUIStretchWindow::draw()
 	{
 		//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X+5))
-		{
-			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
+		{   
+			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchright=true;
 		} else
+		{
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
 			this->stretchright=false;
+		}
 
 		//Hinting and detection for stretch on the left side
 		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X-5) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+5))
 		{
-			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
+			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchleft=true;
 		} else
+		{
 			this->stretchleft=false;
+		}
 
 		//Hinting and detection for stretch on the bottom
 		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-5) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y+5))
 		{
-			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
+			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchbottom=true;
 		}
 		else
@@ -213,11 +218,46 @@ void CGUIStretchWindow::draw()
 		//Hinting and detection for stretch on the top
 		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+5) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y-5))
 		{
-			driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
+			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
 			this->stretchtop=true;
 		}
 		else
 			this->stretchtop=false;
+
+		if (stretchright || stretchleft)
+		{
+			if (!stretchbottom && !stretchtop)
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(11) );
+		}
+		if (stretchbottom || stretchtop)
+		{
+			if (!stretchright && !stretchleft)
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(10) );
+		}
+
+		if (stretchbottom && stretchleft)
+		{
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
+		}
+
+		if (stretchbottom && stretchright)
+		{
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
+		}
+
+		if (stretchtop && stretchleft)
+		{
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
+		}
+
+		if (stretchtop && stretchright)
+		{
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
+		}
+
+		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop)
+			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
+
 	}
 	else
 	{

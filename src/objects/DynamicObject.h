@@ -70,25 +70,26 @@ typedef struct data_anim{
 }DynamicObject_Animation;
 
 typedef struct data_properties{
-	int life;
-	int mana;
-	int maxlife;
-	int maxmana;
-	int regenlife;
-	int regenmana;
-	int money;
-	int level;
-	int experience;
-	int mindamage;
-	int maxdamage;
-	int armor;
-	int magic_armor;
-	int hurt_resist;
-	int dotduration;
+	u32 life;
+	u32 mana;
+	u32 maxlife;
+	u32 maxmana;
+	u32 regenlife;
+	u32 regenmana;
+	u32 money;
+	u32 level;
+	u32 experience;
+	u32 mindamage;
+	u32 maxdamage;
+	u32 armor;
+	u32 magic_armor;
+	u32 hurt_resist;
+	u32 dotduration;
 	f32 hit_prob;
 	f32 dodge_prop;
-	int mindefense;
-	int maxdefense;
+	u32 attackdelay;
+	u32 mindefense;
+	u32 maxdefense;
 }cproperty;
 
 class DynamicObject
@@ -298,7 +299,8 @@ class DynamicObject
 
 	
 		bool templateobject;
-		bool stunstate;
+		bool stunstate; // State to stop moving because the character is hurt
+		bool attackdelaystate; // State to stop the attack for a delay after an attack
 		int attackresult;
 
 		// delay timers needed
@@ -312,6 +314,9 @@ class DynamicObject
 		// Timer to delay the sound (do it's not repeating too fast)
 		u32 lastTime;
 		u32 timer_display;
+
+		// Timer to delay the attack
+		u32 timer_attackdelay;
 
 		bool soundActivated;
 		bool attackActivated;

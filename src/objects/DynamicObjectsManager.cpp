@@ -708,6 +708,8 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
     }
 
     parentElement->LinkEndChild(dynamicObjectsXML2);
+	if (dynamicObjectsXML2)
+		delete(dynamicObjectsXML2);
 }
 
 //! Load back data from XML into the dynamic objects (TinyXML)
@@ -1063,6 +1065,7 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 					s32 number = triangle->getTriangleCount();
 					meta->addTriangleSelector(triangle);
 					s32 number2  = meta->getTriangleCount();
+					triangle->drop();
 				} 
 			}
 		}
@@ -1088,6 +1091,7 @@ void DynamicObjectsManager::clean(bool full)
 	// we close the game (player, target object, etc)
 	// Will have to change the naming convention as it's now using another approach 
 	// (templates are loaded on demand now)
+
 	for(int i=0;i<(int)objects.size();i++)
     {
         DynamicObject* d = objects[i];

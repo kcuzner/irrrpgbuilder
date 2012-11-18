@@ -51,6 +51,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	soundActivated = false;
 	attackActivated = false;
 	stunstate=false;
+	attackdelaystate=false;
 	reached=false;
 
 	attackresult=0;
@@ -58,6 +59,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	timer_attackdelay = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	// Set the animation and AI state to idle (default)
 	this->setAnimation("idle");
 	this->walkTarget=this->getPosition();
@@ -91,6 +93,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	soundActivated = false;
 	attackActivated = false;
 	stunstate=false;
+	attackdelaystate=false;
 
 	oldpos=vector3df(0,0,0);
 
@@ -133,6 +136,7 @@ cproperty DynamicObject::initProperties()
 	prop.maxmana=0;
 	prop.mindamage=0;
 	prop.mindefense=0;
+	prop.attackdelay=2000; //wait 1 second after the initial attack (default)
 	prop.money=0;
 	prop.regenlife=0;
 	prop.regenmana=0;
@@ -704,7 +708,6 @@ bool DynamicObject::setAnimation(stringc animName)
 	// Don't call the animation if the result is not positive (result coming from the combat class)
 	if (animName=="attack" && oldAnimName!="attack")
 	{
-		
 		//When the attack animation is triggered, the class interrogate the combat class and check
 		//that the attack is successful before starting it
 		if (objectType==OBJECT_TYPE_PLAYER)
@@ -759,6 +762,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		
 		// disable the stun state if present. Dying takes over
 		stunstate=false;
+		attackdelaystate=false;
 
 		if (objectType!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
@@ -773,12 +777,25 @@ bool DynamicObject::setAnimation(stringc animName)
 		return false;
 	}
 
+	if (attackdelaystate)
+	{
+		printf("The attack has been done state is active no animation is permitted!\n");
+		return false;
+	}
+
 	// This will activate the "hurt" stun state
 	if (animName=="hurt" && !stunstate)
 	{
 		stunstate=true;
 		timerStun = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		
+	}
+
+	// Activate the "attack delay" after the attack is initialized
+	if (animName=="attack" && !attackdelaystate)
+	{
+		attackdelaystate=true;
+		timer_attackdelay=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	}
 
 	// When a character is dead, don't allow anything exept prespawn or despawn
@@ -795,6 +812,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		if (animName=="prespawn")
 		{
 			stunstate=false;
+			attackdelaystate=false;
 			animName="idle";
 			randomize=true;
 			printf("Prespawn is called here.\n");
@@ -1345,9 +1363,23 @@ void DynamicObject::update()
 		}
 	}
 
-	// Call the animation blending ending loop 
-	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
-		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
+	if (attackdelaystate)
+	{
+		// 400 ms default delay for hurt
+		if (timerobject-this->timer_attackdelay>this->properties.attackdelay)
+		{
+			printf ("Disabling the attack retention...\n");
+			// Disable the stun state and restore the previous animation
+			attackdelaystate=false;
+			//setAnimation(this->oldAnimName);
+			setAnimation("idle");
+		}
+
+	}
+
+	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
+	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
+	//	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
 }
 
 void DynamicObject::updateWalk()

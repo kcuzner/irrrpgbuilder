@@ -45,7 +45,7 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	cproperty defender_prop = defender->getProperties();
 	
 	// Retrieve the current life meter on the defender
-	int life=defender->getLife();
+	u32 life=defender->getLife();
 
 	//dumpProperties(attacker);
 	//dumpProperties(defender);
@@ -142,9 +142,9 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		// Set the properties of the attacker back since the experience increased
 		attacker->setProperties(attacker_prop);
 		// Determine if a level raise is needed
-		int baseXP = attacker->getProp_base().experience;
-		int levelXP = attacker->getProp_level().experience;
-		int level = attacker_prop.level;
+		u32 baseXP = attacker->getProp_base().experience;
+		u32 levelXP = attacker->getProp_level().experience;
+		u32 level = attacker_prop.level;
 		if (attacker_prop.experience>(baseXP+(levelXP*(level*level))))
 			updateLevel(attacker);
 
@@ -221,17 +221,16 @@ void Combat::updateLevel(DynamicObject* object)
 
 bool Combat::percent(f32 percent)
 {
-	if (chances(1,100) > round32(percent))
+	if (chances(1,100) > (u32)round32(percent))
 		return false;
 	else
 		return true;
 }
-
-int Combat::chances(int min, int max)
+u32 Combat::chances(u32 min, u32 max)
 // Use a random value to determinate the result
 // Example damage done ranging from 10 to 100 points min=10, max=100
 {
-	int result = (max-min) + min;
+	u32 result = (max-min) + min;
 	if (result<1)
 		return 0;
 	else
