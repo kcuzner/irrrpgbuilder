@@ -218,7 +218,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
 		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
 		Player::getInstance()->setHighLight(true);
-		CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
+		//CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 	}
 	else
@@ -1235,12 +1235,13 @@ void App::updateEditMode()
 		if(app_state < APP_STATE_CONTROL)
 		{
 			// --- Drag the view when the spacebar is pressed
-			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT &&
-				app_state != APP_EDIT_WAIT_GUI &&
-				app_state != APP_EDIT_PLAYER_SCRIPT &&
-				app_state != APP_EDIT_SCRIPT_GLOBAL &&
-				app_state != APP_EDIT_CHARACTER &&
-				app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT 
+				&& app_state != APP_EDIT_WAIT_GUI 
+				&& app_state != APP_EDIT_PLAYER_SCRIPT
+				&& app_state != APP_EDIT_SCRIPT_GLOBAL
+				// && app_state != APP_EDIT_CHARACTER
+				//&& app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE
+				)
 			{
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
 				{

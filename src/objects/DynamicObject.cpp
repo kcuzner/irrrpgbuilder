@@ -359,7 +359,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	vector3df pos=this->getPosition();
 	oldpos=pos;
 
-    pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
+	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
     pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
 	
@@ -435,7 +435,13 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 void DynamicObject::setWalkTarget(vector3df newTarget)
 {
-    walkTarget = newTarget;
+	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination. 
+	// (This allow the NPC not to go directly a the player position)
+	// This need to be improved further as this should apply only when a NPC destination is selected.
+	f32 desiredDistance=50.0f;
+	f32 distance = getDistanceFrom(newTarget);
+	f32 final = (distance-desiredDistance)/distance;
+	walkTarget = newTarget.getInterpolated(getPosition(),final);
 	reached=false;
 }
 
