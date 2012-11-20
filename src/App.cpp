@@ -1748,22 +1748,22 @@ void App::saveProjectToXML(stringc filename)
 	quickUpdate();
 	TerrainManager::getInstance()->saveToXML(irb_project);
 
+
 	GUIManager::getInstance()->setTextLoader(L"Saving the active dynamic objects");
 	quickUpdate();
 	DynamicObjectsManager::getInstance()->saveToXML(irb_project);
 
-	// Old command should be removed.
-	//Player::getInstance()->getObject()->saveToXML(irb_project);
-
 	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
 	quickUpdate();
+	
 	TiXmlElement* globalScript = new TiXmlElement("global_script");
 	globalScript->SetAttribute("script",scriptGlobal.c_str());
-
 	irb_project->LinkEndChild(globalScript);
 
+	// Closing the XML file
 	doc.LinkEndChild( decl );
 	doc.LinkEndChild( irb_project );
+	
 	bool result = doc.SaveFile( filename.c_str() );
 	if (result) printf("Save OK!\n");
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);

@@ -708,8 +708,10 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
     }
 
     parentElement->LinkEndChild(dynamicObjectsXML2);
-	if (dynamicObjectsXML2)
-		delete(dynamicObjectsXML2);
+
+	// Need to find a better way to delete this when the file is saved.
+	//if (dynamicObjectsXML2)
+	//	delete(dynamicObjectsXML2);
 }
 
 //! Load back data from XML into the dynamic objects (TinyXML)
