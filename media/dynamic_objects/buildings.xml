@@ -3,6 +3,31 @@
     <dynamic_object name="Medieval House" 			mesh="buildings/house.3ds" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Houses"
 					thumbnail="buildings/info_house.jpg" />
+	<dynamic_object name="Forge" 			mesh="buildings/Forge/Forge.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Unknown" category="Household"
+					thumbnail="buildings/Forge/info_forge.jpg" />
+					
+	<dynamic_object name="wall_128 units" 			mesh="buildings/walls/irb_wall_128.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Walls"
+					thumbnail="" />
+					
+	<dynamic_object name="wall 256 units" 			mesh="buildings/walls/irb_wall_256.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Walls"
+					thumbnail="" />
+	
+	<dynamic_object name="wall 512 units" 			mesh="buildings/walls/irb_wall_512.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Walls"
+					thumbnail="" />
+					
+	<dynamic_object name="wall 1024 units" 			mesh="buildings/walls/irb_wall_1024.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Walls"
+					thumbnail="" />
+	<dynamic_object name="doorway normal" 			mesh="buildings/doorways/irb_doorway_normal.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Doorway"
+					thumbnail="" />
+	<dynamic_object name="doorway large" 			mesh="buildings/doorways/irb_doorway_large.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Doorway"
+					thumbnail="" />
 	
 	<dynamic_object name="empty" 			mesh="" 							type="non-interactive" 	scale="30" 	materialType="solid"/>
 </IrrRPG_Builder_DynamicObjects>
