@@ -63,12 +63,12 @@ void CameraSystem::setCamera(int tempCamera)
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
-		case 1: fov=0.65f;
+		case 1: fov=0.50f;
 			gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
-				cameraHeight = 350.0f;
+				cameraHeight = 600.0f;
 				currentCam = gameCam;
-				currentCam->setPosition(vector3df(0,cameraHeight,0));
+				currentCam->setPosition(vector3df(cameraHeight/3.0f,cameraHeight,cameraHeight/3.0f));
 				break;
 
 		// Camera 2 - Editing
@@ -140,7 +140,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		/*case 1: max = 6;
 				min = 2;
 				break;*/
-		case 1: max = 800;
+		case 1: max = 1500;
 				min = 180;
 				break;
 		case 2: max = 10000;
@@ -195,7 +195,7 @@ void CameraSystem::moveCamera(vector3df pos)
 
 void CameraSystem::setPosition(vector3df pos)
 {
-	currentCam->setPosition(vector3df(pos.X,currentCam->getPosition().Y,pos.Z-cameraHeight));
+	currentCam->setPosition(vector3df(pos.X-cameraHeight/3,currentCam->getPosition().Y,pos.Z-cameraHeight/3));
 	currentCam->setTarget(getTarget());
 	//cam->setTarget(cam->getPosition() + vector3df(0,-cam->getPosition().Y+36,cam->getPosition().Y));
 }
@@ -205,8 +205,9 @@ void CameraSystem::updatePointClickCam()
 {
 	// Get the player and find a "reference" position based on it.
 	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
+	camrefpos.X=Player::getInstance()->getNode()->getAbsolutePosition().X-(cameraHeight/3);
 	camrefpos.Y=Player::getInstance()->getNode()->getAbsolutePosition().Y+cameraHeight;
-	camrefpos.Z=camrefpos.Z-cameraHeight;
+	camrefpos.Z=camrefpos.Z-(cameraHeight/3);
 
 	// Find the distance between the current camera and the reference position
 	f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);

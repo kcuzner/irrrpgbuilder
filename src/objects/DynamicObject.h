@@ -114,6 +114,7 @@ class DynamicObject
         vector3df getRotation();
 		void moveObject(f32 speed);
 		void walkTo(vector3df targetPos);
+		f32 rayTest(vector3df pos, vector3df pos1);
 		void setWalkTarget(vector3df newTarget);
 		vector3df getWalkTarget();
 		f32 getDistanceFrom(vector3df pos);
@@ -263,6 +264,9 @@ class DynamicObject
 		
         ISceneNode* fakeShadow;
 		scene::HealthSceneNode* Healthbar;
+
+		ISceneManager* smgr;
+		IVideoDriver* driver;
 		
 
 		OBJECT_ANIMATION currentAnimation;

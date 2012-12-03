@@ -66,10 +66,16 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	this->AI_State=AI_STATE_IDLE;
 	// Init the timedelay taken for a loop
 	lastTime=0;
+	smgr = App::getInstance()->getDevice()->getSceneManager();
+	driver = App::getInstance()->getDevice()->getVideoDriver();
 }
 
 DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
 {
+
+	smgr = App::getInstance()->getDevice()->getSceneManager();
+	driver = App::getInstance()->getDevice()->getVideoDriver();
+
 	// This is done when a new character is created from the template
 	properties=initProperties();
 	prop_base=initProperties();
@@ -361,39 +367,107 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-    pos.Y = 0;///TODO: fixar no Y da terrain (gravidade)
+   
 	
 	// Sampling points on the ground
-	// The sampling point should be spaced based on the character size and not fixed values
+	// TODO: The sampling point should be spaced based on the character size and not fixed values
 	vector3df posfront1 = pos+(targetPos.normalize()*20);
 	vector3df posfront = pos+(targetPos.normalize()*10);
 	vector3df posback1 = pos-(targetPos.normalize()*20);
 	vector3df posback = pos-(targetPos.normalize()*10);
+
+
+	// Redefine the sampling point using a new formula (12/02/12), was giving incorrect coordinates
+	posfront.Z = pos.Z - cos((this->getRotation().Y)*PI/180)*20;
+    posfront.X = pos.X - sin((this->getRotation().Y)*PI/180)*20;
+	posfront.Y = pos.Y;
+
+	posfront1.Z = pos.Z - cos((this->getRotation().Y)*PI/180)*40;
+    posfront1.X = pos.X - sin((this->getRotation().Y)*PI/180)*40;
+	posfront1.Y = pos.Y;
+
+	posback1.Z = pos.Z + cos((this->getRotation().Y)*PI/180)*40;
+    posback1.X = pos.X + sin((this->getRotation().Y)*PI/180)*40;
+	posback1.Y = pos.Y;
+
+	posback.Z = pos.Z + cos((this->getRotation().Y)*PI/180)*20;
+    posback.X = pos.X + sin((this->getRotation().Y)*PI/180)*20;
+	posback.Y = pos.Y;
+   
+	// Debug: Draw the collision ray:
+	// Up/Down collision
+	//driver->draw3DLine(vector3df(pos.X,pos.Y+100,pos.Z),vector3df(posfront1.X,posfront1.Y-100,posfront1.Z),SColor(0,128,255,255));
+	// Front/Back collision
+	//driver->draw3DLine(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z),SColor(0,128,255,255));
+
+	printf ("Coords: xyz: \n1: %f,%f,%f\n2: %f,%f,%f\n\n",pos.X,pos.Y,pos.Z,posfront1.X,posfront1.Y,posfront1.Z);
 	
 	// Samples position where the ground is 
-	f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
-	f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
-	f32 height4 = TerrainManager::getInstance()->getHeightAt(posback);
-	f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
+	f32 height = rayTest(vector3df(pos.X,pos.Y+2000,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
+	f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
+	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+2000,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
+	f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
+	f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
+
+	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z));
+	if (frontcol>-1000)
+	{
+		printf("Something was detected in front!\n");
+		collided=true;
+	}
+	else
+		collided=false;
+	
+
+	//f32 height = TerrainManager::getInstance()->getHeightAt(pos);
+	//f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
+	//f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
+	//f32 height4 = TerrainManager::getInstance()->getHeightAt(posback);
+	//f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
 
 	// Cliff is returning the angle of the slope, should not walk on slope that are too angular.
-	//f32 cliff =  height3 - height5; 
+	//f32 cliff =  height3 - height5;
+
+	// Test has failed
+	if (height==-1000.0f)
+	{
+		printf("The ray cast failed! Doing a bigger one!\n");
+		height = TerrainManager::getInstance()->getHeightAt(pos);
+	}
+
 	f32 cliff =  height3 - height; 
 	if (cliff<0) 
 		cliff = -cliff;
 
-	//printf ("Here are the height: front: %f, middle: %f, back: %f, cliff: %f\n",height2,height,height3,cliff);
-	
-	
+	if (cliff>30)
+	{
+		// Do a smaller ray test to check 
+		f32 oldheight = height;
+		f32 oldheight2 = height3;
+
+		// Need to recheck 2 points for the "cliff"
+		height = rayTest(vector3df(pos.X,pos.Y+100,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
+		height3 = rayTest(vector3df(posfront1.X,posfront1.Y+100,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
+		if (height==-1000)
+			height=oldheight;
+		if (height>-1000)
+			cliff =  height3 - height; 
+
+	}
+
+	if (cliff<0) 
+		cliff = -cliff;
+
+	printf ("Here are the height: front: %f, middle: %f, back: %f, cliff: %f\n",height3,height,height4,cliff);
 
 	// The "cliff" is the number of unit of difference from one point to another
 	// The limit in the water is to get to -80 (legs into water)
 	// This number should be based on the height of the character and not fixed values
-	if (height>-80 && (cliff < 30) && !collided)
+	if (height>-80 && (cliff < 60) && !collided)
 	{
-		//pos.Y = height;
-		pos.Y=((height+height2+height3+height4+height5)/5)+2;
+		pos.Y = height; 
+		// Get the average of the heights to give a smoother result.
+		// pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
 	
 	}
@@ -403,6 +477,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 		// Since we're not using IRRlicht collision response animators now for this,
 		// Collision detection between NPC will have to be is not implemented (simple radius detection)
 		walkTarget = this->getPosition();
+		this->setPosition(oldpos);
 		reached=true;
 
 		if (enemyUnderAttack)
@@ -431,6 +506,41 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	f32 distance = 0.0f;
 
+}
+
+f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
+{
+	// Check from the top of the character
+	irr::f32 maxRayHeight = 1000.0f;
+	smgr = App::getInstance()->getDevice()->getSceneManager();
+	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
+	core::line3d<f32> ray;
+
+    ray.start = pos;
+	ray.end = pos1;
+
+	// Tracks the current intersection point with the level or a mesh
+	core::vector3df intersection;
+    // Used to show with triangle has been hit
+    core::triangle3df hitTriangle;
+	scene::ISceneNode * selectedSceneNode =
+    collMan->getSceneNodeAndCollisionPointFromRay(
+		ray,
+		intersection,
+		hitTriangle,
+		100, //100 is the default ID for walkable (ground obj + props)
+		0); // Check the entire scene (this is actually the implicit default)
+
+	if (selectedSceneNode)
+	{
+		core::stringc name = (core::stringc)selectedSceneNode->getName();
+		printf ("Name of the object: %s\n",name);
+		// return the height found. 
+		return intersection.Y;
+	}
+	else
+		// if not return 0
+		return -1000;
 }
 
 void DynamicObject::setWalkTarget(vector3df newTarget)

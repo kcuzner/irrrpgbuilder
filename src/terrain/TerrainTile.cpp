@@ -512,8 +512,9 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 	core::line3d<f32> ray;
 
 	// Start the ray 500 unit from the character, ray lenght is 1000 unit.
-    ray.start = pos+vector3df(0,+(maxRayHeight/2),0);
-    ray.end = ray.start + (pos+vector3df(0,-50.0f,0) - ray.start).normalize() * maxRayHeight;
+    ray.start = pos+vector3df(0,+(maxRayHeight/2.0f),0);
+    //ray.end = ray.start + (pos+vector3df(0,-maxRayHeight/2.0f,0) - ray.start).normalize() * maxRayHeight;
+	ray.end = pos+vector3df(0,-(maxRayHeight/2),0);
 
 	// Tracks the current intersection point with the level or a mesh
 	core::vector3df intersection;
@@ -533,8 +534,8 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 		return intersection.Y;
 	}
 	else
-		// if not return 0
-		return 0;
+		// if not return -1000 (Impossible value, so it failed)
+		return -1000;
 }
 
 void TerrainTile::showDebugData(bool show)
