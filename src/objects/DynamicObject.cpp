@@ -30,11 +30,17 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     realFile += meshFile;
 	//printf("Here is the object: %s \n",realFile.c_str());
 	
-		mesh = smgr->getMesh(realFile);
-	
+	mesh = smgr->getMesh(realFile);
 	//meshName = meshFile;
     this->animations = animations;
 
+	// Check if mesh is really valid
+	// if not, then use the "error" mesh as temp to tell the user the object is not ok.
+	if (!mesh)
+	{
+		mesh = smgr->getMesh("../media/editor/error.obj");
+	}
+		
 	setupObj(name, mesh);
 
 	// When enabled, the LUA will update even if the node is culled.

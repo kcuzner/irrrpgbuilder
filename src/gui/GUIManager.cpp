@@ -247,7 +247,7 @@ void GUIManager::setupEditorGUI()
 	guienv->getSkin()->setFont(guiFont10);
 	// Load textures
 	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
-	ITexture* info_none = driver->getTexture("../media/dynamic_objects/info_none.jpg");
+	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
 	if (info_none)
 		info_current=info_none;
 
@@ -1274,14 +1274,11 @@ void GUIManager::getInfoAboutModel()
 	filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
 
 	this->info_current=driver->getTexture(filename.c_str());
+	if (!info_current)
+		info_current = driver->getTexture("../media/editor/info_none.jpg");
 	
+	this->thumbnail->setImage(info_current);
 	
-	if (info_current)
-		this->thumbnail->setImage(info_current);
-	else
-		this->thumbnail->setImage(info_none);
-		
-		
 }
 
 #endif
