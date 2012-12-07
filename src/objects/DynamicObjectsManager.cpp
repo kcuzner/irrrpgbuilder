@@ -52,6 +52,11 @@ bool DynamicObjectsManager::loadTemplates()
 		//setup material
 		playerObject->setMaterialType(pObject->getMaterialType());
 		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+		
+		// Fix a little problem by reseting the animation state back to idle.
+		playerObject->setAnimation("walk");
+		playerObject->setAnimation("idle");
+		
 		// Load the script if it was defined in the XML
 		if (pObject->script.size()>1)
 		{
@@ -475,6 +480,9 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
     cout << "TEMPLATE NAME:" << activeObject->getName().c_str() << endl;
 
+	//init the new object and tries to set the animations
+	//Doing a "walk - idle" seem to fix a problem.
+	//Will have to look if the idle stance is set at default (should be pre-spawn)
     newObj->setPosition(pos);
 
     //the unique name of an dynamic object contains his index at the objects vector
