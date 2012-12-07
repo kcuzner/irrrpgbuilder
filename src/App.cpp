@@ -40,6 +40,8 @@ App::App()
 	timer=0;
 	timer2=0;
 	timer3=0;
+	initRotation=false;
+	oldmouse=vector2df(0,0);
 }
 
 App::~App()
@@ -798,7 +800,7 @@ App* App::getInstance()
 	if (!instance) instance = new App();
 	return instance;
 }
-
+//! Get the 3D mouse coordinate on the ground or object (ray test)
 MousePick App::getMousePosition3D(int id)
 {
 	position2d<s32> pos=device->getCursorControl()->getPosition();
@@ -837,6 +839,7 @@ MousePick App::getMousePosition3D(int id)
 }
 
 
+//! Display a "debug" box over a selected node
 void App::setPreviewSelection()
 {
 	// Will get a toggle selection
@@ -1393,7 +1396,28 @@ void App::updateGameplay()
 	// This update the player events and controls at specific time intervals
 	if ((timer-timer2)>34)
 	{
+		vector2d<f32> pom = vector2d<f32>(0,0);
 		timer2 = device->getTimer()->getRealTime();
+
+		//Left mouse button in gameplay to change the cam direction
+		if(EventReceiver::getInstance()->isMousePressed(1) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+		{
+			if (initRotation==false)
+			{
+				oldmouse = device->getCursorControl()->getRelativePosition();
+				initRotation=true;
+			}
+
+			pom=oldmouse-device->getCursorControl()->getRelativePosition();
+			CameraSystem::getInstance()->SetPointNClickAngle(pom);
+			device->getCursorControl()->setVisible(false);
+
+		} else
+			if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+			{
+				device->getCursorControl()->setVisible(true);
+				initRotation=false;
+			}
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
@@ -1880,6 +1904,8 @@ void App::initialize()
 
 
 	Player::getInstance();
+	CameraSystem::getInstance()->setCamera(2);
+	//stopGame();
 	driver->setMinHardwareBufferVertexCount(0);
 
 

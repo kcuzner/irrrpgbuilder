@@ -14,6 +14,7 @@ typedef std::pair<std::string, ISceneNode*> TerrainEmptySegmentsMapPair;
 class TerrainManager
 {
     public:
+
         static TerrainManager* getInstance();
         virtual ~TerrainManager();
 

@@ -32,16 +32,12 @@ class CameraSystem
 		void setCameraHeight(f32 increments);
 		f32 getCameraHeight();
 
-        void moveCamera(vector3df pos);
-        void setPosition(vector3df pos);
-
-		void updatePointClickCam();
+ 		void updatePointClickCam();
 
 		ICameraSceneNode* getNode();
 
         vector3df getPosition();
-        vector3df getTarget();
-
+   
 		void fixRatio(IVideoDriver * driver);
 
         virtual ~CameraSystem();
@@ -49,6 +45,11 @@ class CameraSystem
 		scene::ILightSceneNode * sun;
 
 		ICameraSceneNode* editCamMaya;
+		void SetPointNClickAngle(vector2df angle);
+
+		void moveCamera(vector3df pos);
+		void setPosition(vector3df pos);
+		core::vector3df getTarget();
 
     protected:
     private:
@@ -60,8 +61,12 @@ class CameraSystem
 		ICameraSceneNode* currentCam;
 
 		CSceneNodeAnimatorCameraMayaIRB* anm;
-		//static const irr::f32 cameraHeight;
+		
+		// For the point&Click Camera
 		static irr::f32 cameraHeight;
+		vector3df cameraAngle;
+		irr::f32 cameraRotationSpeed;
+		irr::f32 cameraTargetHeight;
 
 
 		int camera;

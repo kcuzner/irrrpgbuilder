@@ -58,8 +58,8 @@ enum APP_STATE
 
 typedef struct
 {
-    vector3df pickedPos;
-    ISceneNode* pickedNode;
+	vector3df pickedPos;
+	ISceneNode* pickedNode;
 }MousePick;
 
 class App
@@ -192,6 +192,9 @@ class App
 
 		CGUIFileSelector * selector;
 		CGUIFileSelector * saveselector;
+
+		bool initRotation;
+		vector2df oldmouse;
 };
 
 #endif // APP_H

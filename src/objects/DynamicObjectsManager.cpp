@@ -754,8 +754,6 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		{
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
-			CameraSystem::getInstance()->setPosition(vector3df(posX,posY,posZ));
-			
 		}
 		// If a script is assigned to the mesh then load it.
 

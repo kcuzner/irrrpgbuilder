@@ -399,14 +399,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	posback.Z = pos.Z + cos((this->getRotation().Y)*PI/180)*20;
     posback.X = pos.X + sin((this->getRotation().Y)*PI/180)*20;
 	posback.Y = pos.Y;
-   
-	// Debug: Draw the collision ray:
-	// Up/Down collision
-	//driver->draw3DLine(vector3df(pos.X,pos.Y+100,pos.Z),vector3df(posfront1.X,posfront1.Y-100,posfront1.Z),SColor(0,128,255,255));
-	// Front/Back collision
-	//driver->draw3DLine(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z),SColor(0,128,255,255));
-
-	printf ("Coords: xyz: \n1: %f,%f,%f\n2: %f,%f,%f\n\n",pos.X,pos.Y,pos.Z,posfront1.X,posfront1.Y,posfront1.Z);
+  	
 	
 	// Samples position where the ground is 
 	f32 height = rayTest(vector3df(pos.X,pos.Y+2000,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
@@ -463,8 +456,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	if (cliff<0) 
 		cliff = -cliff;
-
-	printf ("Here are the height: front: %f, middle: %f, back: %f, cliff: %f\n",height3,height,height4,cliff);
 
 	// The "cliff" is the number of unit of difference from one point to another
 	// The limit in the water is to get to -80 (legs into water)
@@ -539,8 +530,6 @@ f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 
 	if (selectedSceneNode)
 	{
-		core::stringc name = (core::stringc)selectedSceneNode->getName();
-		printf ("Name of the object: %s\n",name);
 		// return the height found. 
 		return intersection.Y;
 	}
@@ -1500,7 +1489,9 @@ void DynamicObject::update()
 
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
-	//	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
+
+	if (this->objectType==OBJECT_TYPE_PLAYER)
+		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
 }
 
 void DynamicObject::updateWalk()
