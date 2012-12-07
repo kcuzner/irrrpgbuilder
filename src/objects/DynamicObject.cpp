@@ -3,9 +3,10 @@
 #include "../App.h"
 #include "DynamicObjectsManager.h"
 #include "combat.h"
-#include "../LuaGlobalCaller.h"
+//#include "../LuaGlobalCaller.h"
 #include "Player.h"
 #include "../terrain/TerrainManager.h"
+#include "../camera/CameraSystem.h"
 
 #include "DynamicObject.h"
 
@@ -1257,76 +1258,75 @@ void DynamicObject::clearScripts()
 	}*/
 	if (objectType != OBJECT_TYPE_PLAYER)
 	{
-		lua_close(L);
+		lua_close(LS);
 	}
 }
 
 void DynamicObject::doScript()
 {
     // create an Lua pointer instance
-    L = lua_open();
+    LS = lua_open();
 
     // load the libs
-    luaL_openlibs(L);
+    luaL_openlibs(LS);
 
     // register dynamic object functions
-    lua_register(L,"setPosition",setPosition);
-    lua_register(L,"getPosition",getPosition);
-    lua_register(L,"setRotation",setRotation);
-    lua_register(L,"getRotation",getRotation);
-    lua_register(L,"lookAt",lookAt);
-    lua_register(L,"lookToObject",lookToObject);
+    lua_register(LS,"setPosition",setPosition);
+    lua_register(LS,"getPosition",getPosition);
+    lua_register(LS,"setRotation",setRotation);
+    lua_register(LS,"getRotation",getRotation);
+    lua_register(LS,"lookAt",lookAt);
+    lua_register(LS,"lookToObject",lookToObject);
 
-	lua_register(L,"attack",attackObj);
-	lua_register(L,"setPropertie",setPropertie);
-	lua_register(L,"getPropertie",getPropertie);
-    lua_register(L,"move",move);
-	lua_register(L,"walkTo",walkToLUA);
-    lua_register(L,"distanceFrom",distanceFrom);
-	lua_register(L,"getName",getNameLUA);
+	lua_register(LS,"attack",attackObj);
+	lua_register(LS,"setPropertie",setPropertie);
+	lua_register(LS,"getPropertie",getPropertie);
+    lua_register(LS,"move",move);
+	lua_register(LS,"walkTo",walkToLUA);
+    lua_register(LS,"distanceFrom",distanceFrom);
+	lua_register(LS,"getName",getNameLUA);
 
-    lua_register(L,"setFrameLoop",setFrameLoop);
-    lua_register(L,"setAnimationSpeed",setAnimationSpeed);
-    lua_register(L,"setAnimation",setAnimation);
+    lua_register(LS,"setFrameLoop",setFrameLoop);
+    lua_register(LS,"setAnimationSpeed",setAnimationSpeed);
+    lua_register(LS,"setAnimation",setAnimation);
 
-    lua_register(L,"showObjectLabel",showObjectLabel);
-    lua_register(L,"hideObjectLabel",hideObjectLabel);
-    lua_register(L,"setObjectLabel",setObjectLabel);
+    lua_register(LS,"showObjectLabel",showObjectLabel);
+    lua_register(LS,"hideObjectLabel",hideObjectLabel);
+    lua_register(LS,"setObjectLabel",setObjectLabel);
 
 	//Dialog Functions
-    lua_register(L,"showDialogMessage",showDialogMessage);
-	lua_register(L,"showDialogQuestion",showDialogQuestion);
+    lua_register(LS,"showDialogMessage",showDialogMessage);
+	lua_register(LS,"showDialogQuestion",showDialogQuestion);
 
-    lua_register(L,"setEnabled",setEnabled);
+    lua_register(LS,"setEnabled",setEnabled);
 
-	lua_register(L,"hasReached",hasReached);
-		
+	lua_register(LS,"hasReached",hasReached);
 
     //register basic functions
-    LuaGlobalCaller::getInstance()->registerBasicFunctions(L);
+    LuaGlobalCaller::getInstance()->registerBasicFunctions(LS);
 
     //associate the "objName" keyword to the dynamic object name
     stringc scriptTemp = "objName = '";
     scriptTemp += this->getNode()->getName();
     scriptTemp += "'";
-    luaL_dostring(L,scriptTemp.c_str());
+    luaL_dostring(LS,scriptTemp.c_str());
 
 
-    luaL_dostring(L,stringc(script).c_str());
+    luaL_dostring(LS,stringc(script).c_str());
 
     //set default object type
-    luaL_dostring(L,"objType = 'OBJECT'");
+    luaL_dostring(LS,"objType = 'OBJECT'");
     //set enemy (when you click an enemy you attack it)
-    luaL_dostring(L,"function setEnemy() objType = 'ENEMY' end");
+    luaL_dostring(LS,"function setEnemy() objType = 'ENEMY' end");
     //set object (when you click an object you interact with it)
-    luaL_dostring(L,"function setObject() objType = 'OBJECT' end");
+    luaL_dostring(LS,"function setObject() objType = 'OBJECT' end");
 
 
 	//run onLoad() function if it exists
-    lua_getglobal(L,"onLoad");
+    lua_getglobal(LS,"onLoad");
     //if top of stack is not a function then onLoad does not exist
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 	storeParams();
 
 }
@@ -1594,48 +1594,48 @@ void DynamicObject::luaRefresh()
 {
 	if (App::getInstance()->getAppState() > 100)
 	{//app_state < APP_STATE_CONTROL
-		lua_getglobal(L,"onUpdate");
-		if(lua_isfunction(L, -1))
+		lua_getglobal(LS,"onUpdate");
+		if(lua_isfunction(LS, -1))
 		{
-			if (lua_pcall(L,0,0,0)!=0)
+			if (lua_pcall(LS,0,0,0)!=0)
 			{
 				printf("error running function `onUpdate'\n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",SColor(255,255,0,0));
 			}
 
 		}
-		lua_pop( L, -1 );
+		lua_pop( LS, -1 );
 
-		lua_getglobal(L,"step");
+		lua_getglobal(LS,"step");
 
-		if(lua_isfunction(L, -1))
+		if(lua_isfunction(LS, -1))
 		{
-			if (lua_pcall(L,0,0,0)!=0)
+			if (lua_pcall(LS,0,0,0)!=0)
 			{
 				printf("error running function `step': \n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",SColor(255,255,0,0));
 			}
 
 		}
-		lua_pop( L, -1 );
+		lua_pop( LS, -1 );
 
 		//custom update function (updates walkTo for example..)
-		lua_getglobal(L,"CustomDynamicObjectUpdate");
+		lua_getglobal(LS,"CustomDynamicObjectUpdate");
 
-		if(lua_isfunction(L, -1))
+		if(lua_isfunction(LS, -1))
 		{
-			if (lua_pcall(L,0,0,0)!=0)
+			if (lua_pcall(LS,0,0,0)!=0)
 			{
 				printf("error running function `CustomDynamicObjectUpdate': \n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",SColor(255,255,0,0));
 			}
 		}
-		lua_pop( L, -1 );
+		lua_pop( LS, -1 );
 	}
-	lua_getglobal(L,"CustomDynamicObjectUpdateProgrammedAction");
-	if(lua_isfunction(L, -1))
-		lua_pcall(L,0,0,0);
-	lua_pop( L, -1 );
+	lua_getglobal(LS,"CustomDynamicObjectUpdateProgrammedAction");
+	if(lua_isfunction(LS, -1))
+		lua_pcall(LS,0,0,0);
+	lua_pop( LS, -1 );
 }
 
 
@@ -2291,39 +2291,39 @@ int DynamicObject::showDialogQuestion(lua_State *LS)
 
 void DynamicObject::notifyClick()
 {
-    lua_getglobal(L,"onClicked");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    lua_getglobal(LS,"onClicked");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 }
 
 void DynamicObject::notifyAttackRange()
 {
-    lua_getglobal(L,"onAttackRange");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    lua_getglobal(LS,"onAttackRange");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 }
 
 void DynamicObject::notifyCollision()
 {
-    lua_getglobal(L,"onCollision");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    lua_getglobal(LS,"onCollision");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop(LS, -1 );
 }
 
 void DynamicObject::notifyAnswer(bool answer)
 {
 	LuaGlobalCaller::getInstance()->setAnswer(answer);
-	lua_getglobal(L,"onAnswer");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+	lua_getglobal(LS,"onAnswer");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop(LS, -1 );
 }
 
 
 stringc DynamicObject::getObjectType()
 {
-    lua_getglobal(L,"objType");
-    stringc objType = lua_tostring(L, -1);
-	lua_pop(L, 1);
+    lua_getglobal(LS,"objType");
+    stringc objType = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
 
 	return objType;
 }

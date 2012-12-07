@@ -1126,9 +1126,13 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setFogRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getFogRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setPostFX",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("gameMode",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);
@@ -1161,6 +1165,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("turn",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("move",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("walkTo",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("hasReached",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("lookAt",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("lookToObject",SColor(255,128,0,255),true);

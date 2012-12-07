@@ -1438,11 +1438,11 @@ void App::updateGameplay()
 			{
 				stringc nodeName = mousePick.pickedNode->getName();
 
+				printf("Detection of click on a node: %s\n",nodeName.c_str());
 				//if you click on a Dynamic Object...
 				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 				{
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
 
 					if(obj->getObjectType() == stringc("ENEMY"))

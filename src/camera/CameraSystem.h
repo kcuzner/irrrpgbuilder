@@ -35,8 +35,6 @@ class CameraSystem
  		void updatePointClickCam();
 
 		ICameraSceneNode* getNode();
-
-        vector3df getPosition();
    
 		void fixRatio(IVideoDriver * driver);
 
@@ -45,9 +43,11 @@ class CameraSystem
 		scene::ILightSceneNode * sun;
 
 		ICameraSceneNode* editCamMaya;
+		ICameraSceneNode* cutsceneCam;
 		void SetPointNClickAngle(vector2df angle);
 
 		void moveCamera(vector3df pos);
+		vector3df getPosition();
 		void setPosition(vector3df pos);
 		core::vector3df getTarget();
 

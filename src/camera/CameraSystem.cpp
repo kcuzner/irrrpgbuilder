@@ -16,8 +16,16 @@ CameraSystem::CameraSystem()
 {
 
 	refreshdelay = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	camera=2;
 	lightset=false;
+	camera=2;
+
+	// Create the cutscene camera
+	cutsceneCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
+	cutsceneCam->setFarValue(5000);
+	cutsceneCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
+	
+	// Create the ingame camera (RTS mecanic)
 	gameCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
 	gameCam->setFarValue(5000);
 	gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
@@ -25,11 +33,8 @@ CameraSystem::CameraSystem()
 	
 
 	// New edit camera
-
 	editCamMaya = addCameraSceneNodeMaya(0, -450.0f, 800.0f, 400.0f);
-
 	editCamMaya->setFarValue(5000);
-	
 	editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 	editCamMaya->setPosition(vector3df(0,1000,-1000));
@@ -68,7 +73,7 @@ void CameraSystem::setCamera(int tempCamera)
 	{
 		// Camera 1 - Gameplay
 		case 1: fov=0.60f;
-			gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				cameraHeight = 600.0f;
 				cameraAngle = vector3df(135.0f,45.0f,0);
@@ -95,6 +100,14 @@ void CameraSystem::setCamera(int tempCamera)
 		        editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 				editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	
+				break;
+
+		// Camera 3 - Cutscene
+		case 3: fov=0.60f;
+				cutsceneCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
+				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
+				printf("Lua called the cutscen mode from global!\n");
+				currentCam=cutsceneCam;
 				break;
 	}
 	App::getInstance()->getDevice()->getSceneManager()->setActiveCamera(currentCam);
@@ -200,6 +213,9 @@ f32 CameraSystem::getCameraHeight()
 // This method update the point&click camera
 void CameraSystem::updatePointClickCam()
 {
+	if (camera==1)
+
+	{
 	// Get the player and find a "reference" position based on it.
 	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
 	camrefpos.Y+=cameraTargetHeight;
@@ -221,6 +237,7 @@ void CameraSystem::updatePointClickCam()
 	// Set the position and angle of the cam
 	currentCam->setPosition(pos);
 	currentCam->setTarget(camrefpos);
+	}
 }
 
 //! Will update the angle of the pointNClick camera by mouse offsets

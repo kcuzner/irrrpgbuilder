@@ -74,8 +74,13 @@ class LuaGlobalCaller
 
         static int setWeather(lua_State *LS);//rain and snow
 
-        static int setCameraTarget(lua_State *LS);
+		static int setCameraTarget(lua_State *LS);
         static int getCameraTarget(lua_State *LS);
+        static int setCameraPosition(lua_State *LS);
+        static int getCameraPosition(lua_State *LS);
+		static int cutsceneMode(lua_State *LS);
+		static int gameMode(lua_State *LS);
+
 
         static int getObjectPosition(lua_State *LS);//x,y,z = getObjectPosition(objName)
 

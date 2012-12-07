@@ -239,6 +239,10 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
     lua_register(LS,"setCameraTarget",setCameraTarget);//setCameraTarget(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraTarget",getCameraTarget);//x,y,z = getCameraTarget()
+	lua_register(LS,"setCameraPosition",setCameraPosition);//setCameraPosition(x,y,z)    or    setCameraTarget(objName)
+    lua_register(LS,"getCameraPosition",getCameraPosition);//x,y,z = getCameraPosition()
+	lua_register(LS,"cutsceneMode",cutsceneMode); // Activate cutscene mode
+	lua_register(LS,"gameMode",gameMode); //Activate game mode
 
     lua_register(LS,"getObjectPosition",getObjectPosition);//x,y,z getObjectPosition(objName)
 
@@ -664,7 +668,7 @@ int LuaGlobalCaller::setCameraTarget(lua_State *LS)
         }
     }
 
-    CameraSystem::getInstance()->setPosition(otherPos);
+	CameraSystem::getInstance()->getNode()->setTarget(otherPos);
 
     return 0;
 }
@@ -678,6 +682,67 @@ int LuaGlobalCaller::getCameraTarget(lua_State *LS)
     lua_pushnumber(LS,pos.Z);
 
     return 3;
+}
+
+int LuaGlobalCaller::setCameraPosition(lua_State *LS)
+{
+    vector3df otherPos = vector3df(0,0,0);
+
+    if(lua_isnumber(LS, -1))//read (x,y,z)
+    {
+        float z = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        float y = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        float x = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        otherPos = vector3df(x,y,z);
+    }
+    else if(lua_isstring(LS,-1))//read Object position
+    {
+        std::string otherName = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+
+        DynamicObject* otherObj = DynamicObjectsManager::getInstance()->getObjectByName(GlobalMap::getInstance()->getGlobal(otherName.c_str()).c_str());
+
+        if(otherObj)
+        {
+            otherPos = otherObj->getPosition();
+        }
+    }
+
+    CameraSystem::getInstance()->setPosition(otherPos);
+
+    return 0;
+}
+
+int LuaGlobalCaller::getCameraPosition(lua_State *LS)
+{
+	vector3df pos = CameraSystem::getInstance()->getPosition();
+
+    lua_pushnumber(LS,pos.X);
+    lua_pushnumber(LS,pos.Y);
+    lua_pushnumber(LS,pos.Z);
+
+    return 3;
+}
+
+int LuaGlobalCaller::cutsceneMode(lua_State *LS)
+{
+    CameraSystem::getInstance()->setCamera(3);
+	printf("Lua called the cutscen mode from global!\n");
+
+    return 0;
+}
+
+int LuaGlobalCaller::gameMode(lua_State *LS)
+{
+    CameraSystem::getInstance()->setCamera(1);
+
+    return 0;
 }
 
 int LuaGlobalCaller::getObjectPosition(lua_State *LS)

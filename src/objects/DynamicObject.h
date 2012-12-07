@@ -326,7 +326,7 @@ class DynamicObject
 		bool attackActivated;
 
 
-		lua_State *L;
+		lua_State *LS;
       
 };
 
