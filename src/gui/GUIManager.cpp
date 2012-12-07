@@ -5,6 +5,7 @@
 #include "../events/EventReceiver.h"
 #include "../sound/SoundManager.h"
 #include "../objects/Player.h"
+#include "../camera/CameraSystem.h"
 
 using namespace irr;
 using namespace core;
@@ -239,6 +240,48 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     return "";
 }
 
+core::stringw GUIManager::getEditCameraString(ISceneNode* node)
+{
+	core::stringw sct =L"";
+	if (!node)
+	{
+		sct += L"Camera position: ";
+		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		sct+=L"    Target:  ";
+		pos = CameraSystem::getInstance()->getNode()->getTarget();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+	} else
+	{
+		sct += L"Object position: ";
+		core::vector3df pos = node->getPosition();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		sct+=L"    Rotation:  ";
+		pos = node->getRotation();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+	}
+
+
+	
+	return sct;
+}
+
 void GUIManager::setupEditorGUI()
 {
 //    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -292,14 +335,17 @@ void GUIManager::setupEditorGUI()
 	imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
 
 	// Status bar
-	guiStatus = guienv->addWindow(myRect(0,displayheight-20,displaywidth,displayheight),false);
+	guiStatus = guienv->addWindow(myRect(0,displayheight-25,displaywidth,displayheight),false);
 	guiStatus->setDraggable(false);
 	guiStatus->setDrawTitlebar(false);
 	guiStatus->getCloseButton()->setVisible(false);
 	guiStatus->setDrawBackground(true);
 	guiStatus->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	guiStatusText = guienv->addStaticText(L"Welcome to IRR RPG Builder!",myRect(10,2,displaywidth-20,18),false,false,guiStatus);
+	guiStatusText = guienv->addStaticText(L"Welcome to IRR RPG Builder!",myRect(10,4,displaywidth-200,18),false,false,guiStatus);
+
+	guiStatusCameraText = guienv->addStaticText(getEditCameraString(NULL).c_str(),myRect(displaywidth-600,4,displaywidth-700,18),true,false,guiStatus);
+	guiStatusCameraText->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 	// Update and refresh the display
 	App::getInstance()->quickUpdate();

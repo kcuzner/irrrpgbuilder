@@ -141,6 +141,8 @@ class App
 
 		// This check in the GUI manager to get the radius of the Brush in the GUI;
 		irr::f32 getBrushRadius();
+
+		scene::ISceneNode* selectedNode;
 		
     private:
 
@@ -188,6 +190,8 @@ class App
 #endif
         MousePick lastMousePick;
 		MousePick lastScannedPick;
+
+		
 
 
 		CGUIFileSelector * selector;

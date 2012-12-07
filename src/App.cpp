@@ -36,6 +36,7 @@ App::App()
 	lastScannedPick.pickedNode=NULL;
 	selector=NULL;
 	saveselector=NULL;
+	selectedNode=NULL;
 	lastPickedNodeName="";
 	timer=0;
 	timer2=0;
@@ -418,10 +419,13 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 
 		// remove the object for the selection
 		lastScannedPick.pickedNode=NULL;
+		selectedNode=NULL;
+
+		//Tell the dynamic Objects Manager to remove the node
+		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 		lastMousePick.pickedNode=NULL;
 
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
@@ -847,6 +851,7 @@ void App::setPreviewSelection()
 
 
 	stringc nodeName = "";
+	selectedNode=mousePick.pickedNode;
 	// Check for a node to prevent a crash (need to get the name of the node)
 	if (mousePick.pickedNode != NULL)
 	{
@@ -868,6 +873,7 @@ void App::setPreviewSelection()
 			else if (lastScannedPick.pickedNode!=NULL)
 			{
 				lastScannedPick.pickedNode->setDebugDataVisible(0);
+				selectedNode=NULL;
 			}
 		}
 	}
@@ -1222,6 +1228,12 @@ void App::run()
 void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
+
+	//Update the GUI for the infos of the edit camera:
+	if (selectedNode)
+		GUIManager::getInstance()->updateEditCameraString(selectedNode);
+	else
+		GUIManager::getInstance()->updateEditCameraString(NULL);
 
 	// Draw the brush in realtime
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
@@ -1696,6 +1708,8 @@ void App::loadProjectFile(bool value)
 		}
 	}
 
+	// Set back the camera after loading the map (could be perhaps improved later, to select the proper camera after loading (ingame loading))
+	CameraSystem::getInstance()->setCamera(2);
 	//setAppState(old_state);
 }
 
@@ -1889,29 +1903,19 @@ void App::initialize()
 	screensize=driver->getScreenSize();
 
 #ifdef EDITOR
+	// Initialize the camera (2) is maya type camera for editing
+	CameraSystem::getInstance()->setCamera(2);
 	GUIManager::getInstance()->setupEditorGUI();
 	TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
 	quickUpdate();
 #endif
-
-	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
-
-	GUIManager::getInstance()->setupGameplayGUI();
-
-
-	quickUpdate();
-
-
-
-	Player::getInstance();
-	CameraSystem::getInstance()->setCamera(2);
-	//stopGame();
-	driver->setMinHardwareBufferVertexCount(0);
-
-
-	this->currentProjectName = "irb_temp_project";
 	
 
+	GUIManager::getInstance()->setupGameplayGUI();
+	quickUpdate();
+	Player::getInstance();
+	driver->setMinHardwareBufferVertexCount(0);
+	this->currentProjectName = "irb_temp_project";
 }
 
 void App::shutdown()

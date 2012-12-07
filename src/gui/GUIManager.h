@@ -188,6 +188,9 @@ class GUIManager
 
         void updateItemsList();
 
+		core::stringw getEditCameraString(scene::ISceneNode *node);
+		inline void updateEditCameraString(scene::ISceneNode * node) {if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}}
+
         void flush();
 
         void showConfigWindow();
@@ -262,6 +265,7 @@ class GUIManager
         GUIConfigWindow* configWindow;
 		IGUIWindow* guiStatus;
 		IGUIStaticText* guiStatusText;
+		IGUIStaticText* guiStatusCameraText;
 
 		IGUIListBox* console;
 		CGUIStretchWindow* consolewin;//IGUIWindow * consolewin;

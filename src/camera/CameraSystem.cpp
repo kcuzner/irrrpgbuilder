@@ -89,16 +89,16 @@ void CameraSystem::setCamera(int tempCamera)
 		case 2: fov=0.45f;
 				cameraHeight = 1000.0f;
 				currentCam = editCamMaya;
+				editCamMaya->setUpVector(vector3df(0,1,0));
+		        editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
+				editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
+
 				editCamMaya->setInputReceiverEnabled(false);
 				editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				editCamMaya->setInputReceiverEnabled(true);
 				editCamMaya->setInputReceiverEnabled(false);
 				//editCamMaya->setFarValue(cameraHeight*3.0f);
-
-				editCamMaya->setUpVector(vector3df(0,1,0));
-		        editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
-				editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	
 				break;
 
