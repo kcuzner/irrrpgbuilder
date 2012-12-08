@@ -98,7 +98,7 @@ void CameraSystem::setCamera(int tempCamera)
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				editCamMaya->setInputReceiverEnabled(true);
 				editCamMaya->setInputReceiverEnabled(false);
-				//editCamMaya->setFarValue(cameraHeight*3.0f);
+				editCamMaya->setFarValue(cameraHeight*3.0f);
 	
 				break;
 

@@ -1508,6 +1508,10 @@ void App::cleanWorkspace()
 
 void App::createNewProject()
 {
+
+	// Initialize the camera (2) is maya type camera for editing
+	CameraSystem::getInstance()->setCamera(2);
+
 	APP_STATE old_state = getAppState();
 	setAppState(APP_EDIT_WAIT_GUI);
 

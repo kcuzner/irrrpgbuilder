@@ -2179,6 +2179,9 @@ void GUIManager::showDialogMessage(stringw text, std::string sound)
 	//Play dialog sound (yes you can record voices!)
     dialogSound = NULL;
 
+	//Pause the player during the dialog opening
+	Player::getInstance()->getObject()->setAnimation("idle");
+
 	if (sound.size()>0)
     //if((sound.c_str() != "") | (sound.c_str() != NULL))
     {
@@ -2191,6 +2194,9 @@ void GUIManager::showDialogMessage(stringw text, std::string sound)
 
 bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 {
+
+	//Pause the player during the dialog opening
+	Player::getInstance()->getObject()->setAnimation("idle");
 
 	//stringw text2 = (stringw)text.c_str();
 	txt_dialog->setText(text.c_str());
