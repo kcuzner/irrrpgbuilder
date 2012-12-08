@@ -1224,6 +1224,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setEnemy",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setObject",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setPropertie",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectType",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("getPropertie",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("attack",SColor(255,128,0,255),true);

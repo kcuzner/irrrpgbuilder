@@ -9,7 +9,6 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-//const irr::f32 CameraSystem::cameraHeight = 3.0f;
 irr::f32 CameraSystem::cameraHeight = 4.0f;
 
 CameraSystem::CameraSystem()
@@ -93,20 +92,20 @@ void CameraSystem::setCamera(int tempCamera)
 		        editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 				editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 
-				editCamMaya->setInputReceiverEnabled(false);
+				//editCamMaya->setInputReceiverEnabled(false);
 				editCamMaya->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				editCamMaya->setInputReceiverEnabled(true);
-				editCamMaya->setInputReceiverEnabled(false);
+				//editCamMaya->setInputReceiverEnabled(false);
 				editCamMaya->setFarValue(cameraHeight*3.0f);
 	
 				break;
 
 		// Camera 3 - Cutscene
-		case 3: fov=0.60f;
+		case 3: fov=0.45f;
 				cutsceneCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
-				printf("Lua called the cutscen mode from global!\n");
+				//printf("Lua called the cutscene mode from global!\n");
 				currentCam=cutsceneCam;
 				break;
 	}
@@ -130,7 +129,7 @@ int CameraSystem::getCamera()
 	return camera;
 }
 
-// Note: Taken directly from IRRlicht
+// Note: Taken and modified from IRRlicht
 //! Adds a camera scene node which is able to be controlled with the mouse similar
 //! to in the 3D Software Maya by Alias Wavefront.
 //! The returned pointer must not be dropped.

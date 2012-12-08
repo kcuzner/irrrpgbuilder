@@ -216,7 +216,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
 				fillListBox();
 				PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
-				printf ("Enter key being pressed\n");
+				//printf ("Enter key being pressed\n");
 				if (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))
 				{
 					// Will save the file if the user press enter key.
@@ -280,17 +280,17 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			else
 				// If the user enter the complete extension of the filename (mostly for loading)
 				if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
-					if (FileSystem)
-					{
-						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-						//printf("working directory reset to: %s\n", prev_working_dir.c_str());
-					}
-					if (DialogType==EFST_SAVE_DIALOG)
+					if (DialogType==EFST_SAVE_DIALOG && FileSystem)
 					{
 						core::stringw strw = FileSystem->getWorkingDirectory();
 						if (strw[strw.size()-1] != '/')
 							strw += "/";
 						fullpathname = strw+FileNameText->getText();
+					}
+					if (FileSystem)
+					{
+						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
+						//printf("working directory reset to: %s\n", prev_working_dir.c_str());
 					}
 					sendSelectedEvent();
 					remove();
@@ -328,6 +328,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 						fullpathname = strw+FileBox->getListItem(selected);
 						FileNameText->setText(FileBox->getListItem(selected));
 						PathNameText->setText(strw.c_str());
+						//printf("Are in the listbox changed section: path is %s\n",((core::stringc)fullpathname).c_str());
 					}
 				}
 				if (event.GUIEvent.Caller == PlacesBox)
@@ -364,6 +365,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 							fullpathname = strw+FileBox->getListItem(selected);
 							FileNameText->setText(FileBox->getListItem(selected));
 							PathNameText->setText(strw.c_str());
+							//printf("Are in the listbox changed again section: path is %s\n",((core::stringc)fullpathname).c_str());
 							return true;
 						}
 					}

@@ -1293,6 +1293,7 @@ void DynamicObject::doScript()
     lua_register(LS,"showObjectLabel",showObjectLabel);
     lua_register(LS,"hideObjectLabel",hideObjectLabel);
     lua_register(LS,"setObjectLabel",setObjectLabel);
+	lua_register(LS,"setObjectType",setObjectType);
 
 	//Dialog Functions
     lua_register(LS,"showDialogMessage",showDialogMessage);
@@ -1370,7 +1371,7 @@ void DynamicObject::update()
 	{
 		// Check for collision with another node
 		// This is not working anymore (oct 2012) as the collision response animator is removed
-		// A new methode should be implemented in the dynamic object manager (using oldpos)
+		// A new method should be implemented in the dynamic object manager (using oldpos)
 		if (animator && animator->collisionOccurred())
 		{
 			//printf ("Collision occured with %s\n",anim->getCollisionNode()->getName());
@@ -1389,8 +1390,8 @@ void DynamicObject::update()
 		// Check for culling on a node and don't update it if it's culled.
 
 	
-		//check if the node is culled
-		culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
+		//check if the node is culled -- Disable node culling for the moment (12/08/12) Some character have weird moves
+		//culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
 		if (!nodeLuaCulling && culled) 
 			setAnimation("idle");
 
@@ -2326,4 +2327,20 @@ stringc DynamicObject::getObjectType()
 	lua_pop(LS, 1);
 
 	return objType;
+}
+
+int DynamicObject::setObjectType(lua_State *LS)
+{
+	core::stringc type = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+    lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	if(tempObj) tempObj->setType(type);
+
+    return 0;
 }

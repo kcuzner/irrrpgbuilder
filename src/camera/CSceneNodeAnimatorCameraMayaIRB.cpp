@@ -10,6 +10,7 @@
 #include "ICameraSceneNode.h"
 #include "SViewFrustum.h"
 #include "ISceneManager.h"
+#include "../App.h"
 
 namespace irr
 {
@@ -46,6 +47,10 @@ CSceneNodeAnimatorCameraMayaIRB::CSceneNodeAnimatorCameraMayaIRB(gui::ICursorCon
 		KeyMap.push_back(SKeyMap2(EK_ROTATE, irr::KEY_LBUTTON));
 		KeyMap.push_back(SKeyMap2(EK_TRANSLATE, irr::KEY_RBUTTON));
 		KeyMap.push_back(SKeyMap2(EK_ZOOM, irr::KEY_MBUTTON));
+		KeyMap.push_back(SKeyMap2(EK_STRAFE_LEFT, irr::KEY_LEFT));
+		KeyMap.push_back(SKeyMap2(EK_STRAFE_RIGHT, irr::KEY_RIGHT));
+		KeyMap.push_back(SKeyMap2(EK_MOVE_FORWARD, irr::KEY_UP));
+		KeyMap.push_back(SKeyMap2(EK_MOVE_BACKWARD, irr::KEY_DOWN));
     }
     else
     {
@@ -87,15 +92,15 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 
 		for (u32 i=0; i<KeyMap.size(); ++i)
 		{
-			if (KeyMap[i].KeyCode == irr::KEY_LBUTTON)
+			if (KeyMap[i].KeyCode == irr::KEY_LBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
 			{
 				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isLeftPressed();
 			}
-			if (KeyMap[i].KeyCode == irr::KEY_RBUTTON)
+			if (KeyMap[i].KeyCode == irr::KEY_RBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
 			{
 				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isRightPressed();
 			}
-			if (KeyMap[i].KeyCode == irr::KEY_MBUTTON)
+			if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
 			{
 				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isMiddlePressed();
 			}
@@ -212,6 +217,28 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	core::vector3df tvectY = (va->getFarLeftDown() - va->getFarRightDown());
 	tvectY = tvectY.crossProduct(upVector.Y > 0 ? pos - target : target - pos);
 	tvectY.normalize();
+
+	if (ActionKeys[EK_STRAFE_LEFT] && !Zooming)
+	{
+		translate -=  tvectX;
+		OldTarget = translate;		
+	}
+	if (ActionKeys[EK_STRAFE_RIGHT] && !Zooming)
+	{
+		translate +=  tvectX;
+		OldTarget = translate;		
+	}
+	if (ActionKeys[EK_MOVE_FORWARD] && !Zooming)
+	{ 
+		translate += tvectX.crossProduct(core::vector3df(0,1,0));
+		OldTarget = translate;		
+	}
+	if (ActionKeys[EK_MOVE_BACKWARD] && !Zooming)
+	{
+		translate -= tvectX.crossProduct(core::vector3df(0,1,0));
+		OldTarget = translate;		
+	}
+		
 
 	if (ActionKeys[EK_TRANSLATE] && !Zooming)
 	{

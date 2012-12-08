@@ -43,6 +43,7 @@ App::App()
 	timer3=0;
 	initRotation=false;
 	oldmouse=vector2df(0,0);
+	lockcam=false;
 }
 
 App::~App()
@@ -1258,29 +1259,21 @@ void App::updateEditMode()
 				//&& app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE
 				)
 			{
+				// Activate "Viewdrag" mode
+				// This state is checked by the MAYA camera
+				// Will allow to move and rotate the view by the mouse when it's in that mode
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
 				{
 					if (app_state != APP_EDIT_VIEWDRAG)
 						old_state = app_state;
 
 					setAppState(APP_EDIT_VIEWDRAG);
-
-					{// TODO: Move the cam based on the cursor position. Current method is buggy.
-						// vector3df camPosition = this->getMousePosition3D(100).pickedPos;
-						// Unlock the maya camera (Need to be improved)
-						if (!CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
-							CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(true);
-					}
-
 					return;
 				}
 			}
 			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
-			if (app_state == APP_EDIT_VIEWDRAG)
+			if ((app_state == APP_EDIT_VIEWDRAG) && !(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE)))
 			{
-				// lock the maya camera (Need to be improved)
-				if (CameraSystem::getInstance()->editCamMaya->isInputReceiverEnabled())
-					CameraSystem::getInstance()->editCamMaya->setInputReceiverEnabled(false);
 				setAppState(old_state);
 			}
 			// --- End of code for drag of view
@@ -1346,36 +1339,6 @@ void App::updateEditMode()
 			{
 				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
 					Player::getInstance()->getObject()->setPosition(getMousePosition3D(100).pickedPos);
-			}
-
-
-			if(app_state == APP_EDIT_TERRAIN_SEGMENTS ||
-				app_state == APP_EDIT_TERRAIN_TRANSFORM ||
-				app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION||
-				app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE||
-				app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE||
-				app_state == APP_EDIT_CHARACTER ||
-				app_state == APP_EDIT_LOOK)
-			{
-
-				//Update Editor Camera Position
-				// Enabled again with the new editor camera
-				if(EventReceiver::getInstance()->isKeyPressed(KEY_LEFT))
-				{
-					CameraSystem::getInstance()->moveCamera(vector3df(-10.0f,0,0));
-				}
-				else if (EventReceiver::getInstance()->isKeyPressed(KEY_RIGHT))
-				{
-					CameraSystem::getInstance()->moveCamera(vector3df(10.0f,0,0));
-				}
-				if(EventReceiver::getInstance()->isKeyPressed(KEY_UP))
-				{
-					CameraSystem::getInstance()->moveCamera(vector3df(0,0,10.0f));
-				}
-				else if (EventReceiver::getInstance()->isKeyPressed(KEY_DOWN))
-				{
-					CameraSystem::getInstance()->moveCamera(vector3df(0,0,-10.0f));
-				}
 			}
 		}
 	}
@@ -1807,7 +1770,7 @@ void App::saveProjectToXML(stringc filename)
 	doc.LinkEndChild( irb_project );
 	
 	bool result = doc.SaveFile( filename.c_str() );
-	if (result) printf("Save OK!\n");
+	if (result) printf("Saved %s OK!\n",filename.c_str());
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 #ifdef APP_DEBUG

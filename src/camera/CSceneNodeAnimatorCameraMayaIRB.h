@@ -7,6 +7,7 @@
 #ifndef __C_SCENE_NODE_ANIMATOR_CAMERA_MAYA_H_INCLUDED__
 #define __C_SCENE_NODE_ANIMATOR_CAMERA_MAYA_H_INCLUDED__
 
+#include <vector>
 #include "ISceneNodeAnimatorCameraMaya.h"
 #include "ICameraSceneNode.h"
 #include "vector2d.h"

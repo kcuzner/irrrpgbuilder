@@ -198,6 +198,7 @@ class App
 		CGUIFileSelector * saveselector;
 
 		bool initRotation;
+		bool lockcam;
 		vector2df oldmouse;
 };
 

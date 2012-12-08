@@ -276,6 +276,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
+
 }
 
 LuaGlobalCaller* LuaGlobalCaller::getInstance()

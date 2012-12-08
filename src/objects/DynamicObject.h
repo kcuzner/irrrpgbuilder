@@ -251,6 +251,7 @@ class DynamicObject
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
 		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
+		static int DynamicObject::setObjectType(lua_State *LS); // change the object type
 
         stringc name;
 	
