@@ -195,7 +195,14 @@ void TerrainManager::removeEmptySegment(vector3df pos, bool force)
 
 void TerrainManager::removeSegment(vector3df pos)
 {
-    //if(getHashCode(pos)=="0_0") return;
+
+	 //Must be rounded positions (to keep it in the grid)
+    pos.X = (f32)round32(pos.X);
+    pos.Y = (f32)round32(pos.Y);
+    pos.Z = (f32)round32(pos.Z);
+
+	getHashCode(pos);
+
 
     if(getSegment(pos))
     {
@@ -209,6 +216,8 @@ void TerrainManager::removeSegment(vector3df pos)
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << TerrainMap.size() << endl;
         #endif
     }
+	 //if(getHashCode(pos)=="0_0") return;
+	createEmptySegment(vector3df(pos.X,0,pos.Z));
 }
 
 std::string TerrainManager::getHashCode(vector3df pos)

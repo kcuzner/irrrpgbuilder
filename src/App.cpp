@@ -739,7 +739,6 @@ void App::eventMousePressed(s32 mouse)
 			{
 				//TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
-				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
 			}
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{
