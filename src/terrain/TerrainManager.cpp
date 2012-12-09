@@ -33,12 +33,12 @@ TerrainManager* TerrainManager::getInstance()
 
 void TerrainManager::createEmptySegment(vector3df pos)
 {
-    if(getHashCode(pos) == "0_0") return;
+    //if(getHashCode(pos) == "0_0") return;
 
     if(getEmptySegment(pos) || getSegment(pos))
     {
         #ifdef APP_DEBUG
-        cout << "DEBUG : TERRAIN MANAGER : EMPTY SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
+        cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
         #endif
         return;
     }
@@ -48,8 +48,6 @@ void TerrainManager::createEmptySegment(vector3df pos)
     newEmptySegment->setScale(vector3df(scale,0.01f,scale) ) ;
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
     newEmptySegment->setTriangleSelector(sel);
-
-    //newEmptySegment->setRotation(vector3df(0,rand()%360,0));
 
     newEmptySegment->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
     newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
@@ -63,53 +61,82 @@ void TerrainManager::createEmptySegment(vector3df pos)
     #endif
 }
 
-void TerrainManager::createSegment(vector3df pos)
+void TerrainManager::setEmptyTileVisible(bool visible)
+{
+	std::map<std::string, ISceneNode*>::iterator it;
+
+    //Set visibility for all empty nodes
+	//By hiding the node, the selection was disabled. Solution is to put a transparent texture over the mesh
+	//The mesh is still rendered, but is invisible
+	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
+    {
+		if (visible)
+		{
+			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
+			((ISceneNode*)((*it).second))->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+		}
+		else
+		{
+			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_invisible_segment.png"));
+			((ISceneNode*)((*it).second))->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+		}
+
+    }
+}
+
+void TerrainManager::createSegment(vector3df pos, bool empty)
 {
     //Must be rounded positions (to keep it in the grid)
     pos.X = (f32)round32(pos.X);
     pos.Y = (f32)round32(pos.Y);
     pos.Z = (f32)round32(pos.Z);
 
+	bool wasthere = false;
     //if segment already exists it don't need to be created
     if( getSegment(pos) )
     {
+		wasthere=true;
+		printf("Hey there is a tile here!\n");
         #ifdef APP_DEBUG
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
         #endif
-        return;
+        //return;
     }
-    else
-    {
-        removeEmptySegment(pos);
+  
+    if (empty)
+	{
+		createEmptySegment(vector3df(pos.X,0,pos.Z));
+	}
+	else if (!wasthere)
+	{
+		removeEmptySegment(pos, true);
 
-        TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
-                                         0,
-                                         pos,
-                                         getHashCode(pos).c_str());
+		TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
+											0,
+											pos,
+											getHashCode(pos).c_str());
+		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 
-        terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
+#ifdef APP_DEBUG
+cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
+#endif
 
-        #ifdef APP_DEBUG
-        cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
-        #endif
-
-        /*Merge New tile to Neighbors (correcting edges according the neighbord edge)
-        //
-        //  edited neighbor|new tile                 | edge correction
-        //               __|                       __|
-        //              /  |                  =>  /  |\
-        //             /   |___                  /   | \___
-        */
-        newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
-        newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
-        newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
-        newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
-
-        createEmptySegment(vector3df(pos.X-1,0,pos.Z));
-        createEmptySegment(vector3df(pos.X+1,0,pos.Z));
-        createEmptySegment(vector3df(pos.X,0,pos.Z-1));
-        createEmptySegment(vector3df(pos.X,0,pos.Z+1));
-    }
+		/*Merge New tile to Neighbors (correcting edges according the neighbord edge)
+		//
+		//  edited neighbor|new tile                 | edge correction
+		//               __|                       __|
+		//              /  |                  =>  /  |\
+		//             /   |___                  /   | \___
+		*/
+		newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
+		newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
+		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
+		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
+	}
+	createEmptySegment(vector3df(pos.X-1,0,pos.Z));
+    createEmptySegment(vector3df(pos.X+1,0,pos.Z));
+    createEmptySegment(vector3df(pos.X,0,pos.Z-1));
+    createEmptySegment(vector3df(pos.X,0,pos.Z+1));
 }
 
 TerrainTile* TerrainManager::getSegment(vector3df pos)
@@ -145,9 +172,13 @@ ISceneNode* TerrainManager::getEmptySegment(vector3df pos)
         return (ISceneNode*)it->second;
 }
 
-void TerrainManager::removeEmptySegment(vector3df pos)
+void TerrainManager::removeEmptySegment(vector3df pos, bool force)
 {
-    if(getHashCode(pos)=="0_0") return;
+    //if(getHashCode(pos)=="0_0") return;
+
+	// Won't allow to remove the last empty segment 
+	if ((terrainEmptySegmentsMap.size()==1) && (terrainMap.size()==0) && !force) return;
+
 
     if(getEmptySegment(pos))
     {
@@ -158,6 +189,24 @@ void TerrainManager::removeEmptySegment(vector3df pos)
 
         #ifdef APP_DEBUG
         cout << "DEBUG : TERRAIN MANAGER : EMPTY SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;
+        #endif
+    }
+}
+
+void TerrainManager::removeSegment(vector3df pos)
+{
+    //if(getHashCode(pos)=="0_0") return;
+
+    if(getSegment(pos))
+    {
+        TerrainTile* temp = terrainMap.find(getHashCode(pos))->second;
+
+		terrainMap.erase(getHashCode(pos));
+
+        delete temp;
+
+        #ifdef APP_DEBUG
+        cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << TerrainMap.size() << endl;
         #endif
     }
 }

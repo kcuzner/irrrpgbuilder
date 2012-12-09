@@ -27,6 +27,7 @@ enum GUI_ID
 {
     BT_ID_TERRAIN_TRANSFORM = 1,
     BT_ID_TERRAIN_ADD_SEGMENT = 2,
+	BT_ID_TERRAIN_ADD_EMPTY_SEGMENT = 300,
   
     SC_ID_TERRAIN_BRUSH_STRENGTH = 5,
 	SC_ID_TERRAIN_BRUSH_RADIUS = 6,
@@ -280,6 +281,7 @@ class GUIManager
         ///TerrainEditor
         IGUIButton* guiTerrainTransform;
         IGUIButton* guiTerrainAddSegment;
+		IGUIButton* guiTerrainAddEmptySegment;
         ITexture* helpTerrainTransform;
         ITexture* helpTerrainSegments;
 

@@ -5,12 +5,6 @@
 #include "TerrainTile.h"
 #include "../App.h"
 
-typedef std::map<std::string, TerrainTile*> TerrainMap;
-typedef std::pair<std::string, TerrainTile*> TerrainMapPair;
-
-typedef std::map<std::string, ISceneNode*> TerrainEmptySegmentsMap;
-typedef std::pair<std::string, ISceneNode*> TerrainEmptySegmentsMapPair;
-
 class TerrainManager
 {
     public:
@@ -18,7 +12,9 @@ class TerrainManager
         static TerrainManager* getInstance();
         virtual ~TerrainManager();
 
-        void createSegment(vector3df pos);
+        void createSegment(vector3df pos, bool empty=false);
+
+		void setEmptyTileVisible(bool visible);
  
         std::string getHashCode(vector3df pos);
 
@@ -50,7 +46,22 @@ class TerrainManager
 
 		void drawBrush();
 
+		TerrainTile* getSegment(vector3df pos);
+        TerrainTile* getSegment(std::string hashCode);
+        ISceneNode* getEmptySegment(vector3df pos);
+        void removeEmptySegment(vector3df pos, bool force=false);
+        void createEmptySegment(vector3df pos);
+		void removeSegment(vector3df pos);
+
+		typedef std::map<std::string, TerrainTile*> TerrainMap;
+		typedef std::pair<std::string, TerrainTile*> TerrainMapPair;
+
+		typedef std::map<std::string, ISceneNode*> TerrainEmptySegmentsMap;
+		typedef std::pair<std::string, ISceneNode*> TerrainEmptySegmentsMapPair;
+
     protected:
+		
+
     private:
         f32 scale;
 
@@ -68,11 +79,7 @@ class TerrainManager
 		stringc terraintexture4;
 
         TerrainManager();
-        TerrainTile* getSegment(vector3df pos);
-        TerrainTile* getSegment(std::string hashCode);
-        ISceneNode* getEmptySegment(vector3df pos);
-        void removeEmptySegment(vector3df pos);
-        void createEmptySegment(vector3df pos);
+        
 };
 
 #endif // TERRAINMANAGER_H

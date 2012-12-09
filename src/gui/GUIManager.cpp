@@ -585,14 +585,14 @@ void GUIManager::createEnvironmentTab()
 	tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	// Tab description box text
 	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
-		core::rect<s32>(0,64,120,80),false,true,tabEnv,-1);
+		core::rect<s32>(0,64,180,80),false,true,tabEnv,-1);
 	environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
 	environmentTabText->setOverrideFont(guiFont10);
 	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
-		core::rect<s32>(130,64,250,80),false,true,tabEnv,-1);
+		core::rect<s32>(190,64,300,80),false,true,tabEnv,-1);
 	vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
 	vegetationTabText->setOverrideFont(guiFont10);
@@ -615,6 +615,22 @@ void GUIManager::createEnvironmentTab()
 	terrainSText->setOverrideColor(video::SColor(255,65,66,174));
 	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText->setOverrideFont(guiFont9);
+
+	 x+= 60;
+	//Add empty Segment
+	guiTerrainAddEmptySegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_empty_segments")).c_str());
+
+    guiTerrainAddEmptySegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddEmptySegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+	IGUIStaticText * terrainSText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_empty_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText2->setOverrideFont(guiFont9);
 
 	 x+= 60;
 
@@ -1874,6 +1890,10 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
    switch(id)
     {
 #ifdef EDITOR
+		case BT_ID_TERRAIN_ADD_EMPTY_SEGMENT:
+			guiTerrainAddEmptySegment->setEnabled(enable);
+			guiTerrainAddEmptySegment->setPressed(!enable);
+			break;
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);

@@ -26,7 +26,8 @@
 		<text id="bt_save_project" str="Save Project"/>
 		<text id="bt_load_project" str="Load Project"/>
 		<text id="bt_show_playable_area" str="Display plateau"/>
-		<text id="bt_terrain_segments" str="Edit Segments"/>
+		<text id="bt_terrain_segments" str="Terrain tiles"/>
+		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Edit Elevation"/>
 		<text id="bt_terrain_brush" str="Brush tool"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Strength:"/>
@@ -176,6 +177,7 @@
 		<text id="bt_load_project" str="Carregar"/>
 		<text id="bt_show_playable_area" str="Planalto Altura"/>
 		<text id="bt_terrain_segments" str="Editar Segmentos"/>
+		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Editar Elevação"/>
 		<text id="bt_terrain_brush" str="Escova"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Forca do escova:"/>
@@ -325,7 +327,8 @@
 		<text id="bt_save_project" str="Sauver le projet"/>
 		<text id="bt_load_project" str="Charger le projet"/>
 		<text id="bt_show_playable_area" str="Zone plateau"/>
-		<text id="bt_terrain_segments" str="Éditer les segments"/>
+		<text id="bt_terrain_segments" str="Tuile terrain"/>
+		<text id="bt_terrain_empty_segments" str="Tuile vide"/>
 		<text id="bt_terrain_transform" str="Éditer l'élevation"/>
 		<text id="bt_terrain_brush" str="Outils brosse"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Force:"/>
@@ -476,6 +479,7 @@
 		<text id="bt_load_project" str="Projekt laden"/>
 		<text id="bt_show_playable_area" str="Bereich anzeigen"/>
 		<text id="bt_terrain_segments" str="Gelaende bearbeiten"/>
+		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Höhe"/>
 		<text id="bt_terrain_brush" str="Pinsel-Werkzeug"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Pinselstaerke:"/>
@@ -626,6 +630,7 @@
 		<text id="bt_load_project" str="Carga Proyecto"/>
 		<text id="bt_show_playable_area" str="Mostrar meseta"/>
 		<text id="bt_terrain_segments" str="Editar Segmentos"/>
+		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Elevación"/>
 		<text id="bt_terrain_brush" str="Herramienta Pincel"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Fuerza:"/>

@@ -174,6 +174,17 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 
+	if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+	}
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+	}
+
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
@@ -346,6 +357,10 @@ void App::eventGuiButton(s32 id)
 #ifdef EDITOR
 	case BT_ID_TERRAIN_ADD_SEGMENT:
 		this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
+		break;
+
+	case BT_ID_TERRAIN_ADD_EMPTY_SEGMENT:
+		this->setAppState(APP_EDIT_TERRAIN_EMPTY_SEGMENTS);
 		break;
 
 	case BT_ID_TERRAIN_PAINT_VEGETATION:
@@ -677,6 +692,10 @@ void App::eventMousePressed(s32 mouse)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 			}
+			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
+			{
+				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
 				MousePick mousePick = getMousePosition3D();
@@ -718,7 +737,13 @@ void App::eventMousePressed(s32 mouse)
 		{
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 			{
-				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				//TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+			}
+			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
+			{
+				TerrainManager::getInstance()->removeEmptySegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
@@ -1051,6 +1076,7 @@ void App::playGame()
 {
 	if (app_state<APP_STATE_CONTROL)
 	{
+		TerrainManager::getInstance()->setEmptyTileVisible(false);
 		//oldcampos = Player::getInstance()->getObject()->getPosition();
 		oldcampos = CameraSystem::getInstance()->editCamMaya->getPosition();
 		oldcamtar = CameraSystem::getInstance()->editCamMaya->getTarget();
@@ -1086,6 +1112,9 @@ void App::stopGame()
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
 		GlobalMap::getInstance()->clearGlobals();
 
+		
+		TerrainManager::getInstance()->setEmptyTileVisible(true);
+
 		DynamicObjectsManager::getInstance()->clearAllScripts();
 		//DynamicObjectsManager::getInstance()->displayShadow(false);
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
@@ -1104,6 +1133,7 @@ void App::stopGame()
 		CameraSystem::getInstance()->setCamera(2);
 		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
+		CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
@@ -1396,6 +1426,8 @@ void App::updateGameplay()
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
+
+			
 			// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
@@ -1403,6 +1435,7 @@ void App::updateGameplay()
 			// Filter only object with the ID=100 to get the resulting node
 			MousePick mousePick = getMousePosition3D(100);
 
+			
 			// Set back to the defaults
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
@@ -1496,7 +1529,7 @@ void App::createNewProject()
 
 	CameraSystem::getInstance();
 
-	TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+	TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 
 	//smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
 	//driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
@@ -1873,7 +1906,7 @@ void App::initialize()
 	// Initialize the camera (2) is maya type camera for editing
 	CameraSystem::getInstance()->setCamera(2);
 	GUIManager::getInstance()->setupEditorGUI();
-	TerrainManager::getInstance()->createSegment(vector3df(0,0,0));
+	TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 	quickUpdate();
 #endif
 	
