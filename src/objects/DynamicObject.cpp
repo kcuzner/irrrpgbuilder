@@ -1500,6 +1500,9 @@ void DynamicObject::updateWalk()
 	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
 	f32 meshScale = this->getScale().X;
 
+	// Trick to not account for the Y axis when checking for the distance.
+	walkTarget.Y=this->getPosition().Y;
+
 	
 	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
 	{
