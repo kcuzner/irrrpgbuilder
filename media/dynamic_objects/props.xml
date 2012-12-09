@@ -20,13 +20,13 @@
 	<dynamic_object name="horse_food_empty" 	mesh="props/horse_food_empty.b3d" 	type="non-interactive" scale="18" 	materialType="solid"
 					category="stable"
 					thumbnail="props/info_horse_food_empty.jpg" />
-    <dynamic_object name="tropical1"		mesh="plants/tropical1.b3d" 		type="non-interactive"	scale="50.4" 	materialType="transparent_1bit"
+    <dynamic_object name="tropical"		mesh="plants/tropical1.b3d" 		type="non-interactive"	scale="50.4" 	materialType="transparent_1bit"
 					category="plant" 
 					thumbnail="plants/info_tropical1.jpg"/>
-    <dynamic_object name="tropical2" 		mesh="plants/tropical2.b3d" 		type="non-interactive"	scale="36" 	materialType="transparent_1bit"
+    <dynamic_object name="tropical" 		mesh="plants/tropical2.b3d" 		type="non-interactive"	scale="36" 	materialType="transparent_1bit"
 				 	category="plant"
 					thumbnail="plants/info_tropical2.jpg" />
-    <dynamic_object name="tropical3" 		mesh="plants/tropical3.b3d" 		type="non-interactive"	scale="72" 	materialType="transparent_1bit"
+    <dynamic_object name="tropical" 		mesh="plants/tropical3.b3d" 		type="non-interactive"	scale="72" 	materialType="transparent_1bit"
 					category="plant"
 					thumbnail="plants/info_tropical3.jpg" />
 	<dynamic_object name="well" 			mesh="props/well.x" 				type="non-interactive"	scale="80" 	materialType="solid"

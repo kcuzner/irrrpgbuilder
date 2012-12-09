@@ -24,6 +24,7 @@ DynamicObjectsManager::DynamicObjectsManager()
 	objectCounter = 0;
 	dialogCaller = NULL;
 	setname=L"";
+	objectcounter=0;
 
 }
 
@@ -92,6 +93,9 @@ bool DynamicObjectsManager::loadTemplates()
 		targetObject->setMaterialType(tObject->getMaterialType());
 		targetObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
 	}
+
+	// Check to rename all duplicate names
+	this->checkTemplateNames();
 	return true;
 }
 
@@ -151,7 +155,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		u32 playercount = 0;
 		u32 propscount = 0;
 		u32 editorcount = 0;
-
+		
 		core::stringc oldName = "";
 
 		core::stringw currentNodeName = L"";
@@ -165,79 +169,6 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
                 case io::EXN_ELEMENT:
                 {
-					if (core::stringw("dynamic_object") == xml->getNodeName())
-					{
-						if (!inside) 
-						{
-							printf ("Inside the requested block (object)!\n");
-							inside=true;
-						}
-
-						
-						objectName = (core::stringw)xml->getAttributeValue("name");
-
-						core::stringw uptext = L"Loading template object: ";
-						uptext += objectName;
-						GUIManager::getInstance()->setTextLoader(uptext);
-						
-
-						if (oldName!=(core::stringc)newObj->getName())
-						{
-							
-							oldName=(core::stringc)newObj->getName();
-
-							// Add the old object to the list,only the pointer is stored
-							this->objTemplate.push_back(newObj);
-
-							// Create the new object 
-							newObj = new TemplateObject(objectName);
-						}
-						
-						newObj->setName((core::stringw)objectName);
-
-						// Get the current set name and save it in the object
-						newObj->type=setname;
-						
-						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
-						newObj->meshFile=objectMesh;
-
-						objectType = xml->getAttributeValue("type");
-						newObj->setType(objectType);
-
-						// simply count the object types for the statistics
-						if (objectType==(core::stringc)"npc")
-							npccount++;
-						if (objectType==(core::stringc)"non-interactive")
-							propscount++;
-						if (objectType==(core::stringc)"editor")
-							editorcount++;
-						if (objectType==(core::stringc)"player")
-							playercount++;
-
-						linecount++;
-
-						//non-interactive
-						objectScript = (core::stringc)xml->getAttributeValue("script");
-						newObj->script=(core::stringw)objectScript;
-
-						objectScale = (core::stringc)xml->getAttributeValue("scale");
-						newObj->setScale((irr::f32)atof(objectScale.c_str()));
-						
-						objectMaterial = (core::stringc)xml->getAttributeValue("materialType");
-			
-						E_MATERIAL_TYPE mat = EMT_SOLID;
-				
-            			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
-						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
-						newObj->setMaterialType(mat);
-
-						newObj->author = xml->getAttributeValue("author");
-						newObj->description = xml->getAttributeValue("description");
-						newObj->licence = xml->getAttributeValue("licence");
-						newObj->category = xml->getAttributeValue("category");
-						newObj->thumbnail = xml->getAttributeValue("thumbnail");
-						
-					}
 
 					if (core::stringw("animation") == (core::stringw)xml->getNodeName())
 					{
@@ -295,28 +226,86 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						
 						
 						newObj->animations.push_back(currAnim); //add the new animation to the template data
-	
-						/*
-						printf (">>> Added animation %s for %s. S:%d, E:%d\n",currAnim.name.c_str(),objectName.c_str(),
-							currAnim.startFrame, currAnim.endFrame);
-
-						if ((currAnim.soundevent>0) && (currAnim.sound!=""))
-							printf (">>>>> Sound %s will be triggered at frame %d\n",currAnim.sound,currAnim.soundevent);
-						
-						if (currAnim.attackevent>0)
-							printf (">>>>> Damage will be done from frame %d\n",currAnim.attackevent);
-
-						if (currAnim.speed>0) 
-							printf (">>>>> Framerate of anim: %f\n",(float)currAnim.speed);
-						else 
-							printf (">>>>> WARNING! No animation framerate defined!!!\n");
-
-						if (currAnim.walkspeed>0)
-							printf (">>>>> Walkspeed of anim: %f\n",(float)currAnim.walkspeed);
-
-						printf("\n"); */
 					}
-					
+
+					// Add the main mesh informations
+					if (core::stringw("dynamic_object") == xml->getNodeName())
+					{
+						if (!inside) 
+						{
+							inside=true;
+						}
+
+						
+						objectName = (core::stringw)xml->getAttributeValue("name");
+						if (objectName==L"empty")
+							printf("Found the empty!\n");
+
+						core::stringw uptext = L"Loading template object: ";
+						uptext += objectName;
+						GUIManager::getInstance()->setTextLoader(uptext);
+
+						//if (oldName!=(core::stringc)newObj->getName())
+						if (inside)
+						{
+							oldName=(core::stringc)newObj->getName();
+
+							// Add the old object to the list,only the pointer is stored
+							this->objTemplate.push_back(newObj);
+
+							// Create the new object 
+							newObj = new TemplateObject(objectName);
+							objectcounter++;
+							newObj->id=objectcounter;
+						}
+						
+						newObj->setName((core::stringw)objectName);
+						
+						// Get the current set name and save it in the object template
+						newObj->type=setname;
+						
+						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
+						newObj->meshFile=objectMesh;
+
+						objectType = xml->getAttributeValue("type");
+						newObj->setType(objectType);
+
+						// simply count the object types for the statistics
+						if (objectType==(core::stringc)"npc")
+							npccount++;
+						if (objectType==(core::stringc)"non-interactive")
+							propscount++;
+						if (objectType==(core::stringc)"editor")
+							editorcount++;
+						if (objectType==(core::stringc)"player")
+							playercount++;
+
+						linecount++;
+
+						//non-interactive
+						objectScript = (core::stringc)xml->getAttributeValue("script");
+						newObj->script=(core::stringw)objectScript;
+
+						objectScale = (core::stringc)xml->getAttributeValue("scale");
+						newObj->setScale((irr::f32)atof(objectScale.c_str()));
+						
+						objectMaterial = (core::stringc)xml->getAttributeValue("materialType");
+			
+						E_MATERIAL_TYPE mat = EMT_SOLID;
+				
+            			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
+						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
+						newObj->setMaterialType(mat);
+
+						newObj->author = xml->getAttributeValue("author");
+						newObj->description = xml->getAttributeValue("description");
+						newObj->licence = xml->getAttributeValue("licence");
+						newObj->category = xml->getAttributeValue("category");
+						newObj->thumbnail = xml->getAttributeValue("thumbnail");
+
+						
+					}
+			
 				}
                 break;
 
@@ -327,7 +316,6 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 					}
 					inside = false;
 					inside2 = false;
-					printf("The element has ended\n\n");
 					break;
                 
 				default:
@@ -345,7 +333,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 			printf (">>>>> Current npc count is: %d\n",npccount);
 		}
 
-		if (propscount)
+		if (propscount>0)
 		{
 			printf (">>>>> Current prop count is: %d\n",propscount);
 		}
@@ -360,6 +348,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
         if (xml)
                 xml->drop(); // don't forget to delete the xml reader
 
+		//if (newObj)
+		//	delete newObj;
+
 		return true;
 }
 
@@ -372,8 +363,8 @@ bool DynamicObjectsManager::loadSet()
 
 	const u32 starttime = App::getInstance()->getDevice()->getTimer()->getRealTime();
 
-	io::IXMLReaderUTF8* xml = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/dynamic_objects/dynamic_objects.xml");
-	if (!xml)
+	io::IXMLReaderUTF8* xmlmain = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/dynamic_objects/dynamic_objects.xml");
+	if (!xmlmain)
 	{
 		printf ("Failed to load the dynamic object template list!\n");
 		return false;
@@ -391,9 +382,9 @@ bool DynamicObjectsManager::loadSet()
 	// Language counter (using the XML hierachy)
 	u32 count = 0;
 	u32 linecount = 0;
-        while(xml && xml->read())
+        while(xmlmain && xmlmain->read())
         {
-			switch(xml->getNodeType())
+			switch(xmlmain->getNodeType())
             {
 				case io::EXN_TEXT:		
 					break;
@@ -401,7 +392,7 @@ bool DynamicObjectsManager::loadSet()
                 case io::EXN_ELEMENT:
                 {
 					// Look for a specified node
-					if (core::stringw("dynamic_object") == xml->getNodeName())
+					if (core::stringw("dynamic_object") == xmlmain->getNodeName())
 					{
 						if (!inside) 
 						{
@@ -409,8 +400,8 @@ bool DynamicObjectsManager::loadSet()
 							inside=true;
 						}
 							
-						set = xml->getAttributeValue("set");
-						setname = (core::stringw)xml->getAttributeValue("name");
+						set = xmlmain->getAttributeValue("set");
+						setname = (core::stringw)xmlmain->getAttributeValue("name");
 						if (setname!="")
 							meshtypename.push_back(setname);
 						//printf ("--- Set: %s\n",set);
@@ -435,13 +426,17 @@ bool DynamicObjectsManager::loadSet()
                 }
         }
 
+		// Add the last object to the template list
+		if (newObj)		
+			this->objTemplate.push_back(newObj);
+
 		core::stringw countstr = ((core::stringw)L"Object set count: ")+(core::stringw)(linecount);
 
 		const u32 endtime = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		u32 time = endtime-starttime;
 
-        if (xml)
-                xml->drop(); // don't forget to delete the xml reader
+        if (xmlmain)
+                xmlmain->drop(); // don't forget to delete the xml reader
 
 		return true;
 }
@@ -876,6 +871,31 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }
 	return true;
+}
+
+
+// check if there is duplicate names and then rename
+void DynamicObjectsManager::checkTemplateNames()
+{
+	for (int j=0 ; j<(int)objTemplate.size() ; j++) 
+	{
+		printf ("here checking for duplicate names: %i\n",j);
+		irr::u32 duplicatecounter=0;
+		for (int i=0 ; i<(int)objTemplate.size() ; i++)
+		{
+			printf ("Name %s = %s? \n",((core::stringc)objTemplate[i]->getName()).c_str(),((core::stringc)objTemplate[j]->getName()).c_str());
+			if (objTemplate[i]->getName()==objTemplate[j]->getName() && i!=j)
+			{ 
+				core::stringw newname = objTemplate[i]->getName();
+				newname+=L"(";
+				newname+=(core::stringw)duplicatecounter;
+				newname+=L")";
+				printf("Found a duplicate name!!! %s\n",((core::stringc)newname).c_str());
+				objTemplate[i]->setName(newname);
+				duplicatecounter++;
+			}
+		}
+	}
 }
 
 //! Freeze all the NPC and the player object (not moving) on the screen when asked to pause

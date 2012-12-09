@@ -28,6 +28,4 @@
 	<dynamic_object name="doorway large" 			mesh="buildings/doorways/irb_doorway_large.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Christian Clavet" category="Doorway"
 					thumbnail="" />
-	
-	<dynamic_object name="empty" 			mesh="" 							type="non-interactive" 	scale="30" 	materialType="solid"/>
 </IrrRPG_Builder_DynamicObjects>

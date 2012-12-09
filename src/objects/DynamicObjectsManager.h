@@ -56,6 +56,8 @@ class DynamicObjectsManager
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
+		void checkTemplateNames();
+
 		void freezeAll();
 		void unFreezeAll();
 
@@ -110,6 +112,8 @@ class DynamicObjectsManager
         stringc createUniqueName();
 		int objectCounter;
 		core::stringw setname;
+
+		u32 objectcounter;
 };
 
 #endif // DYNAMICOBJECTSMANAGER_H

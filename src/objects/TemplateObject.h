@@ -48,6 +48,8 @@ class TemplateObject
 		stringw licence; // Contain the licence type for the model
 		stringw category; // Category of the item
 		stringc thumbnail;
+
+		irr::u32 id; // contain the unique ID of the template
       
     private:
 
