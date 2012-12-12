@@ -54,6 +54,8 @@ void TemplateObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_PLAYER;
 	if (name=="editor")
 		this->objectType=OBJECT_TYPE_EDITOR;
+	if (name=="walkable")
+		this->objectType=OBJECT_TYPE_WALKABLE;
 	this->typeText = name;
 }
 

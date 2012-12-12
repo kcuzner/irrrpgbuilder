@@ -29,6 +29,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
     stringc realFile = "../media/dynamic_objects/";
     realFile += meshFile;
+
+	error=false;
 	//printf("Here is the object: %s \n",realFile.c_str());
 	
 	mesh = smgr->getMesh(realFile);
@@ -40,8 +42,10 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	if (!mesh)
 	{
 		mesh = smgr->getMesh("../media/editor/error.obj");
+		error=true;
 	}
 		
+	
 	setupObj(name, mesh);
 
 	// When enabled, the LUA will update even if the node is culled.
@@ -175,7 +179,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		this->node = nodeAnim;
 		if (node)
 		{
-			this->selector = smgr->createOctreeTriangleSelector((IAnimatedMesh*)mesh, node);
+			this->selector = smgr->createTriangleSelector((IAnimatedMesh*)mesh, node);
 			this->node->setTriangleSelector(selector);
 		}
 
@@ -188,9 +192,9 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		// Check the size of the mesh and create it as an octree if it's big. (200 unit min)
 		if (mesh->getBoundingBox().getExtent().X>200 && mesh->getBoundingBox().getExtent().Y>200 && mesh->getBoundingBox().getExtent().Z>200)
-			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,100);
+			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,200);
 		else
-			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,100);
+			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,200);
 		if (node)
 		{
 			// Select the triangle selector for more precision
@@ -243,7 +247,8 @@ DynamicObject* DynamicObject::clone()
 {
     DynamicObject* newObj = new DynamicObject(name,mesh,animations);
 
-	newObj->setScale(this->getScale());
+	if (!error)
+		newObj->setScale(this->getScale());
     newObj->setMaterialType(this->getMaterialType());
 	newObj->setType(typeText);
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
@@ -645,6 +650,8 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_PLAYER;
 	if (name=="editor")
 		this->objectType=OBJECT_TYPE_EDITOR;
+	if (name=="walkable")
+		this->objectType=OBJECT_TYPE_WALKABLE;
 	this->typeText = name;
 }
 
@@ -916,9 +923,11 @@ bool DynamicObject::setAnimation(stringc animName)
 			return false;
 	}
 
+
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
+
 		// temporary (until a real prespawn is defined inside the game)
 		if (animName=="prespawn")
 		{
@@ -928,33 +937,23 @@ bool DynamicObject::setAnimation(stringc animName)
 			randomize=true;
 			printf("Prespawn is called here.\n");
 		}
-		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
+
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
 
+		if (Animation==OBJECT_ANIMATION_CUSTOM)
+			printf("It's a custom animation!\n");
+
 		if (animName=="despawn")
-		printf("The despawn animation was called!\n");
+			printf("The despawn animation was called!\n");
 		
+		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];		
 		if( tempAnim.name == animName )
         {
-			if ((Animation!=this->currentAnimation)) //|| Animation==OBJECT_ANIMATION_DIE
-			{
-				
-				// To redo... This is a real mess. 
-				// It will need to be implemented in another method
-				// All the animation MUST be in a single archive!!!
-				// So we can use the anim from another file, the character will need all the animations.
-				/*if (this->mesh)
-					defaultskin = (ISkinnedMesh*)this->mesh;
-				// Setup the skinned mesh animation. Check if the meshname is present
-				if (tempAnim.meshname!=L"undefined" && defaultskin)
-				{
-					skin = (ISkinnedMesh*)tempAnim.mesh;
-					defaultskin->useAnimationFrom(skin);
-				}
-				else if (defaultskin)
-					defaultskin->useAnimationFrom(defaultskin);
 
-				*/
+			
+
+			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_CUSTOM)
+			{
 				// Store the old animations
 				this->oldAnimation=currentAnimation;
 				this->oldAnimName = animName;
@@ -967,6 +966,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
+				//printf ("More info is start:%i end: %i\n",(int)tempAnim.startFrame,tempAnim.endFrame);
 				
 				// Special case for the idle animation (randomisation)
 				if (animName=="idle" && randomize)

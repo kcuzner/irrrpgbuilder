@@ -43,7 +43,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
         return;
     }
 
-    ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
+    ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f,0,100);
 	newEmptySegment->setPosition(vector3df((pos.X)*scale,0,(pos.Z)*scale));
     newEmptySegment->setScale(vector3df(scale,0.01f,scale) ) ;
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
@@ -55,6 +55,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
     newEmptySegment->setName(getHashCode(pos).c_str());
 
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
+
 
     #ifdef APP_DEBUG
     cout << "DEBUG : TERRAIN MANAGER : CREATED NEW EMPTY TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;

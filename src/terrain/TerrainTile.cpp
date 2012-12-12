@@ -111,6 +111,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     ocean->setMaterialTexture(1,oceanLayer1); 
 
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
+	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
 
 }

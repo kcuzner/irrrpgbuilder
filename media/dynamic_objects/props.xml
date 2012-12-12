@@ -12,7 +12,7 @@
 					thumbnail="props/info_horse.jpg">
 		<animation name="idle" start="1" end="600" speed="30"/>
 	</dynamic_object>
-	<dynamic_object name="Test_Bridge" 		mesh="props/IRB_Test_Bridge.x" 		type="non-interactive" 	scale="1" 	materialType="solid"
+	<dynamic_object name="Test_Bridge" 		mesh="props/IRB_Test_Bridge.x" 		type="walkable" 	scale="1" 	materialType="solid"
 					description="Object for testing custom mesh walk" author="Christian Clavet" category="building" />
     <dynamic_object name="horse_food" 		mesh="props/horse_food.b3d" 		type="non-interactive"	scale="18" 	materialType="solid"
 					category="stable"

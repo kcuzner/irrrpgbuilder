@@ -596,6 +596,16 @@ void DynamicObjectsManager::setObjectsID(TYPE objectType, s32 ID)
 
 }
 
+void DynamicObjectsManager::setObjectsVisible(TYPE objectType, bool visible)
+{
+    for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+		if (objects[i]->getType()==objectType)
+			objects[i]->getNode()->setVisible(visible);
+    }
+
+}
+
 //! Return a searched dynamic object based on it's name
 DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 {
@@ -993,7 +1003,7 @@ void DynamicObjectsManager::updateAll()
 		// Should help with performance and allow for more NPC/Interactive objects.
 		if (objects[i])
 		{
-			if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE)
+			if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE  || objects[i]->getType()!=OBJECT_TYPE_WALKABLE )
 			{
 				((DynamicObject*)objects[i])->update();
 			}

@@ -47,6 +47,7 @@ class DynamicObjectsManager
 		vector<stringw> getObjectsListCategories(stringw objectType);
 
 		void setObjectsID(TYPE objectType, s32 ID);
+		void setObjectsVisible(TYPE objectType, bool visible);
 
         void showDebugData(bool show);
 

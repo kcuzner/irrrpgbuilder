@@ -44,8 +44,9 @@ enum TYPE
 	OBJECT_TYPE_NPC = 1,
 	OBJECT_TYPE_INTERACTIVE = 2,
 	OBJECT_TYPE_NON_INTERACTIVE = 3,
-	OBJECT_TYPE_PLAYER	= 4,
-	OBJECT_TYPE_EDITOR	= 5
+	OBJECT_TYPE_WALKABLE = 4,
+	OBJECT_TYPE_PLAYER	= 5,
+	OBJECT_TYPE_EDITOR	= 6
 };
 
 enum AI_INFO
@@ -325,6 +326,7 @@ class DynamicObject
 
 		bool soundActivated;
 		bool attackActivated;
+		bool error;
 
 
 		lua_State *LS;

@@ -436,13 +436,13 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
-		// remove the object for the selection
-		lastScannedPick.pickedNode=NULL;
-		selectedNode=NULL;
-
 		//Tell the dynamic Objects Manager to remove the node
 		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+
+		// remove the object for the selection
+		lastScannedPick.pickedNode=NULL;
 		lastMousePick.pickedNode=NULL;
+		selectedNode=NULL;
 
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
@@ -834,8 +834,10 @@ MousePick App::getMousePosition3D(int id)
 {
 	position2d<s32> pos=device->getCursorControl()->getPosition();
 
-	// For the ray test, we should hide the player
+	// For the ray test, we should hide the player (And the decors element that we don't want to select)
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
+	if (app_state== APP_GAMEPLAY_NORMAL)
+		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);
 
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
@@ -849,6 +851,9 @@ MousePick App::getMousePosition3D(int id)
 	MousePick result;
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
+	
+	if (app_state == APP_GAMEPLAY_NORMAL)
+		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, true);
 
 
 	if(tempNode!=NULL)
@@ -860,7 +865,8 @@ MousePick App::getMousePosition3D(int id)
 	}
 	else
 	{
-		result.pickedPos = vector3df(0,0,0);
+		// Failed the ray test
+		result.pickedPos = vector3df(0,-1000,0);
 		result.pickedNode = NULL;
 
 		return result;
@@ -1428,15 +1434,17 @@ void App::updateGameplay()
 
 			
 			// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+			//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,0x0010);
 
 			// Filter only object with the ID=100 to get the resulting node
 			MousePick mousePick = getMousePosition3D(100);
 
-			
+			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,200);
+		
 			// Set back to the defaults
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+			//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
 
 			stringc nodeName = "";

@@ -259,10 +259,33 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		sct+=(core::stringw)pos.Y;
 		sct+=L",";
 		sct+=(core::stringw)pos.Z;
-	} else
+		return sct;
+	}
+		
+	if (node->getID()==100)
 	{
+		sct += L"Camera position: ";
+		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		sct+=L"    Target:  ";
+		pos = CameraSystem::getInstance()->getNode()->getTarget();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		return sct;
+	}
+	else
+	{		
 		sct += L"Object position: ";
+		
 		core::vector3df pos = node->getPosition();
+
 		sct+=(core::stringw)pos.X;
 		sct+=L",";
 		sct+=(core::stringw)pos.Y;
@@ -275,10 +298,9 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		sct+=(core::stringw)pos.Y;
 		sct+=L",";
 		sct+=(core::stringw)pos.Z;
+		return sct;
 	}
 
-
-	
 	return sct;
 }
 

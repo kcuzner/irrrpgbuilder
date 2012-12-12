@@ -28,4 +28,12 @@
 	<dynamic_object name="doorway large" 			mesh="buildings/doorways/irb_doorway_large.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Christian Clavet" category="Doorway"
 					thumbnail="" />
+	<dynamic_object name="door large" 			mesh="buildings/doorways/Doors.b3d"  type="interactive"		script="doubledoor.lua" scale="1.0" 	materialType="solid"
+					author="Christian Clavet" category="Doors"
+					thumbnail="">
+					<animation name="idle" start="0" end="0" speed="30.0" loop="false"/>
+					<animation name="idleopen" start="90" end="90" speed="30.0" loop="false"/>
+					<animation name="open" start="0" end="90" speed="30.0" loop="false"/>
+					<animation name="close" start="91" end="179" speed="30.0" loop="false"/>
+					</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>
