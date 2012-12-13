@@ -12,7 +12,7 @@ class TerrainManager
         static TerrainManager* getInstance();
         virtual ~TerrainManager();
 
-        void createSegment(vector3df pos, bool empty=false);
+        void createSegment(vector3df pos, bool empty=false, bool noextra=false);
 
 		void setEmptyTileVisible(bool visible);
  

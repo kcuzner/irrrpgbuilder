@@ -1044,9 +1044,10 @@ bool result = false;
 		//App::getInstance()->setAppState(APP_WAIT_DIALOG);
 		App::getInstance()->stopGame();
 		App::getInstance()->cleanWorkspace();
-		//result = App::getInstance()->loadProjectFromXML(filename);
-		//if (result)
-		//	App::getInstance()->playGame();
+		result = App::getInstance()->loadProjectFromXML(filename);
+		Player::getInstance()->getObject()->setAnimation("idle");
+		if (result)
+			App::getInstance()->playGame();
     }
     else
     {

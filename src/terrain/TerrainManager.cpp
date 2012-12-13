@@ -85,7 +85,7 @@ void TerrainManager::setEmptyTileVisible(bool visible)
     }
 }
 
-void TerrainManager::createSegment(vector3df pos, bool empty)
+void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 {
     //Must be rounded positions (to keep it in the grid)
     pos.X = (f32)round32(pos.X);
@@ -134,10 +134,13 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
 		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
 	}
-	createEmptySegment(vector3df(pos.X-1,0,pos.Z));
-    createEmptySegment(vector3df(pos.X+1,0,pos.Z));
-    createEmptySegment(vector3df(pos.X,0,pos.Z-1));
-    createEmptySegment(vector3df(pos.X,0,pos.Z+1));
+	if (!noextra)
+	{
+		createEmptySegment(vector3df(pos.X-1,0,pos.Z));
+		createEmptySegment(vector3df(pos.X+1,0,pos.Z));
+		createEmptySegment(vector3df(pos.X,0,pos.Z-1));
+		createEmptySegment(vector3df(pos.X,0,pos.Z+1));
+	}
 }
 
 TerrainTile* TerrainManager::getSegment(vector3df pos)
@@ -247,9 +250,22 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
     {
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
+
     }
 
 
+	//Save all empty segments to XML
+	std::map<std::string, ISceneNode*>::iterator it2;
+	
+	for ( it2=terrainEmptySegmentsMap.begin() ; it2 != terrainEmptySegmentsMap.end(); it2++ )
+	{
+		vector3df pos = ((ISceneNode*)((*it2).second))->getPosition();
+		TiXmlElement* segmentXML = new TiXmlElement("emptySegment");
+			segmentXML->SetAttribute("x",((core::stringc)pos.X).c_str());
+			segmentXML->SetAttribute("z",((core::stringc)pos.Z).c_str());
+		terrainXML->LinkEndChild(segmentXML);
+
+	}
     parentElement->LinkEndChild(terrainXML);
 }
 
@@ -263,7 +279,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
-        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ));
+        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ),false,true);
         TerrainTile* tempTile = TerrainManager::getInstance()->getSegment( vector3df( x/scale ,0, z/scale ) );
 
         if(tempTile)
@@ -273,6 +289,20 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         }
 
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );
+    }
+
+	// Save empty segments to XML
+	TiXmlNode* tSegment2 = parentElement->FirstChild( "emptySegment" );
+	while( tSegment2 != NULL )
+    {
+        f32 x = (f32)atoi(tSegment2->ToElement()->Attribute("x"));
+        f32 z = (f32)atoi(tSegment2->ToElement()->Attribute("z"));
+
+        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ),true,true);
+       
+			App::getInstance()->quickUpdate();
+
+        tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
     }
 	return true;
 }
