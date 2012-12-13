@@ -105,7 +105,6 @@ void CameraSystem::setCamera(int tempCamera)
 		case 3: fov=0.45f;
 				cutsceneCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
-				//printf("Lua called the cutscene mode from global!\n");
 				currentCam=cutsceneCam;
 				break;
 	}
@@ -242,9 +241,10 @@ void CameraSystem::updatePointClickCam()
 //! Will update the angle of the pointNClick camera by mouse offsets
 void CameraSystem::SetPointNClickAngle(vector2df angle)
 {
+	//This is updated as fast as the CPU can. Will have to implement timed update to have the proper value of angle
 	angle*=cameraRotationSpeed;
-    cameraAngle.X+=-angle.X;
-	cameraAngle.Y+=-angle.Y;
+    cameraAngle.X+=-(angle.X/2);
+	cameraAngle.Y+=-(angle.Y/2);
 
 	// Limit the view
 	if (cameraAngle.Y>89)

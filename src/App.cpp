@@ -390,7 +390,7 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN:
 
-		printf ("User call the spawn menu!\n");
+		//printf ("User call the spawn menu!\n");
 
 		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
 
@@ -1095,16 +1095,24 @@ void App::playGame()
 		this->setAppState(APP_GAMEPLAY_NORMAL);
 		DynamicObjectsManager::getInstance()->showDebugData(false);
 
+		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
+
+		// Execute the script in the global
+		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+		//LuaGlobalCaller::getInstance()->usePlayerItem("onLoad");
+
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		//DynamicObjectsManager::getInstance()->showDebugData(false);
 		//TerrainManager::getInstance()->showDebugData(false);
 
 		// Reset the last "walk target" as the game restart.
 		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getObject()->getPosition());
+		DynamicObjectsManager::getInstance()->resetObjectsWalkTarget(OBJECT_TYPE_NPC);
+
 
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+		//LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 	}
 }
@@ -1386,6 +1394,31 @@ void App::updateGameplay()
 {
 
 	timer = device->getTimer()->getRealTime();
+	vector2d<f32> pom = vector2d<f32>(0,0);
+
+	//Left mouse button in gameplay to change the cam direction
+	if(EventReceiver::getInstance()->isMousePressed(1) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+	{
+		if (initRotation==false)
+		{
+			oldmouse = device->getCursorControl()->getRelativePosition();
+			initRotation=true;
+		}
+
+		pom=oldmouse-device->getCursorControl()->getRelativePosition();
+		CameraSystem::getInstance()->SetPointNClickAngle(pom);
+		device->getCursorControl()->setVisible(false);
+
+	} else
+	if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+	{
+		device->getCursorControl()->setVisible(true);
+		initRotation=false;
+	}
+
+	// Update the Point&Click camera setup
+	CameraSystem::getInstance()->updatePointClickCam();
+
 	// Refresh the NPC loop
 	if ((timer-timer3)>0) // (17 )1/60 second (0 value seem ok for now)
 	{
@@ -1395,8 +1428,7 @@ void App::updateGameplay()
 		// Update all the NPC on the map (including the player)
 		DynamicObjectsManager::getInstance()->updateAll();
 
-		// Update the Point&Click camera setup
-		CameraSystem::getInstance()->updatePointClickCam();
+		
 
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();
@@ -1406,33 +1438,10 @@ void App::updateGameplay()
 	// This update the player events and controls at specific time intervals
 	if ((timer-timer2)>34)
 	{
-		vector2d<f32> pom = vector2d<f32>(0,0);
 		timer2 = device->getTimer()->getRealTime();
-
-		//Left mouse button in gameplay to change the cam direction
-		if(EventReceiver::getInstance()->isMousePressed(1) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
-		{
-			if (initRotation==false)
-			{
-				oldmouse = device->getCursorControl()->getRelativePosition();
-				initRotation=true;
-			}
-
-			pom=oldmouse-device->getCursorControl()->getRelativePosition();
-			CameraSystem::getInstance()->SetPointNClickAngle(pom);
-			device->getCursorControl()->setVisible(false);
-
-		} else
-			if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
-			{
-				device->getCursorControl()->setVisible(true);
-				initRotation=false;
-			}
 
 		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
-
-			
 			// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
 			//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
@@ -1453,7 +1462,6 @@ void App::updateGameplay()
 			{
 				stringc nodeName = mousePick.pickedNode->getName();
 
-				printf("Detection of click on a node: %s\n",nodeName.c_str());
 				//if you click on a Dynamic Object...
 				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 				{

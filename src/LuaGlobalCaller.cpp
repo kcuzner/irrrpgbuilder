@@ -289,10 +289,12 @@ LuaGlobalCaller* LuaGlobalCaller::getInstance()
 void LuaGlobalCaller::doScript(stringc script)
 {
     int error = luaL_dostring(L,script.c_str());
+	core::stringc result = (core::stringc)lua_tostring(L, -1);
+	printf("Global script called: result %s\n",result.c_str());
 // Only available in the editor
 #ifdef EDITOR
     if(error)
-        GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,lua_tostring(L, -1));
+		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,result.c_str());
     else
 	{
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
@@ -734,8 +736,6 @@ int LuaGlobalCaller::getCameraPosition(lua_State *LS)
 int LuaGlobalCaller::cutsceneMode(lua_State *LS)
 {
     CameraSystem::getInstance()->setCamera(3);
-	printf("Lua called the cutscen mode from global!\n");
-
     return 0;
 }
 

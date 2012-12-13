@@ -269,6 +269,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         if(tempTile)
         {
             tempTile->loadFromXML(tSegment->ToElement());
+			App::getInstance()->quickUpdate();
         }
 
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );

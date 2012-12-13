@@ -190,7 +190,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						if (!inside2) 
 						{
-							printf ("Inside the requested block (animation)!\n");
+							//printf ("Inside the requested block (animation)!\n");
 							inside2=true;
 						}
 						currAnim.name = (core::stringc)xml->getAttributeValue("name");
@@ -238,9 +238,6 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						
 						objectName = (core::stringw)xml->getAttributeValue("name");
-						if (objectName==L"empty")
-							printf("Found the empty!\n");
-
 						core::stringw uptext = L"Loading template object: ";
 						uptext += objectName;
 						GUIManager::getInstance()->setTextLoader(uptext);
@@ -396,7 +393,6 @@ bool DynamicObjectsManager::loadSet()
 					{
 						if (!inside) 
 						{
-							printf ("Inside the requested block!\n");
 							inside=true;
 						}
 							
@@ -418,7 +414,6 @@ bool DynamicObjectsManager::loadSet()
 						if (inside)
 							count++;
 						inside = false;
-						printf("The element has ended\n\n");
 						break;
 
                 default:
@@ -606,6 +601,21 @@ void DynamicObjectsManager::setObjectsVisible(TYPE objectType, bool visible)
 
 }
 
+// Reset the state of walking of all the object types
+// Normally used to reset the character states when the game start.
+void DynamicObjectsManager::resetObjectsWalkTarget(TYPE objectType)
+{
+    for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+		if (objects[i]->getType()==objectType)
+		{
+			// Will need to inquire the NPC to know if he have a pre-spawn state.
+			// Those object would need a prespawn state instead of idle
+			objects[i]->setAnimation("idle");
+		}
+    }
+}
+
 //! Return a searched dynamic object based on it's name
 DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
 {
@@ -643,7 +653,7 @@ scene::ISceneNode* DynamicObjectsManager::findActiveObject(void)
     {
 		if (objects[i])
 		{
-			printf("this object is number %d and it's name is: %s\n",i,objects[i]->getTemplateObjectName());
+			//printf("this object is number %d and it's name is: %s\n",i,objects[i]->getTemplateObjectName());
 			if( objects[i]->getTemplateObjectName() == activeObject->getName() )
 				return objects[i]->getNode();
 		}
@@ -889,18 +899,18 @@ void DynamicObjectsManager::checkTemplateNames()
 {
 	for (int j=0 ; j<(int)objTemplate.size() ; j++) 
 	{
-		printf ("here checking for duplicate names: %i\n",j);
+		//printf ("here checking for duplicate names: %i\n",j);
 		irr::u32 duplicatecounter=0;
 		for (int i=0 ; i<(int)objTemplate.size() ; i++)
 		{
-			printf ("Name %s = %s? \n",((core::stringc)objTemplate[i]->getName()).c_str(),((core::stringc)objTemplate[j]->getName()).c_str());
+			//printf ("Name %s = %s? \n",((core::stringc)objTemplate[i]->getName()).c_str(),((core::stringc)objTemplate[j]->getName()).c_str());
 			if (objTemplate[i]->getName()==objTemplate[j]->getName() && i!=j)
 			{ 
 				core::stringw newname = objTemplate[i]->getName();
 				newname+=L"(";
 				newname+=(core::stringw)duplicatecounter;
 				newname+=L")";
-				printf("Found a duplicate name!!! %s\n",((core::stringc)newname).c_str());
+				//printf("Found a duplicate name!!! %s\n",((core::stringc)newname).c_str());
 				objTemplate[i]->setName(newname);
 				duplicatecounter++;
 			}

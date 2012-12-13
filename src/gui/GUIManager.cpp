@@ -225,7 +225,6 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     {
 	
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
-			printf("Here received the listbox event!\n");
 			return stringc(guiDynamicObjects_OBJChooser->getListItem(guiDynamicObjects_OBJChooser->getSelected()));
             break;
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:

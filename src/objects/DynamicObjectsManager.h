@@ -48,6 +48,7 @@ class DynamicObjectsManager
 
 		void setObjectsID(TYPE objectType, s32 ID);
 		void setObjectsVisible(TYPE objectType, bool visible);
+		void resetObjectsWalkTarget(TYPE objectType);
 
         void showDebugData(bool show);
 

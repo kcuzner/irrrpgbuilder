@@ -169,8 +169,6 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     this->mesh = mesh;
     this->name = name;
 
-	printf("Object in dynamic object: %s should be loaded now!\n",name);
-
 	if(hasAnimation())
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
@@ -239,6 +237,9 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
+
+		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
+		this->setWalkTarget(node->getPosition());
 
 	}
 }
@@ -417,7 +418,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z));
 	if (frontcol>-1000)
 	{
-		printf("Something was detected in front!\n");
 		collided=true;
 	}
 	else
@@ -436,7 +436,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// Test has failed
 	if (height==-1000.0f)
 	{
-		printf("The ray cast failed! Doing a bigger one!\n");
 		height = TerrainManager::getInstance()->getHeightAt(pos);
 	}
 
@@ -502,8 +501,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 			this->setAnimation("idle");
 		}
 
-		printf("Cliff too high for walking..\n");
-		
 		collided=false; // reset the collision flag
 	}
 
@@ -891,13 +888,13 @@ bool DynamicObject::setAnimation(stringc animName)
 	// Return if the character is stunned
 	if (stunstate)
 	{
-		printf("The stun state is active no animation is permitted!\n");
+		//printf("The stun state is active no animation is permitted!\n");
 		return false;
 	}
 
 	if (attackdelaystate)
 	{
-		printf("The attack has been done state is active no animation is permitted!\n");
+		//printf("The attack has been done state is active no animation is permitted!\n");
 		return false;
 	}
 
@@ -935,16 +932,17 @@ bool DynamicObject::setAnimation(stringc animName)
 			attackdelaystate=false;
 			animName="idle";
 			randomize=true;
-			printf("Prespawn is called here.\n");
+			//printf("Prespawn is called here.\n");
 		}
 
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
 
-		if (Animation==OBJECT_ANIMATION_CUSTOM)
+		/*if (Animation==OBJECT_ANIMATION_CUSTOM)
 			printf("It's a custom animation!\n");
 
 		if (animName=="despawn")
 			printf("The despawn animation was called!\n");
+			*/
 		
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];		
 		if( tempAnim.name == animName )
@@ -1329,7 +1327,6 @@ void DynamicObject::doScript()
     if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
     lua_pop( LS, -1 );
 	storeParams();
-
 }
 
 void DynamicObject::storeParams()
@@ -1411,7 +1408,6 @@ void DynamicObject::update()
 	//300ms second evaluate the LUA scripts
 	if((timerobject-timerAnimation>300) && enabled) // Lua UPdate to 1/4 second (300)
 	{
-
 		if (!nodeLuaCulling)
 		{// Special abilitie of the object. this will overide the culling refresh
 			if (!culled)
@@ -1441,7 +1437,7 @@ void DynamicObject::update()
 	// This can be overided if the character don't have a die or despawn animation
 	if (!despawnPresent && isEnabled()) 
 	{
-		printf("No despawn Anim, we should see the disabling now!\n");
+		//printf("No despawn Anim, we should see the disabling now!\n");
 		setAnimation("prespawn");
 		this->setEnabled(false);
 		return;
@@ -1453,7 +1449,7 @@ void DynamicObject::update()
 	{	
 		if (timerobject-timerDespawn>5000)
 		{
-			printf("Done despawn, disabling the character now!\n");
+			//printf("Done despawn, disabling the character now!\n");
 			// will disable the character after 5 seconds
 			setAnimation("prespawn");
 			this->setEnabled(false);
@@ -1479,7 +1475,7 @@ void DynamicObject::update()
 		// 400 ms default delay for hurt
 		if (timerobject-this->timer_attackdelay>this->properties.attackdelay)
 		{
-			printf ("Disabling the attack retention...\n");
+			//printf ("Disabling the attack retention...\n");
 			// Disable the stun state and restore the previous animation
 			attackdelaystate=false;
 			//setAnimation(this->oldAnimName);
