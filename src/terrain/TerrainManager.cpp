@@ -129,12 +129,17 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 		//              /  |                  =>  /  |\
 		//             /   |___                  /   | \___
 		*/
-		newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
-		newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
-		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
-		newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
+
+		// If there is noextra (loading from) there should not be sewing
+		if (!noextra)
+		{
+			newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
+			newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
+			newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
+			newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
+		}
 	}
-	if (!noextra)
+	if (!noextra) // Don't create extra borders when the tile is loaded from XML
 	{
 		createEmptySegment(vector3df(pos.X-1,0,pos.Z));
 		createEmptySegment(vector3df(pos.X+1,0,pos.Z));
@@ -250,6 +255,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
     {
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
+		App::getInstance()->quickUpdate();
 
     }
 
@@ -264,6 +270,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			segmentXML->SetAttribute("x",((core::stringc)pos.X).c_str());
 			segmentXML->SetAttribute("z",((core::stringc)pos.Z).c_str());
 		terrainXML->LinkEndChild(segmentXML);
+		App::getInstance()->quickUpdate();
 
 	}
     parentElement->LinkEndChild(terrainXML);
@@ -279,8 +286,8 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
-        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ),false,true);
-        TerrainTile* tempTile = TerrainManager::getInstance()->getSegment( vector3df( x/scale ,0, z/scale ) );
+        createSegment(vector3df( x/scale ,0, z/scale ),false,true);
+        TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 
         if(tempTile)
         {
@@ -330,7 +337,6 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 
 void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 strength)
 {
-	
     if(mousePick.pickedNode != NULL)
     {
         for (int i=-1 ; i<2 ; i++)
@@ -368,7 +374,6 @@ void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-
                 if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,strength,value);
             }
         }

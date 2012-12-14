@@ -292,10 +292,12 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 			}
 
 		}
-		this->transformMeshByVertex(id,y,false);
+		// This slow down when loading and should be optimized.
+		this->transformMeshByVertex(id,y,false,true);
 
         vertex = parentElement->IterateChildren( "vertex", vertex );
     }
+	this->recalculate();
 	return true;
 }
 
@@ -359,7 +361,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 	}
 }
 
-void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
+void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc)
 {
 	IVideoDriver * driver = smgr->getGUIEnvironment()->getVideoDriver();
 
@@ -371,8 +373,8 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 	u16* mb_indices  = meshBuffer->getIndices();
 
 	mb_vertices[id].Pos.Y = y;
-	driver->draw3DBox(aabbox3d<f32>(vector3df(mb_vertices[id].Pos.X-10,mb_vertices[id].Pos.Y-10,mb_vertices[id].Pos.Z-10),
-		vector3df(mb_vertices[id].Pos.X+10,mb_vertices[id].Pos.Y+10,mb_vertices[id].Pos.Z+10)),video::SColor(255,255,255,255));
+	//driver->draw3DBox(aabbox3d<f32>(vector3df(mb_vertices[id].Pos.X-10,mb_vertices[id].Pos.Y-10,mb_vertices[id].Pos.Z-10),
+	//	vector3df(mb_vertices[id].Pos.X+10,mb_vertices[id].Pos.Y+10,mb_vertices[id].Pos.Z+10)),video::SColor(255,255,255,255));
 		//aabbox3d((f32),(f32),(f32),
 		//(f32),(f32),(f32)),video::SColor(255,255,255,255));
 
@@ -385,12 +387,22 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation)
 	    paintVegetation(treePos ,false);
 	}
 
+	if (!norecalc)
+	{
+		recalculate();
+	}
+}
+
+void TerrainTile::recalculate()
+{
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
 
-	// Attempt to update the triangle selector with the new mesh
+		// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-    node->setTriangleSelector(selector);
+	node->setTriangleSelector(selector);
 	selector->drop();
+	((IMeshSceneNode*)node)->getMesh()->setDirty();
+
 }
 
 
@@ -420,13 +432,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	}
 
 
-	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
-	// Attempt to update the triangle selector with the new mesh
-	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-    node->setTriangleSelector(selector);
-	selector->drop();
+	recalculate();
 	
-	((IMeshSceneNode*)node)->getMesh()->setDirty();
 }
 
 void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value)
@@ -464,18 +471,13 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 	    }
 	}
 
-	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
-	// Attempt to update the triangle selector with the new mesh
-	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-    node->setTriangleSelector(selector);
-	selector->drop();
-	((IMeshSceneNode*)node)->getMesh()->setDirty();
+	recalculate();
 }
 
 void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength)
 {
 
-	printf ("this was called to down\n");
+	//printf ("this was called to down\n");
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -497,12 +499,7 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 	    cout << mb_vertices[j].Pos.Y << endl;
 	}
 
-	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
-	// Attempt to update the triangle selector with the new mesh
-	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-    node->setTriangleSelector(selector);
-	selector->drop();
-	((IMeshSceneNode*)node)->getMesh()->setDirty();
+	recalculate();
 }
 
 f32 TerrainTile::getHeightAt(vector3df pos)

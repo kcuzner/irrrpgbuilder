@@ -1185,7 +1185,7 @@ void App::update()
 
 
 	// Check for events of the logger
-	//GUIManager::getInstance()->setConsoleLogger(textevent);
+	GUIManager::getInstance()->setConsoleLogger(textevent);
 
 	// This will calculate the animation blending for the nodes
 	DynamicObjectsManager::getInstance()->updateAnimationBlend();

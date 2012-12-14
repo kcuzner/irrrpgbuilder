@@ -47,6 +47,8 @@ class TerrainTile
 
         void showDebugData(bool show);
 
+		void recalculate();
+
         virtual ~TerrainTile();
     protected:
         IMeshBuffer* getMeshBuffer();
@@ -67,7 +69,7 @@ class TerrainTile
 
         Vegetation* getVegetationAt(vector3df pos);
 
-        void transformMeshByVertex(s32 id, f32 y, bool addVegetation);
+        void transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc=false);
 };
 
 #endif // TERRAINTILE_H

@@ -480,6 +480,12 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(activeObject->getName());
 
+
+	if (newObj->getType()==OBJECT_TYPE_NPC)
+	{
+		newObj->setAnimation("walk");
+		newObj->setAnimation("idle");
+	}
 	// Add to the dynamic object list.
 	objects.push_back(newObj);
 	activeObject2=newObj;
@@ -521,6 +527,8 @@ TemplateObject* DynamicObjectsManager::getActiveObject()
 //Normally the "name" is provided by a list.
 void DynamicObjectsManager::setActiveObject(stringc name)
 {
+	core::stringc notfound=(core::stringc)"Template not found:";
+	notfound+=name; notfound+=(core::stringc)"!";
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		core::stringw templateName=objTemplate[i]->getName();
@@ -528,7 +536,8 @@ void DynamicObjectsManager::setActiveObject(stringc name)
     	{
     	    activeObject = ((TemplateObject*)objTemplate[i]);
     	    break;
-    	}
+    	} else
+			App::getInstance()->getDevice()->getLogger()->log(notfound.c_str());
     }
 }
 
