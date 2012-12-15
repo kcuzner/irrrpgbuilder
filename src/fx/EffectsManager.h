@@ -25,6 +25,9 @@ class EffectsManager
 		void DOFaddObject(ISceneNode * DOFNode);
 		void DOFclearObjects();
 
+		scene::ISceneNode* skydome;
+		scene::ISceneNode* skybox;
+
         virtual ~EffectsManager();
     protected:
     private:

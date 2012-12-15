@@ -21,6 +21,7 @@ EffectsManager::EffectsManager()
 
     //get main app scenemanager pointer
     ISceneManager* smgr=App::getInstance()->getDevice()->getSceneManager();
+	video::IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
     //this is the main particle system, it is used to rain and snow effects
     mainParticleSystem = smgr->addParticleSystemSceneNode(false,//use default emitter
                                                           CameraSystem::getInstance()->getNode(),
@@ -46,6 +47,24 @@ EffectsManager::EffectsManager()
     mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/rain.png"));
 
     mainParticleSystem->setVisible(false);
+
+	// Set the default skydome
+	driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+	skydome=smgr->addSkyDomeSceneNode(driver->getTexture("../media/SKY_DOME.jpg"),32,16,0.95f,2.0f);
+	
+	skydome->setVisible(false);
+	/*skybox=smgr->addSkyBoxSceneNode(
+		driver->getTexture("../media/irrlicht2_up.jpg"),
+		driver->getTexture("../media/irrlicht2_dn.jpg"),
+		driver->getTexture("../media/irrlicht2_lf.jpg"),
+		driver->getTexture("../media/irrlicht2_rt.jpg"),
+		driver->getTexture("../media/irrlicht2_ft.jpg"),
+		driver->getTexture("../media/irrlicht2_bk.jpg"));
+
+	skybox->getMaterial(0).FogEnable=false;*/
+
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
 
 }
 

@@ -243,6 +243,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"getCameraPosition",getCameraPosition);//x,y,z = getCameraPosition()
 	lua_register(LS,"cutsceneMode",cutsceneMode); // Activate cutscene mode
 	lua_register(LS,"gameMode",gameMode); //Activate game mode
+	lua_register(LS,"setRTSView",setRTSView); //Camera view is RTS style
+	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
 
     lua_register(LS,"getObjectPosition",getObjectPosition);//x,y,z getObjectPosition(objName)
 
@@ -744,6 +746,18 @@ int LuaGlobalCaller::gameMode(lua_State *LS)
     CameraSystem::getInstance()->setCamera(1);
 
     return 0;
+}
+
+int LuaGlobalCaller::setRTSView(lua_State *LS)
+{
+	CameraSystem::getInstance()->setRTSView();
+	return 0;
+}
+
+int LuaGlobalCaller::setRPGView(lua_State *LS)
+{
+	CameraSystem::getInstance()->setRPGView();
+	return 0;
 }
 
 int LuaGlobalCaller::getObjectPosition(lua_State *LS)

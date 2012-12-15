@@ -110,13 +110,13 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 	}
 	else if (!wasthere)
 	{
-		removeEmptySegment(pos, true);
-
 		TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
 											0,
 											pos,
 											getHashCode(pos).c_str());
 		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
+
+		removeEmptySegment(pos, true);
 
 #ifdef APP_DEBUG
 cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;

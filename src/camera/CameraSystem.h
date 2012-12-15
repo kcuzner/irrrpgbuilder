@@ -13,9 +13,28 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
+
+enum VIEW_TYPE
+{
+	VIEW_RTS = 0,
+	VIEW_RTS_FIXED = 1,
+	VIEW_RPG = 2,
+	VIEW_FPS = 3,
+	VIEW_HYBRID_FPS = 4,
+	VIEW_COUNT = 5
+};
+
+enum CONTROL_TYPE
+{
+	CONTROL_POINTNCLICK = 0,
+	CONTROL_WASD = 1,
+	CONTROL_COUNT = 2
+};
+
 class CameraSystem
 {
     public:
+
         static CameraSystem* getInstance();
 
 		void setCamera(int tempCamera);
@@ -50,6 +69,8 @@ class CameraSystem
 		vector3df getPosition();
 		void setPosition(vector3df pos);
 		core::vector3df getTarget();
+		void setRTSView();
+		void setRPGView();
 
     protected:
     private:
@@ -76,6 +97,11 @@ class CameraSystem
 		bool lightset;
 
 		f32 fov;
+
+		VIEW_TYPE viewtype;
+		CONTROL_TYPE controltype;
+
+		f32 oldrot;
 
 		u32 refreshdelay;
 };

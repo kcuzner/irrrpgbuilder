@@ -44,6 +44,7 @@ App::App()
 	initRotation=false;
 	oldmouse=vector2df(0,0);
 	lockcam=false;
+
 }
 
 App::~App()
@@ -1064,6 +1065,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	LANGManager::getInstance()->setDefaultLanguage(language);
 	quickUpdate();
 
+
 }
 
 IrrlichtDevice* App::getDevice()
@@ -1081,6 +1083,7 @@ void App::playGame()
 {
 	if (app_state<APP_STATE_CONTROL)
 	{
+		EffectsManager::getInstance()->skydome->setVisible(true);
 		TerrainManager::getInstance()->setEmptyTileVisible(false);
 		//oldcampos = Player::getInstance()->getObject()->getPosition();
 		oldcampos = CameraSystem::getInstance()->editCamMaya->getPosition();
@@ -1112,7 +1115,7 @@ void App::playGame()
 
 
 		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-		//LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 	}
 }
@@ -1121,6 +1124,7 @@ void App::stopGame()
 {
 	if (app_state>APP_STATE_CONTROL)
 	{
+		EffectsManager::getInstance()->skydome->setVisible(false);
 		DynamicObjectsManager::getInstance()->objectsToIdle();
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
 		GlobalMap::getInstance()->clearGlobals();

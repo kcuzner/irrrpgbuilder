@@ -80,6 +80,8 @@ class LuaGlobalCaller
         static int getCameraPosition(lua_State *LS);
 		static int cutsceneMode(lua_State *LS);
 		static int gameMode(lua_State *LS);
+		static int setRTSView(lua_State *LS);
+		static int setRPGView(lua_State *LS);
 
 
         static int getObjectPosition(lua_State *LS);//x,y,z = getObjectPosition(objName)

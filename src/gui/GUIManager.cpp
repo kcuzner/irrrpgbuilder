@@ -241,6 +241,7 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 
 core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 {
+	// A bug that crash if I a "node" is "there" but pointer invalid. Will have to investigate more on this.
 	core::stringw sct =L"";
 	if (!node)
 	{
@@ -261,7 +262,7 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		return sct;
 	}
 		
-	if (node) 
+	if (node && App::getInstance()->getAppState()!=APP_EDIT_TERRAIN_EMPTY_SEGMENTS) 
 	{
 		if (node->getID()==100)
 		{
@@ -851,7 +852,7 @@ void GUIManager::createTerrainToolbar()
 		//myRect(driver->getScreenSize().Width - 170,
 		myRect(displaywidth - 170,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight()-20,
+		guiMainToolWindow->getClientRect().getHeight(),
 		170,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
 		displayheight-guiMainToolWindow->getClientRect().getHeight()),
@@ -879,7 +880,10 @@ void GUIManager::createTerrainToolbar()
     guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushStrength->setMin(0);
     guiTerrainBrushStrength->setMax(200);
-    guiTerrainBrushStrength->setPos(100);
+    guiTerrainBrushStrength->setPos(20);
+	guiTerrainBrushStrength->setSmallStep(1);
+	guiTerrainBrushStrength->setLargeStep(5);
+
 
 	// Display the brush radius
 	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
@@ -894,15 +898,19 @@ void GUIManager::createTerrainToolbar()
                                                          false,true, guiTerrainToolbar);
 
 
-    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS );
     guiTerrainBrushRadius->setMin(0);
-    guiTerrainBrushRadius->setMax(200);
+    guiTerrainBrushRadius->setMax(400);
     guiTerrainBrushRadius->setPos(100);
+	guiTerrainBrushRadius->setSmallStep(1);
+	guiTerrainBrushRadius->setLargeStep(5);
 
 	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
 	guiTerrainBrushPlateau->setMin(-100);
 	guiTerrainBrushPlateau->setMax(255);
 	guiTerrainBrushPlateau->setPos(-10);
+	guiTerrainBrushPlateau->setSmallStep(1);
+	guiTerrainBrushPlateau->setLargeStep(5);
 
 	guiTerrainBrushPlateauValue = guienv->addStaticText(L"0",
                                                          myRect(10,mainToolbarPos.Y+190,150,20),
@@ -1218,6 +1226,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("gameMode",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setRTSView",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setRPGView",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);

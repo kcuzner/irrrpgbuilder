@@ -292,6 +292,12 @@ void DynamicObject::lookAt(vector3df pos)
 
     vector3df rot = (-offsetVector).getHorizontalAngle();
 
+	if (rot.Y>361)
+		rot.Y=rot.Y-360;
+
+	if (rot.Y<-360)
+		rot.Y=rot.Y+360;
+
     rot.X=0;
     rot.Z=0;
 
@@ -508,6 +514,15 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 }
 
+// Tell if the object is walking or running
+bool DynamicObject::isWalking()
+{
+	if (getAnimation()!=OBJECT_ANIMATION_WALK && getAnimation()!=OBJECT_ANIMATION_RUN)
+		return false;
+	else
+		return true;
+}
+
 f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 {
 	// Check from the top of the character
@@ -546,11 +561,17 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination. 
 	// (This allow the NPC not to go directly a the player position)
 	// This need to be improved further as this should apply only when a NPC destination is selected.
-	f32 desiredDistance=50.0f;
-	f32 distance = getDistanceFrom(newTarget);
-	f32 final = (distance-desiredDistance)/distance;
-	walkTarget = newTarget.getInterpolated(getPosition(),final);
-	reached=false;
+	if (objectType!=OBJECT_TYPE_PLAYER)
+	{
+		f32 desiredDistance=50.0f;
+		f32 distance = getDistanceFrom(newTarget);
+		f32 final = (distance-desiredDistance)/distance;
+		walkTarget = newTarget.getInterpolated(getPosition(),final);
+		reached=false;
+	} else
+	{
+		walkTarget=newTarget;
+	}
 }
 
 vector3df DynamicObject::getWalkTarget()

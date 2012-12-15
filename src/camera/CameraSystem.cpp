@@ -29,6 +29,8 @@ CameraSystem::CameraSystem()
 	gameCam->setFarValue(5000);
 	gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
+	viewtype = VIEW_RTS;
+	controltype = CONTROL_POINTNCLICK;
 	
 
 	// New edit camera
@@ -39,6 +41,8 @@ CameraSystem::CameraSystem()
 	editCamMaya->setPosition(vector3df(0,1000,-1000));
 	editCamMaya->setTarget(vector3df(0,0,0));
 	setCamera(camera);
+
+	oldrot=-90+Player::getInstance()->getObject()->getRotation().Y;
 
 	
 	
@@ -71,7 +75,7 @@ void CameraSystem::setCamera(int tempCamera)
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
-		case 1: fov=0.60f;
+		case 1: fov=0.85f;
 				gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				cameraHeight = 600.0f;
@@ -82,6 +86,9 @@ void CameraSystem::setCamera(int tempCamera)
 				currentCam = gameCam;
 				gameCam->bindTargetAndRotation(true);
 				this->updatePointClickCam();
+
+				// Use the RTS view by default
+				viewtype=VIEW_RTS;
 				break;
 
 		// Camera 2 - Editing
@@ -228,6 +235,85 @@ void CameraSystem::updatePointClickCam()
 	// Offset from the reference position (the player)
 	pos+=camrefpos;
 	
+
+	// This update the camera view when it's set as a RPG Camera
+	// Parent is player, and use the player angle as reference
+	if (viewtype==VIEW_RPG)
+	{
+		f32 camrefangle=0;
+
+		if (Player::getInstance()->getObject()->isWalking())
+			camrefangle = -90+(Player::getInstance()->getObject()->getRotation()).Y;
+		else
+			camrefangle = cameraAngle.X;
+
+		// Limit camera and oldrot to stay in 0-360 degree range
+		if (camrefangle<0)
+			camrefangle+=360;
+
+		if (camrefangle>360)
+			camrefangle-=360;
+
+		if (oldrot<0)
+			oldrot+=360;
+
+		if (oldrot>360)
+			oldrot-=360;
+		
+		f32 diff = camrefangle-oldrot;
+	
+		// Turn on the other side if the difference is too great
+		if (diff>181)
+		{
+			camrefangle=180-camrefangle;
+			diff = camrefangle+oldrot;
+		}
+
+		// Turn on the other side if the difference is too great
+		if (diff<-181)
+		{
+			camrefangle=180+camrefangle;
+			diff = camrefangle+oldrot;
+		}
+
+		// The "matching speed" of the rotation
+		f32 matchspeed = 0.1f;
+		bool correction=true;
+
+		if (diff<matchspeed && diff>matchspeed)
+			correction=false;
+
+		if (diff>matchspeed && correction)
+		{
+
+			//camrefangle=oldrot+(matchspeed);
+			if (diff>45)
+				camrefangle=oldrot+(matchspeed*5);
+			if (diff>20 && diff<46)
+				camrefangle=oldrot+(matchspeed*2);
+			if (diff<21)
+				camrefangle=oldrot+(matchspeed);
+
+		}
+		
+		if (diff<-matchspeed && correction)
+		{
+			//camrefangle=oldrot-(matchspeed);
+			if (diff<-45)
+				camrefangle=oldrot-(matchspeed*5);
+			if (diff<-20 && diff>-46)
+				camrefangle=oldrot-(matchspeed*2);
+			if (diff>-21)
+				camrefangle=oldrot-(matchspeed);
+		}
+
+		if (Player::getInstance()->getObject()->isWalking())
+			cameraAngle.X=camrefangle;
+
+		oldrot=camrefangle;
+
+	}
+
 	// Do the rotation calculation
 	pos.rotateXYBy(cameraAngle.Y, camrefpos);
 	pos.rotateXZBy(-cameraAngle.X, camrefpos);
@@ -247,10 +333,10 @@ void CameraSystem::SetPointNClickAngle(vector2df angle)
 	cameraAngle.Y+=-(angle.Y/2);
 
 	// Limit the view
-	if (cameraAngle.Y>89)
-		cameraAngle.Y=89;
-	if (cameraAngle.Y<5)
-		cameraAngle.Y=5;
+	if (cameraAngle.Y>89.0f)
+		cameraAngle.Y=89.0f;
+	if (cameraAngle.Y<-25.0f)
+		cameraAngle.Y=-25.0f;
 }
 
 // Return the current camera node pointer
@@ -281,4 +367,14 @@ void CameraSystem::setPosition(vector3df pos)
 core::vector3df CameraSystem::getTarget()
 {
 	return currentCam->getTarget();
+}
+
+void CameraSystem::setRTSView()
+{
+	viewtype=VIEW_RTS;
+}
+
+void CameraSystem::setRPGView()
+{
+	viewtype=VIEW_RPG;
 }
