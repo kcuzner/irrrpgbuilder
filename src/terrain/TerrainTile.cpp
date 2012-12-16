@@ -427,7 +427,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 			//printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
 
-		if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
+		//if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
+		if(mb_vertices[j].Pos.Y > nodescale) mb_vertices[j].Pos.Y = nodescale;
 	    if(mb_vertices[j].Pos.Y < -(nodescale*0.1f)) mb_vertices[j].Pos.Y = -(nodescale*0.1f);
 	}
 
@@ -505,7 +506,7 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
 	// Check from the top of the character
-	irr::f32 maxRayHeight = 1000.0f;
+	irr::f32 maxRayHeight = 2000.0f;
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
 

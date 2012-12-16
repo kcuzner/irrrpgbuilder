@@ -46,8 +46,10 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     services->setPixelShaderConstant("editingTerrain",(int*)&editingTerrain,1);
 
+#ifdef EDITOR
 	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
 	services->setPixelShaderConstant("plateau",(float*)&plateau,1);
+#endif
 
     layer=10;
     services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);

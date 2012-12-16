@@ -34,6 +34,8 @@ TerrainManager* TerrainManager::getInstance()
 void TerrainManager::createEmptySegment(vector3df pos)
 {
     //if(getHashCode(pos) == "0_0") return;
+	if (pos.Y==-1000.0f)
+		return;
 
     if(getEmptySegment(pos) || getSegment(pos))
     {
@@ -87,6 +89,9 @@ void TerrainManager::setEmptyTileVisible(bool visible)
 
 void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 {
+	if (pos.Y==-1000)
+		return;
+
     //Must be rounded positions (to keep it in the grid)
     pos.X = (f32)round32(pos.X);
     pos.Y = (f32)round32(pos.Y);
@@ -139,7 +144,7 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 			newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
 		}
 	}
-	if (!noextra) // Don't create extra borders when the tile is loaded from XML
+	if (!noextra && empty) // Don't create extra borders when the tile is loaded from XML
 	{
 		createEmptySegment(vector3df(pos.X-1,0,pos.Z));
 		createEmptySegment(vector3df(pos.X+1,0,pos.Z));
@@ -150,6 +155,9 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 
 TerrainTile* TerrainManager::getSegment(vector3df pos)
 {
+	if (pos.Y==-1000.0f)
+		return NULL;
+
     std::map<std::string, TerrainTile*>::iterator it;
 	it = terrainMap.find(getHashCode(pos).c_str());
 
@@ -172,6 +180,9 @@ TerrainTile* TerrainManager::getSegment(std::string hashCode)
 
 ISceneNode* TerrainManager::getEmptySegment(vector3df pos)
 {
+	if (pos.Y==-1000.0f)
+		return NULL;
+
     std::map<std::string, ISceneNode*>::iterator it;
     it = terrainEmptySegmentsMap.find(getHashCode(pos));
 
@@ -183,6 +194,8 @@ ISceneNode* TerrainManager::getEmptySegment(vector3df pos)
 
 void TerrainManager::removeEmptySegment(vector3df pos, bool force)
 {
+	if (pos.Y==-1000.0f)
+		return;
     //if(getHashCode(pos)=="0_0") return;
 
 	// Won't allow to remove the last empty segment 
@@ -209,6 +222,9 @@ void TerrainManager::removeSegment(vector3df pos)
     pos.X = (f32)round32(pos.X);
     pos.Y = (f32)round32(pos.Y);
     pos.Z = (f32)round32(pos.Z);
+
+	if (pos.Y==-1000.0f)
+		return;
 
 	getHashCode(pos);
 
@@ -504,6 +520,8 @@ void TerrainManager::drawBrush()
 
 
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+
+	f32 height=0.0f;
 	
 	f32 radius = App::getInstance()->getBrushRadius();
 	vector3df position = App::getInstance()->getMousePosition3D(100).pickedPos;
@@ -525,13 +543,19 @@ void TerrainManager::drawBrush()
 		vector3df pos=position;
 		pos.X+=cos(degInRad)*radius;
 		pos.Z+=sin(degInRad)*radius;
-		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+		height=getHeightAt(pos);
+		if (height==-1000.0f)
+			height=0.0f;
+		pos.Y=height+5;
 
 		float degInRad2 = (i+step)*DEG2RAD;
 		vector3df pos2=position;
 		pos2.X+=cos(degInRad2)*radius;
 		pos2.Z+=sin(degInRad2)*radius;
-		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+		height=getHeightAt(pos2);
+		if (height==-1000.0f)
+			height=0.0f;
+		pos2.Y=height+5;
 		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 		vector3df pos3=position;
@@ -553,19 +577,30 @@ void TerrainManager::drawBrush()
 	radius=5;
 	framesize = 2;
 	step=15;
+
 	for (int i=0; i<(360); i=i+step)
 	{
 		float degInRad = i*DEG2RAD;
 		vector3df pos=position;
 		pos.X+=cos(degInRad)*radius;
 		pos.Z+=sin(degInRad)*radius;
-		pos.Y=TerrainManager::getInstance()->getHeightAt(pos)+5;
+		height=getHeightAt(pos);
+		
+		if (height==-1000.0f)
+			height=0.0f;
+
+		pos.Y=height+5;
 
 		float degInRad2 = (i+step)*DEG2RAD;
 		vector3df pos2=position;
 		pos2.X+=cos(degInRad2)*radius;
 		pos2.Z+=sin(degInRad2)*radius;
-		pos2.Y=TerrainManager::getInstance()->getHeightAt(pos2)+5;
+		height=getHeightAt(pos2);
+		
+		if (height==-1000.0f)
+			height=0.0f;
+
+		pos2.Y=height+5;
 		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 		vector3df pos3=position;

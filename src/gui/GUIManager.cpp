@@ -243,7 +243,7 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 {
 	// A bug that crash if I a "node" is "there" but pointer invalid. Will have to investigate more on this.
 	core::stringw sct =L"";
-	if (!node)
+	if (!node || App::getInstance()->getAppState()==APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		sct += L"Camera position: ";
 		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
@@ -262,47 +262,52 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		return sct;
 	}
 		
-	if (node && App::getInstance()->getAppState()!=APP_EDIT_TERRAIN_EMPTY_SEGMENTS) 
+	/*if (node && node->getID()==100)
 	{
-		if (node->getID()==100)
-		{
-			sct += L"Camera position: ";
-			core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
-			sct+=(core::stringw)pos.X;
-			sct+=L",";
-			sct+=(core::stringw)pos.Y;
-			sct+=L",";
-			sct+=(core::stringw)pos.Z;
-			sct+=L"    Target:  ";
-			pos = CameraSystem::getInstance()->getNode()->getTarget();
-			sct+=(core::stringw)pos.X;
-			sct+=L",";
-			sct+=(core::stringw)pos.Y;
-			sct+=L",";
-			sct+=(core::stringw)pos.Z;
-			return sct;
-		}
-		else
-		{		
-			sct += L"Object position: ";
-		
-			core::vector3df pos = node->getPosition();
+		sct += L"Camera position: ";
+		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		sct+=L"    Target:  ";
+		pos = CameraSystem::getInstance()->getNode()->getTarget();
+		sct+=(core::stringw)pos.X;
+		sct+=L",";
+		sct+=(core::stringw)pos.Y;
+		sct+=L",";
+		sct+=(core::stringw)pos.Z;
+		return sct;
+	}*/
+	
+	// When moving or rotating a dynamic object
+	if (App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+		node=App::getInstance()->lastMousePick.pickedNode;
 
+	if (node && node->getID()!=100)
+		{
+			core::vector3df pos = node->getPosition();
+			core::vector3df rot = node->getRotation();
+
+			sct += L"Object position: ";
 			sct+=(core::stringw)pos.X;
 			sct+=L",";
 			sct+=(core::stringw)pos.Y;
 			sct+=L",";
 			sct+=(core::stringw)pos.Z;
+
 			sct+=L"    Rotation:  ";
-			pos = node->getRotation();
-			sct+=(core::stringw)pos.X;
+			sct+=(core::stringw)rot.X;
 			sct+=L",";
-			sct+=(core::stringw)pos.Y;
+			sct+=(core::stringw)rot.Y;
 			sct+=L",";
-			sct+=(core::stringw)pos.Z;
+			sct+=(core::stringw)rot.Z;
 			return sct;
 		}
-	}
+		//} else
+		//	printf ("failed to retrieve node\n");
+	//}
 	return sct;
 }
 
@@ -907,7 +912,7 @@ void GUIManager::createTerrainToolbar()
 
 	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
 	guiTerrainBrushPlateau->setMin(-100);
-	guiTerrainBrushPlateau->setMax(255);
+	guiTerrainBrushPlateau->setMax(1024);
 	guiTerrainBrushPlateau->setPos(-10);
 	guiTerrainBrushPlateau->setSmallStep(1);
 	guiTerrainBrushPlateau->setLargeStep(5);
@@ -1490,7 +1495,9 @@ void GUIManager::updateCurrentCategory()
     }
 	guiDynamicObjects_OBJChooser->setSelected(0);
 	// Set the "active" object to the selection
+#ifdef EDITOR
 	DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+#endif
 }
 
 void GUIManager::setTextLoader(stringw text)
@@ -1637,24 +1644,30 @@ void GUIManager::setupGameplayGUI()
 	ITexture* topCircle = driver->getTexture("../media/art/circle_top.png");
 
 	// The bottom image of the interface
-	gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((displaywidth/2)-(gameplay_bar->getSize().Width/2),displayheight-gameplay_bar->getSize().Height),true);
-	gameplay_bar_image->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	if (gameplay_bar)
+	{
+		gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((displaywidth/2)-(gameplay_bar->getSize().Width/2),displayheight-gameplay_bar->getSize().Height),true);
+		gameplay_bar_image->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	// The life gauge
-	lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
-	lifegauge->setImage(circle);
-	lifegauge->ViewHalfLeft();
+		// The life gauge
+		lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
+		lifegauge->setImage(circle);
+		lifegauge->ViewHalfLeft();
 
-	// The mana gauge
-	managauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
-	managauge->setImage(circleMana);
-	managauge->ViewHalfRight();
+		// The mana gauge
+		managauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
+		managauge->setImage(circleMana);
+		managauge->ViewHalfRight();
 
-	// The image over the circle
-	IGUIImage* circle_overlay =
-		guienv->addImage(topCircle,vector2d<s32>((gameplay_bar->getSize().Width/2)-64,gameplay_bar->getSize().Height-128),true,gameplay_bar_image);
+		// The image over the circle
+		IGUIImage* circle_overlay =
+			guienv->addImage(topCircle,vector2d<s32>((gameplay_bar->getSize().Width/2)-64,gameplay_bar->getSize().Height-128),true,gameplay_bar_image);
+		gameplay_bar_image->setVisible(false);
+	}
 
-	gameplay_bar_image->setVisible(false);
+	
+
+	
 
     ///DIALOG
     guiDialogImgYes = driver->getTexture("../media/art/img_yes.png");
@@ -1664,14 +1677,18 @@ void GUIManager::setupGameplayGUI()
 
 
     //view items
-    guiBtViewItems = guienv->addButton(myRect(465,85,48,48),
+	if (gameplay_bar_image)
+	{
+		core::stringw text=LANGManager::getInstance()->getText("bt_view_items");
+		guiBtViewItems = guienv->addButton(myRect(465,85,48,48),
 		//displaywidth/2 + 80,displayheight - 57,48,48),
                                      gameplay_bar_image,
                                      BT_ID_VIEW_ITEMS,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_view_items")).c_str() );
+									 text.c_str());
 
-    guiBtViewItems->setImage(driver->getTexture("../media/art/bt_view_items.png"));
-    guiBtViewItems->setVisible(false);
+		guiBtViewItems->setImage(driver->getTexture("../media/art/bt_view_items.png"));
+		guiBtViewItems->setVisible(false);
+	}
 
     //Items window
 

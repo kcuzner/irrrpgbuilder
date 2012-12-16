@@ -129,7 +129,6 @@ void App::setAppState(APP_STATE newAppState)
 	app_state = newAppState;
 
 #ifdef EDITOR
-
 	if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM && app_state != APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		// Change the props to be collidable with the ray test
@@ -150,7 +149,9 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
 		ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		#endif
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
@@ -161,7 +162,9 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		#endif
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -199,7 +202,6 @@ void App::setAppState(APP_STATE newAppState)
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
 	if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
-#endif
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
@@ -214,7 +216,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 	}
-#ifdef EDITOR
+
 	if(app_state != APP_EDIT_ABOUT)
 	{
 		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
@@ -324,7 +326,11 @@ void App::setAppState(APP_STATE newAppState)
 
 void App::eventGuiButton(s32 id)
 {
-	DynamicObject* selectedObject;
+
+#ifdef EDITOR
+	DynamicObject* selectedObject=NULL;
+#endif
+
 	oldcampos = vector3df(0,0,0);
 
 
@@ -791,12 +797,12 @@ void App::eventMouseWheel(f32 value)
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 	{
 		vector3df oldRot = lastMousePick.pickedNode->getRotation();
-		lastMousePick.pickedNode->setRotation(vector3df(0,value*10,0)+oldRot);
+		lastMousePick.pickedNode->setRotation(vector3df(0,value*5,0)+oldRot);
 	}
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		vector3df oldRot = Player::getInstance()->getObject()->getRotation();
-		Player::getInstance()->getObject()->setRotation(vector3df(0,value*10,0)+oldRot);
+		Player::getInstance()->getObject()->setRotation(vector3df(0,value*5,0)+oldRot);
 	}
 	// This will allow zoom in/out in editor mode
 	if	(app_state != APP_EDIT_CHARACTER &&
@@ -838,9 +844,12 @@ MousePick App::getMousePosition3D(int id)
 	// For the ray test, we should hide the player (And the decors element that we don't want to select)
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 	if (app_state== APP_GAMEPLAY_NORMAL)
-		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);
-
+		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);	
+	
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
+	
+	// Extend the ray as long as possible to get the terrain
+	ray.end=ray.start+(ray.getVector()*250000);
 
 	core::vector3df intersection;
 	core::triangle3df hitTriangle;
@@ -861,14 +870,19 @@ MousePick App::getMousePosition3D(int id)
 	{
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
+		f32 len = ray.getLength();
+		
+		//printf ("Passed the screen ray test! Ray len is: %f \n",len);
 
 		return result;
 	}
 	else
 	{
 		// Failed the ray test
-		result.pickedPos = vector3df(0,-1000,0);
+		result.pickedPos = lastMousePick.pickedPos;
 		result.pickedNode = NULL;
+		f32 len = ray.getLength();
+		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
 
 		return result;
 	}
@@ -1221,6 +1235,9 @@ void App::run()
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
 	this->setAppState(APP_EDIT_LOOK);
+
+	// Update the info panel with the current "active object"
+	GUIManager::getInstance()->getInfoAboutModel();
 #else
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
@@ -1243,8 +1260,7 @@ void App::run()
 	// Start the post process in the FX Manager
 	EffectsManager::getInstance()->initPostProcess();
 
-	// Update the info panel with the current "active object"
-	GUIManager::getInstance()->getInfoAboutModel();
+	
 
 	int lastFPS = -1;
 	//	u32 timer = device->getTimer()->getRealTime();
@@ -1278,10 +1294,13 @@ void App::updateEditMode()
 	timer = device->getTimer()->getRealTime();
 
 	//Update the GUI for the infos of the edit camera:
-	if (selectedNode)
+	if (selectedNode  && app_state!=APP_EDIT_CHARACTER)
 		GUIManager::getInstance()->updateEditCameraString(selectedNode);
 	else
 		GUIManager::getInstance()->updateEditCameraString(NULL);
+
+	if (app_state==APP_EDIT_CHARACTER)
+		GUIManager::getInstance()->updateEditCameraString(Player::getInstance()->getNode());
 
 	// Draw the brush in realtime
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
@@ -1992,6 +2011,9 @@ stringw App::getLangText(irr::core::stringc node)
 
 irr::f32 App::getBrushRadius()
 {
-	f32 radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+	f32 radius=0.0f;
+#ifdef EDITOR
+	radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+#endif
 	return radius;
 }

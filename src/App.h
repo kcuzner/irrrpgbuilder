@@ -144,6 +144,7 @@ class App
 		irr::f32 getBrushRadius();
 
 		scene::ISceneNode* selectedNode;
+		MousePick lastMousePick;
 		
     private:
 
@@ -189,11 +190,8 @@ class App
 #ifndef EDITOR
 		stringc mapname;
 #endif
-        MousePick lastMousePick;
+      
 		MousePick lastScannedPick;
-
-		
-
 
 		CGUIFileSelector * selector;
 		CGUIFileSelector * saveselector;
