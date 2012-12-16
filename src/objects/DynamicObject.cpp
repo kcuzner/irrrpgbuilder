@@ -64,6 +64,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	stunstate=false;
 	attackdelaystate=false;
 	reached=false;
+	rotationupdater=false;
 
 	attackresult=0;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -304,6 +305,15 @@ void DynamicObject::lookAt(vector3df pos)
 	// Will rotate the node only if it still "alive"
 	if (properties.life>0)
 		node->setRotation(rot);
+}
+
+void DynamicObject::rotateObject(core::vector3df from, core::vector3df to, u32 time)
+{
+	rotationcounter = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	rotationupdater=true;
+	rotfrom=from;
+	rotto=to;
+	rotationtime=time;
 }
 
 void DynamicObject::setPosition(vector3df pos)
@@ -1380,6 +1390,9 @@ void DynamicObject::update()
 
 	// Reference timer for the update loop
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+
+	if (rotationupdater)
+		updateRotation();
 	
 	// Check for an event in the current animation. This will be done at the fastest speed possible
 	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
@@ -1510,6 +1523,25 @@ void DynamicObject::update()
 
 	if (this->objectType==OBJECT_TYPE_PLAYER)
 		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
+}
+
+void DynamicObject::updateRotation()
+{
+	vector3df oldrot = getRotation();
+	u32 currentime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+	u32 elapsedtime=currentime-rotationcounter;
+
+	f32 interp = (f32)(rotationtime-elapsedtime)/(f32)rotationtime;
+
+	if (elapsedtime>rotationtime)
+	{
+		rotationupdater=false;
+		return;
+	}
+	
+	vector3df finalrotation = rotfrom.getInterpolated(rotto,interp);
+	setRotation(finalrotation);
+
 }
 
 void DynamicObject::updateWalk()

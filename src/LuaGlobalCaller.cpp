@@ -247,6 +247,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
 
     lua_register(LS,"getObjectPosition",getObjectPosition);//x,y,z getObjectPosition(objName)
+	lua_register(LS,"setObjectRotation",setObjectRotation);////setObjectRotation(from,to,time);
 
     //register Sound Functions
     lua_register(LS,"playSound2D",playSound2D);//playSound2D("sound.ogg") or playSound("sound.ogg", true) for looped
@@ -796,6 +797,49 @@ int LuaGlobalCaller::getObjectPosition(lua_State *LS)
         lua_pushnumber(LS,pos.Z);
 
         return 3;
+    }
+
+    return 0;
+}
+
+int LuaGlobalCaller::setObjectRotation(lua_State *LS)
+{
+
+	float time = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+	float z2 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+	float y2 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+	float x2 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+	float z1 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+	float y1 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+	float x1 = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+
+    stringc dynamicObjName = "";
+
+    if( stringc( objName.subString(0,14)) == "dynamic_object" )
+        dynamicObjName = objName.c_str();
+    else
+        dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
+
+    DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
+
+    if(tempObj)
+    {
+		tempObj->rotateObject(vector3df((f32)x1,(f32)y1,(f32)z1),vector3df((f32)x2,(f32)y2,(f32)z2),(u32)time);
+
+		return 0;
     }
 
     return 0;

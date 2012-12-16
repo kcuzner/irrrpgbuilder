@@ -1469,8 +1469,33 @@ void App::updateGameplay()
 				//if you click on a Dynamic Object...
 				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 				{
+
 					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
 					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
+
+					//Since an object as been clicked the walktarget of the player is changed
+					if (obj)
+					{
+				
+						vector3df pos = obj->getPosition();
+						vector3df pos2 = Player::getInstance()->getObject()->getPosition();
+						f32 desiredDistance=50.0f;
+						f32 distance = Player::getInstance()->getObject()->getDistanceFrom(pos);
+						f32 final = (distance-desiredDistance)/distance;
+	
+						vector3df walkTarget = pos.getInterpolated(pos2,final);
+						Player::getInstance()->getObject()->setWalkTarget(walkTarget);
+
+						DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
+						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+
+						Player::getInstance()->getObject()->lookAt(obj->getPosition());
+						Player::getInstance()->setTaggedTarget(obj);
+					}
+
+
+					if (obj && (obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 100.0f))
+						obj->notifyClick();
 
 					if(obj->getObjectType() == stringc("ENEMY"))
 					{
@@ -1478,16 +1503,9 @@ void App::updateGameplay()
 					}
 					else
 					{
-						if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
-							obj->notifyClick();
 						Player::getInstance()->getObject()->clearEnemy();
 					}
-					DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
-					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-
-					Player::getInstance()->getObject()->setWalkTarget(obj->getPosition());
-					Player::getInstance()->getObject()->lookAt(obj->getPosition());
-					Player::getInstance()->setTaggedTarget(obj);
+					
 					return;
 
 				}

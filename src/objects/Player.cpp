@@ -125,10 +125,10 @@ void Player::update()
 
 		// New code to test (should only define run and walk mode)
 		// Would be more useful if determining the distance based on the zoom distance.
-		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 120) 
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 60) 
 			this->playerObject->setRunningMode(false);
 		
-		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 140)
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 200)
 			this->playerObject->setRunningMode(true);
 
 		

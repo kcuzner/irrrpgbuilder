@@ -108,6 +108,7 @@ class DynamicObject
         void setTemplateObjectName(stringc newName);
 
 		void lookAt(vector3df pos);
+		void rotateObject(vector3df from, vector3df to, u32 time); // Will rotate the object from->to in a specified time
 		void setPosition(vector3df pos);
 		void setOldPos();
         vector3df getPosition();
@@ -185,11 +186,12 @@ class DynamicObject
 		void storeParams(); // Store the original position and rotation before gameplay (used when you start the game)
 		void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
         void update();//run "step" lua function
-
+		
         void notifyClick();
 		void notifyAttackRange();
 		void notifyCollision();
 		void notifyAnswer(bool answer);
+		
 
         stringc getObjectType();
 
@@ -219,8 +221,10 @@ class DynamicObject
 
     private:
         void setupObj(stringc name, IMesh* mesh);
-		void updateWalk();
-		void luaRefresh();
+
+		void updateRotation(); // Update the rotation of the object based on refreshes
+		void updateWalk(); // Update the walk movement based on refrehes
+		void luaRefresh(); //Update the scripts
 
         //lua funcs
         static int setPosition(lua_State *LS);//setPosition(x,y,z)
@@ -290,12 +294,21 @@ class DynamicObject
 		bool diePresent;
 		bool despawnPresent;
 		bool runningMode;
-		bool reached; // check if reached the walktarget
+		bool reached; // check if reached the walktarget or not
+		
 		
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;
 		vector3df oldpos;
+
+		// Used for timed rotation
+		vector3df rotfrom;
+		vector3df rotto;
+		u32 rotationcounter;
+		u32 rotationtime;
+		bool rotationupdater; // check to update rotations or not
+
 		int original_life;
 		int original_maxlife;
 		vector<stringc> items;
@@ -321,6 +334,7 @@ class DynamicObject
 		// Timer to delay the sound (do it's not repeating too fast)
 		u32 lastTime;
 		u32 timer_display;
+		
 
 		// Timer to delay the attack
 		u32 timer_attackdelay;

@@ -85,6 +85,7 @@ class LuaGlobalCaller
 
 
         static int getObjectPosition(lua_State *LS);//x,y,z = getObjectPosition(objName)
+		static int setObjectRotation(lua_State *LS);//setObjectRotation(objectname,from,to,time);
 
         //Sound Functions
         static int playSound2D(lua_State *LS);

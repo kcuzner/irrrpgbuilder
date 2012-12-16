@@ -1224,6 +1224,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectRotation",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("gameMode",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRTSView",SColor(255,128,0,255),true);
