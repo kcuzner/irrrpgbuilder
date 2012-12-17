@@ -233,11 +233,16 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
+		node->setMaterialFlag(EMF_LIGHTING, false);
+		node->setMaterialFlag(EMF_ANTI_ALIASING,true);
+
 		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));
 		objLabel->setVisible(false);
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
+
+		
 
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		this->setWalkTarget(node->getPosition());

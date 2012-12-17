@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-    <dynamic_object name="Medieval House" 			mesh="buildings/house.3ds" 				type="non-interactive"	scale="0.5" 	materialType="solid"
+    <dynamic_object name="Medieval House" 			mesh="buildings/house.obj" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Houses"
 					thumbnail="buildings/info_house.jpg" />
 	<dynamic_object name="Forge" 			mesh="buildings/Forge/Forge.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
