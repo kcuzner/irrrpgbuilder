@@ -51,7 +51,7 @@ void main()
 	
 	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain==1) tex10*=vec4(1.0,0.6,0.4,1.0);
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
-	gl_FragColor = mix(gl_Fog.color,tex10, fog);
+	gl_FragColor = mix(gl_Fog.color,(tex10*AmbientLight), fog);
 }
 
 

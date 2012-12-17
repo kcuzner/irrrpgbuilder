@@ -25,9 +25,6 @@ static const float APP_VERSION = 1.0;
 #include "tinyXML/tinyxml.h"
 #include "XML_Manager.h"
 
-// try to force the class to be remembered for the compiler
-class CIrrFrame;
-
 //Current Application State
 enum APP_STATE
 {
@@ -53,7 +50,7 @@ enum APP_STATE
     APP_GAMEPLAY_VIEW_ITEMS = 102,
 	APP_WAIT_DIALOG = 103,
 	APP_WAIT_DIALOGQUESTION = 104,
-	APP_WAIT_FILEREQUEST = 105,
+	APP_WAIT_FILEREQUEST = 99,
 	
 };
 
@@ -135,6 +132,9 @@ class App
 		//temporary made public to determine if the config is fullscreen
 		bool fullScreen;
 
+		//For the background color ingame
+		inline void setIngameBackgroundColor(const video::SColor color){ingamebackground=color;}
+
 		// used for the logger
 		std::vector<core::stringw> textevent;
 		std::vector<core::stringw> console_event;
@@ -163,6 +163,9 @@ class App
         IVideoDriver* driver;
         ISceneManager* smgr;
         IGUIEnvironment* guienv;
+
+		video::SColor background;
+		video::SColor ingamebackground;
 		
 		u32 timer;
 		u32 timer2;

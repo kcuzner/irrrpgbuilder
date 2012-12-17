@@ -25,8 +25,13 @@ class EffectsManager
 		void DOFaddObject(ISceneNode * DOFNode);
 		void DOFclearObjects();
 
-		scene::ISceneNode* skydome;
-		scene::ISceneNode* skybox;
+		inline void skydomeVisible(bool visible) {skydomestatus=visible;}
+		inline void updateSkydome() {skydome->setVisible(skydomestatus);}
+		inline void turnOffSkydome() {skydome->setVisible(false);}
+		void skydomeTexture(core::stringc file); 
+		void setBackgroundColor(const video::SColor color);
+
+		
 
         virtual ~EffectsManager();
     protected:
@@ -36,8 +41,15 @@ class EffectsManager
 		CPostProcessManager* postProcessManager;
 		E_POSTPROCESS_EFFECT postEffect;
 
+		bool skydomestatus;
+
 		IParticleSystemSceneNode* mainParticleSystem;
 		IParticleBoxEmitter* emitter;
+
+		scene::ISceneNode* skydome;
+		scene::ISceneNode* skybox;
+
+		video::IVideoDriver* driver;
 };
 
 #endif // EFFECTSMANAGER_H

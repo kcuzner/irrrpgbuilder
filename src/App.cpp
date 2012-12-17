@@ -44,6 +44,7 @@ App::App()
 	initRotation=false;
 	oldmouse=vector2df(0,0);
 	lockcam=false;
+	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
 
 }
 
@@ -1097,7 +1098,7 @@ void App::playGame()
 {
 	if (app_state<APP_STATE_CONTROL)
 	{
-		EffectsManager::getInstance()->skydome->setVisible(true);
+		EffectsManager::getInstance()->updateSkydome();
 		TerrainManager::getInstance()->setEmptyTileVisible(false);
 		//oldcampos = Player::getInstance()->getObject()->getPosition();
 		oldcampos = CameraSystem::getInstance()->editCamMaya->getPosition();
@@ -1138,7 +1139,7 @@ void App::stopGame()
 {
 	if (app_state>APP_STATE_CONTROL)
 	{
-		EffectsManager::getInstance()->skydome->setVisible(false);
+		EffectsManager::getInstance()->turnOffSkydome();
 		DynamicObjectsManager::getInstance()->objectsToIdle();
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
 		GlobalMap::getInstance()->clearGlobals();
@@ -1180,7 +1181,13 @@ void App::update()
 	if (screensize != driver->getScreenSize())
 		this->setScreenSize(driver->getScreenSize());
 
-	driver->beginScene(true, true, SColor(0,200,200,200));
+	if (app_state<APP_STATE_CONTROL)
+		background=SColor(0,200,200,200); // Background color in editor
+	else
+		background=ingamebackground; // Background color ingame
+
+
+	driver->beginScene(true, true, background);
 
 	// Terrain transform mode MUSt use all the CPU/Refresh it can get for performance
 	if(app_state < APP_STATE_CONTROL)

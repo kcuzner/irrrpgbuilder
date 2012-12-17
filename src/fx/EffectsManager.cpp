@@ -21,7 +21,7 @@ EffectsManager::EffectsManager()
 
     //get main app scenemanager pointer
     ISceneManager* smgr=App::getInstance()->getDevice()->getSceneManager();
-	video::IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	driver = App::getInstance()->getDevice()->getVideoDriver();
     //this is the main particle system, it is used to rain and snow effects
     mainParticleSystem = smgr->addParticleSystemSceneNode(false,//use default emitter
                                                           CameraSystem::getInstance()->getNode(),
@@ -63,6 +63,7 @@ EffectsManager::EffectsManager()
 		driver->getTexture("../media/irrlicht2_bk.jpg"));
 
 	skybox->getMaterial(0).FogEnable=false;*/
+	skydomestatus=true; // Default state for the skydome;
 
 	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
 
@@ -425,4 +426,22 @@ void EffectsManager::SetPostFX(stringc fxname)
 		return;
 	} else
 	postProcessMode = 0;
+}
+
+// Set a new texture for the skydome
+void EffectsManager::skydomeTexture(core::stringc file) 
+{
+	core::stringc path="../media/";
+	path+=file;
+	driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
+	video::ITexture* texture=App::getInstance()->getDevice()->getVideoDriver()->getTexture(path.c_str());
+	if (texture)
+		skydome->setMaterialTexture(0,texture);
+	driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
+}
+
+void EffectsManager::setBackgroundColor(const irr::video::SColor color)
+{
+	App::getInstance()->setIngameBackgroundColor(color);
 }

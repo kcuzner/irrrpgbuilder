@@ -1223,6 +1223,11 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getFogColor",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setFogRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getFogRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setSkydomeTexture",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setSkydomeVisible",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setBackgroundColor",SColor(255,128,0,255),true);
+
+
 	guiDynamicObjects_Script->addKeyword("setPostFX",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraPosition",SColor(255,128,0,255),true);

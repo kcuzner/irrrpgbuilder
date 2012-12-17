@@ -72,6 +72,10 @@ class LuaGlobalCaller
         static int showBlackScreen(lua_State *LS);//showBlackScreen(optional_text)
         static int hideBlackScreen(lua_State *LS);//showBlackScreen()
 
+		static int setSkydomeTexture(lua_State *LS); // Change the texture of the skydome
+		static int setSkydomeVisible(lua_State *LS); // Set the visibility of the skydome
+		static int setBackgroundColor(lua_State *LS); // Set the background rendering color
+
         static int setWeather(lua_State *LS);//rain and snow
 
 		static int setCameraTarget(lua_State *LS);

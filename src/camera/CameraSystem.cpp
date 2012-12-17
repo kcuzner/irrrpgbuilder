@@ -16,6 +16,8 @@ CameraSystem::CameraSystem()
 
 	refreshdelay = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	lightset=false;
+	this->light=NULL;
+	this->sun=NULL;
 	camera=2;
 
 	// Create the cutscene camera
@@ -121,7 +123,7 @@ void CameraSystem::setCamera(int tempCamera)
 	currentCam->setTarget(currentCam->getTarget());
 
 	// Add a specular light to the camera.
-	if (!lightset)
+	if (lightset)
 	{
 		SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
 		light = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(gameCam,vector3df(0,0,250),video::SColorf(0.5f,0.5f,0.6f),250);

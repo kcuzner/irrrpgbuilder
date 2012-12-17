@@ -98,16 +98,16 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setPixelShaderConstant("MAPRES",(float*)&layer,1);
 */
 	//core::vector3df pos = vector3df(0,0,0);
-	scene::ICameraSceneNode * cam = device->getSceneManager()->getActiveCamera();
-	if (cam)
-	{
+	//scene::ICameraSceneNode * cam = device->getSceneManager()->getActiveCamera();
+	//if (cam)
+	//{
 		// A light that is attached to the camera is used to light the terrain.
-		vector3df pos = CameraSystem::getInstance()->light->getAbsolutePosition();
+		//vector3df pos = CameraSystem::getInstance()->light->getAbsolutePosition();
 
-		services->setPixelShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
-		pos = cam->getPosition();
-		services->setPixelShaderConstant("mCamPos", reinterpret_cast<float*>(&pos),3);
-	}
+		//services->setPixelShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
+		//pos = cam->getPosition();
+		//services->setPixelShaderConstant("mCamPos", reinterpret_cast<float*>(&pos),3);
+	//}
 	
 	//device->getSceneManager()->getActiveCamera()->getPosition();
 

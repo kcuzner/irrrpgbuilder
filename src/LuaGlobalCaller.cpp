@@ -235,6 +235,10 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"showBlackScreen",showBlackScreen);//showBlackScreen(optional_text)
     lua_register(LS,"hideBlackScreen",hideBlackScreen);//hideBlackScreen()
 
+	lua_register(LS,"setSkydomeTexture",setSkydomeTexture);
+	lua_register(LS,"setSkydomeVisible",setSkydomeVisible);
+	lua_register(LS,"setBackgroundColor",setBackgroundColor);
+
     lua_register(LS,"setWeatherPr",setWeather);//setWeather(maxParticles,particleSpeed)
 
     lua_register(LS,"setCameraTarget",setCameraTarget);//setCameraTarget(x,y,z)    or    setCameraTarget(objName)
@@ -613,6 +617,61 @@ int LuaGlobalCaller::hideBlackScreen(lua_State *LS)
 {
     GUIManager::getInstance()->hideBlackScreen();
 	return 0;
+}
+
+int LuaGlobalCaller::setSkydomeTexture(lua_State *LS)
+{
+    
+	core::stringc textureFile = "";
+
+    if(lua_isstring(LS, -1))
+    {
+        textureFile = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+	EffectsManager::getInstance()->skydomeTexture(textureFile);
+
+	return 0;
+}
+
+int LuaGlobalCaller::setSkydomeVisible(lua_State *LS)
+{
+	bool result=false;
+	if(lua_isboolean(LS, -1))
+    {
+        result =(bool)lua_toboolean(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+	EffectsManager::getInstance()->skydomeVisible(result);
+
+	return 0;
+
+}
+
+int LuaGlobalCaller::setBackgroundColor(lua_State *LS)
+{
+	video::SColor color = SColor(0,0,0,0);
+
+    if(lua_isnumber(LS, -1))//read (r,g,b)
+    {
+        u32 b = (u32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        u32 g = (u32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        u32 r = (u32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+		color = video::SColor(0,r,g,b);
+		App::getInstance()->setIngameBackgroundColor(color);
+
+    }
+
+	return 0;
+
 }
 
 int LuaGlobalCaller::setWeather(lua_State *LS)
