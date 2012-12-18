@@ -779,7 +779,10 @@ void DynamicObject::setObjectLabel(stringc label)
 void DynamicObject::objectLabelSetVisible(bool visible)
 {
     objLabel->setVisible(visible);
-	Healthbar->setVisible(visible);
+	if (objectType!=OBJECT_TYPE_NPC)
+		Healthbar->setVisible(false);
+	else
+		Healthbar->setVisible(visible);
 }
 //-----------------------------------------------------------------------
 // Animation system functions

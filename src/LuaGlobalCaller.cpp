@@ -644,8 +644,8 @@ int LuaGlobalCaller::setSkydomeVisible(lua_State *LS)
         lua_pop(LS, 1);
     }
 
-	EffectsManager::getInstance()->skydomeVisible(result);
-
+	//EffectsManager::getInstance()->skydomeVisible(result);
+	EffectsManager::getInstance()->turnOffSkydome();
 	return 0;
 
 }

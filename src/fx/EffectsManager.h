@@ -25,7 +25,7 @@ class EffectsManager
 		void DOFaddObject(ISceneNode * DOFNode);
 		void DOFclearObjects();
 
-		inline void skydomeVisible(bool visible) {skydomestatus=visible;}
+		inline void skydomeVisible(bool visible) {skydomestatus=visible; skydome->setVisible(visible);}
 		inline void updateSkydome() {skydome->setVisible(skydomestatus);}
 		inline void turnOffSkydome() {skydome->setVisible(false);}
 		void skydomeTexture(core::stringc file); 

@@ -1109,6 +1109,7 @@ void App::playGame()
 		CameraSystem::getInstance()->setCamera(1);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
+
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
 		DynamicObjectsManager::getInstance()->showDebugData(false);
@@ -1169,6 +1170,7 @@ void App::stopGame()
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+		DynamicObjectsManager::getInstance()->objectsToIdle();
 
 
 	}
