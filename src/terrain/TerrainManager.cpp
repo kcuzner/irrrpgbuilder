@@ -420,6 +420,8 @@ void TerrainManager::setTileMeshName(stringc name)
 
 stringc TerrainManager::getTerrainTexture(u32 layer)
 {
+	if (layer==0)
+		return this->terraintexture0;
 	if (layer==1)
 		return this->terraintexture1;
 	if (layer==2)
@@ -433,6 +435,8 @@ stringc TerrainManager::getTerrainTexture(u32 layer)
 
 void TerrainManager::setTerrainTexture(u32 layer, stringc name)
 {
+	if (layer==0)
+		this->terraintexture0=name;
 	if (layer==1)
 		this->terraintexture1=name;
 	if (layer==2)

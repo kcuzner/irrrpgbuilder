@@ -64,15 +64,17 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     node->setName(name);
 
+	stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
 	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
 	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
 	stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
 
-	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture1.c_str());
-	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture2.c_str());
-	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture3.c_str());
-    static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture4.c_str());
+	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
+	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture1.c_str());
+	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
+    static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
+	static ITexture* layer4 = smgr->getVideoDriver()->getTexture(texture4.c_str());
 
     //Create a Custom GLSL Material (Terrain Splatting)
     static s32 materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
@@ -85,6 +87,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     node->setMaterialTexture(1,layer1);
     node->setMaterialTexture(2,layer2);
     node->setMaterialTexture(3,layer3);
+	node->setMaterialTexture(4,layer4);
 
 	 //node->setMaterialTexture(0,layer1);
 

@@ -73,6 +73,7 @@ class TerrainManager
 
 		f32	tilemeshsize;
 		stringc tilemesh;
+		stringc terraintexture0;
 		stringc terraintexture1;
 		stringc terraintexture2;
 		stringc terraintexture3;

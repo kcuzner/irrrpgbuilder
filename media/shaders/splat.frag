@@ -25,14 +25,15 @@ void main()
 		scale = 1.0;
 		
 	vec2 texCoord = vec2(gl_TexCoord[0]);
-	
-	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*float(terrainTextureScale) );
+
+	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*float(terrainTextureScale*2.6) );
 	vec4 tex1    = texture2D( terrainLayer1, texCoord.xy*float(terrainTextureScale) );
 	vec4 tex2    = texture2D( terrainLayer2, texCoord.xy*float(terrainTextureScale) );
 	vec4 tex3    = texture2D( terrainLayer3, texCoord.xy*float(terrainTextureScale) );
+	vec4 tex4    = texture2D( terrainLayer4, texCoord.xy*float(terrainTextureScale) );
 
-	tex1 = mix( tex1, tex0, min(1.0-normal.y,1.0) );
-	tex2 = mix( tex1, tex2, (position.y/float(scale)));
+	tex2 = mix( tex2, tex1, min(1.0-normal.y,2.0) );
+	tex3 = mix( tex2, tex3, ((position.y-50.0)/float(scale)));
 	
 	vec4 tex10;
 	
@@ -40,13 +41,25 @@ void main()
 	
 	if(position.y >= 0.0)
 	{
-	  tex10 = mix( tex1, tex3, (position.y/float(scale)));
-	  tex10 = mix( tex10, tex2, (min(1.0-normal.y-0.2,1.0)) );
+		//tex10 = tex2;
+	  tex10 = mix( tex2, tex4, (position.y/float(scale)));
+	  tex10 = mix( tex10, tex3, (min(1.0-normal.y-0.2,0.5)) );
 	}
 	else
 	{
-	  tex10 = mix( tex1, tex2, min(1.0-normal.y-0.2,1.0));
-	  tex10 = mix( tex10, tex0, min(1.0,-(position.y/float(scale))*10.0));
+	  tex10 = mix( tex2, tex3, min(1.0-normal.y-0.5,1.0));
+	  
+	  // Sand layer
+	  tex10 = mix( tex10, tex1, min(1.0,-((position.y)/float(scale))*5.0));
+	  
+	  
+	  if(position.y < -50.0)
+	  {
+	    //Rock layer
+	    tex10 = mix( tex10, tex0, min(1.0,-((position.y+50.0)/float(scale))*1.2));
+		// Theses are underwater (water shadow)
+		tex10 = mix( tex10, vec4(0.0,0.2,0.05,1.0), min(1.0,-((position.y+50.0)/float(scale))*3.0));
+	  }
 	}
 	
 	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain==1) tex10*=vec4(1.0,0.6,0.4,1.0);
