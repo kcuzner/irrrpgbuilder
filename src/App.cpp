@@ -134,6 +134,7 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		// Change the props to be collidable with the ray test
 		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
@@ -144,6 +145,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 	else
 	{
@@ -153,12 +155,14 @@ void App::setAppState(APP_STATE newAppState)
 		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		#endif
+		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 	else
 	{
@@ -166,38 +170,45 @@ void App::setAppState(APP_STATE newAppState)
 		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		#endif
+		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		selectedNode=NULL;
 	}
 
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
@@ -1328,7 +1339,6 @@ void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
 
-	//Update the GUI for the infos of the edit camera:
 	if (selectedNode  && app_state!=APP_EDIT_CHARACTER)
 		GUIManager::getInstance()->updateEditCameraString(selectedNode);
 	else

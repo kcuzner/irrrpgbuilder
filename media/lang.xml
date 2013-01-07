@@ -78,7 +78,9 @@
 		<text id="msg_loaded_ok" str="Loaded successfully!"/>
 		<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
 		<text id="txt_dynobjsel" str="Dynamic object selection" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcur" str="Current model" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Category" />
 		<text id="txt_dynobjitm" str="Item" />
 		<text id="txt_tool_des0" str="IRB Project tools" />
@@ -231,6 +233,7 @@
 		<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
 		<text id="txt_dynobjsel" str="Dinâmica de seleção de objeto" />
 		<text id="txt_dynobjcur" str="Atual modelo" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Categoria" />
 		<text id="txt_dynobjitm" str="Item" />
 		<text id="txt_tool_des0" str="Ferramentas IRB Project" />
@@ -384,6 +387,7 @@
 		<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
 		<text id="txt_dynobjsel" str="Sélection d'objet dynamique" />
 		<text id="txt_dynobjcur" str="Modèle actuel" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Catégorie" />
 		<text id="txt_dynobjitm" str="Item" />
 		<text id="txt_tool_des0" str="Outils Projet IRB" />
@@ -537,6 +541,7 @@
 		<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
 		<text id="txt_dynobjsel" str="Dynamische Objekt-Selektion" />
 		<text id="txt_dynobjcur" str="Aktuelles Modell" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Kategorie" />
 		<text id="txt_dynobjitm" str="Artikel" />
 		<text id="txt_tool_des0" str="IRB Project tools" />
@@ -690,6 +695,7 @@
 		<text id="msg_override_script" str="Esta operación va a reemplazar la secuencia de comandos reales, desea continuar?"/>
 		<text id="txt_dynobjsel" str="Dinámica de selección de objetos" />
 		<text id="txt_dynobjcur" str="Modelo actual" />
+		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Categoría" />
 		<text id="txt_dynobjitm" str="Item" />
 		<text id="txt_tool_des0" str="IRB Proyecto" />

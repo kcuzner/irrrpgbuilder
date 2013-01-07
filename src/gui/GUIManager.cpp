@@ -243,6 +243,8 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 {
 	// A bug that crash if I a "node" is "there" but pointer invalid. Will have to investigate more on this.
 	core::stringw sct =L"";
+
+	// Display this when working with segments or when there no node selected.
 	if (!node || App::getInstance()->getAppState()==APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		sct += L"Camera position: ";
@@ -262,30 +264,13 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		return sct;
 	}
 		
-	/*if (node && node->getID()==100)
-	{
-		sct += L"Camera position: ";
-		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
-		sct+=(core::stringw)pos.X;
-		sct+=L",";
-		sct+=(core::stringw)pos.Y;
-		sct+=L",";
-		sct+=(core::stringw)pos.Z;
-		sct+=L"    Target:  ";
-		pos = CameraSystem::getInstance()->getNode()->getTarget();
-		sct+=(core::stringw)pos.X;
-		sct+=L",";
-		sct+=(core::stringw)pos.Y;
-		sct+=L",";
-		sct+=(core::stringw)pos.Z;
-		return sct;
-	}*/
 	
 	// When moving or rotating a dynamic object
 	if (App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 		node=App::getInstance()->lastMousePick.pickedNode;
 
-	if (node && node->getID()!=100)
+	// Display this when in object edit mode only.
+	if ((App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE || App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MODE) && node && node->getID()!=100)
 		{
 			core::vector3df pos = node->getPosition();
 			core::vector3df rot = node->getRotation();
@@ -1075,7 +1060,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	// guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiDynamicObjectsWindowChooser_Y += 40;
-	guienv->addStaticText(L"Object type",core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	
