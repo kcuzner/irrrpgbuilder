@@ -934,6 +934,9 @@ bool App::loadConfig()
 
 	fullScreen = false;
 	resizable = false;
+	vsync = false;
+	antialias = false;
+
 	language = "en-us";
 	TerrainManager::getInstance()->setTileMeshName("../media/baseTerrain.obj");
 	TerrainManager::getInstance()->setTerrainTexture(0,"../media/L0.jpg");
@@ -986,6 +989,14 @@ bool App::loadConfig()
 			stringc resize = resXML->ToElement()->Attribute("resizeable");
 			if (resize=="true")
 				resizable=true;
+
+			stringc vsyncresult = resXML->ToElement()->Attribute("vsync");
+			if (vsyncresult=="true")
+				vsync=true;
+
+			stringc antialiasresult = resXML->ToElement()->Attribute("antialias");
+			if (antialiasresult=="true")
+				antialias=true;
 
 			if (resizable && fullScreen)
 			{
@@ -1063,12 +1074,24 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 {
 
 	loadConfig();
-
+	irr::SIrrlichtCreationParameters deviceConfig;
+	
 	if (!IRRdevice)
 	{
-		device = createDevice(EDT_OPENGL, screensize, 32, fullScreen, false, false, 0);
+		if (antialias) // Set 4x antialias mode if supported
+			deviceConfig.AntiAlias = 4;
+		else 
+			deviceConfig.AntiAlias = 0;
+
+		deviceConfig.Bits = 32;
+		deviceConfig.DriverType = EDT_OPENGL;
+		deviceConfig.Fullscreen = fullScreen;
+		deviceConfig.Vsync = vsync;
+		deviceConfig.WindowSize = screensize;
+		
+		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (november 2012)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (jan 2013)");
 	} else
 		device = IRRdevice;
 
@@ -1287,7 +1310,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (november 2012)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (jan 2013)";
 			str += " FPS:";
 			str += fps;
 

@@ -49,7 +49,7 @@
 		<text id="bt_edit_script_global" str="Global Script"/>
 		<text id="bt_cfg_window_ok" str="OK"/>
 		<text id="bt_cfg_window_cancel" str="Cancel"/>
-		<text id="bt_config" str="Editor Setup"/>
+		<text id="bt_config" str="Editor setup"/>
 		<text id="bt_terrain_transform_vegetation_paint_strength" str="Brush Strength"/>
 		<text id="txt_cfg_window_changes_msg" str="Changes will take effect next time you run the program"/>
 		<text id="txt_cfg_window_caption" str="Application Settings"/>
@@ -59,6 +59,8 @@
 		<text id="txt_cfg_window_tab_scenary" str="Scenery"/>
 		<text id="txt_cfg_window_fullscreen" str="Fullscreen"/>
 		<text id="txt_cfg_window_resizeable" str="Resizeable"/>
+		<text id="txt_cfg_window_vsync" str="VSync"/>
+		<text id="txt_cfg_window_antialias" str="Antialias"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Terrain Mesh"/>
 		<text id="txt_cfg_window_terrain_scale" str="Scale"/>
 		<text id="txt_cfg_window_terrain_layers" str="Terrain Texture Layers"/>
@@ -209,6 +211,8 @@
 		<text id="txt_cfg_window_tab_scenary" str="Cenário"/>
 		<text id="txt_cfg_window_fullscreen" str="Tela Cheia"/>
 		<text id="txt_cfg_window_resizeable" str="Redimensionavel"/>
+		<text id="txt_cfg_window_vsync" str="VSync"/>
+		<text id="txt_cfg_window_antialias" str="Antialias"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Mesh do terreno"/>
 		<text id="txt_cfg_window_terrain_scale" str="Escala"/>
 		<text id="txt_cfg_window_terrain_layers" str="Camadas de textura do terreno"/>
@@ -360,6 +364,8 @@
 		<text id="txt_cfg_window_tab_scenary" str="Paysage"/>
 		<text id="txt_cfg_window_fullscreen" str="Plein Écran"/>
 		<text id="txt_cfg_window_resizeable" str="Agrandissable"/>
+		<text id="txt_cfg_window_vsync" str="VSync"/>
+		<text id="txt_cfg_window_antialias" str="Antialias"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Modèle du terrain"/>
 		<text id="txt_cfg_window_terrain_scale" str="Grandeur"/>
 		<text id="txt_cfg_window_terrain_layers" str="Texture de la couche du terrain"/>
@@ -511,6 +517,8 @@
 		<text id="txt_cfg_window_tab_scenary" str="Landschaft"/>
 		<text id="txt_cfg_window_fullscreen" str="Vollbild"/>
 		<text id="txt_cfg_window_resizeable" str="Aendern"/>
+		<text id="txt_cfg_window_vsync" str="VSync"/>
+		<text id="txt_cfg_window_antialias" str="Antialias"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Gelaendenetz"/>
 		<text id="txt_cfg_window_terrain_scale" str="Skala"/>
 		<text id="txt_cfg_window_terrain_layers" str="Landschaftebenen"/>
@@ -662,6 +670,8 @@
 		<text id="txt_cfg_window_tab_scenary" str="Scenery"/>
 		<text id="txt_cfg_window_fullscreen" str="Fullscreen"/>
 		<text id="txt_cfg_window_resizeable" str="Resizeable"/>
+		<text id="txt_cfg_window_vsync" str="VSync"/>
+		<text id="txt_cfg_window_antialias" str="Antialias"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Terrain Mesh"/>
 		<text id="txt_cfg_window_terrain_scale" str="Scale"/>
 		<text id="txt_cfg_window_terrain_layers" str="Terrain Texture Layers"/>

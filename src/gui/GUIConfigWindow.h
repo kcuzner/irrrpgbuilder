@@ -34,6 +34,8 @@ class GUIConfigWindow
 
         IGUICheckBox* cbFullscreen;
         IGUICheckBox* cbResizeable;
+		IGUICheckBox* cbVSync;
+		IGUICheckBox* cbAntialias;
 
         IGUIComboBox* languageList;
         vector<stringc> languageListVector;
@@ -44,6 +46,7 @@ class GUIConfigWindow
         IGUIEditBox* ebTerrainL1;
         IGUIEditBox* ebTerrainL2;
         IGUIEditBox* ebTerrainL3;
+		IGUIEditBox* ebTerrainL4;
 
         IGUIEditBox* ebOceanMesh;
         IGUIEditBox* ebOceanNormalMap;

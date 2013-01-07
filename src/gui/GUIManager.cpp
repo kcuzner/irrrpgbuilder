@@ -806,7 +806,10 @@ void GUIManager::createMainTabs()
 
 	createObjectTab();
 
-	tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
+	// No tools at the moment, don't create the panel
+	//tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
+	
+	
 	tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
 	//mainTabCtrl->setTabExtraWidth(25);
 	mainTabCtrl->setActiveTab(1);
@@ -817,6 +820,12 @@ void GUIManager::createMainTabs()
                                      tabConfig,
                                      BT_ID_CONFIG,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_config")).c_str() );
+
+	IGUIStaticText * editConfig = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_config")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabConfig,-1);
+	editConfig->setOverrideColor(video::SColor(255,65,66,174));
+	editConfig->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editConfig->setOverrideFont(guiFont9);
 
     guiConfigButton->setImage(imgConfig);
 	guiConfigButton->setPressedImage(imgConfig1);

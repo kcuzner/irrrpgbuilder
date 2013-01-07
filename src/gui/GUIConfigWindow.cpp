@@ -15,7 +15,7 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
     IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-    cfgWindow = guienv->addWindow(myRect(device->getVideoDriver()->getScreenSize().Width/2 - 250,device->getVideoDriver()->getScreenSize().Height/2 - 200,500,400),
+    cfgWindow = guienv->addWindow(myRect(device->getVideoDriver()->getScreenSize().Width/2 - 250,device->getVideoDriver()->getScreenSize().Height/2 - 140,500,460),
                                   false,
                                   stringw(LANGManager::getInstance()->getText("txt_cfg_window_caption")).c_str());
 
@@ -44,8 +44,11 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
     cbResizeable = guienv->addCheckBox(false,myRect(200,YPos,190,25),tabSystem,-1,stringw(LANGManager::getInstance()->getText("txt_cfg_window_resizeable")).c_str());
 
-    YPos += 35;
+	YPos += 35;
+	cbVSync = guienv->addCheckBox(false,myRect(10,YPos,190,25),tabSystem,-1,stringw(LANGManager::getInstance()->getText("txt_cfg_window_vsync")).c_str());
 
+	cbAntialias = guienv->addCheckBox(false,myRect(200,YPos,190,25),tabSystem,-1,stringw(LANGManager::getInstance()->getText("txt_cfg_window_antialias")).c_str());
+	YPos += 35;
     //language
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_language")).c_str(),myRect(10,YPos,150,25),false,false,tabSystem);
 
@@ -92,6 +95,8 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
     YPos += 25;
     ebTerrainL3 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
     YPos += 25;
+	ebTerrainL4 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
+	YPos += 25;
 
     //Ocean Mesh
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_ocean_mesh")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
@@ -232,6 +237,8 @@ void GUIConfigWindow::loadActualSeetings()
             int sh = atoi(screenXML->ToElement()->Attribute("screen_height"));
             bool sFullscreen =  (screenXML->ToElement()->Attribute("fullscreen") == std::string("true") ? true : false);
             bool sResizeable =  (screenXML->ToElement()->Attribute("resizeable") == std::string("true") ? true : false);
+			bool svSync =  (screenXML->ToElement()->Attribute("vsync") == std::string("true") ? true : false);
+			bool svAntialias =  (screenXML->ToElement()->Attribute("antialias") == std::string("true") ? true : false);
 
 			for(irr::u16 i=0;i<vModes.size();i++)
             {
@@ -240,6 +247,8 @@ void GUIConfigWindow::loadActualSeetings()
 
             cbFullscreen->setChecked(sFullscreen);
             cbResizeable->setChecked(sResizeable);
+			cbVSync->setChecked(svSync);
+			cbAntialias->setChecked(svAntialias);
         }
 
         TiXmlNode* languageXML = root->FirstChildElement( "language" );
@@ -259,6 +268,7 @@ void GUIConfigWindow::loadActualSeetings()
             ebTerrainL1->setText(stringw(terrainXML->ToElement()->Attribute("layer1")).c_str());
             ebTerrainL2->setText(stringw(terrainXML->ToElement()->Attribute("layer2")).c_str());
             ebTerrainL3->setText(stringw(terrainXML->ToElement()->Attribute("layer3")).c_str());
+			ebTerrainL4->setText(stringw(terrainXML->ToElement()->Attribute("layer4")).c_str());
             ebTerrainScale->setText(stringw(terrainXML->ToElement()->Attribute("scale")).c_str());
         }
 
@@ -288,6 +298,8 @@ void GUIConfigWindow::saveNewSeetings()
     screenXML->SetAttribute("screen_height",vModes[resolutionList->getSelected()].Y);
     screenXML->SetAttribute("fullscreen", cbFullscreen->isChecked()?"true":"false" );
     screenXML->SetAttribute("resizeable", cbResizeable->isChecked()?"true":"false" );
+	screenXML->SetAttribute("vsync", cbVSync->isChecked()?"true":"false" );
+	screenXML->SetAttribute("antialias", cbAntialias->isChecked()?"true":"false" );
 
     irb_cfg->LinkEndChild(screenXML);
 
@@ -302,6 +314,7 @@ void GUIConfigWindow::saveNewSeetings()
     terrainXML->SetAttribute("layer1",stringc(ebTerrainL1->getText()).c_str());
     terrainXML->SetAttribute("layer2",stringc(ebTerrainL2->getText()).c_str());
     terrainXML->SetAttribute("layer3",stringc(ebTerrainL3->getText()).c_str());
+	terrainXML->SetAttribute("layer4",stringc(ebTerrainL4->getText()).c_str());
     terrainXML->SetAttribute("scale",atoi(stringc(ebTerrainScale->getText()).c_str()));
 
     irb_cfg->LinkEndChild(terrainXML);

@@ -176,6 +176,8 @@ class App
 		//temporary made public
 		//bool fullScreen;
 		bool resizable;
+		bool vsync;
+		bool antialias;
 		
 		stringc language;
 		
