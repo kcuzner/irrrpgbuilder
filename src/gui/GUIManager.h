@@ -192,6 +192,8 @@ class GUIManager
 		core::stringw getEditCameraString(scene::ISceneNode *node);
 		inline void updateEditCameraString(scene::ISceneNode * node) {if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}}
 
+		inline void setCutsceneText(core::stringw text) { guiCutsceneText->setText(text.c_str());}
+		inline void showCutsceneText(bool visible) { guiCutsceneText->setVisible(visible);}
         void flush();
 
         void showConfigWindow();
@@ -267,6 +269,7 @@ class GUIManager
 		IGUIWindow* guiStatus;
 		IGUIStaticText* guiStatusText;
 		IGUIStaticText* guiStatusCameraText;
+		IGUIStaticText* guiCutsceneText;
 
 		IGUIListBox* console;
 		CGUIStretchWindow* consolewin;//IGUIWindow * consolewin;

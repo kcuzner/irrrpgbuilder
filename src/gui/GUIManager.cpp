@@ -1234,6 +1234,9 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setRTSView",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRPGView",SColor(255,128,0,255),true);
 
+	guiDynamicObjects_Script->addKeyword("showCutsceneText",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCutsceneText",SColor(255,128,0,255),true);
+
 	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setSoundListenerPosition",SColor(255,128,0,255),true);
@@ -1518,6 +1521,12 @@ void GUIManager::setupGameplayGUI()
 	// Check the current screen size 
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
+
+	// Create a cutscene text 
+	guiCutsceneText = guienv->addStaticText(L"This is a standard cutscene text",core::rect<s32>(100,displayheight/2+(displayheight/4),displaywidth-10,displayheight-100),false,true,0,-1,false);
+	guiCutsceneText->setOverrideFont(guiFontLarge28);
+	guiCutsceneText->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	guiCutsceneText->setVisible(false);
 
 	// This is called only in the PLAYER application
 	#ifndef EDITOR

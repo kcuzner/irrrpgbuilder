@@ -87,6 +87,9 @@ class LuaGlobalCaller
 		static int setRTSView(lua_State *LS);
 		static int setRPGView(lua_State *LS);
 
+		static int showCutsceneText(lua_State *LS);
+		static int setCutsceneText(lua_State *LS);
+
 
         static int getObjectPosition(lua_State *LS);//x,y,z = getObjectPosition(objName)
 		static int setObjectRotation(lua_State *LS);//setObjectRotation(objectname,from,to,time);

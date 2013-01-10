@@ -816,6 +816,9 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 		case KEY_TAB:
 			Environment->setFocus(this);
 			inputChar(L' ');
+			inputChar(L' ');
+			inputChar(L' ');
+			inputChar(L' ');
 			//inputChar(L' ');
 			break;
 		case KEY_INSERT:

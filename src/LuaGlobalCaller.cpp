@@ -250,6 +250,9 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"setRTSView",setRTSView); //Camera view is RTS style
 	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
 
+	lua_register(LS,"showCutsceneText",showCutsceneText); // Display/Hide the cutscene text
+	lua_register(LS,"setCutsceneText",setCutsceneText); // Set the text to display
+
     lua_register(LS,"getObjectPosition",getObjectPosition);//x,y,z getObjectPosition(objName)
 	lua_register(LS,"setObjectRotation",setObjectRotation);////setObjectRotation(from,to,time);
 
@@ -637,15 +640,21 @@ int LuaGlobalCaller::setSkydomeTexture(lua_State *LS)
 
 int LuaGlobalCaller::setSkydomeVisible(lua_State *LS)
 {
-	bool result=false;
+	int result=0;
 	if(lua_isboolean(LS, -1))
     {
-        result =(bool)lua_toboolean(LS, -1);
+        result = lua_toboolean(LS, -1);
         lua_pop(LS, 1);
     }
 
-	//EffectsManager::getInstance()->skydomeVisible(result);
-	EffectsManager::getInstance()->turnOffSkydome();
+	bool bresult=false;
+
+	if (result!=0)
+		bresult=true;
+
+	EffectsManager::getInstance()->skydomeVisible(bresult);
+	//EffectsManager::getInstance()->turnOffSkydome();
+	
 	return 0;
 
 }
@@ -798,12 +807,16 @@ int LuaGlobalCaller::getCameraPosition(lua_State *LS)
 int LuaGlobalCaller::cutsceneMode(lua_State *LS)
 {
     CameraSystem::getInstance()->setCamera(3);
+	GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
+	GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
     return 0;
 }
 
 int LuaGlobalCaller::gameMode(lua_State *LS)
 {
     CameraSystem::getInstance()->setCamera(1);
+	GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
+	GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
 
     return 0;
 }
@@ -817,6 +830,39 @@ int LuaGlobalCaller::setRTSView(lua_State *LS)
 int LuaGlobalCaller::setRPGView(lua_State *LS)
 {
 	CameraSystem::getInstance()->setRPGView();
+	return 0;
+}
+
+int LuaGlobalCaller::showCutsceneText(lua_State *LS)
+{
+
+	int result=0;
+	if(lua_isboolean(LS, -1))
+    {
+        result = lua_toboolean(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+	bool bresult=false;
+	if (result==1)
+		bresult=true;
+
+	GUIManager::getInstance()->showCutsceneText(bresult);
+
+	return 0;
+}
+
+int LuaGlobalCaller::setCutsceneText(lua_State *LS)
+{
+	core::stringw text = "";
+
+    if(lua_isstring(LS, -1))
+    {
+        text = lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+	GUIManager::getInstance()->setCutsceneText(text);
 	return 0;
 }
 
