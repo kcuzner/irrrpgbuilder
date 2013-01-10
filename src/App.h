@@ -178,6 +178,7 @@ class App
 		bool resizable;
 		bool vsync;
 		bool antialias;
+		bool overdraw; // This will tell if we need to overdraw the player
 		
 		stringc language;
 		
@@ -207,6 +208,10 @@ class App
 		position2d<s32> mousepos;
 		vector3df initialposition;
 		bool moveupdown;
+
+		video::ITexture * tex_occluded;
+		video::ITexture * tex_normal;
+
 };
 
 #endif // APP_H

@@ -46,6 +46,10 @@ App::App()
 	lockcam=false;
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
 	moveupdown = false; // Mouse move up/down
+	overdraw=false;
+
+	tex_occluded=NULL;
+	tex_normal=NULL;
 
 }
 
@@ -1260,6 +1264,29 @@ void App::update()
 	EffectsManager::getInstance()->preparePostFX(false);
 	smgr->drawAll();
 
+	driver->runAllOcclusionQueries(false);
+	driver->updateAllOcclusionQueries();
+	overdraw=driver->getOcclusionQueryResult(Player::getInstance()->getNode())>0;
+	overdraw=!overdraw;
+	if (overdraw)
+	{
+		// Draw the player over the rendering so it's not occluded by the scenery
+		
+		Player::getInstance()->getNode()->setMaterialTexture(0, tex_occluded);
+		Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,false);
+		Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,false);
+		Player::getInstance()->getNode()->render();
+		Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,true);
+		Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+		
+	}
+	else 
+	{
+		Player::getInstance()->getNode()->setMaterialTexture(0, tex_normal);
+	}
+
+	
+
 	// Tries to do an post FX
 	EffectsManager::getInstance()->update();
 
@@ -1310,6 +1337,14 @@ void App::run()
 
 	// Hide the fog in the editor
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+
+	// Define the occlusion texture for the player (occlusion query)
+	tex_occluded=driver->getTexture("../media/player/swordman_red.png");
+	tex_normal=driver->getTexture("../media/player/swordman.png");
+
+	// Occlusing query
+	//driver->addOcclusionQuery(Player::getInstance()->getNode(), ((scene::IMeshSceneNode*)Player::getInstance()->getNode())->getMesh());
+	driver->addOcclusionQuery(Player::getInstance()->getNode());
 
 	
 

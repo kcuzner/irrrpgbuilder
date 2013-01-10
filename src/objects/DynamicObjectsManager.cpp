@@ -54,6 +54,7 @@ bool DynamicObjectsManager::loadTemplates()
 		playerObject->setMaterialType(pObject->getMaterialType());
 		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
 		
+		
 		// Fix a little problem by reseting the animation state back to idle.
 		playerObject->setAnimation("walk");
 		playerObject->setAnimation("idle");
