@@ -204,6 +204,9 @@ class App
 		bool initRotation;
 		bool lockcam;
 		vector2df oldmouse;
+		position2d<s32> mousepos;
+		vector3df initialposition;
+		bool moveupdown;
 };
 
 #endif // APP_H

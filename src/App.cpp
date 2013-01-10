@@ -45,6 +45,7 @@ App::App()
 	oldmouse=vector2df(0,0);
 	lockcam=false;
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
+	moveupdown = false; // Mouse move up/down
 
 }
 
@@ -782,15 +783,16 @@ void App::eventMousePressed(s32 mouse)
 						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
 						App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
 					}
-					else//create a new copy of active dynamic object at the clicked position
-					{
-						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-					}
 				}
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
-				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+				// Move the object up/down using the mouse Y axis
+				// Pressing back the button release the mode
+				mousepos=device->getCursorControl()->getPosition();
+				moveupdown=!moveupdown;
+				if (!moveupdown)
+					setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 			}
 		}
 		break;
@@ -1306,6 +1308,9 @@ void App::run()
 	// Start the post process in the FX Manager
 	EffectsManager::getInstance()->initPostProcess();
 
+	// Hide the fog in the editor
+	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+
 	
 
 	int lastFPS = -1;
@@ -1439,11 +1444,24 @@ void App::updateEditMode()
 
 			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
 			{
-				// Change the ID of the moved mesh so it's won't collision with the ray.
-				irr::s32 oldID=lastMousePick.pickedNode->getID();
-				lastMousePick.pickedNode->setID(0x0010);
-				lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
-				lastMousePick.pickedNode->setID(oldID);
+				if (!moveupdown)
+				{
+					// Change the ID of the moved mesh so it's won't collision with the ray.
+					irr::s32 oldID=lastMousePick.pickedNode->getID();
+					lastMousePick.pickedNode->setID(0x0010);
+					lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+					lastMousePick.pickedNode->setID(oldID);
+					initialposition=lastMousePick.pickedNode->getPosition();
+				}
+				else
+				{
+					position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+					core::vector3df newpos = initialposition;
+					//lastMousePick.pickedNode->getPosition();
+					newpos.Y=newpos.Y+((mousepos.Y-mousepos2.Y));
+					lastMousePick.pickedNode->setPosition(newpos);
+
+				}
 			}
 
 			if(app_state == APP_EDIT_CHARACTER)
