@@ -124,8 +124,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
 	else if (event.EventType == EET_LOG_TEXT_EVENT)
 	{
 		stringw text = "";
-		text += L"Log>>";
-        text += stringw(event.LogEvent.Text).c_str();
+		text += stringw(event.LogEvent.Text).c_str();
 		App::getInstance()->textevent.push_back(text.c_str());
 
 	}

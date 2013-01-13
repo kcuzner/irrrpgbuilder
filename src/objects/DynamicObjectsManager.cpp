@@ -526,20 +526,28 @@ TemplateObject* DynamicObjectsManager::getActiveObject()
 //Find the name in the template as use it as "active" one.
 //This will be used to create the character or object on the map by the user.
 //Normally the "name" is provided by a list.
-void DynamicObjectsManager::setActiveObject(stringc name)
+bool DynamicObjectsManager::setActiveObject(stringc name)
 {
 	core::stringc notfound=(core::stringc)"Template not found:";
 	notfound+=name; notfound+=(core::stringc)"!";
-    for (int i=0 ; i<(int)objTemplate.size() ; i++)
+    bool found=false;
+	for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		core::stringw templateName=objTemplate[i]->getName();
 		if((core::stringc)templateName == name )
     	{
     	    activeObject = ((TemplateObject*)objTemplate[i]);
+			found=true;
     	    break;
-    	} else
-			App::getInstance()->getDevice()->getLogger()->log(notfound.c_str());
+    	} 
     }
+	if (!found)
+	{
+		GUIManager::getInstance()->setConsoleText(notfound.c_str(),video::SColor(255,240,0,0));
+		return false;
+	} else
+		return true;
+
 }
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
@@ -779,7 +787,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		// Create an object from the template
 		if (type!=OBJECT_TYPE_PLAYER)
 		{ 
-			this->setActiveObject(templateObj);
+			bool result=setActiveObject(templateObj);
+			if (!result)
+				setActiveObject("error");
+
 			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		} 
 		else

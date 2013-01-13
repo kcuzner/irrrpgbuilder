@@ -35,7 +35,7 @@ class DynamicObjectsManager
         void removeObject(stringc uniqueName);
 
         TemplateObject* getActiveObject();
-        void setActiveObject(stringc name);
+        bool setActiveObject(stringc name);
 
         DynamicObject* getObjectByName(stringc name);
 		DynamicObject* getPlayer();

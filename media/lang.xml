@@ -8,6 +8,8 @@
 		<text id="tab_setup" str="Settings"/>
 		<text id="tab_script_debug" str="Debug Panel"/>
 		<text id="tab_script_templates" str="Script Templates"/>
+		<text id="tab_console_message" str="Messages"/>
+		<text id="tab_console_log" str="Log"/>
 		<text id="bt_script_editor_linecount" str="Toggle linecount"/>
 		<text id="bt_dynamic_objects_close_script" str="Close"/>
 		<text id="bt_dynamic_objects_script_noerror" str="No errors found"/>
@@ -39,7 +41,7 @@
 		<text id="bt_player_edit_script" str="Player Script"/>
 		<text id="bt_close_program" str="Close Program"/>
 		<text id="bt_about" str="About"/>
-		<text id="bt_help" str="Help"/>
+		<text id="bt_help" str="Console"/>
 		<text id="bt_dialog_yes" str="Yes"/>
 		<text id="bt_dialog_no" str="No"/>
 		<text id="bt_view_items" str="View Items"/>
@@ -61,6 +63,7 @@
 		<text id="txt_cfg_window_resizeable" str="Resizeable"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
+		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Terrain Mesh"/>
 		<text id="txt_cfg_window_terrain_scale" str="Scale"/>
 		<text id="txt_cfg_window_terrain_layers" str="Terrain Texture Layers"/>
@@ -162,6 +165,8 @@
 		<text id="tab_setup" str="Configurações"/>
 		<text id="tab_script_debug" str="Painel debug"/>
 		<text id="tab_script_templates" str="Modelos Script"/>
+		<text id="tab_console_message" str="Messages"/>
+		<text id="tab_console_log" str="Log"/>
 		<text id="bt_script_editor_linecount" str="Alterna números de linha"/>
 		<text id="bt_dynamic_objects_close_script" str="Fechar"/>
 		<text id="bt_dynamic_objects_script_noerror" str="Não foram encontrados erros"/>
@@ -193,7 +198,7 @@
 		<text id="bt_player_edit_script" str="Script do Personagem"/>
 		<text id="bt_close_program" str="Fechar Programa"/>
 		<text id="bt_about" str="Sobre o IrrRPG Builder"/>
-		<text id="bt_help" str="Ajuda"/>
+		<text id="bt_help" str="Console"/>
 		<text id="bt_dialog_yes" str="Sim"/>
 		<text id="bt_dialog_no" str="Não"/>
 		<text id="bt_view_items" str="Ver Ítens"/>
@@ -215,6 +220,7 @@
 		<text id="txt_cfg_window_resizeable" str="Redimensionavel"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
+		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Mesh do terreno"/>
 		<text id="txt_cfg_window_terrain_scale" str="Escala"/>
 		<text id="txt_cfg_window_terrain_layers" str="Camadas de textura do terreno"/>
@@ -316,6 +322,8 @@
 		<text id="tab_setup" str="Réglages" />
 		<text id="tab_script_debug" str="Panneau de débogage"/>
 		<text id="tab_script_templates" str="Modèles de script"/>
+		<text id="tab_console_message" str="Messages"/>
+		<text id="tab_console_log" str="Log"/>
 		<text id="bt_script_editor_linecount" str="Basculer la numérotation des lignes"/>
 		<text id="bt_dynamic_objects_close_script" str="Fermer"/>
 		<text id="bt_dynamic_objects_script_noerror" str="Aucune erreur trouvée"/>
@@ -347,7 +355,7 @@
 		<text id="bt_player_edit_script" str="Éditer le script du personage"/>
 		<text id="bt_close_program" str="Quitter"/>
 		<text id="bt_about" str="À Propos"/>
-		<text id="bt_help" str="Aide"/>
+		<text id="bt_help" str="Console"/>
 		<text id="bt_dialog_yes" str="Oui"/>
 		<text id="bt_dialog_no" str="Non"/>
 		<text id="bt_view_items" str="Voir les items"/>
@@ -369,6 +377,7 @@
 		<text id="txt_cfg_window_resizeable" str="Agrandissable"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
+		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Modèle du terrain"/>
 		<text id="txt_cfg_window_terrain_scale" str="Grandeur"/>
 		<text id="txt_cfg_window_terrain_layers" str="Texture de la couche du terrain"/>
@@ -470,6 +479,8 @@
 		<text id="tab_setup" str="Einstellungen"/>
 		<text id="tab_script_debug" str="Debug Panel"/>
 		<text id="tab_script_templates" str="Script Vorlagen"/>
+		<text id="tab_console_message" str="Messages"/>
+		<text id="tab_console_log" str="Log"/>
 		<text id="bt_script_editor_linecount" str="Sehen Zeilennummern"/>
 		<text id="bt_dynamic_objects_close_script" str="Schliessen"/>
 		<text id="bt_dynamic_objects_script_noerror" str="Keine Fehler gefunden"/>
@@ -501,7 +512,7 @@
 		<text id="bt_player_edit_script" str="Charakter"/>
 		<text id="bt_close_program" str="Verlassen"/>
 		<text id="bt_about" str="Ueber"/>
-		<text id="bt_help" str="Hilfe"/>
+		<text id="bt_help" str="Console"/>
 		<text id="bt_dialog_yes" str="Ja"/>
 		<text id="bt_dialog_no" str="Nein"/>
 		<text id="bt_view_items" str="Zeige Items"/>
@@ -523,6 +534,7 @@
 		<text id="txt_cfg_window_resizeable" str="Aendern"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
+		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Gelaendenetz"/>
 		<text id="txt_cfg_window_terrain_scale" str="Skala"/>
 		<text id="txt_cfg_window_terrain_layers" str="Landschaftebenen"/>
@@ -624,6 +636,8 @@
 		<text id="tab_setup" str="Configuración"/>
 		<text id="tab_script_debug" str="Depurar Grupo"/>
 		<text id="tab_script_templates" str="Script Templates"/>
+		<text id="tab_console_message" str="Messages"/>
+		<text id="tab_console_log" str="Log"/>
 		<text id="bt_script_editor_linecount" str="Activar lineatura"/>
 		<text id="bt_dynamic_objects_close_script" str="Cerrar"/>
 		<text id="bt_dynamic_objects_script_noerror" str="No se encontraron errores"/>
@@ -655,7 +669,7 @@
 		<text id="bt_player_edit_script" str="Jugador"/>
 		<text id="bt_close_program" str="Cerrar programa"/>
 		<text id="bt_about" str="Acerca de"/>
-		<text id="bt_help" str="Ayuda"/>
+		<text id="bt_help" str="Console"/>
 		<text id="bt_dialog_yes" str="Sí"/>
 		<text id="bt_dialog_no" str="No"/>
 		<text id="bt_view_items" str="Ver Artículos"/>
@@ -677,6 +691,7 @@
 		<text id="txt_cfg_window_resizeable" str="Resizeable"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
+		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Terrain Mesh"/>
 		<text id="txt_cfg_window_terrain_scale" str="Scale"/>
 		<text id="txt_cfg_window_terrain_layers" str="Terrain Texture Layers"/>

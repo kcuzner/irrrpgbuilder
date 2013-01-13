@@ -36,6 +36,7 @@ class GUIConfigWindow
         IGUICheckBox* cbResizeable;
 		IGUICheckBox* cbVSync;
 		IGUICheckBox* cbAntialias;
+		IGUICheckBox* cbSilouette;
 
         IGUIComboBox* languageList;
         vector<stringc> languageListVector;

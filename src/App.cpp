@@ -88,9 +88,9 @@ void App::draw2DImages()
 	{
 		//GUIManager::getInstance()->drawPlayerStats();
 	}
-#ifdef APP_DEBUG
+	#ifdef APP_DEBUG
 	//GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
-#endif
+	#endif
 #endif
 }
 
@@ -127,11 +127,6 @@ void App::setAppState(APP_STATE newAppState)
 
 	//just record the state before changing..
 	APP_STATE old_app_state = app_state;
-
-#ifdef APP_DEBUG
-	cout << "NEW APP_STATE: " << app_state << endl;
-#endif
-
 	app_state = newAppState;
 
 #ifdef EDITOR
@@ -157,9 +152,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
 		ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
-		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		#endif
 		selectedNode=NULL;
 	}
 
@@ -172,9 +165,7 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
-		#ifdef EDITOR
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		#endif
 		selectedNode=NULL;
 	}
 
@@ -619,7 +610,7 @@ void App::eventGuiCheckbox(s32 id)
 	switch (id)
 	{
 	default:
-		break;
+	break;
 	}
 	*/
 }
@@ -829,6 +820,8 @@ void App::eventMouseWheel(f32 value)
 		app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT &&
 		app_state != APP_EDIT_SCRIPT_GLOBAL &&
 		app_state != APP_EDIT_PLAYER_SCRIPT &&
+		app_state != APP_EDIT_WAIT_GUI &&
+		app_state != APP_WAIT_FILEREQUEST &&
 		cursorIsInEditArea())
 	{
 		if (app_state < 100)
@@ -844,6 +837,7 @@ void App::eventMouseWheel(f32 value)
 
 		}
 		else // ingame camera
+		if (app_state>APP_STATE_CONTROL)
 			CameraSystem::getInstance()->setCameraHeight(value);
 	}
 }
@@ -863,9 +857,9 @@ MousePick App::getMousePosition3D(int id)
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 	if (app_state== APP_GAMEPLAY_NORMAL)
 		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);	
-	
+
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
-	
+
 	// Extend the ray as long as possible to get the terrain
 	ray.end=ray.start+(ray.getVector()*250000);
 
@@ -879,7 +873,7 @@ MousePick App::getMousePosition3D(int id)
 	MousePick result;
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
-	
+
 	if (app_state == APP_GAMEPLAY_NORMAL)
 		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, true);
 
@@ -889,7 +883,7 @@ MousePick App::getMousePosition3D(int id)
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
 		f32 len = ray.getLength();
-		
+
 		//printf ("Passed the screen ray test! Ray len is: %f \n",len);
 
 		return result;
@@ -953,6 +947,7 @@ bool App::loadConfig()
 	resizable = false;
 	vsync = false;
 	antialias = false;
+	silouette = false;
 
 	language = "en-us";
 	TerrainManager::getInstance()->setTileMeshName("../media/baseTerrain.obj");
@@ -1014,6 +1009,10 @@ bool App::loadConfig()
 			stringc antialiasresult = resXML->ToElement()->Attribute("antialias");
 			if (antialiasresult=="true")
 				antialias=true;
+
+			stringc silouetteresult = resXML->ToElement()->Attribute("silouette");
+			if (silouetteresult=="true")
+				silouette=true;
 
 			if (resizable && fullScreen)
 			{
@@ -1092,7 +1091,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 	loadConfig();
 	irr::SIrrlichtCreationParameters deviceConfig;
-	
+
 	if (!IRRdevice)
 	{
 		if (antialias) // Set 4x antialias mode if supported
@@ -1105,7 +1104,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 		deviceConfig.Fullscreen = fullScreen;
 		deviceConfig.Vsync = vsync;
 		deviceConfig.WindowSize = screensize;
-		
+
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
 		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (jan 2013)");
@@ -1188,7 +1187,7 @@ void App::stopGame()
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
 		GlobalMap::getInstance()->clearGlobals();
 
-		
+
 		TerrainManager::getInstance()->setEmptyTileVisible(true);
 
 		DynamicObjectsManager::getInstance()->clearAllScripts();
@@ -1264,28 +1263,28 @@ void App::update()
 	EffectsManager::getInstance()->preparePostFX(false);
 	smgr->drawAll();
 
-	driver->runAllOcclusionQueries(false);
-	driver->updateAllOcclusionQueries();
-	overdraw=driver->getOcclusionQueryResult(Player::getInstance()->getNode())>0;
-	overdraw=!overdraw;
-	if (overdraw)
+	// PostFX - render the player in silouette if he's occluded
+	if (silouette)
 	{
-		// Draw the player over the rendering so it's not occluded by the scenery
-		
-		Player::getInstance()->getNode()->setMaterialTexture(0, tex_occluded);
-		Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,false);
-		Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,false);
-		Player::getInstance()->getNode()->render();
-		Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,true);
-		Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,true);
-		
+		driver->runAllOcclusionQueries(false);
+		driver->updateAllOcclusionQueries();
+		overdraw=driver->getOcclusionQueryResult(Player::getInstance()->getNode())>0;
+		overdraw=!overdraw;
+		if (overdraw)
+		{
+			// Draw the player over the rendering so it's not occluded by the scenery
+			Player::getInstance()->getNode()->setMaterialTexture(0, tex_occluded);
+			Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,false);
+			Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,false);
+			Player::getInstance()->getNode()->render();
+			Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,true);
+			Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+		}
+		else 
+		{
+			Player::getInstance()->getNode()->setMaterialTexture(0, tex_normal);
+		}
 	}
-	else 
-	{
-		Player::getInstance()->getNode()->setMaterialTexture(0, tex_normal);
-	}
-
-	
 
 	// Tries to do an post FX
 	EffectsManager::getInstance()->update();
@@ -1346,7 +1345,7 @@ void App::run()
 	//driver->addOcclusionQuery(Player::getInstance()->getNode(), ((scene::IMeshSceneNode*)Player::getInstance()->getNode())->getMesh());
 	driver->addOcclusionQuery(Player::getInstance()->getNode());
 
-	
+
 
 	int lastFPS = -1;
 	//	u32 timer = device->getTimer()->getRealTime();
@@ -1428,6 +1427,29 @@ void App::updateEditMode()
 				setAppState(old_state);
 			}
 			// --- End of code for drag of view
+
+			//Feature: Take a note of the position of the camera or object into the console
+			//Check for the pressing of CTRL+C
+			if(app_state < APP_STATE_CONTROL)
+			{
+				if (EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL) && EventReceiver::getInstance()->isKeyPressed(KEY_KEY_C))
+				{
+					if (!keytoggled)
+					{
+						core::stringw text = L"";
+						if (selectedNode && (app_state==APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE))
+							text = core::stringw(L"Note: ").append(GUIManager::getInstance()->getEditCameraString(selectedNode));
+						else
+							text = core::stringw(L"Note: ").append(GUIManager::getInstance()->getEditCameraString(NULL));
+
+						GUIManager::getInstance()->setConsoleText (text.c_str(), video::SColor(255,11,120,13));
+						keytoggled=true;
+					}
+				}
+				else
+					keytoggled=false;
+					//CameraSystem::getInstance()->getNode()
+			}
 
 			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
 			{
@@ -1531,118 +1553,118 @@ void App::updateGameplay()
 		device->getCursorControl()->setVisible(false);
 
 	} else
-	if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
-	{
-		device->getCursorControl()->setVisible(true);
-		initRotation=false;
-	}
-
-	// Update the Point&Click camera setup
-	CameraSystem::getInstance()->updatePointClickCam();
-
-	// Refresh the NPC loop
-	if ((timer-timer3)>0) // (17 )1/60 second (0 value seem ok for now)
-	{
-		// Update the NPc refresh
-		timer3 = device->getTimer()->getRealTime();
-
-		// Update all the NPC on the map (including the player)
-		DynamicObjectsManager::getInstance()->updateAll();
-
-		
-
-		// Update the combat system (mostly for damage over time management (dot))
-		Combat::getInstance()->update();
-	}
-
-
-	// This update the player events and controls at specific time intervals
-	if ((timer-timer2)>34)
-	{
-		timer2 = device->getTimer()->getRealTime();
-
-		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
+		if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
-			// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
-			//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,0x0010);
+			device->getCursorControl()->setVisible(true);
+			initRotation=false;
+		}
 
-			// Filter only object with the ID=100 to get the resulting node
-			MousePick mousePick = getMousePosition3D(100);
+		// Update the Point&Click camera setup
+		CameraSystem::getInstance()->updatePointClickCam();
 
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,200);
-		
-			// Set back to the defaults
-			//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
-			DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
+		// Refresh the NPC loop
+		if ((timer-timer3)>17) // (17 )1/60 second (0 value seem ok for now)
+		{
+			// Update the NPc refresh
+			timer3 = device->getTimer()->getRealTime();
 
-			stringc nodeName = "";
-			// Check for a node(need to get the name of the node)
-			if (mousePick.pickedNode != NULL)
+			// Update all the NPC on the map (including the player)
+			DynamicObjectsManager::getInstance()->updateAll();
+
+
+
+			// Update the combat system (mostly for damage over time management (dot))
+			Combat::getInstance()->update();
+		}
+
+
+		// This update the player events and controls at specific time intervals
+		if ((timer-timer2)>34)
+		{
+			timer2 = device->getTimer()->getRealTime();
+
+			if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 			{
-				stringc nodeName = mousePick.pickedNode->getName();
+				// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
+				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,0x0010);
 
-				//if you click on a Dynamic Object...
-				if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+				// Filter only object with the ID=100 to get the resulting node
+				MousePick mousePick = getMousePosition3D(100);
+
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,200);
+
+				// Set back to the defaults
+				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
+
+				stringc nodeName = "";
+				// Check for a node(need to get the name of the node)
+				if (mousePick.pickedNode != NULL)
 				{
+					stringc nodeName = mousePick.pickedNode->getName();
 
-					DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-					// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
-
-					//Since an object as been clicked the walktarget of the player is changed
-					if (obj)
+					//if you click on a Dynamic Object...
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
 					{
-				
-						vector3df pos = obj->getPosition();
-						vector3df pos2 = Player::getInstance()->getObject()->getPosition();
-						f32 desiredDistance=50.0f;
-						f32 distance = Player::getInstance()->getObject()->getDistanceFrom(pos);
-						f32 final = (distance-desiredDistance)/distance;
-	
-						vector3df walkTarget = pos.getInterpolated(pos2,final);
-						Player::getInstance()->getObject()->setWalkTarget(walkTarget);
 
-						DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
-						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+						DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
+						// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
 
-						Player::getInstance()->getObject()->lookAt(obj->getPosition());
-						Player::getInstance()->setTaggedTarget(obj);
-					}
+						//Since an object as been clicked the walktarget of the player is changed
+						if (obj)
+						{
+
+							vector3df pos = obj->getPosition();
+							vector3df pos2 = Player::getInstance()->getObject()->getPosition();
+							f32 desiredDistance=50.0f;
+							f32 distance = Player::getInstance()->getObject()->getDistanceFrom(pos);
+							f32 final = (distance-desiredDistance)/distance;
+
+							vector3df walkTarget = pos.getInterpolated(pos2,final);
+							Player::getInstance()->getObject()->setWalkTarget(walkTarget);
+
+							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
+							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+
+							Player::getInstance()->getObject()->lookAt(obj->getPosition());
+							Player::getInstance()->setTaggedTarget(obj);
+						}
 
 
-					if (obj && (obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 100.0f))
-						obj->notifyClick();
+						if (obj && (obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 100.0f))
+							obj->notifyClick();
 
-					if(obj->getObjectType() == stringc("ENEMY"))
-					{
-						Player::getInstance()->getObject()->attackEnemy(obj);
+						if(obj->getObjectType() == stringc("ENEMY"))
+						{
+							Player::getInstance()->getObject()->attackEnemy(obj);
+						}
+						else
+						{
+							Player::getInstance()->getObject()->clearEnemy();
+						}
+
+						return;
+
 					}
 					else
 					{
-						Player::getInstance()->getObject()->clearEnemy();
+						mousePick = getMousePosition3D(100);
+						if (mousePick.pickedPos!=vector3df(0,0,0))
+						{
+							Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
+							DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+							Player::getInstance()->setTaggedTarget(NULL);
+							Player::getInstance()->getObject()->clearEnemy();
+						}
+						//Player::getInstance()->getObject()->clearEnemy();
+						return;
 					}
-					
-					return;
-
-				}
-				else
-				{
-					mousePick = getMousePosition3D(100);
-					if (mousePick.pickedPos!=vector3df(0,0,0))
-					{
-						Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
-						DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
-						DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-						Player::getInstance()->setTaggedTarget(NULL);
-						Player::getInstance()->getObject()->clearEnemy();
-					}
-					//Player::getInstance()->getObject()->clearEnemy();
-					return;
 				}
 			}
 		}
-	}
 }
 
 void App::cleanWorkspace()
@@ -1665,14 +1687,17 @@ void App::createNewProject()
 	APP_STATE old_state = getAppState();
 	setAppState(APP_EDIT_WAIT_GUI);
 
-	stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
-	GUIManager::getInstance()->flush();
+	//stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
+	//GUIManager::getInstance()->flush();
 
+	stringc name = "newproject"; //This will hide the question
+
+	/*
 	while(name == stringc(""))
 	{
 		name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
 		GUIManager::getInstance()->flush();
-	}
+	}*/
 
 	name += ".XML";
 
@@ -1691,6 +1716,13 @@ void App::createNewProject()
 	Player::getInstance();
 
 	this->currentProjectName = name;
+
+	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0,1000,-1000));
+	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0,0,0));
+	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
+
+	Player::getInstance()->getNode()->setPosition(vector3df(0.0f,0.0f,0.0f));
+	Player::getInstance()->getNode()->setRotation(vector3df(0.0f,0.0f,0.0f));
 
 	//this->saveProject();
 
@@ -1829,7 +1861,7 @@ void App::loadProjectFile(bool value)
 		{
 			core::stringc file = (core::stringc)saveselector->getFileName();
 
-// For windows put as backslash.
+			// For windows put as backslash.
 #ifdef WIN32
 			file.replace('/','\\');
 #endif
@@ -1845,7 +1877,7 @@ void App::loadProjectFile(bool value)
 	}
 
 	else
-	// User cancelled the file selector. remove them
+		// User cancelled the file selector. remove them
 	{
 		setAppState(old_state);
 		if (selector)
@@ -1863,23 +1895,23 @@ void App::loadProjectFile(bool value)
 	}
 
 	// Set back the camera after loading the map (could be perhaps improved later, to select the proper camera after loading (ingame loading))
-	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 	//setAppState(old_state);
 }
 
 void App::saveProject()
 {
 	APP_STATE old_state = getAppState();
-	setAppState(APP_EDIT_WAIT_GUI);
+	setAppState(APP_WAIT_FILEREQUEST);
 
 	// Old method of request for save file (only a text input)
-/*
+	/*
 	if(currentProjectName == stringc("irb_temp_project"))
 	{
-		currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
-		GUIManager::getInstance()->flush();
-		EventReceiver::getInstance()->flushKeys();
-		currentProjectName += ".XML";
+	currentProjectName = GUIManager::getInstance()->showInputQuestion(LANGManager::getInstance()->getText("msg_new_project_name"));
+	GUIManager::getInstance()->flush();
+	EventReceiver::getInstance()->flushKeys();
+	currentProjectName += ".XML";
 	}
 
 	stringc filename = "../projects/";
@@ -1947,7 +1979,7 @@ void App::saveProjectToXML(stringc filename)
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
 	quickUpdate();
-	
+
 	TiXmlElement* globalScript = new TiXmlElement("global_script");
 	globalScript->SetAttribute("script",scriptGlobal.c_str());
 	irb_project->LinkEndChild(globalScript);
@@ -1955,10 +1987,12 @@ void App::saveProjectToXML(stringc filename)
 	// Closing the XML file
 	doc.LinkEndChild( decl );
 	doc.LinkEndChild( irb_project );
-	
+
 	bool result = doc.SaveFile( filename.c_str() );
 	if (result) printf("Saved %s OK!\n",filename.c_str());
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
+	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
 
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
@@ -2019,6 +2053,7 @@ bool App::loadProjectFromXML(stringc filename)
 			// Player is a dynamic object now.
 			// There is no need for now to load from this
 		}
+		CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 	}
 	else
 	{
@@ -2032,7 +2067,7 @@ bool App::loadProjectFromXML(stringc filename)
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
 #endif
-	
+
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 	return true;
@@ -2063,7 +2098,7 @@ void App::initialize()
 	TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 	quickUpdate();
 #endif
-	
+
 
 	GUIManager::getInstance()->setupGameplayGUI();
 	quickUpdate();

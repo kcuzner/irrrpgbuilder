@@ -142,6 +142,7 @@ class GUIManager
 		void createDynamicObjectChooserGUI();
 		void createContextMenuGUI();
 		void createCodeEditorGUI();
+		void createConsole();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
@@ -272,6 +273,7 @@ class GUIManager
 		IGUIStaticText* guiCutsceneText;
 
 		IGUIListBox* console;
+		IGUIListBox* consolelog;
 		CGUIStretchWindow* consolewin;//IGUIWindow * consolewin;
 
 		// Loader window

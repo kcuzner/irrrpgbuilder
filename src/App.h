@@ -179,6 +179,9 @@ class App
 		bool vsync;
 		bool antialias;
 		bool overdraw; // This will tell if we need to overdraw the player
+		bool silouette; // This will determine if we need to activate the player silouette rendering when occluded
+
+		bool keytoggled; // Toggle check for a combo key press
 		
 		stringc language;
 		

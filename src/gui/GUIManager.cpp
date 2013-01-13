@@ -1511,8 +1511,43 @@ void GUIManager::setTextLoader(stringw text)
 	}
 }
 
+// Console window
+void GUIManager::createConsole()
+{
+
+	core::dimension2d<u32> center = screensize/2;
+	// consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
+	consolewin = new CGUIStretchWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(center.Width-400,center.Height-200,center.Width+400,center.Height+200));
+	consolewin->setDevice(App::getInstance()->getDevice());
+	consolewin->getCloseButton()->setVisible(false);
+
+	// project TAB
+	gui::IGUITabControl* control = guienv->addTabControl(myRect(20,40,750,340),consolewin,true,true);
+	gui::IGUITab* tab=control->addTab(LANGManager::getInstance()->getText("tab_console_message").c_str());
+	gui::IGUITab* tab2=control->addTab(LANGManager::getInstance()->getText("tab_console_log").c_str());
+
+	control->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	
+	//Message console
+	console = guienv->addListBox(myRect(10,15,720,260),tab,0,true);
+	console->setAutoScrollEnabled(false);
+	console->setItemHeight(20);
+	console->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	//logger console
+	consolelog = guienv->addListBox(myRect(10,15,720,260),tab2,0,true);
+	consolelog->setAutoScrollEnabled(false);
+	consolelog->setItemHeight(20);
+	consolelog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	
+	consolewin->setVisible(false);
+}
+
 void GUIManager::setupGameplayGUI()
 {
+
+	createConsole();
+
     fader=guienv->addInOutFader();
 	fader->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     fader->setVisible(false);
@@ -1633,17 +1668,6 @@ void GUIManager::setupGameplayGUI()
 
 	// ---------------------------------------
 	#endif
-
-	// Console window
-	// consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
-	consolewin = new CGUIStretchWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(20,20,800,400));
-	consolewin->setDevice(App::getInstance()->getDevice());
-	consolewin->getCloseButton()->setVisible(false);
-	console = guienv->addListBox(myRect(10,30,700,325),consolewin,0,true);
-	console->setAutoScrollEnabled(false);
-	console->setItemHeight(20);
-	console->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-	consolewin->setVisible(false);
 
 	// --- Active game menu during play
 	ITexture* gameplay_bar = driver->getTexture("../media/art/gameplay_bar.png");
@@ -2170,23 +2194,23 @@ void GUIManager::setStaticTextText(GUI_ID id, stringc text)
 
 void GUIManager::setConsoleText(stringw text, video::SColor color)
 // Add text into the output console
-// The function manage up to 2000 lines before clearing the buffer
+// The function manage up to 5000 lines before clearing the buffer
 // Using "forcedisplay" will toggle the display of the GUI
 {
 	//Temporary disable of this method to gain speed
 	//Will have a toggle to use/not use this in the future
 
 
-	u32 maxitem = 2000;
+	u32 maxitem = 5000;
 	// If the GUI is not displayed, accumulate the info in a buffer
 	if (textevent.size()<maxitem)
 	{
 		textevent.push_back(text);
 		texteventcolor.push_back(color);
-	}
-
+	} 
+	
 	// This part will update the IRRlicht type console
-	if (consolewin && consolewin->isVisible())
+	if (console)
 	{
 		for (int a=0; a<(int)textevent.size(); a++)
 		{
@@ -2210,20 +2234,20 @@ void GUIManager::clearConsole()
 
 void GUIManager::setConsoleLogger(vector<core::stringw> &text)
 {
-	u32 maxitem = 500;
-	if (consolewin && consolewin->isVisible())
+	u32 maxitem = 5000;
+	if (consolelog)
 	{
 		if (text.size()>0)
 		{
 			for (int a=0; a<(int)text.size(); a++)
 			{
 
-				if (console->getItemCount()>maxitem-1)
-					console->removeItem(maxitem);
+				if (consolelog->getItemCount()>maxitem-1)
+					consolelog->removeItem(maxitem);
 
 				//
-				console->insertItem(0,text[a].subString(0,90).c_str(),0);
-				console->setItemOverrideColor(0,video::SColor(255,0,0,0));
+				consolelog->insertItem(0,text[a].subString(0,90).c_str(),0);
+				consolelog->setItemOverrideColor(0,video::SColor(255,0,0,0));
 
 				//text.pop_back();
 

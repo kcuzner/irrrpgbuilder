@@ -49,6 +49,9 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
 	cbAntialias = guienv->addCheckBox(false,myRect(200,YPos,190,25),tabSystem,-1,stringw(LANGManager::getInstance()->getText("txt_cfg_window_antialias")).c_str());
 	YPos += 35;
+
+	cbSilouette = guienv->addCheckBox(false,myRect(10,YPos,380,25),tabSystem,-1,stringw(LANGManager::getInstance()->getText("txt_cfg_window_silouette")).c_str());
+	YPos += 35;
     //language
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_language")).c_str(),myRect(10,YPos,150,25),false,false,tabSystem);
 
@@ -220,6 +223,8 @@ void GUIConfigWindow::populateResolutionList()
     }
 }
 
+// Load the actual settings to display into the GUI
+// Loading is also done in APP that set the application
 void GUIConfigWindow::loadActualSeetings()
 {
     TiXmlDocument doc("config.xml");
@@ -233,22 +238,50 @@ void GUIConfigWindow::loadActualSeetings()
 
         if(screenXML)
         {
-            int sw = atoi(screenXML->ToElement()->Attribute("screen_width"));
-            int sh = atoi(screenXML->ToElement()->Attribute("screen_height"));
-            bool sFullscreen =  (screenXML->ToElement()->Attribute("fullscreen") == std::string("true") ? true : false);
-            bool sResizeable =  (screenXML->ToElement()->Attribute("resizeable") == std::string("true") ? true : false);
-			bool svSync =  (screenXML->ToElement()->Attribute("vsync") == std::string("true") ? true : false);
-			bool svAntialias =  (screenXML->ToElement()->Attribute("antialias") == std::string("true") ? true : false);
+			stringc result = "";
+			int sw = atoi(screenXML->ToElement()->Attribute("screen_width"));
+			int sh = atoi(screenXML->ToElement()->Attribute("screen_height"));
+			
+			result = screenXML->ToElement()->Attribute("fullscreen");
+			if (result.size()>0)
+			{
+				 bool sFullscreen =  (screenXML->ToElement()->Attribute("fullscreen") == std::string("true") ? true : false);
+				 cbFullscreen->setChecked(sFullscreen);
+			}
+            
+			result = screenXML->ToElement()->Attribute("resizeable");
+			if (result.size()>0)
+			{
+				 bool sResizeable =  (screenXML->ToElement()->Attribute("resizeable") == std::string("true") ? true : false);
+				 cbResizeable->setChecked(sResizeable);
+			}
+
+			result = screenXML->ToElement()->Attribute("vsync");
+			if (result.size()>0)
+			{
+				 bool svSync =  (screenXML->ToElement()->Attribute("vsync") == std::string("true") ? true : false);
+				 cbVSync->setChecked(svSync);
+			}
+
+			result = screenXML->ToElement()->Attribute("antialias");
+			if (result.size()>0)
+			{
+				 bool svAntialias =  (screenXML->ToElement()->Attribute("antialias") == std::string("true") ? true : false);
+				 cbAntialias->setChecked(svAntialias);
+			}
+
+			result = screenXML->ToElement()->Attribute("silouette");
+			if (result.size()>0)
+			{
+				bool svSilouette = (screenXML->ToElement()->Attribute("silouette") == std::string("true") ? true : false);
+				cbSilouette->setChecked(svSilouette);
+			}
 
 			for(irr::u16 i=0;i<vModes.size();i++)
             {
                 if(vModes[i].X == sw && vModes[i].Y == sh) resolutionList->setSelected(i);
             }
-
-            cbFullscreen->setChecked(sFullscreen);
-            cbResizeable->setChecked(sResizeable);
-			cbVSync->setChecked(svSync);
-			cbAntialias->setChecked(svAntialias);
+	
         }
 
         TiXmlNode* languageXML = root->FirstChildElement( "language" );
@@ -300,6 +333,7 @@ void GUIConfigWindow::saveNewSeetings()
     screenXML->SetAttribute("resizeable", cbResizeable->isChecked()?"true":"false" );
 	screenXML->SetAttribute("vsync", cbVSync->isChecked()?"true":"false" );
 	screenXML->SetAttribute("antialias", cbAntialias->isChecked()?"true":"false" );
+	screenXML->SetAttribute("silouette", cbSilouette->isChecked()?"true":"false" );
 
     irb_cfg->LinkEndChild(screenXML);
 
