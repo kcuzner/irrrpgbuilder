@@ -44,6 +44,9 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
+	vector3df oldpos = ocean->getPosition();
+	oldpos.Y=oldpos.Y-5.0f;
+	ocean->setPosition(oldpos);
 	
 	//Testing if I can use Irrlicht generated mesh for base
 	//ocean=smgr->addMeshSceneNode(smgr->addHillPlaneMesh("water",dimension2df(scale/nodescale,scale/nodescale),dimension2du(1,1)),node,0);
@@ -130,11 +133,13 @@ TerrainTile::~TerrainTile()
 
     vegetationVector.clear();
 
+	selector->drop();
+	ocean->remove();
     node->remove();
 
     //ocean->remove();///TODO: rever destrutor TerrainTile!
 
-    selector->drop();
+    
 }
 
 Vegetation* TerrainTile::getVegetationAt(vector3df pos)
@@ -431,8 +436,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	    }
 
 		//if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
-		if(mb_vertices[j].Pos.Y > nodescale) mb_vertices[j].Pos.Y = nodescale;
-	    if(mb_vertices[j].Pos.Y < -(nodescale*0.1f)) mb_vertices[j].Pos.Y = -(nodescale*0.1f);
+		if(mb_vertices[j].Pos.Y > nodescale) mb_vertices[j].Pos.Y = nodescale*0.75f;
+	    if(mb_vertices[j].Pos.Y < -(nodescale*0.1f)) mb_vertices[j].Pos.Y = -(nodescale*0.12f);
 	}
 
 
@@ -509,7 +514,7 @@ void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
 	// Check from the top of the character
-	irr::f32 maxRayHeight = 2000.0f;
+	irr::f32 maxRayHeight = 4000.0f;
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
 

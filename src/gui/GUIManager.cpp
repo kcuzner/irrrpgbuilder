@@ -22,8 +22,6 @@ GUIManager::GUIManager()
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 	screensize = App::getInstance()->getScreenSize();
 
-    loadFonts();
-
 	// init those because they will move on the display.
 	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
@@ -34,6 +32,19 @@ GUIManager::GUIManager()
 	guiLoaderDescription = NULL;
 	info_none=NULL;
 	info_current=NULL;
+
+	//Init the fonts
+	guiFontCourier12 = NULL;
+    guiFontLarge28 = NULL;
+    guiFontDialog = NULL;
+	guiFont6 = NULL;
+	guiFont8 = NULL;
+	guiFont9 = NULL;
+	guiFont10 = NULL;
+	guiFont12 = NULL;
+	guiFont14 = NULL;
+	// Load the required font
+	guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
 
 	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timer2 = timer;
@@ -46,11 +57,10 @@ GUIManager::GUIManager()
     }
 
 	// Fake office style skin colors
-	guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
-	guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
-	guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
-
-
+	// We should allow creation of skins colors by the users or at least a choice of skins to use
+	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
+	//guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
+	//guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
 }
 
 GUIManager::~GUIManager()
@@ -298,12 +308,11 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 
 void GUIManager::setupEditorGUI()
 {
-//    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
-    //guienv->getSkin()->setFont(guiFontC12);
-	guienv->getSkin()->setFont(guiFont10);
+	
 	// Load textures
-	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+	//ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
 	if (info_none)
 		info_current=info_none;
@@ -320,8 +329,14 @@ void GUIManager::setupEditorGUI()
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 	guiLoaderWindow->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
 
-	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
-	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	//guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
+	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
+	guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	App::getInstance()->quickUpdate();
+
+	loadFonts();
+	guienv->getSkin()->setFont(guiFont10);
+	guiLoaderDescription->setText(L"Loading interface graphics...");
 
 	// quick update of the Irrlicht display while loading.
 	App::getInstance()->quickUpdate();
@@ -450,16 +465,18 @@ void GUIManager::createProjectTab()
 
 	// Tab description box text
 	IGUIStaticText * projectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des0")).c_str(),
-		core::rect<s32>(0,64,250,80),false,true,tabProject,-1);
-	projectTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	projectTabText->setOverrideColor(video::SColor(255,65,66,174));
+		core::rect<s32>(0,64,250,76),false,true,tabProject,-1);
+	//projectTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	//projectTabText->setOverrideColor(video::SColor(255,65,66,174));
+	projectTabText->setBackgroundColor(video::SColor(255,238,240,242));
+	projectTabText->setOverrideColor(video::SColor(255,86,95,109));
 	projectTabText->setOverrideFont(guiFont10);
 	projectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	// Buttons
 	 s32 x = 0;
 
-	mainToolbarPos.Y=5;
+	mainToolbarPos.Y=3;
 	// Close program
 	x += 12;
 	guiCloseProgram = guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
@@ -471,7 +488,8 @@ void GUIManager::createProjectTab()
 
 	IGUIStaticText * closeText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str(),
 		core::rect<s32>(x-5,36,x+40,65),false,true,tabProject,-1);
-	closeText->setOverrideColor(video::SColor(255,65,66,174));
+	//closeText->setOverrideColor(video::SColor(255,65,66,174));
+	closeText->setOverrideColor(video::SColor(255,64,64,64));
 	closeText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	closeText->setOverrideFont(guiFont9);
 
@@ -487,7 +505,8 @@ void GUIManager::createProjectTab()
 
 	IGUIStaticText * newPText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_new_project")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
-	newPText->setOverrideColor(video::SColor(255,65,66,174));
+	//newPText->setOverrideColor(video::SColor(255,65,66,174));
+	newPText->setOverrideColor(video::SColor(255,64,64,64));	
 	newPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	newPText->setOverrideFont(guiFont9);
 
@@ -504,7 +523,8 @@ void GUIManager::createProjectTab()
 
 	IGUIStaticText * loadPText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_load_project")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
-	loadPText->setOverrideColor(video::SColor(255,65,66,174));
+	//loadPText->setOverrideColor(video::SColor(255,65,66,174));
+	loadPText->setOverrideColor(video::SColor(255,64,64,64));
 	loadPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	loadPText->setOverrideFont(guiFont9);
 
@@ -521,7 +541,8 @@ void GUIManager::createProjectTab()
 
 	IGUIStaticText * savePText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_save_project")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
-	savePText->setOverrideColor(video::SColor(255,65,66,174));
+	//savePText->setOverrideColor(video::SColor(255,65,66,174));
+	savePText->setOverrideColor(video::SColor(255,64,64,64));
 	savePText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	savePText->setOverrideFont(guiFont9);
 
@@ -535,7 +556,7 @@ void GUIManager::createPlayTab()
 
 	//Play Game
 	s32 x = 12;
-	mainToolbarPos.Y=5;
+	mainToolbarPos.Y=3;
     guiPlayGame= guienv->addButton(myRect(x,mainToolbarPos.Y,32,32),
                                      tabPlayTool,
                                      BT_ID_PLAY_GAME,L"",
@@ -545,7 +566,8 @@ void GUIManager::createPlayTab()
 
 	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str(),
 		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	playGText->setOverrideColor(video::SColor(255,65,66,174));
+	//playGText->setOverrideColor(video::SColor(255,65,66,174));
+	playGText->setOverrideColor(video::SColor(255,64,64,64));
 	playGText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	playGText->setOverrideFont(guiFont9);
 
@@ -573,7 +595,8 @@ void GUIManager::createPlayTab()
 
 	IGUIStaticText * aboutBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_about")).c_str(),
 		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	aboutBText->setOverrideColor(video::SColor(255,65,66,174));
+	//aboutBText->setOverrideColor(video::SColor(255,65,66,174));
+	aboutBText->setOverrideColor(video::SColor(255,64,64,64));
 	aboutBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	aboutBText->setOverrideFont(guiFont9);
 
@@ -589,26 +612,32 @@ void GUIManager::createPlayTab()
 
 	IGUIStaticText * helpBText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_help")).c_str(),
 		core::rect<s32>(x-5,36,x+40,65),false,true,tabPlayTool,-1);
-	helpBText->setOverrideColor(video::SColor(255,65,66,174));
+	//helpBText->setOverrideColor(video::SColor(255,65,66,174));
+	helpBText->setOverrideColor(video::SColor(255,64,64,64));
 	helpBText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 
 }
 
 void GUIManager::createEnvironmentTab()
 {
+	mainToolbarPos.Y=3;
 	tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	// Tab description box text
 	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
-		core::rect<s32>(0,64,180,80),false,true,tabEnv,-1);
-	environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
+		core::rect<s32>(0,64,180,76),false,true,tabEnv,-1);
+	//environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	//environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
+	environmentTabText->setBackgroundColor(video::SColor(255,238,240,242));
+	environmentTabText->setOverrideColor(video::SColor(255,86,95,109));
 	environmentTabText->setOverrideFont(guiFont10);
 	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
-		core::rect<s32>(190,64,300,80),false,true,tabEnv,-1);
-	vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
+		core::rect<s32>(190,64,300,76),false,true,tabEnv,-1);
+	//vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	//vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
+	vegetationTabText->setBackgroundColor(video::SColor(255,238,240,242));
+	vegetationTabText->setOverrideColor(video::SColor(255,86,95,109));
 	vegetationTabText->setOverrideFont(guiFont10);
 	vegetationTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
@@ -626,7 +655,8 @@ void GUIManager::createEnvironmentTab()
 
 	IGUIStaticText * terrainSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	terrainSText->setOverrideColor(video::SColor(255,65,66,174));
+	//terrainSText->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText->setOverrideFont(guiFont9);
 
@@ -642,7 +672,8 @@ void GUIManager::createEnvironmentTab()
 
 	IGUIStaticText * terrainSText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_empty_segments")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText2->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText2->setOverrideFont(guiFont9);
 
@@ -658,7 +689,8 @@ void GUIManager::createEnvironmentTab()
 
 	IGUIStaticText * terrainTText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	terrainTText->setOverrideColor(video::SColor(255,65,66,174));
+	//terrainTText->setOverrideColor(video::SColor(255,65,66,174));
+	terrainTText->setOverrideColor(video::SColor(255,64,64,64));
 	terrainTText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainTText->setOverrideFont(guiFont9);
 
@@ -675,7 +707,8 @@ void GUIManager::createEnvironmentTab()
 
 	IGUIStaticText * paintVText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	paintVText->setOverrideColor(video::SColor(255,65,66,174));
+	//paintVText->setOverrideColor(video::SColor(255,65,66,174));
+	paintVText->setOverrideColor(video::SColor(255,64,64,64));
 	paintVText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	paintVText->setOverrideFont(guiFont9);
 }
@@ -685,17 +718,21 @@ void GUIManager::createObjectTab()
 	tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
 	// Tab description box text
 	IGUIStaticText * objectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des1")).c_str(),
-		core::rect<s32>(0,64,120,80),false,true,tabObject,-1);
-	objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
-	objectTabText->setOverrideColor(video::SColor(255,65,66,174));
+		core::rect<s32>(0,64,120,76),false,true,tabObject,-1);
+	//objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	//objectTabText->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText->setBackgroundColor(video::SColor(255,238,240,242));
+	objectTabText->setOverrideColor(video::SColor(255,86,95,109));
 	objectTabText->setOverrideFont(guiFont10);
 	objectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	// Tab description box text
 	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
-		core::rect<s32>(130,64,250,80),false,true,tabObject,-1);
-	objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
-	objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+		core::rect<s32>(130,64,250,76),false,true,tabObject,-1);
+	//objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
+	//objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText2->setBackgroundColor(video::SColor(255,238,240,242));
+	objectTabText2->setOverrideColor(video::SColor(255,86,95,109));
 	objectTabText2->setOverrideFont(guiFont10);
 	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
@@ -712,7 +749,8 @@ void GUIManager::createObjectTab()
 
 	IGUIStaticText * dynObjText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	dynObjText->setOverrideColor(video::SColor(255,65,66,174));
+	//dynObjText->setOverrideColor(video::SColor(255,65,66,174));
+	dynObjText->setOverrideColor(video::SColor(255,64,64,64));
 	dynObjText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	dynObjText->setOverrideFont(guiFont9);
 
@@ -730,7 +768,8 @@ void GUIManager::createObjectTab()
 
 	IGUIStaticText * editCharText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	editCharText->setOverrideColor(video::SColor(255,65,66,174));
+	//editCharText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharText->setOverrideColor(video::SColor(255,64,64,64));
 	editCharText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	editCharText->setOverrideFont(guiFont9);
 
@@ -748,7 +787,8 @@ void GUIManager::createObjectTab()
 
 	IGUIStaticText * editCharSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	editCharSText->setOverrideColor(video::SColor(255,65,66,174));
+	//editCharSText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharSText->setOverrideColor(video::SColor(255,64,64,64));
 	editCharSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	editCharSText->setOverrideFont(guiFont9);
 
@@ -770,7 +810,8 @@ void GUIManager::createObjectTab()
 
 	IGUIStaticText * editGlobSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	editGlobSText->setOverrideColor(video::SColor(255,65,66,174));
+	//editGlobSText->setOverrideColor(video::SColor(255,65,66,174));
+	editGlobSText->setOverrideColor(video::SColor(255,64,64,64));
 	editGlobSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	editGlobSText->setOverrideFont(guiFont9);
 
@@ -808,7 +849,8 @@ void GUIManager::createMainTabs()
 
 	IGUIStaticText * editConfig = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_config")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabConfig,-1);
-	editConfig->setOverrideColor(video::SColor(255,65,66,174));
+	//editConfig->setOverrideColor(video::SColor(255,65,66,174));
+	editConfig->setOverrideColor(video::SColor(255,64,64,64));
 	editConfig->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	editConfig->setOverrideFont(guiFont9);
 
@@ -1525,6 +1567,8 @@ void GUIManager::createConsole()
 	gui::IGUITabControl* control = guienv->addTabControl(myRect(20,40,750,340),consolewin,true,true);
 	gui::IGUITab* tab=control->addTab(LANGManager::getInstance()->getText("tab_console_message").c_str());
 	gui::IGUITab* tab2=control->addTab(LANGManager::getInstance()->getText("tab_console_log").c_str());
+	tab->setBackgroundColor(video::SColor(255,220,220,220));
+	tab->setDrawBackground(true);
 
 	control->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	
@@ -1836,12 +1880,6 @@ void GUIManager::setupGameplayGUI()
 	guiBtDialogCancel->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 	guidialog->setVisible(false);
 
-	//////
-	stringw text = L"Current screen size is:";
-	text.append((stringw)screensize.Width);
-	text.append(L",");
-	text.append((stringw)screensize.Height);
-	this->setConsoleText(text.c_str(),SColor(255,0,0,255));
 }
 
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
@@ -2146,10 +2184,8 @@ void GUIManager::hideBlackScreen()
 
 void GUIManager::loadFonts()
 {
-	///Load Fonts
-    guiFontCourier12 = guienv->getFont("../media/fonts/courier12.xml");
-    guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
-    guiFontLarge28 = guienv->getFont("../media/fonts/large28.xml");
+	guiFontCourier12 = guienv->getFont("../media/fonts/courier12.xml");
+	guiFontLarge28 = guienv->getFont("../media/fonts/large28.xml");
     guiFontDialog = guienv->getFont("../media/fonts/dialog.xml");
 	guiFont6 = guienv->getFont("../media/fonts/Arial6.xml");
 	guiFont8 = guienv->getFont("../media/fonts/Arial8.xml");
@@ -2157,6 +2193,7 @@ void GUIManager::loadFonts()
 	guiFont10 = guienv->getFont("../media/fonts/Arial10.xml");
 	guiFont12 = guienv->getFont("../media/fonts/Arial12.xml");
 	guiFont14 = guienv->getFont("../media/fonts/Arial14.xml");
+
 
 	if (guiFont10)
 		guiFont10->setKerningWidth(-1);

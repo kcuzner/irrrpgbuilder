@@ -150,6 +150,11 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 		createEmptySegment(vector3df(pos.X+1,0,pos.Z));
 		createEmptySegment(vector3df(pos.X,0,pos.Z-1));
 		createEmptySegment(vector3df(pos.X,0,pos.Z+1));
+
+		createEmptySegment(vector3df(pos.X+1,0,pos.Z+1));
+		createEmptySegment(vector3df(pos.X-1,0,pos.Z+1));
+		createEmptySegment(vector3df(pos.X-1,0,pos.Z-1));
+		createEmptySegment(vector3df(pos.X+1,0,pos.Z-1));
 	}
 }
 

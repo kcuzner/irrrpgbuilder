@@ -126,6 +126,7 @@ class GUIManager
 
     	void drawPlayerStats();
 		bool isGuiPresent(vector2d<s32> mousepos);
+		void createConsole();
 
 #ifdef EDITOR
 		void setupEditorGUI();
@@ -142,7 +143,6 @@ class GUIManager
 		void createDynamicObjectChooserGUI();
 		void createContextMenuGUI();
 		void createCodeEditorGUI();
-		void createConsole();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
         f32 getScrollBarValue(GUI_ID id);
