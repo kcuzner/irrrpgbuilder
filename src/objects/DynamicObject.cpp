@@ -221,6 +221,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
 			fakeShadow->setScale(vector3df(0.75f,0.75f,0.75f));
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+			fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 			
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
@@ -233,7 +234,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
-		node->setMaterialFlag(EMF_LIGHTING, false);
+		node->setMaterialFlag(EMF_LIGHTING, true);
 		node->setMaterialFlag(EMF_ANTI_ALIASING,true);
 
 		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));

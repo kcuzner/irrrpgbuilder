@@ -436,8 +436,9 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	    }
 
 		//if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
-		if(mb_vertices[j].Pos.Y > nodescale) mb_vertices[j].Pos.Y = nodescale*0.75f;
-	    if(mb_vertices[j].Pos.Y < -(nodescale*0.1f)) mb_vertices[j].Pos.Y = -(nodescale*0.12f);
+		// Fix up/down limits
+		if(mb_vertices[j].Pos.Y > nodescale*0.75f) mb_vertices[j].Pos.Y = nodescale*0.75f;
+	    if(mb_vertices[j].Pos.Y < -(nodescale*0.12f)) mb_vertices[j].Pos.Y = -(nodescale*0.12f);
 	}
 
 
@@ -478,34 +479,6 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
                 if(mb_vertices[j].Pos.Y >= value) mb_vertices[j].Pos.Y = value;
             }
 	    }
-	}
-
-	recalculate();
-}
-
-void TerrainTile::transformMeshDOWN(vector3df clickPos, f32 radius, f32 strength)
-{
-
-	//printf ("this was called to down\n");
-    IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
-
-	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
-
-	u16* mb_indices  = meshBuffer->getIndices();
-
-	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
-	{
-	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
-        clickPos.Y = realPos.Y;
-	    if(realPos.getDistanceFrom(clickPos) < radius)
-	    {
-            //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
-			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
-	        mb_vertices[j].Pos.Y -= strength * ratio / (scale/nodescale);
-	    }
-
-	    //if(mb_vertices[j].Pos.Y < 0 ) mb_vertices[j].Pos.Y = 0;
-	    cout << mb_vertices[j].Pos.Y << endl;
 	}
 
 	recalculate();

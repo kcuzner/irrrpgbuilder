@@ -45,7 +45,7 @@ namespace irr
 			f32 halfHeight = (f32)m_gDim.Height/2; 
 			Box.MinEdge.set(-halfWidth,-halfHeight,-1.0); 
 			Box.MaxEdge.set(halfWidth,halfHeight,1.0); 
-			SceneManager->registerNodeForRendering(this, ESNRP_SHADOW);
+			SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT);
 		} 
 
 		//! destructor 
@@ -62,7 +62,7 @@ namespace irr
 		void HealthSceneNode::OnRegisterSceneNode() 
 		{ 
 			if (IsVisible) 
-				SceneManager->registerNodeForRendering(this, ESNRP_SHADOW); 
+				SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT); 
 
 			ISceneNode::OnRegisterSceneNode(); 
 		} 

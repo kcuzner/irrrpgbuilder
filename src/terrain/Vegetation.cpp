@@ -49,11 +49,13 @@ Vegetation::Vegetation(int type)
 	leafs = smgr->addOctreeSceneNode(leafsMesh,trunk,-1);
 	leafs->setAutomaticCulling(EAC_FRUSTUM_BOX);
 	leafs->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+	leafs->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	leafs->setMaterialFlag(EMF_FOG_ENABLE,true);
 
     //Fake Shadow
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/vegetation/shadow.obj"),trunk);
     fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+	fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
     fakeShadow->setPosition(vector3df(0,(f32)0.03 + (rand()%10)*(f32)0.01 ,0));
 	fakeShadow->setAutomaticCulling(EAC_FRUSTUM_BOX);
 

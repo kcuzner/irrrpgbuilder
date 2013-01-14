@@ -648,15 +648,7 @@ void App::setScreenSize(dimension2d<u32> size)
 	{
 		GUIManager::getInstance()->updateGuiPositions(size);
 		screensize = size;
-		stringw text = L"Current screen size is:";
-		text.append((stringw)screensize.Width);
-		text.append(L",");
-		text.append((stringw)screensize.Height);
-		// Correct the aspect ratio of the camera when the screen is changed.
-
 		CameraSystem::getInstance()->fixRatio(driver);
-
-		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,0,255));
 	}
 }
 
@@ -851,6 +843,18 @@ App* App::getInstance()
 //! Get the 3D mouse coordinate on the ground or object (ray test)
 MousePick App::getMousePosition3D(int id)
 {
+
+	// Initialize the data
+	MousePick result;
+	result.pickedNode=NULL;
+	result.pickedPos=vector3df(0,0,0);
+
+	core::vector3df intersection=vector3df(0,0,0);
+	core::triangle3df hitTriangle=triangle3df(vector3df(0,0,0),vector3df(0,0,0),vector3df(0,0,0));
+
+	ISceneNode* tempNode=NULL;
+
+	// Get the cursor 2D coordinates
 	position2d<s32> pos=device->getCursorControl()->getPosition();
 
 	// For the ray test, we should hide the player (And the decors element that we don't want to select)
@@ -861,16 +865,13 @@ MousePick App::getMousePosition3D(int id)
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
 	// Extend the ray as long as possible to get the terrain
-	ray.end=ray.start+(ray.getVector()*250000);
+	//ray.end=ray.start+(ray.getVector()*250000);
 
-	core::vector3df intersection;
-	core::triangle3df hitTriangle;
-
-	ISceneNode* tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
+	tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
 		intersection,
 		hitTriangle,
 		id);
-	MousePick result;
+	
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
@@ -880,22 +881,18 @@ MousePick App::getMousePosition3D(int id)
 
 	if(tempNode!=NULL)
 	{
+		// Ray test passed, returning the results
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
-		f32 len = ray.getLength();
-
-		//printf ("Passed the screen ray test! Ray len is: %f \n",len);
-
 		return result;
 	}
 	else
 	{
-		// Failed the ray test
+		// Failed the ray test, returning the previous results
 		result.pickedPos = lastMousePick.pickedPos;
 		result.pickedNode = NULL;
-		f32 len = ray.getLength();
+		//f32 len = ray.getLength();
 		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
-
 		return result;
 	}
 }
@@ -1159,8 +1156,6 @@ void App::playGame()
 		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 
-		// Execute the script in the global
-		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 		//LuaGlobalCaller::getInstance()->usePlayerItem("onLoad");
 
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)

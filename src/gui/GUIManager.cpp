@@ -893,10 +893,10 @@ void GUIManager::createTerrainToolbar()
 		//myRect(driver->getScreenSize().Width - 170,
 		myRect(displaywidth - 170,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()+3,
 		170,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
-		displayheight-guiMainToolWindow->getClientRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
 		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str());
 
 
@@ -947,8 +947,8 @@ void GUIManager::createTerrainToolbar()
 	guiTerrainBrushRadius->setLargeStep(5);
 
 	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
-	guiTerrainBrushPlateau->setMin(-100);
-	guiTerrainBrushPlateau->setMax(1024);
+	guiTerrainBrushPlateau->setMin(-120);
+	guiTerrainBrushPlateau->setMax(768);
 	guiTerrainBrushPlateau->setPos(-10);
 	guiTerrainBrushPlateau->setSmallStep(1);
 	guiTerrainBrushPlateau->setLargeStep(5);
@@ -957,15 +957,15 @@ void GUIManager::createTerrainToolbar()
                                                          myRect(10,mainToolbarPos.Y+190,150,20),
                                                          false,true, guiTerrainToolbar);
 
-    ///Vegetation toolbar
+	///Vegetation toolbar (Not yet implemented, will have a choice of vegetation and brush)
     guiVegetationToolbar = guienv->addWindow(
 		//myRect(driver->getScreenSize().Width - 170,
 		myRect(displaywidth - 170,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()+3,
 		170,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
-		displayheight-guiMainToolWindow->getClientRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
 		false,L"Vegetation tool");
 
     guiVegetationToolbar->getCloseButton()->setVisible(false);
@@ -991,9 +991,9 @@ void GUIManager::createDynamicObjectInfoGUI()
 	// --- Dynamic Objects Info panel (display info about the current selected template object)
     rect<s32> windowRect =
 	myRect(displaywidth - 540,
-	guiMainToolWindow->getClientRect().getHeight()+4,
+	guiMainToolWindow->getClientRect().getHeight()+3,
 	320,
-	displayheight-guiMainToolWindow->getClientRect().getHeight()-24);
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
 	guiDynamicObjectsWindowInfo = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_INFO);
 	guiDynamicObjectsWindowInfo->setDraggable(false);
@@ -1070,9 +1070,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 {
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect = myRect(displaywidth - 220,
-	guiMainToolWindow->getClientRect().getHeight()+4,
+	guiMainToolWindow->getClientRect().getHeight()+3,
 	220,
-	displayheight-guiMainToolWindow->getClientRect().getHeight()-24);
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
     guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -1613,14 +1613,18 @@ void GUIManager::setupGameplayGUI()
     //guienv->getSkin()->setFont(guiFontC12);
 	guienv->getSkin()->setFont(guiFontCourier12);
 	// Load textures
-	ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
+	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 
 	//LOADER WINDOW
 	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 
-	guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
+	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
+	guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	App::getInstance()->quickUpdate();
+
+	loadFonts();
 	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
 	//printf("The GUI should display from here...\n");
 	// quick update
@@ -2106,14 +2110,16 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			break;
 
 		case CONSOLE:
+			// Show hide the console. If it`s visible, focus on it
 			consolewin->setVisible(visible);
+			if (visible) 
+				guienv->setFocus(consolewin);
 			break;
 
 		case BT_ID_VIEW_ITEMS:
 		{
 
-
-            guiBtViewItems->setVisible(visible);
+	        guiBtViewItems->setVisible(visible);
 			// Update the gold items
 			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 			playerMoney += Player::getInstance()->getObject()->getMoney();
