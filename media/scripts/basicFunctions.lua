@@ -76,7 +76,7 @@ function walkRandomly(radius, speed)
   if(radius == nil) then radius = 250 end
   if(speed == nil) then speed = 0.8 end
 
-  if(distanceFrom(randomPointX,0,randomPointZ) < 32) then
+  if(distanceFrom(randomPointX,0,randomPointZ) < 80) then
     randomPointX = IRBOriginalPositionX + math.random(-radius,radius)
     randomPointZ = IRBOriginalPositionZ + math.random(-radius,radius)
   end
@@ -86,11 +86,17 @@ function walkRandomly(radius, speed)
     randomPointZ = IRBOriginalPositionZ
   end
   if (hasReached()) then
-  	walkTo(randomPointX,0,randomPointZ)
-    end
-  
-  --lookAt(randomPointX,0,randomPointZ)
-  --move(speed)
+    res = math.random(0,10)
+	if (res>1) then 
+	    walkidle=true
+		setAnimation('idle')
+	else
+	    walkidle=false
+		walkTo(randomPointX,0,randomPointZ)
+	    randomPointX = IRBOriginalPositionX + math.random(-radius,radius)
+        randomPointZ = IRBOriginalPositionZ + math.random(-radius,radius)
+	end	
+  end
 end
 
 --with this function you can schedule an function call, for example:

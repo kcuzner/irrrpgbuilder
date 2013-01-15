@@ -847,6 +847,12 @@ bool DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
 
+	if (attackdelaystate)
+	{
+		//printf("The attack has been done state is active no animation is permitted!\n");
+		return false;
+	}
+
 	// Reset the walktimer if the walk anim is triggered (for the time delay calculation)
 	if (animName=="walk" || animName=="run")
 		lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -863,9 +869,11 @@ bool DynamicObject::setAnimation(stringc animName)
 	// Don't call the animation if the result is not positive (result coming from the combat class)
 	if (animName=="attack" && oldAnimName!="attack")
 	{
+
 		//When the attack animation is triggered, the class interrogate the combat class and check
 		//that the attack is successful before starting it
-		if (objectType==OBJECT_TYPE_PLAYER)
+		attackresult = 0;
+		if (objectType==OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
 			if (enemyUnderAttack)
 			{
@@ -881,15 +889,16 @@ bool DynamicObject::setAnimation(stringc animName)
 			}
 		} 
 			
-		if (objectType!=OBJECT_TYPE_PLAYER)
+		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
 				attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-				if (attackresult>0)
+				if (attackresult<1)
 					Player::getInstance()->getObject()->setObjectLabel("Miss!");
+				//printf("Going for attack animation: %s, %d\n",this->getName().c_str(),attackresult);
 		}
 		// Check to see if the attack was successful. if not, then put idle from the previous attack move
 		// or use the old animation
-		if (!attackresult)
+		/*if (!attackresult)
 		{ 
 			if (oldAnimName=="attack")
 				animName="idle";
@@ -899,7 +908,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		{
 			this->setWalkTarget(this->getPosition());
 			reached=true;
-		}
+		}*/
 	
 	}
 	if (animName=="die")
@@ -932,14 +941,9 @@ bool DynamicObject::setAnimation(stringc animName)
 		return false;
 	}
 
-	if (attackdelaystate)
-	{
-		//printf("The attack has been done state is active no animation is permitted!\n");
-		return false;
-	}
 
 	// This will activate the "hurt" stun state
-	if (animName=="hurt" && !stunstate)
+	if (oldAnimName == "hurt" && animName=="hurt" && !stunstate)
 	{
 		stunstate=true;
 		timerStun = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -947,10 +951,14 @@ bool DynamicObject::setAnimation(stringc animName)
 	}
 
 	// Activate the "attack delay" after the attack is initialized
-	if (animName=="attack" && !attackdelaystate)
+	//if (oldAnimName=="attack" && !attackdelaystate)
+	if (oldAnimName == "attack" && animName == "attack" &&! attackdelaystate)
 	{
 		attackdelaystate=true;
 		timer_attackdelay=App::getInstance()->getDevice()->getTimer()->getRealTime();
+	} else
+	{
+		attackdelaystate=false;
 	}
 
 	// When a character is dead, don't allow anything exept prespawn or despawn
@@ -1064,8 +1072,12 @@ void DynamicObject::checkAnimationEvent()
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
 		//This set the animation back to idle when it's played
-		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-2)
+		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-1)
+		{	
+			//nodeAnim->setCurrentFrame(currentAnim.startFrame);
 			this->setAnimation("idle");
+			//printf("Reset animation to idle here\n");
+		}
 
 		// Set a default attack event if there is none defined.
 		if (currentAnim.attackevent==-1)
@@ -1432,8 +1444,8 @@ void DynamicObject::update()
 	
 		//check if the node is culled -- Disable node culling for the moment (12/08/12) Some character have weird moves
 		//culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-		if (!nodeLuaCulling && culled) 
-			setAnimation("idle");
+		//if (!nodeLuaCulling && culled) 
+		//	setAnimation("idle");
 
 		// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 		//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
@@ -1523,6 +1535,7 @@ void DynamicObject::update()
 			attackdelaystate=false;
 			//setAnimation(this->oldAnimName);
 			setAnimation("idle");
+			//printf("Attack delay for %s is %d mil\n",this->getName().c_str(),this->properties.attackdelay);
 		}
 
 	}
