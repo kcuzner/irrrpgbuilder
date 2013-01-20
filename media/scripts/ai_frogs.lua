@@ -32,11 +32,11 @@ function onUpdate()
   end
   local x,y,z = getObjectPosition("player")
    if(distanceFrom(x,y,z) < 288 and getPlayerLife()>0) then 
-    if(distanceFrom(x,y,z) < 50) then
-	  print("Frog now attack!")
+    if(distanceFrom(x,y,z) < 75) then
+	  --print("Frog now attack!")
 	  setAnimation("attack")
 	else
-      chaseObject("player",0.8,36,800)
+      chaseObject("player",0.8,75,800)
     end
 	setObjectLabel(name)
     showObjectLabel()

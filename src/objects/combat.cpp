@@ -64,7 +64,7 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	temptext+=" should have ";
 	temptext+=stringw(damage);
 	temptext+=" points of damage!!.";
-	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 
 /*	// hit probability
 	temptext=stringw(attacker->getName().c_str());
@@ -93,7 +93,7 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		temptext+=" missed ";
 		temptext+=stringw(defender->getName().c_str());
 		temptext+="!";
-		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
+		//GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
 		#endif
 	}
 	life -= damage;
@@ -105,7 +105,7 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		temptext+=" lost ";
 		temptext+=stringw(damage);
 		temptext+=" points of life!!.";
-		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
+		//GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
 	}
 	#endif
 
@@ -152,7 +152,7 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 		temptext+=" was killed by ";
 		temptext+=stringw(attacker->getName().c_str());
 		temptext+="!!.";
-		GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
+		//GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,160,0,0));
 		
 		// Set the animation for the attacker when the defender is dead
 		//defender=NULL;
@@ -169,11 +169,11 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	temptext+=" and defender: ";
 	temptext+=stringw(defender->getName().c_str());
 	temptext+="!!!";
-	GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText(temptext.c_str(),SColor(255,128,0,128));
 	
-	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
-	GUIManager::getInstance()->setConsoleText("  COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT",SColor(255,128,0,128));
-	GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText("  COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT - COMBAT",SColor(255,128,0,128));
+	//GUIManager::getInstance()->setConsoleText("----------------------------------------------------------------",SColor(255,128,0,128));
 	
 	//Player::getInstance()->updateDisplay();
 	return damage;
@@ -230,11 +230,11 @@ u32 Combat::chances(u32 min, u32 max)
 // Use a random value to determinate the result
 // Example damage done ranging from 10 to 100 points min=10, max=100
 {
-	u32 result = (max-min) + min;
+	u32 result = (max-min);
 	if (result<1)
 		return 0;
 	else
-		return rand() % result;
+		return min + (rand() % result);
 }
 
 void Combat::dumpProperties(DynamicObject* object)

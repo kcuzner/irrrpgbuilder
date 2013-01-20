@@ -847,9 +847,34 @@ bool DynamicObject::setAnimation(stringc animName)
 	ISkinnedMesh* skin = NULL;
 	ISkinnedMesh* defaultskin = NULL;
 
-	if (attackdelaystate)
+	if (animName=="die")
+	{
+		// REmove the collision animator
+		node->removeAnimator(animator);
+		
+		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
+		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		
+		// disable the stun state if present. Dying takes over
+		stunstate=false;
+		attackdelaystate=false;
+
+		if (objectType!=OBJECT_TYPE_PLAYER)
+			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		   
+			
+	}
+
+	if (attackdelaystate && animName!="hurt" && animName!="die" )
 	{
 		//printf("The attack has been done state is active no animation is permitted!\n");
+		return false;
+	}
+
+	// Return if the character is stunned
+	if (stunstate && animName!="die")
+	{
+		//printf("The stun state is active no animation is permitted!\n");
 		return false;
 	}
 
@@ -877,8 +902,12 @@ bool DynamicObject::setAnimation(stringc animName)
 		{
 			if (enemyUnderAttack)
 			{
+				// Call the combat class to evaluate the damage that should be done BEFORE the attack anim
+				// is done.
+				// If the attack is missed, we could play a specific animation for this (to do)
+				// Damage is done in the "animation" at the "attack event"
 				attackresult=Combat::getInstance()->attack(this,enemyUnderAttack);
-				if (attackresult>0)
+				if (attackresult==0)
 					enemyUnderAttack->setObjectLabel("Miss!");
 				else
 				{
@@ -892,8 +921,15 @@ bool DynamicObject::setAnimation(stringc animName)
 		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
 				attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-				if (attackresult<1)
+				if (attackresult==0)
 					Player::getInstance()->getObject()->setObjectLabel("Miss!");
+				else
+				{
+					stringc textdam = "-";
+					textdam.append(stringc(attackresult));
+					Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
+				}
+
 				//printf("Going for attack animation: %s, %d\n",this->getName().c_str(),attackresult);
 		}
 		// Check to see if the attack was successful. if not, then put idle from the previous attack move
@@ -911,35 +947,8 @@ bool DynamicObject::setAnimation(stringc animName)
 		}*/
 	
 	}
-	if (animName=="die")
-	{
-		// REmove the collision animator
-		node->removeAnimator(animator);
-		// debug output to the console
-		stringw text = L"Die animation for character: ";
-		text.append(getNode()->getName());
-		text.append(L" encountered.");
-		GUIManager::getInstance()->setConsoleText(text.c_str(),SColor(255,0,128,0));
-		
-		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
-		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		
-		// disable the stun state if present. Dying takes over
-		stunstate=false;
-		attackdelaystate=false;
 
-		if (objectType!=OBJECT_TYPE_PLAYER)
-			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-		   
-			
-	}
-
-	// Return if the character is stunned
-	if (stunstate)
-	{
-		//printf("The stun state is active no animation is permitted!\n");
-		return false;
-	}
+	
 
 
 	// This will activate the "hurt" stun state
@@ -962,10 +971,9 @@ bool DynamicObject::setAnimation(stringc animName)
 	}
 
 	// When a character is dead, don't allow anything exept prespawn or despawn
-	if (currentAnimation==OBJECT_ANIMATION_DIE)
+	if (currentAnimation==OBJECT_ANIMATION_DIE && animName!="prespawn" && animName!="despawn" )
 	{
-		if  (animName!="prespawn" && animName!="despawn")
-			return false;
+		return false;
 	}
 
 
@@ -1071,9 +1079,15 @@ void DynamicObject::checkAnimationEvent()
 	// Check if the current animation have an attack event
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
+		
 		//This set the animation back to idle when it's played
 		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-1)
 		{	
+			if (attackActivated)
+			{
+				attackActivated=false;
+				GUIManager::getInstance()->setConsoleText(core::stringw(L"Error! Attack was not triggered!"),video::SColor(255,0,0,0));
+			}
 			//nodeAnim->setCurrentFrame(currentAnim.startFrame);
 			this->setAnimation("idle");
 			//printf("Reset animation to idle here\n");
@@ -1082,12 +1096,15 @@ void DynamicObject::checkAnimationEvent()
 		// Set a default attack event if there is none defined.
 		if (currentAnim.attackevent==-1)
 		{
+			GUIManager::getInstance()->setConsoleText(core::stringw(L"No attack defined!"),video::SColor(255,0,0,0));
 			currentAnim.attackevent = currentAnim.startFrame+1;
 		}
 
 		// This only mean that the attack animation is still looking for the event
-		if (nodeAnim->getFrameNr() < currentAnim.attackevent) 
+		if (nodeAnim->getFrameNr() < currentAnim.attackevent+1) 
+		{
 			attackActivated=true;
+		}
 		
 		if ((nodeAnim->getFrameNr() > currentAnim.attackevent) && attackActivated)
 		{
@@ -1107,15 +1124,22 @@ void DynamicObject::checkAnimationEvent()
 					{
 						int resultlife = enemyUnderAttack->getLife()-attackresult;
 						enemyUnderAttack->setLife(resultlife);
+
+						core::stringw textresult = core::stringw(L"The player attacked ").append(enemyUnderAttack->getName()).append(L" and caused ")
+							.append(core::stringw(attackresult)).append(L" points of damage!");
+						GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 						
 						if (resultlife>0)
 						{
 							enemyUnderAttack->setAnimation("hurt");
+							//GUIManager::getInstance()->setConsoleText(core::stringw(L"Should do hurt anim"),video::SColor(255,0,0,65));
 						}
 						else
 						{
+							GUIManager::getInstance()->setConsoleText(core::stringw(L"The player killed ").append(core::stringw(enemyUnderAttack->getName())
+								.append(L"!")),video::SColor(255,120,0,0));
 							enemyUnderAttack->setAnimation("die");
-							this->setAnimation("idle");
+							this->setAnimation("idle2");
 							enemyUnderAttack=NULL;
 						}
 
@@ -1126,6 +1150,12 @@ void DynamicObject::checkAnimationEvent()
 				{
 					int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
 					Player::getInstance()->getObject()->setLife(resultlife);
+
+					// When damage is done, the defender will look (turn to look at) at his opponent
+					Player::getInstance()->getObject()->lookAt(this->getPosition());
+
+					core::stringw textresult = core::stringw(getName()).append(L" attacked the player and caused ").append(core::stringw(attackresult)).append(L" points damage!");
+					GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 					
 					if (resultlife>0)
 					{
@@ -1135,6 +1165,19 @@ void DynamicObject::checkAnimationEvent()
 						Player::getInstance()->getObject()->setAnimation("die");
 						
 				}
+			}
+			else
+			{
+				core::stringw textresult = L"";
+				if (enemyUnderAttack)
+				{
+					textresult = core::stringw(getName()).append(L" attacked ").append(core::stringw(enemyUnderAttack->getName()))
+						.append(L" and missed! ");					
+				}
+				else
+					textresult = core::stringw(getName()).append(L" attacked the player and missed!");	
+
+				GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 			}
 		}
 	}
@@ -1527,11 +1570,8 @@ void DynamicObject::update()
 
 	if (attackdelaystate)
 	{
-		// 400 ms default delay for hurt
 		if (timerobject-this->timer_attackdelay>this->properties.attackdelay)
 		{
-			//printf ("Disabling the attack retention...\n");
-			// Disable the stun state and restore the previous animation
 			attackdelaystate=false;
 			//setAnimation(this->oldAnimName);
 			setAnimation("idle");
@@ -1543,8 +1583,8 @@ void DynamicObject::update()
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
-	if (this->objectType==OBJECT_TYPE_PLAYER)
-		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.15f);	
+	if (this->objectType==OBJECT_TYPE_PLAYER )//|| this->objectType==OBJECT_TYPE_NPC)
+		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);	
 }
 
 void DynamicObject::updateRotation()

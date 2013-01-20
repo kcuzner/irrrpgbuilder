@@ -6,11 +6,11 @@ function setProperties()
 	setPropertie("life",25) -- current life of the NPC
 	setPropertie("maxlife",25) -- current Maximum life of this NPC
 	setPropertie("experience",10) -- given experience to attacker if killed
-	setPropertie("mindamage",1) -- minimum damage inflicted
-	setPropertie("maxdamage",3) -- maximum damage inflicted
+	setPropertie("mindamage",3) -- minimum damage inflicted when hit
+	setPropertie("maxdamage",5) -- maximum damage inflicted when hit
 	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
-	setPropertie("hit_prob",60) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
-	setPropertie("dodge_prob",12) -- Dodge probability, will lower the hit probability of the attacker
+	setPropertie("hit_prob",75) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
+	setPropertie("dodge_prob",15) -- Dodge probability, will lower the hit probability of the attacker
 end
 
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user
