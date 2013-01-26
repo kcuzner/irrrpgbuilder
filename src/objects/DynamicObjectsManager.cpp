@@ -321,6 +321,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
                 }
         }
 
+		/*
 		if (playercount>0)
 		{
 			printf (">>>>> Current player count is: %d\n",playercount);
@@ -342,6 +343,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		}
 
 		printf (">>>>> Total objects in this set: %d\n",linecount);
+		*/
 
         if (xml)
                 xml->drop(); // don't forget to delete the xml reader

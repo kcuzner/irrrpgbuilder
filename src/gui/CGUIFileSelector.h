@@ -140,7 +140,12 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         */
         bool matchesFileFilter(core::stringw s, core::stringw f);
         
-      /**
+		/**
+		\Check if the selected file exist in the filelist
+		*/
+      bool checkExistingFile();
+		
+		/**
         \brief Fills the listbox with files.
         */
       void fillListBox();

@@ -258,6 +258,16 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			}
 			break;
 
+		case EGET_MESSAGEBOX_OK:
+				sendSelectedEvent();
+				remove();
+			break;
+
+		case EGET_MESSAGEBOX_YES:
+				sendSelectedEvent();
+				remove();
+			break;
+
 		case EGET_ELEMENT_FOCUS_LOST:
 			Dragging = false;
 			break;
@@ -284,7 +294,11 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 						if (strw[strw.size()-1] != '/')
 							strw += "/";
 						fullpathname = strw+FileNameText->getText();
+						// Temporary: Will cancel the save if the file exists.
+						if (checkExistingFile())
+							return true;
 					}
+					
 					if (FileSystem)
 					{
 						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
@@ -304,6 +318,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					fullpathname = strw+FileNameText->getText();
 					fullpathname+=".";
 					fullpathname+=FileFilters[i].FileExtension;
+					
 					sendSelectedEvent();
 					remove();
 					return true;
@@ -668,6 +683,21 @@ bool CGUIFileSelector::matchesFileFilter(core::stringw s, core::stringw f)
 	return f.equals_ignore_case(core::stringw(&s.c_str()[pos+1]));
 }
 
+//! Check if the selected file exist in the filelist
+bool CGUIFileSelector::checkExistingFile()
+{
+	s32 found=FileList->findFile(fullpathname,false);
+	if (found>0)
+	{
+		Environment->addMessageBox(core::stringw("Warning").c_str(),core::stringw("Do you really want to overwrite this file?!").c_str(),
+			false,EMBF_OK+EMBF_CANCEL, this);
+		return true;
+	}
+	else
+		return false;
+
+}
+
 //! fills the listbox with files.
 void CGUIFileSelector::fillListBox()
 {
@@ -859,35 +889,35 @@ void CGUIFileSelector::populatePCDrives()
 		dr_type=GetDriveType((LPWSTR)temp);
 		switch(dr_type) {
 			case 0: // Unknown
-				printf("%s : Unknown Drive type\n",temp);
+				//printf("%s : Unknown Drive type\n",temp);
 				break;
 
 			case 1: // Invalid
-				printf("%s : Drive is invalid\n",temp);
+				//printf("%s : Drive is invalid\n",temp);
 				break;
 
 			case 2: // Removable Drive
-				printf("%s : Removable Drive\n",temp);
+				//printf("%s : Removable Drive\n",temp);
 				DriveBox->addItem(temp);
 				break;
 
 			case 3: // Fixed
-				printf("%s : Hard Disk (Fixed)\n",temp);
+				//printf("%s : Hard Disk (Fixed)\n",temp);
 				DriveBox->addItem(temp);
 				break;
 
 			case 4: // Remote
-				printf("%s : Remote (Network) Drive\n",temp);
+				//printf("%s : Remote (Network) Drive\n",temp);
 				DriveBox->addItem(temp);
 				break;
 
 			case 5: // CDROM
-				printf("%s : CD-Rom/DVD-Rom\n",temp);
+				//printf("%s : CD-Rom/DVD-Rom\n",temp);
 				DriveBox->addItem(temp);
 				break;
 
 			case 6: // RamDrive
-				printf("%s : Ram Drive\n",temp);
+				//printf("%s : Ram Drive\n",temp);
 				DriveBox->addItem(temp);
 				break;
 
@@ -996,8 +1026,8 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		// If the "ascii" code is "normal then append the letter only
 		if (code>0)
 			result.append(test);
-		if (code<0)
-			printf("============================\nThe code is: %d\n==============================\n",code);
+		//if (code<0)
+			//printf("============================\nThe code is: %d\n==============================\n",code);
 #ifdef WIN32
 		// if the result give < 0 then it look like an accented letter, then convert
 		

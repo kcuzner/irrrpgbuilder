@@ -75,10 +75,10 @@
 		<text id="msg_error" str="Error"/>
 		<text id="msg_invalid_project_file" str="Invalid Project File"/>
 		<text id="msg_override_project" str="Save current project?"/>
-		<text id="msg_saved_ok" str="Saved successfully!"/>
+		<text id="msg_saved_ok" str=" saved successfully!"/>
 		<text id="msg_new_project_name" str="Input project name:"/>
 		<text id="msg_loaded_error" str="Loaded Error!"/>
-		<text id="msg_loaded_ok" str="Loaded successfully!"/>
+		<text id="msg_loaded_ok" str=" loaded successfully!"/>
 		<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
 		<text id="txt_dynobjsel" str="Dynamic object selection" />
 		<text id="txt_objectcol" str="Object collection" />
@@ -232,10 +232,10 @@
 		<text id="msg_error" str="Erro"/>
 		<text id="msg_invalid_project_file" str="Arquivo de Projeto Invalido"/>
 		<text id="msg_override_project" str="Salvar o projeto atual antes de prosseguir?"/>
-		<text id="msg_saved_ok" str="Salvo com sucesso!"/>
+		<text id="msg_saved_ok" str=" salvo com sucesso!"/>
 		<text id="msg_new_project_name" str="Insira o nome do Projeto:"/>
 		<text id="msg_loaded_error" str="Erro ao Carregar!"/>
-		<text id="msg_loaded_ok" str="Carregado com sucesso!"/>
+		<text id="msg_loaded_ok" str=" carregado com sucesso!"/>
 		<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
 		<text id="txt_dynobjsel" str="Dinâmica de seleção de objeto" />
 		<text id="txt_dynobjcur" str="Atual modelo" />
@@ -389,10 +389,10 @@
 		<text id="msg_error" str="Erreur"/>
 		<text id="msg_invalid_project_file" str="Fichier projet invalide!"/>
 		<text id="msg_override_project" str="Sauver le projet actuel?"/>
-		<text id="msg_saved_ok" str="Sauvegarde réussie!"/>
+		<text id="msg_saved_ok" str=" sauvegarde réussie!"/>
 		<text id="msg_new_project_name" str="Entrez le nom du projet:"/>
 		<text id="msg_loaded_error" str="Erreur chargement!"/>
-		<text id="msg_loaded_ok" str="Chargement réussi!"/>
+		<text id="msg_loaded_ok" str=" chargement réussi!"/>
 		<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
 		<text id="txt_dynobjsel" str="Sélection d'objet dynamique" />
 		<text id="txt_dynobjcur" str="Modèle actuel" />
@@ -546,10 +546,10 @@
 		<text id="msg_error" str="Fehler"/>
 		<text id="msg_invalid_project_file" str="Ungueltige Projektdatei"/>
 		<text id="msg_override_project" str="Das aktuelle Projekt speichern?"/>
-		<text id="msg_saved_ok" str="Speichern erfolgreich!"/>
+		<text id="msg_saved_ok" str=" speichern erfolgreich!"/>
 		<text id="msg_new_project_name" str="Geben Sie den Projektnamen ein:"/>
 		<text id="msg_loaded_error" str="Fehler beim Laden"/>
-		<text id="msg_loaded_ok" str="Laden erfolgreich!"/>
+		<text id="msg_loaded_ok" str=" laden erfolgreich!"/>
 		<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
 		<text id="txt_dynobjsel" str="Dynamische Objekt-Selektion" />
 		<text id="txt_dynobjcur" str="Aktuelles Modell" />
@@ -703,10 +703,10 @@
 		<text id="msg_error" str="Error"/>
 		<text id="msg_invalid_project_file" str="Invalid Project File"/>
 		<text id="msg_override_project" str="Save current project?"/>
-		<text id="msg_saved_ok" str="Saved successfully!"/>
+		<text id="msg_saved_ok" str=" saved successfully!"/>
 		<text id="msg_new_project_name" str="Input project name:"/>
 		<text id="msg_loaded_error" str="Loaded Error!"/>
-		<text id="msg_loaded_ok" str="Loaded successfully!"/>
+		<text id="msg_loaded_ok" str=" loaded successfully!"/>
 		<text id="msg_override_script" str="Esta operación va a reemplazar la secuencia de comandos reales, desea continuar?"/>
 		<text id="txt_dynobjsel" str="Dinámica de selección de objetos" />
 		<text id="txt_dynobjcur" str="Modelo actual" />

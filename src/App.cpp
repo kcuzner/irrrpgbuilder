@@ -1989,6 +1989,11 @@ void App::saveProjectToXML(stringc filename)
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
 
+	guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
+		.append(core::stringw(filename.c_str()))
+		.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
+		,true);
+
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
 #endif
@@ -2064,7 +2069,14 @@ bool App::loadProjectFromXML(stringc filename)
 #endif
 
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
+
+	//guienv->getSkin()->setDefaultText(EGDT_MSG_BOX_CANCEL,L"Canceller");
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
+		.append(core::stringw(filename.c_str()))
+		.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
+		,true);
+
 	return true;
 }
 
