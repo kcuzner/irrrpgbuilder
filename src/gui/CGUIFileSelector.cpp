@@ -689,8 +689,10 @@ bool CGUIFileSelector::checkExistingFile()
 	s32 found=FileList->findFile(fullpathname,false);
 	if (found>0)
 	{
+		video::IVideoDriver * driver = device->getVideoDriver();
+		video::ITexture * flag = driver->getTexture("../media/art/status-dialog-warning-icon64.png");
 		Environment->addMessageBox(core::stringw("Warning").c_str(),core::stringw("Do you really want to overwrite this file?!").c_str(),
-			false,EMBF_OK+EMBF_CANCEL, this);
+			true,EMBF_OK+EMBF_CANCEL, this, -1, flag);
 		return true;
 	}
 	else

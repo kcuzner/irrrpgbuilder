@@ -118,6 +118,17 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
+
+
+	// Reset the vertices height of the mesh to 0.0f (Y axis)
+	IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
+	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+	{
+	   mb_vertices[j].Pos.Y = 0.0f;
+	}
+	recalculate();
+
 	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
 
 }
@@ -367,6 +378,29 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 	        }
 	    }
 	}
+}
+
+// Test the tile if it was being modified
+bool TerrainTile::checkModified()
+{
+	bool modified = false;
+	
+    IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
+
+    for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+	{
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+	    if(realPos.Y != 0.0f )
+        {
+           modified = true;
+		   j=meshBuffer->getVertexCount();
+		   break;
+        }
+	}
+
+	return modified;
+
 }
 
 void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc)

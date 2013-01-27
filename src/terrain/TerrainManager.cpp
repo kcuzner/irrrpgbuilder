@@ -17,6 +17,7 @@ TerrainManager::TerrainManager()
 {
     terrainEmptySegmentsMap.clear();
     terrainMap.clear();
+	tileTagged=NULL;
 }
 
 TerrainManager::~TerrainManager()
@@ -231,23 +232,48 @@ void TerrainManager::removeSegment(vector3df pos)
 	if (pos.Y==-1000.0f)
 		return;
 
-	getHashCode(pos);
+	posTagged = pos;
 
+	getHashCode(pos);
 
     if(getSegment(pos))
     {
-        TerrainTile* temp = terrainMap.find(getHashCode(pos))->second;
+        tileTagged = terrainMap.find(getHashCode(pos))->second;
+		// Test if the tile has been modified
+		bool test = tileTagged->checkModified();
+		if (test)
+		{
+			IGUIEnvironment * guienv = App::getInstance()->getDevice()->getGUIEnvironment();
+			video::IVideoDriver * driver =  App::getInstance()->getDevice()->getVideoDriver();
 
-		terrainMap.erase(getHashCode(pos));
-
-        delete temp;
-
-        #ifdef APP_DEBUG
-        cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << TerrainMap.size() << endl;
-        #endif
+			video::ITexture * flag = driver->getTexture("../media/art/status-dialog-warning-icon64.png");
+			guienv->addMessageBox(core::stringw("Warning").c_str(),
+				core::stringw("You modified this tile, do you really want to remove it?").c_str(),
+				true,EMBF_YES+EMBF_NO,0,-1, flag);
+			// Events returns in APP class will check what button was pressed and
+			// call deleteTaggedSegment if the user pressed "YES"
+			return;
+		}
+		else
+			deleteTaggedSegment();
     }
-	 //if(getHashCode(pos)=="0_0") return;
-	createEmptySegment(vector3df(pos.X,0,pos.Z));
+	
+}
+
+void TerrainManager::deleteTaggedSegment()
+{
+	
+	 terrainMap.erase(getHashCode(posTagged));
+
+     delete tileTagged;
+
+	 // Put back the empty segment
+	 createEmptySegment(vector3df(posTagged.X,0,posTagged.Z));
+
+     #ifdef APP_DEBUG
+     cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << TerrainMap.size() << endl;
+     #endif
+
 }
 
 std::string TerrainManager::getHashCode(vector3df pos)

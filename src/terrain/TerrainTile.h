@@ -29,6 +29,7 @@ class TerrainTile
 
         void transformMesh(vector3df clickPos, f32 radius, f32 strength);
 		void transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value);
+		bool checkModified();
 
         stringc getName();
         ISceneNode* getNode();

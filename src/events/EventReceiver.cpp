@@ -102,6 +102,9 @@ bool EventReceiver::OnEvent(const SEvent& event)
                 App::getInstance()->eventGuiCombobox(id);
                 break;
 
+			case EGET_MESSAGEBOX_YES:
+				App::getInstance()->eventMessagebox(EGET_MESSAGEBOX_YES);
+
 			case EGET_FILE_SELECTED:
 				App::getInstance()->loadProjectFile(true);
 				break;

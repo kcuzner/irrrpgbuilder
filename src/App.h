@@ -88,6 +88,8 @@ class App
         void eventMousePressed(s32 mouse);
         void eventMouseWheel(f32 value);
 
+		void eventMessagebox(gui::EGUI_EVENT_TYPE type);
+
         IrrlichtDevice* getDevice();
         MousePick getMousePosition3D(int id = 0);
 		

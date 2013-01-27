@@ -834,6 +834,15 @@ void App::eventMouseWheel(f32 value)
 	}
 }
 
+void App::eventMessagebox(gui::EGUI_EVENT_TYPE type)
+{
+
+	// When editing terrain segment, on "yes" on the message box will 
+	// Delete the "tagged" terrain segment
+	if (type==EGET_MESSAGEBOX_YES && app_state==APP_EDIT_TERRAIN_SEGMENTS)
+		TerrainManager::getInstance()->deleteTaggedSegment();
+}
+
 App* App::getInstance()
 {
 	static App *instance = 0;

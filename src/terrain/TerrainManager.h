@@ -52,6 +52,7 @@ class TerrainManager
         void removeEmptySegment(vector3df pos, bool force=false);
         void createEmptySegment(vector3df pos);
 		void removeSegment(vector3df pos);
+		void deleteTaggedSegment();
 
 		typedef std::map<std::string, TerrainTile*> TerrainMap;
 		typedef std::pair<std::string, TerrainTile*> TerrainMapPair;
@@ -64,6 +65,10 @@ class TerrainManager
 
     private:
         f32 scale;
+
+		// Tile tagged for deletion
+		TerrainTile* tileTagged;
+		vector3df posTagged;
 
         TerrainMap terrainMap;
         TerrainEmptySegmentsMap terrainEmptySegmentsMap;
