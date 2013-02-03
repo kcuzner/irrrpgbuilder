@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Player Debug" />
-	<File name="src/App.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="5701" topLine="210" />
+	<ActiveTarget name="Standard Debug" />
+	<File name="src/App.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="2707" topLine="111" />
+	</File>
+	<File name="src/gui/GUIManager.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="67881" topLine="1400" />
+	</File>
+	<File name="src/objects/DynamicObject.cpp" open="1" top="1" tabpos="5">
+		<Cursor position="931" topLine="9" />
+	</File>
+	<File name="src/objects/DynamicObject.h" open="1" top="0" tabpos="3">
+		<Cursor position="7760" topLine="242" />
+	</File>
+	<File name="src/sound/SoundManager.h" open="1" top="0" tabpos="2">
+		<Cursor position="50" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

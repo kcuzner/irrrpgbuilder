@@ -32,7 +32,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	error=false;
 	//printf("Here is the object: %s \n",realFile.c_str());
-	
+
+	mesh = NULL;
 	mesh = smgr->getMesh(realFile);
 	//meshName = meshFile;
     this->animations = animations;
@@ -44,8 +45,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		mesh = smgr->getMesh("../media/editor/error.obj");
 		error=true;
 	}
-		
-	
+
+
 	setupObj(name, mesh);
 
 	// When enabled, the LUA will update even if the node is culled.
@@ -55,7 +56,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	enabled=true;
 	enemyUnderAttack=NULL;
 	namecollide="";
-	
+
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
@@ -131,7 +132,7 @@ DynamicObject::~DynamicObject()
 
 	if (node)
 		node->remove();
-	
+
 }
 
 cproperty DynamicObject::initProperties()
@@ -158,7 +159,7 @@ cproperty DynamicObject::initProperties()
 	prop.money=0;
 	prop.regenlife=0;
 	prop.regenmana=0;
-	
+
 	return prop;
 
 }
@@ -204,12 +205,12 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		}
 	}
 	if (node)
-	{	
+	{
 		// Setup the animations
 		this->animator = NULL;
 
 		node->setName(name);
-	
+
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
 
@@ -223,13 +224,13 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
-			
+
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
 			//if(hasAnimation()) this->setFrameLoop(0,0);
 		}
-		
+
 		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
 		this->setEnabled(true);
@@ -243,7 +244,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
 
-		
+
 
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		this->setWalkTarget(node->getPosition());
@@ -385,25 +386,25 @@ void DynamicObject::walkTo(vector3df targetPos)
 		targetPos = Player::getInstance()->getTaggedTarget()->getPosition();
 	else
 		targetPos = vector3df((f32)round32(targetPos.X),(f32)round32(targetPos.Y),(f32)round32(targetPos.Z));
-	
+
 	this->lookAt(targetPos);
 
 	//Attemp to calculate the proper time/distance interval
 	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
-	
+
 	// Calculate the distance based on time (delay)
 	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(based on seconds (1000 for 1000ms)
 	if (speed == 0)
 		speed=1.0f;
-		
+
 	vector3df pos=this->getPosition();
 	oldpos=pos;
 
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
-   
-	
+
+
 	// Sampling points on the ground
 	// TODO: The sampling point should be spaced based on the character size and not fixed values
 	vector3df posfront1 = pos+(targetPos.normalize()*20);
@@ -428,9 +429,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 	posback.Z = pos.Z + cos((this->getRotation().Y)*PI/180)*20;
     posback.X = pos.X + sin((this->getRotation().Y)*PI/180)*20;
 	posback.Y = pos.Y;
-  	
-	
-	// Samples position where the ground is 
+
+
+	// Samples position where the ground is
 	f32 height = rayTest(vector3df(pos.X,pos.Y+2000,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
 	f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
 	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+2000,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
@@ -444,7 +445,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 		collided=false;
-	
+
 
 	//f32 height = TerrainManager::getInstance()->getHeightAt(pos);
 	//f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
@@ -461,13 +462,13 @@ void DynamicObject::walkTo(vector3df targetPos)
 		height = TerrainManager::getInstance()->getHeightAt(pos);
 	}
 
-	f32 cliff =  height3 - height; 
-	if (cliff<0) 
+	f32 cliff =  height3 - height;
+	if (cliff<0)
 		cliff = -cliff;
 
 	if (cliff>30)
 	{
-		// Do a smaller ray test to check 
+		// Do a smaller ray test to check
 		f32 oldheight = height;
 		f32 oldheight2 = height3;
 
@@ -477,11 +478,11 @@ void DynamicObject::walkTo(vector3df targetPos)
 		if (height==-1000)
 			height=oldheight;
 		if (height>-1000)
-			cliff =  height3 - height; 
+			cliff =  height3 - height;
 
 	}
 
-	if (cliff<0) 
+	if (cliff<0)
 		cliff = -cliff;
 
 	// The "cliff" is the number of unit of difference from one point to another
@@ -489,11 +490,11 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// This number should be based on the height of the character and not fixed values
 	if (height>-80 && (cliff < 60) && !collided)
 	{
-		pos.Y = height; 
+		pos.Y = height;
 		// Get the average of the heights to give a smoother result.
 		// pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
-	
+
 	}
 	else
 	{
@@ -564,7 +565,7 @@ f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 
 	if (selectedSceneNode)
 	{
-		// return the height found. 
+		// return the height found.
 		return intersection.Y;
 	}
 	else
@@ -574,7 +575,7 @@ f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 
 void DynamicObject::setWalkTarget(vector3df newTarget)
 {
-	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination. 
+	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination.
 	// (This allow the NPC not to go directly a the player position)
 	// This need to be improved further as this should apply only when a NPC destination is selected.
 	if (objectType!=OBJECT_TYPE_PLAYER)
@@ -754,7 +755,7 @@ void DynamicObject::setMoney(int money)
 
 int DynamicObject::getMoney()
 {
-	
+
 	return this->properties.money;
 
 }
@@ -763,7 +764,7 @@ int DynamicObject::getMoney()
 void DynamicObject::setObjectLabel(stringc label)
 {
 	u32 currenttime=App::getInstance()->getDevice()->getTimer()->getRealTime();
-	// Will update the display at each 1/10 second, so we have the time to see what is written 
+	// Will update the display at each 1/10 second, so we have the time to see what is written
 	if (currenttime-timer_display>100)
 	{
 		timer_display=currenttime;
@@ -851,18 +852,18 @@ bool DynamicObject::setAnimation(stringc animName)
 	{
 		// REmove the collision animator
 		node->removeAnimator(animator);
-		
+
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		
+
 		// disable the stun state if present. Dying takes over
 		stunstate=false;
 		attackdelaystate=false;
 
 		if (objectType!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-		   
-			
+
+
 	}
 
 	if (attackdelaystate && animName!="hurt" && animName!="die" )
@@ -916,8 +917,8 @@ bool DynamicObject::setAnimation(stringc animName)
 					enemyUnderAttack->setObjectLabel(textdam.c_str());
 				}
 			}
-		} 
-			
+		}
+
 		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
 				attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
@@ -935,7 +936,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		// Check to see if the attack was successful. if not, then put idle from the previous attack move
 		// or use the old animation
 		/*if (!attackresult)
-		{ 
+		{
 			if (oldAnimName=="attack")
 				animName="idle";
 			else
@@ -945,10 +946,10 @@ bool DynamicObject::setAnimation(stringc animName)
 			this->setWalkTarget(this->getPosition());
 			reached=true;
 		}*/
-	
+
 	}
 
-	
+
 
 
 	// This will activate the "hurt" stun state
@@ -956,7 +957,7 @@ bool DynamicObject::setAnimation(stringc animName)
 	{
 		stunstate=true;
 		timerStun = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		
+
 	}
 
 	// Activate the "attack delay" after the attack is initialized
@@ -999,12 +1000,12 @@ bool DynamicObject::setAnimation(stringc animName)
 		if (animName=="despawn")
 			printf("The despawn animation was called!\n");
 			*/
-		
-		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];		
+
+		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		if( tempAnim.name == animName )
         {
 
-			
+
 
 			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_CUSTOM)
 			{
@@ -1015,17 +1016,17 @@ bool DynamicObject::setAnimation(stringc animName)
 				// Set the state of the current one
 				this->currentAnimation=Animation;
 				this->currentAnim=tempAnim;
-				
+
 				// Set the frameloop, the current animation and the speed
 				this->setFrameLoop(tempAnim.startFrame,tempAnim.endFrame);
 				this->setAnimationSpeed(tempAnim.speed);
 				this->nodeAnim->setLoopMode(tempAnim.loop);
 				//printf ("More info is start:%i end: %i\n",(int)tempAnim.startFrame,tempAnim.endFrame);
-				
+
 				// Special case for the idle animation (randomisation)
 				if (animName=="idle" && randomize)
 				{
-					
+
 					// Fix a random frame so the idle for different character are not the same.
 					if (tempAnim.endFrame>0)
 					{
@@ -1044,9 +1045,9 @@ bool DynamicObject::setAnimation(stringc animName)
 
 	// If the die animation is not there, the flag become active (will start the die timer anyway)
 	// As always this does not apply to the player (event if it misse it's die animation)
-	if (animName=="die" && this->getType()!=OBJECT_TYPE_PLAYER) 
+	if (animName=="die" && this->getType()!=OBJECT_TYPE_PLAYER)
 		diePresent=false;
-	if (animName=="despawn" && this->getType()!=OBJECT_TYPE_PLAYER) 
+	if (animName=="despawn" && this->getType()!=OBJECT_TYPE_PLAYER)
 		despawnPresent=false;
 
 	return false;
@@ -1079,10 +1080,10 @@ void DynamicObject::checkAnimationEvent()
 	// Check if the current animation have an attack event
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
-		
+
 		//This set the animation back to idle when it's played
 		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-1)
-		{	
+		{
 			if (attackActivated)
 			{
 				attackActivated=false;
@@ -1101,11 +1102,11 @@ void DynamicObject::checkAnimationEvent()
 		}
 
 		// This only mean that the attack animation is still looking for the event
-		if (nodeAnim->getFrameNr() < currentAnim.attackevent+1) 
+		if (nodeAnim->getFrameNr() < currentAnim.attackevent+1)
 		{
 			attackActivated=true;
 		}
-		
+
 		if ((nodeAnim->getFrameNr() > currentAnim.attackevent) && attackActivated)
 		{
 
@@ -1128,7 +1129,7 @@ void DynamicObject::checkAnimationEvent()
 						core::stringw textresult = core::stringw(L"The player attacked ").append(enemyUnderAttack->getName()).append(L" and caused ")
 							.append(core::stringw(attackresult)).append(L" points of damage!");
 						GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
-						
+
 						if (resultlife>0)
 						{
 							enemyUnderAttack->setAnimation("hurt");
@@ -1144,8 +1145,8 @@ void DynamicObject::checkAnimationEvent()
 						}
 
 					}
-				} 
-			
+				}
+
 				if (objectType!=OBJECT_TYPE_PLAYER)
 				{
 					int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
@@ -1156,14 +1157,14 @@ void DynamicObject::checkAnimationEvent()
 
 					core::stringw textresult = core::stringw(getName()).append(L" attacked the player and caused ").append(core::stringw(attackresult)).append(L" points damage!");
 					GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
-					
+
 					if (resultlife>0)
 					{
 						Player::getInstance()->getObject()->setAnimation("hurt");
 					}
 					else
 						Player::getInstance()->getObject()->setAnimation("die");
-						
+
 				}
 			}
 			else
@@ -1172,10 +1173,10 @@ void DynamicObject::checkAnimationEvent()
 				if (enemyUnderAttack)
 				{
 					textresult = core::stringw(getName()).append(L" attacked ").append(core::stringw(enemyUnderAttack->getName()))
-						.append(L" and missed! ");					
+						.append(L" and missed! ");
 				}
 				else
-					textresult = core::stringw(getName()).append(L" attacked the player and missed!");	
+					textresult = core::stringw(getName()).append(L" attacked the player and missed!");
 
 				GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 			}
@@ -1183,7 +1184,7 @@ void DynamicObject::checkAnimationEvent()
 	}
 
 	// Check if the current animation have an sound event
-	if (nodeAnim->getFrameNr()<currentAnim.soundevent) 
+	if (nodeAnim->getFrameNr()<currentAnim.soundevent)
 			soundActivated=true;
 
 	if ((currentAnim.sound.size() > 0) &&
@@ -1252,11 +1253,11 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
 		{
 			attackresult=Combat::getInstance()->attack(this,obj);
-			if (attackresult>0) 
+			if (attackresult>0)
 				this->setAnimation("attack");
 			else
 				this->setAnimation("idle");
-			
+
 			obj->notifyClick();
 		}
     }
@@ -1457,7 +1458,7 @@ void DynamicObject::update()
 
 	if (rotationupdater)
 		updateRotation();
-	
+
 	// Check for an event in the current animation. This will be done at the fastest speed possible
 	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 		checkAnimationEvent();
@@ -1484,18 +1485,18 @@ void DynamicObject::update()
 		// Check if the node is in walk state, so update the walk at 1/60 intervals (animations need 1/60 check)
 		// Check for culling on a node and don't update it if it's culled.
 
-	
+
 		//check if the node is culled -- Disable node culling for the moment (12/08/12) Some character have weird moves
 		//culled = App::getInstance()->getDevice()->getSceneManager()->isCulled(this->getNode());
-		//if (!nodeLuaCulling && culled) 
+		//if (!nodeLuaCulling && culled)
 		//	setAnimation("idle");
 
 		// This is for the LUA move command. Refresh and update the position of the mesh (Now refresh of this is 1/60th sec)
 		//old code: if (currentAnimation==OBJECT_ANIMATION_WALK && !culled && (timerobject-timerLUA>17) && (objectType!=OBJECT_TYPE_PLAYER)) // 1/60 second
-		
-		// 
+
+		//
 		// Check and update the walking of the object
-		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN)&& !culled) 
+		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN)&& !culled)
 		{ // timerLUA=17
 			updateWalk();
 			if (currentSpeed!=0)
@@ -1528,12 +1529,12 @@ void DynamicObject::update()
 		{
 			// Init the despawn timer
 			this->setAnimation("despawn");
-			timerDespawn = timerobject;	
+			timerDespawn = timerobject;
 		}
 	}
 	// Special timer to init when the character is being despawned (5 seconds)
 	// This can be overided if the character don't have a die or despawn animation
-	if (!despawnPresent && isEnabled()) 
+	if (!despawnPresent && isEnabled())
 	{
 		//printf("No despawn Anim, we should see the disabling now!\n");
 		setAnimation("prespawn");
@@ -1542,16 +1543,16 @@ void DynamicObject::update()
 	}
 
 
-	// Check and update after the despawn of the character. 
+	// Check and update after the despawn of the character.
 	if ((this->currentAnimation==OBJECT_ANIMATION_DESPAWN && this->isEnabled()))
-	{	
+	{
 		if (timerobject-timerDespawn>5000)
 		{
 			//printf("Done despawn, disabling the character now!\n");
 			// will disable the character after 5 seconds
 			setAnimation("prespawn");
 			this->setEnabled(false);
-			
+
 		}
 	}
 
@@ -1584,7 +1585,7 @@ void DynamicObject::update()
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
 	if (this->objectType==OBJECT_TYPE_PLAYER )//|| this->objectType==OBJECT_TYPE_NPC)
-		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);	
+		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
 }
 
 void DynamicObject::updateRotation()
@@ -1600,7 +1601,7 @@ void DynamicObject::updateRotation()
 		rotationupdater=false;
 		return;
 	}
-	
+
 	vector3df finalrotation = rotfrom.getInterpolated(rotto,interp);
 	setRotation(finalrotation);
 
@@ -1614,7 +1615,7 @@ void DynamicObject::updateWalk()
 	// Trick to not account for the Y axis when checking for the distance.
 	walkTarget.Y=this->getPosition().Y;
 
-	
+
 	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
 	{
 		// Stop the walk when in range
@@ -1634,13 +1635,13 @@ void DynamicObject::updateWalk()
 
 		// This tries to stop the NPC or player if it reach the proper distance
 		// This is needed to stop the character before combat or when it reach the destination
-		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN) 
+		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 		{
 			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType==OBJECT_TYPE_PLAYER) //Mostly for the reticle
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
-				
+
 				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			}
 			else if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType!=OBJECT_TYPE_PLAYER) // NPC
@@ -1659,7 +1660,7 @@ void DynamicObject::updateWalk()
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 			}
 		}
-			
+
 
 		// Cancel the move if another animation is triggered
 		//if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()!=OBJECT_ANIMATION_RUN || this->getAnimation()==OBJECT_ANIMATION_IDLE)
@@ -1701,7 +1702,7 @@ void DynamicObject::updateWalk()
 
 	}
 
-	
+
 
 }
 
@@ -1928,7 +1929,7 @@ int DynamicObject::move(lua_State *LS)//move(speed)
 			if (tempObj->getAnimation()!=OBJECT_ANIMATION_WALK)
 				tempObj->setAnimation("walk");
 		}
-		
+
 		//printf ("Lua call the walk animation.\n");
 
 		tempObj->moveObject(speed);
@@ -2062,7 +2063,7 @@ int DynamicObject::attackObj(lua_State *LS)
 		tempObj2 = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 		//printf("The LUA use attack with that target: %s\n",tempObj->getName().c_str());
 		tempObj2->attackresult=Combat::getInstance()->attack(DynamicObjectsManager::getInstance()->getObjectByName(objName),tempObj);
-		if (tempObj2->attackresult>0) 
+		if (tempObj2->attackresult>0)
 			tempObj2->setAnimation("attack");
 		else
 			tempObj2->setAnimation("idle");
@@ -2076,7 +2077,7 @@ int DynamicObject::setPropertie(lua_State *LS)
 	float value = (float)lua_tonumber(LS, -1);
 	lua_pop(LS, 1);
 
-	
+
 
 	stringc propertieName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
@@ -2145,7 +2146,7 @@ int DynamicObject::getPropertie(lua_State *LS)
 	stringc propertieName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
 
-	
+
 	//stringc otherObjName = lua_tostring(LS, -1);
 	//lua_pop(LS, 1);
 

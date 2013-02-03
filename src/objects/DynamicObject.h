@@ -121,13 +121,13 @@ class DynamicObject
 		void setWalkTarget(vector3df newTarget);
 		vector3df getWalkTarget();
 		f32 getDistanceFrom(vector3df pos);
- 
+
 		void setEnabled(bool enabled);
 		bool isEnabled();
 		void setType(stringc name);
 		void setType(TYPE type);
 		TYPE getType();
-		
+
 		void setName(stringc name);
         stringc getName();
 
@@ -155,7 +155,7 @@ class DynamicObject
         int getMoney();
 		void setObjectLabel(stringc label);
         void objectLabelSetVisible(bool visible);
-        
+
 		 bool hasAnimation(){ return animations.size() != 0; };
         //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
@@ -166,11 +166,11 @@ class DynamicObject
         bool setAnimation(stringc animName);
 		void checkAnimationEvent();
 		void setRunningMode(bool run); // Switche the walk animation to a run animation
-        
+
 		void setAnimator(ISceneNodeAnimatorCollisionResponse* animator_node);
 		ISceneNodeAnimatorCollisionResponse* getAnimator();
 		ITriangleSelector* getTriangleSelector();
-		
+
 		// item management
         void addItem(stringc itemName);
         void removeItem(stringc itemName);
@@ -186,12 +186,12 @@ class DynamicObject
 		void storeParams(); // Store the original position and rotation before gameplay (used when you start the game)
 		void restoreParams();//restore original position and rotation after gameplay (used when you stop the game in Editor)
         void update();//run "step" lua function
-		
+
         void notifyClick();
 		void notifyAttackRange();
 		void notifyCollision();
 		void notifyAnswer(bool answer);
-		
+
 
         stringc getObjectType();
 
@@ -210,12 +210,12 @@ class DynamicObject
 		cproperty prop_level;
 		cproperty properties;
 
-      
+
     protected:
 
         bool enabled;//disabled objects aren't rendered and step() function isn't processed during gameplay
 
-        
+
 
         DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations = vector<DynamicObject_Animation>());
 
@@ -257,10 +257,10 @@ class DynamicObject
         static int setEnabled(lua_State *LS);//setEnabled(enabled?)
 
 		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
-		static int DynamicObject::setObjectType(lua_State *LS); // change the object type
+		static int setObjectType(lua_State *LS); // change the object type
 
         stringc name;
-	
+
         IMesh* mesh;
         ISceneNode* node;
 		IAnimatedMeshSceneNode * nodeAnim;
@@ -268,13 +268,13 @@ class DynamicObject
 
 		ITriangleSelector* selector;
 		ISceneNodeAnimatorCollisionResponse* animator;
-		
+
         ISceneNode* fakeShadow;
 		scene::HealthSceneNode* Healthbar;
 
 		ISceneManager* smgr;
 		IVideoDriver* driver;
-		
+
 
 		OBJECT_ANIMATION currentAnimation;
 		OBJECT_ANIMATION oldAnimation;
@@ -295,8 +295,8 @@ class DynamicObject
 		bool despawnPresent;
 		bool runningMode;
 		bool reached; // check if reached the walktarget or not
-		
-		
+
+
 		vector3df walkTarget;
 		vector3df originalPosition;
 		vector3df originalRotation;
@@ -315,9 +315,9 @@ class DynamicObject
         ITextSceneNode* objLabel;
 
 		vector<DynamicObject_Animation> animations;
-		
 
-	
+
+
 		bool templateobject;
 		bool stunstate; // State to stop moving because the character is hurt
 		bool attackdelaystate; // State to stop the attack for a delay after an attack
@@ -334,7 +334,7 @@ class DynamicObject
 		// Timer to delay the sound (do it's not repeating too fast)
 		u32 lastTime;
 		u32 timer_display;
-		
+
 
 		// Timer to delay the attack
 		u32 timer_attackdelay;
@@ -345,7 +345,7 @@ class DynamicObject
 
 
 		lua_State *LS;
-      
+
 };
 
 #endif // DYNAMICOBJECT_H
