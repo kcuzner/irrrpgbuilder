@@ -36,7 +36,7 @@ void main()
 	
 	vec4 tex10;
 	
-	float pos2 = (position.y/scale)*10;
+	float pos2 = (position.y/scale)*10.0;
 	
 	if(position.y >= 0.0)
 	{

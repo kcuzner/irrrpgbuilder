@@ -3,7 +3,7 @@ uniform int terrainScale;
 
 void main(void)
 {
-	float scale = (terrainScale * 0.05);
+	float scale = (float(terrainScale) * 0.05);
 			
 	posY = gl_Vertex.y;
 	
