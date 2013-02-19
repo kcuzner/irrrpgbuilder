@@ -47,7 +47,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	vector3df oldpos = ocean->getPosition();
 	oldpos.Y=oldpos.Y-5.0f;
 	ocean->setPosition(oldpos);
-	
+
 	//Testing if I can use Irrlicht generated mesh for base
 	//ocean=smgr->addMeshSceneNode(smgr->addHillPlaneMesh("water",dimension2df(scale/nodescale,scale/nodescale),dimension2du(1,1)),node,0);
 
@@ -89,7 +89,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/shaders/splat8.frag", "pixelMain", video::EPST_PS_1_4,
-        ShaderCallBack::getInstance(), video::EMT_SOLID); 
+        ShaderCallBack::getInstance(), video::EMT_SOLID);
 
 		//Assign Textures
 		node->setMaterialTexture(0,layer0);
@@ -97,7 +97,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 		node->setMaterialTexture(2,layer2);
 		node->setMaterialTexture(3,layer3);
 		node->setMaterialTexture(4,layer4);
-	
+
 	}
 	else
 	{
@@ -105,13 +105,13 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
         "../media/shaders/splat4.frag", "pixelMain", video::EPST_PS_1_4,
-        ShaderCallBack::getInstance(), video::EMT_SOLID); 
+        ShaderCallBack::getInstance(), video::EMT_SOLID);
 
 		//Assign Textures
-		node->setMaterialTexture(0,layer1);
-		node->setMaterialTexture(1,layer2);
-		node->setMaterialTexture(2,layer3);
-		node->setMaterialTexture(3,layer4);
+		node->setMaterialTexture(0,layer0);
+		node->setMaterialTexture(1,layer1);
+		node->setMaterialTexture(2,layer2);
+		node->setMaterialTexture(3,layer3);
 	}
 
 	 //node->setMaterialTexture(0,layer1);
@@ -120,7 +120,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	node->getMaterial(0).setFlag(EMF_LIGHTING,false);
 	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
 
-    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain); 
+    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
 
     //Create a Custom GLSL Material (Water shader)
    static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
@@ -132,11 +132,11 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
 
     //Assign GLSL Shader
-    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean); 
-	
+    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean);
+
     //Assign Textures
     ocean->setMaterialTexture(0,oceanLayer0);
-    ocean->setMaterialTexture(1,oceanLayer1); 
+    ocean->setMaterialTexture(1,oceanLayer1);
 
     ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
@@ -172,7 +172,7 @@ TerrainTile::~TerrainTile()
 
     //ocean->remove();///TODO: rever destrutor TerrainTile!
 
-    
+
 }
 
 Vegetation* TerrainTile::getVegetationAt(vector3df pos)
@@ -271,7 +271,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
             TiXmlElement* vertexXML = new TiXmlElement("vertex");
             vertexXML->SetAttribute("id",j);
             vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
-		
+
 			Vegetation * tree = 0;
 			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
 			{
@@ -284,7 +284,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				else
 					tree = 0;
 			}
-    			
+
 			if (tree!=0)
 			{
 				vector3df treepos=tree->getPosition();
@@ -298,7 +298,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
         }
 	}
 
-	parentElement->LinkEndChild(segmentXML);	
+	parentElement->LinkEndChild(segmentXML);
 }
 
 bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
@@ -406,7 +406,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 bool TerrainTile::checkModified()
 {
 	bool modified = false;
-	
+
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 
@@ -499,7 +499,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 
 	recalculate();
-	
+
 }
 
 void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value)
@@ -566,7 +566,7 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 
 	if (selectedSceneNode)
 	{
-		// return the height found. 
+		// return the height found.
 		return intersection.Y;
 	}
 	else
