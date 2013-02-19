@@ -108,10 +108,19 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
         ShaderCallBack::getInstance(), video::EMT_SOLID);
 
 		//Assign Textures
+#ifdef WIN32 // Strange 
+		// On Windows
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(1,layer2);
+		node->setMaterialTexture(2,layer3);
+		node->setMaterialTexture(3,layer4);
+#else
+		// On Linux
 		node->setMaterialTexture(0,layer0);
 		node->setMaterialTexture(1,layer1);
 		node->setMaterialTexture(2,layer2);
 		node->setMaterialTexture(3,layer3);
+#endif
 	}
 
 	 //node->setMaterialTexture(0,layer1);
