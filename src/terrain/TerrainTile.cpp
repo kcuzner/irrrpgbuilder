@@ -79,18 +79,40 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
     static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
 	static ITexture* layer4 = smgr->getVideoDriver()->getTexture(texture4.c_str());
 
+	static s32 materialTerrain = 0;
+	// Disable 8 textures for the moment, will be enabled by the user directly.
+	bool heighttextures = false;
     //Create a Custom GLSL Material (Terrain Splatting)
-    static s32 materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+	if (heighttextures)
+	{
+		//Hardware support for 8 textures
+		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
         "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/splat.frag", "pixelMain", video::EPST_PS_1_4,
+        "../media/shaders/splat8.frag", "pixelMain", video::EPST_PS_1_4,
         ShaderCallBack::getInstance(), video::EMT_SOLID); 
 
-    //Assign Textures
-    node->setMaterialTexture(0,layer0);
-    node->setMaterialTexture(1,layer1);
-    node->setMaterialTexture(2,layer2);
-    node->setMaterialTexture(3,layer3);
-	node->setMaterialTexture(4,layer4);
+		//Assign Textures
+		node->setMaterialTexture(0,layer0);
+		node->setMaterialTexture(1,layer1);
+		node->setMaterialTexture(2,layer2);
+		node->setMaterialTexture(3,layer3);
+		node->setMaterialTexture(4,layer4);
+	
+	}
+	else
+	{
+		// Hardware support for 4 textures
+		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/splat4.frag", "pixelMain", video::EPST_PS_1_4,
+        ShaderCallBack::getInstance(), video::EMT_SOLID); 
+
+		//Assign Textures
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(1,layer2);
+		node->setMaterialTexture(2,layer3);
+		node->setMaterialTexture(3,layer4);
+	}
 
 	 //node->setMaterialTexture(0,layer1);
 

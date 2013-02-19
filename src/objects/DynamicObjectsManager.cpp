@@ -791,7 +791,9 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		{ 
 			bool result=setActiveObject(templateObj);
 			if (!result)
+			{
 				setActiveObject("error");
+			}
 
 			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		} 

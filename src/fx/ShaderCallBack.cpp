@@ -33,17 +33,16 @@ void ShaderCallBack::setFlagEditingTerrain(bool edit)
 
 void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
-    layer=0;
-    services->setPixelShaderConstant("terrainLayer0",(int*)&layer,1);
-    layer=1;
-    services->setPixelShaderConstant("terrainLayer1",(int*)&layer,1);
-    layer=2;
-    services->setPixelShaderConstant("terrainLayer2",(int*)&layer,1);
-    layer=3;
-    services->setPixelShaderConstant("terrainLayer3",(int*)&layer,1);
-    layer=4;
-    services->setPixelShaderConstant("terrainLayer4",(int*)&layer,1);
-
+	layer=0;
+	services->setPixelShaderConstant("terrainLayer0",(int*)&layer,1);
+	layer=1;
+	services->setPixelShaderConstant("terrainLayer1",(int*)&layer,1);
+	layer=2;
+	services->setPixelShaderConstant("terrainLayer2",(int*)&layer,1);
+	layer=3;
+	services->setPixelShaderConstant("terrainLayer3",(int*)&layer,1);
+	layer=4;
+	services->setPixelShaderConstant("terrainLayer4",(int*)&layer,1);
     services->setPixelShaderConstant("editingTerrain",(int*)&editingTerrain,1);
 
 #ifdef EDITOR
