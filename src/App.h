@@ -145,6 +145,9 @@ class App
 		// This check in the GUI manager to get the radius of the Brush in the GUI;
 		irr::f32 getBrushRadius();
 
+		// Snapping function
+		core::vector3df calculateSnap(vector3df input, f32 snapvalue);
+
 		scene::ISceneNode* selectedNode;
 		MousePick lastMousePick;
 		
@@ -212,7 +215,9 @@ class App
 		vector2df oldmouse;
 		position2d<s32> mousepos;
 		vector3df initialposition;
+		
 		bool moveupdown;
+		bool snapfunction;
 
 		video::ITexture * tex_occluded;
 		video::ITexture * tex_normal;

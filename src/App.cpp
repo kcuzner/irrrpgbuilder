@@ -46,6 +46,7 @@ App::App()
 	lockcam=false;
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
 	moveupdown = false; // Mouse move up/down
+	snapfunction = false;
 	overdraw=false;
 
 	tex_occluded=NULL;
@@ -682,6 +683,15 @@ void App::eventKeyPressed(s32 key)
 	case KEY_ESCAPE:
 		//device->drop();
 		break;
+
+	case KEY_LCONTROL:
+
+		if (EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
+			snapfunction=true;
+		else
+			snapfunction=false;
+		break;
+
 
 	default:
 		break;
@@ -1510,7 +1520,12 @@ void App::updateEditMode()
 					// Change the ID of the moved mesh so it's won't collision with the ray.
 					irr::s32 oldID=lastMousePick.pickedNode->getID();
 					lastMousePick.pickedNode->setID(0x0010);
-					lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+					
+					if (snapfunction) // If snapping is activated use the function
+						lastMousePick.pickedNode->setPosition(calculateSnap(getMousePosition3D(100).pickedPos,64.0f));
+					else
+						lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+
 					lastMousePick.pickedNode->setID(oldID);
 					initialposition=lastMousePick.pickedNode->getPosition();
 				}
@@ -1520,7 +1535,11 @@ void App::updateEditMode()
 					core::vector3df newpos = initialposition;
 					//lastMousePick.pickedNode->getPosition();
 					newpos.Y=newpos.Y+((mousepos.Y-mousepos2.Y));
-					lastMousePick.pickedNode->setPosition(newpos);
+
+					if (snapfunction) // If snapping is activated use the function
+						lastMousePick.pickedNode->setPosition(calculateSnap(newpos,64.0f));
+					else
+						lastMousePick.pickedNode->setPosition(newpos);
 
 				}
 			}
@@ -2165,4 +2184,19 @@ irr::f32 App::getBrushRadius()
 	radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
 #endif
 	return radius;
+}
+
+// Snapping function
+core::vector3df App::calculateSnap(vector3df input, f32 snapvalue)
+{
+	f32 X1=core::round32(input.X/snapvalue)+0.0f;
+	f32 Y1=core::round32(input.Y/snapvalue)+0.0f;
+	f32 Z1=core::round32(input.Z/snapvalue)+0.0f;
+
+	X1=X1*snapvalue;
+	Y1=Y1*snapvalue;
+	Z1=Z1*snapvalue;
+
+	core::vector3df result = core::vector3df(X1,Y1,Z1);
+	return result;
 }

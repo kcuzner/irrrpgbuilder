@@ -45,8 +45,6 @@ bool EventReceiver::OnEvent(const SEvent& event)
 {
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
     {
-        App::getInstance()->eventKeyPressed(event.KeyInput.Key);
-
         if(event.KeyInput.PressedDown == true)
         {
             keys[event.KeyInput.Key] = 1;
@@ -55,6 +53,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
         {
             keys[event.KeyInput.Key] = 0;
         }
+		App::getInstance()->eventKeyPressed(event.KeyInput.Key);
     }
     else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
     {
