@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<IrrRPG_Builder_DynamicObjects version="1.0">
+	<dynamic_object name="tile_NS" mesh="tiles/tileNS.obj"  type="walkable" scale="1.0"
+					description="North-South tile" author="Christian Clavet" licence="Creative Commons" >
+	</dynamic_object>
+	<dynamic_object name="tile_Corner" mesh="tiles/tileCorner.obj"  type="walkable" scale="1.0"
+					description="North-South Tile" author="Christian Clavet" licence="Creative Commons" >
+	</dynamic_object>
+</IrrRPG_Builder_DynamicObjects>

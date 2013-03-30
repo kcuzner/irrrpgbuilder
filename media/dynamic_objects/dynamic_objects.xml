@@ -5,4 +5,6 @@
 	<dynamic_object name="IRB-npc" set="../media/dynamic_objects/npc.xml" />
 	<dynamic_object name="IRB-props" set="../media/dynamic_objects/props.xml" />
 	<dynamic_object name="IRB-buildings" set="../media/dynamic_objects/buildings.xml" />
+	<dynamic_object name="IRB-Tiles" set="../media/dynamic_objects/tiles.xml" />
+	<dynamic_object name="IRB-Walls" set="../media/dynamic_objects/walls.xml" />
 </IrrRPG_Builder_DynamicObjects>
