@@ -34,6 +34,7 @@ class DynamicObjectsManager
         DynamicObject* createActiveObjectAt(vector3df pos);
         void removeObject(stringc uniqueName);
 
+		bool findTemplate(stringc filename);
         TemplateObject* getActiveObject();
         bool setActiveObject(stringc name);
 

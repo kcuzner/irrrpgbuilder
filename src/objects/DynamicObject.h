@@ -204,6 +204,7 @@ class DynamicObject
 
 		// WAs protected before
 		stringc templateObjectName;//The original object name
+		stringc fileName; // Information about the given filename 
 		stringw script;
 
 		cproperty prop_base;

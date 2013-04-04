@@ -524,6 +524,27 @@ TemplateObject* DynamicObjectsManager::getActiveObject()
     return activeObject;
 }
 
+//Find the filename in the template and use the object as the active object
+//Used mostly when the object template name was not found, using the "filename" as reference instead
+bool DynamicObjectsManager::findTemplate(stringc filename)
+{
+	bool found=false;
+	for (int i=0 ; i<(int)objTemplate.size() ; i++)
+    {
+		core::stringc templateFilename=objTemplate[i]->meshFile;
+		if(templateFilename == filename )
+    	{
+    	    activeObject = ((TemplateObject*)objTemplate[i]);
+			found=true;
+    	    break;
+    	} 
+    }
+
+	if (found)
+		return true;
+	else
+		return false;
+}
 
 //Find the name in the template as use it as "active" one.
 //This will be used to create the character or object on the map by the user.
@@ -704,6 +725,8 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 
 		dynamicObjectXML->SetAttribute("template",objects[i]->templateObjectName.c_str());
 
+		dynamicObjectXML->SetAttribute("filename",objects[i]->fileName.c_str());
+
 		if (objects[i]->script.size()>0)
 			dynamicObjectXML->SetAttribute("script",objects[i]->getScript().c_str());
 		
@@ -766,6 +789,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
     {
 
 		stringc templateObj = "";
+		stringc fileObj= "";
 		int type=0;
 		DynamicObject* newObj = NULL;
 
@@ -779,7 +803,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
 
 		if (type != OBJECT_TYPE_PLAYER)
+		{
             templateObj = dynamicObjectXML->ToElement()->Attribute("template");
+			fileObj = dynamicObjectXML->ToElement()->Attribute("filename");
+		}
 
         f32 posX = (f32)atof(dynamicObjectXML->ToElement()->Attribute("x"));
         f32 posY = (f32)atof(dynamicObjectXML->ToElement()->Attribute("y"));
@@ -789,7 +816,15 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		// Create an object from the template
 		if (type!=OBJECT_TYPE_PLAYER)
 		{ 
-			bool result=setActiveObject(templateObj);
+			bool result=false;
+			// If the "filename" was stored in the XML, then use this for retrieving the proper template
+			// if not, then trie to load based on the template name.
+			if (fileObj!="")
+				result = findTemplate(fileObj);
+			else
+				result = setActiveObject(templateObj);
+			
+			// If those fail then will use the error mesh
 			if (!result)
 			{
 				setActiveObject("error");
@@ -925,7 +960,7 @@ void DynamicObjectsManager::checkTemplateNames()
 	for (int j=0 ; j<(int)objTemplate.size() ; j++) 
 	{
 		//printf ("here checking for duplicate names: %i\n",j);
-		irr::u32 duplicatecounter=0;
+		irr::u32 duplicatecounter=1;
 		for (int i=0 ; i<(int)objTemplate.size() ; i++)
 		{
 			//printf ("Name %s = %s? \n",((core::stringc)objTemplate[i]->getName()).c_str(),((core::stringc)objTemplate[j]->getName()).c_str());

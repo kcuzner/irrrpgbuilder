@@ -30,6 +30,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
     stringc realFile = "../media/dynamic_objects/";
     realFile += meshFile;
 
+	fileName=meshFile; // Store the original filename of the dynamic object for verification
+
 	error=false;
 	//printf("Here is the object: %s \n",realFile.c_str());
 
