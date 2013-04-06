@@ -52,6 +52,8 @@ App::App()
 	tex_occluded=NULL;
 	tex_normal=NULL;
 
+	df = DF_PROJECT;
+
 }
 
 App::~App()
@@ -404,7 +406,7 @@ void App::eventGuiButton(s32 id)
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN:
+	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN: // Create a new item from the last selected item in the dynamic object
 
 		//printf ("User call the spawn menu!\n");
 
@@ -413,6 +415,14 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
+
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+
+		loadProject(DF_MODEL);
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
@@ -1406,8 +1416,12 @@ void App::updateEditMode()
 
 	// Trie to display the node as we go with the mouse cursor in edit mode
 	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
+	{
+		
 		setPreviewSelection();
+	}
 
+	GUIManager::getInstance()->update(); // Update the GUI when editing objects
 	// Enter the refresh after a timer duration OR if the terrain transform is used
 	if ((timer-timer2)>17 || APP_EDIT_TERRAIN_TRANSFORM) // (17)1/60th second refresh interval
 	{
@@ -1752,9 +1766,12 @@ void App::createNewProject()
 	setAppState(old_state);
 }
 
-void App::loadProject()
+void App::loadProject(DIALOG_FUNCTION function)
 {
 	old_state = getAppState();
+
+	// Store the dialog function value and remember it.
+	df = function;
 
 	// Have to rethink how to do it. It used the gameplay dialog.
 	//bool ansSave = GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_project")).c_str());
@@ -1797,6 +1814,7 @@ void App::loadProject()
 	setAppState(APP_WAIT_FILEREQUEST);
 	if (!selector)
 	{
+		
 		// Create a load file selector
 		selector = new CGUIFileSelector(getLangText("msg_prj_lp0").c_str(), guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
 		// Create a base icon for the files
@@ -1804,13 +1822,31 @@ void App::loadProject()
 		// Create a base icon for the folders
 		selector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
 		// Add a new file filters (Normally for what is required to load)
-		selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+		//selector->setStartingPath(L"../");
+		if (function == DF_PROJECT)
+		{
+			selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+			// Create a "favorite places"
+			selector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+			// Define in what path the request will open (it accept full or relative paths)
+			
+		}
+		else
+		{
+			// Create a "favorite places"
+			selector->addPlacePaths(L"Dynamic object folder",L"../media/dynamic_objects",driver->getTexture("../media/art/places_folder.png"));
+			selector->addFileFilter(L"OBJ Model", L"obj", driver->getTexture("../media/art/wma.png"));
+			selector->addFileFilter(L"3DS Model", L"3ds", driver->getTexture("../media/art/wma.png"));
+			selector->addFileFilter(L"B3D Model", L"b3d", driver->getTexture("../media/art/wma.png"));
+			selector->addFileFilter(L"DirectX Model", L"x", driver->getTexture("../media/art/wma.png"));
+			// Define in what path the request will open (it accept full or relative paths)
+			selector->setStartingPath(L"../media/dynamic_objects");
+		}
 
 		// This is required for the window stretching feature
 		selector->setDevice(device);
 
-		// Create a "favorite places"
-		selector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+		
 #ifdef WIN32
 
 		// Populate with standard windows favorites paths
@@ -1820,9 +1856,10 @@ void App::loadProject()
 		selector->populateLinuxFAV();
 #endif
 
-		// Define in what path the request will open (it accept full or relative paths)
-		selector->setStartingPath(L"../projects");
-
+		if (function == DF_PROJECT)
+			selector->setStartingPath(L"../projects"); // Projects
+		else
+			selector->setStartingPath(L"../media/dynamic_objects"); // Replacing objects
 	}
 
 }
@@ -1839,8 +1876,15 @@ if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewPr
 // Call is coming directly from the event manager
 // Since we're using our new file selector and the method uses the events
 // It will be useful to rename that method (obsolete name)
+
+// This need to be reworked as it might be confusing (not only for projects)
+// As it's been used for getting the filename and doing actions
 void App::loadProjectFile(bool value)
 {
+	// Do not load the project if the file request is requesting for other things.
+	if (df!=DF_PROJECT)
+		value=false;
+
 	if (value)
 	{
 		// Close and drop the file selector

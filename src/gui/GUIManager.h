@@ -39,6 +39,7 @@ enum GUI_ID
     CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER = 18,
 	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY = 202,
 	BT_ID_DYNAMIC_OBJECT_BT_SPAWN = 201,
+	BT_ID_DYNAMIC_OBJECT_BT_REPLACE = 202,
     BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS = 19,
     BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE= 20,
     BT_ID_DYNAMIC_OBJECT_BT_REMOVE= 21,
@@ -128,6 +129,8 @@ class GUIManager
 		bool isGuiPresent(vector2d<s32> mousepos);
 		void createConsole();
 
+		void update();
+
 #ifdef EDITOR
 		void setupEditorGUI();
 		void createProjectTab();
@@ -167,6 +170,7 @@ class GUIManager
         void setElementVisible(GUI_ID id, bool visible);
 
         void setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible);
+		bool isWindowVisible(GUI_CUSTOM_WINDOW window);
 
         void updateDynamicObjectPreview();
 
@@ -205,6 +209,7 @@ class GUIManager
 
 	    virtual ~GUIManager();
     private:
+		IrrlichtDevice *device;
         IGUIEnvironment* guienv;
 		IVideoDriver* driver;
 		dimension2d<u32> screensize;
@@ -332,6 +337,7 @@ class GUIManager
         IGUIButton* guiDynamicObjects_Context_btRemove;
         IGUIButton* guiDynamicObjects_Context_btCancel;
 		IGUIButton* guiDynamicObjects_Context_btSpawn;
+		IGUIButton* guiDynamicObjects_Context_btReplace;
 
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;

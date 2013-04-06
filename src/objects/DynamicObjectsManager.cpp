@@ -799,15 +799,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		if (stype.size()>0)
 			type=atoi(stype.c_str());
 
-
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
-
-		if (type != OBJECT_TYPE_PLAYER)
-		{
-            templateObj = dynamicObjectXML->ToElement()->Attribute("template");
-			fileObj = dynamicObjectXML->ToElement()->Attribute("filename");
-		}
-
         f32 posX = (f32)atof(dynamicObjectXML->ToElement()->Attribute("x"));
         f32 posY = (f32)atof(dynamicObjectXML->ToElement()->Attribute("y"));
         f32 posZ = (f32)atof(dynamicObjectXML->ToElement()->Attribute("z"));
@@ -816,6 +808,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		// Create an object from the template
 		if (type!=OBJECT_TYPE_PLAYER)
 		{ 
+
+			templateObj = dynamicObjectXML->ToElement()->Attribute("template");
+			fileObj = dynamicObjectXML->ToElement()->Attribute("filename");
+	
 			bool result=false;
 			// If the "filename" was stored in the XML, then use this for retrieving the proper template
 			// if not, then trie to load based on the template name.
@@ -1114,6 +1110,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 }
 
 //! This is used for animation blending, need to be called at each update refresh
+//! Since Irrlicht 1.8 this seem to cause problems with certain models
 void DynamicObjectsManager::updateAnimationBlend()
 {
 	 for(int i=0;i<(int)objects.size();i++)
@@ -1187,6 +1184,8 @@ IMetaTriangleSelector* DynamicObjectsManager::getMeta()
 	return meta;
 }
 
+//! Add the player object pointer back in the dynamic object list
+//! Used after clearing a scene
 void DynamicObjectsManager::setPlayer()
 {
 	// Will add the player object to the list if the list is "live"

@@ -867,8 +867,8 @@ void CGUIFileSelector::addPlacePaths(wchar_t* name, wchar_t* path, video::ITextu
 		fillListBox();
 		FileSystem->changeWorkingDirectoryTo(core::stringc(prev_working_dir).c_str());
 	}
-
 	placespaths.push_back(newpath);
+
 }
 
 //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
@@ -937,6 +937,9 @@ void CGUIFileSelector::populateWindowsFAV()
 	TCHAR strPath[ MAX_PATH ];
 
 	irr::video::IVideoDriver * driver = Environment->getVideoDriver();
+
+	// Need to be in the starting path BEFORE getting the icons
+	FileSystem->changeWorkingDirectoryTo(core::stringc(prev_working_dir).c_str());
 
 	// Get the special folder path. (Desktop)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_DESKTOPDIRECTORY, FALSE );

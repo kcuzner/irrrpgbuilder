@@ -54,6 +54,12 @@ enum APP_STATE
 	
 };
 
+enum DIALOG_FUNCTION
+{
+	DF_PROJECT = 1,
+	DF_MODEL = 2,
+};
+
 typedef struct
 {
 	vector3df pickedPos;
@@ -107,7 +113,7 @@ class App
         void cleanWorkspace();
 
 		void createNewProject();
-        void loadProject();
+        void loadProject(DIALOG_FUNCTION function = DF_PROJECT);
         void loadProject(stringc filename);
 		void loadProjectFile(bool value);
         void saveProject();
@@ -216,11 +222,14 @@ class App
 		position2d<s32> mousepos;
 		vector3df initialposition;
 		
-		bool moveupdown;
-		bool snapfunction;
-
+		// Tools substates
+		bool moveupdown; // Moving and object up/down
+		bool snapfunction; // Snapping activated
+		
 		video::ITexture * tex_occluded;
 		video::ITexture * tex_normal;
+
+		DIALOG_FUNCTION df;
 
 };
 

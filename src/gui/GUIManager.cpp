@@ -18,8 +18,9 @@ using namespace irrklang;
 
 GUIManager::GUIManager()
 {
-    guienv = App::getInstance()->getDevice()->getGUIEnvironment();
-	driver = App::getInstance()->getDevice()->getVideoDriver();
+	device = App::getInstance()->getDevice();
+    guienv = device->getGUIEnvironment();
+	driver = device->getVideoDriver();
 	screensize = App::getInstance()->getScreenSize();
 
 	// init those because they will move on the display.
@@ -1152,35 +1153,54 @@ void GUIManager::createContextMenuGUI()
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window->setVisible(false);
 
-	guiDynamicObjects_Context_btSpawn = guienv->addButton(myRect(5,5,190,20),
+	u32 pby = 30; //vertical initial position of the button
+	IGUIStaticText* contexttitle = guienv->addStaticText(L"Action",core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window,-1);
+	contexttitle->setOverrideFont(guiFont14);
+	contexttitle->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+	contexttitle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+	guiDynamicObjects_Context_btSpawn = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_SPAWN,
                                                            L"Create item here");
 	guiDynamicObjects_Context_btSpawn->setOverrideFont(guiFontC12);
+	pby+=25;
 
-    guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,30,190,20),
+	guiDynamicObjects_Context_btReplace = guienv->addButton(myRect(5,pby,190,20),
+                                                           guiDynamicObjects_Context_Menu_Window,
+                                                           BT_ID_DYNAMIC_OBJECT_BT_REPLACE,
+                                                           L"Replace this object with file");
+	guiDynamicObjects_Context_btReplace->setOverrideFont(guiFontC12);
+	pby+=25;
+
+    guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 	guiDynamicObjects_Context_btEditScript->setOverrideFont(guiFontC12);
+	pby+=25;
 
-    guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,55,190,20),
+    guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_move_rotate")).c_str() );
 	guiDynamicObjects_Context_btMoveRotate->setOverrideFont(guiFontC12);
+	pby+=25;
 
-    guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,80,190,20),
+    guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 	guiDynamicObjects_Context_btRemove->setOverrideFont(guiFontC12);
+	pby+=25;
 
-    guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,105,190,20),
+	// The windows now close dynamicaly. 
+    /*guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_CANCEL,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_cancel")).c_str() );
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
+	pby+=25;*/
 
 }
 
@@ -1199,7 +1219,7 @@ void GUIManager::createCodeEditorGUI()
 
 	// NEW (oct 2012) Create a stretching windows for the script editor
 	guiDynamicObjectsWindowEditAction=new CGUIStretchWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
-	guiDynamicObjectsWindowEditAction->setDevice(App::getInstance()->getDevice());
+	guiDynamicObjectsWindowEditAction->setDevice(device);
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
 
@@ -1587,6 +1607,22 @@ void GUIManager::createConsole()
 	consolewin->setVisible(false);
 }
 
+void GUIManager::update()
+{
+	//printf("Update the GUI\n");
+	// If the context window is visible and the cursor is outside of it, then close it
+	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+	{
+		if (!isGuiPresent(device->getCursorControl()->getPosition()))
+		{
+			//The cursor is outside the window, close it then.
+			setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+			App::getInstance()->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		}
+		
+	}
+}
+
 void GUIManager::setupGameplayGUI()
 {
 
@@ -1899,10 +1935,13 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             guiDynamicObjectsWindowChooser->setVisible(visible);
             break;
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
-            mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X;
-            mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y;
-            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,130));
+			
+            mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
+            mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
+			
+            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,155));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
+			
             break;
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
@@ -1930,6 +1969,50 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
 
     }
+}
+
+bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
+{
+	bool result = false;
+    switch(window)
+    {
+#ifdef EDITOR
+		case GCW_DYNAMIC_OBJECT_INFO:
+			result = guiDynamicObjectsWindowInfo->isVisible();
+			break;
+
+        case GCW_DYNAMIC_OBJECT_CHOOSER:
+			result = guiDynamicObjectsWindowChooser->isVisible();
+            break;
+        case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
+			result = guiDynamicObjects_Context_Menu_Window->isVisible();
+            break;
+        case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
+            result = guiDynamicObjectsWindowEditAction->isVisible();
+            break;
+        case GCW_TERRAIN_TOOLBAR:
+			result = guiTerrainToolbar->isVisible();
+            break;
+#endif
+        case GCW_GAMEPLAY_ITEMS:
+			result = guiWindowItems->isVisible();
+            break;
+        case GCW_ABOUT:
+			result = guiAboutWindow->isVisible();
+            break;
+        case GCW_TERRAIN_PAINT_VEGETATION:
+			result = guiVegetationToolbar->isVisible();
+            break;
+		case GCW_DIALOG:
+			result = guidialog->isVisible();
+			break;
+
+        default:
+			result = false;
+            break;
+
+    }
+	return result;
 }
 
 void GUIManager::loadScriptTemplates()
