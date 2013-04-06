@@ -40,6 +40,7 @@ enum GUI_ID
 	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY = 202,
 	BT_ID_DYNAMIC_OBJECT_BT_SPAWN = 201,
 	BT_ID_DYNAMIC_OBJECT_BT_REPLACE = 202,
+	BT_ID_DYNAMIC_OBJECT_BT_REPLACE2 = 203,
     BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS = 19,
     BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE= 20,
     BT_ID_DYNAMIC_OBJECT_BT_REMOVE= 21,
@@ -338,6 +339,7 @@ class GUIManager
         IGUIButton* guiDynamicObjects_Context_btCancel;
 		IGUIButton* guiDynamicObjects_Context_btSpawn;
 		IGUIButton* guiDynamicObjects_Context_btReplace;
+		IGUIButton* guiDynamicObjects_Context_btReplace2;
 
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;

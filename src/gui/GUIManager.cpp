@@ -1152,12 +1152,27 @@ void GUIManager::createContextMenuGUI()
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window->setVisible(false);
-
-	u32 pby = 30; //vertical initial position of the button
+	
 	IGUIStaticText* contexttitle = guienv->addStaticText(L"Action",core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window,-1);
 	contexttitle->setOverrideFont(guiFont14);
 	contexttitle->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
-	contexttitle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+	//contexttitle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+
+	u32 pby = 30; //vertical initial position of the button
+	guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,pby,190,20),
+                                                           guiDynamicObjects_Context_Menu_Window,
+                                                           BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
+                                                           stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_move_rotate")).c_str() );
+	guiDynamicObjects_Context_btMoveRotate->setOverrideFont(guiFontC12);
+	pby+=25;
+
+	guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,pby,190,20),
+                                                           guiDynamicObjects_Context_Menu_Window,
+                                                           BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
+                                                           stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
+	guiDynamicObjects_Context_btEditScript->setOverrideFont(guiFontC12);
+	pby+=30;
 
 	guiDynamicObjects_Context_btSpawn = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
@@ -1169,29 +1184,24 @@ void GUIManager::createContextMenuGUI()
 	guiDynamicObjects_Context_btReplace = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REPLACE,
-                                                           L"Replace this object with file");
+                                                           L"Replace with a model file");
 	guiDynamicObjects_Context_btReplace->setOverrideFont(guiFontC12);
+	guiDynamicObjects_Context_btReplace->setEnabled(false);
 	pby+=25;
 
-    guiDynamicObjects_Context_btEditScript = guienv->addButton(myRect(5,pby,190,20),
+	guiDynamicObjects_Context_btReplace2 = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
-                                                           BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
-                                                           stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
-	guiDynamicObjects_Context_btEditScript->setOverrideFont(guiFontC12);
-	pby+=25;
-
-    guiDynamicObjects_Context_btMoveRotate= guienv->addButton(myRect(5,pby,190,20),
-                                                           guiDynamicObjects_Context_Menu_Window,
-                                                           BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
-                                                           stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_move_rotate")).c_str() );
-	guiDynamicObjects_Context_btMoveRotate->setOverrideFont(guiFontC12);
-	pby+=25;
-
-    guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,pby,190,20),
+                                                           BT_ID_DYNAMIC_OBJECT_BT_REPLACE2,
+                                                           L"Replace with current template");
+	guiDynamicObjects_Context_btReplace2->setOverrideFont(guiFontC12);
+	pby+=30;
+	
+	guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 	guiDynamicObjects_Context_btRemove->setOverrideFont(guiFontC12);
+	
 	pby+=25;
 
 	// The windows now close dynamicaly. 
@@ -1939,7 +1949,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
 			
-            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,155));
+            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,190));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
 			
             break;

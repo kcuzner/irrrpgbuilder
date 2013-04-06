@@ -409,11 +409,10 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN: // Create a new item from the last selected item in the dynamic object
 
 		//printf ("User call the spawn menu!\n");
-
-		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
-
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+
+		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
 
 		break;
 
@@ -423,6 +422,23 @@ void App::eventGuiButton(s32 id)
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 		loadProject(DF_MODEL);
+		break;
+
+	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with one from the file selector
+
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+
+		//Tell the dynamic Objects Manager to remove the node
+		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+
+		// remove the object for the selection
+		lastScannedPick.pickedNode=NULL;
+		lastMousePick.pickedNode=NULL;
+		selectedNode=NULL;
+
+		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+		
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
