@@ -496,6 +496,22 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
     return newObj;
 }
 
+core::stringc DynamicObjectsManager::getScript(stringc uniqueName)
+{
+
+	core::stringc result=L"";
+	for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+        if( stringc(objects[i]->getName()) == uniqueName )
+        {
+			result=objects[i]->getScript();
+            break;
+        }
+    }
+	return result;
+
+}
+
 void DynamicObjectsManager::removeObject(stringc uniqueName)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)

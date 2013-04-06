@@ -32,6 +32,9 @@ class DynamicObjectsManager
 		bool loadBlock(IrrlichtDevice * device, core::stringc file);
 		bool loadSet();
         DynamicObject* createActiveObjectAt(vector3df pos);
+
+		core::stringc getScript(stringc uniqueName);
+		void setScript(stringc uniqueName);
         void removeObject(stringc uniqueName);
 
 		bool findTemplate(stringc filename);

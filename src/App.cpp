@@ -338,11 +338,14 @@ void App::setAppState(APP_STATE newAppState)
 void App::eventGuiButton(s32 id)
 {
 
+	DynamicObject* object=NULL;
 #ifdef EDITOR
 	DynamicObject* selectedObject=NULL;
 #endif
 
 	oldcampos = vector3df(0,0,0);
+	vector3df oldrotation = vector3df(0,0,0);
+	core::stringw oldscript = L"";
 
 
 	switch (id)
@@ -428,6 +431,10 @@ void App::eventGuiButton(s32 id)
 
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		
+		// Keep the "good stuff"
+		oldrotation = lastMousePick.pickedNode->getRotation();
+		oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
 
 		//Tell the dynamic Objects Manager to remove the node
 		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
@@ -437,7 +444,10 @@ void App::eventGuiButton(s32 id)
 		lastMousePick.pickedNode=NULL;
 		selectedNode=NULL;
 
-		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+		// Create the new object from the template and put the old values back in.
+		object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+		object->setScript(oldscript);
+		object->setRotation(oldrotation);
 		
 		break;
 
