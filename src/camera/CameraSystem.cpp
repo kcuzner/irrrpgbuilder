@@ -171,9 +171,13 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 				break;*/
 		case 1: max = 2000;
 				min = 72;
+				gameCam->setFarValue(10000.0f);
+				gameCam->setNearValue(1.0f);
 				break;
 		case 2: max = 10000;
 				min = 144;
+				editCamMaya->setFarValue(35000.0f);
+				editCamMaya->setNearValue(1.0f);
 				break;
 	}
 
@@ -190,8 +194,13 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		f32 distance = anm->getDistance();
 		distance=distance+(increments*(distance/10));
 		anm->setDistance(distance);
-		if (distance>144)
-			editCamMaya->setFarValue(distance*4.0f);
+		if (distance<1.0f) 
+		{
+			distance=1.0f;
+			GUIManager::getInstance()->setConsoleText(L"Reached limit of camera zoom!",video::SColor(255,180,0,0));
+		}
+		//if (distance>144)
+		//	editCamMaya->setFarValue(distance*4.0f);
 
 	}
 	else
@@ -203,9 +212,6 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 			cameraHeight-=(increments*(distance/10));
 			updatePointClickCam();
 			f32 camdist = currentCam->getPosition().getDistanceFrom(currentCam->getTarget());
-			if (camdist>144)
-				gameCam->setFarValue(camdist*2.5f);
-			gameCam->setFarValue(cameraHeight*20.0f);
 		}
 	}
 }

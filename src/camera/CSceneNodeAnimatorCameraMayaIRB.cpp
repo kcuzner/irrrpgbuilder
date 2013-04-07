@@ -26,6 +26,7 @@ CSceneNodeAnimatorCameraMayaIRB::CSceneNodeAnimatorCameraMayaIRB(gui::ICursorCon
 	Zooming(false), Rotating(false), Moving(false), Translating(false)
 {
 
+	camera = NULL;
 	bypass_switch=false;
 	#ifdef _DEBUG
 	setDebugName("CSceneNodeAnimatorCameraMayaIRB");
@@ -132,7 +133,7 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	if (!node || node->getType() != ESNT_CAMERA)
 		return;
 
-	ICameraSceneNode* camera = static_cast<ICameraSceneNode*>(node);
+	camera = static_cast<ICameraSceneNode*>(node);
 
 
 	// If the camera isn't the active camera, and receiving input, then don't process it.
@@ -184,7 +185,7 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 		}
 		else
 		{
-			const f32 targetMinDistance = 0.1f;
+			const f32 targetMinDistance = 0.01f;
 			nZoom += (ZoomStart.X - MousePos.X) * ZoomSpeed;
 
 			if (nZoom < targetMinDistance) // jox: fixed bug: bounce back when zooming to close

@@ -155,6 +155,8 @@ namespace scene
 		bool FirstUpdate;
 		bool bypass_switch;
 
+		ICameraSceneNode* camera;
+
 		core::array<SKeyMap2> KeyMap;
 		bool ActionKeys[EK_COUNT];
 
