@@ -439,6 +439,31 @@ bool DynamicObjectsManager::loadSet()
 		return true;
 }
 
+DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::stringc meshfile)
+{
+  	DynamicObject* newObj = new DynamicObject(L"CUSTOM",meshfile,activeObject->animations,true);
+	newObj->setType(OBJECT_TYPE_NON_INTERACTIVE);
+	newObj->setTemplate(false);
+
+	//setup material
+	//newObj->getNode()->setMaterialType(activeObject->getMaterialType());
+	newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+	// Load the script if it was defined in the XML
+	
+    newObj->setPosition(pos);
+
+    //the unique name of an dynamic object contains his index at the objects vector
+    newObj->setName(this->createUniqueName());
+	// This is the reference name of the template this object is made of.
+	newObj->setTemplateObjectName(L"CUSTOM");
+
+	objects.push_back(newObj);
+	activeObject2=newObj;
+
+    return newObj;
+}
+
+
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
   	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);

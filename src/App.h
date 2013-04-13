@@ -206,6 +206,8 @@ class App
 
 		stringc lastPickedNodeName;
 
+		stringc lastFilename;
+
 // Used to load the startup map when the game start (only the player app)
 #ifndef EDITOR
 		stringc mapname;

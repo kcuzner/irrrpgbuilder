@@ -18,7 +18,7 @@ using namespace io;
 using namespace gui;
 
 
-DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFile, vector<DynamicObject_Animation> animations)
+DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFile, vector<DynamicObject_Animation> animations, bool directpath)
 {
 	// This is done when an dynamic object is initialised (template && player)
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -27,8 +27,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	prop_base=initProperties();
 	prop_level=initProperties();
 
-    stringc realFile = "../media/dynamic_objects/";
-    realFile += meshFile;
+	stringc realFile = "../media/dynamic_objects/";
+	realFile += meshFile;   
 
 	fileName=meshFile; // Store the original filename of the dynamic object for verification
 
@@ -36,7 +36,13 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	//printf("Here is the object: %s \n",realFile.c_str());
 
 	mesh = NULL;
-	mesh = smgr->getMesh(realFile);
+
+	if (!directpath)
+		mesh = smgr->getMesh(realFile);
+	else
+		mesh = smgr->getMesh(meshFile);
+
+	
 	//meshName = meshFile;
     this->animations = animations;
 

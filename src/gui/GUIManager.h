@@ -163,7 +163,7 @@ class GUIManager
         stringc getEditBoxText(GUI_ID id);
 
         void setStaticTextText(GUI_ID id, stringc text);
-		void setConsoleText (stringw text, video::SColor color);
+		void setConsoleText (stringw text, video::SColor color = video::SColor(255,0,0,0));
 		void clearConsole();
 		void setConsoleLogger(vector<core::stringw> &text);
 

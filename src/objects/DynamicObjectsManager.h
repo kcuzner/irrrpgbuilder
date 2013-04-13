@@ -31,6 +31,8 @@ class DynamicObjectsManager
 
 		bool loadBlock(IrrlichtDevice * device, core::stringc file);
 		bool loadSet();
+
+		DynamicObject* createCustomObjectAt(vector3df pos, core::stringc meshfile);
         DynamicObject* createActiveObjectAt(vector3df pos);
 
 		core::stringc getScript(stringc uniqueName);

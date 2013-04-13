@@ -1186,7 +1186,7 @@ void GUIManager::createContextMenuGUI()
                                                            BT_ID_DYNAMIC_OBJECT_BT_REPLACE,
                                                            L"Replace with a model file");
 	guiDynamicObjects_Context_btReplace->setOverrideFont(guiFontC12);
-	guiDynamicObjects_Context_btReplace->setEnabled(false);
+	guiDynamicObjects_Context_btReplace->setEnabled(true);
 	pby+=25;
 
 	guiDynamicObjects_Context_btReplace2 = guienv->addButton(myRect(5,pby,190,20),

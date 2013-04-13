@@ -117,6 +117,8 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
 
 	  inline bool isSaver() { if (DialogType==EFST_SAVE_DIALOG) return true; else return false;}
 
+	  inline core::stringw getOnlyFileName() { return FileNameText->getText(); }
+
 	  void populateWindowsFAV();
 
 	  void populateLinuxFAV();

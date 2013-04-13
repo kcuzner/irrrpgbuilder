@@ -97,7 +97,7 @@ class DynamicObject
 {
     public:
 
-		DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations);
+		DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations, bool directpath = false);
 		virtual ~DynamicObject();
 
         DynamicObject* clone();

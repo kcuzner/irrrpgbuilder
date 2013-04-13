@@ -38,6 +38,7 @@ App::App()
 	saveselector=NULL;
 	selectedNode=NULL;
 	lastPickedNodeName="";
+	lastFilename="";
 	timer=0;
 	timer2=0;
 	timer3=0;
@@ -425,7 +426,8 @@ void App::eventGuiButton(s32 id)
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 		loadProject(DF_MODEL);
-		break;
+
+	break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with one from the file selector
 
@@ -1865,8 +1867,6 @@ void App::loadProject(DIALOG_FUNCTION function)
 			selector->addFileFilter(L"3DS Model", L"3ds", driver->getTexture("../media/art/wma.png"));
 			selector->addFileFilter(L"B3D Model", L"b3d", driver->getTexture("../media/art/wma.png"));
 			selector->addFileFilter(L"DirectX Model", L"x", driver->getTexture("../media/art/wma.png"));
-			// Define in what path the request will open (it accept full or relative paths)
-			selector->setStartingPath(L"../media/dynamic_objects");
 		}
 
 		// This is required for the window stretching feature
@@ -1907,11 +1907,44 @@ if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewPr
 // As it's been used for getting the filename and doing actions
 void App::loadProjectFile(bool value)
 {
-	// Do not load the project if the file request is requesting for other things.
-	if (df!=DF_PROJECT)
-		value=false;
+	vector3df oldrotation = vector3df(0,0,0);
+	core::stringw oldscript = L"";
+	DynamicObject* object=NULL;
 
-	if (value)
+	if (df==DF_MODEL && value)
+	{
+		if (selector)
+		{
+			lastFilename=(core::stringc)selector->getFileName();
+			GUIManager::getInstance()->setConsoleText(selector->getFileName());
+			GUIManager::getInstance()->setConsoleText(selector->getOnlyFileName());
+			// This is a file loader
+			if (selector->isSaver()==false)
+			{
+	
+				selector->setVisible(false); // Hide the file selector
+				// Keep the "good stuff"
+				oldrotation = lastMousePick.pickedNode->getRotation();
+				oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
+
+				//Tell the dynamic Objects Manager to remove the node
+				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+
+				// remove the object for the selection
+				lastScannedPick.pickedNode=NULL;
+				lastMousePick.pickedNode=NULL;
+				selectedNode=NULL;
+
+				// Create the new object from the template and put the old values back in.
+				object = DynamicObjectsManager::getInstance()->createCustomObjectAt(lastMousePick.pickedPos, lastFilename);
+				object->setScript(oldscript);
+				object->setRotation(oldrotation);
+			}
+		}
+	}
+	
+	// Project loading
+	if (df==DF_PROJECT && value)
 	{
 		// Close and drop the file selector
 
