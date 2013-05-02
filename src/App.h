@@ -25,6 +25,8 @@ static const float APP_VERSION = 1.0;
 #include "tinyXML/tinyxml.h"
 #include "XML_Manager.h"
 
+#include "raytests.h"
+
 //Current Application State
 enum APP_STATE
 {
@@ -161,6 +163,8 @@ class App
 
         App();
         ~App();
+
+		raytest* raytester;
 
 		//ConsoleDialog * console_dialog;
 

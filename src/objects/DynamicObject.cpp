@@ -38,10 +38,13 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	mesh = NULL;
 
 	if (!directpath)
-		mesh = smgr->getMesh(realFile);
+		mesh = smgr->getMesh(realFile); //Loading from the Dynamic objects template library
+										//Objects in the library should be stored in the
+										//" media/dynamic_objects" folder in IRB
 	else
-		mesh = smgr->getMesh(meshFile);
-
+		mesh = smgr->getMesh(meshFile); //Loading the file directly from a path (directpath)
+										// Object can be stored anywhere
+										// Used mostly for testing models
 	
 	//meshName = meshFile;
     this->animations = animations;

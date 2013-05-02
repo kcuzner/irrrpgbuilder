@@ -1,4 +1,5 @@
 #include "App.h"
+#include "raytests.h"
 
 #include "camera/CameraSystem.h"
 #include "events/EventReceiver.h"
@@ -12,8 +13,6 @@
 
 #include "sound/SoundManager.h"
 #include "objects/Player.h"
-
-
 
 using namespace irr;
 using namespace core;
@@ -55,11 +54,17 @@ App::App()
 
 	df = DF_PROJECT;
 
+	// Initialize and the ray tester class
+	raytester=0;
+	
 }
 
 App::~App()
 {
 	this->cleanWorkspace();
+
+	// Remove the raytester class from memory
+	delete raytester;
 	SoundManager::getInstance()->stopEngine();
 	device->drop();
 	// exit(0);
@@ -714,6 +719,19 @@ void App::eventKeyPressed(s32 key)
 			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
 		break;
 
+	case KEY_F10: // Clear the test rays
+		if (raytester)
+			raytester->clearAll();
+		break;
+	case KEY_F9:
+		if (raytester)
+			raytester->enable(true);
+		break;
+	case KEY_F8:
+		if (raytester)
+			raytester->enable(false);
+		break;
+
 
 	case KEY_RETURN:
 		if (app_state == APP_WAIT_DIALOG)
@@ -942,13 +960,22 @@ MousePick App::getMousePosition3D(int id)
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
 		return result;
+		GUIManager::getInstance()->setConsoleText ("Ray success!", video::SColor(255,11,120,128));
+	
 	}
 	else
 	{
 		// Failed the ray test, returning the previous results
-		result.pickedPos = lastMousePick.pickedPos;
+		if (intersection!=vector3df(0,0,0))
+			result.pickedPos = intersection;
+		else
+			result.pickedPos = lastMousePick.pickedPos;
+		
 		result.pickedNode = NULL;
-		//f32 len = ray.getLength();
+
+		// Send the ray to the raytester (drawing lines to see the failed ray)
+		raytester->addRay(ray);
+	
 		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
 		return result;
 	}
@@ -1315,6 +1342,9 @@ void App::update()
 	EffectsManager::getInstance()->preparePostFX(false);
 	smgr->drawAll();
 
+	if (raytester)
+		raytester->update();
+
 	// PostFX - render the player in silouette if he's occluded
 	if (silouette)
 	{
@@ -1397,6 +1427,9 @@ void App::run()
 	//driver->addOcclusionQuery(Player::getInstance()->getNode(), ((scene::IMeshSceneNode*)Player::getInstance()->getNode())->getMesh());
 	driver->addOcclusionQuery(Player::getInstance()->getNode());
 
+	// Instanciate the ray test class (debug purpose)
+	raytester=new raytest();
+	raytester->init(device);
 
 
 	int lastFPS = -1;
