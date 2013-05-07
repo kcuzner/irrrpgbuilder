@@ -939,8 +939,8 @@ MousePick App::getMousePosition3D(int id)
 
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 
-	// Extend the ray as long as possible to get the terrain
-	//ray.end=ray.start+(ray.getVector()*250000);
+	// Set the ray a specific lenght for the ray
+	//ray.end=ray.start+((ray.getVector().normalize())*6000.0f);
 
 	tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
 		intersection,
@@ -960,7 +960,6 @@ MousePick App::getMousePosition3D(int id)
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
 		return result;
-		GUIManager::getInstance()->setConsoleText ("Ray success!", video::SColor(255,11,120,128));
 	
 	}
 	else

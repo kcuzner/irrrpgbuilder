@@ -56,6 +56,10 @@ void TerrainManager::createEmptySegment(vector3df pos)
     newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 
     newEmptySegment->setName(getHashCode(pos).c_str());
+	
+	//May have to define a bigger bounding box to be able to select better the empty tiles... This portion in test.
+	//core::aabbox3df box=newEmptySegment->getBoundingBox();
+	//((IMeshSceneNode*)newEmptySegment)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
 
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
 

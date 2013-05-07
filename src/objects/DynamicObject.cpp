@@ -144,6 +144,10 @@ DynamicObject::~DynamicObject()
 	if (node)
 		node->remove();
 
+//	if (fakeShadow)
+//		fakeShadow->drop();
+
+
 }
 
 cproperty DynamicObject::initProperties()
@@ -259,6 +263,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		this->setWalkTarget(node->getPosition());
+		
+		node->setDebugDataVisible(EDS_BBOX_ALL);
 
 	}
 }
@@ -1595,7 +1601,7 @@ void DynamicObject::update()
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
-	if (this->objectType==OBJECT_TYPE_PLAYER )//|| this->objectType==OBJECT_TYPE_NPC)
+	if (this->objectType==OBJECT_TYPE_PLAYER)//|| this->objectType==OBJECT_TYPE_NPC)
 		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
 }
 

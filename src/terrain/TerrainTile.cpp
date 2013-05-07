@@ -161,6 +161,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	recalculate();
 
 	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
+	//node->setDebugDataVisible(EDS_BBOX);
 
 }
 
@@ -472,8 +473,12 @@ void TerrainTile::recalculate()
 
 		// Attempt to update the triangle selector with the new mesh
 	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+	//ITriangleSelector * selector = smgr->createOctTreeTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
 	node->setTriangleSelector(selector);
 	selector->drop();
+
+	core::aabbox3df box=node->getBoundingBox();
+	((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 
 }

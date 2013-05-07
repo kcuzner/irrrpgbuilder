@@ -52,7 +52,18 @@ CameraSystem::CameraSystem()
 
 CameraSystem::~CameraSystem()
 {
-	anm->drop();
+	if (anm)
+		anm->drop();
+
+	if (cutsceneCam)
+		cutsceneCam->drop();
+
+	if (gameCam)
+		gameCam->drop();
+
+	if (editCamMaya)
+		editCamMaya->drop();
+
     //dtor
 }
 
