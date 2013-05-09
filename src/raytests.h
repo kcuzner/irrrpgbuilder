@@ -10,7 +10,7 @@ class raytest
 {
 	public:
 		raytest();
-		void addRay(core::line3df ray);
+		void addRay(core::line3df ray, bool result);
 		void clearAll();
 		void update();
 		void init(IrrlichtDevice* device);
@@ -21,7 +21,8 @@ class raytest
 		video::IVideoDriver* driver;
 		IrrlichtDevice* device;
 
-		std::vector<core::line3df> lines;
+		std::vector<core::line3df> linesbad;
+		std::vector<core::line3df> linesgood;
 		bool active;
 		
 

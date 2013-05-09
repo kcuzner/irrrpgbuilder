@@ -47,6 +47,9 @@ class TerrainTile
 
         void showDebugData(bool show);
 
+		void assignTerrainShader(scene::ISceneNode* node);
+		void assignWaterShader(scene::ISceneNode* node);
+
 		void recalculate();
 
         virtual ~TerrainTile();

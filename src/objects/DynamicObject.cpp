@@ -207,9 +207,9 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		// Check the size of the mesh and create it as an octree if it's big. (200 unit min)
 		if (mesh->getBoundingBox().getExtent().X>200 && mesh->getBoundingBox().getExtent().Y>200 && mesh->getBoundingBox().getExtent().Z>200)
-			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,200);
+			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,100);
 		else
-			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,200);
+			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,100);
 		if (node)
 		{
 			// Select the triangle selector for more precision
@@ -264,7 +264,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		this->setWalkTarget(node->getPosition());
 		
-		node->setDebugDataVisible(EDS_BBOX_ALL);
+		//node->setDebugDataVisible(EDS_BBOX_ALL);
 
 	}
 }
@@ -567,7 +567,6 @@ f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 
     ray.start = pos;
 	ray.end = pos1;
-
 	// Tracks the current intersection point with the level or a mesh
 	core::vector3df intersection;
     // Used to show with triangle has been hit

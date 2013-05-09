@@ -8,12 +8,15 @@ raytest::raytest()
 }
 
 // Add a new ray to test inside the
-void raytest::addRay(core::line3df ray)
+void raytest::addRay(core::line3df ray, bool result)
 {
 	if (device && active)
 	{
-		lines.push_back(ray);
-		device->getLogger()->log("added 1 line to the test");
+		if (result)
+			linesgood.push_back(ray);
+		else
+			linesbad.push_back(ray);
+
 	}
 
 }
@@ -23,7 +26,8 @@ void raytest::clearAll()
 {
 	if (device)
 	{
-		lines.clear();
+		linesbad.clear();
+		linesgood.clear();
 	}
 }
 
@@ -38,11 +42,15 @@ void raytest::update()
         m.Lighting = false;
         driver->setMaterial(m);
 
-		if (lines.size()>0)
+		if (linesbad.size()>0 || linesgood.size()>0)
 		{
-			for (int i=0 ; i<(int)lines.size() ; i++)
+			for (int i=0 ; i<(int)linesbad.size() ; i++)
 			{
-				driver->draw3DLine(lines[i].start, lines[i].end, video::SColor(128,255,45,45)); //Red	
+				driver->draw3DLine(linesbad[i].start, linesbad[i].end, video::SColor(255,255,45,45)); //Red	
+			}
+			for (int i=0 ; i<(int)linesgood.size() ; i++)
+			{
+				driver->draw3DLine(linesgood[i].start, linesgood[i].end, video::SColor(255,145,255,45)); //Green	
 			}
 			
 		}

@@ -959,6 +959,7 @@ MousePick App::getMousePosition3D(int id)
 		// Ray test passed, returning the results
 		result.pickedPos = intersection;
 		result.pickedNode = tempNode;
+		raytester->addRay(ray,true);
 		return result;
 	
 	}
@@ -973,7 +974,7 @@ MousePick App::getMousePosition3D(int id)
 		result.pickedNode = NULL;
 
 		// Send the ray to the raytester (drawing lines to see the failed ray)
-		raytester->addRay(ray);
+		raytester->addRay(ray,false);
 	
 		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
 		return result;
@@ -1234,8 +1235,10 @@ void App::playGame()
 
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
-		DynamicObjectsManager::getInstance()->showDebugData(false);
+		DynamicObjectsManager::getInstance()->showDebugData(false); //DynamicObjectsManager::getInstance()->showDebugData(false);
 
+
+		
 		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 
@@ -1685,16 +1688,26 @@ void App::updateGameplay()
 				// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
 				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_INTERACTIVE,100);
 				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,0x0010);
 
 				// Filter only object with the ID=100 to get the resulting node
 				MousePick mousePick = getMousePosition3D(100);
 
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,200);
+				
 
 				// Set back to the defaults
 				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
 				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_INTERACTIVE,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,100);
+
+				// Failed to pick something, try to select "walkable"
+				if (!mousePick.pickedNode)
+				{
+					mousePick = getMousePosition3D(100);
+				}
+
 
 				stringc nodeName = "";
 				// Check for a node(need to get the name of the node)
@@ -2286,7 +2299,7 @@ void App::shutdown()
 	device->closeDevice();
 	device->run();
 	device->drop();
-	exit(0);
+	//exit(0);
 }
 
 std::vector<stringw> App::getConsoleText()

@@ -20,6 +20,10 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 {
     this->smgr=smgr;
 
+	ocean=NULL;
+	node=NULL;
+	selector=NULL;
+
     scale = TerrainManager::getInstance()->getScale();
 
     stringc tilename = TerrainManager::getInstance()->getTileMeshName();
@@ -31,126 +35,46 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 		tilename="../media/land.obj";
 
 	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
+	static IMesh* baseMesh2= smgr->getMesh("../media/irb_waterplane.obj"); //
+		//(scene::IMesh*)App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("water.obj",core::dimension2d<f32>(1.0f,1.0f),core::dimension2d<u32>(1,1));
 
 	SMesh* newMesh = NULL;
+	SMesh* newMesh2 = NULL;
 
 	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
+	newMesh2 = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 
 	newMesh->setHardwareMappingHint(EHM_STATIC);
-	//node=smgr->addOctreeSceneNode(newMesh,parent,100,512,true);  // Now work. Will be able to define octrees!
-	//newMesh->setMaterialFlag(EMF_WIREFRAME ,true);
-    node=smgr->addMeshSceneNode(newMesh,parent,100);
+	newMesh2->setHardwareMappingHint(EHM_STATIC);
+
+	// Create the terrain mesh node
+	node = smgr->addMeshSceneNode(newMesh,parent,100);
+	// Create the terrain mesh node
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
+	node->setName(name);
+	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+    node->setPosition(pos*scale);
+    selector = smgr->createTriangleSelector(newMesh,node);
+    node->setTriangleSelector(selector);
+	assignTerrainShader(node);
 
+	//node->setVisible(false);
+	
+	// Create the ocean mesh node
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
 	vector3df oldpos = ocean->getPosition();
 	oldpos.Y=oldpos.Y-5.0f;
-	ocean->setPosition(oldpos);
+	ocean->setPosition(oldpos); 
+	assignWaterShader(ocean);
 
+	
+	//assignTerrainShader(ocean);
+	
 	//Testing if I can use Irrlicht generated mesh for base
 	//ocean=smgr->addMeshSceneNode(smgr->addHillPlaneMesh("water",dimension2df(scale/nodescale,scale/nodescale),dimension2du(1,1)),node,0);
 
-    node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
-
-    node->setPosition(pos*scale);
-
-    selector = smgr->createTriangleSelector(newMesh,node);
-    node->setTriangleSelector(selector);
-
-    //node->setMaterialTexture(0,smgr->getVideoDriver()->getTexture("../0.jpg"));
-
-    int tileX = round32(pos.X);
-    int tileZ = round32(pos.Z);
-
-    //cout << name.c_str() << endl;
-
-    node->setName(name);
-
-	stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
-	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
-	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
-	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
-	stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
-
-	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
-	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture1.c_str());
-	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
-    static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
-	static ITexture* layer4 = smgr->getVideoDriver()->getTexture(texture4.c_str());
-
-	static s32 materialTerrain = 0;
-	// Disable 8 textures for the moment, will be enabled by the user directly.
-	bool heighttextures = false;
-    //Create a Custom GLSL Material (Terrain Splatting)
-	if (heighttextures)
-	{
-		//Hardware support for 8 textures
-		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/splat8.frag", "pixelMain", video::EPST_PS_1_4,
-        ShaderCallBack::getInstance(), video::EMT_SOLID);
-
-		//Assign Textures
-		node->setMaterialTexture(0,layer0);
-		node->setMaterialTexture(1,layer1);
-		node->setMaterialTexture(2,layer2);
-		node->setMaterialTexture(3,layer3);
-		node->setMaterialTexture(4,layer4);
-
-	}
-	else
-	{
-		// Hardware support for 4 textures
-		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/splat4.frag", "pixelMain", video::EPST_PS_1_4,
-        ShaderCallBack::getInstance(), video::EMT_SOLID);
-
-		//Assign Textures
-#ifdef WIN32 // Strange 
-		// On Windows
-		node->setMaterialTexture(0,layer1);
-		node->setMaterialTexture(1,layer2);
-		node->setMaterialTexture(2,layer3);
-		node->setMaterialTexture(3,layer4);
-#else
-		// On Linux
-		node->setMaterialTexture(0,layer0);
-		node->setMaterialTexture(1,layer1);
-		node->setMaterialTexture(2,layer2);
-		node->setMaterialTexture(3,layer3);
-#endif
-	}
-
-	 //node->setMaterialTexture(0,layer1);
-
-    //Assign GLSL Shader
-	node->getMaterial(0).setFlag(EMF_LIGHTING,false);
-	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
-
-    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
-
-    //Create a Custom GLSL Material (Water shader)
-   static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_4,
-        ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-
-    static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
-    static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
-
-    //Assign GLSL Shader
-    ocean->setMaterialType((E_MATERIAL_TYPE)materialOcean);
-
-    //Assign Textures
-    ocean->setMaterialTexture(0,oceanLayer0);
-    ocean->setMaterialTexture(1,oceanLayer1);
-
-    ocean->setMaterialFlag(EMF_FOG_ENABLE,true);
-	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
-
-
+ 
 	// Reset the vertices height of the mesh to 0.0f (Y axis)
 	IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -161,7 +85,6 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	recalculate();
 
 	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
-	//node->setDebugDataVisible(EDS_BBOX);
 
 }
 
@@ -176,9 +99,16 @@ TerrainTile::~TerrainTile()
 
     vegetationVector.clear();
 
-	selector->drop();
-	ocean->remove();
-    node->remove();
+	if (selector)
+		selector->drop();
+
+	if (ocean)
+		ocean->remove();
+
+	if (node)
+		node->remove();
+
+	
 
     //ocean->remove();///TODO: rever destrutor TerrainTile!
 
@@ -478,7 +408,7 @@ void TerrainTile::recalculate()
 	selector->drop();
 
 	core::aabbox3df box=node->getBoundingBox();
-	((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
+	((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,-256.0f,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
 	((IMeshSceneNode*)node)->getMesh()->setDirty();
 
 }
@@ -508,7 +438,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 		//if(mb_vertices[j].Pos.Y > nodescale/4) mb_vertices[j].Pos.Y = nodescale/4;
 		// Fix up/down limits
 		if(mb_vertices[j].Pos.Y > nodescale*0.75f) mb_vertices[j].Pos.Y = nodescale*0.75f;
-	    if(mb_vertices[j].Pos.Y < -(nodescale*0.12f)) mb_vertices[j].Pos.Y = -(nodescale*0.12f);
+	    if(mb_vertices[j].Pos.Y < -(nodescale*0.25f)) mb_vertices[j].Pos.Y = -(nodescale*0.25f);
 	}
 
 
@@ -594,4 +524,90 @@ void TerrainTile::showDebugData(bool show)
     {
         vegetationVector[i]->showDebugData(show);
     }
+}
+
+void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
+{
+	stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
+	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
+	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
+	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
+	stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
+
+	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
+	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture1.c_str());
+	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
+    static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
+	static ITexture* layer4 = smgr->getVideoDriver()->getTexture(texture4.c_str());
+
+	static s32 materialTerrain = 0;
+	// Disable 8 textures for the moment, will be enabled by the user directly.
+	bool heighttextures = false;
+    //Create a Custom GLSL Material (Terrain Splatting)
+	if (heighttextures)
+	{
+		//Hardware support for 8 textures
+		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/splat8.frag", "pixelMain", video::EPST_PS_1_4,
+        ShaderCallBack::getInstance(), video::EMT_SOLID);
+
+		//Assign Textures
+		node->setMaterialTexture(0,layer0);
+		node->setMaterialTexture(1,layer1);
+		node->setMaterialTexture(2,layer2);
+		node->setMaterialTexture(3,layer3);
+		node->setMaterialTexture(4,layer4);
+
+	}
+	else
+	{
+		// Hardware support for 4 textures
+		materialTerrain=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+        "../media/shaders/splat.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/splat4.frag", "pixelMain", video::EPST_PS_1_4,
+        ShaderCallBack::getInstance(), video::EMT_SOLID);
+
+		//Assign Textures
+#ifdef WIN32 // Strange 
+		// On Windows
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(1,layer2);
+		node->setMaterialTexture(2,layer3);
+		node->setMaterialTexture(3,layer4);
+#else
+		// On Linux
+		node->setMaterialTexture(0,layer0);
+		node->setMaterialTexture(1,layer1);
+		node->setMaterialTexture(2,layer2);
+		node->setMaterialTexture(3,layer3);
+#endif
+	}
+
+	 //node->setMaterialTexture(0,layer1);
+
+    //Assign GLSL Shader
+	node->getMaterial(0).setFlag(EMF_LIGHTING,false);
+	node->getMaterial(0).setFlag(EMF_FOG_ENABLE,true);
+    node->setMaterialType((E_MATERIAL_TYPE)materialTerrain);
+}
+
+void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
+{
+	 //Create a Custom GLSL Material (Water shader)
+	static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+        "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_4,
+        ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+    static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
+    static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
+	// Water shader
+
+	node->setMaterialType((E_MATERIAL_TYPE)materialOcean);
+	node->setMaterialTexture(0,oceanLayer0);
+	node->setMaterialTexture(1,oceanLayer1);
+
+	node->setMaterialFlag(EMF_FOG_ENABLE,true);    
+	node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 }
