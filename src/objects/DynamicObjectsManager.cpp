@@ -504,7 +504,10 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
     newObj->setPosition(pos);
 
     //the unique name of an dynamic object contains his index at the objects vector
-    newObj->setName(this->createUniqueName());
+	if (newObj->getType()==OBJECT_TYPE_WALKABLE) // Change the name as it's not a really a "object" 
+		newObj->setName("WALKABLE_");
+	else
+		newObj->setName(this->createUniqueName());
 	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(activeObject->getName());
 

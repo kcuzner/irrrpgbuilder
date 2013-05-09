@@ -1706,6 +1706,7 @@ void App::updateGameplay()
 				if (!mousePick.pickedNode)
 				{
 					mousePick = getMousePosition3D(100);
+					//mousePick.pickedNode = NULL; //Forget about the node since we only need the collision point
 				}
 
 
@@ -1759,8 +1760,8 @@ void App::updateGameplay()
 
 					}
 					else
-					{
-						mousePick = getMousePosition3D(100);
+					{ // Did not clicked on a NPC or object but on a walkable area
+						//mousePick = getMousePosition3D(100);
 						if (mousePick.pickedPos!=vector3df(0,0,0))
 						{
 							Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
