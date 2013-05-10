@@ -46,6 +46,8 @@ CameraSystem::CameraSystem()
 
 	oldrot=-90+Player::getInstance()->getObject()->getRotation().Y;
 
+	counter=0;
+
 	
 	
 }
@@ -238,109 +240,111 @@ f32 CameraSystem::getCameraHeight()
 void CameraSystem::updatePointClickCam()
 {
 	if (camera==1)
-
 	{
-	// Get the player and find a "reference" position based on it.
-	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
-	camrefpos.Y+=cameraTargetHeight;
+		// Get the player and find a "reference" position based on it.
+		core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
+		camrefpos.Y+=cameraTargetHeight;
 
-	// Find the distance between the current camera and the reference position
-	f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);
+		// Find the distance between the current camera and the reference position
+		f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);
 
-	// Initialize the vector and set the distance of the camera toward it
-	vector3df pos=vector3df(0,0,0);
-	pos.X+=cameraHeight;
+		// Initialize the vector and set the distance of the camera toward it
+		vector3df pos=vector3df(0,0,0);
+		pos.X+=cameraHeight;
 
-	// Offset from the reference position (the player)
-	pos+=camrefpos;
+		// Offset from the reference position (the player)
+		pos+=camrefpos;
 	
 
-	// This update the camera view when it's set as a RPG Camera
-	// Parent is player, and use the player angle as reference
-	if (viewtype==VIEW_RPG)
-	{
-		f32 camrefangle=0;
+		// This update the camera view when it's set as a RPG Camera
+		// Parent is player, and use the player angle as reference
+		if (viewtype==VIEW_RPG)
+		{
+			f32 camrefangle=0;
 
-		if (Player::getInstance()->getObject()->isWalking())
-			camrefangle = -90+(Player::getInstance()->getObject()->getRotation()).Y;
-		else
-			camrefangle = cameraAngle.X;
+			if (Player::getInstance()->getObject()->isWalking())
+				camrefangle = -90+(Player::getInstance()->getObject()->getRotation()).Y;
+			else
+				camrefangle = cameraAngle.X;
 
-		// Limit camera and oldrot to stay in 0-360 degree range
-		if (camrefangle<0)
-			camrefangle+=360;
+			// Limit camera and oldrot to stay in 0-360 degree range
+			if (camrefangle<0)
+				camrefangle+=360;
 
-		if (camrefangle>360)
-			camrefangle-=360;
+			if (camrefangle>360)
+				camrefangle-=360;
 
-		if (oldrot<0)
-			oldrot+=360;
+			if (oldrot<0)
+				oldrot+=360;
 
-		if (oldrot>360)
-			oldrot-=360;
+			if (oldrot>360)
+				oldrot-=360;
 		
-		f32 diff = camrefangle-oldrot;
+			f32 diff = camrefangle-oldrot;
 	
-		// Turn on the other side if the difference is too great
-		if (diff>181)
-		{
-			camrefangle=180-camrefangle;
-			diff = camrefangle+oldrot;
-		}
+			// Turn on the other side if the difference is too great
+			if (diff>181)
+			{
+				camrefangle=180-camrefangle;
+				diff = camrefangle+oldrot;
+			}
 
-		// Turn on the other side if the difference is too great
-		if (diff<-181)
-		{
-			camrefangle=180+camrefangle;
-			diff = camrefangle+oldrot;
-		}
+			// Turn on the other side if the difference is too great
+			if (diff<-181)
+			{
+				camrefangle=180+camrefangle;
+				diff = camrefangle+oldrot;
+			}
 
-		// The "matching speed" of the rotation
-		f32 matchspeed = 0.1f;
-		bool correction=true;
+			// The "matching speed" of the rotation
+			f32 matchspeed = 0.1f;
+			bool correction=true;
 
-		if (diff<matchspeed && diff>matchspeed)
-			correction=false;
+			if (diff<matchspeed && diff>matchspeed)
+				correction=false;
 
-		if (diff>matchspeed && correction)
-		{
 
-			//camrefangle=oldrot+(matchspeed);
-			if (diff>45)
-				camrefangle=oldrot+(matchspeed*5);
-			if (diff>20 && diff<46)
-				camrefangle=oldrot+(matchspeed*2);
-			if (diff<21)
-				camrefangle=oldrot+(matchspeed);
+			if (diff>matchspeed && correction)
+			{
 
-		}
+				//camrefangle=oldrot+(matchspeed);
+				if (diff>45)
+					camrefangle=oldrot+(matchspeed*5);
+				if (diff>20 && diff<46)
+					camrefangle=oldrot+(matchspeed*2);
+				if (diff<21)
+					camrefangle=oldrot+(matchspeed);
+
+			}
 		
-		if (diff<-matchspeed && correction)
-		{
-			//camrefangle=oldrot-(matchspeed);
-			if (diff<-45)
-				camrefangle=oldrot-(matchspeed*5);
-			if (diff<-20 && diff>-46)
-				camrefangle=oldrot-(matchspeed*2);
-			if (diff>-21)
-				camrefangle=oldrot-(matchspeed);
+			if (diff<-matchspeed && correction)
+			{
+				//camrefangle=oldrot-(matchspeed);
+				if (diff<-45)
+					camrefangle=oldrot-(matchspeed*5);
+				if (diff<-20 && diff>-46)
+					camrefangle=oldrot-(matchspeed*2);
+				if (diff>-21)
+					camrefangle=oldrot-(matchspeed);
+			}
+
+			if (Player::getInstance()->getObject()->isWalking())
+				cameraAngle.X=camrefangle;
+
+			oldrot=camrefangle;
+
 		}
 
-		if (Player::getInstance()->getObject()->isWalking())
-			cameraAngle.X=camrefangle;
+		// Do the rotation calculation
+		pos.rotateXYBy(cameraAngle.Y, camrefpos);
+		pos.rotateXZBy(-cameraAngle.X, camrefpos);
 
-		oldrot=camrefangle;
-
+	
+		// Set the position and angle of the cam
+		currentCam->setPosition(pos);
+		currentCam->setTarget(camrefpos);
 	}
-
-	// Do the rotation calculation
-	pos.rotateXYBy(cameraAngle.Y, camrefpos);
-	pos.rotateXZBy(-cameraAngle.X, camrefpos);
-
-	// Set the position and angle of the cam
-	currentCam->setPosition(pos);
-	currentCam->setTarget(camrefpos);
-	}
+	
 }
 
 //! Will update the angle of the pointNClick camera by mouse offsets

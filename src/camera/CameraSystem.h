@@ -103,6 +103,8 @@ class CameraSystem
 
 		f32 oldrot;
 
+		u32 counter;
+
 		u32 refreshdelay;
 };
 
