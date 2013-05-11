@@ -109,11 +109,7 @@ void Player::update()
 	{
 		timer3=timercheck;
 		//printf("current state of animation is %i\n",playerObject->getAnimation());
-		// Calculate the size of the mesh, and multiplicate it with the scale
-		// Will give the real size on the map
-		f32 sizePlayer = playerObject->getNode()->getBoundingBox().getExtent().X;
-		f32 meshScale = playerObject->getScale().X;
-
+	
 		vector3df walkTarget = playerObject->getWalkTarget();
 
 		// With this the target reticle will follow the target that has been selected (app.cpp)

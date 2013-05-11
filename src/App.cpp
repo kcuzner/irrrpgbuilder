@@ -781,7 +781,7 @@ void App::eventMousePressed(s32 mouse)
 					nodeName = mousePick.pickedNode->getName();
 
 					//if you click on a Dynamic Object then open his properties
-					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
@@ -998,7 +998,8 @@ void App::setPreviewSelection()
 		{
 			nodeName = mousePick.pickedNode->getName();
 			//If the mouse hover the object it will be toggled in debug data (bounding box, etc)
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+			//Should be able to select the walkable in editor mode
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName=="WALKABLE_" )
 			{
 				if (nodeName!=lastPickedNodeName && lastScannedPick.pickedNode!=NULL)
 					lastScannedPick.pickedNode->setDebugDataVisible(0);

@@ -85,8 +85,6 @@ void CameraSystem::setCamera(int tempCamera)
 {
 	camera = tempCamera;
 
-	// Get the distance from the current cam
-	f32 camdist = 0.0f;
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
@@ -224,7 +222,6 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 			f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
 			cameraHeight-=(increments*(distance/10));
 			updatePointClickCam();
-			f32 camdist = currentCam->getPosition().getDistanceFrom(currentCam->getTarget());
 		}
 	}
 }
@@ -246,7 +243,7 @@ void CameraSystem::updatePointClickCam()
 		camrefpos.Y+=cameraTargetHeight;
 
 		// Find the distance between the current camera and the reference position
-		f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);
+		//f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);
 
 		// Initialize the vector and set the distance of the camera toward it
 		vector3df pos=vector3df(0,0,0);

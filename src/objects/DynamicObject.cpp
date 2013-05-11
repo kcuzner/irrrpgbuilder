@@ -549,8 +549,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 		collided=false; // reset the collision flag
 	}
 
-	f32 distance = 0.0f;
-
 }
 
 // Tell if the object is walking or running
@@ -564,8 +562,6 @@ bool DynamicObject::isWalking()
 
 f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 {
-	// Check from the top of the character
-	irr::f32 maxRayHeight = 1000.0f;
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
@@ -866,8 +862,8 @@ bool DynamicObject::setAnimation(stringc animName)
 	bool randomize=true;
 
 	// Setup the animation skinning of the meshes (Allow external animation to be used)
-	ISkinnedMesh* skin = NULL;
-	ISkinnedMesh* defaultskin = NULL;
+	//ISkinnedMesh* skin = NULL;
+	//ISkinnedMesh* defaultskin = NULL;
 
 	if (animName=="die")
 	{
@@ -1214,7 +1210,7 @@ void DynamicObject::checkAnimationEvent()
 		stringc sound = currentAnim.sound;
 		//Play dialog sound (yes you can record voices!)
 		ISound * soundfx = NULL;
-		u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		//u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		// After the sound as been called for this duration, permit to trigger other sounds
 
 		if (sound.size()>0)
@@ -1522,7 +1518,8 @@ void DynamicObject::update()
 
 		//
 		// Check and update the walking of the object
-		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN)&& !culled)
+		//if ((currentAnimation==OBJECT_ANIMATION_WALK || currentAnimation==OBJECT_ANIMATION_RUN) && !culled)
+		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN) && !culled)
 		{ // timerLUA=17
 			updateWalk();
 			if (currentSpeed!=0)
@@ -1655,7 +1652,7 @@ void DynamicObject::updateWalk()
 			enemybasesize = enemyUnderAttack->getNode()->getBoundingBox().getExtent().X;
 			f32 enemyscale=0;
 			enemyscale = enemyUnderAttack->getNode()->getScale().X;
-			f32 enemysize = enemybasesize * enemyscale;
+			//f32 enemysize = enemybasesize * enemyscale;
 			//printf ("DB=====>>>>> size of ennemy is: %f units!\n",enemysize);
 		}
 

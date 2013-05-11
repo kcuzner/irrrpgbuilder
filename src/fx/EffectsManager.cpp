@@ -271,7 +271,7 @@ void EffectsManager::update()
 void EffectsManager::preparePostFX(bool depth)
 {
 	if (postProcessMode>0)
-		postProcessManager->prepare(false);
+		postProcessManager->prepare(depth);
 
 }
 

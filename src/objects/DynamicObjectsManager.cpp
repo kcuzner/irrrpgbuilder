@@ -361,8 +361,6 @@ bool DynamicObjectsManager::loadSet()
 	// Will provide the path and "sets" to load
 	// read configuration from xml file
 
-	const u32 starttime = App::getInstance()->getDevice()->getTimer()->getRealTime();
-
 	io::IXMLReaderUTF8* xmlmain = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/dynamic_objects/dynamic_objects.xml");
 	if (!xmlmain)
 	{
@@ -377,7 +375,6 @@ bool DynamicObjectsManager::loadSet()
 	core::stringw  result = L"";
 
 	bool inside = false;
-	bool inside2 = false;
 
 	// Language counter (using the XML hierachy)
 	u32 count = 0;
@@ -430,10 +427,7 @@ bool DynamicObjectsManager::loadSet()
 
 		core::stringw countstr = ((core::stringw)L"Object set count: ")+(core::stringw)(linecount);
 
-		const u32 endtime = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		u32 time = endtime-starttime;
-
-        if (xmlmain)
+	    if (xmlmain)
                 xmlmain->drop(); // don't forget to delete the xml reader
 
 		return true;
