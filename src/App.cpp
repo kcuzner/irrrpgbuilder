@@ -829,7 +829,7 @@ void App::eventMousePressed(s32 mouse)
 					nodeName = mousePick.pickedNode->getName();
 
 					//if you click on a Dynamic Object then open his properties
-					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
