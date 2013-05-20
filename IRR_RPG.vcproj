@@ -597,6 +597,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gui\CGUIPaneWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gui\CGUIPaneWindow.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gui\CGUIStretchWindow.cpp"
 					>
 				</File>

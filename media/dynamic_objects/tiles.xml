@@ -6,4 +6,10 @@
 	<dynamic_object name="tile_Corner" mesh="tiles/tileCorner.obj"  type="walkable" scale="1.0"
 					description="North-South Tile" author="Christian Clavet" licence="Creative Commons" >
 	</dynamic_object>
+	<dynamic_object name="test terrain" mesh="untitled.obj"  type="walkable" scale="1.0"
+					description="test terrain" author="Christian Clavet" licence="Creative Commons" >
+	</dynamic_object>
+	<dynamic_object name="Spire Terrain" mesh="tiles/spire.obj"  type="walkable" scale="1.0"
+					description="test terrain" author="" licence="Creative Commons" >
+	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>

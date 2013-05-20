@@ -14,6 +14,9 @@
 // Stretching window class
 #include "CGUIStretchWindow.h"
 
+// Stretching window class
+#include "CGUIPaneWindow.h"
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -318,7 +321,9 @@ class GUIManager
 
         ///Dynamic Objects
         IGUIButton* guiDynamicObjectsMode;
-        IGUIWindow* guiDynamicObjectsWindowChooser;
+		
+        //IGUIWindow* guiDynamicObjectsWindowChooser;
+		CGUIPaneWindow* guiDynamicObjectsWindowChooser;
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIStretchWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 

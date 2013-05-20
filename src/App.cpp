@@ -229,7 +229,7 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
+		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 	}
@@ -406,7 +406,7 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECT_INFO:
 		{
-			bool result = GUIManager::getInstance()->getVisibleStatus(GCW_DYNAMIC_OBJECT_INFO);
+			bool result = GUIManager::getInstance()->isWindowVisible(GCW_DYNAMIC_OBJECT_INFO);
 			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,!result);
 		}
 
