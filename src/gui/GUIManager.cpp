@@ -1010,7 +1010,7 @@ void GUIManager::createDynamicObjectInfoGUI()
 	infoscroll->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	infoscroll->setVisible(false);
 
-	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+10,20,posx+310,49),false,true,guiDynamicObjectsWindowChooser,-1);
+	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+10,30,posx+310,49),false,true,guiDynamicObjectsWindowChooser,-1);
 	infotext->setDrawBackground(true);
 	infotext->setDrawBorder(true);
 	infotext->setBackgroundColor(video::SColor(255,237,242,248));
@@ -1079,7 +1079,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
     //guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
-	guiDynamicObjectsWindowChooser = new CGUIPaneWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
+	guiDynamicObjectsWindowChooser = new CGUIPaneWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect, true);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
    //guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
@@ -1090,8 +1090,11 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsWindowChooser->setMaxSize(core::dimension2du(550,2000));
 	guiDynamicObjectsWindowChooser->setMinSize(core::dimension2du(220,10));
 
+	//Could be able to drag the window
+	//guiDynamicObjectsWindowChooser->setDraggable(true);
+
 	// Enable manual dragging of the left portion of the pane
-	//guiDynamicObjectsWindowChooser->enableleft=true;
+	guiDynamicObjectsWindowChooser->enableleft=true;
 
 
     s32 guiDynamicObjectsWindowChooser_Y = 5;
@@ -1123,6 +1126,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	{
 		guiDynamicObjects_Category->addItem(DynamicObjectsManager::getInstance()->meshtypename[i].c_str());
 	}
+
 	//Since they are not yet implemented, theses will be off for the moment.
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	//guiDynamicObjects_Category->addItem(L"PROPS");
@@ -1139,7 +1143,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
 	
 	guiDynamicObjectsWindowChooser_Y += 20;
-	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+180);
+	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+185);
 	if (boxend<10)
 		boxend=10;
 
@@ -1973,6 +1977,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
+			guienv->setFocus(guiDynamicObjects_Script);
             break;
         case GCW_TERRAIN_TOOLBAR:
             guiTerrainToolbar->setVisible(visible);
