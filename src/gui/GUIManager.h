@@ -284,7 +284,7 @@ class GUIManager
 
 		IGUIListBox* console;
 		IGUIListBox* consolelog;
-		CGUIStretchWindow* consolewin;//IGUIWindow * consolewin;
+		CGUIPaneWindow* consolewin;//IGUIWindow * consolewin;
 
 		// Loader window
 		IGUIStaticText* guiLoaderDescription;
@@ -327,7 +327,7 @@ class GUIManager
 		CGUIPaneWindow* guiDynamicObjectsWindowChooser;
 		IGUIWindow* InnerChooser;
 		IGUIWindow* guiDynamicObjectsWindowInfo;
-        CGUIStretchWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
+        CGUIPaneWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
 		IGUIListBox* guiDynamicObjects_OBJCategory;

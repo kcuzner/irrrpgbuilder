@@ -212,7 +212,10 @@ void GUIConfigWindow::populateResolutionList()
             modeName.append(" x ");
             modeName.append( stringw(h) );
 
-            resolutionList->addItem(modeName.c_str());
+			//Limit the list to the "approved" resolutions
+			//A 800x600 display is the minimum for IRB
+            if (w>=800 && h>=600)
+				resolutionList->addItem(modeName.c_str());
 
             vector2di v;
             v.X = w;

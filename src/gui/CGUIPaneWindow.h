@@ -15,8 +15,16 @@ using namespace gui;
 
 
 class CGUIPaneWindow : public IGUIElement {
-      
+
    public:
+
+	   enum GUI_PANE_DIR
+	   {
+		   PANE_LEFT = 0,
+		   PANE_RIGHT = 1,
+		   PANE_TOP = 2,
+		   PANE_BOTTOM = 3,
+	   };
        
         /** 
       \brief Constructor
@@ -57,12 +65,15 @@ class CGUIPaneWindow : public IGUIElement {
 
 	  core::rect<s32> getClientRect();
 
+	  inline void setStretchable(bool str) {enablebottom=str; enabletop=str; enableright=str; enableleft=str;}
+	  inline void setCloseHide(bool hide) {closehide=hide;}
+
 	  bool enablebottom, enabletop, enableright, enableleft;
 
-	  void expandLeft();
-	  void retractLeft();
+	  void Expand(irr::u16 dir);
+	  void Retract(irr::u16 dir);
 
-	  bool leftStatus();
+	  bool Status(irr::u16 dir);
 
    protected:
 	   
@@ -91,6 +102,7 @@ class CGUIPaneWindow : public IGUIElement {
 		bool DrawInsideBorder;
 		bool DragByTitlebar;
 		u32 borderwidth;
+		bool closehide;
 
 		//contain the original position of the rectangle.
 		core::rect<s32> oldrectangle;

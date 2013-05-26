@@ -35,14 +35,16 @@ DrawInsideBorder(true)
 
 	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
 	
-	enableright=false;
-	enableleft=false;
-	enablebottom=false;
-	enabletop=false;
-	timer1=0;
-	timer2=0;
+	enableright = false;
+	enableleft = false;
+	enablebottom = false;
+	enabletop = false;
+	timer1 = 0;
+	timer2 = 0;
 	expand = false;
 	retract = false;
+	closehide = false;
+	drawTitleBar = true;
 
 	// Position the close button Windows or Linux style
 #ifdef WIN32
@@ -119,7 +121,12 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 		{
 			if (event.GUIEvent.Caller == CloseButton)
 			{
-				remove();
+				//User can decide if he want to "remove" the class when closing the window or simply hide it.
+				if (!closehide)
+					remove();
+				else 
+					this->setVisible(false);
+
 				return true;
 			}
 	
@@ -529,7 +536,7 @@ core::rect<s32> CGUIPaneWindow::getClientRect()
 // Initialize a expand of the left side of the window
 // Will have to be expanded to allow the four direction
 // Enums will be needed to define the direction
-void CGUIPaneWindow::expandLeft()
+void CGUIPaneWindow::Expand(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	expand=true;
@@ -540,7 +547,7 @@ void CGUIPaneWindow::expandLeft()
 // Initialize a retract of the left side of the window
 // Will have to be expanded to allow the four direction
 // Enums will be needed to define the direction
-void CGUIPaneWindow::retractLeft()
+void CGUIPaneWindow::Retract(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	retract=true;
@@ -549,7 +556,7 @@ void CGUIPaneWindow::retractLeft()
 }
 
 // Give a status of the window (to determine to expand or retract)
-bool CGUIPaneWindow::leftStatus()
+bool CGUIPaneWindow::Status(irr::u16 dir)
 {
 	//printf("Asked the pane status\n");
 	if ((AbsoluteRect.getWidth()/2)>(irr::s32)MinSize.Width)
