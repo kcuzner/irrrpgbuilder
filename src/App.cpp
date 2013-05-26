@@ -226,6 +226,10 @@ void App::setAppState(APP_STATE newAppState)
 		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		
+		//If the up/down mode was last used then reset if
+		if (moveupdown)
+			moveupdown=false;
 	}
 	else
 	{

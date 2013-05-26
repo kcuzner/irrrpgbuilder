@@ -330,6 +330,9 @@ void CGUIPaneWindow::draw()
 void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 {
 
+	if (!device)
+		return;
+
 	//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
@@ -382,8 +385,8 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		if (device->getGUIEnvironment()->getHovered()==this)
 		{
 			focus=true;
-		} else
-			return;
+		} //else
+			//return;
 			
 
 		if (stretchright || stretchleft)
@@ -418,21 +421,21 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		}
 
 		// reset the default cursor if the cursor get out or inside the area (border select)
-		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop) //&& Environment->getHovered()==this
+		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop)
 		{
 			// Define a rectangle that is bigger than the source rectangle
 			core::rect<s32> outsiderect = AbsoluteRect;
-			outsiderect.LowerRightCorner.X+=10;
-			outsiderect.LowerRightCorner.Y+=10;
-			outsiderect.UpperLeftCorner.X-=10;
-			outsiderect.UpperLeftCorner.Y-=10;
+			outsiderect.LowerRightCorner.X+=15;
+			outsiderect.LowerRightCorner.Y+=15;
+			outsiderect.UpperLeftCorner.X-=15;
+			outsiderect.UpperLeftCorner.Y-=15;
 			
 			// Define a rectangle that is smaller than the source rectangle
 			core::rect<s32> insiderect = AbsoluteRect;
-			insiderect.LowerRightCorner.X-=10;
-			insiderect.LowerRightCorner.Y-=10;
-			insiderect.UpperLeftCorner.X+=10;
-			insiderect.UpperLeftCorner.Y+=10;
+			insiderect.LowerRightCorner.X-=15;
+			insiderect.LowerRightCorner.Y-=15;
+			insiderect.UpperLeftCorner.X+=15;
+			insiderect.UpperLeftCorner.Y+=15;
 
 			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0) && outsiderect.isPointInside(mousepos) && !insiderect.isPointInside(mousepos))
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
