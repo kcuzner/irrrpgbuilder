@@ -26,7 +26,7 @@ class CGUIPaneWindow : public IGUIElement {
       \param id - The ID of the dialog
       \param type - The type of dialog
       */
-      CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle, bool insideborder);
+      CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
 		 // : IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle) {}
 
       /**
@@ -50,6 +50,7 @@ class CGUIPaneWindow : public IGUIElement {
       virtual void draw();  
 
 	  virtual inline void setDraggable (bool drag) {IsDraggable=drag;}
+	  virtual inline void setDrawTitlebar (bool draw) {drawTitleBar=draw;}
 
 	  // Device 
 	  inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
@@ -74,7 +75,7 @@ class CGUIPaneWindow : public IGUIElement {
 
 		// mwethods
 		void drawRef(core::vector2d<s32> mousepos);
-		void drawStretch(core::vector2d<s32> mousepos);
+		bool drawStretch(core::vector2d<s32> mousepos);
 
 		// variables
 		bool stretchbottom, stretchtop, stretchright, stretchleft;
@@ -83,11 +84,12 @@ class CGUIPaneWindow : public IGUIElement {
 		IGUIScrollBar * scroll;
 		s32 scrollpos;
 
-		bool Dragging, IsDraggable;
+		bool Dragging, IsDraggable, drawTitleBar;
         bool DrawBackground;
         bool DrawTitlebar;
 		bool IsActive;
 		bool DrawInsideBorder;
+		bool DragByTitlebar;
 		u32 borderwidth;
 
 		//contain the original position of the rectangle.

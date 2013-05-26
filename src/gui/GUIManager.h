@@ -223,6 +223,7 @@ class GUIManager
 
 		u32 timer;
 		u32 timer2;
+		u32 timer3; //Timer for the Context menu disabling
 		
 		// Used to store text events in a buffer while the GUI is not displayed
 		std::vector<core::stringw> textevent;
@@ -324,6 +325,7 @@ class GUIManager
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIPaneWindow* guiDynamicObjectsWindowChooser;
+		IGUIWindow* InnerChooser;
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIStretchWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 

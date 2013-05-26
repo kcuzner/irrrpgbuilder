@@ -26,6 +26,7 @@ GUIManager::GUIManager()
 	// init those because they will move on the display.
 	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
+	InnerChooser=NULL;
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
 	guiWindowItems=NULL;
@@ -991,8 +992,6 @@ void GUIManager::createTerrainToolbar()
 
 void GUIManager::createDynamicObjectInfoGUI()
 {
-	u16 posx = 220;
-	u16 posy = 260;
 	// --- Dynamic Objects Info panel (display info about the current selected template object)
     rect<s32> windowRect =
 	myRect(displaywidth - 540,
@@ -1010,61 +1009,6 @@ void GUIManager::createDynamicObjectInfoGUI()
 	infoscroll->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	infoscroll->setVisible(false);
 
-	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+10,30,posx+310,49),false,true,guiDynamicObjectsWindowChooser,-1);
-	infotext->setDrawBackground(true);
-	infotext->setDrawBorder(true);
-	infotext->setBackgroundColor(video::SColor(255,237,242,248));
-	infotext->setOverrideColor(video::SColor(255,65,66,174));
-	infotext->setOverrideFont(guiFontCourier12);
-	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-
-	thumbnail=guienv->addImage(info_current,vector2d<s32>(220+10,50),true,guiDynamicObjectsWindowChooser);
-
-	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(posx+10,posy,posx+290,posy+39),false,true,guiDynamicObjectsWindowChooser,-1);
-	infotext1->setOverrideFont(guiFont12);
-
-	posy+=15;
-	mdl_name = guienv->addStaticText(L"",core::rect<s32>(posx+10,posy,posx+290,posy+20),true,true,guiDynamicObjectsWindowChooser,-1);
-	mdl_name->setDrawBackground(true);
-	mdl_name->setBackgroundColor(video::SColor(255,237,242,248));
-	mdl_name->setOverrideFont(guiFont10);
-	mdl_name->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
-
-	posy+=25;
-
-	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(posx+10,posy,posx+290,posy+39),false,true,guiDynamicObjectsWindowChooser,-1);
-	infotext2->setOverrideFont(guiFont12);
-
-	posy+=15;
-	mdl_desc = guienv->addStaticText(L"",core::rect<s32>(posx+10,posy,posx+290,posy+100),true,true,guiDynamicObjectsWindowChooser,-1);
-	mdl_desc->setDrawBackground(true);
-	mdl_desc->setBackgroundColor(video::SColor(255,237,242,248));
-	mdl_desc->setOverrideFont(guiFont10);
-
-	posy+=110;
-	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(posx+10,posy,posx+290,posy+39),false,true,guiDynamicObjectsWindowChooser,-1);
-	infotext3->setOverrideFont(guiFont12);
-
-	posy+=15;
-	mdl_auth = guienv->addStaticText(L"",core::rect<s32>(posx+10,posy,posx+290,posy+20),true,true,guiDynamicObjectsWindowChooser,-1);
-	mdl_auth->setDrawBackground(true);
-	mdl_auth->setBackgroundColor(video::SColor(255,237,242,248));
-	mdl_auth->setOverrideFont(guiFont10);
-	mdl_auth->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
-
-	posy+=25;
-	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(posx+10,posy,posx+290,posy+39),false,true,guiDynamicObjectsWindowChooser,-1);
-	infotext4->setOverrideFont(guiFont12);
-
-	posy+=15;
-	mdl_lic = guienv->addStaticText(L"",core::rect<s32>(posx+10,posy,posx+290,posy+20),true,true,guiDynamicObjectsWindowChooser,-1);
-	mdl_lic->setDrawBackground(true);
-	mdl_lic->setBackgroundColor(video::SColor(255,237,242,248));
-	mdl_lic->setOverrideFont(guiFont10);
-	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
-
-
-
 	guienv->getRootGUIElement()->bringToFront(guiDynamicObjectsWindowInfo);
 	guiDynamicObjectsWindowInfo->setVisible(false);
 
@@ -1079,7 +1023,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
     //guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
-	guiDynamicObjectsWindowChooser = new CGUIPaneWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect, true);
+	guiDynamicObjectsWindowChooser = new CGUIPaneWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
    //guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
@@ -1087,40 +1031,40 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsWindowChooser->setVisible(false);
 
 	guiDynamicObjectsWindowChooser->setDevice(App::getInstance()->getDevice());
-	guiDynamicObjectsWindowChooser->setMaxSize(core::dimension2du(550,2000));
+	guiDynamicObjectsWindowChooser->enableleft=true;
+	guiDynamicObjectsWindowChooser->setMaxSize(core::dimension2du(545,2000));
 	guiDynamicObjectsWindowChooser->setMinSize(core::dimension2du(220,10));
 
+	// Enable manual dragging of the left portion of the pane
+	
+	/*guiDynamicObjectsWindowChooser->enablebottom=true;
+	guiDynamicObjectsWindowChooser->enableright=true;
+	guiDynamicObjectsWindowChooser->enabletop=true;*/
+
+	//-- inner window
+	rect<s32> windowRect2;
+	windowRect2.UpperLeftCorner.X=10;
+	windowRect2.UpperLeftCorner.Y=25;
+	windowRect2.LowerRightCorner.X=windowRect.getWidth()-10;
+	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
+
+	gui::IGUIWindow* InnerChooser = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser->setDraggable(false);
+	InnerChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	InnerChooser->getCloseButton()->setVisible(false);
+    InnerChooser->setDrawTitlebar(false);
+	InnerChooser->setDrawBackground(false);
 	//Could be able to drag the window
 	//guiDynamicObjectsWindowChooser->setDraggable(true);
 
-	// Enable manual dragging of the left portion of the pane
-	guiDynamicObjectsWindowChooser->enableleft=true;
-
-
-    s32 guiDynamicObjectsWindowChooser_Y = 5;
-
-	/*IGUIStaticText * ObjectText0 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),core::rect<s32>(1,1,218,39),false,true,guiDynamicObjectsWindowChooser,-1);
-	ObjectText0->setDrawBackground(true);
-	ObjectText0->setDrawBorder(true);
-	ObjectText0->setBackgroundColor(video::SColor(255,237,242,248));
-	ObjectText0->setOverrideColor(video::SColor(255,65,66,174));
-	ObjectText0->setOverrideFont(guiFontCourier12);
-	ObjectText0->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);*/
-
-	//IGUIStaticText * ObjectText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcur")).c_str(),core::rect<s32>(10,190,160,200),false,true,guiDynamicObjectsWindowChooser,-1);
-	//ObjectText1->setOverrideColor(video::SColor(255,0,0,0));
-	//ObjectText1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
-
-	// Temporary disabled until the new object templates are in place.
-   	// guiDynamicObjects_NodePreview = new NodePreview(guienv,guiDynamicObjectsWindowChooser,rect<s32>(10,40,160,180),-1);
-    // guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
-	// guiDynamicObjects_NodePreview->setNode(DynamicObjectsManager::getInstance()->findActiveObject()->getNode());
-	// guiDynamicObjects_NodePreview->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-
-    guiDynamicObjectsWindowChooser_Y += 40;
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+    s32 guiDynamicObjectsWindowChooser_Y = 0;
+    guiDynamicObjectsWindowChooser_Y += 5;
+	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	text1->setOverrideFont(guiFont12);
+	
 	guiDynamicObjectsWindowChooser_Y += 20;
-	guiDynamicObjects_Category = guienv->addComboBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,20),guiDynamicObjectsWindowChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
+	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
+	guiDynamicObjects_Category->setMaxSelectionRows(4);
 	
 	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->meshtypename.size() ; i++)
 	{
@@ -1131,31 +1075,90 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	//guiDynamicObjects_Category->addItem(L"PROPS");
 	
-
-	
-	guiDynamicObjectsWindowChooser_Y += 40;
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
-	guiDynamicObjectsWindowChooser_Y += 20;
-	
-	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,160),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
-
-	guiDynamicObjectsWindowChooser_Y += 185;
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(10,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,guiDynamicObjectsWindowChooser,-1);
+	guiDynamicObjectsWindowChooser_Y += 90;
+	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	text2->setOverrideFont(guiFont12);
 	
 	guiDynamicObjectsWindowChooser_Y += 20;
-	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+185);
+	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,160),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
+	//guiDynamicObjects_OBJCategory->setDrawBackground(false);
+
+	guiDynamicObjectsWindowChooser_Y += 175;
+	gui::IGUIStaticText* text3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	text3->setOverrideFont(guiFont12);
+
+	guiDynamicObjectsWindowChooser_Y += 20;
+	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+215);
 	if (boxend<10)
 		boxend=10;
 
-	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(10,guiDynamicObjectsWindowChooser_Y,200,boxend),guiDynamicObjectsWindowChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,boxend),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
 	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
-	guiDynamicObjectsInfo= guienv->addButton(myRect(10,guiDynamicObjectsWindowChooser_Y+boxend+10,200,20),
-                                                           guiDynamicObjectsWindowChooser,
+	guiDynamicObjectsInfo= guienv->addButton(myRect(5,guiDynamicObjectsWindowChooser_Y+boxend+10,190,20),
+                                                           InnerChooser,
                                                            BT_ID_DYNAMIC_OBJECT_INFO,
                                                            L">> Information panel" );
 	guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
 	guiDynamicObjectsInfo->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+
+	/// ---------------- Info portions
+	u16 posx = 200;
+	u16 posy = 260;
+	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+5,5,posx+310,20),false,true,InnerChooser,-1);
+	infotext->setDrawBackground(true);
+	infotext->setDrawBorder(true);
+	infotext->setBackgroundColor(video::SColor(255,237,242,248));
+	infotext->setOverrideColor(video::SColor(255,65,66,174));
+	infotext->setOverrideFont(guiFontCourier12);
+	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	thumbnail=guienv->addImage(info_current,vector2d<s32>(posx+5,50),true,InnerChooser);
+
+	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext1->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_name = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_name->setDrawBackground(true);
+	mdl_name->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_name->setOverrideFont(guiFont10);
+	mdl_name->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+
+	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext2->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_desc = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+100),true,true,InnerChooser,-1);
+	mdl_desc->setDrawBackground(true);
+	mdl_desc->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_desc->setOverrideFont(guiFont10);
+
+	posy+=110;
+	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext3->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_auth = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_auth->setDrawBackground(true);
+	mdl_auth->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_auth->setOverrideFont(guiFont10);
+	mdl_auth->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext4->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_lic = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_lic->setDrawBackground(true);
+	mdl_lic->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_lic->setOverrideFont(guiFont10);
+	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+	// -- end info portions
 
 	UpdateGUIChooser();
 }
@@ -1635,16 +1638,18 @@ void GUIManager::createConsole()
 
 void GUIManager::update()
 {
-	//printf("Update the GUI\n");
-	// If the context window is visible and the cursor is outside of it, then close it
+	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
 	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 	{
 		if (!isGuiPresent(device->getCursorControl()->getPosition()))
 		{
-			//The cursor is outside the window, close it then.
-			setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-			App::getInstance()->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		}
+			if (device->getTimer()->getRealTime()-timer3>900) // 900 ms delay before closing
+			{
+				//The cursor is outside the window, close it then.
+				setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+			}
+		} else
+		timer3 = device->getTimer()->getRealTime();
 		
 	}
 }

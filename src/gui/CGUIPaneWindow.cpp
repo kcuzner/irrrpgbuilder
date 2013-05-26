@@ -6,16 +6,15 @@ const s32 FOD_HEIGHT = 400;
 const s32 yoffset = 10;
 
 //! constructor
-CGUIPaneWindow::CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle, bool insideborder)
+CGUIPaneWindow::CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
 : IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false),
-DrawInsideBorder(false)
+DrawInsideBorder(true)
 {
 #ifdef _DEBUG
 	IGUIElement::setDebugName("CGUIPaneWindow");
 #endif
 
-	if (insideborder)
-		DrawInsideBorder=true;
+	DragByTitlebar = true;
 
 	Text = title;
 	device=NULL;
@@ -133,33 +132,58 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 		case EMIE_LMOUSE_PRESSED_DOWN:
 			DragStart.X = event.MouseInput.X;
 			DragStart.Y = event.MouseInput.Y;
-			//if (IsDraggable)
-				Dragging = true;			
+			Dragging = true;			
 			return true;
 
 		case EMIE_LMOUSE_LEFT_UP:
-			Dragging = false;
+			if (Dragging)
+			{
+				// Set back the pointer cursor after the dragging operation
+				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) ); 
+				Dragging = false;
+			}
 			return true;
 
 		case EMIE_MOUSE_MOVED:
+			if (!IsDraggable)
+					return true;
+
+			core::vector2d<s32> mousepos; //Current mouse position
+			mousepos.X=event.MouseInput.X;
+			mousepos.Y=event.MouseInput.Y;
+
+			core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
+			rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
+					
 			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
 			{
 				// gui window should not be dragged outside its parent
 				if (Parent)
-					if (event.MouseInput.X < Parent->getAbsolutePosition().UpperLeftCorner.X +1 ||
-						event.MouseInput.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +1 ||
-						event.MouseInput.X > Parent->getAbsolutePosition().LowerRightCorner.X -1 ||
-						event.MouseInput.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -1)
+					if (mousepos.X < Parent->getAbsolutePosition().UpperLeftCorner.X +1 ||
+						mousepos.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +1 ||
+						mousepos.X > Parent->getAbsolutePosition().LowerRightCorner.X -1 ||
+						mousepos.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -1)
 
 						return true;
 
-				if (!IsDraggable)
+				if (DragByTitlebar && rect.isPointInside(mousepos))
+				{
+					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
+					DragStart = mousepos;
 					return true;
+				}
+				
+				if (!DragByTitlebar)
+				{
+					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
+					DragStart = mousepos;
+					return true;
+				}
 
-				move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
-				DragStart.X = event.MouseInput.X;
-				DragStart.Y = event.MouseInput.Y;
+				Dragging=false;
 				return true;
+	
 			}
 			break;
 		}
@@ -167,7 +191,7 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 		//if (event.GUIEvent.Caller == scroll)
 		{
 			s32 VScrollPos = (s32)scroll->getPos();
-			printf ("Scrollpos: %d\n",VScrollPos);
+			//printf ("Scrollpos: %d\n",VScrollPos);
 			scrollpos=VScrollPos;
 		}
 		return true;
@@ -199,9 +223,9 @@ void CGUIPaneWindow::draw()
 		mousepos=device->getCursorControl()->getPosition();
 
 	core::rect<s32> rect = AbsoluteRect;
-
-	rect = skin->draw3DWindowBackground(this, true, skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
-		rect, &AbsoluteClippingRect);
+	
+	rect = skin->draw3DWindowBackground(this, drawTitleBar, skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
+		rect, &AbsoluteClippingRect); 
 
 	if (Text.size())
 	{
@@ -230,7 +254,7 @@ void CGUIPaneWindow::draw()
 			rect.LowerRightCorner.X=AbsoluteRect.LowerRightCorner.X-borderwidth;
 
 		rect.LowerRightCorner.Y=AbsoluteRect.LowerRightCorner.Y-borderwidth;
-		skin->draw3DSunkenPane(this,skin->getColor(EGDC_INACTIVE_BORDER),true,true,rect,&AbsoluteClippingRect);
+		skin->draw3DSunkenPane(this,skin->getColor(EGDC_INACTIVE_BORDER),true,true,rect, &AbsoluteClippingRect);
 	}
 
 	// Draw cursor changes
@@ -240,32 +264,12 @@ void CGUIPaneWindow::draw()
 	}
 	else
 	{
-		if (!stretchtop && !stretchbottom && !stretchright && !stretchleft)
+		//Stretch the window defined on the desired direction
+		if (drawStretch(mousepos))
 		{
-			// gui window should not be dragged outside its parent
-			if (Parent)
-			{
-				if (mousepos.X < Parent->getAbsolutePosition().UpperLeftCorner.X +30 ||
-					mousepos.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +30 ||
-					mousepos.X > Parent->getAbsolutePosition().LowerRightCorner.X -30 ||
-					mousepos.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -30)
-				{
-					IGUIElement::draw();
-					return;
-				}
-			}
-
-			if (IsDraggable)
-				move(core::position2d<s32>(mousepos.X - DragStart.X, mousepos.Y - DragStart.Y));
-
-			updateAbsolutePosition();
-			DragStart.X = mousepos.X;
-			DragStart.Y = mousepos.Y;
 			IGUIElement::draw();
 			return;
 		}
-		//Stretch the window defined on the desired direction
-		drawStretch(mousepos);
 	}
 
 	if (expand && device)
@@ -280,6 +284,8 @@ void CGUIPaneWindow::draw()
 			{
 				expand=false;
 				AbsoluteRect.UpperLeftCorner.X+=5;
+				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
 			}
 			this->AbsoluteClippingRect=this->AbsoluteRect;
 			this->DesiredRect=AbsoluteRect;
@@ -301,6 +307,8 @@ void CGUIPaneWindow::draw()
 			{
 				retract=false;
 				AbsoluteRect.UpperLeftCorner.X-=5;
+				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
 			}
 			this->AbsoluteClippingRect=this->AbsoluteRect;
 			this->DesiredRect=AbsoluteRect;
@@ -309,6 +317,7 @@ void CGUIPaneWindow::draw()
 		}
 
 	}
+
 	
 	IGUIElement::draw();
 	
@@ -320,6 +329,7 @@ void CGUIPaneWindow::draw()
 //Draw the cursor changes or hinting reference for a window stretch
 void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 {
+
 	//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
@@ -367,12 +377,13 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 			this->stretchtop=false;
 
 		//Determine if the cursor is over the GUI because the focus is often lost over this gui
+		//If the mouse pointer is not over the current GUI then it will not change the pointer
 		bool focus = false;
-		if (this->isVisible() && this->isPointInside(mousepos))
+		if (device->getGUIEnvironment()->getHovered()==this)
 		{
 			focus=true;
-			//Environment->setFocus(this);
-		}
+		} else
+			return;
 			
 
 		if (stretchright || stretchleft)
@@ -406,25 +417,40 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
-		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop && !focus)
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
+		// reset the default cursor if the cursor get out or inside the area (border select)
+		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop) //&& Environment->getHovered()==this
+		{
+			// Define a rectangle that is bigger than the source rectangle
+			core::rect<s32> outsiderect = AbsoluteRect;
+			outsiderect.LowerRightCorner.X+=10;
+			outsiderect.LowerRightCorner.Y+=10;
+			outsiderect.UpperLeftCorner.X-=10;
+			outsiderect.UpperLeftCorner.Y-=10;
+			
+			// Define a rectangle that is smaller than the source rectangle
+			core::rect<s32> insiderect = AbsoluteRect;
+			insiderect.LowerRightCorner.X-=10;
+			insiderect.LowerRightCorner.Y-=10;
+			insiderect.UpperLeftCorner.X+=10;
+			insiderect.UpperLeftCorner.Y+=10;
 
-		if (!stretchright && !stretchleft && !stretchbottom && !stretchtop && focus)
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
-
+			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0) && outsiderect.isPointInside(mousepos) && !insiderect.isPointInside(mousepos))
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
+			
+		}
 }
 
 //Stretch the windows defined on the desired direction
-void CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
+bool CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 {
 	if (stretchright)
 	{
 		if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
 		{
 			IGUIElement::draw();
-			return;
+			return true;
 		}
-		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>200)
+		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>(irr::s32)MinSize.Width)
 		{
 			AbsoluteRect.LowerRightCorner.X=mousepos.X+5;
 		}
@@ -437,14 +463,14 @@ void CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 		if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
 		{
 			IGUIElement::draw();
-			return;
+			return true;
 		}
 
 		if (AbsoluteRect.LowerRightCorner.X-mousepos.X>(irr::s32)this->MinSize.Width-5)
 		{
 			AbsoluteRect.UpperLeftCorner.X=mousepos.X-5;
 			// If the rectangle is moved then cancel the movement.
-			if (oldrectangle.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X)
+			if (oldrectangle.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X+1)
 			{
 				AbsoluteRect.LowerRightCorner.X = oldrectangle.LowerRightCorner.X;
 				AbsoluteRect.UpperLeftCorner.X=mousepos.X+5;
@@ -460,10 +486,10 @@ void CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 		if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
 		{
 			IGUIElement::draw();
-			return;
+			return true;
 		}
 
-		if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)>200)
+		if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)>(irr::s32)MinSize.Height)
 		{
 			AbsoluteRect.LowerRightCorner.Y=mousepos.Y+5;
 		}
@@ -476,7 +502,7 @@ void CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 		if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
 		{
 			IGUIElement::draw();
-			return;
+			return true;
 		}
 
 		if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>200)
@@ -487,6 +513,7 @@ void CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 		this->DesiredRect=AbsoluteRect;
 		this->updateAbsolutePosition();
 	}
+	return false;
 
 }
 
@@ -503,7 +530,7 @@ void CGUIPaneWindow::expandLeft()
 {
 	timer1 = device->getTimer()->getRealTime();
 	expand=true;
-	printf("Asked to expand the pane\n");
+	//printf("Asked to expand the pane\n");
 
 }
 
@@ -514,14 +541,14 @@ void CGUIPaneWindow::retractLeft()
 {
 	timer1 = device->getTimer()->getRealTime();
 	retract=true;
-	printf("Asked to retract the pane\n");
+	//printf("Asked to retract the pane\n");
 
 }
 
 // Give a status of the window (to determine to expand or retract)
 bool CGUIPaneWindow::leftStatus()
 {
-	printf("Asked the pane status\n");
+	//printf("Asked the pane status\n");
 	if ((AbsoluteRect.getWidth()/2)>(irr::s32)MinSize.Width)
 		return true; // Should call expand
 	else

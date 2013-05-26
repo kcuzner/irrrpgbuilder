@@ -78,6 +78,8 @@ void TerrainManager::setEmptyTileVisible(bool visible)
 	//The mesh is still rendered, but is invisible
 	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
     {
+		((ISceneNode*)((*it).second))->setVisible(visible);
+		/* //Empty tiles should not be selectable in gameplay mode
 		if (visible)
 		{
 			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
@@ -87,7 +89,7 @@ void TerrainManager::setEmptyTileVisible(bool visible)
 		{
 			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_invisible_segment.png"));
 			((ISceneNode*)((*it).second))->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-		}
+		}*/
 
     }
 }

@@ -411,25 +411,16 @@ void App::eventGuiButton(s32 id)
 		}
 
 	case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN: // Create a new item from the last selected item in the dynamic object
-
-		//printf ("User call the spawn menu!\n");
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
-
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
-
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-
 		loadProject(DF_MODEL);
 
 	break;
@@ -437,8 +428,7 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with one from the file selector
 
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		
+
 		// Keep the "good stuff"
 		oldrotation = lastMousePick.pickedNode->getRotation();
 		oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
@@ -459,8 +449,9 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
-		selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+
+		selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 
@@ -494,7 +485,6 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
 		//Tell the dynamic Objects Manager to remove the node
 		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 
@@ -785,11 +775,17 @@ void App::eventMousePressed(s32 mouse)
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
-						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
-						App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+						// Toggle the context menu
+						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+							!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+
 					}
 					else//create a new copy of active dynamic object at the clicked position
 					{
+						// If the context menu is still open close it since we want to create a object
+						if (GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+
 						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
 
 #ifdef APP_DEBUG
@@ -833,8 +829,9 @@ void App::eventMousePressed(s32 mouse)
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
-						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,true);
-						App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+						// Toggle the context menu
+						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+							!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 					}
 				}
 			}
@@ -1189,7 +1186,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (jan 2013)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (jun 2013)");
 	} else
 		device = IRRdevice;
 
@@ -1448,7 +1445,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (jan 2013)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (jun 2013)";
 			str += " FPS:";
 			str += fps;
 
