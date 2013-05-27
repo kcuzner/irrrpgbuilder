@@ -788,6 +788,7 @@ void GUIManager::createObjectTab()
 
 	guiPlayerEditScript->setOverrideFont(guiFontC12);
     guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
+	guiPlayerEditScript->setPressedImage(driver->getTexture("../media/art/bt_player_edit_script_ghost.png"));
 
 	IGUIStaticText * editCharSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
@@ -2239,7 +2240,6 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             break;
 
         case BT_ID_PLAYER_EDIT_SCRIPT:
-            //guiPlayerEditScript->setVisible(visible);
             break;
 
 		case IMG_BAR:

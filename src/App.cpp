@@ -255,7 +255,7 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
+		//GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
 		Player::getInstance()->setHighLight(true);
 		//CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
@@ -263,7 +263,7 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
-		GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
+		//GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
 		Player::getInstance()->setHighLight(false);
 	}
 
@@ -291,10 +291,12 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_PLAYER_EDIT_SCRIPT,false);
 		//setAppState(APP_EDIT_CHARACTER);
 	}
 	else
 	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_PLAYER_EDIT_SCRIPT,true);
 		// Find a way to set the script once the user change the mode
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
 			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
