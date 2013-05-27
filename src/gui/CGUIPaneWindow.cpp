@@ -96,8 +96,7 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 {
 	switch(event.EventType)
 	{
-	
-	case EET_GUI_EVENT:
+		case EET_GUI_EVENT:
 		if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
 		{
 			Dragging = false;
@@ -133,28 +132,27 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 		}
 		break;
 
-	case EET_MOUSE_INPUT_EVENT:
-		switch(event.MouseInput.Event)
-		{
-		case EMIE_LMOUSE_PRESSED_DOWN:
-			DragStart.X = event.MouseInput.X;
+		case EET_MOUSE_INPUT_EVENT:
+		if (event.MouseInput.Event==EMIE_LMOUSE_PRESSED_DOWN)
+		{	DragStart.X = event.MouseInput.X;
 			DragStart.Y = event.MouseInput.Y;
 			Dragging = true;			
-			return true;
-
-		case EMIE_LMOUSE_LEFT_UP:
-			if (Dragging)
-			{
-				// Set back the pointer cursor after the dragging operation
-				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
-					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) ); 
-				Dragging = false;
-			}
-			return true;
-
-		case EMIE_MOUSE_MOVED:
+			break;
+		}
+		else
+		if (event.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && Dragging)
+		{
+			// Set back the pointer cursor after the dragging operation
+			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) ); 
+			Dragging = false;
+			break;
+		}
+		else
+		if (event.MouseInput.Event==EMIE_MOUSE_MOVED)
+		{
 			if (!IsDraggable)
-					return true;
+					break;
 
 			core::vector2d<s32> mousepos; //Current mouse position
 			mousepos.X=event.MouseInput.X;
@@ -172,39 +170,30 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 						mousepos.X > Parent->getAbsolutePosition().LowerRightCorner.X -1 ||
 						mousepos.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -1)
 
-						return true;
+						break;
 
 				if (DragByTitlebar && rect.isPointInside(mousepos))
 				{
 					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
 					DragStart = mousepos;
-					return true;
+					break;
 				}
 				
 				if (!DragByTitlebar)
 				{
 					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
 					DragStart = mousepos;
-					return true;
+					break;
 				}
 
 				Dragging=false;
-				return true;
-	
+				
 			}
 			break;
 		}
-	case EGET_SCROLL_BAR_CHANGED:
-		//if (event.GUIEvent.Caller == scroll)
-		{
-			s32 VScrollPos = (s32)scroll->getPos();
-			//printf ("Scrollpos: %d\n",VScrollPos);
-			scrollpos=VScrollPos;
-		}
-		return true;
-		break;
+		
 	}
-	return Parent ? Parent->OnEvent(event) : false;
+	return IGUIElement::OnEvent(event);
 }
 
 
