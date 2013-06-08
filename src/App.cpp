@@ -150,7 +150,6 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		// Change the props to be non-collidable with the ray test
 		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
-
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
@@ -223,7 +222,6 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
-		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		
@@ -233,7 +231,7 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
+	
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 	}
@@ -255,15 +253,13 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-		//GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,true);
 		Player::getInstance()->setHighLight(true);
-		//CameraSystem::getInstance()->setPosition(Player::getInstance()->getObject()->getPosition());
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
-		//GUIManager::getInstance()->setElementVisible(BT_ID_PLAYER_EDIT_SCRIPT,false);
+		
 		Player::getInstance()->setHighLight(false);
 	}
 
@@ -292,7 +288,6 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_PLAYER_EDIT_SCRIPT,false);
-		//setAppState(APP_EDIT_CHARACTER);
 	}
 	else
 	{
@@ -701,14 +696,6 @@ void App::eventKeyPressed(s32 key)
 {
 	switch (key)
 	{
-	case KEY_LEFT:
-		break;
-	case KEY_UP:
-		break;
-	case KEY_RIGHT:
-		break;
-	case KEY_DOWN:
-		break;
 
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))

@@ -79,40 +79,46 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 	switch(evt.EventType)
 	{
 		case EET_KEY_INPUT_EVENT:
-		for (u32 i=0; i<KeyMap.size(); ++i)
-		{
-			if (KeyMap[i].KeyCode == evt.KeyInput.Key)
+			for (u32 i=0; i<KeyMap.size(); ++i)
 			{
-				ActionKeys[KeyMap[i].Action] = evt.KeyInput.PressedDown;
-				return true;
+				if (KeyMap[i].KeyCode == evt.KeyInput.Key)
+				{
+					printf("Received a keyboard event here!: Action= %d",(int)i);
+					ActionKeys[KeyMap[i].Action] = evt.KeyInput.PressedDown;
+					if (evt.KeyInput.PressedDown)
+						printf(" pressed down!\n");
+					else
+						printf(" released!\n");
+				} 
+					
 			}
-		}
 		break;
 
 		case EET_MOUSE_INPUT_EVENT:
-
-		for (u32 i=0; i<KeyMap.size(); ++i)
-		{
-			if (KeyMap[i].KeyCode == irr::KEY_LBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+			for (u32 i=0; i<KeyMap.size(); ++i)
 			{
-				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isLeftPressed();
-			}
-			if (KeyMap[i].KeyCode == irr::KEY_RBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
-			{
-				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isRightPressed();
-			}
-			if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
-			{
-				ActionKeys[KeyMap[i].Action] = evt.MouseInput.isMiddlePressed();
+				if (KeyMap[i].KeyCode == irr::KEY_LBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				{
+					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isLeftPressed();
+				}
+
+				if (KeyMap[i].KeyCode == irr::KEY_RBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				{
+					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isRightPressed();
+				}
+
+				if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				{
+					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isMiddlePressed();
+				}	
+
 			}
 
-		}
-
-		if (evt.MouseInput.Event == EMIE_MOUSE_MOVED)
-		{
-			MousePos = CursorControl->getRelativePosition();
-			return true;
-		}
+			if (evt.MouseInput.Event == EMIE_MOUSE_MOVED)
+			{
+				MousePos = CursorControl->getRelativePosition();
+				return true;
+			}
 		break;
 
 	default:
@@ -141,6 +147,7 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	{
 		// If the input receiver is down, then reset the camera, so it take the new position to start
 		FirstUpdate=true;
+		printf("keycode?\n");
 		return;
 	}
 	//reset the bypass switch
@@ -148,7 +155,10 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 
 	scene::ISceneManager * smgr = camera->getSceneManager();
 	if (smgr && smgr->getActiveCamera() != camera)
+	{
+		printf("Camera is inactive!\n");
 		return;
+	}
 
 	if (OldCamera != camera)
 	{
@@ -219,8 +229,10 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	tvectY = tvectY.crossProduct(upVector.Y > 0 ? pos - target : target - pos);
 	tvectY.normalize();
 
+
 	if (ActionKeys[EK_STRAFE_LEFT] && !Zooming)
 	{
+		printf("Should start to move now!\n");
 		translate -=  tvectX;
 		OldTarget = translate;		
 	}

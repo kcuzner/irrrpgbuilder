@@ -1994,6 +1994,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			
             guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,190));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
+			guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
 			
             break;
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
@@ -2002,6 +2003,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
         case GCW_TERRAIN_TOOLBAR:
             guiTerrainToolbar->setVisible(visible);
+			guienv->setFocus(guiTerrainToolbar);
             break;
 #endif
         case GCW_GAMEPLAY_ITEMS:

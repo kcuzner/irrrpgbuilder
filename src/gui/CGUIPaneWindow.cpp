@@ -15,6 +15,9 @@ DrawInsideBorder(true)
 #endif
 
 	DragByTitlebar = true;
+	collapse = false;
+	oldsize_y = 0;
+	oldmin = this->MinSize;
 
 	Text = title;
 	device=NULL;
@@ -72,6 +75,8 @@ DrawInsideBorder(true)
 	scroll->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 	scroll->setVisible(false);
 
+	oldrectangle = AbsoluteRect;
+
 }
 
 
@@ -94,6 +99,9 @@ IGUIButton* CGUIPaneWindow::getCloseButton() const
 //! called if an event happened.
 bool CGUIPaneWindow::OnEvent(const SEvent& event)
 {
+	if (!isVisible())
+			return IGUIElement::OnEvent(event);
+
 	switch(event.EventType)
 	{
 		case EET_GUI_EVENT:
@@ -130,15 +138,67 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 			}
 	
 		}
+		
 		break;
 
 		case EET_MOUSE_INPUT_EVENT:
 		if (event.MouseInput.Event==EMIE_LMOUSE_PRESSED_DOWN)
-		{	DragStart.X = event.MouseInput.X;
-			DragStart.Y = event.MouseInput.Y;
-			Dragging = true;			
+		{	
+			core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
+			rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
+			core::vector2d<s32> mousepos; //Current mouse position
+			mousepos.X=event.MouseInput.X;
+			mousepos.Y=event.MouseInput.Y;
+
+			if (DragByTitlebar)
+			{
+				//if (Dragging==false && rect.isPointInside(mousepos))
+				{
+					DragStart.X = event.MouseInput.X;
+					DragStart.Y = event.MouseInput.Y;
+					Dragging = true;
+				}
+			} else
+				if (!DragByTitlebar)
+				{
+					DragStart.X = event.MouseInput.X;
+					DragStart.Y = event.MouseInput.Y;
+					Dragging = true;
+				}
 			break;
 		}
+		else
+			if (event.MouseInput.Event==EMIE_LMOUSE_DOUBLE_CLICK)
+			{
+				core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
+				rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
+				core::vector2d<s32> mousepos; //Current mouse position
+				mousepos.X=event.MouseInput.X;
+				mousepos.Y=event.MouseInput.Y;
+				
+				if (!collapse && DragByTitlebar && rect.isPointInside(mousepos))
+				{
+					oldmin = this->MinSize;
+					this->MinSize.Height=25;
+					oldsize_y = AbsoluteRect.LowerRightCorner.Y;
+					AbsoluteRect.LowerRightCorner.Y = AbsoluteRect.UpperLeftCorner.Y+22;
+					AbsoluteClippingRect = AbsoluteRect;
+					DesiredRect = AbsoluteRect;
+					this->updateAbsolutePosition();
+					collapse=true;
+				}
+				else
+					if (DragByTitlebar && rect.isPointInside(mousepos))
+				{
+					this->MinSize=oldmin;
+					AbsoluteRect.LowerRightCorner.Y = oldsize_y;
+					AbsoluteClippingRect = AbsoluteRect;
+					DesiredRect = AbsoluteRect;
+					this->updateAbsolutePosition();
+					collapse=false;
+				}
+
+			}
 		else
 		if (event.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && Dragging)
 		{
@@ -158,9 +218,6 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 			mousepos.X=event.MouseInput.X;
 			mousepos.Y=event.MouseInput.Y;
 
-			core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
-			rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
-					
 			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
 			{
 				// gui window should not be dragged outside its parent
@@ -172,27 +229,18 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 
 						break;
 
-				if (DragByTitlebar && rect.isPointInside(mousepos))
-				{
-					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
-					DragStart = mousepos;
-					break;
-				}
-				
-				if (!DragByTitlebar)
-				{
-					move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
-					DragStart = mousepos;
-					break;
-				}
-
-				Dragging=false;
-				
+				move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
+				DragStart = mousepos;				
 			}
 			break;
 		}
+
+		default:
+			break;
 		
 	}
+	
+	//return true;
 	return IGUIElement::OnEvent(event);
 }
 
@@ -239,7 +287,7 @@ void CGUIPaneWindow::draw()
 	}
 
 	//Draw inside borders
-	if (DrawInsideBorder)
+	if (DrawInsideBorder && !collapse)
 	{
 		// Inner border as double border lines (better looking, could use an activator so the user could decide to have it or not
 		rect.UpperLeftCorner.X=AbsoluteRect.UpperLeftCorner.X+borderwidth;
@@ -254,32 +302,34 @@ void CGUIPaneWindow::draw()
 	}
 
 	// Draw cursor changes
-	if (!Dragging)
+	if (!Dragging && !collapse)
 	{
 		drawRef(mousepos);
 	}
 	else
+	if (!collapse)
 	{
-		//Stretch the window defined on the desired direction
+		//Stretch the window defined on the desired directions
 		if (drawStretch(mousepos))
 		{
+			// Move outside the parent then return
 			IGUIElement::draw();
 			return;
 		}
 	}
 
-	if (expand && device)
+	if (expand && device && !collapse)
 	{
 		u32 time = device->getTimer()->getRealTime();
 		//2 ms interval
-		if ((time-timer1) > 1)
+		if ((time-timer1) > 17)
 		{
 			timer1=time;
-			AbsoluteRect.UpperLeftCorner.X-=5;
+			AbsoluteRect.UpperLeftCorner.X-=50;
 			if (AbsoluteRect.getWidth()>(irr::s32)this->MaxSize.Width)
 			{
 				expand=false;
-				AbsoluteRect.UpperLeftCorner.X+=5;
+				AbsoluteRect.UpperLeftCorner.X=AbsoluteRect.LowerRightCorner.X-MaxSize.Width;
 				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
 					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
 			}
@@ -290,19 +340,19 @@ void CGUIPaneWindow::draw()
 		}
 
 	}
-	if (retract && device)
+	if (retract && device && !collapse)
 	{
 		
 		u32 time = device->getTimer()->getRealTime();
 		//2 ms interval
-		if ((time-timer1) > 1)
+		if ((time-timer1) > 17)
 		{
 			timer1=time;
-			AbsoluteRect.UpperLeftCorner.X+=5;
+			AbsoluteRect.UpperLeftCorner.X+=50;
 			if (AbsoluteRect.getWidth()<(irr::s32)this->MinSize.Width)
 			{
 				retract=false;
-				AbsoluteRect.UpperLeftCorner.X-=5;
+				AbsoluteRect.UpperLeftCorner.X=AbsoluteRect.LowerRightCorner.X-MinSize.Width;
 				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
 					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
 			}
@@ -315,7 +365,8 @@ void CGUIPaneWindow::draw()
 	}
 
 	
-	IGUIElement::draw();
+	if (!collapse)
+		IGUIElement::draw();
 	
 	// If not streched from any corner then update the reference rectangle
 	if (!stretchright && !stretchleft && !stretchbottom && !stretchtop)
@@ -329,7 +380,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 	if (!device)
 		return;
 
-	//Hinting and detection for stretch on the right side
+		//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{   
@@ -345,9 +396,10 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+5) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{
-			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
 			if (enableleft)
 				this->stretchleft=true;
+			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
+			
 		} else
 		{
 			this->stretchleft=false;
@@ -439,81 +491,75 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		}
 }
 
-//Stretch the windows defined on the desired direction
+//Stretch the window defined on the desired direction
+//The windows will stretch but respect the min/max limits
 bool CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 {
 	if (stretchright)
 	{
 		if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
-		{
-			IGUIElement::draw();
-			return true;
-		}
-		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>(irr::s32)MinSize.Width)
-		{
-			AbsoluteRect.LowerRightCorner.X=mousepos.X+5;
-		}
-		this->AbsoluteClippingRect=this->AbsoluteRect;
-		this->DesiredRect=AbsoluteRect;
-		this->updateAbsolutePosition();
+		return true;
+
+		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
+		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>=MaxSize.Width && MaxSize.Width!=0)
+			AbsoluteRect.LowerRightCorner.X = oldrectangle.UpperLeftCorner.X+MaxSize.Width;
+		else
+			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)<=MinSize.Width)
+				AbsoluteRect.LowerRightCorner.X = oldrectangle.UpperLeftCorner.X+MinSize.Width;
+			else
+				AbsoluteRect.LowerRightCorner.X=mousepos.X;	
+	
 	}
 	if (stretchleft)
 	{
 		if (mousepos.X<10 || mousepos.X>this->getParent()->getAbsoluteClippingRect().getWidth()-10)
-		{
-			IGUIElement::draw();
-			return true;
-		}
+		return true;
 
-		if (AbsoluteRect.LowerRightCorner.X-mousepos.X>(irr::s32)this->MinSize.Width-5)
-		{
-			AbsoluteRect.UpperLeftCorner.X=mousepos.X-5;
-			// If the rectangle is moved then cancel the movement.
-			if (oldrectangle.LowerRightCorner.X > AbsoluteRect.LowerRightCorner.X+1)
-			{
-				AbsoluteRect.LowerRightCorner.X = oldrectangle.LowerRightCorner.X;
-				AbsoluteRect.UpperLeftCorner.X=mousepos.X+5;
-				stretchleft = false;
-			}
-		}
-		this->AbsoluteClippingRect=this->AbsoluteRect;
-		this->DesiredRect=AbsoluteRect;
-		this->updateAbsolutePosition();
+		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
+		if ((oldrectangle.LowerRightCorner.X-mousepos.X)>=MaxSize.Width && MaxSize.Width!=0)
+			AbsoluteRect.UpperLeftCorner.X = oldrectangle.LowerRightCorner.X-MaxSize.Width;
+		else 
+			if ((oldrectangle.LowerRightCorner.X-mousepos.X)<=MinSize.Width)
+				AbsoluteRect.UpperLeftCorner.X = oldrectangle.LowerRightCorner.X-MinSize.Width;
+			else
+				AbsoluteRect.UpperLeftCorner.X=mousepos.X;	
+			
+		
 	}
 	if (stretchbottom)
 	{
 		if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
-		{
-			IGUIElement::draw();
-			return true;
-		}
+		return true;
 
-		if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)>(irr::s32)MinSize.Height)
-		{
-			AbsoluteRect.LowerRightCorner.Y=mousepos.Y+5;
-		}
-		this->AbsoluteClippingRect=this->AbsoluteRect;
-		this->DesiredRect=AbsoluteRect;
-		this->updateAbsolutePosition();
+		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
+		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.Y)>=MaxSize.Height && MaxSize.Height!=0)
+			AbsoluteRect.LowerRightCorner.Y = oldrectangle.UpperLeftCorner.Y+MaxSize.Height;
+		else
+			if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)<=MinSize.Height)
+				AbsoluteRect.LowerRightCorner.Y = oldrectangle.UpperLeftCorner.Y+MinSize.Height;
+			else
+				AbsoluteRect.LowerRightCorner.Y=mousepos.Y;	
 	}
 	if (stretchtop)
 	{
 		if (mousepos.Y<10 || mousepos.Y>this->getParent()->getAbsoluteClippingRect().getHeight()-10)
-		{
-			IGUIElement::draw();
-			return true;
-		}
+		return true;
 
-		if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>200)
-		{
-			AbsoluteRect.UpperLeftCorner.Y=mousepos.Y-5;
-		}
-		this->AbsoluteClippingRect=this->AbsoluteRect;
-		this->DesiredRect=AbsoluteRect;
-		this->updateAbsolutePosition();
+		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
+		if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>=MaxSize.Height && MaxSize.Height!=0)
+			AbsoluteRect.UpperLeftCorner.Y = oldrectangle.LowerRightCorner.Y-MaxSize.Height;
+		else
+			if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)<=MinSize.Height)
+				AbsoluteRect.UpperLeftCorner.Y = oldrectangle.LowerRightCorner.Y-MinSize.Height;
+			else
+				AbsoluteRect.UpperLeftCorner.Y=mousepos.Y;	
+		
 	}
-	return false;
 
+	this->AbsoluteClippingRect=this->AbsoluteRect;
+	this->DesiredRect=AbsoluteRect;
+	this->updateAbsolutePosition();
+	return false;
 }
 
 //! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
@@ -529,8 +575,6 @@ void CGUIPaneWindow::Expand(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	expand=true;
-	//printf("Asked to expand the pane\n");
-
 }
 
 // Initialize a retract of the left side of the window
@@ -540,8 +584,6 @@ void CGUIPaneWindow::Retract(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	retract=true;
-	//printf("Asked to retract the pane\n");
-
 }
 
 // Give a status of the window (to determine to expand or retract)

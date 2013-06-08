@@ -103,12 +103,16 @@ class CGUIPaneWindow : public IGUIElement {
 		bool DragByTitlebar;
 		u32 borderwidth;
 		bool closehide;
+		bool collapse;
 
 		//contain the original position of the rectangle.
 		core::rect<s32> oldrectangle;
 
 		u32 timer1;
 		u32 timer2;
+
+		u32 oldsize_y; //Used for the collapse;
+		core::dimension2du oldmin;
 
 		bool expand, retract;
 		  
