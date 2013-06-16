@@ -58,6 +58,8 @@ GUIManager::GUIManager()
             guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
 
+	// Bigger Windows titlebar width
+	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
 	// Fake office style skin colors
 	// We should allow creation of skins colors by the users or at least a choice of skins to use
 	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
@@ -1045,7 +1047,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//-- inner window
 	rect<s32> windowRect2;
 	windowRect2.UpperLeftCorner.X=10;
-	windowRect2.UpperLeftCorner.Y=25;
+	windowRect2.UpperLeftCorner.Y=35;
 	windowRect2.LowerRightCorner.X=windowRect.getWidth()-10;
 	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
 
@@ -1059,13 +1061,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//guiDynamicObjectsWindowChooser->setDraggable(true);
 
     s32 guiDynamicObjectsWindowChooser_Y = 0;
-    guiDynamicObjectsWindowChooser_Y += 5;
+    //guiDynamicObjectsWindowChooser_Y += 10;
 	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
 	text1->setOverrideFont(guiFont12);
 	
 	guiDynamicObjectsWindowChooser_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
-	guiDynamicObjects_Category->setMaxSelectionRows(4);
+	guiDynamicObjects_Category->setMaxSelectionRows(24);
 	
 	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->meshtypename.size() ; i++)
 	{
@@ -1076,7 +1078,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
 	//guiDynamicObjects_Category->addItem(L"PROPS");
 	
-	guiDynamicObjectsWindowChooser_Y += 90;
+	guiDynamicObjectsWindowChooser_Y += 80;
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
 	
@@ -1089,7 +1091,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	text3->setOverrideFont(guiFont12);
 
 	guiDynamicObjectsWindowChooser_Y += 20;
-	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+215);
+	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+225);
 	if (boxend<10)
 		boxend=10;
 
@@ -1264,7 +1266,7 @@ void GUIManager::createCodeEditorGUI()
                        guienv,
                        guiDynamicObjectsWindowEditAction,
                        EB_ID_DYNAMIC_OBJECT_SCRIPT,
-                       myRect(6,28,driver->getScreenSize().Width-15,driver->getScreenSize().Height-312),
+                       myRect(6,32,driver->getScreenSize().Width-15,driver->getScreenSize().Height-312),
 					   //myRect(10,40,guiDynamicObjectsWindowEditAction->getClientRect().getWidth()-20,guiDynamicObjectsWindowEditAction->getClientRect().getHeight()-130),
 					   App::getInstance()->getDevice());
 

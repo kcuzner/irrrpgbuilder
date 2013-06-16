@@ -36,7 +36,8 @@ DrawInsideBorder(true)
 		color = skin->getColor(EGDC_WINDOW_SYMBOL);
 	}
 
-	s32 buttonw = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
+	s32 buttonw = 42; 
+		//Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH);
 	
 	enableright = false;
 	enableleft = false;
@@ -55,13 +56,16 @@ DrawInsideBorder(true)
 #else
 	s32 posx = 4;
 #endif
-	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
+	//buttonw, this, -1,
+	//CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3+buttonw),this, -1 ,
+	CloseButton = Environment->addButton(core::rect<s32>(posx, 1, posx + buttonw, 20),this, -1 ,
 		L"", L"Close");
 	CloseButton->setSubElement(true);
 	if (sprites) {
 		CloseButton->setSpriteBank(sprites);
 		CloseButton->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_WINDOW_CLOSE), color);
 		CloseButton->setSprite(EGBS_BUTTON_DOWN, skin->getIcon(EGDI_WINDOW_CLOSE), color);
+		//CloseButton->setDrawBorder(false);
 	}
 #ifdef WIN32
 	CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
@@ -97,23 +101,23 @@ IGUIButton* CGUIPaneWindow::getCloseButton() const
 }
 
 //! called if an event happened.
-bool CGUIPaneWindow::OnEvent(const SEvent& event)
+bool CGUIPaneWindow::OnEvent(const SEvent& evt)
 {
-	if (!isVisible())
-			return IGUIElement::OnEvent(event);
+	if (!isVisible() || !isEnabled())
+			return IGUIElement::OnEvent(evt);
 
-	switch(event.EventType)
+	switch(evt.EventType)
 	{
 		case EET_GUI_EVENT:
-		if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
+		if (evt.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
 		{
 			Dragging = false;
 			IsActive = false;
 		}
 		else
-		if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
+		if (evt.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
 		{
-			if (Parent && ((event.GUIEvent.Caller == this) || isMyChild(event.GUIEvent.Caller)))
+			if (Parent && ((evt.GUIEvent.Caller == this) || isMyChild(evt.GUIEvent.Caller)))
 			{
 				Parent->bringToFront(this);
 				IsActive = true;
@@ -124,10 +128,12 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 			}
 		}
 		else
-		if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+		if (evt.GUIEvent.EventType == EGET_BUTTON_CLICKED)
 		{
-			if (event.GUIEvent.Caller == CloseButton)
+			if (evt.GUIEvent.Caller == CloseButton)
 			{
+				if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0));
 				//User can decide if he want to "remove" the class when closing the window or simply hide it.
 				if (!closehide)
 					remove();
@@ -142,39 +148,39 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 		break;
 
 		case EET_MOUSE_INPUT_EVENT:
-		if (event.MouseInput.Event==EMIE_LMOUSE_PRESSED_DOWN)
+		if (evt.MouseInput.Event==EMIE_LMOUSE_PRESSED_DOWN)
 		{	
 			core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
 			rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
 			core::vector2d<s32> mousepos; //Current mouse position
-			mousepos.X=event.MouseInput.X;
-			mousepos.Y=event.MouseInput.Y;
+			mousepos.X=evt.MouseInput.X;
+			mousepos.Y=evt.MouseInput.Y;
 
 			if (DragByTitlebar)
 			{
 				//if (Dragging==false && rect.isPointInside(mousepos))
 				{
-					DragStart.X = event.MouseInput.X;
-					DragStart.Y = event.MouseInput.Y;
+					DragStart.X = evt.MouseInput.X;
+					DragStart.Y = evt.MouseInput.Y;
 					Dragging = true;
 				}
 			} else
 				if (!DragByTitlebar)
 				{
-					DragStart.X = event.MouseInput.X;
-					DragStart.Y = event.MouseInput.Y;
+					DragStart.X = evt.MouseInput.X;
+					DragStart.Y = evt.MouseInput.Y;
 					Dragging = true;
 				}
 			break;
 		}
 		else
-			if (event.MouseInput.Event==EMIE_LMOUSE_DOUBLE_CLICK)
+			if (evt.MouseInput.Event==EMIE_LMOUSE_DOUBLE_CLICK)
 			{
 				core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
 				rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
 				core::vector2d<s32> mousepos; //Current mouse position
-				mousepos.X=event.MouseInput.X;
-				mousepos.Y=event.MouseInput.Y;
+				mousepos.X=evt.MouseInput.X;
+				mousepos.Y=evt.MouseInput.Y;
 				
 				if (!collapse && DragByTitlebar && rect.isPointInside(mousepos))
 				{
@@ -200,7 +206,7 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 
 			}
 		else
-		if (event.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && Dragging)
+		if (evt.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && Dragging)
 		{
 			// Set back the pointer cursor after the dragging operation
 			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
@@ -209,14 +215,14 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 			break;
 		}
 		else
-		if (event.MouseInput.Event==EMIE_MOUSE_MOVED)
+		if (evt.MouseInput.Event==EMIE_MOUSE_MOVED)
 		{
 			if (!IsDraggable)
 					break;
 
 			core::vector2d<s32> mousepos; //Current mouse position
-			mousepos.X=event.MouseInput.X;
-			mousepos.Y=event.MouseInput.Y;
+			mousepos.X=evt.MouseInput.X;
+			mousepos.Y=evt.MouseInput.Y;
 
 			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
 			{
@@ -229,7 +235,7 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 
 						break;
 
-				move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
+				move(core::position2d<s32>(evt.MouseInput.X - DragStart.X, evt.MouseInput.Y - DragStart.Y));
 				DragStart = mousepos;				
 			}
 			break;
@@ -241,7 +247,7 @@ bool CGUIPaneWindow::OnEvent(const SEvent& event)
 	}
 	
 	//return true;
-	return IGUIElement::OnEvent(event);
+	return IGUIElement::OnEvent(evt);
 }
 
 
@@ -274,7 +280,7 @@ void CGUIPaneWindow::draw()
 	if (Text.size())
 	{
 #ifdef WIN32
-		rect.UpperLeftCorner.X += 2;
+		rect.UpperLeftCorner.X += 10;
 #else
 		rect.UpperLeftCorner.X += CloseButton->getAbsoluteClippingRect().getWidth()+10;
 #endif
@@ -291,7 +297,7 @@ void CGUIPaneWindow::draw()
 	{
 		// Inner border as double border lines (better looking, could use an activator so the user could decide to have it or not
 		rect.UpperLeftCorner.X=AbsoluteRect.UpperLeftCorner.X+borderwidth;
-		rect.UpperLeftCorner.Y=AbsoluteRect.UpperLeftCorner.Y+(20+borderwidth);
+		rect.UpperLeftCorner.Y=AbsoluteRect.UpperLeftCorner.Y+(skin->getSize(EGDS_WINDOW_BUTTON_WIDTH)+borderwidth);
 		if (scroll->isVisible())
 			rect.LowerRightCorner.X=AbsoluteRect.LowerRightCorner.X-(15+borderwidth);
 		else
@@ -381,7 +387,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		return;
 
 		//Hinting and detection for stretch on the right side
-		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X) &&
+		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-8) && (mousepos.X<AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{   
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
@@ -393,7 +399,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		}
 
 		//Hinting and detection for stretch on the left side
-		if ((mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+5) &&
+		if ((mousepos.X>AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+8) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{
 			if (enableleft)
@@ -406,7 +412,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		}
 
 		//Hinting and detection for stretch on the bottom
-		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-5) && (mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) &&
+		if ((mousepos.Y>=AbsoluteRect.LowerRightCorner.Y-8) && (mousepos.Y<AbsoluteRect.LowerRightCorner.Y) &&
 			(mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X))
 		{
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
@@ -417,7 +423,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 			this->stretchbottom=false;
 
 		//Hinting and detection for stretch on the top
-		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+5) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y) &&
+		if ((mousepos.Y<=AbsoluteRect.UpperLeftCorner.Y+8) && (mousepos.Y>AbsoluteRect.UpperLeftCorner.Y) &&
 			(mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X))
 		{
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
@@ -427,43 +433,45 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 		else
 			this->stretchtop=false;
 
+
+		//Set back the cursor if it's over the close button
+		if ((device->getGUIEnvironment()->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)) 
+			&& (device->getGUIEnvironment()->getHovered()->isMyChild(this)))
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0));
+
 		//Determine if the cursor is over the GUI because the focus is often lost over this gui
 		//If the mouse pointer is not over the current GUI then it will not change the pointer
-		bool focus = false;
-		if (device->getGUIEnvironment()->getHovered()==this)
-		{
-			focus=true;
-		} //else
-			//return;
+		if (device->getGUIEnvironment()->getHovered()!=this)
+			return;
 			
 
 		if (stretchright || stretchleft)
 		{
-			if (!stretchbottom && !stretchtop && focus)
+			if (!stretchbottom && !stretchtop)
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(11) );
 		}
 		if (stretchbottom || stretchtop)
 		{
-			if (!stretchright && !stretchleft && focus)
+			if (!stretchright && !stretchleft)
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(10) );
 		}
 
-		if (stretchbottom && stretchleft && focus)
+		if (stretchbottom && stretchleft)
 		{
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
-		if (stretchbottom && stretchright && focus)
+		if (stretchbottom && stretchright)
 		{
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
-		if (stretchtop && stretchleft && focus)
+		if (stretchtop && stretchleft)
 		{
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
-		if (stretchtop && stretchright && focus)
+		if (stretchtop && stretchright)
 		{
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}

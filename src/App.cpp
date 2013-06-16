@@ -741,6 +741,8 @@ void App::eventMousePressed(s32 mouse)
 {
 	switch(mouse)
 	{///TODO: colocar acoes mais comuns acima e menos comuns nos elses
+
+
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
 		if( cursorIsInEditArea())
 		{
@@ -840,8 +842,6 @@ void App::eventMousePressed(s32 mouse)
 		}
 		break;
 
-	case 3: //Mousewheel pressed
-		break;
 
 	default:
 		break;

@@ -50,7 +50,7 @@ class CGUIPaneWindow : public IGUIElement {
 	  //! Returns pointer to the close button
 	  IGUIButton* getCloseButton() const;
 	
-      virtual bool OnEvent(const SEvent& event);
+      virtual bool OnEvent(const SEvent& evt);
 
       /**
       \brief Render function

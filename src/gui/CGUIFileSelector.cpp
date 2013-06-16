@@ -207,6 +207,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 	case EET_KEY_INPUT_EVENT:
 		switch (event.KeyInput.Key)
 		{
+			
 		case KEY_RETURN:
 			if (FileSystem)
 			{
@@ -242,6 +243,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			}
 			return true;
 		}
+		
 		break;
 	case EET_GUI_EVENT:
 		switch(event.GUIEvent.EventType)

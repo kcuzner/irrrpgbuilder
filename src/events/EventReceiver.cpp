@@ -43,9 +43,14 @@ bool EventReceiver::isKeyPressed(int key)
 
 bool EventReceiver::OnEvent(const SEvent& event)
 {
-	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
-    {
-        if(event.KeyInput.PressedDown == true)
+	s32 id = 0;
+	stringw text = "";
+
+	switch (event.EventType)
+	{
+	// Keyboard input events
+	case irr::EET_KEY_INPUT_EVENT:
+		if(event.KeyInput.PressedDown == true)
         {
             keys[event.KeyInput.Key] = 1;
         }
@@ -54,9 +59,10 @@ bool EventReceiver::OnEvent(const SEvent& event)
             keys[event.KeyInput.Key] = 0;
         }
 		App::getInstance()->eventKeyPressed(event.KeyInput.Key);
-    }
-    else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT)
-    {
+		break;
+
+	// Mouse events
+	case irr::EET_MOUSE_INPUT_EVENT:
         App::getInstance()->eventMousePressed(event.MouseInput.Event);
 
 		mouse[event.MouseInput.Event] = 1;
@@ -82,12 +88,12 @@ bool EventReceiver::OnEvent(const SEvent& event)
         {
             App::getInstance()->eventMouseWheel(event.MouseInput.Wheel);
         }
+		break;
 
-    }
-    else if (event.EventType == EET_GUI_EVENT)
-    {
-        s32 id = event.GUIEvent.Caller->getID();
-
+	// GUIevents 
+	case EET_GUI_EVENT:
+		id = event.GUIEvent.Caller->getID();
+		// GUI Events per types
         switch(event.GUIEvent.EventType)
         {
             case EGET_BUTTON_CLICKED:
@@ -121,14 +127,15 @@ bool EventReceiver::OnEvent(const SEvent& event)
 				App::getInstance()->eventGuiCombobox(id);
 				break;
 #endif
-        }
-    }
-	else if (event.EventType == EET_LOG_TEXT_EVENT)
-	{
-		stringw text = "";
-		text += stringw(event.LogEvent.Text).c_str();
-		App::getInstance()->textevent.push_back(text.c_str());
+		}
+        break;
 
+	// Irrlicht logger events
+	case EET_LOG_TEXT_EVENT:
+		text += stringw(event.LogEvent.Text).c_str();
+		if (text.size()>0)
+		   App::getInstance()->textevent.push_back(text.c_str());
+		break;
 	}
     return false;
 }

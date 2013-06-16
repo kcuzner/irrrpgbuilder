@@ -352,7 +352,7 @@ void CGUIEditBoxIRB::setSelectionColors(video::SColor background, video::SColor 
 //! called if an event happened.
 bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 {
-	if (IsEnabled)
+	if (IsEnabled && IsVisible)
 	{
 
 		switch(event.EventType)
