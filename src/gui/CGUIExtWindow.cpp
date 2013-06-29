@@ -1,4 +1,4 @@
-#include "CGUIPaneWindow.h"
+#include "CGUIExtWindow.h"
 
 
 const s32 FOD_WIDTH = 640;
@@ -6,12 +6,12 @@ const s32 FOD_HEIGHT = 400;
 const s32 yoffset = 10;
 
 //! constructor
-CGUIPaneWindow::CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
+CGUIExtWindow::CGUIExtWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
 : IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false),
 DrawInsideBorder(true)
 {
 #ifdef _DEBUG
-	IGUIElement::setDebugName("CGUIPaneWindow");
+	IGUIElement::setDebugName("CGUIExtWindow");
 #endif
 
 	DragByTitlebar = true;
@@ -21,7 +21,6 @@ DrawInsideBorder(true)
 
 	Text = title;
 	device=NULL;
-	scrollpos = 0;
 	borderwidth=5;
 	
 	//Keep the old rectangle in memory.
@@ -52,9 +51,9 @@ DrawInsideBorder(true)
 
 	// Position the close button Windows or Linux style
 #ifdef WIN32
-	s32 posx = RelativeRect.getWidth() - buttonw - 4;
+	s32 posx = RelativeRect.getWidth() - buttonw - 6;
 #else
-	s32 posx = 4;
+	s32 posx = 6;
 #endif
 	//buttonw, this, -1,
 	//CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3+buttonw),this, -1 ,
@@ -73,12 +72,6 @@ DrawInsideBorder(true)
 	CloseButton->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 #endif
 	CloseButton->grab();
-
-	//Define the scroolbar
-	scroll = Environment->addScrollBar(false, core::rect<s32>(AbsoluteRect.getWidth()-15,0,AbsoluteRect.getWidth(),AbsoluteRect.getHeight()),this,-1);
-	scroll->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
-	scroll->setVisible(false);
-
 	oldrectangle = AbsoluteRect;
 
 }
@@ -86,7 +79,7 @@ DrawInsideBorder(true)
 
 
 //! destructor
-CGUIPaneWindow::~CGUIPaneWindow()
+CGUIExtWindow::~CGUIExtWindow()
 {
 	if (CloseButton)
 		CloseButton->drop();
@@ -95,13 +88,13 @@ CGUIPaneWindow::~CGUIPaneWindow()
 
 
 //! Returns pointer to the close button
-IGUIButton* CGUIPaneWindow::getCloseButton() const
+IGUIButton* CGUIExtWindow::getCloseButton() const
 {
 	return CloseButton;
 }
 
 //! called if an event happened.
-bool CGUIPaneWindow::OnEvent(const SEvent& evt)
+bool CGUIExtWindow::OnEvent(const SEvent& evt)
 {
 	if (!isVisible() || !isEnabled())
 			return IGUIElement::OnEvent(evt);
@@ -252,16 +245,13 @@ bool CGUIPaneWindow::OnEvent(const SEvent& evt)
 
 
 //! draws the element and its children
-void CGUIPaneWindow::draw()
+void CGUIExtWindow::draw()
 {
 	if (!IsVisible)
 		return;
 
 	// Update the size of the client rectangle if changed
 	ClientRect = core::rect<s32>(0,0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
-	
-	if (scroll->isVisible())
-		this->bringToFront(scroll);
 
 	core::vector2d<s32> mousepos = core::vector2d<s32>(0,0);
 	IGUISkin* skin = Environment->getSkin();
@@ -297,11 +287,9 @@ void CGUIPaneWindow::draw()
 	{
 		// Inner border as double border lines (better looking, could use an activator so the user could decide to have it or not
 		rect.UpperLeftCorner.X=AbsoluteRect.UpperLeftCorner.X+borderwidth;
-		rect.UpperLeftCorner.Y=AbsoluteRect.UpperLeftCorner.Y+(skin->getSize(EGDS_WINDOW_BUTTON_WIDTH)+borderwidth);
-		if (scroll->isVisible())
-			rect.LowerRightCorner.X=AbsoluteRect.LowerRightCorner.X-(15+borderwidth);
-		else
-			rect.LowerRightCorner.X=AbsoluteRect.LowerRightCorner.X-borderwidth;
+		rect.UpperLeftCorner.Y=AbsoluteRect.UpperLeftCorner.Y+(skin->getSize(EGDS_WINDOW_BUTTON_WIDTH)+borderwidth+4);
+		
+		rect.LowerRightCorner.X=AbsoluteRect.LowerRightCorner.X-borderwidth;
 
 		rect.LowerRightCorner.Y=AbsoluteRect.LowerRightCorner.Y-borderwidth;
 		skin->draw3DSunkenPane(this,skin->getColor(EGDC_INACTIVE_BORDER),true,true,rect, &AbsoluteClippingRect);
@@ -380,7 +368,7 @@ void CGUIPaneWindow::draw()
 }
 
 //Draw the cursor changes or hinting reference for a window stretch
-void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
+void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 {
 
 	if (!device)
@@ -434,16 +422,19 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 			this->stretchtop=false;
 
 
-		//Set back the cursor if it's over the close button
-		if ((device->getGUIEnvironment()->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)) 
-			&& (device->getGUIEnvironment()->getHovered()->isMyChild(this)))
-				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0));
-
-		//Determine if the cursor is over the GUI because the focus is often lost over this gui
-		//If the mouse pointer is not over the current GUI then it will not change the pointer
-		if (device->getGUIEnvironment()->getHovered()!=this)
-			return;
-			
+		// Cursor changes if the mouse pointer is over another guielement
+		if ((Environment->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)))
+		{
+			//if (Environment->getHovered())
+			//Set back the cursor if it's over the close button or any other child component of the window
+			if (isMyChild(Environment->getHovered()))
+			{
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0)); 
+				return;
+			}
+			else
+				return;
+		}
 
 		if (stretchright || stretchleft)
 		{
@@ -501,7 +492,7 @@ void CGUIPaneWindow::drawRef(core::vector2d<s32> mousepos)
 
 //Stretch the window defined on the desired direction
 //The windows will stretch but respect the min/max limits
-bool CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
+bool CGUIExtWindow::drawStretch(core::vector2d<s32> mousepos)
 {
 	if (stretchright)
 	{
@@ -570,8 +561,8 @@ bool CGUIPaneWindow::drawStretch(core::vector2d<s32> mousepos)
 	return false;
 }
 
-//! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
-core::rect<s32> CGUIPaneWindow::getClientRect()
+//! Returns the rectangle of the drawable area (without border, without titlebar)
+core::rect<s32> CGUIExtWindow::getClientRect()
 {
 	return ClientRect;
 }
@@ -579,7 +570,7 @@ core::rect<s32> CGUIPaneWindow::getClientRect()
 // Initialize a expand of the left side of the window
 // Will have to be expanded to allow the four direction
 // Enums will be needed to define the direction
-void CGUIPaneWindow::Expand(irr::u16 dir)
+void CGUIExtWindow::Expand(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	expand=true;
@@ -588,14 +579,14 @@ void CGUIPaneWindow::Expand(irr::u16 dir)
 // Initialize a retract of the left side of the window
 // Will have to be expanded to allow the four direction
 // Enums will be needed to define the direction
-void CGUIPaneWindow::Retract(irr::u16 dir)
+void CGUIExtWindow::Retract(irr::u16 dir)
 {
 	timer1 = device->getTimer()->getRealTime();
 	retract=true;
 }
 
 // Give a status of the window (to determine to expand or retract)
-bool CGUIPaneWindow::Status(irr::u16 dir)
+bool CGUIExtWindow::Status(irr::u16 dir)
 {
 	//printf("Asked the pane status\n");
 	if ((AbsoluteRect.getWidth()/2)>(irr::s32)MinSize.Width)

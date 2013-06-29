@@ -12,10 +12,10 @@
 #include "../sound/SoundManager.h"
 
 // Stretching window class
-#include "CGUIStretchWindow.h"
+//#include "CGUIStretchWindow.h"
 
 // Stretching window class
-#include "CGUIPaneWindow.h"
+#include "CGUIExtWindow.h"
 
 using namespace irr;
 using namespace core;
@@ -284,7 +284,7 @@ class GUIManager
 
 		IGUIListBox* console;
 		IGUIListBox* consolelog;
-		CGUIPaneWindow* consolewin;//IGUIWindow * consolewin;
+		CGUIExtWindow* consolewin;//IGUIWindow * consolewin;
 
 		// Loader window
 		IGUIStaticText* guiLoaderDescription;
@@ -324,10 +324,10 @@ class GUIManager
         IGUIButton* guiDynamicObjectsMode;
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
-		CGUIPaneWindow* guiDynamicObjectsWindowChooser;
+		CGUIExtWindow* guiDynamicObjectsWindowChooser;
 		IGUIWindow* InnerChooser;
 		IGUIWindow* guiDynamicObjectsWindowInfo;
-        CGUIPaneWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
+        CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
 		IGUIListBox* guiDynamicObjects_OBJCategory;

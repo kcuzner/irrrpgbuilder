@@ -1,5 +1,5 @@
-#ifndef INC_CGUIPANEWINDOW_H
-#define INC_CGUIPANEWINDOW_H
+#ifndef INC_CGUIEXTWINDOW_H
+#define INC_CGUIEXTWINDOW_H
 
 #include <irrlicht.h>
 
@@ -14,7 +14,7 @@ using namespace gui;
 	*/
 
 
-class CGUIPaneWindow : public IGUIElement {
+class CGUIExtWindow : public IGUIElement {
 
    public:
 
@@ -34,13 +34,13 @@ class CGUIPaneWindow : public IGUIElement {
       \param id - The ID of the dialog
       \param type - The type of dialog
       */
-      CGUIPaneWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
+      CGUIExtWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
 		 // : IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle) {}
 
       /**
         \brief Destructor
         */
-      virtual ~CGUIPaneWindow();
+      virtual ~CGUIExtWindow();
       
       /**
         \brief Returns the filename of the selected file. Returns NULL, if no file was selected.
@@ -92,9 +92,6 @@ class CGUIPaneWindow : public IGUIElement {
 		bool stretchbottom, stretchtop, stretchright, stretchleft;
 		irr::IrrlichtDevice * device;
 
-		IGUIScrollBar * scroll;
-		s32 scrollpos;
-
 		bool Dragging, IsDraggable, drawTitleBar;
         bool DrawBackground;
         bool DrawTitlebar;
@@ -119,4 +116,4 @@ class CGUIPaneWindow : public IGUIElement {
          
 };
 
-#endif /* CGUIPANEWINDOW_H */
+#endif /* CGUIEXTWINDOW_H */

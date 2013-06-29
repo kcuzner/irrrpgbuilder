@@ -581,6 +581,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gui\CGUIExtWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gui\CGUIExtWindow.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gui\CGUIFileSelector.cpp"
 					>
 				</File>
@@ -594,22 +602,6 @@
 				</File>
 				<File
 					RelativePath=".\src\gui\CGUIGfxStatus.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\gui\CGUIPaneWindow.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\gui\CGUIPaneWindow.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\gui\CGUIStretchWindow.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\gui\CGUIStretchWindow.h"
 					>
 				</File>
 				<File

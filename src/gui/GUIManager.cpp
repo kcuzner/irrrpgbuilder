@@ -1026,7 +1026,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
     //guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
-	guiDynamicObjectsWindowChooser = new CGUIPaneWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
+	guiDynamicObjectsWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
     guiDynamicObjectsWindowChooser->setDraggable(false);
     guiDynamicObjectsWindowChooser->getCloseButton()->setVisible(false);
    //guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
@@ -1250,7 +1250,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);*/
 
 	// NEW (oct 2012) Create a stretching windows for the script editor
-	guiDynamicObjectsWindowEditAction=new CGUIPaneWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
+	guiDynamicObjectsWindowEditAction=new CGUIExtWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
 	guiDynamicObjectsWindowEditAction->setDevice(device);
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	//guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
@@ -1616,7 +1616,7 @@ void GUIManager::createConsole()
 
 	core::dimension2d<u32> center = screensize/2;
 	// consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
-	consolewin = new CGUIPaneWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(center.Width-400,center.Height-200,center.Width+400,center.Height+200));
+	consolewin = new CGUIExtWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(center.Width-400,center.Height-200,center.Width+400,center.Height+200));
 	consolewin->setDevice(App::getInstance()->getDevice());
 	//consolewin->getCloseButton()->setVisible(false);
 	consolewin->setCloseHide(true);
