@@ -2064,7 +2064,8 @@ void App::loadProjectFile(bool value)
 
 void App::saveProject()
 {
-	APP_STATE old_state = getAppState();
+	//Save current state, disabled for now
+	//APP_STATE old_state = getAppState();
 	setAppState(APP_WAIT_FILEREQUEST);
 
 	// Old method of request for save file (only a text input)

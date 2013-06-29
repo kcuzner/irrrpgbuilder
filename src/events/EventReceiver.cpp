@@ -126,6 +126,8 @@ bool EventReceiver::OnEvent(const SEvent& event)
 			case  EGET_LISTBOX_SELECTED_AGAIN:
 				App::getInstance()->eventGuiCombobox(id);
 				break;
+
+			default: break;
 #endif
 		}
         break;
@@ -136,7 +138,11 @@ bool EventReceiver::OnEvent(const SEvent& event)
 		if (text.size()>0)
 		   App::getInstance()->textevent.push_back(text.c_str());
 		break;
+
+	default: break;
 	}
+	
+
     return false;
 }
 
