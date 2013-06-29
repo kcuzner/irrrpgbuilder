@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Player Debug" />
-	<File name="src/App.cpp" open="1" top="1" tabpos="3">
-		<Cursor position="2767" topLine="119" />
+	<File name="src/objects/DynamicObject.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/gui/GUIManager.cpp" open="1" top="0" tabpos="6">
-		<Cursor position="81165" topLine="1729" />
+	<File name="src/sound/SoundManager.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/objects/DynamicObject.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="9583" topLine="323" />
+	<File name="src/sound/SoundManager.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/objects/DynamicObject.h" open="0" top="0" tabpos="3">
-		<Cursor position="7760" topLine="242" />
+	<File name="src/objects/DynamicObjectsManager.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/objects/DynamicObjectsManager.cpp" open="1" top="0" tabpos="4">
-		<Cursor position="11714" topLine="420" />
+	<File name="src/gui/GUIManager.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/sound/SoundManager.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="104" topLine="0" />
+	<File name="src/App.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="65230" topLine="2057" />
+		</Cursor>
 	</File>
-	<File name="src/sound/SoundManager.h" open="0" top="0" tabpos="2">
-		<Cursor position="50" topLine="0" />
+	<File name="src/terrain/TerrainTile.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="src/terrain/TerrainTile.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="1905" topLine="49" />
+	<File name="src/objects/DynamicObject.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src/events/EventReceiver.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2020" topLine="72" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
