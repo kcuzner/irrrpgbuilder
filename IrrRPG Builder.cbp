@@ -17,20 +17,11 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-m32" />
-					<Add option="-Wswitch" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="lib" />
 				</ResourceCompiler>
 				<Linker>
-					<Add option="-m32" />
-					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
-					<Add library="src/lua/liblua.a" />
-					<Add library="GL" />
-					<Add library="./libIrrKlang.so" />
-					<Add library="./ikpFlac.so" />
-					<Add library="./ikpMP3.so" />
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
 					<Add directory="lib" />
@@ -43,20 +34,10 @@
 				<Option object_output="obj/PlayRel/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-m32" />
-				</Compiler>
 				<ResourceCompiler>
 					<Add directory="lib" />
 				</ResourceCompiler>
 				<Linker>
-					<Add option="-m32" />
-					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
-					<Add library="src/lua/liblua.a" />
-					<Add library="GL" />
-					<Add library="./libIrrKlang.so" />
-					<Add library="./ikpFlac.so" />
-					<Add library="./ikpMP3.so" />
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
 					<Add directory="lib" />
@@ -70,22 +51,14 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Wextra" />
+					<Add option="-w" />
 					<Add option="-g" />
-					<Add option="-m32" />
 					<Add option="-DEDITOR" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="lib" />
 				</ResourceCompiler>
 				<Linker>
-					<Add option="-m32" />
-					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
-					<Add library="src/lua/liblua.a" />
-					<Add library="GL" />
-					<Add library="./libIrrKlang.so" />
-					<Add library="./ikpFlac.so" />
-					<Add library="./ikpMP3.so" />
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
 					<Add directory="lib" />
@@ -99,21 +72,13 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Wextra" />
-					<Add option="-m32" />
+					<Add option="-w" />
 					<Add option="-DEDITOR" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="lib" />
 				</ResourceCompiler>
 				<Linker>
-					<Add option="-m32" />
-					<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
-					<Add library="src/lua/liblua.a" />
-					<Add library="GL" />
-					<Add library="./libIrrKlang.so" />
-					<Add library="./ikpFlac.so" />
-					<Add library="./ikpMP3.so" />
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
 					<Add directory="lib" />
@@ -121,12 +86,23 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
 			<Add directory="irrlicht-engine/include" />
 			<Add directory="src/lua" />
 			<Add directory="irrlicht-engine/source/Irrlicht" />
 			<Add directory="irrKlang/include" />
+			<Add directory="bin" />
 		</Compiler>
+		<Linker>
+			<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
+			<Add library="src/lua/liblua.a" />
+			<Add library="GL" />
+			<Add library="./libIrrKlang.so" />
+			<Add library="./ikpFlac.so" />
+			<Add library="./ikpMP3.so" />
+			<Add library="/usr/lib/i386-linux-gnu/libX11.so.6" />
+			<Add library="/usr/lib/i386-linux-gnu/libXxf86vm.so.1" />
+			<Add library="/lib/i386-linux-gnu/libdl.so.2" />
+		</Linker>
 		<Unit filename="src/App.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
@@ -288,6 +264,12 @@
 		</Unit>
 		<Unit filename="src/objects/combat.h">
 			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/raytests.cpp">
+			<Option virtualFolder="App/" />
+		</Unit>
+		<Unit filename="src/raytests.h">
+			<Option virtualFolder="App/" />
 		</Unit>
 		<Unit filename="src/sound/SoundManager.cpp">
 			<Option virtualFolder="App/sound/" />

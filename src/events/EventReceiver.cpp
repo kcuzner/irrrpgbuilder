@@ -90,7 +90,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
         }
 		break;
 
-	// GUIevents 
+	// GUIevents
 	case EET_GUI_EVENT:
 		id = event.GUIEvent.Caller->getID();
 		// GUI Events per types
@@ -126,9 +126,8 @@ bool EventReceiver::OnEvent(const SEvent& event)
 			case  EGET_LISTBOX_SELECTED_AGAIN:
 				App::getInstance()->eventGuiCombobox(id);
 				break;
-
-			default: break;
 #endif
+            default: break;
 		}
         break;
 
@@ -141,7 +140,7 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 	default: break;
 	}
-	
+
 
     return false;
 }

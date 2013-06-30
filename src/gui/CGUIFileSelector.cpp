@@ -207,11 +207,11 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 	case EET_KEY_INPUT_EVENT:
 		switch (event.KeyInput.Key)
 		{
-			
+
 		case KEY_RETURN:
 			if (FileSystem)
 			{
-				
+
 				FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
 				fillListBox();
 				PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
@@ -242,9 +242,11 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				}
 			}
 			return true;
+			break;
+        default: break;
 		}
-		
-		break;
+    break;
+
 	case EET_GUI_EVENT:
 		switch(event.GUIEvent.EventType)
 		{
@@ -300,7 +302,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 						if (checkExistingFile())
 							return true;
 					}
-					
+
 					if (FileSystem)
 					{
 						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
@@ -320,7 +322,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 					fullpathname = strw+FileNameText->getText();
 					fullpathname+=".";
 					fullpathname+=FileFilters[i].FileExtension;
-					
+
 					sendSelectedEvent();
 					remove();
 					return true;
@@ -393,6 +395,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				}
 			}
 			break;
+        default: break;
 		}
 		break;
 
@@ -427,8 +430,10 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 				return true;
 			}
 			break;
+        default: break;
 
 		}
+    default: break;
 	}
 
 	return Parent ? Parent->OnEvent(event) : false;
@@ -472,7 +477,7 @@ void CGUIFileSelector::draw()
 		//Hinting and detection for stretch on the right side
 		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-5) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
-		{   
+		{
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
 			this->stretchright=true;
 		} else
@@ -768,7 +773,7 @@ void CGUIFileSelector::sendSelectedEvent()
 	event.EventType = EET_GUI_EVENT;
 	event.GUIEvent.Caller = this;
 	event.GUIEvent.EventType = EGET_FILE_SELECTED;
-	if (Parent) 
+	if (Parent)
 		Parent->OnEvent(event);
 	this->setVisible(false);
 }
@@ -1037,7 +1042,7 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 			//printf("============================\nThe code is: %d\n==============================\n",code);
 #ifdef WIN32
 		// if the result give < 0 then it look like an accented letter, then convert
-		
+
 		if (code==-56)
 			result.append(L"È");
 
@@ -1083,7 +1088,7 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		// if the result give < 0 then it look like an accented letter, then convert
 		// Have to find a way on Linux for converting the accented characters to a irrlicht displayable character
 		// Not implemented on Linux.
-		
+
 #endif
 
 
