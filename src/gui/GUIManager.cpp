@@ -237,6 +237,12 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
 
 stringc GUIManager::getComboBoxItem(GUI_ID id)
 {
+
+	if (id==CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER)
+	{
+		core::stringc text=stringc(guiCustom_Segment_OBJChooser->getListItem(guiCustom_Segment_OBJChooser->getSelected()));
+		printf ("Received this string because the item was selected: %s \n\n",text.c_str());
+	}
     switch(id)
     {
 	
@@ -1171,8 +1177,6 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 void GUIManager::createCustomSegmentChooserGUI()
 {
-
-	guiCustomSegmentWindowChooser;
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
     rect<s32> windowRect = myRect(displaywidth - 220,
 	guiMainToolWindow->getClientRect().getHeight()+3,
@@ -1826,7 +1830,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 		guiCustom_Segment_OBJChooser->setSelected(0);
 		// Set the "active" object to the selection
 #ifdef EDITOR
-		//DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 #endif
 		return;
 

@@ -52,7 +52,7 @@ class TerrainManager
         ISceneNode* getEmptySegment(vector3df pos);
         void removeEmptySegment(vector3df pos, bool force=false);
         void createEmptySegment(vector3df pos);
-		void removeSegment(vector3df pos);
+		void removeSegment(vector3df pos, bool custom = false);
 		void deleteTaggedSegment();
 
 		typedef std::map<std::string, TerrainTile*> TerrainMap;

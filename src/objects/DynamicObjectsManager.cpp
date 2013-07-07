@@ -608,6 +608,8 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
     	    break;
     	} 
     }
+	if (found)
+		printf ("This item is the active object now: %s \n\n",name.c_str());
 	if (!found)
 	{
 		GUIManager::getInstance()->setConsoleText(notfound.c_str(),video::SColor(255,240,0,0));

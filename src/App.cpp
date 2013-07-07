@@ -410,6 +410,7 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		this->setAppState(APP_EDIT_TERRAIN_CUSTOM_SEGMENTS);
 		break;
 
@@ -423,6 +424,7 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECTS_MODE:
 		{
+			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		break;
@@ -800,6 +802,7 @@ void App::eventMousePressed(s32 mouse)
 			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 			{
 				core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
+				printf("Here is the name of the active mesh: %s",meshfile);
 				TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
@@ -851,6 +854,10 @@ void App::eventMousePressed(s32 mouse)
 			{
 				//TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+			}
+			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+			{
+				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
 			}
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{

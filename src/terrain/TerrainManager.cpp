@@ -269,7 +269,7 @@ void TerrainManager::removeEmptySegment(vector3df pos, bool force)
     }
 }
 
-void TerrainManager::removeSegment(vector3df pos)
+void TerrainManager::removeSegment(vector3df pos, bool custom)
 {
 
 	 //Must be rounded positions (to keep it in the grid)
@@ -289,7 +289,7 @@ void TerrainManager::removeSegment(vector3df pos)
         tileTagged = terrainMap.find(getHashCode(pos))->second;
 		// Test if the tile has been modified
 		bool test = tileTagged->checkModified();
-		if (test)
+		if (test && !custom)
 		{
 			IGUIEnvironment * guienv = App::getInstance()->getDevice()->getGUIEnvironment();
 			video::IVideoDriver * driver =  App::getInstance()->getDevice()->getVideoDriver();
@@ -313,7 +313,11 @@ void TerrainManager::deleteTaggedSegment()
 	
 	 terrainMap.erase(getHashCode(posTagged));
 
-     delete tileTagged;
+	 if (tileTagged->getNode()!=NULL)
+		 tileTagged->getNode()->remove();
+
+
+	 delete tileTagged;
 
 	 // Put back the empty segment
 	 createEmptySegment(vector3df(posTagged.X,0,posTagged.Z));
@@ -381,7 +385,12 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
-        createSegment(vector3df( x/scale ,0, z/scale ),false,true);
+		core::stringc customtile=tSegment->ToElement()->Attribute("custom");
+		if (customtile=="")
+			createSegment(vector3df( x/scale ,0, z/scale ),false,true);
+		else
+			createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
+
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 
         if(tempTile)
@@ -567,6 +576,9 @@ void TerrainManager::clean()
     {
         TerrainTile* t = it->second;
 
+		if (t->getNode())
+			t->getNode()->remove();
+	
         delete t;
     }
 

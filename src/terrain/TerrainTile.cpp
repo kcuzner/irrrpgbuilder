@@ -101,8 +101,13 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 {
 	core::stringc path="../media/dynamic_objects/";
 	core::stringc file=path.append(model);
-	static IMesh* baseMesh = smgr->getMesh(file.c_str());
+	IMesh* baseMesh = smgr->getMesh(file.c_str());
 	baseMesh->setHardwareMappingHint(EHM_STATIC);
+
+	if (ocean)
+		ocean->remove();
+	if (node)
+		node->remove();
 		
 	// Create the custom mesh node
 	node = smgr->addMeshSceneNode(baseMesh,parent,100);
@@ -132,14 +137,14 @@ TerrainTile::~TerrainTile()
 	if (selector)
 		selector->drop();
 
-	if (ocean)
+/*	if (ocean)
 		ocean->remove();
 
 	if (node)
 		node->remove();
 
 	
-
+*/
     //ocean->remove();///TODO: rever destrutor TerrainTile!
 
 
@@ -228,6 +233,11 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
     segmentXML->SetAttribute("x",x);
     segmentXML->SetAttribute("z",z);
 
+	if (custom)
+	{
+		segmentXML->SetAttribute("custom",customname.c_str());
+	}
+
     //write all vertex
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -239,7 +249,8 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 	    if(realPos.Y != 0.0f )
         {
             TiXmlElement* vertexXML = new TiXmlElement("vertex");
-            vertexXML->SetAttribute("id",j);
+            
+			vertexXML->SetAttribute("id",j);
             vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
 
 			Vegetation * tree = 0;
