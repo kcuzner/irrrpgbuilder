@@ -590,7 +590,7 @@ bool CGUIExtWindow::Status(irr::u16 dir)
 {
 	//printf("Asked the pane status\n");
 	if ((AbsoluteRect.getWidth()/2)>(irr::s32)MinSize.Width)
-		return true; // Should call expand
+		return false; // Should call expand
 	else
-		return false; // Should call retract
+		return true; // Should call retract
 }

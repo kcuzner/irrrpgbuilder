@@ -129,6 +129,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		// Data blocks defining the object itself
 		core::stringc  objectName = "";
 		core::stringc  objectMesh = "";
+		core::stringc  objectSpecial = "";
 		core::stringc  objectType = "";
 		core::stringc  objectScript = "";
 		core::stringc  objectScale = "";
@@ -261,6 +262,11 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						
 						// Get the current set name and save it in the object template
 						newObj->type=setname;
+						newObj->special=SPECIAL_NONE;
+
+						objectSpecial = (core::stringc)xml->getAttributeValue("special");
+						if (objectSpecial=="segment")
+							newObj->special=SPECIAL_SEGMENT;
 						
 						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
 						newObj->meshFile=objectMesh;
@@ -613,17 +619,17 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
-vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category)
+vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category, SPECIAL special)
 {
     vector<stringw> listObjs;
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->type==objectType && category=="")
+		if (objTemplate[i]->type==objectType && category=="" && objTemplate[i]->special==special)
 				listObjs.push_back( objTemplate[i]->getName() );
 		else
 
-		if (objTemplate[i]->type==objectType && objTemplate[i]->category==category)
+		if (objTemplate[i]->type==objectType && objTemplate[i]->category==category && objTemplate[i]->special==special)
 		{
 			listObjs.push_back( objTemplate[i]->getName() ); 
 		}
@@ -633,8 +639,34 @@ vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, 
     return listObjs;
 }
 
+
+vector<stringw> DynamicObjectsManager::getObjectsCollections(SPECIAL special)
+{
+	vector<stringw> listObjs;
+	
+    for (int i=0 ; i<(int)objTemplate.size() ; i++)
+    {
+		if (objTemplate[i]->special==special)
+		{
+			bool add=true;
+			for (int j=0; j<(int)listObjs.size(); j++)
+			{
+				if (objTemplate[i]->type==listObjs[j].c_str())
+					add=false;
+			}
+			if (add)
+				listObjs.push_back( objTemplate[i]->type ); 
+		}
+
+    }
+
+    return listObjs;
+
+}
+
 //! Create a list of the categories from the XML data in the templates.
-vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType)
+// Special is to build a list based on the special type of this template (DYNAMIC OBJECT, CUSTOM TILE, LOOT, ETC)
+vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType, SPECIAL special)
 {
     vector<stringw> listObjs;
 	listObjs.push_back((core::stringw)"All");
@@ -648,10 +680,10 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw ob
 			{
 				if (objTemplate[i]->category == listObjs[a])
 				{
-					found=true;
+						found=true;
 				}
 			}
-			if (!found && objTemplate[i]->category!="")
+			if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
 					listObjs.push_back( objTemplate[i]->category );
 			found=false;
 		}

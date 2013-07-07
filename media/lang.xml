@@ -29,6 +29,7 @@
 		<text id="bt_load_project" str="Load Project"/>
 		<text id="bt_show_playable_area" str="Display plateau"/>
 		<text id="bt_terrain_segments" str="Terrain tiles"/>
+		<text id="bt_terrain_custom_segments" str="Custom tiles"/>
 		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Edit Elevation"/>
 		<text id="bt_terrain_brush" str="Brush tool"/>
@@ -81,6 +82,7 @@
 		<text id="msg_loaded_ok" str=" loaded successfully!"/>
 		<text id="msg_override_script" str="This operation will override the actual script, do you want to proceed?"/>
 		<text id="txt_dynobjsel" str="Dynamic object selection" />
+		<text id="txt_cussegsel" str="Custom tile selection" />
 		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcur" str="Current model" />
 		<text id="txt_objectcol" str="Object collection" />
@@ -186,6 +188,7 @@
 		<text id="bt_load_project" str="Carregar"/>
 		<text id="bt_show_playable_area" str="Planalto Altura"/>
 		<text id="bt_terrain_segments" str="Editar Segmentos"/>
+		<text id="bt_terrain_custom_segments" str="Custom tiles"/>
 		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Editar Elevação"/>
 		<text id="bt_terrain_brush" str="Escova"/>
@@ -238,6 +241,7 @@
 		<text id="msg_loaded_ok" str=" carregado com sucesso!"/>
 		<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
 		<text id="txt_dynobjsel" str="Dinâmica de seleção de objeto" />
+		<text id="txt_cussegsel" str="Custom tile selection" />
 		<text id="txt_dynobjcur" str="Atual modelo" />
 		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Categoria" />
@@ -343,6 +347,7 @@
 		<text id="bt_load_project" str="Charger le projet"/>
 		<text id="bt_show_playable_area" str="Zone plateau"/>
 		<text id="bt_terrain_segments" str="Tuile terrain"/>
+		<text id="bt_terrain_custom_segments" str="Tuile spéciale"/>
 		<text id="bt_terrain_empty_segments" str="Tuile vide"/>
 		<text id="bt_terrain_transform" str="Éditer l'élevation"/>
 		<text id="bt_terrain_brush" str="Outils brosse"/>
@@ -395,6 +400,7 @@
 		<text id="msg_loaded_ok" str=" chargement réussi!"/>
 		<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
 		<text id="txt_dynobjsel" str="Sélection d'objet dynamique" />
+		<text id="txt_cussegsel" str="Sélection tuile spéciale" />
 		<text id="txt_dynobjcur" str="Modèle actuel" />
 		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Catégorie" />
@@ -500,6 +506,7 @@
 		<text id="bt_load_project" str="Projekt laden"/>
 		<text id="bt_show_playable_area" str="Bereich anzeigen"/>
 		<text id="bt_terrain_segments" str="Gelaende bearbeiten"/>
+		<text id="bt_terrain_custom_segments" str="Custom tiles"/>
 		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Höhe"/>
 		<text id="bt_terrain_brush" str="Pinsel-Werkzeug"/>
@@ -552,6 +559,7 @@
 		<text id="msg_loaded_ok" str=" laden erfolgreich!"/>
 		<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
 		<text id="txt_dynobjsel" str="Dynamische Objekt-Selektion" />
+		<text id="txt_cussegsel" str="Custom tile selection" />
 		<text id="txt_dynobjcur" str="Aktuelles Modell" />
 		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Kategorie" />
@@ -657,6 +665,7 @@
 		<text id="bt_load_project" str="Carga Proyecto"/>
 		<text id="bt_show_playable_area" str="Mostrar meseta"/>
 		<text id="bt_terrain_segments" str="Editar Segmentos"/>
+		<text id="bt_terrain_custom_segments" str="Custom tiles"/>
 		<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 		<text id="bt_terrain_transform" str="Elevación"/>
 		<text id="bt_terrain_brush" str="Herramienta Pincel"/>
@@ -709,6 +718,7 @@
 		<text id="msg_loaded_ok" str=" loaded successfully!"/>
 		<text id="msg_override_script" str="Esta operación va a reemplazar la secuencia de comandos reales, desea continuar?"/>
 		<text id="txt_dynobjsel" str="Dinámica de selección de objetos" />
+		<text id="txt_cussegsel" str="Custom tile selection" />
 		<text id="txt_dynobjcur" str="Modelo actual" />
 		<text id="txt_objectcol" str="Object collection" />
 		<text id="txt_dynobjcat" str="Categoría" />

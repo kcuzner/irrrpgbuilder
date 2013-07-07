@@ -50,6 +50,7 @@ class TemplateObject
 		stringc thumbnail;
 
 		irr::u32 id; // contain the unique ID of the template
+		SPECIAL special; // Tell if the model is special (Custom tile, loot object, etc.)
       
     private:
 
@@ -63,8 +64,7 @@ class TemplateObject
 		cproperty properties; // Active properties
 
 		f32 templateScale; // Scale of the object
-		E_MATERIAL_TYPE materialType;
-        
+		E_MATERIAL_TYPE materialType;       
 		
 };
 

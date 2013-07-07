@@ -13,6 +13,7 @@ class TerrainManager
         virtual ~TerrainManager();
 
         void createSegment(vector3df pos, bool empty=false, bool noextra=false);
+		void createCustomSegment(vector3df pos, core::stringc model);
 
 		void setEmptyTileVisible(bool visible);
  

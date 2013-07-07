@@ -16,7 +16,7 @@ using namespace std;
 const irr::f32 TerrainTile::vegetationRange = 60; // old value=60
 
 
-TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name)
+TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name, bool custom)
 {
     this->smgr=smgr;
 
@@ -26,10 +26,19 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
     scale = TerrainManager::getInstance()->getScale();
 
-    stringc tilename = TerrainManager::getInstance()->getTileMeshName();
 	#ifdef APP_DEBUG
 	printf("DEBUG : TERRAIN MANAGER : Here is the tile name: %s\n",tilename.c_str());
     #endif
+	
+	//if (!custom)
+	createTerrain(parent,pos,name);
+
+	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
+}
+
+void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
+{
+	stringc tilename = TerrainManager::getInstance()->getTileMeshName();
 
 	if (tilename=="")
 		tilename="../media/land.obj";
@@ -46,6 +55,9 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 
 	newMesh->setHardwareMappingHint(EHM_STATIC);
 	newMesh2->setHardwareMappingHint(EHM_STATIC);
+
+	if (node)
+		node->drop();
 
 	// Create the terrain mesh node
 	node = smgr->addMeshSceneNode(newMesh,parent,100);
@@ -83,10 +95,28 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	   mb_vertices[j].Pos.Y = 0.0f;
 	}
 	recalculate();
-
-	srand ( App::getInstance()->getDevice()->getTimer()->getRealTime());
-
 }
+
+void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model)
+{
+	core::stringc path="../media/dynamic_objects/";
+	core::stringc file=path.append(model);
+	static IMesh* baseMesh = smgr->getMesh(file.c_str());
+	baseMesh->setHardwareMappingHint(EHM_STATIC);
+		
+	// Create the custom mesh node
+	node = smgr->addMeshSceneNode(baseMesh,parent,100);
+
+	// Create the terrain mesh node
+	nodescale = node->getBoundingBox().getExtent().X;
+	TerrainManager::getInstance()->setTileMeshSize(nodescale);
+	node->setName(name);
+	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+    node->setPosition(pos*scale);
+    selector = smgr->createTriangleSelector(baseMesh,node);
+    node->setTriangleSelector(selector);
+}
+
 
 TerrainTile::~TerrainTile()
 {

@@ -203,6 +203,23 @@ void App::setAppState(APP_STATE newAppState)
 		selectedNode=NULL;
 	}
 
+	if (app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		GUIManager::getInstance()->setWindowVisible(GCW_CUSTOM_SEGMENT_CHOOSER,true);
+		selectedNode=NULL;
+	}
+	else
+	{
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		selectedNode=NULL;
+	}
+
+	if(old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+		GUIManager::getInstance()->setWindowVisible(GCW_CUSTOM_SEGMENT_CHOOSER,false);
+	
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
@@ -218,6 +235,7 @@ void App::setAppState(APP_STATE newAppState)
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
 	if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
@@ -391,6 +409,10 @@ void App::eventGuiButton(s32 id)
 		this->setAppState(APP_EDIT_TERRAIN_EMPTY_SEGMENTS);
 		break;
 
+	case BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
+		this->setAppState(APP_EDIT_TERRAIN_CUSTOM_SEGMENTS);
+		break;
+
 	case BT_ID_TERRAIN_PAINT_VEGETATION:
 		this->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
 		break;
@@ -404,12 +426,6 @@ void App::eventGuiButton(s32 id)
 			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		break;
-
-	case BT_ID_DYNAMIC_OBJECT_INFO:
-		{
-			bool result = GUIManager::getInstance()->isWindowVisible(GCW_DYNAMIC_OBJECT_INFO);
-			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,!result);
-		}
 
 	case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
 		break;
@@ -620,6 +636,10 @@ void App::eventGuiButton(s32 id)
 		}
 		break;
 
+	case BT_ID_DYNAMIC_OBJECT_INFO: // Expand/Retract the pane for the info of the dynamic object with the button
+		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
+		break;
+
 	default:
 		break;
 	}
@@ -654,6 +674,8 @@ void App::eventGuiCombobox(s32 id)
 {
 	switch (id)
 	{
+		
+	// Selection in the list from the dynamic object selection
 	case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel();
@@ -671,6 +693,27 @@ void App::eventGuiCombobox(s32 id)
 		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
+
+	// Selection in the list from the custom segment selection
+	case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+		//GUIManager::getInstance()->updateDynamicObjectPreview();
+		break;
+
+	case CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY:
+		GUIManager::getInstance()->updateCurrentCategory(LIST_SEGMENT);
+		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+		break;
+
+	case CO_ID_CUSTOM_SEGMENT_CATEGORY:
+		GUIManager::getInstance()->UpdateGUIChooser(LIST_SEGMENT);
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+		//GUIManager::getInstance()->updateDynamicObjectPreview();
+		break;
+
+
 
 	}
 }
@@ -753,6 +796,11 @@ void App::eventMousePressed(s32 mouse)
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+			}
+			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+			{
+				core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
+				TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{

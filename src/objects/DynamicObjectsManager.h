@@ -49,8 +49,10 @@ class DynamicObjectsManager
 
 		scene::ISceneNode* findActiveObject(void);
 
-		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category);
-		vector<stringw> getObjectsListCategories(stringw objectType);
+		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category, SPECIAL special = SPECIAL_NONE);
+		vector<stringw> getObjectsListCategories(stringw objectType, SPECIAL special = SPECIAL_NONE);
+		vector<stringw> getObjectsCollections(SPECIAL special = SPECIAL_NONE);
+
 
 		void setObjectsID(TYPE objectType, s32 ID);
 		void setObjectsVisible(TYPE objectType, bool visible);

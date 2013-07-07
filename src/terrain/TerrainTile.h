@@ -23,7 +23,10 @@ using namespace std;
 class TerrainTile
 {
     public:
-        TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name);
+        TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name, bool custom=false);
+
+		void createTerrain(ISceneNode* parent, vector3df pos, stringc name);
+		void createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model);
 
         void paintVegetation(vector3df clickPos, bool erase);
 
@@ -50,9 +53,15 @@ class TerrainTile
 		void assignTerrainShader(scene::ISceneNode* node);
 		void assignWaterShader(scene::ISceneNode* node);
 
+		
 		void recalculate();
 
         virtual ~TerrainTile();
+
+		// variables
+		core::stringc customname;
+		bool custom;
+
     protected:
         IMeshBuffer* getMeshBuffer();
 

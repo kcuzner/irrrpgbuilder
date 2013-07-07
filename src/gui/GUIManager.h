@@ -30,6 +30,8 @@ enum GUI_ID
 {
     BT_ID_TERRAIN_TRANSFORM = 1,
     BT_ID_TERRAIN_ADD_SEGMENT = 2,
+	BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT = 3,
+
 	BT_ID_TERRAIN_ADD_EMPTY_SEGMENT = 300,
   
     SC_ID_TERRAIN_BRUSH_STRENGTH = 5,
@@ -40,6 +42,7 @@ enum GUI_ID
     BT_ID_DYNAMIC_OBJECTS_MODE = 16,
     CB_ID_DYNAMIC_OBJECT_HAS_ACTION = 17,
     CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER = 18,
+	CO_ID_CUSTOM_SEGMENT_CATEGORY = 199,
 	CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY = 202,
 	BT_ID_DYNAMIC_OBJECT_BT_SPAWN = 201,
 	BT_ID_DYNAMIC_OBJECT_BT_REPLACE = 202,
@@ -82,6 +85,8 @@ enum GUI_ID
 	IMG_BAR = 53,
 	CONSOLE = 54,
 	CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,
+	CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,
+	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -96,7 +101,8 @@ enum GUI_CUSTOM_WINDOW
     GCW_TERRAIN_PAINT_VEGETATION = 7,
 	GCW_DIALOG = 8,
 	GCW_CONSOLE = 9,
-	GCW_DYNAMIC_OBJECT_INFO = 10
+	GCW_DYNAMIC_OBJECT_INFO,  // this is a pane not a window
+	GCW_CUSTOM_SEGMENT_CHOOSER = 11
 };
 
 enum GUI_HELP_IMAGE
@@ -117,6 +123,12 @@ enum FONT_NAME
     FONT_ARIAL = 1,
 };
 
+enum LIST_TYPE
+{
+	LIST_OBJ = 1,
+	LIST_SEGMENT,
+};
+
 class GUIManager
 {
     public:
@@ -124,8 +136,8 @@ class GUIManager
 
 
         void setupGameplayGUI();
-		void UpdateGUIChooser();
-		void updateCurrentCategory();
+		void UpdateGUIChooser(LIST_TYPE type = LIST_OBJ);
+		void updateCurrentCategory(LIST_TYPE type = LIST_OBJ);
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
 
@@ -146,8 +158,8 @@ class GUIManager
 
 		void createAboutWindowGUI();
 		void createTerrainToolbar();
-		void createDynamicObjectInfoGUI();
 		void createDynamicObjectChooserGUI();
+		void createCustomSegmentChooserGUI();
 		void createContextMenuGUI();
 		void createCodeEditorGUI();
 		void drawHelpImage(GUI_HELP_IMAGE img);
@@ -156,7 +168,7 @@ class GUIManager
         stringc getComboBoxItem(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
 		bool getVisibleStatus(s32 ID);
-		void getInfoAboutModel();
+		void getInfoAboutModel(LIST_TYPE type = LIST_OBJ);
 
 #endif
 
@@ -295,6 +307,7 @@ class GUIManager
 
         ///TerrainEditor
         IGUIButton* guiTerrainTransform;
+		IGUIButton* guiTerrainAddCustomSegment;
         IGUIButton* guiTerrainAddSegment;
 		IGUIButton* guiTerrainAddEmptySegment;
         ITexture* helpTerrainTransform;
@@ -312,6 +325,8 @@ class GUIManager
 		IGUIStaticText* guiTerrainBrushStrengthValue;
         IGUIStaticText* guiTerrainBrushRadiusValue;
 
+		CGUIExtWindow* guiCustomSegmentWindowChooser;
+
         IGUIButton* guiTerrainPaintVegetation;
         ITexture* helpVegetationPaint;
 
@@ -325,7 +340,7 @@ class GUIManager
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicObjectsWindowChooser;
-		IGUIWindow* InnerChooser;
+		
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
@@ -335,6 +350,11 @@ class GUIManager
         NodePreview* guiDynamicObjects_NodePreview;
 		NodePreview* guiPlayerNodePreview;
 		IGUIButton* guiDynamicObjectsInfo;
+
+		// For the Custom tiles selection
+		IGUIListBox* guiCustom_Segment_OBJChooser;
+		IGUIListBox* guiCustom_Segment_OBJCategory;
+		IGUIComboBox* guiCustom_Segment_Category;
 
         IGUIComboBox* guiDynamicObjects_LoadScriptTemplateCB;
         IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;
@@ -358,6 +378,12 @@ class GUIManager
 		IGUIStaticText * mdl_desc;
 		IGUIStaticText * mdl_auth;
 		IGUIStaticText * mdl_lic;
+
+		// Information bar custom tiles
+		IGUIStaticText * mdl_name1;
+		IGUIStaticText * mdl_desc1;
+		IGUIStaticText * mdl_auth1;
+		IGUIStaticText * mdl_lic1;
 
         ///IrrRPG Builder LOGO
         ITexture* logo1;
@@ -418,6 +444,9 @@ class GUIManager
 		ITexture* info_none; // no texture in the template
 		ITexture* info_current; // current assigned texture
 		gui::IGUIImage * thumbnail; // GUI item that will have the content
+
+		ITexture* info_current1; // current assigned texture inside the Custom Segments
+		gui::IGUIImage * thumbnail1; // GUI item that will have the content inside Custom Segments
 
 
         GUIManager();

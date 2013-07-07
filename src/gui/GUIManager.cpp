@@ -26,7 +26,8 @@ GUIManager::GUIManager()
 	// init those because they will move on the display.
 	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
-	InnerChooser=NULL;
+	guiCustomSegmentWindowChooser=NULL;
+
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
 	guiWindowItems=NULL;
@@ -34,6 +35,7 @@ GUIManager::GUIManager()
 	guiLoaderDescription = NULL;
 	info_none=NULL;
 	info_current=NULL;
+	info_current1=NULL;
 
 	//Init the fonts
 	guiFontCourier12 = NULL;
@@ -238,6 +240,9 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     switch(id)
     {
 	
+		case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
+			return stringc(guiCustom_Segment_OBJChooser->getListItem(guiCustom_Segment_OBJChooser->getSelected()));
+			break;
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 			return stringc(guiDynamicObjects_OBJChooser->getListItem(guiDynamicObjects_OBJChooser->getSelected()));
             break;
@@ -318,8 +323,12 @@ void GUIManager::setupEditorGUI()
 	//ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
 	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
+	// Default textures for the info window
 	if (info_none)
+	{	
 		info_current=info_none;
+		info_current1=info_none;
+	}
 
 // NEW Create display size since IRRlicht return wrong values
 
@@ -398,10 +407,8 @@ void GUIManager::setupEditorGUI()
 	// Create the Dynamic Object Chooser GUI
 	createDynamicObjectChooserGUI();
 
-	// Create the Dynamic Object Info panel GUI
-	createDynamicObjectInfoGUI();
-	
-	
+	// Create the Custom Segments Chooser GUI
+	createCustomSegmentChooserGUI();
 	
 	// Create the Editor context menu GUI
 	createContextMenuGUI();
@@ -630,7 +637,7 @@ void GUIManager::createEnvironmentTab()
 	tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	// Tab description box text
 	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
-		core::rect<s32>(0,64,180,76),false,true,tabEnv,-1);
+		core::rect<s32>(0,64,240,76),false,true,tabEnv,-1);
 	//environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	//environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
 	environmentTabText->setBackgroundColor(video::SColor(255,238,240,242));
@@ -639,7 +646,7 @@ void GUIManager::createEnvironmentTab()
 	environmentTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	IGUIStaticText * vegetationTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des6")).c_str(),
-		core::rect<s32>(190,64,300,76),false,true,tabEnv,-1);
+		core::rect<s32>(250,64,360,76),false,true,tabEnv,-1);
 	//vegetationTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	//vegetationTabText->setOverrideColor(video::SColor(255,65,66,174));
 	vegetationTabText->setBackgroundColor(video::SColor(255,238,240,242));
@@ -649,25 +656,9 @@ void GUIManager::createEnvironmentTab()
 
 	//Buttons
 	//Transform Terrain
-	s32 x=12;
-    //Terrain Add Segment
-    guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     tabEnv,
-                                     BT_ID_TERRAIN_ADD_SEGMENT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str());
 
-    guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
-	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
-
-	IGUIStaticText * terrainSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str(),
-		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	//terrainSText->setOverrideColor(video::SColor(255,65,66,174));
-	terrainSText->setOverrideColor(video::SColor(255,64,64,64));
-	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	terrainSText->setOverrideFont(guiFont9);
-
-	 x+= 60;
 	//Add empty Segment
+	s32 x=12;
 	guiTerrainAddEmptySegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
                                      BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,L"",
@@ -682,6 +673,43 @@ void GUIManager::createEnvironmentTab()
 	terrainSText2->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText2->setOverrideFont(guiFont9);
+ 
+	//Terrain Add Segment
+	 x+= 60;
+	  guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabEnv,
+                                     BT_ID_TERRAIN_ADD_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str());
+
+    guiTerrainAddSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+	IGUIStaticText * terrainSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	//terrainSText->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText->setOverrideColor(video::SColor(255,64,64,64));
+	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText->setOverrideFont(guiFont9);
+	
+
+	//-- Add custom segment (Custom Tiles button)
+	x+= 60;
+	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+									 tabEnv,
+                                     BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str());
+
+	guiTerrainAddCustomSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddCustomSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+	IGUIStaticText * terrainSText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText3->setOverrideColor(video::SColor(255,64,64,64));
+	terrainSText3->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText3->setOverrideFont(guiFont9);
+
+	//--
 
 	 x+= 60;
 
@@ -993,30 +1021,6 @@ void GUIManager::createTerrainToolbar()
     guiVegetationBrushStrength->setPos(100);
 }
 
-void GUIManager::createDynamicObjectInfoGUI()
-{
-	// --- Dynamic Objects Info panel (display info about the current selected template object)
-    rect<s32> windowRect =
-	myRect(displaywidth - 540,
-	guiMainToolWindow->getClientRect().getHeight()+3,
-	320,
-	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
-
-	guiDynamicObjectsWindowInfo = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_INFO);
-	guiDynamicObjectsWindowInfo->setDraggable(false);
-    guiDynamicObjectsWindowInfo->getCloseButton()->setVisible(false);
-    guiDynamicObjectsWindowInfo->setDrawTitlebar(false);
-	guiDynamicObjectsWindowInfo->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-
-	IGUIScrollBar * infoscroll = guienv->addScrollBar(false, rect<s32>(300,40,618,driver->getScreenSize().Height-150),guiDynamicObjectsWindowInfo,-1);
-	infoscroll->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-	infoscroll->setVisible(false);
-
-	guienv->getRootGUIElement()->bringToFront(guiDynamicObjectsWindowInfo);
-	guiDynamicObjectsWindowInfo->setVisible(false);
-
-}
-
 void GUIManager::createDynamicObjectChooserGUI()
 {
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
@@ -1069,14 +1073,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->setMaxSelectionRows(24);
 	
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->meshtypename.size() ; i++)
+	// Populate a list of collection that contain only dynamic objects. (SPECIAL_NONE)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_NONE).size() ; i++)
 	{
-		guiDynamicObjects_Category->addItem(DynamicObjectsManager::getInstance()->meshtypename[i].c_str());
+		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_NONE)[i].c_str();
+		if (result!=L"") //Collection with no name filtering
+			guiDynamicObjects_Category->addItem(result.c_str());
 	}
-
-	//Since they are not yet implemented, theses will be off for the moment.
-	//guiDynamicObjects_Category->addItem(L"INTERACTIVE OBJECTS");
-	//guiDynamicObjects_Category->addItem(L"PROPS");
 	
 	guiDynamicObjectsWindowChooser_Y += 80;
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
@@ -1164,6 +1167,150 @@ void GUIManager::createDynamicObjectChooserGUI()
 	// -- end info portions
 
 	UpdateGUIChooser();
+}
+
+void GUIManager::createCustomSegmentChooserGUI()
+{
+
+	guiCustomSegmentWindowChooser;
+	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
+    rect<s32> windowRect = myRect(displaywidth - 220,
+	guiMainToolWindow->getClientRect().getHeight()+3,
+	220,
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
+
+	guiCustomSegmentWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_cussegsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_CUSTOM_SEGMENT_CHOOSER,windowRect);
+    guiCustomSegmentWindowChooser->setDraggable(false);
+    guiCustomSegmentWindowChooser->getCloseButton()->setVisible(false);
+	guiCustomSegmentWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	guiCustomSegmentWindowChooser->setVisible(false);
+
+	guiCustomSegmentWindowChooser->setDevice(App::getInstance()->getDevice());
+	guiCustomSegmentWindowChooser->enableleft=true;
+	guiCustomSegmentWindowChooser->setMaxSize(core::dimension2du(545,2000));
+	guiCustomSegmentWindowChooser->setMinSize(core::dimension2du(220,10));
+
+	// Enable manual dragging of the left portion of the pane
+	
+	/*guiDynamicObjectsWindowChooser->enablebottom=true;
+	guiDynamicObjectsWindowChooser->enableright=true;
+	guiDynamicObjectsWindowChooser->enabletop=true;*/
+
+	//-- inner window
+	rect<s32> windowRect2;
+	windowRect2.UpperLeftCorner.X=10;
+	windowRect2.UpperLeftCorner.Y=35;
+	windowRect2.LowerRightCorner.X=windowRect.getWidth()-10;
+	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
+
+	gui::IGUIWindow* InnerChooser = guienv->addWindow(windowRect2,false,L"",guiCustomSegmentWindowChooser,0);
+	InnerChooser->setDraggable(false);
+	InnerChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	InnerChooser->getCloseButton()->setVisible(false);
+    InnerChooser->setDrawTitlebar(false);
+	InnerChooser->setDrawBackground(false);
+
+	// Left side with lists of objects
+
+	s32 pos_Y = 0;
+	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
+	text1->setOverrideFont(guiFont12);
+	
+	pos_Y += 20;
+	guiCustom_Segment_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_CUSTOM_SEGMENT_CATEGORY);
+	guiCustom_Segment_Category->setMaxSelectionRows(24);
+	
+	// Populate a list of collection that contain only CUSTOM TERRAIN SEGMENTS. (SPECIAL_SEGMENT)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT).size() ; i++)
+	{
+		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT)[i].c_str());
+	}
+
+	pos_Y += 80;
+	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
+	text2->setOverrideFont(guiFont12);
+	
+	pos_Y += 20;
+	guiCustom_Segment_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,160),InnerChooser, CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,true);
+
+	pos_Y += 175;
+	gui::IGUIStaticText* text3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
+	text3->setOverrideFont(guiFont12);
+
+	pos_Y += 20;
+	s32 boxend = screensize.Height-(pos_Y+225);
+	if (boxend<10)
+		boxend=10;
+
+	guiCustom_Segment_OBJChooser = guienv->addListBox(myRect(5,pos_Y,190,boxend),InnerChooser, CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,true);
+	guiCustom_Segment_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	//guiDynamicObjectsInfo= guienv->addButton(myRect(5,guiDynamicObjectsWindowChooser_Y+boxend+10,190,20),
+    //                                                       InnerChooser,
+    //                                                       BT_ID_DYNAMIC_OBJECT_INFO,
+    //                                                       L">> Information panel" );
+	//guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
+	//guiDynamicObjectsInfo->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
+
+	/// ---------------- Info portions
+	u16 posx = 200;
+	u16 posy = 260;
+	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+5,5,posx+310,20),false,true,InnerChooser,-1);
+	infotext->setDrawBackground(true);
+	infotext->setDrawBorder(true);
+	infotext->setBackgroundColor(video::SColor(255,237,242,248));
+	infotext->setOverrideColor(video::SColor(255,65,66,174));
+	infotext->setOverrideFont(guiFontCourier12);
+	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	thumbnail1=guienv->addImage(info_current1,vector2d<s32>(posx+5,50),true,InnerChooser);
+
+	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext1->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_name1 = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_name1->setDrawBackground(true);
+	mdl_name1->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_name1->setOverrideFont(guiFont10);
+	mdl_name1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+
+	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext2->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_desc1 = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+100),true,true,InnerChooser,-1);
+	mdl_desc1->setDrawBackground(true);
+	mdl_desc1->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_desc1->setOverrideFont(guiFont10);
+
+	posy+=110;
+	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext3->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_auth1 = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_auth1->setDrawBackground(true);
+	mdl_auth1->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_auth1->setOverrideFont(guiFont10);
+	mdl_auth1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+
+	posy+=25;
+	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	infotext4->setOverrideFont(guiFont12);
+
+	posy+=15;
+	mdl_lic1 = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	mdl_lic1->setDrawBackground(true);
+	mdl_lic1->setBackgroundColor(video::SColor(255,237,242,248));
+	mdl_lic1->setOverrideFont(guiFont10);
+	mdl_lic1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
+	// -- end info portions
+
+	UpdateGUIChooser(LIST_SEGMENT);
+
 }
 
 void GUIManager::createContextMenuGUI()
@@ -1455,9 +1602,6 @@ void GUIManager::createCodeEditorGUI()
 
 bool GUIManager::getVisibleStatus(s32 ID)
 {
-	if (ID==GCW_DYNAMIC_OBJECT_INFO)
-		return guiDynamicObjectsWindowInfo->isVisible();
-
 	if (ID==GCW_CONSOLE)
 		return consolewin->isVisible();
 
@@ -1468,24 +1612,49 @@ bool GUIManager::getVisibleStatus(s32 ID)
 }
 
 // Update the Info panel GUI with the information contained in the template name
-void GUIManager::getInfoAboutModel()
+void GUIManager::getInfoAboutModel(LIST_TYPE type)
 {
 
-	// Text will return the current item basec on the Dynamic Objects manager "active" object.
-	mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
-	mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
-	mdl_auth->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
-	mdl_lic->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
+	if (type==LIST_OBJ)
+	{
+		// Text will return the current item basec on the Dynamic Objects manager "active" object.
+		mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
+		mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
+		mdl_auth->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
+		mdl_lic->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
 
 
-	core::stringc filename = "../media/dynamic_objects/";
-	filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
+		core::stringc filename = "../media/dynamic_objects/";
+		filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
 
-	this->info_current=driver->getTexture(filename.c_str());
-	if (!info_current)
-		info_current = driver->getTexture("../media/editor/info_none.jpg");
+		this->info_current=driver->getTexture(filename.c_str());
+		if (!info_current)
+			info_current = driver->getTexture("../media/editor/info_none.jpg");
 	
-	this->thumbnail->setImage(info_current);
+		this->thumbnail->setImage(info_current);
+		return;
+	}
+	if (type==LIST_SEGMENT)
+	{
+		// Text will return the current item basec on the Dynamic Objects manager "active" object.
+		mdl_name1->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
+		mdl_desc1->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
+		mdl_auth1->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
+		mdl_lic1->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
+
+
+		core::stringc filename = "../media/dynamic_objects/";
+		filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
+
+		this->info_current1=driver->getTexture(filename.c_str());
+		if (!info_current1)
+			info_current1 = driver->getTexture("../media/editor/info_none.jpg");
+	
+		this->thumbnail1->setImage(info_current1);
+		return;
+	}
+
+
 	
 }
 
@@ -1512,13 +1681,16 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 
 	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
 		return true;
+
 	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
 		return true;
 #ifdef EDITOR
 	if (guiDynamicObjectsWindowChooser->isVisible() && guiDynamicObjectsWindowChooser->isPointInside(mousepos))
 		return true;
-	if (guiDynamicObjectsWindowInfo->isVisible() && guiDynamicObjectsWindowInfo->isPointInside(mousepos))
+
+	if (guiCustomSegmentWindowChooser->isVisible() && guiCustomSegmentWindowChooser->isPointInside(mousepos))
 		return true;
+
 	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
 	{
 		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
@@ -1528,10 +1700,13 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	}
 	if (guiLoaderWindow->isVisible() && guiLoaderWindow->isPointInside(mousepos))
 		return true;
+
 	if (guiAboutWindow->isVisible() && guiAboutWindow->isPointInside(mousepos))
 		return true;
+
 	if (guiDynamicObjectsWindowEditAction->isVisible() && guiDynamicObjectsWindowEditAction->isPointInside(mousepos))
 		return true;
+
 	if (guiDynamicObjects_Context_Menu_Window->isVisible() && guiDynamicObjects_Context_Menu_Window->isPointInside(mousepos))
 		return true;
 
@@ -1546,59 +1721,116 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	return false;
 }
 
-void GUIManager::UpdateGUIChooser()
+void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 {
-	core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+	if (type==LIST_OBJ)
+	{
+
+		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
 	
-	// Create the category list first
-	guiDynamicObjects_OBJCategory->clear();
+		// Create the category list first
+		guiDynamicObjects_OBJCategory->clear();
 
-	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
-	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
-    {
-		guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
-    }
-	guiDynamicObjects_OBJCategory->setSelected(0);
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+		}
+		guiDynamicObjects_OBJCategory->setSelected(0);
 
+		// Then the list of objects
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"");
 
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		return;
+	}
+	if (type==LIST_SEGMENT) // Get a list for the special CUSTOM SEGMENT meshes
+	{
+		core::stringw selected = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
+	
+		// Create the category list first
+		guiCustom_Segment_OBJCategory->clear();
 
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected, SPECIAL_SEGMENT );
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			guiCustom_Segment_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+		}
+		guiCustom_Segment_OBJCategory->setSelected(0);
 
-	// Then the list of objects
-	guiDynamicObjects_OBJChooser->clear();
-	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"");
+		// Then the list of objects
+		guiCustom_Segment_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"", SPECIAL_SEGMENT);
 
-    for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
-    {
-		guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
-    }
-	guiDynamicObjects_OBJChooser->setSelected(0);
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiCustom_Segment_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiCustom_Segment_OBJChooser->setSelected(0);
+		return;
+	}
 }
 
-void GUIManager::updateCurrentCategory()
+void GUIManager::updateCurrentCategory(LIST_TYPE type)
 {
 
 	core::stringw text="";
-	u32 selected = guiDynamicObjects_OBJCategory->getSelected();
-	core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
-	text=guiDynamicObjects_OBJCategory->getListItem(selected);
+	if (type == LIST_OBJ)
+	{
+		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+		text=guiDynamicObjects_OBJCategory->getListItem(selected);
 
-	// check if "all" is selected, as it's the first choice
-	// and empty string mean, that will check for all
-	if (selected==0)
-		text="";
+		// check if "all" is selected, as it's the first choice
+		// and empty string mean, that will check for all
+		if (selected==0)
+			text="";
 
-	guiDynamicObjects_OBJChooser->clear();
-	std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text);
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text);
 
-    for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
-    {
-		guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
-    }
-	guiDynamicObjects_OBJChooser->setSelected(0);
-	// Set the "active" object to the selection
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		// Set the "active" object to the selection
 #ifdef EDITOR
-	DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 #endif
+		return;
+	}
+	if (type==LIST_SEGMENT) // Get a list for the special CUSTOM SEGMENT meshes
+	{
+		u32 selected = guiCustom_Segment_OBJCategory->getSelected();
+		core::stringw selectedcat = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
+		text=guiCustom_Segment_OBJCategory->getListItem(selected);
+
+		// check if "all" is selected, as it's the first choice
+		// and empty string mean, that will check for all
+		if (selected==0)
+			text="";
+
+		guiCustom_Segment_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text, SPECIAL_SEGMENT);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiCustom_Segment_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiCustom_Segment_OBJChooser->setSelected(0);
+		// Set the "active" object to the selection
+#ifdef EDITOR
+		//DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+#endif
+		return;
+
+	}
 }
 
 void GUIManager::setTextLoader(stringw text)
@@ -1973,15 +2205,17 @@ void GUIManager::setupGameplayGUI()
 
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
+	bool retracted = false; //default status for panes
     switch(window)
     {
 #ifdef EDITOR
 		case GCW_DYNAMIC_OBJECT_INFO:
-			if (visible)
+			retracted = guiDynamicObjectsWindowChooser->Status(CGUIExtWindow::PANE_LEFT);
+			if (retracted)
 				guiDynamicObjectsWindowChooser->Expand(guiDynamicObjectsWindowChooser->PANE_LEFT);
 			else
 				guiDynamicObjectsWindowChooser->Retract(guiDynamicObjectsWindowChooser->PANE_LEFT);
-			//guiDynamicObjectsWindowInfo->setVisible(visible);
+//			//guiDynamicObjectsWindowInfo->setVisible(visible);
 			break;
 
         case GCW_DYNAMIC_OBJECT_CHOOSER:
@@ -1989,6 +2223,12 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             guiDynamicObjectsWindowChooser->setVisible(visible);
 			guienv->setFocus(guiDynamicObjectsWindowChooser);
             break;
+
+		case GCW_CUSTOM_SEGMENT_CHOOSER:
+			guiCustomSegmentWindowChooser->setVisible(visible);
+			guienv->setFocus(guiCustomSegmentWindowChooser);
+			break;
+
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
 			
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
@@ -2035,10 +2275,10 @@ bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
     switch(window)
     {
 #ifdef EDITOR
-		case GCW_DYNAMIC_OBJECT_INFO:
-			result = guiDynamicObjectsWindowChooser->Status(guiDynamicObjectsWindowChooser->PANE_LEFT);
-			//result = guiDynamicObjectsWindowInfo->isVisible();
-			break;
+//		case GCW_DYNAMIC_OBJECT_INFO:
+//			result = guiDynamicObjectsWindowChooser->Status(guiDynamicObjectsWindowChooser->PANE_LEFT);
+//			//result = guiDynamicObjectsWindowInfo->isVisible();
+//			break;
 
         case GCW_DYNAMIC_OBJECT_CHOOSER:
 			result = guiDynamicObjectsWindowChooser->isVisible();
@@ -2160,6 +2400,10 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 		case BT_ID_TERRAIN_ADD_EMPTY_SEGMENT:
 			guiTerrainAddEmptySegment->setEnabled(enable);
 			guiTerrainAddEmptySegment->setPressed(!enable);
+			break;
+		case BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
+			guiTerrainAddCustomSegment->setEnabled(enable);
+			guiTerrainAddCustomSegment->setPressed(!enable);
 			break;
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);

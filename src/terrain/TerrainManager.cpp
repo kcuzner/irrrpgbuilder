@@ -165,6 +165,48 @@ cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCod
 	}
 }
 
+void TerrainManager::createCustomSegment(vector3df pos, core::stringc model)
+{
+	if (pos.Y==-1000)
+		return;
+
+    //Must be rounded positions (to keep it in the grid)
+    pos.X = (f32)round32(pos.X);
+    pos.Y = (f32)round32(pos.Y);
+    pos.Z = (f32)round32(pos.Z);
+
+	bool wasthere = false;
+    //if segment already exists it don't need to be created
+    if( getSegment(pos) )
+    {
+		wasthere=true;
+		printf("Hey there is a tile here!\n");
+        #ifdef APP_DEBUG
+        cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
+        #endif
+        //return;
+    }
+  
+	if (!wasthere) // Will have to check for supporting custom tiles...
+	{
+		TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
+											0,
+											pos,
+											getHashCode(pos).c_str(),true);
+		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
+
+		removeEmptySegment(pos, true);
+		newTile->customname = model;
+		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
+	}
+
+#ifdef APP_DEBUG
+cout << "DEBUG : TERRAIN MANAGER : CREATED NEW CUSTOM SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
+#endif
+
+	
+}
+
 TerrainTile* TerrainManager::getSegment(vector3df pos)
 {
 	if (pos.Y==-1000.0f)
