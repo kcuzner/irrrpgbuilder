@@ -108,6 +108,8 @@ class CGUIExtWindow : public IGUIElement {
 		u32 timer1;
 		u32 timer2;
 
+		bool triggered;
+
 		u32 oldsize_y; //Used for the collapse;
 		core::dimension2du oldmin;
 

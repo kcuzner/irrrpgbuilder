@@ -49,6 +49,8 @@ DrawInsideBorder(true)
 	closehide = false;
 	drawTitleBar = true;
 
+	triggered = false;
+
 	// Position the close button Windows or Linux style
 #ifdef WIN32
 	s32 posx = RelativeRect.getWidth() - buttonw - 6;
@@ -169,8 +171,9 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 		else
 			if (evt.MouseInput.Event==EMIE_LMOUSE_DOUBLE_CLICK)
 			{
+				u32 titleheight = Environment->getSkin()->getSize(EGDS_WINDOW_BUTTON_WIDTH)+4;
 				core::rect<s32> rect = AbsoluteRect; //define a new rect based on the titlebar size (aprx 25pix)
-				rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+25;
+				rect.LowerRightCorner.Y=rect.UpperLeftCorner.Y+titleheight;
 				core::vector2d<s32> mousepos; //Current mouse position
 				mousepos.X=evt.MouseInput.X;
 				mousepos.Y=evt.MouseInput.Y;
@@ -180,7 +183,7 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 					oldmin = this->MinSize;
 					this->MinSize.Height=25;
 					oldsize_y = AbsoluteRect.LowerRightCorner.Y;
-					AbsoluteRect.LowerRightCorner.Y = AbsoluteRect.UpperLeftCorner.Y+22;
+					AbsoluteRect.LowerRightCorner.Y = AbsoluteRect.UpperLeftCorner.Y+titleheight;
 					AbsoluteClippingRect = AbsoluteRect;
 					DesiredRect = AbsoluteRect;
 					this->updateAbsolutePosition();
@@ -422,48 +425,44 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			this->stretchtop=false;
 
 
-		// Cursor changes if the mouse pointer is over another guielement
-		if ((Environment->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)))
-		{
-			//if (Environment->getHovered())
-			//Set back the cursor if it's over the close button or any other child component of the window
-			if (isMyChild(Environment->getHovered()))
-			{
-				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0)); 
-				return;
-			}
-			else
-				return;
-		}
-
 		if (stretchright || stretchleft)
 		{
 			if (!stretchbottom && !stretchtop)
+			{
+				triggered = true;
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(11) );
+			}
 		}
 		if (stretchbottom || stretchtop)
 		{
 			if (!stretchright && !stretchleft)
+			{
+				triggered = true;
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(10) );
+			}
 		}
 
 		if (stretchbottom && stretchleft)
 		{
+			triggered = true;
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
 		if (stretchbottom && stretchright)
 		{
+			triggered = true;
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
 		if (stretchtop && stretchleft)
 		{
+			triggered = true;
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
 		if (stretchtop && stretchright)
 		{
+			triggered = true;
 			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
@@ -484,8 +483,26 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			insiderect.UpperLeftCorner.X+=15;
 			insiderect.UpperLeftCorner.Y+=15;
 
+			// Cursor changes if the mouse pointer is over another guielement
+			if ((Environment->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)))
+			{
+				//if (Environment->getHovered())
+				//Set back the cursor if it's over the close button or any other child component of the window
+				if (isMyChild(Environment->getHovered()))
+				{
+					triggered = false;
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0)); 
+				//	return;
+				}
+				//else
+				//	return;
+			}
+
 			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0) && outsiderect.isPointInside(mousepos) && !insiderect.isPointInside(mousepos))
+			{
+				triggered = false;
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
+			}
 			
 		}
 }
@@ -500,10 +517,10 @@ bool CGUIExtWindow::drawStretch(core::vector2d<s32> mousepos)
 		return true;
 
 		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
-		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>=MaxSize.Width && MaxSize.Width!=0)
+		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)>=(s32)MaxSize.Width && MaxSize.Width!=0)
 			AbsoluteRect.LowerRightCorner.X = oldrectangle.UpperLeftCorner.X+MaxSize.Width;
 		else
-			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)<=MinSize.Width)
+			if ((mousepos.X-AbsoluteRect.UpperLeftCorner.X)<=(s32)MinSize.Width)
 				AbsoluteRect.LowerRightCorner.X = oldrectangle.UpperLeftCorner.X+MinSize.Width;
 			else
 				AbsoluteRect.LowerRightCorner.X=mousepos.X;	
@@ -515,10 +532,10 @@ bool CGUIExtWindow::drawStretch(core::vector2d<s32> mousepos)
 		return true;
 
 		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
-		if ((oldrectangle.LowerRightCorner.X-mousepos.X)>=MaxSize.Width && MaxSize.Width!=0)
+		if ((oldrectangle.LowerRightCorner.X-mousepos.X)>=(s32)MaxSize.Width && MaxSize.Width!=0)
 			AbsoluteRect.UpperLeftCorner.X = oldrectangle.LowerRightCorner.X-MaxSize.Width;
 		else 
-			if ((oldrectangle.LowerRightCorner.X-mousepos.X)<=MinSize.Width)
+			if ((oldrectangle.LowerRightCorner.X-mousepos.X)<=(s32)MinSize.Width)
 				AbsoluteRect.UpperLeftCorner.X = oldrectangle.LowerRightCorner.X-MinSize.Width;
 			else
 				AbsoluteRect.UpperLeftCorner.X=mousepos.X;	
@@ -531,10 +548,10 @@ bool CGUIExtWindow::drawStretch(core::vector2d<s32> mousepos)
 		return true;
 
 		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
-		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.Y)>=MaxSize.Height && MaxSize.Height!=0)
+		if ((mousepos.X-AbsoluteRect.UpperLeftCorner.Y)>=(s32)MaxSize.Height && MaxSize.Height!=0)
 			AbsoluteRect.LowerRightCorner.Y = oldrectangle.UpperLeftCorner.Y+MaxSize.Height;
 		else
-			if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)<=MinSize.Height)
+			if ((mousepos.Y-AbsoluteRect.UpperLeftCorner.Y)<=(s32)MinSize.Height)
 				AbsoluteRect.LowerRightCorner.Y = oldrectangle.UpperLeftCorner.Y+MinSize.Height;
 			else
 				AbsoluteRect.LowerRightCorner.Y=mousepos.Y;	
@@ -545,10 +562,10 @@ bool CGUIExtWindow::drawStretch(core::vector2d<s32> mousepos)
 		return true;
 
 		// Do only the stretching by limiting the stretch to the max/min limits of the rectangle
-		if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>=MaxSize.Height && MaxSize.Height!=0)
+		if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)>=(s32)MaxSize.Height && MaxSize.Height!=0)
 			AbsoluteRect.UpperLeftCorner.Y = oldrectangle.LowerRightCorner.Y-MaxSize.Height;
 		else
-			if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)<=MinSize.Height)
+			if ((AbsoluteRect.LowerRightCorner.Y-mousepos.Y)<=(s32)MinSize.Height)
 				AbsoluteRect.UpperLeftCorner.Y = oldrectangle.LowerRightCorner.Y-MinSize.Height;
 			else
 				AbsoluteRect.UpperLeftCorner.Y=mousepos.Y;	
