@@ -92,7 +92,7 @@ class CGUIExtWindow : public IGUIElement {
 		bool stretchbottom, stretchtop, stretchright, stretchleft;
 		irr::IrrlichtDevice * device;
 
-		bool Dragging, IsDraggable, drawTitleBar;
+		bool dragging, IsDraggable, drawTitleBar;
         bool DrawBackground;
         bool DrawTitlebar;
 		bool IsActive;
@@ -113,8 +113,7 @@ class CGUIExtWindow : public IGUIElement {
 		u32 oldsize_y; //Used for the collapse;
 		core::dimension2du oldmin;
 
-		bool expand, retract;
-		  
+		bool expand, retract;		  
          
 };
 

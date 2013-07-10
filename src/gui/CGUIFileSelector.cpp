@@ -21,6 +21,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 #endif
 
 	Text = title;
+	Dragging = false;
 	IsDirectoryChoosable = false;
 	device=NULL;
 	PlacesBox=NULL;

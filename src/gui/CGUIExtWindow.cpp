@@ -7,7 +7,7 @@ const s32 yoffset = 10;
 
 //! constructor
 CGUIExtWindow::CGUIExtWindow(const wchar_t* title, IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-: IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false),
+: IGUIElement(EGUIET_WINDOW, environment, parent, id, rectangle), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false),
 DrawInsideBorder(true)
 {
 #ifdef _DEBUG
@@ -50,6 +50,7 @@ DrawInsideBorder(true)
 	drawTitleBar = true;
 
 	triggered = false;
+	dragging = false;
 
 	// Position the close button Windows or Linux style
 #ifdef WIN32
@@ -106,7 +107,7 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 		case EET_GUI_EVENT:
 		if (evt.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
 		{
-			Dragging = false;
+			//dragging = false;
 			IsActive = false;
 		}
 		else
@@ -150,6 +151,7 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 			core::vector2d<s32> mousepos; //Current mouse position
 			mousepos.X=evt.MouseInput.X;
 			mousepos.Y=evt.MouseInput.Y;
+			dragging = true;
 
 			if (DragByTitlebar)
 			{
@@ -157,14 +159,12 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 				{
 					DragStart.X = evt.MouseInput.X;
 					DragStart.Y = evt.MouseInput.Y;
-					Dragging = true;
 				}
 			} else
 				if (!DragByTitlebar)
 				{
 					DragStart.X = evt.MouseInput.X;
 					DragStart.Y = evt.MouseInput.Y;
-					Dragging = true;
 				}
 			break;
 		}
@@ -202,12 +202,15 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 
 			}
 		else
-		if (evt.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && Dragging)
+		if (evt.MouseInput.Event==EMIE_LMOUSE_LEFT_UP && dragging)
 		{
 			// Set back the pointer cursor after the dragging operation
 			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0))
-				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) ); 
-			Dragging = false;
+			{	
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
+				triggered = false;
+			}
+			dragging = false;
 			break;
 		}
 		else
@@ -220,7 +223,7 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 			mousepos.X=evt.MouseInput.X;
 			mousepos.Y=evt.MouseInput.Y;
 
-			if (Dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
+			if (dragging && !stretchbottom && !stretchtop  && !stretchright && !stretchleft)
 			{
 				// gui window should not be dragged outside its parent
 				if (Parent)
@@ -250,6 +253,7 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 //! draws the element and its children
 void CGUIExtWindow::draw()
 {
+
 	if (!IsVisible)
 		return;
 
@@ -299,12 +303,12 @@ void CGUIExtWindow::draw()
 	}
 
 	// Draw cursor changes
-	if (!Dragging && !collapse)
+	if (!dragging && !collapse)
 	{
 		drawRef(mousepos);
 	}
-	else
-	if (!collapse)
+	
+	if (dragging && !collapse)
 	{
 		//Stretch the window defined on the desired directions
 		if (drawStretch(mousepos))
@@ -377,12 +381,18 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 	if (!device)
 		return;
 
+	// Determine if the GUI is being hovered or any of the child of this window
+	// if nothing is hovered then there must be NO POINTER changes.
+	bool hovered = false;
+	if (Environment->getHovered()==this || isMyChild(Environment->getHovered()))
+		hovered = true;
+
 		//Hinting and detection for stretch on the right side
-		if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-8) && (mousepos.X<AbsoluteRect.LowerRightCorner.X) &&
+	if ((mousepos.X>=AbsoluteRect.LowerRightCorner.X-8) && (mousepos.X<AbsoluteRect.LowerRightCorner.X) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{   
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
-			if (enableright) 
+			if (enableright && hovered) 
 				this->stretchright=true;
 		} else
 		{
@@ -393,7 +403,7 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 		if ((mousepos.X>AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.UpperLeftCorner.X+8) &&
 			(mousepos.Y<=AbsoluteRect.LowerRightCorner.Y) && (mousepos.Y>=AbsoluteRect.UpperLeftCorner.Y))
 		{
-			if (enableleft)
+			if (enableleft && hovered)
 				this->stretchleft=true;
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y-1),video::SColor(255,255,255,0));
 			
@@ -407,7 +417,7 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			(mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X))
 		{
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.LowerRightCorner.Y-1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.LowerRightCorner.Y-1),video::SColor(255,255,255,0));
-			if (enablebottom)
+			if (enablebottom && hovered)
 				this->stretchbottom=true;
 		}
 		else
@@ -418,7 +428,7 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			(mousepos.X>=AbsoluteRect.UpperLeftCorner.X) && (mousepos.X<=AbsoluteRect.LowerRightCorner.X))
 		{
 			//driver->draw2DLine(core::vector2d<s32>(AbsoluteRect.UpperLeftCorner.X+1,AbsoluteRect.UpperLeftCorner.Y+1),core::vector2d<s32>(AbsoluteRect.LowerRightCorner.X-1,AbsoluteRect.UpperLeftCorner.Y+1),video::SColor(255,255,255,0));
-			if (enabletop)
+			if (enabletop && hovered)
 				this->stretchtop=true;
 		}
 		else
@@ -430,7 +440,7 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			if (!stretchbottom && !stretchtop)
 			{
 				triggered = true;
-				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(11) );
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(11) );
 			}
 		}
 		if (stretchbottom || stretchtop)
@@ -438,32 +448,32 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			if (!stretchright && !stretchleft)
 			{
 				triggered = true;
-				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(10) );
+					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(10) );
 			}
 		}
 
 		if (stretchbottom && stretchleft)
 		{
 			triggered = true;
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
 		if (stretchbottom && stretchright)
 		{
 			triggered = true;
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
 		if (stretchtop && stretchleft)
 		{
 			triggered = true;
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(9) );
 		}
 
 		if (stretchtop && stretchright)
 		{
 			triggered = true;
-			device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(8) );
 		}
 
 		// reset the default cursor if the cursor get out or inside the area (border select)
@@ -483,22 +493,16 @@ void CGUIExtWindow::drawRef(core::vector2d<s32> mousepos)
 			insiderect.UpperLeftCorner.X+=15;
 			insiderect.UpperLeftCorner.Y+=15;
 
-			// Cursor changes if the mouse pointer is over another guielement
-			if ((Environment->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)))
+			// Cursor changes if the mouse pointer is over another guielement (any other elements including childs)
+			if ((Environment->getHovered()!=this) && (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0)) && triggered)
 			{
-				//if (Environment->getHovered())
-				//Set back the cursor if it's over the close button or any other child component of the window
-				if (isMyChild(Environment->getHovered()))
-				{
-					triggered = false;
-					device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0)); 
-				//	return;
-				}
-				//else
-				//	return;
+				triggered = false;
+				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0)); 
+				return;
 			}
 
-			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0) && outsiderect.isPointInside(mousepos) && !insiderect.isPointInside(mousepos))
+			// Cursor is in the defined area to reset
+			if (device->getCursorControl()->getActiveIcon()!= ECURSOR_ICON(0) && outsiderect.isPointInside(mousepos) && !insiderect.isPointInside(mousepos) && triggered)
 			{
 				triggered = false;
 				device->getCursorControl()->setActiveIcon( ECURSOR_ICON(0) );
