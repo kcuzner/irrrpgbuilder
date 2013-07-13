@@ -69,6 +69,7 @@ GUIManager::GUIManager()
 	//guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
 }
 
+// Clear all GUI when the class is deleted
 GUIManager::~GUIManager()
 {
 
@@ -1216,10 +1217,29 @@ void GUIManager::createCustomSegmentChooserGUI()
 
 	// Left side with lists of objects
 
-	s32 pos_Y = 0;
+	s32 pos_Y = 10;
+	
+	
+	guiSegmentRotateLeft = guienv->addButton(core::rect<s32>(5,pos_Y,5+36,pos_Y+36+5),InnerChooser, BT_ID_TILE_ROT_LEFT,L"",stringw("Rotate the tile left").c_str());
+	guiSegmentRotateLeft->setIsPushButton(true);
+
+	video::ITexture * imgTurnLeft = driver->getTexture("../media/art/left_turn.png");
+	
+	guiSegmentRotateLeft->setImage(imgTurnLeft);
+	guiSegmentRotateLeft->setPressedImage(driver->getTexture("../media/art/left_turn_pr.png"));
+	//guiSegmentRotateLeft->setScaleImage(true);
+
+	
+	guiSegmentRotateRight = guienv->addButton(core::rect<s32>(200-41,pos_Y,200-5,pos_Y+36+5),InnerChooser, BT_ID_TILE_ROT_RIGHT,L"",stringw("Rotate the tile right").c_str());
+	guiSegmentRotateRight->setIsPushButton(true);
+	video::ITexture * imgTurnRight = driver->getTexture("../media/art/right_turn.png");
+	
+	guiSegmentRotateRight->setImage(imgTurnRight);
+	guiSegmentRotateRight->setPressedImage(driver->getTexture("../media/art/right_turn_pr.png"));
+
+	pos_Y += 40;
 	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text1->setOverrideFont(guiFont12);
-	
 	pos_Y += 20;
 	guiCustom_Segment_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_CUSTOM_SEGMENT_CATEGORY);
 	guiCustom_Segment_Category->setMaxSelectionRows(24);
@@ -1230,7 +1250,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT)[i].c_str());
 	}
 
-	pos_Y += 80;
+	pos_Y += 40;
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
 	
@@ -1619,7 +1639,7 @@ bool GUIManager::getVisibleStatus(s32 ID)
 void GUIManager::getInfoAboutModel(LIST_TYPE type)
 {
 
-	if (type==LIST_OBJ)
+	if (type==LIST_OBJ) // Dynamic objects panel
 	{
 		// Text will return the current item basec on the Dynamic Objects manager "active" object.
 		mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
@@ -1638,7 +1658,7 @@ void GUIManager::getInfoAboutModel(LIST_TYPE type)
 		this->thumbnail->setImage(info_current);
 		return;
 	}
-	if (type==LIST_SEGMENT)
+	if (type==LIST_SEGMENT) // Custom tiles panel
 	{
 		// Text will return the current item basec on the Dynamic Objects manager "active" object.
 		mdl_name1->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
@@ -1657,17 +1677,13 @@ void GUIManager::getInfoAboutModel(LIST_TYPE type)
 		this->thumbnail1->setImage(info_current1);
 		return;
 	}
-
-
 	
 }
 
 #endif
 
-
-
-bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 // will tell the caller if he's clicked inside a IRB window
+bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 {
 
 	if (guidialog->isVisible() && guidialog->isPointInside(mousepos))
@@ -1725,9 +1741,10 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	return false;
 }
 
+// Reshesh the GUI informations inside a window
 void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 {
-	if (type==LIST_OBJ)
+	if (type==LIST_OBJ) // Dynamic object panel
 	{
 
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
@@ -1780,11 +1797,12 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 	}
 }
 
+// Refresh gui information inside a panel type
 void GUIManager::updateCurrentCategory(LIST_TYPE type)
 {
 
 	core::stringw text="";
-	if (type == LIST_OBJ)
+	if (type == LIST_OBJ) // Dynamic objects
 	{
 		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
 		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
@@ -1837,6 +1855,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 	}
 }
 
+// Used to put a text description when loading a project
 void GUIManager::setTextLoader(stringw text)
 {
 	if (guiLoaderDescription)
@@ -1846,7 +1865,7 @@ void GUIManager::setTextLoader(stringw text)
 	}
 }
 
-// Console window
+// Console window GUI
 void GUIManager::createConsole()
 {
 
@@ -1883,6 +1902,7 @@ void GUIManager::createConsole()
 	consolewin->setVisible(false);
 }
 
+// Basic GUI Refresh loop
 void GUIManager::update()
 {
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
@@ -1908,6 +1928,7 @@ void GUIManager::update()
 
 }
 
+// Set up the gameplay interface GUI
 void GUIManager::setupGameplayGUI()
 {
 
@@ -2207,6 +2228,7 @@ void GUIManager::setupGameplayGUI()
 
 }
 
+// Hides/Display a IRB window/Pane
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
 	bool retracted = false; //default status for panes
@@ -2273,6 +2295,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
     }
 }
 
+// Check the visibility status of a IRB window
 bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
 {
 	bool result = false;
@@ -2318,6 +2341,7 @@ bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
 	return result;
 }
 
+// Load a script template list for the script editor GUI
 void GUIManager::loadScriptTemplates()
 {
 	TiXmlDocument doc("../media/scripts/template_scripts.xml");
@@ -2349,6 +2373,8 @@ void GUIManager::loadScriptTemplates()
     }
 }
 
+// Currently disabled
+// Update a object preview GUI
 void GUIManager::updateDynamicObjectPreview()
 {
 	// Temporary disabled until the new template system is in place.
@@ -2395,6 +2421,7 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 }
 #endif
 
+// Enable/Disable specific GUI buttons (Mostly IRB menu buttons)
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
 	///TODO: fazer metodo getElement by ID!!!
@@ -2470,6 +2497,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
     }
 }
 
+// Set visibility of specific IRB gui (script editor, etc.)
 void GUIManager::setElementVisible(GUI_ID id, bool visible)
 {
     switch(id)
@@ -2691,9 +2719,9 @@ void GUIManager::setConsoleLogger(vector<core::stringw> &text)
 	}
 }
 
+//stop sound when player cancel the dialog
 void GUIManager::stopDialogSound()
 {
-	 //stop sound when player cancel the dialog
     if(dialogSound)
     {
         dialogSound->stop();
@@ -2847,6 +2875,7 @@ void GUIManager::updateItemsList()
     for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
 }
 
+// Flush all gui elements
 void GUIManager::flush()
 {
 #ifdef EDITOR
@@ -2858,6 +2887,7 @@ void GUIManager::flush()
     guiBtViewItems->setPressed(false);
 }
 
+// Display the configuration Window GUI
 void GUIManager::showConfigWindow()
 {
     APP_STATE old_State = App::getInstance()->getAppState();

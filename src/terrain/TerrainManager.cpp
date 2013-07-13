@@ -611,9 +611,6 @@ void TerrainManager::showDebugData(bool show)
 
 void TerrainManager::drawBrush()
 {
-#ifdef EDITOR
-
-
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 
 	f32 height=0.0f;
@@ -712,5 +709,62 @@ void TerrainManager::drawBrush()
 		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
 
 	}
-#endif
 }
+
+// Rotate a custom tile left
+void TerrainManager::rotateLeft(core::vector3df pos)
+{
+	if (pos.Y==-1000)
+		return;
+
+    //Must be rounded positions (to keep it in the grid)
+    pos.X = (f32)round32(pos.X);
+    pos.Y = (f32)round32(pos.Y);
+    pos.Z = (f32)round32(pos.Z);
+
+	 if(getSegment(pos))
+    {
+		tileTagged = terrainMap.find(getHashCode(pos))->second;
+		if (tileTagged->custom)
+		{
+			core::vector3df rotbase = tileTagged->getNode()->getRotation();
+			rotbase-=vector3df(0.0f,90.0f,0.0f);
+
+			if (rotbase.Y<0) 
+				rotbase.Y=270;
+
+			tileTagged->getNode()->setRotation(rotbase);
+			
+			tileTagged=NULL;
+		}
+	 }
+}
+
+// Rotate a custom tile right 
+void TerrainManager::rotateRight(vector3df pos)
+{
+	if (pos.Y==-1000)
+		return;
+
+    //Must be rounded positions (to keep it in the grid)
+    pos.X = (f32)round32(pos.X);
+    pos.Y = (f32)round32(pos.Y);
+    pos.Z = (f32)round32(pos.Z);
+
+	 if(getSegment(pos))
+    {
+		tileTagged = terrainMap.find(getHashCode(pos))->second;
+		if (tileTagged->custom)
+		{
+			core::vector3df rotbase = tileTagged->getNode()->getRotation();
+			rotbase+=vector3df(0.0f,90.0f,0.0f);
+
+			if (rotbase.Y>360) 
+				rotbase.Y=0;
+
+			tileTagged->getNode()->setRotation(rotbase);
+			
+			tileTagged=NULL;
+		}
+	 }
+} 

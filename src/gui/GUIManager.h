@@ -86,7 +86,10 @@ enum GUI_ID
 	CONSOLE = 54,
 	CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,
 	CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,
-	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER
+	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,
+
+	BT_ID_TILE_ROT_LEFT,
+	BT_ID_TILE_ROT_RIGHT
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -355,6 +358,8 @@ class GUIManager
 		IGUIListBox* guiCustom_Segment_OBJChooser;
 		IGUIListBox* guiCustom_Segment_OBJCategory;
 		IGUIComboBox* guiCustom_Segment_Category;
+		IGUIButton* guiSegmentRotateLeft;
+		IGUIButton* guiSegmentRotateRight;
 
         IGUIComboBox* guiDynamicObjects_LoadScriptTemplateCB;
         IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;

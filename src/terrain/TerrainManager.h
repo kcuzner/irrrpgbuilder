@@ -55,6 +55,9 @@ class TerrainManager
 		void removeSegment(vector3df pos, bool custom = false);
 		void deleteTaggedSegment();
 
+		void rotateLeft(core::vector3df pos);
+		void rotateRight(core::vector3df pos);
+
 		typedef std::map<std::string, TerrainTile*> TerrainMap;
 		typedef std::pair<std::string, TerrainTile*> TerrainMapPair;
 

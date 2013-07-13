@@ -54,6 +54,8 @@ App::App()
 
 	df = DF_PROJECT;
 
+	toolstate = TOOL_NONE;
+
 	// Initialize and the ray tester class
 	raytester=0;
 	
@@ -642,6 +644,20 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
 		break;
 
+	case BT_ID_TILE_ROT_LEFT: // User pressed the rotate tile left toggle button
+		if (toolstate != TOOL_TILEROTATE_LEFT)
+			toolstate = TOOL_TILEROTATE_LEFT;
+		else
+			toolstate = TOOL_NONE;
+		break;
+
+	case BT_ID_TILE_ROT_RIGHT: // User pressed the rotate tile right toggle button
+		if (toolstate != TOOL_TILEROTATE_RIGHT)
+			toolstate = TOOL_TILEROTATE_RIGHT;
+		else
+			toolstate = TOOL_NONE;
+		break;
+
 	default:
 		break;
 	}
@@ -801,9 +817,23 @@ void App::eventMousePressed(s32 mouse)
 			}
 			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 			{
-				core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
-				printf("Here is the name of the active mesh: %s",meshfile);
-				TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
+				if (toolstate==TOOL_NONE)
+				{
+					core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
+					printf("Here is the name of the active mesh: %s",meshfile);
+					TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
+					return;
+				}
+				if (toolstate==TOOL_TILEROTATE_LEFT)
+				{
+					TerrainManager::getInstance()->rotateLeft(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+					return;
+				}
+				if (toolstate==TOOL_TILEROTATE_RIGHT)
+				{
+					TerrainManager::getInstance()->rotateRight(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+					return;
+				}
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
@@ -857,7 +887,8 @@ void App::eventMousePressed(s32 mouse)
 			}
 			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 			{
-				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+				if (toolstate==TOOL_NONE)
+					TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
 			}
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{

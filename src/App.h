@@ -59,6 +59,14 @@ enum APP_STATE
 	
 };
 
+// States for IRB TOOLS
+enum APP_TOOLSTATE
+{
+	TOOL_NONE = 0,
+	TOOL_TILEROTATE_LEFT,
+	TOOL_TILEROTATE_RIGHT,
+};
+
 enum DIALOG_FUNCTION
 {
 	DF_PROJECT = 1,
@@ -206,6 +214,8 @@ class App
 		
         APP_STATE app_state;
 		APP_STATE old_state;
+
+		APP_TOOLSTATE toolstate;
 
         stringc scriptGlobal;
 
