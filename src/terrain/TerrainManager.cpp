@@ -385,11 +385,20 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
-		core::stringc customtile=tSegment->ToElement()->Attribute("custom");
+		core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
+		core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
+		
+		f32 noderot = 0.0f;
+		if (customr!="") 
+			noderot=(f32)atoi(customr.c_str()); // Custom mesh rotation
+		
 		if (customtile=="")
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true);
 		else
+		{
 			createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
+			getSegment(vector3df( x/scale ,0, z/scale ))->getNode()->setRotation(core::vector3df(0,noderot,0));
+		}
 
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 

@@ -1191,15 +1191,9 @@ void GUIManager::createCustomSegmentChooserGUI()
 	guiCustomSegmentWindowChooser->setVisible(false);
 
 	guiCustomSegmentWindowChooser->setDevice(App::getInstance()->getDevice());
-	guiCustomSegmentWindowChooser->enableleft=true;
+	guiCustomSegmentWindowChooser->enableleft=true; // This enable the left side to be dragged with the mouse (Stretching pane use)
 	guiCustomSegmentWindowChooser->setMaxSize(core::dimension2du(545,2000));
 	guiCustomSegmentWindowChooser->setMinSize(core::dimension2du(220,10));
-
-	// Enable manual dragging of the left portion of the pane
-	
-	/*guiDynamicObjectsWindowChooser->enablebottom=true;
-	guiDynamicObjectsWindowChooser->enableright=true;
-	guiDynamicObjectsWindowChooser->enabletop=true;*/
 
 	//-- inner window
 	rect<s32> windowRect2;
@@ -1218,27 +1212,56 @@ void GUIManager::createCustomSegmentChooserGUI()
 	// Left side with lists of objects
 
 	s32 pos_Y = 10;
-	
-	
-	guiSegmentRotateLeft = guienv->addButton(core::rect<s32>(5,pos_Y,5+36,pos_Y+36+5),InnerChooser, BT_ID_TILE_ROT_LEFT,L"",stringw("Rotate the tile left").c_str());
-	guiSegmentRotateLeft->setIsPushButton(true);
+	s32 pos_X = 5;
 
+	s32 boxend = screensize.Height-(pos_Y+225); // Used to determine the bottom of screen minus GUI
+	if (boxend<10)
+		boxend=10;
+
+	gui::IGUIStaticText* text0 = guienv->addStaticText(L"Rotation modes",core::rect<s32>(pos_X-5,pos_Y,200,pos_Y+110),true,true,InnerChooser,-1);
+	text0->setOverrideFont(guiFont12);
+
+	pos_Y += 20;
+	pos_X += 15;
+	// Rotation button left
+	guiSegmentRotateLeft = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),InnerChooser, BT_ID_TILE_ROT_LEFT,L"",stringw("Rotate the tile left").c_str());
+	guiSegmentRotateLeft->setIsPushButton(true);
 	video::ITexture * imgTurnLeft = driver->getTexture("../media/art/left_turn.png");
-	
 	guiSegmentRotateLeft->setImage(imgTurnLeft);
 	guiSegmentRotateLeft->setPressedImage(driver->getTexture("../media/art/left_turn_pr.png"));
 	//guiSegmentRotateLeft->setScaleImage(true);
 
-	
-	guiSegmentRotateRight = guienv->addButton(core::rect<s32>(200-41,pos_Y,200-5,pos_Y+36+5),InnerChooser, BT_ID_TILE_ROT_RIGHT,L"",stringw("Rotate the tile right").c_str());
+	pos_X+=120;
+	// Rotation button right
+	guiSegmentRotateRight = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),InnerChooser, BT_ID_TILE_ROT_RIGHT,L"",stringw("Rotate the tile right").c_str());
 	guiSegmentRotateRight->setIsPushButton(true);
 	video::ITexture * imgTurnRight = driver->getTexture("../media/art/right_turn.png");
 	
 	guiSegmentRotateRight->setImage(imgTurnRight);
 	guiSegmentRotateRight->setPressedImage(driver->getTexture("../media/art/right_turn_pr.png"));
+	pos_X=20;
 
-	pos_Y += 40;
-	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
+	pos_Y += 39; // Text under the buttons
+	IGUIStaticText * tilerotationTextL = guienv->addStaticText(L"Rotate\ntile\nleft",
+		core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+42),false,true,InnerChooser,-1);
+	//tilerotationTextL->setBackgroundColor(video::SColor(255,238,240,242));
+	//tilerotationTextL->setOverrideColor(video::SColor(255,86,95,109));
+	tilerotationTextL->setOverrideFont(guiFont10);
+	tilerotationTextL->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	pos_X+=120;
+	IGUIStaticText * tilerotationTextR = guienv->addStaticText(L"Rotate\ntile\nright",
+		core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+42),false,true,InnerChooser,-1);
+	//tilerotationTextL->setBackgroundColor(video::SColor(255,238,240,242));
+	//tilerotationTextL->setOverrideColor(video::SColor(255,86,95,109));
+	tilerotationTextR->setOverrideFont(guiFont10);
+	tilerotationTextR->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+	pos_X=5;
+
+	
+
+	pos_Y += 60; // Collections
+	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(pos_X-5,pos_Y,200,boxend),true,true,InnerChooser,-1);
 	text1->setOverrideFont(guiFont12);
 	pos_Y += 20;
 	guiCustom_Segment_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_CUSTOM_SEGMENT_CATEGORY);
@@ -1250,23 +1273,21 @@ void GUIManager::createCustomSegmentChooserGUI()
 		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT)[i].c_str());
 	}
 
-	pos_Y += 40;
+	pos_Y += 40; //Categories
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
 	
 	pos_Y += 20;
-	guiCustom_Segment_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,160),InnerChooser, CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,true);
+	guiCustom_Segment_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,80),InnerChooser, CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,true);
 
-	pos_Y += 175;
+	pos_Y += 95; //Objects
 	gui::IGUIStaticText* text3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text3->setOverrideFont(guiFont12);
 
 	pos_Y += 20;
-	s32 boxend = screensize.Height-(pos_Y+225);
-	if (boxend<10)
-		boxend=10;
+	
 
-	guiCustom_Segment_OBJChooser = guienv->addListBox(myRect(5,pos_Y,190,boxend),InnerChooser, CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,true);
+	guiCustom_Segment_OBJChooser = guienv->addListBox(core::rect<s32>(pos_X,pos_Y,pos_X+190,boxend-10),InnerChooser, CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,true);
 	guiCustom_Segment_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
 	//guiDynamicObjectsInfo= guienv->addButton(myRect(5,guiDynamicObjectsWindowChooser_Y+boxend+10,190,20),
@@ -2480,6 +2501,12 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiEditScriptGlobal->setEnabled(enable);
 			guiEditScriptGlobal->setPressed(!enable);
             break;
+		case BT_ID_TILE_ROT_LEFT:
+			guiSegmentRotateLeft->setPressed(enable);
+			break;
+		case BT_ID_TILE_ROT_RIGHT:
+			guiSegmentRotateRight->setPressed(enable);
+			break;
 #endif
         case BT_ID_ABOUT:
             guiAbout->setEnabled(enable);

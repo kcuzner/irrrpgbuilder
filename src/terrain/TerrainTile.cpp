@@ -186,7 +186,7 @@ IMeshBuffer* TerrainTile::getMeshBuffer()
 
 void TerrainTile::mergeToTile(TerrainTile* tile)
 {
-    if(!tile)
+    if(!tile || custom)
     {
         #ifdef APP_DEBUG
         cout << "DEBUG : TERRAIN TILE : MERGE FAILED, TILE IS NULL: " << endl;
@@ -236,48 +236,53 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 	if (custom)
 	{
 		segmentXML->SetAttribute("custom",customname.c_str());
+		if (node->getRotation().Y!=0)
+			segmentXML->SetAttribute("custom_R",(int)node->getRotation().Y);
 	}
 
-    //write all vertex
-    IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
-	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
-	u16* mb_indices  = meshBuffer->getIndices();
-
-    for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+	if (!custom)
 	{
-	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
-	    if(realPos.Y != 0.0f )
-        {
-            TiXmlElement* vertexXML = new TiXmlElement("vertex");
+		//write all vertex
+		IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+		S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
+		u16* mb_indices  = meshBuffer->getIndices();
+
+		for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+		{
+			vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+			if(realPos.Y != 0.0f )
+			{
+				TiXmlElement* vertexXML = new TiXmlElement("vertex");
             
-			vertexXML->SetAttribute("id",j);
-            vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
+				vertexXML->SetAttribute("id",j);
+				vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
 
-			Vegetation * tree = 0;
-			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
-			{
-    			Vegetation * temp = (Vegetation*)vegetationVector[i];
-    			if(temp->getPosition().getDistanceFrom(realPos) < (vegetationRange/10) )
+				Vegetation * tree = 0;
+				for (int i=0 ; i<(int)vegetationVector.size() ; i++)
 				{
-					tree = temp;
-					break;
+    				Vegetation * temp = (Vegetation*)vegetationVector[i];
+    				if(temp->getPosition().getDistanceFrom(realPos) < (vegetationRange/10) )
+					{
+						tree = temp;
+						break;
+					}
+					else
+						tree = 0;
 				}
-				else
-					tree = 0;
-			}
 
-			if (tree!=0)
-			{
-				vector3df treepos=tree->getPosition();
-				vertexXML->SetAttribute("v",tree->getType());
-				vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
-				vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
-				vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+				if (tree!=0)
+				{
+					vector3df treepos=tree->getPosition();
+					vertexXML->SetAttribute("v",tree->getType());
+					vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
+					vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
+					vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+				}
+				// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
+				segmentXML->LinkEndChild(vertexXML);
 			}
-			// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
-            segmentXML->LinkEndChild(vertexXML);
-        }
-	}
+		} //End meshbuffer save
+	} // End custom condition
 
 	parentElement->LinkEndChild(segmentXML);
 }
@@ -408,6 +413,9 @@ bool TerrainTile::checkModified()
 
 void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc)
 {
+	if (custom)
+		return;
+
 	IVideoDriver * driver = smgr->getGUIEnvironment()->getVideoDriver();
 
 
@@ -457,6 +465,10 @@ void TerrainTile::recalculate()
 
 void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 {
+
+	if (custom)
+		return;
+
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
@@ -489,6 +501,10 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value)
 {
+
+	if (custom)
+		return;
+
     if(strength<0) strength = -strength;
 
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);

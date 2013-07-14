@@ -217,6 +217,9 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		selectedNode=NULL;
+		toolstate = TOOL_NONE;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
 	}
 
 	if(old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
@@ -646,14 +649,20 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_TILE_ROT_LEFT: // User pressed the rotate tile left toggle button
 		if (toolstate != TOOL_TILEROTATE_LEFT)
+		{
 			toolstate = TOOL_TILEROTATE_LEFT;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
+		}
 		else
 			toolstate = TOOL_NONE;
 		break;
 
 	case BT_ID_TILE_ROT_RIGHT: // User pressed the rotate tile right toggle button
 		if (toolstate != TOOL_TILEROTATE_RIGHT)
+		{
 			toolstate = TOOL_TILEROTATE_RIGHT;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
+		}
 		else
 			toolstate = TOOL_NONE;
 		break;
