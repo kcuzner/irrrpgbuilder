@@ -95,6 +95,8 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 	   mb_vertices[j].Pos.Y = 0.0f;
 	}
 	recalculate();
+
+	custom = false;
 }
 
 void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model)
@@ -120,6 +122,7 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
     node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(baseMesh,node);
     node->setTriangleSelector(selector);
+	custom = true;
 }
 
 
