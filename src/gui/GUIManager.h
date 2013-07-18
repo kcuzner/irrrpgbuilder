@@ -89,7 +89,12 @@ enum GUI_ID
 	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,
 
 	BT_ID_TILE_ROT_LEFT,
-	BT_ID_TILE_ROT_RIGHT
+	BT_ID_TILE_ROT_RIGHT,
+	BT_ID_DO_ADD_MODE,
+	BT_ID_DO_SEL_MODE,
+	BT_ID_DO_MOV_MODE,
+	BT_ID_DO_ROT_MODE,
+	BT_ID_DO_SCA_MODE
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -343,9 +348,20 @@ class GUIManager
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicObjectsWindowChooser;
+		gui::IGUIWindow* InnerChooser; // For the inner part of the chooser (add)
+		gui::IGUIWindow* InnerChooser1; // For the inner part of the chooser (select)
+		gui::IGUIWindow* InnerChooser2; // For the inner part of the chooser (move/rotate/scale)
+
 		
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
+
+		IGUIToolBar * guiDynamicObjectEditModesPanel;
+		IGUIButton* guiDOAddMode;
+		IGUIButton* guiDOSelMode;
+		IGUIButton* guiDOMovMode;
+		IGUIButton* guiDORotMode;
+		IGUIButton* guiDOScaMode;
 
         IGUIListBox* guiDynamicObjects_OBJChooser;
 		IGUIListBox* guiDynamicObjects_OBJCategory;

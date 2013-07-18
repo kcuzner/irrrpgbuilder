@@ -26,6 +26,7 @@ static const float APP_VERSION = 1.0;
 #include "XML_Manager.h"
 
 #include "raytests.h"
+#include "objects/DynamicObject.h"
 
 //Current Application State
 enum APP_STATE
@@ -65,6 +66,12 @@ enum APP_TOOLSTATE
 	TOOL_NONE = 0,
 	TOOL_TILEROTATE_LEFT,
 	TOOL_TILEROTATE_RIGHT,
+	TOOL_DO_ADD,
+	TOOL_DO_SEL,
+	TOOL_DO_MOV,
+	TOOL_DO_ROT,
+	TOOL_DO_SCA
+
 };
 
 enum DIALOG_FUNCTION
@@ -169,6 +176,9 @@ class App
 
 		scene::ISceneNode* selectedNode;
 		MousePick lastMousePick;
+
+		//Multiple selections
+		std::vector<DynamicObject*> selectedSet;
 		
     private:
 

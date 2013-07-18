@@ -33,6 +33,8 @@ App::App()
 	app_state=APP_EDIT_LOOK;
 	textevent.clear();
 	lastScannedPick.pickedNode=NULL;
+	lastMousePick.pickedNode=NULL;
+
 	selector=NULL;
 	saveselector=NULL;
 	selectedNode=NULL;
@@ -251,12 +253,15 @@ void App::setAppState(APP_STATE newAppState)
 		//If the up/down mode was last used then reset if
 		if (moveupdown)
 			moveupdown=false;
+		if (toolstate == TOOL_NONE)
+			toolstate = TOOL_DO_ADD;
 	}
 	else
 	{
 	
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
+		toolstate = TOOL_NONE;
 	}
 
 	if(app_state != APP_EDIT_ABOUT)
@@ -667,6 +672,32 @@ void App::eventGuiButton(s32 id)
 			toolstate = TOOL_NONE;
 		break;
 
+	case BT_ID_DO_ADD_MODE:
+		printf("ADD MODE SELECTED\n");
+		toolstate = TOOL_DO_ADD;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,false);
+		break;
+	case BT_ID_DO_SEL_MODE:
+		printf("SELECT MODE SELECTED\n");
+		toolstate = TOOL_DO_SEL;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,false);
+		break;
+	case BT_ID_DO_MOV_MODE:
+		printf("MOVE MODE SELECTED\n");
+		toolstate = TOOL_DO_MOV;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,false);
+		break;
+	case BT_ID_DO_ROT_MODE:
+		printf("ROTATE MODE SELECTED\n");
+		toolstate = TOOL_DO_ROT;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,false);
+		break;
+	case BT_ID_DO_SCA_MODE:
+		printf("SCALE MODE SELECTED\n");
+		toolstate = TOOL_DO_SCA;
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,false);
+		break;
+
 	default:
 		break;
 	}
@@ -829,7 +860,6 @@ void App::eventMousePressed(s32 mouse)
 				if (toolstate==TOOL_NONE)
 				{
 					core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
-					printf("Here is the name of the active mesh: %s",meshfile);
 					TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
 					return;
 				}
@@ -851,7 +881,7 @@ void App::eventMousePressed(s32 mouse)
 				lastMousePick = mousePick;
 				stringc nodeName = "";
 				// Check for a node to prevent a crash (need to get the name of the node)
-				if (mousePick.pickedNode != NULL)
+				if (mousePick.pickedNode != NULL && toolstate==TOOL_DO_ADD)
 				{
 					nodeName = mousePick.pickedNode->getName();
 
@@ -876,6 +906,53 @@ void App::eventMousePressed(s32 mouse)
 #ifdef APP_DEBUG
 						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif
+					}
+				} else if (toolstate==TOOL_DO_SEL) // User is in selection mode. Must click on an object to select it
+				{
+					if (selectedNode) // There was a node selected before
+					{
+						selectedNode->setDebugDataVisible(0); // Unselect it
+						GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, false); // lock the panels
+						selectedNode=NULL;
+					}
+					
+					
+					selectedNode=mousePick.pickedNode;	
+					nodeName = mousePick.pickedNode->getName();
+						
+					if (selectedNode) 
+					{
+						// Need to filter some nodes names as "terrain" or other objects might be selected.
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						{
+							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+							GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, true); // Unlock the panels
+							
+							printf("Node %s was selected\n",nodeName.c_str());
+							//selectedSet.clear(); // Temporary, until we manage multiple selections
+							//selectedSet.push_back(DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName()));
+							//DynamicObject * selectedobject = DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName());
+							//core::stringc text="";
+							//if (selectedobject->getType()==OBJECT_TYPE_NPC)
+							//	text="NPC";
+
+							//if (selectedobject->getType()==OBJECT_TYPE_NON_INTERACTIVE)
+							//	text="PROP";
+							//if (selectedobject)
+							//	text = selectedobject->getObjectType();
+
+						
+							//printf("Entered selection mode and clicked on a object: %s\n",text.c_str());
+						}
+						else
+							selectedNode=NULL;
+
+					}
+					else
+					{
+						selectedNode=NULL; // No node was found remove selection
+						GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, false); // lock the panels
+						//lastMousePick.pickedNode->setDebugDataVisible(0);
 					}
 				}
 			}
@@ -1567,7 +1644,8 @@ void App::updateEditMode()
 	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
 	{
 		
-		setPreviewSelection();
+		if (toolstate==TOOL_DO_ADD) //Will "preselect" an item only in ADD mode
+			setPreviewSelection();
 	}
 
 	GUIManager::getInstance()->update(); // Update the GUI when editing objects

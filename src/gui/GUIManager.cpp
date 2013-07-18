@@ -1055,14 +1055,56 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsWindowChooser->enableright=true;
 	guiDynamicObjectsWindowChooser->enabletop=true;*/
 
+
+	// Mode select for dynamic object editing
+	 s32 pos_Y = 40;
+	 s32 pos_X = 10;
+	
+	//guiDynamicObjectEditModesPanel->setRelativePosition(core::position2di(45,35));
+	//guiDynamicObjectEditModesPanel->setMaxSize(core::dimension2du(110,40));
+	// Buttons
+
+	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"ADD", L"ADD MODE");
+	 guiDOAddMode->setIsPushButton(true);
+	 guiDOAddMode->setUseAlphaChannel(true);
+	 guiDOAddMode->setPressed(true);
+
+	 pos_X += 40;
+	 guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"SEL", L"SELECT MODE");
+	 guiDOSelMode->setIsPushButton(true);
+	 guiDOSelMode->setUseAlphaChannel(true);
+	 guiDOSelMode->setPressed(false);
+
+	 pos_X += 40;
+	 guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"MOV", L"MOVE MODE");
+	 guiDOMovMode->setIsPushButton(true);
+	 guiDOMovMode->setUseAlphaChannel(true);
+	 guiDOMovMode->setPressed(false);
+	 guiDOMovMode->setEnabled(false);
+
+	 pos_X += 40;
+	 guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"ROT", L"ROTATE MODE");
+	 guiDORotMode->setIsPushButton(true);
+	 guiDORotMode->setUseAlphaChannel(true);
+	 guiDORotMode->setPressed(false);
+	 guiDORotMode->setEnabled(false);
+
+	 pos_X += 40;
+	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"SCA", L"SCALE MODE");
+	 guiDOScaMode->setIsPushButton(true);
+	 guiDOScaMode->setUseAlphaChannel(true);
+	 guiDOScaMode->setPressed(false);
+	 guiDOScaMode->setEnabled(false);
+
 	//-- inner window
 	rect<s32> windowRect2;
 	windowRect2.UpperLeftCorner.X=10;
-	windowRect2.UpperLeftCorner.Y=35;
+	windowRect2.UpperLeftCorner.Y=100;
 	windowRect2.LowerRightCorner.X=windowRect.getWidth()-10;
 	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
 
-	gui::IGUIWindow* InnerChooser = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	// Define the "window" that will contain the stuff to ADD new elements.
+	InnerChooser = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser->setDraggable(false);
 	InnerChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	InnerChooser->getCloseButton()->setVisible(false);
@@ -1071,13 +1113,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//Could be able to drag the window
 	//guiDynamicObjectsWindowChooser->setDraggable(true);
 
-    s32 guiDynamicObjectsWindowChooser_Y = 0;
+	pos_Y = 0;
     //guiDynamicObjectsWindowChooser_Y += 10;
-	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text1->setOverrideFont(guiFont12);
 	
-	guiDynamicObjectsWindowChooser_Y += 20;
-	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
+	pos_Y += 20;
+	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->setMaxSelectionRows(24);
 	
 	// Populate a list of collection that contain only dynamic objects. (SPECIAL_NONE)
@@ -1088,27 +1130,27 @@ void GUIManager::createDynamicObjectChooserGUI()
 			guiDynamicObjects_Category->addItem(result.c_str());
 	}
 	
-	guiDynamicObjectsWindowChooser_Y += 80;
-	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	pos_Y += 80;
+	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
 	
-	guiDynamicObjectsWindowChooser_Y += 20;
-	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,160),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
+	pos_Y += 20;
+	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,80),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
 	//guiDynamicObjects_OBJCategory->setDrawBackground(false);
 
-	guiDynamicObjectsWindowChooser_Y += 175;
-	gui::IGUIStaticText* text3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(5,guiDynamicObjectsWindowChooser_Y,210,guiDynamicObjectsWindowChooser_Y+20),false,true,InnerChooser,-1);
+	pos_Y += 95;
+	gui::IGUIStaticText* text3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjitm")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text3->setOverrideFont(guiFont12);
 
-	guiDynamicObjectsWindowChooser_Y += 20;
-	s32 boxend = screensize.Height-(guiDynamicObjectsWindowChooser_Y+225);
+	pos_Y += 20;
+	s32 boxend = screensize.Height-(pos_Y+325);
 	if (boxend<10)
 		boxend=10;
 
-	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(5,guiDynamicObjectsWindowChooser_Y,190,boxend),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(5,pos_Y,190,boxend),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
 	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
-	guiDynamicObjectsInfo= guienv->addButton(myRect(5,guiDynamicObjectsWindowChooser_Y+boxend+10,190,20),
+	guiDynamicObjectsInfo= guienv->addButton(myRect(5,pos_Y+boxend+10,190,20),
                                                            InnerChooser,
                                                            BT_ID_DYNAMIC_OBJECT_INFO,
                                                            L">> Information panel" );
@@ -1117,9 +1159,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 
 	/// ---------------- Info portions
-	u16 posx = 200;
-	u16 posy = 260;
-	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+5,5,posx+310,20),false,true,InnerChooser,-1);
+	pos_X = 200;
+	pos_Y = 5;
+	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,20),false,true,InnerChooser,-1);
 	infotext->setDrawBackground(true);
 	infotext->setDrawBorder(true);
 	infotext->setBackgroundColor(video::SColor(255,237,242,248));
@@ -1127,53 +1169,70 @@ void GUIManager::createDynamicObjectChooserGUI()
 	infotext->setOverrideFont(guiFontCourier12);
 	infotext->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	thumbnail=guienv->addImage(info_current,vector2d<s32>(posx+5,50),true,InnerChooser);
+	thumbnail=guienv->addImage(info_current,vector2d<s32>(pos_X+5,pos_Y+20),true,InnerChooser);
 
-	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	pos_Y+=220;
+
+	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext1->setOverrideFont(guiFont12);
 
-	posy+=15;
-	mdl_name = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	pos_Y+=15;
+	mdl_name = guienv->addStaticText(L"",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+20),true,true,InnerChooser,-1);
 	mdl_name->setDrawBackground(true);
 	mdl_name->setBackgroundColor(video::SColor(255,237,242,248));
 	mdl_name->setOverrideFont(guiFont10);
 	mdl_name->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
-	posy+=25;
+	pos_Y+=25;
 
-	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext2->setOverrideFont(guiFont12);
 
-	posy+=15;
-	mdl_desc = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+100),true,true,InnerChooser,-1);
+	pos_Y+=15;
+	mdl_desc = guienv->addStaticText(L"",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+100),true,true,InnerChooser,-1);
 	mdl_desc->setDrawBackground(true);
 	mdl_desc->setBackgroundColor(video::SColor(255,237,242,248));
 	mdl_desc->setOverrideFont(guiFont10);
 
-	posy+=110;
-	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	pos_Y+=110;
+	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext3->setOverrideFont(guiFont12);
 
-	posy+=15;
-	mdl_auth = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	pos_Y+=15;
+	mdl_auth = guienv->addStaticText(L"",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+20),true,true,InnerChooser,-1);
 	mdl_auth->setDrawBackground(true);
 	mdl_auth->setBackgroundColor(video::SColor(255,237,242,248));
 	mdl_auth->setOverrideFont(guiFont10);
 	mdl_auth->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
-	posy+=25;
-	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	pos_Y+=25;
+	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext4->setOverrideFont(guiFont12);
 
-	posy+=15;
-	mdl_lic = guienv->addStaticText(L"",core::rect<s32>(posx+5,posy,posx+310,posy+20),true,true,InnerChooser,-1);
+	pos_Y+=15;
+	mdl_lic = guienv->addStaticText(L"",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+20),true,true,InnerChooser,-1);
 	mdl_lic->setDrawBackground(true);
 	mdl_lic->setBackgroundColor(video::SColor(255,237,242,248));
 	mdl_lic->setOverrideFont(guiFont10);
 	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 	// -- end info portions
-
 	UpdateGUIChooser();
+	/// Define the portion when in select mode
+	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser1->setDraggable(false);
+	InnerChooser1->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	InnerChooser1->getCloseButton()->setVisible(false);
+    InnerChooser1->setDrawTitlebar(false);
+	InnerChooser1->setDrawBackground(false);
+	InnerChooser1->setVisible(false);
+	/// Define the portion when in move/rotate/scale
+	InnerChooser2 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser2->setDraggable(false);
+	InnerChooser2->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	InnerChooser2->getCloseButton()->setVisible(false);
+    InnerChooser2->setDrawTitlebar(false);
+	InnerChooser2->setDrawBackground(false);
+	InnerChooser2->setVisible(false);
 }
 
 void GUIManager::createCustomSegmentChooserGUI()
@@ -1229,6 +1288,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	video::ITexture * imgTurnLeft = driver->getTexture("../media/art/left_turn.png");
 	guiSegmentRotateLeft->setImage(imgTurnLeft);
 	guiSegmentRotateLeft->setPressedImage(driver->getTexture("../media/art/left_turn_pr.png"));
+	guiSegmentRotateLeft->setUseAlphaChannel(true);
 	//guiSegmentRotateLeft->setScaleImage(true);
 
 	pos_X+=120;
@@ -1239,6 +1299,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	
 	guiSegmentRotateRight->setImage(imgTurnRight);
 	guiSegmentRotateRight->setPressedImage(driver->getTexture("../media/art/right_turn_pr.png"));
+	guiSegmentRotateRight->setUseAlphaChannel(true);
 	pos_X=20;
 
 	pos_Y += 39; // Text under the buttons
@@ -2507,6 +2568,42 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 		case BT_ID_TILE_ROT_RIGHT:
 			guiSegmentRotateRight->setPressed(enable);
 			break;
+
+		case BT_ID_DO_ADD_MODE:
+			InnerChooser->setVisible(true);
+			guiDOSelMode->setPressed(false);
+			guiDOMovMode->setPressed(false);
+			guiDORotMode->setPressed(false);
+			guiDOScaMode->setPressed(false);
+			break;
+		case BT_ID_DO_SEL_MODE:
+			InnerChooser->setVisible(false);
+			guiDOAddMode->setPressed(false);
+			guiDOMovMode->setPressed(false);
+			guiDORotMode->setPressed(false);
+			guiDOScaMode->setPressed(false);
+			break;
+		case BT_ID_DO_MOV_MODE:
+			InnerChooser->setVisible(false);
+			guiDOAddMode->setPressed(false);
+			guiDOSelMode->setPressed(false);
+			guiDORotMode->setPressed(false);
+			guiDOScaMode->setPressed(false);
+			break;
+		case BT_ID_DO_ROT_MODE:
+			InnerChooser->setVisible(false);
+			guiDOAddMode->setPressed(false);
+			guiDOSelMode->setPressed(false);
+			guiDOMovMode->setPressed(false);
+			guiDOScaMode->setPressed(false);
+			break;
+		case BT_ID_DO_SCA_MODE:
+			InnerChooser->setVisible(false);
+			guiDOAddMode->setPressed(false);
+			guiDOSelMode->setPressed(false);
+			guiDOMovMode->setPressed(false);
+			guiDORotMode->setPressed(false);
+			break;
 #endif
         case BT_ID_ABOUT:
             guiAbout->setEnabled(enable);
@@ -2570,6 +2667,13 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
 		}
         break;
+
+		case BT_ID_DO_SEL_MODE:
+			// This is used to unlock and display panels when in SEL mode and a object is selected.
+			guiDOMovMode->setEnabled(visible); // Lock/Unlock the MOVE button
+			guiDORotMode->setEnabled(visible); // Lock/Unlock the ROTATE button
+			guiDOScaMode->setEnabled(visible); // Lock/Unlock the SCALE button
+			break;
 
         default:
            break;
