@@ -2675,6 +2675,10 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 			guiDOScaMode->setEnabled(visible); // Lock/Unlock the SCALE button
 			break;
 
+		case BT_ID_DO_ADD_MODE:
+			guiDOAddMode->setPressed(visible); // Set the button press state (Needed when coming back in object edit mode as ADD is the default state.
+			break;
+
         default:
            break;
 

@@ -143,11 +143,21 @@ void App::setAppState(APP_STATE newAppState)
 	app_state = newAppState;
 
 #ifdef EDITOR
+
+	if (old_app_state != app_state && app_state != APP_EDIT_VIEWDRAG && app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	{
+		if (selectedNode) //Unselect and remove the selected node in mode changes
+		{
+			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
+			selectedNode->setDebugDataVisible(0); 
+			selectedNode=NULL;
+		}
+	}
+
 	if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM && app_state != APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		// Change the props to be collidable with the ray test
 		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
-		selectedNode=NULL;
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
@@ -157,15 +167,16 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
 	}
 	else
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
-		ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM)
+		{
+			GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
+			ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
@@ -176,9 +187,11 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (old_app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -189,22 +202,25 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (old_app_state == APP_EDIT_TERRAIN_SEGMENTS)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (old_app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		}
 	}
 
 	if (app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
@@ -216,12 +232,15 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
-		toolstate = TOOL_NONE;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
+		if  (old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+		{
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+			selectedNode=NULL;
+			toolstate = TOOL_NONE;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
+			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
+		}
 	}
 
 	if(old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
@@ -231,12 +250,10 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
 	}
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
-		selectedNode=NULL;
 	}
 
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
@@ -253,15 +270,23 @@ void App::setAppState(APP_STATE newAppState)
 		//If the up/down mode was last used then reset if
 		if (moveupdown)
 			moveupdown=false;
-		if (toolstate == TOOL_NONE)
+
+		if (old_app_state != APP_EDIT_VIEWDRAG) //Should not change anything if coming back from VIEWDRAG mode
+		{
+			// ADD mode is the default dynamic object tool mode
 			toolstate = TOOL_DO_ADD;
+			GUIManager::getInstance()->setElementVisible(BT_ID_DO_ADD_MODE,true); // Set the button as pressed
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true); // enable it and disable the other modes
+			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // lock the other buttons since there is no selection
+
+		}
 	}
 	else
 	{
-	
 		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
-		toolstate = TOOL_NONE;
+		if (app_state != APP_EDIT_VIEWDRAG)
+			toolstate = TOOL_NONE;
 	}
 
 	if(app_state != APP_EDIT_ABOUT)
@@ -676,6 +701,14 @@ void App::eventGuiButton(s32 id)
 		printf("ADD MODE SELECTED\n");
 		toolstate = TOOL_DO_ADD;
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,false);
+		GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // Clear the button states and lock them again (selection)
+		if (selectedNode) //Unselect and remove the selected node if back in ADD mode
+		{
+			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
+			selectedNode->setDebugDataVisible(0); 
+			selectedNode=NULL;
+		}
+
 		break;
 	case BT_ID_DO_SEL_MODE:
 		printf("SELECT MODE SELECTED\n");
@@ -883,6 +916,13 @@ void App::eventMousePressed(s32 mouse)
 				// Check for a node to prevent a crash (need to get the name of the node)
 				if (mousePick.pickedNode != NULL && toolstate==TOOL_DO_ADD)
 				{
+
+					if (selectedNode) //Unselect and remove the selected node in mode changes
+					{
+						selectedNode->setDebugDataVisible(0); 
+						selectedNode=NULL;
+					}
+
 					nodeName = mousePick.pickedNode->getName();
 
 					//if you click on a Dynamic Object then open his properties
@@ -929,20 +969,6 @@ void App::eventMousePressed(s32 mouse)
 							GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, true); // Unlock the panels
 							
 							printf("Node %s was selected\n",nodeName.c_str());
-							//selectedSet.clear(); // Temporary, until we manage multiple selections
-							//selectedSet.push_back(DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName()));
-							//DynamicObject * selectedobject = DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName());
-							//core::stringc text="";
-							//if (selectedobject->getType()==OBJECT_TYPE_NPC)
-							//	text="NPC";
-
-							//if (selectedobject->getType()==OBJECT_TYPE_NON_INTERACTIVE)
-							//	text="PROP";
-							//if (selectedobject)
-							//	text = selectedobject->getObjectType();
-
-						
-							//printf("Entered selection mode and clicked on a object: %s\n",text.c_str());
 						}
 						else
 							selectedNode=NULL;
@@ -952,7 +978,6 @@ void App::eventMousePressed(s32 mouse)
 					{
 						selectedNode=NULL; // No node was found remove selection
 						GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, false); // lock the panels
-						//lastMousePick.pickedNode->setDebugDataVisible(0);
 					}
 				}
 			}
