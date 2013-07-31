@@ -63,7 +63,7 @@ enum APP_STATE
 // States for IRB TOOLS
 enum APP_TOOLSTATE
 {
-	TOOL_NONE = 0,
+	TOOL_NONE = 1024,
 	TOOL_TILEROTATE_LEFT,
 	TOOL_TILEROTATE_RIGHT,
 	TOOL_DO_ADD,
@@ -204,8 +204,10 @@ class App
 		video::SColor ingamebackground;
 		
 		u32 timer;
+		u32 timer1;
 		u32 timer2;
 		u32 timer3;
+		u32 timer4;
 		
 		dimension2d<u32> screensize;
 
@@ -226,6 +228,8 @@ class App
 		APP_STATE old_state;
 
 		APP_TOOLSTATE toolstate;
+
+		bool toolactivated; //This determine if the tool is activated.
 
         stringc scriptGlobal;
 
@@ -250,6 +254,7 @@ class App
 		vector2df oldmouse;
 		position2d<s32> mousepos;
 		vector3df initialposition;
+		vector2d<f32> initangle; //initial angle of the camera (point&click)
 		
 		// Tools substates
 		bool moveupdown; // Moving and object up/down

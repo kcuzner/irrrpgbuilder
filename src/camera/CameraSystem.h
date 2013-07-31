@@ -69,6 +69,7 @@ class CameraSystem
 		vector3df getPosition();
 		void setPosition(vector3df pos);
 		core::vector3df getTarget();
+		inline vector3df getAngle() {return cameraAngle;};
 		void setRTSView();
 		void setRPGView();
 

@@ -57,6 +57,8 @@ App::App()
 	df = DF_PROJECT;
 
 	toolstate = TOOL_NONE;
+	toolactivated = false;
+	initangle=vector2d<f32>(0,0);
 
 	// Initialize and the ray tester class
 	raytester=0;
@@ -167,6 +169,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+		timer1 = device->getTimer()->getRealTime();
 	}
 	else
 	{
@@ -184,6 +187,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		selectedNode=NULL;
+		timer1 = device->getTimer()->getRealTime();
 	}
 	else
 	{
@@ -355,8 +359,8 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,false);
 		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		//GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
+		//GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,false);
@@ -370,7 +374,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
 	}
-	else if(app_state < 100)
+	else if(app_state < APP_STATE_CONTROL)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
@@ -381,6 +385,8 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
 	} else if(app_state == APP_WAIT_DIALOG)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
@@ -876,6 +882,28 @@ void App::eventMousePressed(s32 mouse)
 	switch(mouse)
 	{///TODO: colocar acoes mais comuns acima e menos comuns nos elses
 
+	case EMIE_LMOUSE_LEFT_UP:
+		{
+			if (toolstate==TOOL_DO_MOV)
+			{
+				//Deactivate the tool if the mouse button is released
+				if (toolactivated)
+					toolactivated=false;
+			}
+		}
+		break;
+
+	case EMIE_RMOUSE_LEFT_UP:
+		{
+			if (toolstate==TOOL_DO_MOV)
+			{
+				//Deactivate the tool if the mouse button is released
+				toolactivated=false;
+				moveupdown=false;
+				
+			}
+		}
+		break;
 
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
 		if( cursorIsInEditArea())
@@ -883,10 +911,12 @@ void App::eventMousePressed(s32 mouse)
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				return;
 			}
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+				return;
 			}
 			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 			{
@@ -942,6 +972,7 @@ void App::eventMousePressed(s32 mouse)
 							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+						return;
 
 #ifdef APP_DEBUG
 						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
@@ -984,6 +1015,16 @@ void App::eventMousePressed(s32 mouse)
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
 				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+				return;
+			}
+			if (toolstate==TOOL_DO_MOV && selectedNode) //The user selected the move mode
+			{
+				printf ("User selected the move mode.\n");
+				initialposition=selectedNode->getPosition();
+				mousepos=device->getCursorControl()->getPosition();
+				toolactivated=!toolactivated; //Toggle the state of the tool
+				return;
+				//setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
 			}
 		}
 		break;
@@ -995,15 +1036,18 @@ void App::eventMousePressed(s32 mouse)
 			{
 				//TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				return;
 			}
 			else if(app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 			{
 				if (toolstate==TOOL_NONE)
 					TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(), true);
+				return;
 			}
 			else if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 			{
 				TerrainManager::getInstance()->removeEmptySegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
+				return;
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
@@ -1012,7 +1056,9 @@ void App::eventMousePressed(s32 mouse)
 				lastMousePick = mousePick;
 				stringc nodeName = "";
 				// Check for a node to prevent a crash (need to get the name of the node)
-				if (mousePick.pickedNode != NULL)
+				
+				
+				if (mousePick.pickedNode != NULL && toolstate==TOOL_DO_ADD) // Add mode right button functionnality
 				{
 					nodeName = mousePick.pickedNode->getName();
 
@@ -1025,7 +1071,19 @@ void App::eventMousePressed(s32 mouse)
 						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 							!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 					}
+					return;
 				}
+				
+				if (toolstate==TOOL_DO_MOV && selectedNode)
+				{
+					initialposition=selectedNode->getPosition();
+					mousepos=device->getCursorControl()->getPosition();
+					toolactivated=true;
+					moveupdown=true;
+					return;
+				}
+
+
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
@@ -1675,7 +1733,7 @@ void App::updateEditMode()
 
 	GUIManager::getInstance()->update(); // Update the GUI when editing objects
 	// Enter the refresh after a timer duration OR if the terrain transform is used
-	if ((timer-timer2)>17 || APP_EDIT_TERRAIN_TRANSFORM) // (17)1/60th second refresh interval
+	if ((timer2-timer)>17) // (17)1/60th second refresh interval
 	{
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
@@ -1698,15 +1756,24 @@ void App::updateEditMode()
 						old_state = app_state;
 
 					setAppState(APP_EDIT_VIEWDRAG);
-					return;
 				}
 			}
 			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
 			if ((app_state == APP_EDIT_VIEWDRAG) && !(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE)))
 			{
 				setAppState(old_state);
+				return;
 			}
 			// --- End of code for drag of view
+
+
+			//Move the player update code
+			if(app_state == APP_EDIT_CHARACTER)
+			{
+				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
+					Player::getInstance()->getObject()->setPosition(getMousePosition3D(100).pickedPos);
+				return;
+			}
 
 			//Feature: Take a note of the position of the camera or object into the console
 			//Check for the pressing of CTRL+C
@@ -1727,12 +1794,18 @@ void App::updateEditMode()
 					}
 				}
 				else
+				{
 					keytoggled=false;
 					//CameraSystem::getInstance()->getNode()
+				}
 			}
 
-			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
+
+			// Refresh the edition of terrain at 30FPS (Should be uniform now on all system)
+			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() && (device->getTimer()->getRealTime()-timer1)>34)
 			{
+				timer1 = device->getTimer()->getRealTime();
+
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
 				{
 					// Activate the "plateau" display in the shader
@@ -1778,7 +1851,8 @@ void App::updateEditMode()
 					TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), true);
 				}
 			}
-
+			
+			// Move the selected object in ADD mode
 			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
 			{
 				if (!moveupdown)
@@ -1794,6 +1868,7 @@ void App::updateEditMode()
 
 					lastMousePick.pickedNode->setID(oldID);
 					initialposition=lastMousePick.pickedNode->getPosition();
+					return;
 				}
 				else
 				{
@@ -1807,13 +1882,48 @@ void App::updateEditMode()
 					else
 						lastMousePick.pickedNode->setPosition(newpos);
 
+					return;
+
 				}
 			}
 
-			if(app_state == APP_EDIT_CHARACTER)
+			// Tools mode refresh
+			if (app_state==APP_EDIT_DYNAMIC_OBJECTS_MODE && toolstate!=TOOL_NONE && toolactivated)
 			{
-				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
-					Player::getInstance()->getObject()->setPosition(getMousePosition3D(100).pickedPos);
+				
+				if (toolstate==TOOL_DO_MOV)
+					printf("Move tool mode selected\n");
+				if (toolstate==TOOL_DO_MOV && toolactivated) // Will move the object
+				{
+					if (!moveupdown)
+					{
+						// Change the ID of the moved mesh so it's won't collision with the ray.
+						irr::s32 oldID=selectedNode->getID();
+						selectedNode->setID(0x0010);
+					
+						if (snapfunction) // If snapping is activated use the function
+							selectedNode->setPosition(calculateSnap(getMousePosition3D(100).pickedPos,64.0f));
+						else
+							selectedNode->setPosition(getMousePosition3D(100).pickedPos);
+
+						selectedNode->setID(oldID);
+						initialposition=selectedNode->getPosition();
+					}
+					else
+					{
+						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+						core::vector3df newpos = initialposition;
+						//lastMousePick.pickedNode->getPosition();
+						newpos.Y=newpos.Y+((mousepos.Y-mousepos2.Y));
+
+						if (snapfunction) // If snapping is activated use the function
+							selectedNode->setPosition(calculateSnap(newpos,64.0f));
+						else
+							selectedNode->setPosition(newpos);
+
+					}
+				}
+				return;
 			}
 		}
 	}
@@ -1827,23 +1937,43 @@ void App::updateGameplay()
 
 	timer = device->getTimer()->getRealTime();
 	vector2d<f32> pom = vector2d<f32>(0,0);
-
+	
 	//Left mouse button in gameplay to change the cam direction
 	if(EventReceiver::getInstance()->isMousePressed(1) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 	{
-		if (initRotation==false)
+		if (initRotation==false) // when the rotation is initialized, it store the camera position and the cursor relative position
 		{
 			oldmouse = device->getCursorControl()->getRelativePosition();
 			initRotation=true;
+			initangle.X=CameraSystem::getInstance()->getAngle().X;
+			initangle.Y=CameraSystem::getInstance()->getAngle().Y;
+			timer4=device->getTimer()->getRealTime();
+			
 		}
 
-		pom=oldmouse-device->getCursorControl()->getRelativePosition();
-		CameraSystem::getInstance()->SetPointNClickAngle(pom);
-		device->getCursorControl()->setVisible(false);
+		if (initRotation && timer-timer4>17)
+		{
+			// Offset from the stored value
+			timer4=device->getTimer()->getRealTime();
+			vector2d<f32> pom1 = oldmouse-device->getCursorControl()->getRelativePosition();
+			pom.X=initangle.X-(pom1.X*180);
+			pom.Y=initangle.Y-(pom1.Y*180);
+			
+			CameraSystem::getInstance()->SetPointNClickAngle(pom);
+			//Hide the mouse pointer while rotation is done
+			device->getCursorControl()->setVisible(false);
+
+			// Update the Point&Click camera setup
+			CameraSystem::getInstance()->updatePointClickCam();
+			// Update all the NPC on the map (including the player)
+			DynamicObjectsManager::getInstance()->updateAll();
+		}
+		return;
 
 	} else
 		if((!EventReceiver::getInstance()->isMousePressed(1)) && cursorIsInEditArea() && app_state == APP_GAMEPLAY_NORMAL)
 		{
+			// Restore the mouse pointer
 			device->getCursorControl()->setVisible(true);
 			initRotation=false;
 		}

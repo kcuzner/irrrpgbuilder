@@ -33,6 +33,7 @@ CameraSystem::CameraSystem()
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 	viewtype = VIEW_RTS;
 	controltype = CONTROL_POINTNCLICK;
+	cameraAngle=vector3df(135.0f,45.0f,0.0f);
 	
 
 	// New edit camera
@@ -347,11 +348,17 @@ void CameraSystem::updatePointClickCam()
 //! Will update the angle of the pointNClick camera by mouse offsets
 void CameraSystem::SetPointNClickAngle(vector2df angle)
 {
-	//This is updated as fast as the CPU can. Will have to implement timed update to have the proper value of angle
-	angle*=cameraRotationSpeed;
-    cameraAngle.X+=-(angle.X/2);
-	cameraAngle.Y+=-(angle.Y/2);
+	//Old behavior was adding angle to the current angle.
+	//Has some complaints from forum user about imprecision.
 
+	//angle*=cameraRotationSpeed;
+    //cameraAngle.X+=-(angle.X/2);
+	//cameraAngle.Y+=-(angle.Y/2);
+
+	//New behavior take the angle directly
+	cameraAngle.X = angle.X;
+	cameraAngle.Y = angle.Y;
+	
 	// Limit the view
 	if (cameraAngle.Y>89.0f)
 		cameraAngle.Y=89.0f;
