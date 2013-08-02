@@ -680,6 +680,24 @@ void GUIManager::createEnvironmentTab()
 	terrainSText2->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText2->setOverrideFont(guiFont9);
+
+
+	//-- Add custom segment (Custom Tiles button)
+	x+= 60;
+	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+									 tabEnv,
+                                     BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str());
+
+	guiTerrainAddCustomSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddCustomSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+	IGUIStaticText * terrainSText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
+	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText3->setOverrideColor(video::SColor(255,64,64,64));
+	terrainSText3->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText3->setOverrideFont(guiFont9);
  
 	//Terrain Add Segment
 	 x+= 60;
@@ -699,22 +717,7 @@ void GUIManager::createEnvironmentTab()
 	terrainSText->setOverrideFont(guiFont9);
 	
 
-	//-- Add custom segment (Custom Tiles button)
-	x+= 60;
-	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-									 tabEnv,
-                                     BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str());
-
-	guiTerrainAddCustomSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
-	guiTerrainAddCustomSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
-
-	IGUIStaticText * terrainSText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str(),
-		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
-	terrainSText3->setOverrideColor(video::SColor(255,64,64,64));
-	terrainSText3->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	terrainSText3->setOverrideFont(guiFont9);
+	
 
 	//--
 
@@ -1080,21 +1083,21 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 guiDOMovMode->setIsPushButton(true);
 	 guiDOMovMode->setUseAlphaChannel(true);
 	 guiDOMovMode->setPressed(false);
-	 guiDOMovMode->setEnabled(false);
+	 //guiDOMovMode->setEnabled(false);
 
 	 pos_X += 40;
 	 guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"ROT", L"ROTATE MODE");
 	 guiDORotMode->setIsPushButton(true);
 	 guiDORotMode->setUseAlphaChannel(true);
 	 guiDORotMode->setPressed(false);
-	 guiDORotMode->setEnabled(false);
+	 //guiDORotMode->setEnabled(false);
 
 	 pos_X += 40;
 	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"SCA", L"SCALE MODE");
 	 guiDOScaMode->setIsPushButton(true);
 	 guiDOScaMode->setUseAlphaChannel(true);
 	 guiDOScaMode->setPressed(false);
-	 guiDOScaMode->setEnabled(false);
+	 //guiDOScaMode->setEnabled(false);
 
 	//-- inner window
 	rect<s32> windowRect2;
@@ -2570,39 +2573,44 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 
 		case BT_ID_DO_ADD_MODE:
-			InnerChooser->setVisible(true);
-			guiDOSelMode->setPressed(false);
-			guiDOMovMode->setPressed(false);
-			guiDORotMode->setPressed(false);
-			guiDOScaMode->setPressed(false);
+			InnerChooser->setVisible(enable);
+			guiDOAddMode->setPressed(enable);
+			guiDOSelMode->setPressed(!enable);
+			guiDOMovMode->setPressed(!enable);
+			guiDORotMode->setPressed(!enable);
+			guiDOScaMode->setPressed(!enable);
 			break;
 		case BT_ID_DO_SEL_MODE:
-			InnerChooser->setVisible(false);
-			guiDOAddMode->setPressed(false);
-			guiDOMovMode->setPressed(false);
-			guiDORotMode->setPressed(false);
-			guiDOScaMode->setPressed(false);
+			InnerChooser->setVisible(!enable);
+			guiDOSelMode->setPressed(enable);
+			guiDOAddMode->setPressed(!enable);
+			guiDOMovMode->setPressed(!enable);
+			guiDORotMode->setPressed(!enable);
+			guiDOScaMode->setPressed(!enable);
 			break;
 		case BT_ID_DO_MOV_MODE:
-			InnerChooser->setVisible(false);
-			guiDOAddMode->setPressed(false);
-			guiDOSelMode->setPressed(false);
-			guiDORotMode->setPressed(false);
-			guiDOScaMode->setPressed(false);
+			InnerChooser->setVisible(!enable);
+			guiDOAddMode->setPressed(!enable);
+			guiDOSelMode->setPressed(!enable);
+			guiDOMovMode->setPressed(enable);
+			guiDORotMode->setPressed(!enable);
+			guiDOScaMode->setPressed(!enable);
 			break;
 		case BT_ID_DO_ROT_MODE:
-			InnerChooser->setVisible(false);
-			guiDOAddMode->setPressed(false);
-			guiDOSelMode->setPressed(false);
-			guiDOMovMode->setPressed(false);
-			guiDOScaMode->setPressed(false);
+			InnerChooser->setVisible(!enable);
+			guiDOAddMode->setPressed(!enable);
+			guiDOSelMode->setPressed(!enable);
+			guiDOMovMode->setPressed(!enable);
+			guiDORotMode->setPressed(enable);
+			guiDOScaMode->setPressed(!enable);
 			break;
 		case BT_ID_DO_SCA_MODE:
-			InnerChooser->setVisible(false);
-			guiDOAddMode->setPressed(false);
-			guiDOSelMode->setPressed(false);
-			guiDOMovMode->setPressed(false);
-			guiDORotMode->setPressed(false);
+			InnerChooser->setVisible(!enable);
+			guiDOAddMode->setPressed(!enable);
+			guiDOSelMode->setPressed(!enable);
+			guiDOMovMode->setPressed(!enable);
+			guiDORotMode->setPressed(!enable);
+			guiDOScaMode->setPressed(enable);
 			break;
 #endif
         case BT_ID_ABOUT:

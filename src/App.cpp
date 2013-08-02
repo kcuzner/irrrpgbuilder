@@ -28,7 +28,8 @@ const float DEG2RAD = 3.14159f/180;
 
 App::App()
 {
-	wxSystemState=false;
+
+	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
 	textevent.clear();
@@ -47,21 +48,20 @@ App::App()
 	oldmouse=vector2df(0,0);
 	lockcam=false;
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
-	moveupdown = false; // Mouse move up/down
+	moveupdown = false; // Mouse item move up/down in dynamic object ADD mode
 	snapfunction = false;
-	overdraw=false;
 
-	tex_occluded=NULL;
+
+	overdraw=false;
+	tex_occluded=NULL; // Texture to put on the player when he is occluded
 	tex_normal=NULL;
 
-	df = DF_PROJECT;
+	df = DF_PROJECT; // Default state for the fileselector (Dialog)
 
-	toolstate = TOOL_NONE;
-	toolactivated = false;
-	initangle=vector2d<f32>(0,0);
-
-	// Initialize and the ray tester class
-	raytester=0;
+	toolstate = TOOL_NONE; // no tools activated
+	toolactivated = false; // no tools activated
+	initangle=vector2d<f32>(0,0); //Initialize the initial angle of the RTS camera (Calculated from here)
+	raytester=0; // Initialize and the ray tester class
 	
 }
 
@@ -112,8 +112,6 @@ void App::draw2DImages()
 
 void App::displayGuiConsole()
 {
-	// This was the old console
-	// This need to be improved with scaling.
 	bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
 	GUIManager::getInstance()->setElementVisible(CONSOLE,result);
 	GUIManager::getInstance()->setConsoleText(L"",true);
@@ -150,7 +148,7 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (selectedNode) //Unselect and remove the selected node in mode changes
 		{
-			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
+			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
 			selectedNode->setDebugDataVisible(0); 
 			selectedNode=NULL;
 		}
@@ -281,7 +279,7 @@ void App::setAppState(APP_STATE newAppState)
 			toolstate = TOOL_DO_ADD;
 			GUIManager::getInstance()->setElementVisible(BT_ID_DO_ADD_MODE,true); // Set the button as pressed
 			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true); // enable it and disable the other modes
-			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // lock the other buttons since there is no selection
+			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // lock the other buttons since there is no selection
 
 		}
 	}
@@ -705,36 +703,38 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DO_ADD_MODE:
 		printf("ADD MODE SELECTED\n");
-		toolstate = TOOL_DO_ADD;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,false);
-		GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // Clear the button states and lock them again (selection)
+		
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
+
+		//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // Clear the button states and lock them again (selection)
 		if (selectedNode) //Unselect and remove the selected node if back in ADD mode
 		{
-			GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
+			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
 			selectedNode->setDebugDataVisible(0); 
 			selectedNode=NULL;
 		}
+		toolstate = TOOL_DO_ADD;
 
 		break;
 	case BT_ID_DO_SEL_MODE:
 		printf("SELECT MODE SELECTED\n");
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
 		toolstate = TOOL_DO_SEL;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,false);
 		break;
 	case BT_ID_DO_MOV_MODE:
 		printf("MOVE MODE SELECTED\n");
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
 		toolstate = TOOL_DO_MOV;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,false);
 		break;
 	case BT_ID_DO_ROT_MODE:
 		printf("ROTATE MODE SELECTED\n");
 		toolstate = TOOL_DO_ROT;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
 		break;
 	case BT_ID_DO_SCA_MODE:
 		printf("SCALE MODE SELECTED\n");
 		toolstate = TOOL_DO_SCA;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,false);
+		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,true);
 		break;
 
 	default:
@@ -747,7 +747,6 @@ void App::eventGuiButton(s32 id)
 
 void App::hideEditGui()
 {
-	wxSystemState=true;
 	GUIManager::getInstance()->setConsoleText(L"Console ready!",SColor(255,0,0,255));
 }
 
@@ -884,7 +883,7 @@ void App::eventMousePressed(s32 mouse)
 
 	case EMIE_LMOUSE_LEFT_UP:
 		{
-			if (toolstate==TOOL_DO_MOV)
+			if (toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
 				//Deactivate the tool if the mouse button is released
 				if (toolactivated)
@@ -895,7 +894,7 @@ void App::eventMousePressed(s32 mouse)
 
 	case EMIE_RMOUSE_LEFT_UP:
 		{
-			if (toolstate==TOOL_DO_MOV)
+			if (toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
 				//Deactivate the tool if the mouse button is released
 				toolactivated=false;
@@ -978,12 +977,11 @@ void App::eventMousePressed(s32 mouse)
 						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif
 					}
-				} else if (toolstate==TOOL_DO_SEL) // User is in selection mode. Must click on an object to select it
+				} else // Enable selection
 				{
 					if (selectedNode) // There was a node selected before
 					{
 						selectedNode->setDebugDataVisible(0); // Unselect it
-						GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, false); // lock the panels
 						selectedNode=NULL;
 					}
 					
@@ -996,9 +994,7 @@ void App::eventMousePressed(s32 mouse)
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 						{
-							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
-							GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, true); // Unlock the panels
-							
+							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);							
 							printf("Node %s was selected\n",nodeName.c_str());
 						}
 						else
@@ -1017,10 +1013,12 @@ void App::eventMousePressed(s32 mouse)
 				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 				return;
 			}
-			if (toolstate==TOOL_DO_MOV && selectedNode) //The user selected the move mode
+			if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) && selectedNode) //The user selected the move mode
 			{
-				printf ("User selected the move mode.\n");
+				printf ("User selected a mode. pressing button now.\n");
 				initialposition=selectedNode->getPosition();
+				initialrotation=selectedNode->getRotation();
+				initialscale=selectedNode->getScale();
 				mousepos=device->getCursorControl()->getPosition();
 				toolactivated=!toolactivated; //Toggle the state of the tool
 				return;
@@ -1034,7 +1032,6 @@ void App::eventMousePressed(s32 mouse)
 		{
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 			{
-				//TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 				TerrainManager::getInstance()->removeSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
 				return;
 			}
@@ -1074,7 +1071,7 @@ void App::eventMousePressed(s32 mouse)
 					return;
 				}
 				
-				if (toolstate==TOOL_DO_MOV && selectedNode)
+				if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) && selectedNode)
 				{
 					initialposition=selectedNode->getPosition();
 					mousepos=device->getCursorControl()->getPosition();
@@ -1183,10 +1180,6 @@ MousePick App::getMousePosition3D(int id)
 		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);	
 
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
-
-	// Set the ray a specific lenght for the ray
-	//ray.end=ray.start+((ray.getVector().normalize())*6000.0f);
-
 	tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
 		intersection,
 		hitTriangle,
@@ -1889,12 +1882,10 @@ void App::updateEditMode()
 
 			// Tools mode refresh
 			if (app_state==APP_EDIT_DYNAMIC_OBJECTS_MODE && toolstate!=TOOL_NONE && toolactivated)
-			{
-				
-				if (toolstate==TOOL_DO_MOV)
-					printf("Move tool mode selected\n");
+			{				
 				if (toolstate==TOOL_DO_MOV && toolactivated) // Will move the object
 				{
+					printf("Move tool mode selected\n");
 					if (!moveupdown)
 					{
 						// Change the ID of the moved mesh so it's won't collision with the ray.
@@ -1922,8 +1913,56 @@ void App::updateEditMode()
 							selectedNode->setPosition(newpos);
 
 					}
+					return;
 				}
-				return;
+				
+				if (toolstate==TOOL_DO_ROT && toolactivated) // Will rotate the object
+				{
+					printf("rotate mode selected\n");
+					if (!moveupdown)
+					{
+						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+						vector3df newrotation = initialrotation;
+						newrotation.Y=initialrotation.Y+(mousepos.X-mousepos2.X);
+						newrotation.X=initialrotation.X+(mousepos.Y-mousepos2.Y);
+
+						selectedNode->setRotation(newrotation);
+					}
+					else
+					{
+						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+						vector3df newrotation = initialrotation;
+						newrotation.Z=initialrotation.Z+(mousepos.X-mousepos2.X);
+						selectedNode->setRotation(newrotation);
+					}
+
+					return;
+				}
+				
+
+				if (toolstate==TOOL_DO_SCA && toolactivated) // Will rotate the object
+				{
+					printf("scale mode selected\n");
+					position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+					vector3df newscale = initialscale;
+
+					f32 tscale=-f32(mousepos.X-mousepos2.X)/10.0f;
+					
+					if ((initialscale.X+tscale)<0.001f)
+					{
+						initialscale.X=0.001f;
+						initialscale.Y=0.001f;
+						initialscale.Z=0.001f;
+					} else
+					{
+						newscale.X=initialscale.X+tscale;
+						newscale.Y=initialscale.Y+tscale;
+						newscale.Z=initialscale.Z+tscale;
+					}
+					selectedNode->setScale(newscale);
+
+					return;
+				}	
 			}
 		}
 	}

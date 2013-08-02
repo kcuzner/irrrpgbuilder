@@ -155,8 +155,6 @@ class App
 		
 		void clearConsole();
 
-		bool wxSystemState;
-
 		//temporary made public to determine if the config is fullscreen
 		bool fullScreen;
 
@@ -254,6 +252,9 @@ class App
 		vector2df oldmouse;
 		position2d<s32> mousepos;
 		vector3df initialposition;
+		vector3df initialrotation;
+		vector3df initialscale;
+
 		vector2d<f32> initangle; //initial angle of the camera (point&click)
 		
 		// Tools substates
