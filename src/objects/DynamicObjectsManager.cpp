@@ -785,15 +785,22 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
     {
         //objects[i]->saveToXML(dynamicObjectsXML);
 		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
-		//dynamicObjectXML->SetAttribute("name",name.c_str());
+
 		dynamicObjectXML->SetAttribute("type",(int)objects[i]->getType());
 		dynamicObjectXML->SetAttribute("x",stringc(this->objects[i]->getPosition().X).c_str());
 		dynamicObjectXML->SetAttribute("y",stringc(this->objects[i]->getPosition().Y).c_str());
 		dynamicObjectXML->SetAttribute("z",stringc(this->objects[i]->getPosition().Z).c_str());
+	
+		// Values stored for the rotation of the object
+		dynamicObjectXML->SetAttribute("rx",stringc(this->objects[i]->getRotation().X).c_str());
+		dynamicObjectXML->SetAttribute("ry",stringc(this->objects[i]->getRotation().Y).c_str());
+		dynamicObjectXML->SetAttribute("rz",stringc(this->objects[i]->getRotation().Z).c_str());
 
-		dynamicObjectXML->SetAttribute("s",stringc(this->objects[i]->getScale().X).c_str());
+		// Values stored for the scale of the object
+		dynamicObjectXML->SetAttribute("sx",stringc(this->objects[i]->getScale().X).c_str());
+		dynamicObjectXML->SetAttribute("sy",stringc(this->objects[i]->getScale().Y).c_str());
+		dynamicObjectXML->SetAttribute("sz",stringc(this->objects[i]->getScale().Z).c_str());
 
-		dynamicObjectXML->SetAttribute("r",stringc(this->objects[i]->getRotation().Y).c_str());
 
 		dynamicObjectXML->SetAttribute("template",objects[i]->templateObjectName.c_str());
 
@@ -872,10 +879,51 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			type=atoi(stype.c_str());
 
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
+
+		//Get the position of the object
         f32 posX = (f32)atof(dynamicObjectXML->ToElement()->Attribute("x"));
         f32 posY = (f32)atof(dynamicObjectXML->ToElement()->Attribute("y"));
         f32 posZ = (f32)atof(dynamicObjectXML->ToElement()->Attribute("z"));
-        f32 rot = (f32)atof(dynamicObjectXML->ToElement()->Attribute("r"));
+
+		//Get the rotation (old and new)
+		core::stringc tempv=dynamicObjectXML->ToElement()->Attribute("r");
+
+		//Better and more failsafe way of loading data from XML.
+		f32 rot = 0.0f;
+		f32 rotX = 0.0f;
+		f32 rotY = 0.0f;
+		f32 rotZ = 0.0f;
+		f32 sclX = 0.0f;
+		f32 sclY = 0.0f;
+		f32 sclZ = 0.0f;
+
+		if (tempv!="")
+			rot=(f32)atof(tempv.c_str());
+
+		tempv = dynamicObjectXML->ToElement()->Attribute("rx");
+		if (tempv!="")
+			rotX = (f32)atof(tempv.c_str());
+
+		tempv = dynamicObjectXML->ToElement()->Attribute("ry");
+        if (tempv!="")
+			rotY = (f32)atof(tempv.c_str());
+
+		tempv = dynamicObjectXML->ToElement()->Attribute("rz");
+        if (tempv!="")
+			rotZ = (f32)atof(tempv.c_str());
+
+		//Get the scale
+		tempv = dynamicObjectXML->ToElement()->Attribute("sx");
+		if (tempv!="")
+			sclX = (f32)atof(tempv.c_str());
+
+		tempv = dynamicObjectXML->ToElement()->Attribute("sy");
+        if (tempv!="")
+			sclY = (f32)atof(tempv.c_str());
+        
+		tempv = dynamicObjectXML->ToElement()->Attribute("sz");
+		if (tempv!="")
+			sclZ = (f32)atof(tempv.c_str());
 
 		// Create an object from the template
 		if (type!=OBJECT_TYPE_PLAYER)
@@ -897,7 +945,6 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			{
 				setActiveObject("error");
 			}
-
 			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		} 
 		else
@@ -906,12 +953,24 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
 		}
-		// If a script is assigned to the mesh then load it.
-
-		newObj->setRotation(vector3df(0,rot,0));
-        newObj->setScript(convert(script));
-
 		
+		// if the "r" is not 0 then use this information to set the rotation of the model (compatibility mode)
+		if (rot!=0)
+			newObj->setRotation(vector3df(0,rot,0));
+		else
+		{
+			// This is the new rotation model. User can set any angle.
+			newObj->setRotation(vector3df(rotX,rotY,rotZ));
+		}
+
+		//If there is no scale information then don't set the scale, let it as the template was.
+		if ((sclX+sclY+sclZ)>0)
+			newObj->setScale(vector3df(sclX,sclY,sclZ));
+
+
+		// If a script is assigned to the mesh then load it.
+        newObj->setScript(convert(script));
+	
         
 		cproperty a=newObj->initProperties();
 		
