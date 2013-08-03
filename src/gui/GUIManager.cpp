@@ -966,7 +966,7 @@ void GUIManager::createTerrainToolbar()
     guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushStrength->setMin(0);
     guiTerrainBrushStrength->setMax(200);
-    guiTerrainBrushStrength->setPos(20);
+    guiTerrainBrushStrength->setPos(100);
 	guiTerrainBrushStrength->setSmallStep(1);
 	guiTerrainBrushStrength->setLargeStep(5);
 

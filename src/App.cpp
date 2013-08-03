@@ -1995,8 +1995,8 @@ void App::updateGameplay()
 			// Offset from the stored value
 			timer4=device->getTimer()->getRealTime();
 			vector2d<f32> pom1 = oldmouse-device->getCursorControl()->getRelativePosition();
-			pom.X=initangle.X-(pom1.X*180);
-			pom.Y=initangle.Y-(pom1.Y*180);
+			pom.X=initangle.X-(pom1.X*360);
+			pom.Y=initangle.Y-(pom1.Y*360);
 			
 			CameraSystem::getInstance()->SetPointNClickAngle(pom);
 			//Hide the mouse pointer while rotation is done
