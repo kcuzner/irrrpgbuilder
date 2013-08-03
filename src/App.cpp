@@ -977,7 +977,7 @@ void App::eventMousePressed(s32 mouse)
 						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif
 					}
-				} else // Enable selection
+				} else if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
 				{
 					if (selectedNode) // There was a node selected before
 					{
@@ -985,12 +985,12 @@ void App::eventMousePressed(s32 mouse)
 						selectedNode=NULL;
 					}
 					
-					
-					selectedNode=mousePick.pickedNode;	
-					nodeName = mousePick.pickedNode->getName();
-						
-					if (selectedNode) 
+					// Create the selected node if there was a node picked
+					if (mousePick.pickedNode)
 					{
+						selectedNode=mousePick.pickedNode;	
+						nodeName = mousePick.pickedNode->getName();
+					
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 						{
@@ -999,12 +999,6 @@ void App::eventMousePressed(s32 mouse)
 						}
 						else
 							selectedNode=NULL;
-
-					}
-					else
-					{
-						selectedNode=NULL; // No node was found remove selection
-						GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE, false); // lock the panels
 					}
 				}
 			}
