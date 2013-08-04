@@ -59,6 +59,7 @@ App::App()
 	df = DF_PROJECT; // Default state for the fileselector (Dialog)
 
 	toolstate = TOOL_NONE; // no tools activated
+	old_do_state = TOOL_DO_ADD; // no tools activated
 	toolactivated = false; // no tools activated
 	initangle=vector2d<f32>(0,0); //Initialize the initial angle of the RTS camera (Calculated from here)
 	raytester=0; // Initialize and the ray tester class
@@ -184,7 +185,11 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;
+		}
 		timer1 = device->getTimer()->getRealTime();
 	}
 	else
@@ -200,7 +205,11 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		selectedNode=NULL;
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;	
+		}
 	}
 	else
 	{
@@ -230,7 +239,11 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		GUIManager::getInstance()->setWindowVisible(GCW_CUSTOM_SEGMENT_CHOOSER,true);
-		selectedNode=NULL;
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;
+		}
 	}
 	else
 	{
@@ -238,7 +251,12 @@ void App::setAppState(APP_STATE newAppState)
 		{
 			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-			selectedNode=NULL;
+			
+			if (selectedNode)
+			{
+				selectedNode->setDebugDataVisible(0);
+				selectedNode=NULL;
+			}
 			toolstate = TOOL_NONE;
 			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
 			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
@@ -259,36 +277,36 @@ void App::setAppState(APP_STATE newAppState)
 	}
 
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
-	if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+	//if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+	//	GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
 
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
-		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		
-		//If the up/down mode was last used then reset if
-		if (moveupdown)
-			moveupdown=false;
+		//If the tools was in move/rotate mode then set back the current mode as the old tool state
+		//if (old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE || old_app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
+			toolstate = old_do_state;
 
-		if (old_app_state != APP_EDIT_VIEWDRAG) //Should not change anything if coming back from VIEWDRAG mode
+		if (old_app_state != APP_EDIT_VIEWDRAG)
 		{
-			// ADD mode is the default dynamic object tool mode
-			toolstate = TOOL_DO_ADD;
-			GUIManager::getInstance()->setElementVisible(BT_ID_DO_ADD_MODE,true); // Set the button as pressed
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true); // enable it and disable the other modes
-			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // lock the other buttons since there is no selection
-
+			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
+			//If the up/down mode was last used then reset if
+			if (moveupdown)
+				moveupdown=false;
 		}
+
 	}
 	else
-	{
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
+	{	
+		//Reset the tools state if going outside of the dynamic object edit mode
 		if (app_state != APP_EDIT_VIEWDRAG)
+		{
+			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
 			toolstate = TOOL_NONE;
+		}
 	}
 
 	if(app_state != APP_EDIT_ABOUT)
@@ -417,14 +435,23 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_NEW_PROJECT:
 		lastScannedPick.pickedNode=NULL;
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;
+		}
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		if (!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+			printf("Context menu is hidden!\n");
 		this->createNewProject();
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
+		this->setAppState(APP_EDIT_LOOK);
 		break;
 
 	case BT_ID_LOAD_PROJECT:
 		this->loadProject();
-		//this->setAppState(APP_EDIT_LOOK);
+		this->setAppState(APP_EDIT_LOOK);
 		break;
 
 	case BT_ID_SAVE_PROJECT:
@@ -457,6 +484,8 @@ void App::eventGuiButton(s32 id)
 		{
 			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+			if (toolstate==TOOL_NONE)
+				toolstate=old_do_state;
 		}
 		break;
 
@@ -494,7 +523,11 @@ void App::eventGuiButton(s32 id)
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
 				lastMousePick.pickedNode=NULL;
-				selectedNode=NULL;
+				if (selectedNode)
+				{
+					selectedNode->setDebugDataVisible(0);
+					selectedNode=NULL;
+				}
 
 				// Create the new object from the template and put the old values back in.
 				object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
@@ -580,7 +613,11 @@ void App::eventGuiButton(s32 id)
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
 				lastMousePick.pickedNode=NULL;
-				selectedNode=NULL;
+				if (selectedNode)
+				{
+					selectedNode->setDebugDataVisible(0);
+					selectedNode=NULL;
+				}
 			}
 			else //Wrong node type selected
 			{
@@ -745,29 +782,44 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_DO_ADD_MODE:
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
 		toolstate = TOOL_DO_ADD;
+		old_do_state = toolstate;
 		if (selectedNode)
-			GUIManager::getInstance()->updateNodeInfos(selectedNode);
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;
+		}
+		toolactivated=false;
+		moveupdown=false;
 		break;
 
 	case BT_ID_DO_SEL_MODE:
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
 		toolstate = TOOL_DO_SEL;
+		old_do_state = toolstate;
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
+		toolactivated=false;
+		moveupdown=false;
 		break;
 
 	case BT_ID_DO_MOV_MODE:
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
 		toolstate = TOOL_DO_MOV;
+		old_do_state = toolstate;
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
+		toolactivated=false;
+		moveupdown=false;
 		break;
 
 	case BT_ID_DO_ROT_MODE:
 		toolstate = TOOL_DO_ROT;
+		old_do_state = toolstate;
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
+		toolactivated=false;
+		moveupdown=false;
 		break;
 
 	case BT_ID_DO_SCA_MODE:
@@ -775,6 +827,9 @@ void App::eventGuiButton(s32 id)
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		toolstate = TOOL_DO_SCA;
+		old_do_state = toolstate;
+		toolactivated=false;
+		moveupdown=false;
 		break;
 
 	default:
@@ -901,6 +956,67 @@ void App::eventKeyPressed(s32 key)
 {
 	switch (key)
 	{
+
+
+	case KEY_KEY_Q:
+		if (app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			toolstate=TOOL_DO_ADD;
+			old_do_state = toolstate;
+			if (selectedNode)
+			{
+				selectedNode->setDebugDataVisible(0);
+				selectedNode=NULL;
+				toolactivated=false;
+				moveupdown=false;
+			}
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
+		}
+		break;
+
+	case KEY_KEY_W:
+		if (app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			toolstate=TOOL_DO_SEL;
+			old_do_state = toolstate;
+			toolactivated=false;
+			moveupdown=false;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
+		}
+		break;
+
+	case KEY_KEY_E:
+		if (app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			toolstate=TOOL_DO_MOV;
+			old_do_state = toolstate;
+			toolactivated=false;
+			moveupdown=false;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
+		}
+		break;
+
+	case KEY_KEY_R:
+		if (app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			toolstate=TOOL_DO_ROT;
+			old_do_state = toolstate;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
+			toolactivated=false;
+			moveupdown=false;
+		}
+		break;
+
+	case KEY_KEY_T:
+		if (app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			toolstate=TOOL_DO_SCA;
+			old_do_state = toolstate;
+			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,true);
+			toolactivated=false;
+			moveupdown=false;
+		}
+		break;
 
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))
@@ -1865,9 +1981,10 @@ void App::updateEditMode()
 				if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
 				{
 					if (app_state != APP_EDIT_VIEWDRAG)
+					{
 						old_state = app_state;
-
-					setAppState(APP_EDIT_VIEWDRAG);
+						setAppState(APP_EDIT_VIEWDRAG);
+					}
 				}
 			}
 			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
@@ -1972,12 +2089,17 @@ void App::updateEditMode()
 					// Change the ID of the moved mesh so it's won't collision with the ray.
 					irr::s32 oldID=lastMousePick.pickedNode->getID();
 					lastMousePick.pickedNode->setID(0x0010);
+
+					vector3df newposition = vector3df(0,0,0);
 					
 					if (snapfunction) // If snapping is activated use the function
-						lastMousePick.pickedNode->setPosition(calculateSnap(getMousePosition3D(100).pickedPos,64.0f));
+						newposition=calculateSnap(getMousePosition3D(100).pickedPos,64.0f);
 					else
-						lastMousePick.pickedNode->setPosition(getMousePosition3D(100).pickedPos);
+						newposition=getMousePosition3D(100).pickedPos;
 
+					//newposition=lastMousePick.pickedNode->getPosition()+(newposition-lastMousePick.pickedNode->getPosition());
+					
+					lastMousePick.pickedNode->setPosition(newposition);
 					lastMousePick.pickedNode->setID(oldID);
 					initialposition=lastMousePick.pickedNode->getPosition();
 					return;

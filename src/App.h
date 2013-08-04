@@ -226,6 +226,7 @@ class App
 		APP_STATE old_state;
 
 		APP_TOOLSTATE toolstate;
+		APP_TOOLSTATE old_do_state;
 
 		bool toolactivated; //This determine if the tool is activated.
 
