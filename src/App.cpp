@@ -424,14 +424,6 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_LOAD_PROJECT:
 		this->loadProject();
-		/* // Load a new project but not when the loader window is visible
-		if (!GUIManager::getInstance()->guiLoaderWindow->isVisible())
-		{
-		GUIRequestManager::getInstance()->FileSelector(core::dimension2d<u32>(640,400),L"Loading a project file");
-		old_state=app_state;
-		app_state=APP_WAIT_FILEREQUEST;
-		}*/
-
 		//this->setAppState(APP_EDIT_LOOK);
 		break;
 
@@ -483,38 +475,71 @@ void App::eventGuiButton(s32 id)
 
 	break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with one from the file selector
+	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with the one selected in the item template
 
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
-		// Keep the "good stuff"
-		oldrotation = lastMousePick.pickedNode->getRotation();
-		oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
+		if (lastMousePick.pickedNode)
+		{
+			core::stringc nodeName = lastMousePick.pickedNode->getName();
 
-		//Tell the dynamic Objects Manager to remove the node
-		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			{	// Keep the "good stuff"
+				oldrotation = lastMousePick.pickedNode->getRotation();
+				oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
 
-		// remove the object for the selection
-		lastScannedPick.pickedNode=NULL;
-		lastMousePick.pickedNode=NULL;
-		selectedNode=NULL;
+				//Tell the dynamic Objects Manager to remove the node
+				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 
-		// Create the new object from the template and put the old values back in.
-		object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
-		object->setScript(oldscript);
-		object->setRotation(oldrotation);
+				// remove the object for the selection
+				lastScannedPick.pickedNode=NULL;
+				lastMousePick.pickedNode=NULL;
+				selectedNode=NULL;
+
+				// Create the new object from the template and put the old values back in.
+				object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+				object->setScript(oldscript);
+				object->setRotation(oldrotation);
+			}
+			else //Wrong node type selected
+			{
+				guienv->addMessageBox(L"No object selected",(L"You need to select an object to be able to replace it."),true);
+			}
+		}
+		else //Wrong node type selected
+		{
+			guienv->addMessageBox(L"No object selected",(L"You need to select an object to be able to replace it."),true);
+		}
 		
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
+		
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		
+		if (lastMousePick.pickedNode)
+		{
+			core::stringc nodeName = lastMousePick.pickedNode->getName();
 
-		selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(lastMousePick.pickedNode->getName()) );
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			{
+				selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(nodeName) );
+				GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
+				GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
+			}
+			else //Wrong node type selected
+			{
+				guienv->addMessageBox(L"No object selected",(L"You need to select an object to edit it's script."),true);
+			}
+		}
+		else //Nothing selected
+		{
+			guienv->addMessageBox(L"No object selected",(L"You need to select an object to edit it's script."),true);
+		}
 
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
-		break;
+
+		break;			
 
 	case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
 		//if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
@@ -543,15 +568,31 @@ void App::eventGuiButton(s32 id)
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		//Tell the dynamic Objects Manager to remove the node
-		DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 
-		// remove the object for the selection
-		lastScannedPick.pickedNode=NULL;
-		lastMousePick.pickedNode=NULL;
-		selectedNode=NULL;
 
-		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		if (lastMousePick.pickedNode)
+		{
+			core::stringc nodeName = lastMousePick.pickedNode->getName();
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			{
+				//Tell the dynamic Objects Manager to remove the node
+				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
+				// remove the object for the selection
+				lastScannedPick.pickedNode=NULL;
+				lastMousePick.pickedNode=NULL;
+				selectedNode=NULL;
+			}
+			else //Wrong node type selected
+			{
+				guienv->addMessageBox(L"No object selected",(L"You need to select an object to remove it."),true);
+			}
+		}
+		else //Nothing selected
+		{
+			guienv->addMessageBox(L"No object selected",(L"You need to select an object to remove it."),true);
+		}
+		if (app_state!=APP_EDIT_DYNAMIC_OBJECTS_MODE)
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
@@ -702,39 +743,38 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case BT_ID_DO_ADD_MODE:
-		printf("ADD MODE SELECTED\n");
-		
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
-
-		//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false); // Clear the button states and lock them again (selection)
-		if (selectedNode) //Unselect and remove the selected node if back in ADD mode
-		{
-			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
-			selectedNode->setDebugDataVisible(0); 
-			selectedNode=NULL;
-		}
 		toolstate = TOOL_DO_ADD;
-
+		if (selectedNode)
+			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		break;
+
 	case BT_ID_DO_SEL_MODE:
-		printf("SELECT MODE SELECTED\n");
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
 		toolstate = TOOL_DO_SEL;
+		if (selectedNode)
+			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		break;
+
 	case BT_ID_DO_MOV_MODE:
-		printf("MOVE MODE SELECTED\n");
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
 		toolstate = TOOL_DO_MOV;
+		if (selectedNode)
+			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		break;
+
 	case BT_ID_DO_ROT_MODE:
-		printf("ROTATE MODE SELECTED\n");
 		toolstate = TOOL_DO_ROT;
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
+		if (selectedNode)
+			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		break;
+
 	case BT_ID_DO_SCA_MODE:
-		printf("SCALE MODE SELECTED\n");
-		toolstate = TOOL_DO_SCA;
 		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,true);
+		if (selectedNode)
+			GUIManager::getInstance()->updateNodeInfos(selectedNode);
+		toolstate = TOOL_DO_SCA;
 		break;
 
 	default:
@@ -755,15 +795,41 @@ std::vector<stringw> App::getAbout()
 	return LANGManager::getInstance()->getAboutText();
 }
 
+//Checkbox events
 void App::eventGuiCheckbox(s32 id)
 {
-	/*
 	switch (id)
 	{
-	default:
-	break;
+		case CB_ID_POS_X:
+			break;
+
+		case CB_ID_POS_Y:
+			break;
+
+		case CB_ID_POS_Z:
+			break;
+
+		case CB_ID_ROT_X:
+			break;
+
+		case CB_ID_ROT_Y:
+			break;
+
+		case CB_ID_ROT_Z:
+			break;
+
+		case CB_ID_SCA_X:
+			break;
+
+		case CB_ID_SCA_Y:
+			break;
+
+		case CB_ID_SCA_Z:
+			break;
+
+		default:
+		break;
 	}
-	*/
 }
 
 void App::eventGuiCombobox(s32 id)
@@ -876,6 +942,9 @@ void App::eventKeyPressed(s32 key)
 	}
 }
 
+// Behaviors with the detected mouse button
+// This is called from mouse events
+// (08/02/13) This will need to be split in methods as the code is getting too big here.
 void App::eventMousePressed(s32 mouse)
 {
 	switch(mouse)
@@ -885,7 +954,7 @@ void App::eventMousePressed(s32 mouse)
 		{
 			if (toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
-				//Deactivate the tool if the mouse button is released
+				//Deactivate the tool if the mouse buttons are released
 				if (toolactivated)
 					toolactivated=false;
 			}
@@ -896,7 +965,7 @@ void App::eventMousePressed(s32 mouse)
 		{
 			if (toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
-				//Deactivate the tool if the mouse button is released
+				//Deactivate the tool if the mouse buttons are released
 				toolactivated=false;
 				moveupdown=false;
 				
@@ -942,48 +1011,62 @@ void App::eventMousePressed(s32 mouse)
 
 				lastMousePick = mousePick;
 				stringc nodeName = "";
-				// Check for a node to prevent a crash (need to get the name of the node)
-				if (mousePick.pickedNode != NULL && toolstate==TOOL_DO_ADD)
+				
+				// Mouse operation in ADD mode
+				if (toolstate==TOOL_DO_ADD)
 				{
 
 					if (selectedNode) //Unselect and remove the selected node in mode changes
 					{
-						selectedNode->setDebugDataVisible(0); 
-						selectedNode=NULL;
+						selectedNode->setDebugDataVisible(0); //Remove selection
 					}
 
-					nodeName = mousePick.pickedNode->getName();
+					selectedNode=NULL;
 
-					//if you click on a Dynamic Object then open his properties
-					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+					// To add an object, the picked node need to return at least a tile. 
+					// If pickednode is empty then the user clicked outside the area
+					if (mousePick.pickedNode)
 					{
-						cout << "PROP:" << nodeName.c_str() << endl;
-
-						// Toggle the context menu
-						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-							!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
-
-					}
-					else//create a new copy of active dynamic object at the clicked position
-					{
-						// If the context menu is still open close it since we want to create a object
-						if (GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
-							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
-						DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-						return;
-
-#ifdef APP_DEBUG
-						cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
+						selectedNode=mousePick.pickedNode;
+						nodeName = mousePick.pickedNode->getName();
+						//if you click on a Dynamic Object then open the context menu
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						{
+#ifdef DEBUG
+							cout << "PROP:" << nodeName.c_str() << endl;
 #endif
+
+							// Toggle the context menu
+							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+								!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+							
+
+						}
+						else//create a new copy of active dynamic object at the clicked position
+						{
+							// If the context menu is still open close it since we want to create a object
+							if (GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+								GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+
+							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+#ifdef DEBUG
+							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
+#endif
+							
+						}
 					}
-				} else if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
+					return;
+				} 
+				
+				// Mouse operation in SEL,MOV,ROT and SCA modes
+				if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
 				{
+					// Since we don't have multi section implemented as of now, the previous node should be NULL
 					if (selectedNode) // There was a node selected before
 					{
 						selectedNode->setDebugDataVisible(0); // Unselect it
-						selectedNode=NULL;
 					}
+					selectedNode=NULL;
 					
 					// Create the selected node if there was a node picked
 					if (mousePick.pickedNode)
@@ -994,12 +1077,30 @@ void App::eventMousePressed(s32 mouse)
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 						{
-							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);							
-							printf("Node %s was selected\n",nodeName.c_str());
+							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
 						}
-						else
+						else //Invalid node for selection
+						{
 							selectedNode=NULL;
+							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+						}
+					} else //Clicked outside on nothing
+					{
+						selectedNode=NULL;
+						GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
 					}
+
+					if (selectedNode)
+					{
+						initialposition=selectedNode->getPosition();
+						initialrotation=selectedNode->getRotation();
+						initialscale=selectedNode->getScale();
+						mousepos=device->getCursorControl()->getPosition();
+						toolactivated=!toolactivated; //Toggle the state of the tool
+						return;
+					}
+
 				}
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
@@ -1007,21 +1108,11 @@ void App::eventMousePressed(s32 mouse)
 				setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 				return;
 			}
-			if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) && selectedNode) //The user selected the move mode
-			{
-				printf ("User selected a mode. pressing button now.\n");
-				initialposition=selectedNode->getPosition();
-				initialrotation=selectedNode->getRotation();
-				initialscale=selectedNode->getScale();
-				mousepos=device->getCursorControl()->getPosition();
-				toolactivated=!toolactivated; //Toggle the state of the tool
-				return;
-				//setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
-			}
 		}
 		break;
+
+	// Right button (Action the same as the left button)
 	case EMIE_RMOUSE_PRESSED_DOWN:
-		// Right button (Action the same as the left button)
 		if( cursorIsInEditArea())
 		{
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -1065,12 +1156,46 @@ void App::eventMousePressed(s32 mouse)
 					return;
 				}
 				
-				if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) && selectedNode)
+				if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA))
 				{
-					initialposition=selectedNode->getPosition();
-					mousepos=device->getCursorControl()->getPosition();
-					toolactivated=true;
-					moveupdown=true;
+
+					// Since we don't have multi section implemented as of now, the previous node should be NULL
+					if (selectedNode) // There was a node selected before
+					{
+						selectedNode->setDebugDataVisible(0); // Unselect it
+					}
+					selectedNode=NULL;
+					
+					// Create the selected node if there was a node picked
+					if (mousePick.pickedNode)
+					{
+						selectedNode=mousePick.pickedNode;	
+						nodeName = mousePick.pickedNode->getName();
+					
+						// Need to filter some nodes names as "terrain" or other objects might be selected.
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						{
+							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
+						}
+						else //Invalid node for selection
+						{
+							selectedNode=NULL;
+							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+						}
+					} else //Clicked outside on nothing
+					{
+						selectedNode=NULL;
+						GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+					}
+
+					if (selectedNode)
+					{
+						initialposition=selectedNode->getPosition();
+						mousepos=device->getCursorControl()->getPosition();
+						toolactivated=true;
+						moveupdown=true;
+					}
 					return;
 				}
 
@@ -1879,32 +2004,50 @@ void App::updateEditMode()
 			{				
 				if (toolstate==TOOL_DO_MOV && toolactivated) // Will move the object
 				{
-					printf("Move tool mode selected\n");
 					if (!moveupdown)
 					{
 						// Change the ID of the moved mesh so it's won't collision with the ray.
 						irr::s32 oldID=selectedNode->getID();
 						selectedNode->setID(0x0010);
 					
+						vector3df newposition = vector3df(0,0,0);
+
 						if (snapfunction) // If snapping is activated use the function
-							selectedNode->setPosition(calculateSnap(getMousePosition3D(100).pickedPos,64.0f));
+							newposition=calculateSnap(getMousePosition3D(100).pickedPos,64.0f);
 						else
-							selectedNode->setPosition(getMousePosition3D(100).pickedPos);
+							newposition=getMousePosition3D(100).pickedPos;
+
+						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_X))
+							newposition.X = initialposition.X;
+
+						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Y))
+							newposition.Y = initialposition.Y;
+
+						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Z))
+							newposition.Z = initialposition.Z;
+
+						selectedNode->setPosition(newposition);
 
 						selectedNode->setID(oldID);
 						initialposition=selectedNode->getPosition();
+						GUIManager::getInstance()->updateNodeInfos(selectedNode);
 					}
 					else
 					{
 						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
-						core::vector3df newpos = initialposition;
+						core::vector3df newposition = initialposition;
 						//lastMousePick.pickedNode->getPosition();
-						newpos.Y=newpos.Y+((mousepos.Y-mousepos2.Y));
+						newposition.Y=newposition.Y+((mousepos.Y-mousepos2.Y));
+
+						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Y))
+							return;
 
 						if (snapfunction) // If snapping is activated use the function
-							selectedNode->setPosition(calculateSnap(newpos,64.0f));
+							selectedNode->setPosition(calculateSnap(newposition,64.0f));
 						else
-							selectedNode->setPosition(newpos);
+							selectedNode->setPosition(newposition);
+
+						GUIManager::getInstance()->updateNodeInfos(selectedNode);
 
 					}
 					return;
@@ -1912,22 +2055,33 @@ void App::updateEditMode()
 				
 				if (toolstate==TOOL_DO_ROT && toolactivated) // Will rotate the object
 				{
-					printf("rotate mode selected\n");
 					if (!moveupdown)
 					{
 						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
 						vector3df newrotation = initialrotation;
-						newrotation.Y=initialrotation.Y+(mousepos.X-mousepos2.X);
-						newrotation.X=initialrotation.X+(mousepos.Y-mousepos2.Y);
+						
+						//Checkboxes define if the axis can be modified
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_Y))
+							newrotation.Y=initialrotation.Y+(mousepos.X-mousepos2.X);
+						
+
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_X))
+							newrotation.X=initialrotation.X+(mousepos.Y-mousepos2.Y);
 
 						selectedNode->setRotation(newrotation);
+						GUIManager::getInstance()->updateNodeInfos(selectedNode);
+
 					}
 					else
 					{
 						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
-						vector3df newrotation = initialrotation;
-						newrotation.Z=initialrotation.Z+(mousepos.X-mousepos2.X);
+						vector3df newrotation = selectedNode->getRotation(); //initialrotation;
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_Z))
+							newrotation.Z=initialrotation.Z+(mousepos.X-mousepos2.X);
+						
 						selectedNode->setRotation(newrotation);
+						GUIManager::getInstance()->updateNodeInfos(selectedNode);
+
 					}
 
 					return;
@@ -1936,7 +2090,6 @@ void App::updateEditMode()
 
 				if (toolstate==TOOL_DO_SCA && toolactivated) // Will rotate the object
 				{
-					printf("scale mode selected\n");
 					position2d<s32> mousepos2=device->getCursorControl()->getPosition();
 					vector3df newscale = initialscale;
 
@@ -1949,11 +2102,18 @@ void App::updateEditMode()
 						initialscale.Z=0.001f;
 					} else
 					{
-						newscale.X=initialscale.X+tscale;
-						newscale.Y=initialscale.Y+tscale;
-						newscale.Z=initialscale.Z+tscale;
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_X))
+							newscale.X=initialscale.X+tscale;
+
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_Y))
+							newscale.Y=initialscale.Y+tscale;
+
+						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_Z))
+							newscale.Z=initialscale.Z+tscale;
 					}
 					selectedNode->setScale(newscale);
+					GUIManager::getInstance()->updateNodeInfos(selectedNode);
+
 
 					return;
 				}	

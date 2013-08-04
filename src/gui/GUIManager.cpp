@@ -186,14 +186,95 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 
 bool GUIManager::getCheckboxState(GUI_ID id)
 {
-	/*
-    switch(id)
+	 switch(id)
     {
+		case CB_ID_POS_X:
+			return pos_x_lock->isChecked();
+			break;
+
+		case CB_ID_POS_Y:
+			return pos_y_lock->isChecked();
+			break;
+
+		case CB_ID_POS_Z:
+			return pos_z_lock->isChecked();
+			break;
+
+		case CB_ID_ROT_X:
+			return rot_x_lock->isChecked();
+			break;
+
+		case CB_ID_ROT_Y:
+			return rot_y_lock->isChecked();
+			break;
+
+		case CB_ID_ROT_Z:
+			return rot_z_lock->isChecked();
+			break;
+
+		case CB_ID_SCA_X:
+			return sca_x_lock->isChecked();
+			break;
+
+		case CB_ID_SCA_Y:
+			return sca_y_lock->isChecked();
+			break;
+
+		case CB_ID_SCA_Z:
+			return sca_z_lock->isChecked();
+			break;
+
+
+
         default:
             break;
     }
-	*/
-    return false;
+	return false;
+}
+
+void GUIManager::setCheckboxState(GUI_ID id,bool value)
+{
+	switch (id)
+	{
+		case CB_ID_POS_X:
+			pos_x_lock->setChecked(value);
+			break;
+
+		case CB_ID_POS_Y:
+			pos_y_lock->setChecked(value);
+			break;
+
+		case CB_ID_POS_Z:
+			pos_z_lock->setChecked(value);
+			break;
+
+		case CB_ID_ROT_X:
+			rot_x_lock->setChecked(value);
+			break;
+
+		case CB_ID_ROT_Y:
+			rot_y_lock->setChecked(value);
+			break;
+
+		case CB_ID_ROT_Z:
+			rot_z_lock->setChecked(value);
+			break;
+
+		case CB_ID_SCA_X:
+			sca_x_lock->setChecked(value);
+			break;
+
+		case CB_ID_SCA_Y:
+			sca_y_lock->setChecked(value);
+			break;
+
+		case CB_ID_SCA_Z:
+			sca_z_lock->setChecked(value);
+			break;
+		
+		default:
+			break;
+	}
 }
 
 f32 GUIManager::getScrollBarValue(GUI_ID id)
@@ -1067,33 +1148,43 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//guiDynamicObjectEditModesPanel->setMaxSize(core::dimension2du(110,40));
 	// Buttons
 
-	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"ADD", L"ADD MODE");
+	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", L"ADD MODE");
+	 guiDOAddMode->setImage(driver->getTexture("../media/art/DO_ADD.jpg"));
+	 guiDOAddMode->setPressedImage(driver->getTexture("../media/art/DO_ADD1.jpg"));
 	 guiDOAddMode->setIsPushButton(true);
 	 guiDOAddMode->setUseAlphaChannel(true);
 	 guiDOAddMode->setPressed(true);
 
 	 pos_X += 40;
-	 guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"SEL", L"SELECT MODE");
+	 guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"", L"SELECT MODE");
+	 guiDOSelMode->setImage(driver->getTexture("../media/art/DO_SEL.jpg"));
+	 guiDOSelMode->setPressedImage(driver->getTexture("../media/art/DO_SEL1.jpg"));
 	 guiDOSelMode->setIsPushButton(true);
 	 guiDOSelMode->setUseAlphaChannel(true);
 	 guiDOSelMode->setPressed(false);
 
 	 pos_X += 40;
-	 guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"MOV", L"MOVE MODE");
+	 guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"", L"MOVE MODE");
+	 guiDOMovMode->setImage(driver->getTexture("../media/art/DO_MOV.jpg"));
+	 guiDOMovMode->setPressedImage(driver->getTexture("../media/art/DO_MOV1.jpg"));
 	 guiDOMovMode->setIsPushButton(true);
 	 guiDOMovMode->setUseAlphaChannel(true);
 	 guiDOMovMode->setPressed(false);
 	 //guiDOMovMode->setEnabled(false);
 
 	 pos_X += 40;
-	 guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"ROT", L"ROTATE MODE");
+	 guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"", L"ROTATE MODE");
+	 guiDORotMode->setImage(driver->getTexture("../media/art/DO_ROT.jpg"));
+	 guiDORotMode->setPressedImage(driver->getTexture("../media/art/DO_ROT1.jpg"));
 	 guiDORotMode->setIsPushButton(true);
 	 guiDORotMode->setUseAlphaChannel(true);
 	 guiDORotMode->setPressed(false);
 	 //guiDORotMode->setEnabled(false);
 
 	 pos_X += 40;
-	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"SCA", L"SCALE MODE");
+	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"", L"SCALE MODE");
+	 guiDOScaMode->setImage(driver->getTexture("../media/art/DO_SCA.jpg"));
+	 guiDOScaMode->setPressedImage(driver->getTexture("../media/art/DO_SCA1.jpg"));
 	 guiDOScaMode->setIsPushButton(true);
 	 guiDOScaMode->setUseAlphaChannel(true);
 	 guiDOScaMode->setPressed(false);
@@ -1220,6 +1311,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 	// -- end info portions
 	UpdateGUIChooser();
+	
 	/// Define the portion when in select mode
 	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser1->setDraggable(false);
@@ -1228,6 +1320,16 @@ void GUIManager::createDynamicObjectChooserGUI()
     InnerChooser1->setDrawTitlebar(false);
 	InnerChooser1->setDrawBackground(false);
 	InnerChooser1->setVisible(false);
+
+	//Script editor button
+	guienv->addButton(myRect(5,5,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
+		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
+
+	guienv->addButton(myRect(5,35,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
+		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
+
+	guienv->addButton(myRect(5,65,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
+
 	/// Define the portion when in move/rotate/scale
 	InnerChooser2 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser2->setDraggable(false);
@@ -1235,6 +1337,95 @@ void GUIManager::createDynamicObjectChooserGUI()
 	InnerChooser2->getCloseButton()->setVisible(false);
     InnerChooser2->setDrawTitlebar(false);
 	InnerChooser2->setDrawBackground(false);
+
+	//Line 1 Position
+	guienv->addStaticText(L"",myRect(5,5,190,90),true,true,InnerChooser2);
+	guienv->addStaticText(L"Position",myRect(10,10,160,20),false,false,InnerChooser2);
+	
+	//position X axis
+	guienv->addStaticText(L"X",myRect(10,28,15,20),false,false,InnerChooser2);
+	pos_x_text = guienv->addEditBox(L"X:",myRect(25,25,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,28,50,20),false,false,InnerChooser2);
+	pos_x_text->setMultiLine(false);
+	pos_x_text->setText(L"0.000000");
+	pos_x_lock = guienv->addCheckBox(false,myRect(160,25,20,20),InnerChooser2,CB_ID_POS_X);
+
+	//position Y axis
+	guienv->addStaticText(L"Y",myRect(10,48,15,20),false,false,InnerChooser2);
+	pos_y_text = guienv->addEditBox(L"X:",myRect(25,45,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,48,50,20),false,false,InnerChooser2);
+	pos_y_text->setMultiLine(false);
+	pos_y_text->setText(L"0.000000");
+	pos_y_lock = guienv->addCheckBox(false,myRect(160,45,20,20),InnerChooser2, CB_ID_POS_Y);
+
+	//position Z axis
+	guienv->addStaticText(L"Z",myRect(10,68,15,20),false,false,InnerChooser2);
+	pos_z_text = guienv->addEditBox(L"X:",myRect(25,65,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,68,50,20),false,false,InnerChooser2);
+	pos_z_text->setMultiLine(false);
+	pos_z_text->setText(L"0.000000");
+	pos_z_lock = guienv->addCheckBox(false,myRect(160,65,20,20),InnerChooser2, CB_ID_POS_Z);
+	
+
+
+	//Rotation
+	guienv->addStaticText(L"",myRect(5,100,190,90),true,true,InnerChooser2);
+	guienv->addStaticText(L"Rotation",myRect(10,110,160,20),false,false,InnerChooser2);
+
+	//rotation X axis
+	guienv->addStaticText(L"X",myRect(10,128,15,20),false,false,InnerChooser2);
+	rot_x_text = guienv->addEditBox(L"X:",myRect(25,125,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,128,50,20),false,false,InnerChooser2);
+	rot_x_text->setMultiLine(false);
+	rot_x_text->setText(L"0.000000");
+	rot_x_lock = guienv->addCheckBox(true,myRect(160,125,20,20),InnerChooser2, CB_ID_ROT_X);
+
+	//rotation Y axis
+	guienv->addStaticText(L"Y",myRect(10,148,15,20),false,false,InnerChooser2);
+	rot_y_text = guienv->addEditBox(L"X:",myRect(25,145,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,148,50,20),false,false,InnerChooser2);
+	rot_y_text->setMultiLine(false);
+	rot_y_text->setText(L"0.000000");
+	rot_y_lock = guienv->addCheckBox(false,myRect(160,145,20,20),InnerChooser2, CB_ID_ROT_Y);
+
+	//rotation Z axis
+	guienv->addStaticText(L"Z",myRect(10,168,15,20),false,false,InnerChooser2);
+	rot_z_text = guienv->addEditBox(L"X:",myRect(25,165,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,168,50,20),false,false,InnerChooser2);
+	rot_z_text->setMultiLine(false);
+	rot_z_text->setText(L"0.000000");
+	rot_z_lock = guienv->addCheckBox(false,myRect(160,165,20,20),InnerChooser2, CB_ID_ROT_Z);
+	
+
+	
+
+
+	guienv->addStaticText(L"",myRect(5,200,190,90),true,true,InnerChooser2);
+	guienv->addStaticText(L"Scale",myRect(10,210,160,20),false,false,InnerChooser2);
+
+	//Scale X axis
+	guienv->addStaticText(L"X",myRect(10,228,15,20),false,false,InnerChooser2);
+	sca_x_text = guienv->addEditBox(L"X:",myRect(25,225,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,228,50,20),false,false,InnerChooser2);
+	sca_x_text->setMultiLine(false);
+	sca_x_text->setText(L"0.000000");
+	sca_x_lock = guienv->addCheckBox(false,myRect(160,225,20,20),InnerChooser2, CB_ID_SCA_X);
+
+	//Scale Y axis
+	guienv->addStaticText(L"Y",myRect(10,248,15,20),false,false,InnerChooser2);
+	sca_y_text = guienv->addEditBox(L"X:",myRect(25,245,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,248,50,20),false,false,InnerChooser2);
+	sca_y_text->setMultiLine(false);
+	sca_y_text->setText(L"0.000000");
+	sca_y_lock = guienv->addCheckBox(false,myRect(160,245,20,20),InnerChooser2, CB_ID_SCA_Y);
+
+	//Scale Z axis
+	guienv->addStaticText(L"Z",myRect(10,268,15,20),false,false,InnerChooser2);
+	sca_z_text = guienv->addEditBox(L"X:",myRect(25,265,100,20), true, InnerChooser2, 0);
+	guienv->addStaticText(L"Lock",myRect(130,268,50,20),false,false,InnerChooser2);
+	sca_z_text->setMultiLine(false);
+	sca_z_text->setText(L"0.000000");
+	sca_z_lock = guienv->addCheckBox(false,myRect(160,265,20,20),InnerChooser2, CB_ID_SCA_Z);
 	InnerChooser2->setVisible(false);
 }
 
@@ -2574,6 +2765,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 
 		case BT_ID_DO_ADD_MODE:
 			InnerChooser->setVisible(enable);
+			InnerChooser1->setVisible(!enable);
+			InnerChooser2->setVisible(!enable);
+
 			guiDOAddMode->setPressed(enable);
 			guiDOSelMode->setPressed(!enable);
 			guiDOMovMode->setPressed(!enable);
@@ -2582,6 +2776,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 		case BT_ID_DO_SEL_MODE:
 			InnerChooser->setVisible(!enable);
+			InnerChooser1->setVisible(enable);
+			InnerChooser2->setVisible(!enable);
+
 			guiDOSelMode->setPressed(enable);
 			guiDOAddMode->setPressed(!enable);
 			guiDOMovMode->setPressed(!enable);
@@ -2590,6 +2787,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 		case BT_ID_DO_MOV_MODE:
 			InnerChooser->setVisible(!enable);
+			InnerChooser1->setVisible(!enable);
+			InnerChooser2->setVisible(enable);
+
 			guiDOAddMode->setPressed(!enable);
 			guiDOSelMode->setPressed(!enable);
 			guiDOMovMode->setPressed(enable);
@@ -2598,6 +2798,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 		case BT_ID_DO_ROT_MODE:
 			InnerChooser->setVisible(!enable);
+			InnerChooser1->setVisible(!enable);
+			InnerChooser2->setVisible(enable);
+
 			guiDOAddMode->setPressed(!enable);
 			guiDOSelMode->setPressed(!enable);
 			guiDOMovMode->setPressed(!enable);
@@ -2606,6 +2809,9 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 		case BT_ID_DO_SCA_MODE:
 			InnerChooser->setVisible(!enable);
+			InnerChooser1->setVisible(!enable);
+			InnerChooser2->setVisible(enable);
+
 			guiDOAddMode->setPressed(!enable);
 			guiDOSelMode->setPressed(!enable);
 			guiDOMovMode->setPressed(!enable);
@@ -3016,6 +3222,33 @@ void GUIManager::updateItemsList()
     vector<stringc> items = Player::getInstance()->getObject()->getItems();
 
     for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
+}
+
+void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
+{
+	vector3df pos = vector3df(0,0,0);
+	vector3df rot = vector3df(0,0,0);
+	vector3df sca = vector3df(0,0,0);
+
+	if (node)
+	{
+		pos = node->getPosition();
+		rot = node->getRotation();
+		sca = node->getScale();
+	}
+
+	// Set the textbox gui with the information
+	pos_x_text->setText(core::stringw(pos.X).c_str());
+	pos_y_text->setText(core::stringw(pos.Y).c_str());
+	pos_z_text->setText(core::stringw(pos.Z).c_str());
+
+	rot_x_text->setText(core::stringw(rot.X).c_str());
+	rot_y_text->setText(core::stringw(rot.Y).c_str());
+	rot_z_text->setText(core::stringw(rot.Z).c_str());
+
+	sca_x_text->setText(core::stringw(sca.X).c_str());
+	sca_y_text->setText(core::stringw(sca.Y).c_str());
+	sca_z_text->setText(core::stringw(sca.Z).c_str());
 }
 
 // Flush all gui elements

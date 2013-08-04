@@ -94,7 +94,19 @@ enum GUI_ID
 	BT_ID_DO_SEL_MODE,
 	BT_ID_DO_MOV_MODE,
 	BT_ID_DO_ROT_MODE,
-	BT_ID_DO_SCA_MODE
+	BT_ID_DO_SCA_MODE,
+
+	CB_ID_POS_X,
+	CB_ID_POS_Y,
+	CB_ID_POS_Z,
+	CB_ID_ROT_X,
+	CB_ID_ROT_Y,
+	CB_ID_ROT_Z,
+	CB_ID_SCA_X,
+	CB_ID_SCA_Y,
+	CB_ID_SCA_Z,
+
+
 };
 
 //here are all windows of the editor (except mainWindow - toolbar)
@@ -172,6 +184,7 @@ class GUIManager
 		void createCodeEditorGUI();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
+		void setCheckboxState(GUI_ID id, bool value);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
@@ -217,6 +230,9 @@ class GUIManager
         stringc showInputQuestion(stringw text);
 
         void updateItemsList();
+
+		// Update the infos of the node when the user move the mouse (call coming from APP class)
+		void updateNodeInfos(ISceneNode * node);
 
 		core::stringw getEditCameraString(scene::ISceneNode *node);
 		inline void updateEditCameraString(scene::ISceneNode * node) {if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}}
@@ -405,6 +421,28 @@ class GUIManager
 		IGUIStaticText * mdl_desc1;
 		IGUIStaticText * mdl_auth1;
 		IGUIStaticText * mdl_lic1;
+
+		//Move, Rotate, Scale text input + lock
+		IGUIEditBox * pos_x_text;
+		IGUIEditBox * pos_y_text;
+		IGUIEditBox * pos_z_text;
+		IGUICheckBox * pos_x_lock;
+		IGUICheckBox * pos_y_lock;
+		IGUICheckBox * pos_z_lock;
+
+		IGUIEditBox * rot_x_text;
+		IGUIEditBox * rot_y_text;
+		IGUIEditBox * rot_z_text;
+		IGUICheckBox * rot_x_lock;
+		IGUICheckBox * rot_y_lock;
+		IGUICheckBox * rot_z_lock;
+
+		IGUIEditBox * sca_x_text;
+		IGUIEditBox * sca_y_text;
+		IGUIEditBox * sca_z_text;
+		IGUICheckBox * sca_x_lock;
+		IGUICheckBox * sca_y_lock;
+		IGUICheckBox * sca_z_lock;
 
         ///IrrRPG Builder LOGO
         ITexture* logo1;
