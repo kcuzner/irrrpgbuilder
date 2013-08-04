@@ -609,15 +609,16 @@ void App::eventGuiButton(s32 id)
 			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
 			{
 				//Tell the dynamic Objects Manager to remove the node
+				if (lastMousePick.pickedNode)
+				{
+					lastMousePick.pickedNode->setDebugDataVisible(0);
+					selectedNode=NULL;
+				}
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
 				lastMousePick.pickedNode=NULL;
-				if (selectedNode)
-				{
-					selectedNode->setDebugDataVisible(0);
-					selectedNode=NULL;
-				}
+				
 			}
 			else //Wrong node type selected
 			{
