@@ -106,6 +106,16 @@ enum GUI_ID
 	CB_ID_SCA_Y,
 	CB_ID_SCA_Z,
 
+	TI_ID_POS_X,
+	TI_ID_POS_Y,
+	TI_ID_POS_Z,
+	TI_ID_ROT_X,
+	TI_ID_ROT_Y,
+	TI_ID_ROT_Z,
+	TI_ID_SCA_X,
+	TI_ID_SCA_Y,
+	TI_ID_SCA_Z
+
 
 };
 

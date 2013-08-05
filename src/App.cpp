@@ -617,8 +617,7 @@ void App::eventGuiButton(s32 id)
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
-				lastMousePick.pickedNode=NULL;
-				
+				lastMousePick.pickedNode=NULL;				
 			}
 			else //Wrong node type selected
 			{
@@ -888,6 +887,7 @@ void App::eventGuiCheckbox(s32 id)
 	}
 }
 
+//Check events coming from combo boxes
 void App::eventGuiCombobox(s32 id)
 {
 	switch (id)
@@ -931,10 +931,120 @@ void App::eventGuiCombobox(s32 id)
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
-
+	default:
+		break;
 
 	}
 }
+
+//Check the ENTER events coming from edit boxes
+void App::eventGuiEditBox(s32 id)
+{
+	core::stringc text="";
+	core::vector3df newposition=vector3df(0,0,0);
+	core::vector3df newrotation=vector3df(0,0,0);
+	core::vector3df newscale=vector3df(1,1,1);
+	if (selectedNode)
+	{
+		newposition=selectedNode->getPosition();
+		newrotation=selectedNode->getRotation();
+		newscale=selectedNode->getScale();
+	}
+
+	switch (id)
+	{
+	case TI_ID_POS_X:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true)->getText());
+		newposition.X=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setPosition(newposition);
+		}
+		break;
+
+	case TI_ID_POS_Y:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true)->getText());
+		newposition.Y=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setPosition(newposition);
+		}
+		break;
+
+	case TI_ID_POS_Z:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Y,true)->getText());
+		newposition.Z=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setPosition(newposition);
+		}
+		break;
+
+	case TI_ID_ROT_X:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Z,true)->getText());
+		newrotation.X=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setRotation(newrotation);
+		}
+		break;
+
+	case TI_ID_ROT_Y:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Y,true)->getText());
+		newrotation.Y=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setRotation(newrotation);
+		}
+		break;
+
+	case TI_ID_ROT_Z:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Z,true)->getText());
+		newrotation.Z=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setRotation(newrotation);
+		}
+		break;
+
+	case TI_ID_SCA_X:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_X,true)->getText());
+		newscale.X=(irr::f32)atof(text.c_str());
+		//in case the user enter strange input (should get 0). 0 as a scale is not good.
+		//if (newscale.X==0)
+		//	newscale.X=1.0f;
+
+		if (selectedNode)
+		{
+			selectedNode->setScale(newscale);
+		}
+		break;
+
+	case TI_ID_SCA_Y:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Y,true)->getText());
+		newscale.Y=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setScale(newscale);
+		}
+		break;
+
+	case TI_ID_SCA_Z:
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Z,true)->getText());
+		newscale.Z=(irr::f32)atof(text.c_str());
+		if (selectedNode)
+		{
+			selectedNode->setScale(newscale);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+}
+
+
 
 #endif
 

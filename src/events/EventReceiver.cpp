@@ -103,12 +103,14 @@ bool EventReceiver::OnEvent(const SEvent& event)
             case EGET_CHECKBOX_CHANGED:
                 App::getInstance()->eventGuiCheckbox(id);
                 break;
+
             case EGET_COMBO_BOX_CHANGED:
                 App::getInstance()->eventGuiCombobox(id);
                 break;
 
 			case EGET_MESSAGEBOX_YES:
 				App::getInstance()->eventMessagebox(EGET_MESSAGEBOX_YES);
+				break;
 
 			case EGET_FILE_SELECTED:
 				App::getInstance()->loadProjectFile(true);
@@ -116,6 +118,15 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 			case EGET_FILE_CHOOSE_DIALOG_CANCELLED:
 				App::getInstance()->loadProjectFile(false);
+				break;
+
+			case EGET_EDITBOX_ENTER:
+				App::getInstance()->eventGuiEditBox(id);
+				break;
+
+			case EGET_EDITBOX_CHANGED:
+				App::getInstance()->eventGuiEditBox(id);
+				break;
 
 			case EGET_LISTBOX_CHANGED:
 				App::getInstance()->eventGuiCombobox(id);

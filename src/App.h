@@ -94,6 +94,7 @@ class App
 
 		void eventGuiCheckbox(s32 id);
         void eventGuiCombobox(s32 id);
+		void eventGuiEditBox(s32 id);
 		void updateEditMode();
 		void hideEditGui();
 		std::vector<core::stringw> getAbout();
