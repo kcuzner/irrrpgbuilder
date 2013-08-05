@@ -981,7 +981,7 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_ROT_X:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Z,true)->getText());
+		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_X,true)->getText());
 		newrotation.X=(irr::f32)atof(text.c_str());
 		if (selectedNode)
 		{
