@@ -1330,6 +1330,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	guienv->addButton(myRect(5,65,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
 
+	guienv->addButton(myRect(5,95,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+
 	/// Define the portion when in move/rotate/scale
 	InnerChooser2 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser2->setDraggable(false);
@@ -1616,7 +1618,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 void GUIManager::createContextMenuGUI()
 {
 	// --- Contextual menu for the dynamic objects
-    guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(100,100,200,160),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
+    guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(0,0,200,240),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
     guiDynamicObjects_Context_Menu_Window->getCloseButton()->setVisible(false);
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
@@ -1670,6 +1672,11 @@ void GUIManager::createContextMenuGUI()
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
                                                            stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 	guiDynamicObjects_Context_btRemove->setOverrideFont(guiFontC12);
+
+	pby+=30;
+
+	IGUIButton * button = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+	button->setOverrideFont(guiFontC12);
 	
 	pby+=25;
 
@@ -2536,7 +2543,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
 			
-            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,190));
+            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,220));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
 			guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
 			

@@ -632,6 +632,23 @@ void App::eventGuiButton(s32 id)
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
+		//Center the view on the selected object
+	case BT_ID_DYNAMIC_OBJECT_BT_CENTER:
+		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		if (selectedNode)
+		{
+			core::vector3df pos = selectedNode->getPosition();
+			core::vector3df offset = CameraSystem::getInstance()->getNode()->getPosition();
+			core::vector3df calc = pos + (pos - offset);
+
+			CameraSystem::getInstance()->setPosition(calc);
+			CameraSystem::getInstance()->getNode()->setTarget(pos);
+		}
+		else
+			guienv->addMessageBox(L"No object selected",(L"You need to select the object to center the view on it."),true);
+
+		break;
+
 	case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
