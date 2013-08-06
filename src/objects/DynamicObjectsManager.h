@@ -52,6 +52,7 @@ class DynamicObjectsManager
 		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category, SPECIAL special = SPECIAL_NONE);
 		vector<stringw> getObjectsListCategories(stringw objectType, SPECIAL special = SPECIAL_NONE);
 		vector<stringw> getObjectsCollections(SPECIAL special = SPECIAL_NONE);
+		vector<stringw> getObjectsSceneList(TYPE objectType);
 
 
 		void setObjectsID(TYPE objectType, s32 ID);
@@ -112,14 +113,17 @@ class DynamicObjectsManager
 
 		TemplateObject* newObj;
 		vector<TemplateObject*> objTemplate; // List of all the dynamic object template data 
-        int objsCounter;
+        int objsCounter_npc;
+		int objsCounter_regular;
+		int objsCounter_walkable;
+		int objsCounter_others;
 
 		vector<ISceneNodeAnimatorCollisionResponse*> collisionResponseAnimators;
 		
 		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;
 
-        stringc createUniqueName();
+        stringc createUniqueName(TYPE objtype);
 		int objectCounter;
 		core::stringw setname;
 

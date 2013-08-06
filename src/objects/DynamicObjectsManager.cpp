@@ -20,8 +20,10 @@ DynamicObjectsManager::DynamicObjectsManager()
 	//set the initial active object - the list must be 1 or more objs!
 	activeObject = this->searchTemplate("frog");
 	 //just initialize var
-    objsCounter = 0;
-	objectCounter = 0;
+    objsCounter_npc=0;
+	objsCounter_regular=0;
+	objsCounter_walkable=0;
+	objsCounter_others=0;
 	dialogCaller = NULL;
 	setname=L"";
 	objectcounter=0;
@@ -453,7 +455,7 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
     newObj->setPosition(pos);
 
     //the unique name of an dynamic object contains his index at the objects vector
-    newObj->setName(this->createUniqueName());
+	newObj->setName(this->createUniqueName(newObj->getType()));
 	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(L"CUSTOM");
 
@@ -502,12 +504,9 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	//Doing a "walk - idle" seem to fix a problem.
 	//Will have to look if the idle stance is set at default (should be pre-spawn)
     newObj->setPosition(pos);
+	core::stringc oldname = core::stringc("_").append(newObj->getName());
 
-    //the unique name of an dynamic object contains his index at the objects vector
-	if (newObj->getType()==OBJECT_TYPE_WALKABLE) // Change the name as it's not a really a "object" 
-		newObj->setName("WALKABLE_");
-	else
-		newObj->setName(this->createUniqueName());
+	newObj->setName(this->createUniqueName(newObj->getType()).append(oldname));
 	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(activeObject->getName());
 
@@ -692,6 +691,24 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw ob
     }
 
     return listObjs;
+}
+
+vector<stringw> DynamicObjectsManager::getObjectsSceneList(TYPE objectType)
+{
+	vector<stringw> listObjs;
+
+    for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+		if (objects[i]->getType()==objectType || objectType==OBJECT_TYPE_NONE)
+		{ 
+			//Don`t want theses in the list
+			if (objects[i]->getType()!=OBJECT_TYPE_PLAYER && objects[i]->getType()!=OBJECT_TYPE_EDITOR)
+				listObjs.push_back( core::stringw(objects[i]->getName()));
+		}
+    }
+
+    return listObjs;
+
 }
 
 void DynamicObjectsManager::setObjectsID(TYPE objectType, s32 ID)
@@ -1154,10 +1171,31 @@ DynamicObject* DynamicObjectsManager::getDialogCaller()
 }
 
 //!the unique name of an dynamic object contains his index at the objects vector
-stringc DynamicObjectsManager::createUniqueName()
+stringc DynamicObjectsManager::createUniqueName(TYPE objtype)
 {
-    stringc uniqueName = "dynamic_object_";
-    uniqueName += objsCounter++;
+	stringc uniqueName="";
+
+	if (objtype==OBJECT_TYPE_NPC)
+	{
+		uniqueName = "dynamic_object_npc_";
+		uniqueName += objsCounter_npc++;
+		return uniqueName;
+	}
+
+	if (objtype==OBJECT_TYPE_INTERACTIVE || objtype==OBJECT_TYPE_NON_INTERACTIVE)
+	{
+		uniqueName = "dynamic_object_";
+		uniqueName += objsCounter_regular++;
+		return uniqueName;
+	}
+
+	if (objtype==OBJECT_TYPE_WALKABLE)
+	{
+		uniqueName = "dynamic_walkable_";
+		uniqueName += objsCounter_walkable++;
+		return uniqueName;
+	}
+
 
     return uniqueName;
 }
@@ -1355,12 +1393,14 @@ void DynamicObjectsManager::clean(bool full)
     }
 	// Cleanup
 	objects.clear();
+	objsCounter_npc=0;
+	objsCounter_regular=0;
+	objsCounter_walkable=0;
+	objsCounter_others=0;
 	
 	if (!full)
 		return;
-    objsCounter = 0;
-	
-
+    
     activeObject = NULL;
 	
 	

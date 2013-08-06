@@ -27,6 +27,7 @@ GUIManager::GUIManager()
 	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
 	guiCustomSegmentWindowChooser=NULL;
+	guiSceneObjectList=NULL;
 
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
@@ -345,6 +346,37 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
     }
     return "";
 }
+
+IGUIListBox* GUIManager::getListBox(GUI_ID id)
+{
+
+    switch(id)
+    {
+	
+		case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
+			return guiCustom_Segment_OBJChooser;
+			break;
+
+		case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
+			return guiDynamicObjects_OBJChooser;
+            break;
+
+		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
+			return guiDynamicObjects_OBJCategory;
+			break;
+
+		case CO_ID_ACTIVE_SCENE_LIST:
+			return guiSceneObjectList;
+			break;
+
+        default:
+            break;
+    }
+    return NULL;
+}
+
+
+
 
 core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 {
@@ -1339,6 +1371,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	InnerChooser2->getCloseButton()->setVisible(false);
     InnerChooser2->setDrawTitlebar(false);
 	InnerChooser2->setDrawBackground(false);
+	InnerChooser2->setSubElement(true);
 
 	//Line 1 Position
 	guienv->addStaticText(L"",myRect(5,5,190,90),true,true,InnerChooser2);
@@ -1429,8 +1462,45 @@ void GUIManager::createDynamicObjectChooserGUI()
 	sca_z_text->setText(L"0.000000");
 	sca_z_lock = guienv->addCheckBox(false,myRect(160,265,20,20),InnerChooser2, CB_ID_SCA_Z);
 	InnerChooser2->setVisible(false);
+
+	// Right portion of the GUI in SELECT MODE will contain a way to select object by list of object types 
+	windowRect2.UpperLeftCorner.X=220;
+	windowRect2.UpperLeftCorner.Y=35;
+	windowRect2.LowerRightCorner.X=540;
+	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
+
+	InnerChooser3 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser3->getCloseButton()->setVisible(false);
+	InnerChooser3->setDrawTitlebar(false);
+	InnerChooser3->setDrawBackground(false);
+	InnerChooser3->setDraggable(false);
+	//InnerChooser3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	pos_X=0; 
+	pos_Y=5;
+	//Elements of this windows
+	IGUIStaticText * it_1 = guienv->addStaticText(L"Selection lists",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser3,-1);
+	it_1->setOverrideFont(guiFont12);
+
+	pos_Y+=20;
+	guienv->addStaticText(L"Object type filter:",core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3,-1);
+	IGUIComboBox * combo = guienv->addComboBox(myRect(120,pos_Y+5,180,20),InnerChooser3,0);
+	combo->setMaxSelectionRows(24);
+	combo->addItem(L"All");
+	combo->addItem(L"NPC");
+	combo->addItem(L"Props");
+	combo->addItem(L"Walkables");
+
+	pos_Y+=60;
+	guiSceneObjectList = guienv->addListBox(myRect(5,pos_Y,260,320),InnerChooser3, CO_ID_ACTIVE_SCENE_LIST,true);
+	guiSceneObjectList->addItem(L"No item in the scene");
+	guiSceneObjectList->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	InnerChooser3->setVisible(false);
+	InnerChooser3->setSubElement(true);
 }
 
+// GUI Interface for choosing CUSTOM SEGMENTS 
 void GUIManager::createCustomSegmentChooserGUI()
 {
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
@@ -1615,9 +1685,11 @@ void GUIManager::createCustomSegmentChooserGUI()
 
 }
 
+
+// --- Contextual menu for the dynamic objects
 void GUIManager::createContextMenuGUI()
 {
-	// --- Contextual menu for the dynamic objects
+
     guiDynamicObjects_Context_Menu_Window = guienv->addWindow(myRect(0,0,200,240),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
     guiDynamicObjects_Context_Menu_Window->getCloseButton()->setVisible(false);
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
@@ -2137,6 +2209,23 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 	}
 }
+
+void GUIManager::buildSceneObjectList(TYPE objtype)
+{
+
+	if (!guiSceneObjectList)
+		return;
+
+	guiSceneObjectList->clear();
+
+	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneList(objtype);
+	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+	{
+		guiSceneObjectList->addItem(listDynamicObjsCat[i].c_str());
+	}
+	guiSceneObjectList->setSelected(0);
+}
+
 
 // Used to put a text description when loading a project
 void GUIManager::setTextLoader(stringw text)
@@ -2774,6 +2863,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			InnerChooser->setVisible(enable);
 			InnerChooser1->setVisible(!enable);
 			InnerChooser2->setVisible(!enable);
+			InnerChooser3->setVisible(!enable);
 
 			guiDOAddMode->setPressed(enable);
 			guiDOSelMode->setPressed(!enable);
@@ -2785,6 +2875,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			InnerChooser->setVisible(!enable);
 			InnerChooser1->setVisible(enable);
 			InnerChooser2->setVisible(!enable);
+			InnerChooser3->setVisible(enable);
 
 			guiDOSelMode->setPressed(enable);
 			guiDOAddMode->setPressed(!enable);
@@ -2796,6 +2887,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			InnerChooser->setVisible(!enable);
 			InnerChooser1->setVisible(!enable);
 			InnerChooser2->setVisible(enable);
+			InnerChooser3->setVisible(enable);
 
 			guiDOAddMode->setPressed(!enable);
 			guiDOSelMode->setPressed(!enable);
@@ -2807,6 +2899,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			InnerChooser->setVisible(!enable);
 			InnerChooser1->setVisible(!enable);
 			InnerChooser2->setVisible(enable);
+			InnerChooser3->setVisible(enable);
 
 			guiDOAddMode->setPressed(!enable);
 			guiDOSelMode->setPressed(!enable);

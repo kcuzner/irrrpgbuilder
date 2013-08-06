@@ -429,6 +429,8 @@ void App::eventGuiButton(s32 id)
 	vector3df oldrotation = vector3df(0,0,0);
 	core::stringw oldscript = L"";
 
+	IGUIListBox* box = NULL; // Combo box pointer
+
 
 	switch (id)
 	{
@@ -512,7 +514,7 @@ void App::eventGuiButton(s32 id)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
 
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{	// Keep the "good stuff"
 				oldrotation = lastMousePick.pickedNode->getRotation();
 				oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
@@ -554,7 +556,7 @@ void App::eventGuiButton(s32 id)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
 
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
 				selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(nodeName) );
 				GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
@@ -606,7 +608,7 @@ void App::eventGuiButton(s32 id)
 		if (lastMousePick.pickedNode)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
 				//Tell the dynamic Objects Manager to remove the node
 				if (lastMousePick.pickedNode)
@@ -817,6 +819,9 @@ void App::eventGuiButton(s32 id)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		toolactivated=false;
 		moveupdown=false;
+
+		GUIManager::getInstance()->buildSceneObjectList();
+		
 		break;
 
 	case BT_ID_DO_MOV_MODE:
@@ -904,9 +909,12 @@ void App::eventGuiCheckbox(s32 id)
 	}
 }
 
-//Check events coming from combo boxes
+//Check events coming from combo boxes AND LIST BOXES
 void App::eventGuiCombobox(s32 id)
 {
+	s32 index = 0;
+	core::stringw item = L"";
+
 	switch (id)
 	{
 		
@@ -946,6 +954,22 @@ void App::eventGuiCombobox(s32 id)
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
+		break;
+
+	case CO_ID_ACTIVE_SCENE_LIST:
+		index = GUIManager::getInstance()->getListBox(CO_ID_ACTIVE_SCENE_LIST)->getSelected();
+		item = GUIManager::getInstance()->getListBox(CO_ID_ACTIVE_SCENE_LIST)->getListItem(index);
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(0);
+			selectedNode=NULL;
+		}
+		selectedNode = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item))->getNode();
+		if (selectedNode)
+		{
+			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+		}
+		printf("The combo box is refreshed");
 		break;
 
 	default:
@@ -1274,7 +1298,7 @@ void App::eventMousePressed(s32 mouse)
 						selectedNode=mousePick.pickedNode;
 						nodeName = mousePick.pickedNode->getName();
 						//if you click on a Dynamic Object then open the context menu
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
 #ifdef DEBUG
 							cout << "PROP:" << nodeName.c_str() << endl;
@@ -1319,7 +1343,7 @@ void App::eventMousePressed(s32 mouse)
 						nodeName = mousePick.pickedNode->getName();
 					
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
@@ -1389,7 +1413,7 @@ void App::eventMousePressed(s32 mouse)
 					nodeName = mousePick.pickedNode->getName();
 
 					//if you click on a Dynamic Object then open his properties
-					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
@@ -1417,7 +1441,7 @@ void App::eventMousePressed(s32 mouse)
 						nodeName = mousePick.pickedNode->getName();
 					
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName == "WALKABLE_" )
+						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
@@ -1600,7 +1624,7 @@ void App::setPreviewSelection()
 			nodeName = mousePick.pickedNode->getName();
 			//If the mouse hover the object it will be toggled in debug data (bounding box, etc)
 			//Should be able to select the walkable in editor mode
-			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName=="WALKABLE_" )
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
 				if (nodeName!=lastPickedNodeName && lastScannedPick.pickedNode!=NULL)
 					lastScannedPick.pickedNode->setDebugDataVisible(0);

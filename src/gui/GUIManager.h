@@ -88,6 +88,7 @@ enum GUI_ID
 	CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,
 	CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,
 	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,
+	CO_ID_ACTIVE_SCENE_LIST,
 
 	BT_ID_TILE_ROT_LEFT,
 	BT_ID_TILE_ROT_RIGHT,
@@ -169,6 +170,8 @@ class GUIManager
         void setupGameplayGUI();
 		void UpdateGUIChooser(LIST_TYPE type = LIST_OBJ);
 		void updateCurrentCategory(LIST_TYPE type = LIST_OBJ);
+		void buildSceneObjectList(TYPE objtype = OBJECT_TYPE_NONE);
+
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
 
@@ -198,6 +201,7 @@ class GUIManager
 		void setCheckboxState(GUI_ID id, bool value);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
+		IGUIListBox* getListBox(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
 		bool getVisibleStatus(s32 ID);
 		void getInfoAboutModel(LIST_TYPE type = LIST_OBJ);
@@ -378,6 +382,7 @@ class GUIManager
 		gui::IGUIWindow* InnerChooser; // For the inner part of the chooser (add)
 		gui::IGUIWindow* InnerChooser1; // For the inner part of the chooser (select)
 		gui::IGUIWindow* InnerChooser2; // For the inner part of the chooser (move/rotate/scale)
+		gui::IGUIWindow* InnerChooser3; // For the inner part of the chooser (select->Object lists)
 
 		
 		IGUIWindow* guiDynamicObjectsWindowInfo;
@@ -400,6 +405,7 @@ class GUIManager
 		// For the Custom tiles selection
 		IGUIListBox* guiCustom_Segment_OBJChooser;
 		IGUIListBox* guiCustom_Segment_OBJCategory;
+		IGUIListBox* guiSceneObjectList;
 		IGUIComboBox* guiCustom_Segment_Category;
 		IGUIButton* guiSegmentRotateLeft;
 		IGUIButton* guiSegmentRotateRight;
@@ -529,6 +535,8 @@ class GUIManager
         void loadFonts();
 
         void loadScriptTemplates();
+
+
 
 		
 };
