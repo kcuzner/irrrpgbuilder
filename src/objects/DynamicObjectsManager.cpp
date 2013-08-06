@@ -545,7 +545,9 @@ void DynamicObjectsManager::removeObject(stringc uniqueName)
     {
         if( stringc(objects[i]->getName()) == uniqueName )
         {
+			printf("Deleting %s\n",uniqueName.c_str());
             delete ((DynamicObject*)objects[i]);
+			
             objects.erase(objects.begin() + i);
             return;
         }

@@ -449,11 +449,13 @@ void App::eventGuiButton(s32 id)
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
 		this->setAppState(APP_EDIT_LOOK);
+		GUIManager::getInstance()->buildSceneObjectList();
 		break;
 
 	case BT_ID_LOAD_PROJECT:
 		this->loadProject();
 		this->setAppState(APP_EDIT_LOOK);
+		GUIManager::getInstance()->buildSceneObjectList();
 		break;
 
 	case BT_ID_SAVE_PROJECT:
@@ -498,11 +500,13 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
+		GUIManager::getInstance()->buildSceneObjectList();
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		loadProject(DF_MODEL);
+		GUIManager::getInstance()->buildSceneObjectList();
 
 	break;
 
@@ -510,42 +514,55 @@ void App::eventGuiButton(s32 id)
 
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
+
+		//----
 		if (lastMousePick.pickedNode)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
-
 			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
-			{	// Keep the "good stuff"
+			{
+				//Tell the dynamic Objects Manager to remove the node
+				if (lastMousePick.pickedNode)
+				{
+					lastMousePick.pickedNode->setDebugDataVisible(0);
+					selectedNode=NULL;
+				}
+
+				// Keep the "good stuff"
 				oldrotation = lastMousePick.pickedNode->getRotation();
 				oldscript = DynamicObjectsManager::getInstance()->getScript(lastMousePick.pickedNode->getName());
 
-				//Tell the dynamic Objects Manager to remove the node
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
-
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
-				lastMousePick.pickedNode=NULL;
-				if (selectedNode)
-				{
-					selectedNode->setDebugDataVisible(0);
-					selectedNode=NULL;
-				}
+				lastMousePick.pickedNode=NULL;		
 
 				// Create the new object from the template and put the old values back in.
 				object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
 				object->setScript(oldscript);
 				object->setRotation(oldrotation);
+				
+				//Reselect the replaced object (in the other modes, in ADD mode selection is done automatically)
+				if (toolstate!=TOOL_DO_ADD)
+				{
+					selectedNode=object->getNode();
+					selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+				}
+
+				//Once the change is done rebuild the list
+				GUIManager::getInstance()->buildSceneObjectList();
 			}
 			else //Wrong node type selected
 			{
-				guienv->addMessageBox(L"No object selected",(L"You need to select an object to be able to replace it."),true);
+				guienv->addMessageBox(L"No object selected",(L"You need to select an object to replace it."),true);
 			}
 		}
-		else //Wrong node type selected
+		else //Nothing selected
 		{
-			guienv->addMessageBox(L"No object selected",(L"You need to select an object to be able to replace it."),true);
+			guienv->addMessageBox(L"No object selected",(L"You need to select an object to replace it."),true);
 		}
-		
+		if (app_state!=APP_EDIT_DYNAMIC_OBJECTS_MODE)
+			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
@@ -619,7 +636,8 @@ void App::eventGuiButton(s32 id)
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
-				lastMousePick.pickedNode=NULL;				
+				lastMousePick.pickedNode=NULL;		
+				GUIManager::getInstance()->buildSceneObjectList();
 			}
 			else //Wrong node type selected
 			{
@@ -819,9 +837,6 @@ void App::eventGuiButton(s32 id)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		toolactivated=false;
 		moveupdown=false;
-
-		GUIManager::getInstance()->buildSceneObjectList();
-		
 		break;
 
 	case BT_ID_DO_MOV_MODE:
@@ -914,6 +929,7 @@ void App::eventGuiCombobox(s32 id)
 {
 	s32 index = 0;
 	core::stringw item = L"";
+	DynamicObject * object = NULL;
 
 	switch (id)
 	{
@@ -964,12 +980,17 @@ void App::eventGuiCombobox(s32 id)
 			selectedNode->setDebugDataVisible(0);
 			selectedNode=NULL;
 		}
-		selectedNode = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item))->getNode();
+
+		object =DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item)); 
+		if (object)
+		{
+			selectedNode = object->getNode();
+		}
+		
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 		}
-		printf("The combo box is refreshed");
 		break;
 
 	default:
@@ -1317,6 +1338,7 @@ void App::eventMousePressed(s32 mouse)
 								GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+							GUIManager::getInstance()->buildSceneObjectList();
 #ifdef DEBUG
 							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif

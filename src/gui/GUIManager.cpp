@@ -1345,24 +1345,27 @@ void GUIManager::createDynamicObjectChooserGUI()
 	UpdateGUIChooser();
 	
 	/// Define the portion when in select mode
-	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser);
 	InnerChooser1->setDraggable(false);
-	InnerChooser1->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	//InnerChooser1->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	InnerChooser1->getCloseButton()->setVisible(false);
     InnerChooser1->setDrawTitlebar(false);
 	InnerChooser1->setDrawBackground(false);
-	InnerChooser1->setVisible(false);
+	InnerChooser1->setSubElement(false);
 
+	IGUIButton * button = NULL;
 	//Script editor button
-	guienv->addButton(myRect(5,5,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
+	button = guienv->addButton(myRect(5,5,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 
-	guienv->addButton(myRect(5,35,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
+	button=guienv->addButton(myRect(5,35,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 
-	guienv->addButton(myRect(5,65,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
+	button=guienv->addButton(myRect(5,65,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
 
-	guienv->addButton(myRect(5,95,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+	button=guienv->addButton(myRect(5,95,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+
+	InnerChooser1->setVisible(false);
 
 	/// Define the portion when in move/rotate/scale
 	InnerChooser2 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
@@ -1469,12 +1472,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 	windowRect2.LowerRightCorner.X=540;
 	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
 
-	InnerChooser3 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
+	InnerChooser3 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser);
 	InnerChooser3->getCloseButton()->setVisible(false);
-	InnerChooser3->setDrawTitlebar(false);
+	InnerChooser3->setDrawTitlebar(true);
 	InnerChooser3->setDrawBackground(false);
 	InnerChooser3->setDraggable(false);
-	//InnerChooser3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	InnerChooser3->setSubElement(true);
+	//InnerChooser3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
 	pos_X=0; 
 	pos_Y=5;
@@ -1483,7 +1487,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	it_1->setOverrideFont(guiFont12);
 
 	pos_Y+=20;
-	guienv->addStaticText(L"Object type filter:",core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3,-1);
+	guienv->addStaticText(L"Object type filter:",core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3);
 	IGUIComboBox * combo = guienv->addComboBox(myRect(120,pos_Y+5,180,20),InnerChooser3,0);
 	combo->setMaxSelectionRows(24);
 	combo->addItem(L"All");
@@ -1495,9 +1499,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiSceneObjectList = guienv->addListBox(myRect(5,pos_Y,260,320),InnerChooser3, CO_ID_ACTIVE_SCENE_LIST,true);
 	guiSceneObjectList->addItem(L"No item in the scene");
 	guiSceneObjectList->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-
 	InnerChooser3->setVisible(false);
-	InnerChooser3->setSubElement(true);
+	
 }
 
 // GUI Interface for choosing CUSTOM SEGMENTS 

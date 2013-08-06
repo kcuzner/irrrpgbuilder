@@ -233,7 +233,6 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 
 	if (ActionKeys[EK_STRAFE_LEFT] && !Zooming)
 	{
-		printf("Should start to move now!\n");
 		translate -=  tvectX;
 		OldTarget = translate;		
 	}
