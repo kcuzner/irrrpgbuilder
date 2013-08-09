@@ -32,6 +32,7 @@ App::App()
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
+
 	textevent.clear();
 	lastScannedPick.pickedNode=NULL;
 	lastMousePick.pickedNode=NULL;
@@ -63,6 +64,8 @@ App::App()
 	toolactivated = false; // no tools activated
 	initangle=vector2d<f32>(0,0); //Initialize the initial angle of the RTS camera (Calculated from here)
 	raytester=0; // Initialize and the ray tester class
+
+	current_listfilter = OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 	
 }
 
@@ -449,13 +452,13 @@ void App::eventGuiButton(s32 id)
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
 		this->setAppState(APP_EDIT_LOOK);
-		GUIManager::getInstance()->buildSceneObjectList();
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
 	case BT_ID_LOAD_PROJECT:
 		this->loadProject();
 		this->setAppState(APP_EDIT_LOOK);
-		GUIManager::getInstance()->buildSceneObjectList();
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
 	case BT_ID_SAVE_PROJECT:
@@ -500,13 +503,13 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
-		GUIManager::getInstance()->buildSceneObjectList();
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
 	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		loadProject(DF_MODEL);
-		GUIManager::getInstance()->buildSceneObjectList();
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 
 	break;
 
@@ -550,7 +553,7 @@ void App::eventGuiButton(s32 id)
 				}
 
 				//Once the change is done rebuild the list
-				GUIManager::getInstance()->buildSceneObjectList();
+				GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 			}
 			else //Wrong node type selected
 			{
@@ -637,7 +640,7 @@ void App::eventGuiButton(s32 id)
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
 				lastMousePick.pickedNode=NULL;		
-				GUIManager::getInstance()->buildSceneObjectList();
+				GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 			}
 			else //Wrong node type selected
 			{
@@ -981,17 +984,35 @@ void App::eventGuiCombobox(s32 id)
 			selectedNode=NULL;
 		}
 
-		object =DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item)); 
+		object = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item)); 
 		if (object)
 		{
 			selectedNode = object->getNode();
-		}
+			lastMousePick.pickedNode = object->getNode();
+		} else
+			GUIManager::getInstance()->setConsoleText(core::stringw(L"Failed to retrieve this object: ").append(core::stringw(item)));
 		
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 		}
 		break;
+
+	case CO_ID_ACTIVE_LIST_FILTER: // User activate a item filter to get a new list of objects to select
+		item = GUIManager::getInstance()->getComboBoxItem(CO_ID_ACTIVE_LIST_FILTER);
+		current_listfilter = OBJECT_TYPE_NONE; 
+		if (item == core::stringc("NPC"))
+			current_listfilter = OBJECT_TYPE_NPC; 
+		if (item == core::stringc("Props"))
+			current_listfilter = OBJECT_TYPE_NON_INTERACTIVE; 
+		if (item == core::stringc("Interactive Props"))
+			current_listfilter = OBJECT_TYPE_INTERACTIVE;
+		if (item == core::stringc("Walkables"))
+			current_listfilter = OBJECT_TYPE_WALKABLE; 
+
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+		break;
+
 
 	default:
 		break;
@@ -1338,7 +1359,7 @@ void App::eventMousePressed(s32 mouse)
 								GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-							GUIManager::getInstance()->buildSceneObjectList();
+							GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 #ifdef DEBUG
 							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif

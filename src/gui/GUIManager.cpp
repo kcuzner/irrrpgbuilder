@@ -332,15 +332,23 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 		case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
 			return stringc(guiCustom_Segment_OBJChooser->getListItem(guiCustom_Segment_OBJChooser->getSelected()));
 			break;
+
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 			return stringc(guiDynamicObjects_OBJChooser->getListItem(guiDynamicObjects_OBJChooser->getSelected()));
             break;
+
 		case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
 			return stringc(guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected()));
 			break;
+
         case CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
             return stringc(guiDynamicObjects_LoadScriptTemplateCB->getItem(guiDynamicObjects_LoadScriptTemplateCB->getSelected()));
             break;
+
+		case CO_ID_ACTIVE_LIST_FILTER:
+			return stringc(guiDynamicObjects_listfilter->getItem(guiDynamicObjects_listfilter->getSelected()));
+			break;
+
         default:
             break;
     }
@@ -1488,12 +1496,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	pos_Y+=20;
 	guienv->addStaticText(L"Object type filter:",core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3);
-	IGUIComboBox * combo = guienv->addComboBox(myRect(120,pos_Y+5,180,20),InnerChooser3,0);
-	combo->setMaxSelectionRows(24);
-	combo->addItem(L"All");
-	combo->addItem(L"NPC");
-	combo->addItem(L"Props");
-	combo->addItem(L"Walkables");
+	guiDynamicObjects_listfilter = guienv->addComboBox(myRect(120,pos_Y+5,180,20),InnerChooser3,CO_ID_ACTIVE_LIST_FILTER);
+	guiDynamicObjects_listfilter->setMaxSelectionRows(24);
+	guiDynamicObjects_listfilter->addItem(L"All");
+	guiDynamicObjects_listfilter->addItem(L"NPC");
+	guiDynamicObjects_listfilter->addItem(L"Props");
+	guiDynamicObjects_listfilter->addItem(L"Interactive Props");
+	guiDynamicObjects_listfilter->addItem(L"Walkables");
 
 	pos_Y+=60;
 	guiSceneObjectList = guienv->addListBox(myRect(5,pos_Y,260,320),InnerChooser3, CO_ID_ACTIVE_SCENE_LIST,true);

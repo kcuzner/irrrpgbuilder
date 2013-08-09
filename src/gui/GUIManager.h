@@ -89,6 +89,7 @@ enum GUI_ID
 	CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,
 	CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,
 	CO_ID_ACTIVE_SCENE_LIST,
+	CO_ID_ACTIVE_LIST_FILTER,
 
 	BT_ID_TILE_ROT_LEFT,
 	BT_ID_TILE_ROT_RIGHT,
@@ -460,6 +461,9 @@ class GUIManager
 		IGUICheckBox * sca_x_lock;
 		IGUICheckBox * sca_y_lock;
 		IGUICheckBox * sca_z_lock;
+
+		// Items list 
+		IGUIComboBox* guiDynamicObjects_listfilter;
 
         ///IrrRPG Builder LOGO
         ITexture* logo1;

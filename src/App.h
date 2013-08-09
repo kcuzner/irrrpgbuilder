@@ -229,6 +229,8 @@ class App
 		APP_TOOLSTATE toolstate;
 		APP_TOOLSTATE old_do_state;
 
+		TYPE current_listfilter; //Last filter for the object list
+
 		bool toolactivated; //This determine if the tool is activated.
 
         stringc scriptGlobal;
