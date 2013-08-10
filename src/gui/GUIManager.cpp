@@ -1237,15 +1237,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 	windowRect2.LowerRightCorner.X=windowRect.getWidth()-10;
 	windowRect2.LowerRightCorner.Y=windowRect.getHeight()-10;
 
-	// Define the "window" that will contain the stuff to ADD new elements.
+	//---------------------------------------------- ADD MODE content.
 	InnerChooser = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser->setDraggable(false);
 	InnerChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	InnerChooser->getCloseButton()->setVisible(false);
     InnerChooser->setDrawTitlebar(false);
 	InnerChooser->setDrawBackground(false);
-	//Could be able to drag the window
-	//guiDynamicObjectsWindowChooser->setDraggable(true);
 
 	pos_Y = 0;
     //guiDynamicObjectsWindowChooser_Y += 10;
@@ -1292,7 +1290,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsInfo->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 
-	/// ---------------- Info portions
+	//---------------------------------------------- Info portions - ADD MODE
 	pos_X = 200;
 	pos_Y = 5;
 	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,20),false,true,InnerChooser,-1);
@@ -1352,6 +1350,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	// -- end info portions
 	UpdateGUIChooser();
 	
+	//---------------------------------------------- SELECT MODE PORTION
 	/// Define the portion when in select mode
 	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser);
 	InnerChooser1->setDraggable(false);
@@ -1361,20 +1360,63 @@ void GUIManager::createDynamicObjectChooserGUI()
 	InnerChooser1->setDrawBackground(false);
 	InnerChooser1->setSubElement(false);
 
+	pos_X = 10;
+	pos_Y = 5;
 	IGUIButton * button = NULL;
 	//Script editor button
-	button = guienv->addButton(myRect(5,5,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
+
+	IGUIStaticText * background = guienv->addStaticText(L"",core::rect<s32>(pos_X-5,pos_Y,pos_X+185,pos_Y+140),true,false,InnerChooser1,-1,true); //Box border & background for infos
+	background->setBackgroundColor(video::SColor(255,240,240,240));
+
+	IGUIStaticText * objinfotext1 =  guienv->addStaticText(L"Selected object:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	objinfotext1->setOverrideFont(guiFont12);
+
+	pos_Y+=15;
+	IGUIStaticText * objtext1 =  guienv->addStaticText(L"no selection:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT);
+	objtext1->setOverrideColor(video::SColor(255,60,129,220));
+
+	pos_Y+=20;
+	IGUIStaticText * objinfotext2 =  guienv->addStaticText(L"Selected object type:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	objinfotext2->setOverrideFont(guiFont12);
+
+	pos_Y+=15;
+	IGUIStaticText * objtext2 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT_TYPE);
+	objtext2->setOverrideColor(video::SColor(255,60,129,220));
+
+	pos_Y+=20;
+	IGUIStaticText * objinfotext4 =  guienv->addStaticText(L"Object has a script?:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	objinfotext4->setOverrideFont(guiFont12);
+
+	pos_Y+=15;
+	IGUIStaticText * objtext4 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_OBJ_SCRIPT);
+	objtext4->setOverrideColor(video::SColor(255,60,129,220));
+
+	pos_Y+=20;
+	IGUIStaticText * objinfotext3 =  guienv->addStaticText(L"Current template:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	objinfotext3->setOverrideFont(guiFont12);
+
+	pos_Y+=15;
+	IGUIStaticText * objtext3 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+185,pos_Y+30),false,true,InnerChooser1,TXT_ID_CUR_TEMPLATE);
+	objtext3->setOverrideColor(video::SColor(255,60,129,220));
+
+	pos_X-=5;
+	pos_Y+=30;
+	button = guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 
-	button=guienv->addButton(myRect(5,35,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
+	pos_Y+=30;
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 
-	button=guienv->addButton(myRect(5,65,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
+	pos_Y+=30;
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
 
-	button=guienv->addButton(myRect(5,95,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+	pos_Y+=30;
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
 
 	InnerChooser1->setVisible(false);
 
+	//---------------------------------------------- SELECT - MOVE - ROTATE - SCALE MODES RIGHT PORTION
 	/// Define the portion when in move/rotate/scale
 	InnerChooser2 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser,0);
 	InnerChooser2->setDraggable(false);
@@ -1474,6 +1516,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	sca_z_lock = guienv->addCheckBox(false,myRect(160,265,20,20),InnerChooser2, CB_ID_SCA_Z);
 	InnerChooser2->setVisible(false);
 
+	//---------------------------------------------- SELECT MODE RIGHT portion
 	// Right portion of the GUI in SELECT MODE will contain a way to select object by list of object types 
 	windowRect2.UpperLeftCorner.X=220;
 	windowRect2.UpperLeftCorner.Y=35;

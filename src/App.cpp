@@ -1337,20 +1337,17 @@ void App::eventMousePressed(s32 mouse)
 					// If pickednode is empty then the user clicked outside the area
 					if (mousePick.pickedNode)
 					{
-						selectedNode=mousePick.pickedNode;
 						nodeName = mousePick.pickedNode->getName();
 						//if you click on a Dynamic Object then open the context menu
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
+							selectedNode=mousePick.pickedNode;
 #ifdef DEBUG
 							cout << "PROP:" << nodeName.c_str() << endl;
 #endif
-
 							// Toggle the context menu
 							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 								!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
-							
-
 						}
 						else//create a new copy of active dynamic object at the clicked position
 						{
@@ -1382,12 +1379,12 @@ void App::eventMousePressed(s32 mouse)
 					// Create the selected node if there was a node picked
 					if (mousePick.pickedNode)
 					{
-						selectedNode=mousePick.pickedNode;	
 						nodeName = mousePick.pickedNode->getName();
 					
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
+							selectedNode=mousePick.pickedNode;	
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
 						}
@@ -1480,12 +1477,12 @@ void App::eventMousePressed(s32 mouse)
 					// Create the selected node if there was a node picked
 					if (mousePick.pickedNode)
 					{
-						selectedNode=mousePick.pickedNode;	
 						nodeName = mousePick.pickedNode->getName();
 					
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
+							selectedNode=mousePick.pickedNode;	
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
 						}
@@ -1655,10 +1652,8 @@ void App::setPreviewSelection()
 {
 	// Will get a toggle selection
 	MousePick mousePick = getMousePosition3D();
-
-
 	stringc nodeName = "";
-	selectedNode=mousePick.pickedNode;
+	
 	// Check for a node to prevent a crash (need to get the name of the node)
 	if (mousePick.pickedNode != NULL)
 	{
@@ -1669,6 +1664,7 @@ void App::setPreviewSelection()
 			//Should be able to select the walkable in editor mode
 			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
+				selectedNode=mousePick.pickedNode;
 				if (nodeName!=lastPickedNodeName && lastScannedPick.pickedNode!=NULL)
 					lastScannedPick.pickedNode->setDebugDataVisible(0);
 
@@ -1857,7 +1853,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (jun 2013)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (aug 2013)");
 	} else
 		device = IRRdevice;
 
@@ -1999,15 +1995,17 @@ void App::update()
 	{
 		// Do not update the gameplay if we "paused" the game for a reason
 		if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
+		{
 			updateGameplay();
+			
+			// This will calculate the animation blending for the nodes
+			DynamicObjectsManager::getInstance()->updateAnimationBlend();
+		}
 	}
 
 
 	// Check for events of the logger
 	GUIManager::getInstance()->setConsoleLogger(textevent);
-
-	// This will calculate the animation blending for the nodes
-	DynamicObjectsManager::getInstance()->updateAnimationBlend();
 
 	// Prepare the post FX before rendering all
 	EffectsManager::getInstance()->preparePostFX(false);
@@ -2017,7 +2015,8 @@ void App::update()
 		raytester->update();
 
 	// PostFX - render the player in silouette if he's occluded
-	if (silouette)
+	// Work with the current model but the code should be improved to support more models (with more than one texture)
+	if (silouette && (app_state > APP_STATE_CONTROL))
 	{
 		driver->runAllOcclusionQueries(false);
 		driver->updateAllOcclusionQueries();
@@ -2102,6 +2101,8 @@ void App::run()
 	raytester=new raytest();
 	raytester->init(device);
 
+	selectedNode=NULL;
+
 
 	int lastFPS = -1;
 	//	u32 timer = device->getTimer()->getRealTime();
@@ -2116,7 +2117,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (jun 2013)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (aug 2013)";
 			str += " FPS:";
 			str += fps;
 
@@ -2312,6 +2313,100 @@ void App::updateEditMode()
 						lastMousePick.pickedNode->setPosition(newpos);
 
 					return;
+
+				}
+			}
+
+			//Refresh the infos about the selections
+			if (app_state==APP_EDIT_DYNAMIC_OBJECTS_MODE && toolstate==TOOL_DO_SEL)
+			{
+				if (selectedNode)
+				{
+					IGUIStaticText * text = NULL;
+					DynamicObject * object = NULL;
+					core::stringw objtype = "";
+					core::stringw templatename = "";
+
+					templatename = DynamicObjectsManager::getInstance()->getActiveObject()->getName();
+
+					// Get the selected dynamic object
+					object = DynamicObjectsManager::getInstance()->getObjectByName(((core::stringc)selectedNode->getName()).c_str());
+
+					if (object)
+					{
+						TYPE obj = object->getType();
+						switch (obj)
+						{ 
+
+							case OBJECT_TYPE_PLAYER:
+								objtype = "Object is a PLAYER";
+								break;
+
+							case OBJECT_TYPE_NPC:
+								objtype = "Object is a NPC";
+								break;
+
+							case OBJECT_TYPE_INTERACTIVE:
+								objtype = "Object is interactive";
+								break;
+
+							case OBJECT_TYPE_NON_INTERACTIVE:
+								objtype = "Object is non interactive";
+								break;
+
+							case OBJECT_TYPE_WALKABLE:
+								objtype = "Object is a walkable mesh";
+								break;
+
+						
+							default:
+							break;
+						}
+					}
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT,true));
+					if (text)
+						text->setText(((core::stringw)selectedNode->getName()).c_str());
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT_TYPE,true));
+					if (text)
+						text->setText(objtype.c_str());
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_OBJ_SCRIPT,true));
+					if (text && object)
+					{
+						if (object->getScript().size()>0)
+							text->setText(L"Yes");
+						else
+							text->setText(L"No");
+					}
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
+					if (text)
+						text->setText(templatename.c_str());
+				} else
+				{
+				
+					core::stringw templatename = "";
+					IGUIStaticText * text = NULL;
+
+					templatename = DynamicObjectsManager::getInstance()->getActiveObject()->getName();
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT,true));
+					if (text)
+						text->setText(L"No selection");
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT_TYPE,true));
+					if (text)
+						text->setText(L"No selection");
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_OBJ_SCRIPT,true));
+					if (text)
+						text->setText(L"No selection");
+
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
+					if (text)
+						text->setText(templatename.c_str());
 
 				}
 			}
