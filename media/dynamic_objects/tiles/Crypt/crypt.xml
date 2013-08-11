@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<IrrRPG_Builder_DynamicObjects version="1.0">
+	<dynamic_object name="Straight corridor" mesh="tiles/Crypt/irb_CryptCorridor.obj"  type="walkable" special="segment" scale="1.0"
+					description="Straigth corridor for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
+					thumbnail="tiles/Crypt/info_crypt_corridor.jpg" >
+	</dynamic_object>
+	<dynamic_object name="Corner" mesh="tiles/Crypt/irb_CryptCorner.obj"  type="walkable" special="segment" scale="1.0"
+					description="Corner for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
+					thumbnail="tiles/Crypt/info_crypt_corner.jpg" >
+	</dynamic_object>
+</IrrRPG_Builder_DynamicObjects>

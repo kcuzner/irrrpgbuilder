@@ -2016,7 +2016,7 @@ void App::update()
 
 	// PostFX - render the player in silouette if he's occluded
 	// Work with the current model but the code should be improved to support more models (with more than one texture)
-	if (silouette && (app_state > APP_STATE_CONTROL))
+	if (silouette) //  && (app_state > APP_STATE_CONTROL))
 	{
 		driver->runAllOcclusionQueries(false);
 		driver->updateAllOcclusionQueries();

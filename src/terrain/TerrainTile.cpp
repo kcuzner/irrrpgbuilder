@@ -229,8 +229,21 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 void TerrainTile::saveToXML(TiXmlElement* parentElement)
 {
 	// Save the terrain land
-    int x = (int)node->getPosition().X/(int)node->getScale().X;
-    int z = (int)node->getPosition().Z/(int)node->getScale().Z;
+    
+	int x = 0;
+	int z = 0;
+
+	int scalex = (int)node->getScale().X;
+	int scalez = (int)node->getScale().Z;
+	if (scalex!=0)
+	{
+		x = (int)node->getPosition().X/scalex;
+		z = (int)node->getPosition().Z/scalez;
+	} else
+	{
+		x = (int)node->getPosition().X;
+		z = (int)node->getPosition().Z;
+	}
 
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
     segmentXML->SetAttribute("x",x);
