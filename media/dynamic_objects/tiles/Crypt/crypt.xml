@@ -8,4 +8,15 @@
 					description="Corner for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
 					thumbnail="tiles/Crypt/info_crypt_corner.jpg" >
 	</dynamic_object>
+	<dynamic_object name="Intersection" mesh="tiles/Crypt/irb_CryptQuad.obj"  type="walkable" special="segment" scale="1.0"
+					description="Intersection for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
+					thumbnail="tiles/Crypt/info_crypt_quad.jpg" >
+	</dynamic_object>
+	<dynamic_object name="Intersection 3 way" mesh="tiles/Crypt/irb_CryptTri.obj"  type="walkable" special="segment" scale="1.0"
+					description="Intersection with 3 way for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
+					thumbnail="tiles/Crypt/info_crypt_tri.jpg" >
+	<dynamic_object name="Dead End" mesh="tiles/Crypt/Irb_DeadEnd.obj"  type="walkable" special="segment" scale="1.0"
+					description="Dead end for a Crypt environment" author="Christian Clavet" licence="Creative Commons"
+					thumbnail="tiles/Crypt/info_crypt_deadend.jpg" >
+	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>
