@@ -7528,7 +7528,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1372537951 /home/christian/projets/IRB/src/App.h
+1376363563 /home/christian/projets/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -7538,6 +7538,7 @@
 	"tinyXML/tinyxml.h"
 	"XML_Manager.h"
 	"raytests.h"
+	"objects/DynamicObject.h"
 
 1372537943 /home/christian/projets/IRB/irrlicht-engine/include/irrlicht.h
 	"IrrCompileConfig.h"
@@ -8594,7 +8595,7 @@
 	<irrlicht.h>
 	<vector>
 
-1372537951 /home/christian/projets/IRB/src/camera/CameraSystem.h
+1375828486 /home/christian/projets/IRB/src/camera/CameraSystem.h
 	"../App.h"
 	"../objects/Player.h"
 	"CSceneNodeAnimatorCameraMayaIRB.h"
@@ -8613,7 +8614,7 @@
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1372537951 /home/christian/projets/IRB/src/gui/GUIManager.h
+1376363563 /home/christian/projets/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -8747,10 +8748,10 @@
 	"ik_IRefCounted.h"
 	"ik_ISoundSource.h"
 
-1372537951 /home/christian/projets/IRB/src/gui/CGUIExtWindow.h
+1375828485 /home/christian/projets/IRB/src/gui/CGUIExtWindow.h
 	<irrlicht.h>
 
-1372537951 /home/christian/projets/IRB/src/objects/DynamicObject.h
+1375828486 /home/christian/projets/IRB/src/objects/DynamicObject.h
 	<vector>
 	<irrlicht.h>
 	"HealthSceneNode.h"
@@ -8783,12 +8784,12 @@
 	<irrlicht.h>
 	"../App.h"
 
-1372537951 /home/christian/projets/IRB/src/terrain/TerrainManager.h
+1375828486 /home/christian/projets/IRB/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"../App.h"
 
-1372537951 /home/christian/projets/IRB/src/terrain/TerrainTile.h
+1375828486 /home/christian/projets/IRB/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -8812,7 +8813,7 @@
 1372537951 /home/christian/projets/IRB/src/fx/postprocess/PostProcessManager.h
 	<irrlicht.h>
 
-1372537951 /home/christian/projets/IRB/src/objects/DynamicObjectsManager.h
+1375828486 /home/christian/projets/IRB/src/objects/DynamicObjectsManager.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
@@ -8821,14 +8822,14 @@
 	"Player.h"
 	"../tinyXML/tinyxml.h"
 
-1372537951 /home/christian/projets/IRB/src/objects/TemplateObject.h
+1375828486 /home/christian/projets/IRB/src/objects/TemplateObject.h
 	<irrlicht.h>
 
-1372537951 source:/home/christian/projets/IRB/src/camera/CameraSystem.cpp
+1375828486 source:/home/christian/projets/IRB/src/camera/CameraSystem.cpp
 	"CameraSystem.h"
 	"../sound/SoundManager.h"
 
-1372537951 source:/home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
+1375830689 source:/home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	"ICursorControl.h"
 	"ICameraSceneNode.h"
@@ -8836,7 +8837,7 @@
 	"ISceneManager.h"
 	"../App.h"
 
-1372542487 source:/home/christian/projets/IRB/src/events/EventReceiver.cpp
+1375828486 source:/home/christian/projets/IRB/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
@@ -8889,10 +8890,10 @@
 	<vector>
 	<sstream>
 
-1372537951 source:/home/christian/projets/IRB/src/gui/CGUIExtWindow.cpp
+1375828485 source:/home/christian/projets/IRB/src/gui/CGUIExtWindow.cpp
 	"CGUIExtWindow.h"
 
-1372542955 source:/home/christian/projets/IRB/src/gui/CGUIFileSelector.cpp
+1375828485 source:/home/christian/projets/IRB/src/gui/CGUIFileSelector.cpp
 	"CGUIFileSelector.h"
 
 1372537951 source:/home/christian/projets/IRB/src/gui/CGUIGfxStatus.cpp
@@ -8960,7 +8961,7 @@
 	"../camera/CameraSystem.h"
 	"DynamicObject.h"
 
-1372537951 source:/home/christian/projets/IRB/src/objects/DynamicObjectsManager.cpp
+1375830689 source:/home/christian/projets/IRB/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"DynamicObject.h"
 	"../camera/CameraSystem.h"
@@ -8992,7 +8993,7 @@
 1372537951 source:/home/christian/projets/IRB/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1372537951 source:/home/christian/projets/IRB/src/terrain/TerrainManager.cpp
+1375828486 source:/home/christian/projets/IRB/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
 	<sstream>
 
