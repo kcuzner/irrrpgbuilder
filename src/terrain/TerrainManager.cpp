@@ -180,24 +180,36 @@ void TerrainManager::createCustomSegment(vector3df pos, core::stringc model)
     if( getSegment(pos) )
     {
 		wasthere=true;
-		printf("Hey there is a tile here!\n");
         #ifdef APP_DEBUG
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
         #endif
         //return;
     }
   
-	if (!wasthere) // Will have to check for supporting custom tiles...
+	if (!wasthere) 
 	{
+		removeEmptySegment(pos, true);
+
 		TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
 											0,
 											pos,
 											getHashCode(pos).c_str(),true);
-		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 
-		removeEmptySegment(pos, true);
+		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 		newTile->customname = model;
 		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
+	
+		//Safety check if the object/model cannot be loaded
+		if (!newTile->getNode())
+		{
+			App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+			App::getInstance()->getDevice()->getGUIEnvironment()->addMessageBox(L"Loading error!",L"Failed to load the tile model or model is missing!");
+			if(getSegment(pos))
+			{
+				tileTagged = terrainMap.find(getHashCode(pos))->second;
+				deleteTaggedSegment();
+			}
+		}
 	}
 
 #ifdef APP_DEBUG

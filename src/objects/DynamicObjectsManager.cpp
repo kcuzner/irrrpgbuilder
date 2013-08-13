@@ -48,6 +48,7 @@ bool DynamicObjectsManager::loadTemplates()
 	{
 		playerObject = new DynamicObject(pObject->getName(), pObject->meshFile, pObject->animations);
 		playerObject->setScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
+		playerObject->setTemplateScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
 		playerObject->setType(pObject->getType());
 			
 		playerObject->setTemplate(true);
@@ -470,6 +471,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
   	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);
 	newObj->setScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
+	newObj->setTemplateScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setType(activeObject->getType());
 	newObj->setTemplate(false);
 
@@ -964,13 +966,14 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			{
 				setActiveObject("error");
 			}
-			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
+			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));			
 		} 
 		else
 		// If this is the player, retrieve only it's position (permanent dynamic object)
 		{
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
+			newObj->setTemplateScale(newObj->getScale());
 		}
 		
 		// if the "r" is not 0 then use this information to set the rotation of the model (compatibility mode)

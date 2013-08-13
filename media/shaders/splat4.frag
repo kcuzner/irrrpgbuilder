@@ -32,7 +32,7 @@ void main()
 	vec4 tex3    = texture2D( terrainLayer3, texCoord.xy*float(terrainTextureScale) );
 
 	tex1 = mix( tex1, tex0, min(1.0-normal.y,1.0) );
-	tex2 = mix( tex1, tex2, (position.y/float(scale)));
+	tex2 = mix( tex1, tex2, (position.y/float(terrainScale/3)));
 	
 	vec4 tex10;
 	
@@ -40,7 +40,7 @@ void main()
 	
 	if(position.y >= 0.0)
 	{
-	  tex10 = mix( tex1, tex3, (position.y/float(scale)));
+	  tex10 = mix( tex1, tex3, (position.y/float(terrainScale/2)));
 	  tex10 = mix( tex10, tex2, (min(1.0-normal.y-0.2,1.0)) );
 	}
 	else

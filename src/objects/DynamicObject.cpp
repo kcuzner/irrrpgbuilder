@@ -79,6 +79,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	rotationupdater=false;
 
 	attackresult=0;
+	originalscale=vector3df(1.0f,1.0f,1.0f);
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -258,12 +259,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
-
-
-
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		this->setWalkTarget(node->getPosition());
-		
 		//node->setDebugDataVisible(EDS_BBOX_ALL);
 
 	}
@@ -280,7 +277,7 @@ DynamicObject* DynamicObject::clone()
     newObj->templateObjectName = this->templateObjectName;///TODO: scale and material can be protected too, then we does not need get and set for them.
 	newObj->setTemplate(false);
 	// use a temporary state to define animation, will set the idle animation, but with a random initial frame.
-
+	
 	fakeShadow->setVisible(false);
 	// Preset telling the die animation is present (will be tested for this)
     return newObj;
@@ -410,11 +407,21 @@ void DynamicObject::walkTo(vector3df targetPos)
 	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
+	f32 newspeed = 1.0f;
 	// Calculate the distance based on time (delay)
 	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(based on seconds (1000 for 1000ms)
+	//change the speed of the object if the scale is changed.
+	if (node->getScale()!=originalscale)
+	{
+		printf("Original scale is: %f - new scale is: %f\n",originalscale.Y,getScale().Y);
+		newspeed=currentAnim.walkspeed*(node->getScale().Y/originalscale.Y);
+		speed = (newspeed*(f32)delay)/1000;
+	}
+	printf("Here is the new speed: %f\n",(float)speed);
 	if (speed == 0)
 		speed=1.0f;
 
+	
 	vector3df pos=this->getPosition();
 	oldpos=pos;
 
@@ -455,6 +462,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
 	f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
 
+	// Sample in the front
 	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z));
 	if (frontcol>-1000)
 	{
@@ -462,16 +470,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 		collided=false;
-
-
-	//f32 height = TerrainManager::getInstance()->getHeightAt(pos);
-	//f32 height2 = TerrainManager::getInstance()->getHeightAt(posfront);
-	//f32 height3 = TerrainManager::getInstance()->getHeightAt(posfront1);
-	//f32 height4 = TerrainManager::getInstance()->getHeightAt(posback);
-	//f32 height5 = TerrainManager::getInstance()->getHeightAt(posback1);
-
-	// Cliff is returning the angle of the slope, should not walk on slope that are too angular.
-	//f32 cliff =  height3 - height5;
 
 	// Test has failed
 	if (height==-1000.0f)
@@ -595,9 +593,16 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination.
 	// (This allow the NPC not to go directly a the player position)
 	// This need to be improved further as this should apply only when a NPC destination is selected.
-	if (objectType!=OBJECT_TYPE_PLAYER)
+	if (objectType!=OBJECT_TYPE_PLAYER && App::getInstance()->getAppState()==APP_GAMEPLAY_NORMAL)
 	{
-		f32 desiredDistance=50.0f;
+		f32 desiredDistance=0.0f;
+			
+		desiredDistance=(((node->getBoundingBox().getExtent().X*node->getScale().Y))+DynamicObjectsManager::getInstance()->getPlayer()->getNode()->getBoundingBox().getExtent().X);
+		//Check if there is a ennemy defined and find the proper distance by checking the size of it.
+		//desiredDistance = 50.0f;
+
+		printf("Desired distance is: %f\n",(float)desiredDistance);
+
 		f32 distance = getDistanceFrom(newTarget);
 		f32 final = (distance-desiredDistance)/distance;
 		walkTarget = newTarget.getInterpolated(getPosition(),final);
@@ -1267,7 +1272,11 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
     {
         this->lookAt(obj->getPosition());
 		// This need to be improved for a better distance evaluation. '72' is just too approximate as monsters could be smaller or bigger
-		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 72.0f)
+		
+		// This return the size (back to front of an object.
+		f32 size = (obj->getNode()->getBoundingBox().getExtent().X + this->getNode()->getBoundingBox().getExtent().X);
+		
+		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < size)
 		{
 			attackresult=Combat::getInstance()->attack(this,obj);
 			if (attackresult>0)

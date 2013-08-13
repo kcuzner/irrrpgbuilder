@@ -205,6 +205,7 @@ class DynamicObject
 		void attackEnemy(DynamicObject* obj);
 		bool isTemplate();
 		void setTemplate(bool value);
+		inline void setTemplateScale(core::vector3df scale) { originalscale=scale; }
 		// Needed in other classes
 		DynamicObject_Animation currentAnim;
 		AI_INFO AI_State;
@@ -350,6 +351,9 @@ class DynamicObject
 		bool soundActivated;
 		bool attackActivated;
 		bool error;
+
+		//Used to calculate a ratio when the node is scaled.
+		core::vector3df originalscale;
 
 
 		lua_State *LS;

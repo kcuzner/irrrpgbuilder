@@ -101,16 +101,27 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 
 void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model)
 {
-	core::stringc path="../media/dynamic_objects/";
-	core::stringc file=path.append(model);
-	IMesh* baseMesh = smgr->getMesh(file.c_str());
-	baseMesh->setHardwareMappingHint(EHM_STATIC);
 
+	// Remove terrain if it was there
 	if (ocean)
 		ocean->remove();
 	if (node)
 		node->remove();
-		
+
+
+	core::stringc path="../media/dynamic_objects/";
+	core::stringc file=path.append(model);
+	IMesh* baseMesh = smgr->getMesh(file.c_str());
+	if (!baseMesh)
+	{
+		GUIManager::getInstance()->setConsoleText(L"ERROR! Failed to load custom tile",video::SColor(255,255,0,0));
+		node=NULL;
+		return;
+	}
+
+	baseMesh->setHardwareMappingHint(EHM_STATIC);
+
+
 	// Create the custom mesh node
 	node = smgr->addMeshSceneNode(baseMesh,parent,100);
 
@@ -118,7 +129,8 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
-	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+	//Disable node scaling for the moment.
+	//node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
     node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(baseMesh,node);
     node->setTriangleSelector(selector);
