@@ -491,7 +491,7 @@ void TerrainTile::recalculate()
 }
 
 
-void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
+void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength)
 {
 
 	if (custom)
@@ -511,7 +511,12 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
-			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
+			//- (realPos.getDistanceFrom(clickPos)-radius2)
+			f32 ratio = radius;
+
+			if (radius2-realPos.getDistanceFrom(clickPos)<0)
+				ratio = (radius+radius2)-realPos.getDistanceFrom(clickPos);
+
 	        mb_vertices[j].Pos.Y += (strength * (ratio)/(scale/nodescale));
 			//printf("found something here: vertice %i, vertice Y: %f\n",j, mb_vertices[j].Pos.Y);
 	    }
@@ -527,7 +532,7 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 strength)
 
 }
 
-void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 strength, f32 value)
+void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value)
 {
 
 	if (custom)
@@ -548,7 +553,10 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 stren
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
-			f32 ratio = radius - realPos.getDistanceFrom(clickPos);
+			f32 ratio = radius;
+
+			if (radius2-realPos.getDistanceFrom(clickPos)<0)
+				ratio = (radius+radius2)-realPos.getDistanceFrom(clickPos);
 
             if(mb_vertices[j].Pos.Y > value)
             {

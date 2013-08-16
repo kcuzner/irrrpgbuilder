@@ -460,7 +460,7 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 }
 */
 
-void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 strength)
+void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radius2, f32 strength)
 {
     if(mousePick.pickedNode != NULL)
     {
@@ -477,13 +477,13 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 stre
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,strength);
+                if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength);
             }
         }
     }
 }
 
-void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 strength, f32 value)
+void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value)
 {
     if(mousePick.pickedNode != NULL)
     {
@@ -499,7 +499,7 @@ void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,strength,value);
+                if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,radius2,strength,value);
             }
         }
     }
@@ -637,6 +637,7 @@ void TerrainManager::drawBrush()
 	f32 height=0.0f;
 	
 	f32 radius = App::getInstance()->getBrushRadius();
+	f32 radius2 = App::getInstance()->getBrushRadius(1); // get the inner brush radius
 	vector3df position = App::getInstance()->getMousePosition3D(100).pickedPos;
 	if (position==vector3df(0,0,0))
 		return;
@@ -685,6 +686,50 @@ void TerrainManager::drawBrush()
 		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
 
 	}
+
+	// Display the inner brush size if the user change the default value of 5 to another value
+	if (radius2!=5.0f)
+	{
+		// Render the size of the brush.
+		framesize = 5;
+		step=10;
+		for (int i=0; i<(360); i=i+step)
+		{
+			float degInRad = i*DEG2RAD;
+			vector3df pos=position;
+			pos.X+=cos(degInRad)*radius2;
+			pos.Z+=sin(degInRad)*radius2;
+			height=getHeightAt(pos);
+			if (height==-1000.0f)
+				height=0.0f;
+			pos.Y=height+5;
+
+			float degInRad2 = (i+step)*DEG2RAD;
+			vector3df pos2=position;
+			pos2.X+=cos(degInRad2)*radius2;
+			pos2.Z+=sin(degInRad2)*radius2;
+			height=getHeightAt(pos2);
+			if (height==-1000.0f)
+				height=0.0f;
+			pos2.Y=height+5;
+			//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+
+			vector3df pos3=position;
+			pos3.X+=cos(degInRad)*(radius2+framesize);
+			pos3.Z+=sin(degInRad)*(radius2+framesize);
+			pos3.Y=pos.Y;
+
+			vector3df pos4=position;
+			pos4.X+=cos(degInRad2)*(radius2+framesize);
+			pos4.Z+=sin(degInRad2)*(radius2+framesize);
+			pos4.Y=pos2.Y;
+
+			driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,200));
+			driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,200));
+		}
+
+	}
+
 
 	// Center circle for the brush give the center
 	radius=5;

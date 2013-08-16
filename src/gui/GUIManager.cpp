@@ -138,6 +138,10 @@ IGUIFont* GUIManager::getFont(FONT_NAME fontName)
         case FONT_ARIAL:
             return guiFontC12;
             break;
+
+		case FONT_LARGE:
+			return guiFontLarge28;
+			break;
     }
 
     return NULL;
@@ -295,7 +299,20 @@ f32 GUIManager::getScrollBarValue(GUI_ID id)
 				stringw text = stringw(guiTerrainBrushRadius->getPos()).c_str();
 				text=text+L"\"";
 				guiTerrainBrushRadiusValue->setText(text.c_str());
+				guiTerrainBrushRadius2->setMax(guiTerrainBrushRadius->getPos());
+
+				if (guiTerrainBrushRadius->getPos()>guiTerrainBrushRadius->getPos())
+					guiTerrainBrushRadius2->setPos(guiTerrainBrushRadius->getPos());
+
 				return (f32)guiTerrainBrushRadius->getPos();
+			}
+			break;
+		case SC_ID_TERRAIN_BRUSH_RADIUS2 :
+			{
+				stringw text = stringw(guiTerrainBrushRadius2->getPos()).c_str();
+				text=text+L"\"";
+				guiTerrainBrushRadiusValue2->setText(text.c_str());
+				return (f32)guiTerrainBrushRadius2->getPos();
 			}
 			break;
 		case SC_ID_TERRAIN_BRUSH_PLATEAU :
@@ -1086,7 +1103,7 @@ void GUIManager::createTerrainToolbar()
 
     guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
     guiTerrainBrushStrength->setMin(0);
-    guiTerrainBrushStrength->setMax(200);
+    guiTerrainBrushStrength->setMax(400);
     guiTerrainBrushStrength->setPos(100);
 	guiTerrainBrushStrength->setSmallStep(1);
 	guiTerrainBrushStrength->setLargeStep(5);
@@ -1096,23 +1113,38 @@ void GUIManager::createTerrainToolbar()
 	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
                                                          myRect(10,mainToolbarPos.Y+90,150,20),
                                                          false,true, guiTerrainToolbar);
+
+	guienv->addStaticText(stringw("Inner radius").c_str(),myRect(10,mainToolbarPos.Y+150,150,20),
+                                                         false,true, guiTerrainToolbar);
+
 	guiTerrainBrushRadiusValue = guienv->addStaticText(L"100",
                                                          myRect(10,mainToolbarPos.Y+130,150,20),
                                                          false,true, guiTerrainToolbar);
 
+	guiTerrainBrushRadiusValue2 = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+190,150,20),
+                                                         false,true, guiTerrainToolbar);
+
 	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_plateau")).c_str(),
-                                                         myRect(10,mainToolbarPos.Y+150,150,20),
+                                                         myRect(10,mainToolbarPos.Y+210,150,20),
                                                          false,true, guiTerrainToolbar);
 
 
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS );
     guiTerrainBrushRadius->setMin(0);
-    guiTerrainBrushRadius->setMax(400);
+    guiTerrainBrushRadius->setMax(800);
     guiTerrainBrushRadius->setPos(100);
 	guiTerrainBrushRadius->setSmallStep(1);
 	guiTerrainBrushRadius->setLargeStep(5);
 
-	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+170,160,mainToolbarPos.Y+190),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
+	guiTerrainBrushRadius2 = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+170,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS2 );
+    guiTerrainBrushRadius2->setMin(5);
+    guiTerrainBrushRadius2->setMax(100);
+    guiTerrainBrushRadius2->setPos(5);
+	guiTerrainBrushRadius2->setSmallStep(1);
+	guiTerrainBrushRadius2->setLargeStep(5);
+
+	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+230,160,mainToolbarPos.Y+250),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
 	guiTerrainBrushPlateau->setMin(-120);
 	guiTerrainBrushPlateau->setMax(768);
 	guiTerrainBrushPlateau->setPos(-10);
@@ -1120,7 +1152,7 @@ void GUIManager::createTerrainToolbar()
 	guiTerrainBrushPlateau->setLargeStep(5);
 
 	guiTerrainBrushPlateauValue = guienv->addStaticText(L"0",
-                                                         myRect(10,mainToolbarPos.Y+190,150,20),
+                                                         myRect(10,mainToolbarPos.Y+250,150,20),
                                                          false,true, guiTerrainToolbar);
 
 	///Vegetation toolbar (Not yet implemented, will have a choice of vegetation and brush)
@@ -1838,6 +1870,15 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjectsWindowEditAction->setCloseHide(true); // Not now as it need to check for buttons states and other things 
 	guiDynamicObjectsWindowEditAction->setStretchable(true); // Use this window as a streachable windows (all directions)
 	guiDynamicObjectsWindowEditAction->setMinSize(core::dimension2du(640,256));
+	guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
+
+	IGUIButton* close = guiDynamicObjects_Script_Close = guienv->addButton(myRect(driver->getScreenSize().Width-40,0,30,20),
+                      guiDynamicObjectsWindowEditAction,
+                      BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE,
+                      stringw(L"X").c_str() );
+
+	close->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	
 
 
 	//scripts editor box

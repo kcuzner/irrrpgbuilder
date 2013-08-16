@@ -168,12 +168,13 @@ class App
 		std::vector<video::SColor> console_event_color;
 
 		// This check in the GUI manager to get the radius of the Brush in the GUI;
-		irr::f32 getBrushRadius();
+		irr::f32 getBrushRadius(int number = 0);
 
 		// Snapping function
 		core::vector3df calculateSnap(vector3df input, f32 snapvalue);
 
 		scene::ISceneNode* selectedNode;
+		scene::ISceneNode* scriptNode;
 		MousePick lastMousePick;
 
 		//Multiple selections

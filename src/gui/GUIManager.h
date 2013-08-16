@@ -36,6 +36,7 @@ enum GUI_ID
   
     SC_ID_TERRAIN_BRUSH_STRENGTH,
 	SC_ID_TERRAIN_BRUSH_RADIUS,
+	SC_ID_TERRAIN_BRUSH_RADIUS2,
 	SC_ID_TERRAIN_BRUSH_PLATEAU,
     BT_ID_TERRAIN_PAINT_VEGETATION,
     BT_ID_SAVE_PROJECT,
@@ -160,6 +161,7 @@ enum GUI_MSG_TYPE
 enum FONT_NAME
 {
     FONT_ARIAL = 1,
+	FONT_LARGE,
 };
 
 enum LIST_TYPE
@@ -367,9 +369,11 @@ class GUIManager
 		IGUIScrollBar* guiTerrainBrushPlateau;
 		IGUIStaticText* guiTerrainBrushPlateauValue;
 		IGUIScrollBar* guiTerrainBrushRadius;
+		IGUIScrollBar* guiTerrainBrushRadius2;
         IGUIStaticText* guiTerrainBrushRadiusLabel;
 		IGUIStaticText* guiTerrainBrushStrengthValue;
         IGUIStaticText* guiTerrainBrushRadiusValue;
+		IGUIStaticText* guiTerrainBrushRadiusValue2;
 
 		CGUIExtWindow* guiCustomSegmentWindowChooser;
 

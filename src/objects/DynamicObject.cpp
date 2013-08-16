@@ -413,11 +413,10 @@ void DynamicObject::walkTo(vector3df targetPos)
 	//change the speed of the object if the scale is changed.
 	if (node->getScale()!=originalscale)
 	{
-		printf("Original scale is: %f - new scale is: %f\n",originalscale.Y,getScale().Y);
+		//printf("Original scale is: %f - new scale is: %f\n",originalscale.Y,getScale().Y);
 		newspeed=currentAnim.walkspeed*(node->getScale().Y/originalscale.Y);
 		speed = (newspeed*(f32)delay)/1000;
 	}
-	printf("Here is the new speed: %f\n",(float)speed);
 	if (speed == 0)
 		speed=1.0f;
 
@@ -601,11 +600,12 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 		//Check if there is a ennemy defined and find the proper distance by checking the size of it.
 		//desiredDistance = 50.0f;
 
-		printf("Desired distance is: %f\n",(float)desiredDistance);
+		//printf("Desired distance is: %f\n",(float)desiredDistance);
 
 		f32 distance = getDistanceFrom(newTarget);
 		f32 final = (distance-desiredDistance)/distance;
-		walkTarget = newTarget.getInterpolated(getPosition(),final);
+		//walkTarget = newTarget.getInterpolated(getPosition(),final);
+		walkTarget = newTarget;
 		reached=false;
 	} else
 	{
@@ -622,6 +622,39 @@ vector3df DynamicObject::getWalkTarget()
 f32 DynamicObject::getDistanceFrom(vector3df pos)
 {
     return node->getPosition().getDistanceFrom(pos);
+}
+
+
+//Tried to give a distance based on the depth of the bounding box of the characters (NPC + PLAYER)
+// Might not be 100% accurate has such models varies a lot in the depth (Z Axis)
+f32 DynamicObject::getObjectSize(bool withenemy)
+{
+
+	ISceneNode * us = getNode();
+	ISceneNode * enemy = NULL;
+
+	if (objectType!=OBJECT_TYPE_PLAYER)
+	{
+		enemy = Player::getInstance()->getObject()->getNode();
+	} else if (enemyUnderAttack)
+	{
+		enemy = this->enemyUnderAttack->getNode();
+	}
+
+	f32 properdistance = 0.0f;
+
+	if (withenemy && enemy) //Give the distance between the enemy and the object
+	{
+		properdistance = ((enemy->getBoundingBox().getExtent().Z * enemy->getScale().Z)) + ((us->getBoundingBox().getExtent().Z * us->getScale().Z));
+		//Note, might divide per 2 to get a more precise distance. using 3/4 of the scale for now
+		//properdistance=properdistance*.5f;
+	} else //Give the size of the object
+	{
+		properdistance = ((us->getBoundingBox().getExtent().Z * us->getScale().Z));
+	}
+
+ //printf("the distance is %f\n",properdistance);
+	return properdistance;
 }
 
 DynamicObject * DynamicObject::getCurrentEnemy()
@@ -808,6 +841,36 @@ void DynamicObject::objectLabelSetVisible(bool visible)
 	else
 		Healthbar->setVisible(visible);
 }
+
+// Create and animate a text over the object head
+void DynamicObject::createTextAnim(core::stringw text, video::SColor color, u32 duration, dimension2d<f32> size)
+{
+	//Problem: The application will crash here if the object was not moved. Reason: Unknown.
+
+	const wchar_t * ttext = L" ";
+	
+	if (!text.empty())
+		ttext=text.c_str();
+
+	vector3df start = getNode()->getAbsolutePosition();
+	
+	f32 height = getNode()->getBoundingBox().getExtent().Y*getScale().Y;
+	
+	start.Y+=height-30;
+	vector3df end = start;
+	end.Y+=height+50;
+
+	IBillboardTextSceneNode * nodetext = smgr->addBillboardTextSceneNode(GUIManager::getInstance()->getFont(FONT_LARGE),ttext,smgr->getRootSceneNode(),size,start,-1,color,color);
+	
+	scene::ISceneNodeAnimator * anim = smgr->createDeleteAnimator(duration);
+	scene::ISceneNodeAnimator * anim2 = smgr->createFlyStraightAnimator(start,end,duration);
+	if (nodetext && anim)
+	{	
+		nodetext->addAnimator(anim);
+		nodetext->addAnimator(anim2);
+	}
+}
+
 //-----------------------------------------------------------------------
 // Animation system functions
 //-----------------------------------------------------------------------
@@ -875,6 +938,9 @@ bool DynamicObject::setAnimation(stringc animName)
 		// REmove the collision animator
 		node->removeAnimator(animator);
 
+		//
+		createTextAnim(L"Died!",video::SColor(255,240,240,240),5000,dimension2d<f32>(25,12));
+
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
 
@@ -931,29 +997,40 @@ bool DynamicObject::setAnimation(stringc animName)
 				// Damage is done in the "animation" at the "attack event"
 				attackresult=Combat::getInstance()->attack(this,enemyUnderAttack);
 				if (attackresult==0)
-					enemyUnderAttack->setObjectLabel("Miss!");
+					//enemyUnderAttack->setObjectLabel("Miss!");
+					enemyUnderAttack->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
 				else
 				{
-					stringc textdam = "-";
+					core::stringw textdam = "Hit! ";
 					textdam.append(stringc(attackresult));
-					enemyUnderAttack->setObjectLabel(textdam.c_str());
+					//enemyUnderAttack->setObjectLabel(textdam.c_str());
+					enemyUnderAttack->createTextAnim(textdam);
 				}
 			}
 		}
 
 		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
-				attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-				if (attackresult==0)
-					Player::getInstance()->getObject()->setObjectLabel("Miss!");
-				else
+
+				f32 properdistance = this->getObjectSize();
+						
+				if (Player::getInstance()->getNode()->getPosition().getDistanceFrom(getNode()->getPosition())<properdistance)
 				{
-					stringc textdam = "-";
-					textdam.append(stringc(attackresult));
-					Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
-				}
+					attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
+					if (attackresult==0)
+						//Player::getInstance()->getObject()->setObjectLabel("Miss!");
+						Player::getInstance()->getObject()->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+						
+					else
+					{
+						stringc textdam = "Hit! ";
+						textdam.append(stringc(attackresult));
+						//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
+						Player::getInstance()->getObject()->createTextAnim(textdam);
+					}
 
 				//printf("Going for attack animation: %s, %d\n",this->getName().c_str(),attackresult);
+				}
 		}
 		// Check to see if the attack was successful. if not, then put idle from the previous attack move
 		// or use the old animation
@@ -1140,6 +1217,7 @@ void DynamicObject::checkAnimationEvent()
 			attackActivated = false;
 			if (attackresult>0)
 			{
+				printf("Passed here: animation events");
 				if (objectType==OBJECT_TYPE_PLAYER)
 				{
 
@@ -1263,7 +1341,7 @@ ITriangleSelector* DynamicObject::getTriangleSelector()
 // Main attack feature (Player + NPC)
 void DynamicObject::attackEnemy(DynamicObject* obj)
 {
-	if (enemyUnderAttack==obj)
+	if (enemyUnderAttack==obj || !obj)
 		return;
 
     enemyUnderAttack = obj;
@@ -1271,12 +1349,10 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 	if(obj)
     {
         this->lookAt(obj->getPosition());
-		// This need to be improved for a better distance evaluation. '72' is just too approximate as monsters could be smaller or bigger
-		
 		// This return the size (back to front of an object.
-		f32 size = (obj->getNode()->getBoundingBox().getExtent().X + this->getNode()->getBoundingBox().getExtent().X);
+		f32 size = ((obj->getNode()->getBoundingBox().getExtent().X*obj->getScale().X) + (this->getNode()->getBoundingBox().getExtent().X*this->getScale().X));
 		
-		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < size)
+		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < (size/2)+10)
 		{
 			attackresult=Combat::getInstance()->attack(this,obj);
 			if (attackresult>0)
@@ -1288,6 +1364,7 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 		}
     }
 
+	printf("Passed here: attackEnnemy()\n");
 }
 
 //-----------------------------------------------------------------------
@@ -1479,6 +1556,9 @@ void DynamicObject::update()
 	// Used for culling check
 	bool culled = false;
 
+	//For some reason the scene manage pointer was corrupted. Refresh it to be sure it's alway correct.
+	smgr = App::getInstance()->getDevice()->getSceneManager();
+
 	// Reference timer for the update loop
 	u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
 
@@ -1616,13 +1696,14 @@ void DynamicObject::update()
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
-	if (this->objectType==OBJECT_TYPE_PLAYER)//|| this->objectType==OBJECT_TYPE_NPC)
+	if (this->objectType==OBJECT_TYPE_PLAYER) // || this->objectType==OBJECT_TYPE_NPC)
 		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
 }
 
 void DynamicObject::updateRotation()
 {
 	vector3df oldrot = getRotation();
+
 	u32 currentime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	u32 elapsedtime=currentime-rotationcounter;
 
@@ -1641,9 +1722,6 @@ void DynamicObject::updateRotation()
 
 void DynamicObject::updateWalk()
 {
-	f32 meshSize = this->getNode()->getBoundingBox().getExtent().X;
-	f32 meshScale = this->getScale().X;
-
 	// Trick to not account for the Y axis when checking for the distance.
 	walkTarget.Y=this->getPosition().Y;
 
@@ -1654,13 +1732,14 @@ void DynamicObject::updateWalk()
 		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))
 
 		//This will find the size of the ennemy and calculate a proper distance before the attack.
-		f32 enemysize = 0;
+
+		f32 objectsize = this->getObjectSize(false);
 		if (enemyUnderAttack)
-		{
-			f32 enemybasesize=0;
-			enemybasesize = enemyUnderAttack->getNode()->getBoundingBox().getExtent().X;
-			f32 enemyscale=0;
-			enemyscale = enemyUnderAttack->getNode()->getScale().X;
+		{	
+			objectsize = this->getObjectSize()*0.5f;
+		
+			// Use 3/4 of the size to be use the object is in range
+
 			//f32 enemysize = enemybasesize * enemyscale;
 			//printf ("DB=====>>>>> size of ennemy is: %f units!\n",enemysize);
 		}
@@ -1681,8 +1760,8 @@ void DynamicObject::updateWalk()
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
 			}
-
-			else if (this->getPosition().getDistanceFrom(walkTarget) < enemysize ) // both types if they have a "ennemy" in sight
+			
+			else if ((getPosition().getDistanceFrom(walkTarget) < objectsize) && (getPosition().getDistanceFrom(walkTarget)>objectsize-20)) // both types if they have a "ennemy" in sight
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
@@ -1703,13 +1782,16 @@ void DynamicObject::updateWalk()
 		// Walk until in range
 		// testing
 		//if( (this->getPosition().getDistanceFrom(walkTarget) > ((meshScale*meshSize)*2)) &&  (this->getLife()!=0))
-		if( (this->getPosition().getDistanceFrom(walkTarget) > (meshScale*meshSize)) &&  (this->getLife()!=0))
+
+		
+		
+		
+		if( (this->getPosition().getDistanceFrom(walkTarget) > objectsize-20) &&  (this->getLife()!=0))
 		{
 			//if (objectType==OBJECT_TYPE_NPC)
 				//printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
 				//this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
 				//this->walkTarget.X,this->walkTarget.Y,this->walkTarget.Z);
-
 
 			if (runningMode)
 			{

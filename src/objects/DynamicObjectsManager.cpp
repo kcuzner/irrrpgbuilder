@@ -517,6 +517,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	{
 		newObj->setAnimation("walk");
 		newObj->setAnimation("idle");
+		newObj->setWalkTarget(newObj->getPosition());
 	}
 	// Add to the dynamic object list.
 	objects.push_back(newObj);

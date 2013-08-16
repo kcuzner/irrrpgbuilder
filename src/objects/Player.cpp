@@ -132,21 +132,8 @@ void Player::update()
 		if (timercheck-timer1>300) // 1 attack per 1/4 sec
 		{
 			timer1 = timercheck;
-
-			//This will find the size of the ennemy and calculate a proper distance before the attack.
-			f32 enemysize = 0;
 			
-			if (playerObject->getCurrentEnemy())
-			{
-				f32 enemybasesize=0;
-				enemybasesize = playerObject->getCurrentEnemy()->getNode()->getBoundingBox().getExtent().X;
-				f32 enemyscale=0;
-				enemyscale = playerObject->getCurrentEnemy()->getNode()->getScale().X;
-				f32 enemysize = enemybasesize * enemyscale;
-
-				//printf ("DB=====>>>>> size of ennemy is: %f units!\n",enemysize);
-			}
-			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<(enemysize+72))
+			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<(playerObject->getObjectSize()+10))
 			{
 				//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
 				if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)

@@ -40,6 +40,7 @@ App::App()
 	selector=NULL;
 	saveselector=NULL;
 	selectedNode=NULL;
+	scriptNode=NULL;
 	lastPickedNodeName="";
 	lastFilename="";
 	timer=0;
@@ -153,8 +154,13 @@ void App::setAppState(APP_STATE newAppState)
 		if (selectedNode) //Unselect and remove the selected node in mode changes
 		{
 			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
-			selectedNode->setDebugDataVisible(0); 
-			selectedNode=NULL;
+			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
+			{
+				selectedNode->setDebugDataVisible(0); 
+				selectedNode=NULL;
+			}
+			
+
 		}
 	}
 
@@ -684,7 +690,9 @@ void App::eventGuiButton(s32 id)
 	case BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
 		{
-			DynamicObjectsManager::getInstance()->getObjectByName(lastMousePick.pickedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			if (selectedNode)
+				DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		else if(app_state == APP_EDIT_PLAYER_SCRIPT)
@@ -697,7 +705,7 @@ void App::eventGuiButton(s32 id)
 			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
+		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
 		break;
 
 	case BT_ID_EDIT_CHARACTER:
@@ -1612,6 +1620,7 @@ MousePick App::getMousePosition3D(int id)
 		hitTriangle,
 		id);
 	
+	//ray.start = ray.start.getInterpolated(ray.end, 0.5f);
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
@@ -2239,6 +2248,7 @@ void App::updateEditMode()
 					{
 						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
 					}
@@ -2251,12 +2261,14 @@ void App::updateEditMode()
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 					else if(EventReceiver::getInstance()->isMousePressed(1) )
 					{
 						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
 							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
 							-GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
 					}
 				}
@@ -2594,8 +2606,6 @@ void App::updateGameplay()
 
 			// Update all the NPC on the map (including the player)
 			DynamicObjectsManager::getInstance()->updateAll();
-
-
 
 			// Update the combat system (mostly for damage over time management (dot))
 			Combat::getInstance()->update();
@@ -3251,12 +3261,15 @@ stringw App::getLangText(irr::core::stringc node)
 }
 
 
-irr::f32 App::getBrushRadius()
+irr::f32 App::getBrushRadius(int number)
 {
 	f32 radius=0.0f;
-#ifdef EDITOR
-	radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
-#endif
+	
+	if (number==0) //main radius
+		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+	if (number==1) // inner radius
+		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2);
+
 	return radius;
 }
 

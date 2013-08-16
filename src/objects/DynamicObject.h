@@ -129,6 +129,8 @@ class DynamicObject
 		vector3df getWalkTarget();
 		f32 getDistanceFrom(vector3df pos);
 
+		f32 getObjectSize(bool withenemy=true);
+
 		void setEnabled(bool enabled);
 		bool isEnabled();
 		void setType(stringc name);
@@ -162,6 +164,8 @@ class DynamicObject
         int getMoney();
 		void setObjectLabel(stringc label);
         void objectLabelSetVisible(bool visible);
+
+		void createTextAnim(core::stringw text=L"", video::SColor color=video::SColor(255,255,0,0), u32 duration=2000, dimension2d<f32> size=dimension2d<f32>(18,10));
 
 		 bool hasAnimation(){ return animations.size() != 0; };
         //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };

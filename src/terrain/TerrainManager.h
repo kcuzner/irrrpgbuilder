@@ -26,8 +26,8 @@ class TerrainManager
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
-        void transformSegments(MousePick mousePick, f32 radius, f32 strength);
-        void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 strength, f32 value);
+        void transformSegments(MousePick mousePick, f32 radius,f32 radius2, f32 strength);
+        void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value);
 
 		stringc getTileMeshName();
 		void setTileMeshName(stringc name);
