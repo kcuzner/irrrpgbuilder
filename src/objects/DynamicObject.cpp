@@ -1217,7 +1217,6 @@ void DynamicObject::checkAnimationEvent()
 			attackActivated = false;
 			if (attackresult>0)
 			{
-				printf("Passed here: animation events");
 				if (objectType==OBJECT_TYPE_PLAYER)
 				{
 
@@ -1733,35 +1732,32 @@ void DynamicObject::updateWalk()
 
 		//This will find the size of the ennemy and calculate a proper distance before the attack.
 
-		f32 objectsize = this->getObjectSize(false);
-		if (enemyUnderAttack)
+		f32 objectsize = this->getObjectSize(false); // This only get the character size (Z axis)
+		if (enemyUnderAttack || objectType==OBJECT_TYPE_NPC) // The object size is calculated from both (defender+attacker sizes (Z axis) and give the distance
 		{	
 			objectsize = this->getObjectSize()*0.5f;
-		
-			// Use 3/4 of the size to be use the object is in range
-
-			//f32 enemysize = enemybasesize * enemyscale;
-			//printf ("DB=====>>>>> size of ennemy is: %f units!\n",enemysize);
 		}
 
 		// This tries to stop the NPC or player if it reach the proper distance
 		// This is needed to stop the character before combat or when it reach the destination
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 		{
-			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType==OBJECT_TYPE_PLAYER) //Mostly for the reticle
+			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 1 && this->objectType==OBJECT_TYPE_PLAYER) //Mostly for the reticle
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
 
 				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+				return;
 			}
-			else if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5 && this->objectType!=OBJECT_TYPE_PLAYER) // NPC
+			else if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize && this->objectType!=OBJECT_TYPE_PLAYER) // NPC
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
+				return;
 			}
 			
-			else if ((getPosition().getDistanceFrom(walkTarget) < objectsize) && (getPosition().getDistanceFrom(walkTarget)>objectsize-20)) // both types if they have a "ennemy" in sight
+			else if ((getPosition().getDistanceFrom(walkTarget) < objectsize) && enemyUnderAttack) // both types if they have a "ennemy" in sight
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
@@ -1769,42 +1765,32 @@ void DynamicObject::updateWalk()
 				// For the player, hides the target if get to the destination
 				if (objectType==OBJECT_TYPE_PLAYER)
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+				return;
 			}
 		}
 
-
-		// Cancel the move if another animation is triggered
-		//if (this->getAnimation()!=OBJECT_ANIMATION_WALK || this->getAnimation()!=OBJECT_ANIMATION_RUN || this->getAnimation()==OBJECT_ANIMATION_IDLE)
-		//{
-		//	this->setWalkTarget(this->getPosition());
-		//}
-
-		// Walk until in range
-		// testing
-		//if( (this->getPosition().getDistanceFrom(walkTarget) > ((meshScale*meshSize)*2)) &&  (this->getLife()!=0))
-
-		
-		
-		
-		if( (this->getPosition().getDistanceFrom(walkTarget) > objectsize-20) &&  (this->getLife()!=0))
+		//Keep walking to stay in the "range"
+		if( ((this->getPosition().getDistanceFrom(walkTarget) > objectsize*1.10f) &&  (this->getLife()!=0))) // ||
+			//((this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.5f) &&  (this->getLife()!=0)))
 		{
 			//if (objectType==OBJECT_TYPE_NPC)
 				//printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
 				//this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
 				//this->walkTarget.X,this->walkTarget.Y,this->walkTarget.Z);
-
-			if (runningMode)
 			{
-				if (this->getAnimation()!=OBJECT_ANIMATION_RUN)
+				if (runningMode)
 				{
-					this->setAnimation("run");
+					if (this->getAnimation()!=OBJECT_ANIMATION_RUN)
+					{
+						this->setAnimation("run");
+					}
 				}
-			}
-			else
-			{
-				if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+				else
 				{
-					this->setAnimation("walk");
+					if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+					{
+						this->setAnimation("walk");
+					}
 				}
 			}
 
