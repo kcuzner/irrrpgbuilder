@@ -121,10 +121,10 @@ void Player::update()
 
 		// New code to test (should only define run and walk mode)
 		// Would be more useful if determining the distance based on the zoom distance.
-		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 60) 
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) < 80) 
 			this->playerObject->setRunningMode(false);
 		
-		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 200)
+		if (this->playerObject->getPosition().getDistanceFrom(walkTarget) > 120)
 			this->playerObject->setRunningMode(true);
 
 		
@@ -133,14 +133,18 @@ void Player::update()
 		{
 			timer1 = timercheck;
 			
-			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<(playerObject->getObjectSize()+10))
+			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<(playerObject->getObjectSize()*1.10f))
 			{
 				//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
 				if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
 				{
 					playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
 					if (playerObject->getLife()!=0)
-						playerObject->setAnimation("attack");
+					{
+						if (playerObject->getCurrentEnemy()->getLife()!=0) //Why hit a corpse?! :)
+							playerObject->setAnimation("attack");
+					}
+
 					else
 						playerObject->setAnimation("die");
 				}

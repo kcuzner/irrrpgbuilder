@@ -633,6 +633,7 @@ void TerrainManager::showDebugData(bool show)
 void TerrainManager::drawBrush()
 {
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	vector3df camref = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera()->getPosition();
 
 	f32 height=0.0f;
 	
@@ -649,7 +650,7 @@ void TerrainManager::drawBrush()
 
 
 	// Render the size of the brush.
-	f32 framesize = 5;
+	f32 framesize = position.getDistanceFrom(camref)/400.0f;
 	int step=10;
 	for (int i=0; i<(360); i=i+step)
 	{
@@ -660,7 +661,7 @@ void TerrainManager::drawBrush()
 		height=getHeightAt(pos);
 		if (height==-1000.0f)
 			height=0.0f;
-		pos.Y=height+5;
+		pos.Y=height+framesize;
 
 		float degInRad2 = (i+step)*DEG2RAD;
 		vector3df pos2=position;
@@ -669,7 +670,7 @@ void TerrainManager::drawBrush()
 		height=getHeightAt(pos2);
 		if (height==-1000.0f)
 			height=0.0f;
-		pos2.Y=height+5;
+		pos2.Y=height+framesize;
 		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 		vector3df pos3=position;
@@ -691,7 +692,7 @@ void TerrainManager::drawBrush()
 	if (radius2!=5.0f)
 	{
 		// Render the size of the brush.
-		framesize = 5;
+		//framesize = 5;
 		step=10;
 		for (int i=0; i<(360); i=i+step)
 		{
@@ -702,7 +703,7 @@ void TerrainManager::drawBrush()
 			height=getHeightAt(pos);
 			if (height==-1000.0f)
 				height=0.0f;
-			pos.Y=height+5;
+			pos.Y=height+framesize;
 
 			float degInRad2 = (i+step)*DEG2RAD;
 			vector3df pos2=position;
@@ -711,7 +712,7 @@ void TerrainManager::drawBrush()
 			height=getHeightAt(pos2);
 			if (height==-1000.0f)
 				height=0.0f;
-			pos2.Y=height+5;
+			pos2.Y=height+framesize;
 			//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 			vector3df pos3=position;
@@ -733,7 +734,7 @@ void TerrainManager::drawBrush()
 
 	// Center circle for the brush give the center
 	radius=5;
-	framesize = 2;
+	//framesize = 2;
 	step=15;
 
 	for (int i=0; i<(360); i=i+step)
@@ -747,7 +748,7 @@ void TerrainManager::drawBrush()
 		if (height==-1000.0f)
 			height=0.0f;
 
-		pos.Y=height+5;
+		pos.Y=height+framesize;
 
 		float degInRad2 = (i+step)*DEG2RAD;
 		vector3df pos2=position;
@@ -758,7 +759,7 @@ void TerrainManager::drawBrush()
 		if (height==-1000.0f)
 			height=0.0f;
 
-		pos2.Y=height+5;
+		pos2.Y=height+framesize;
 		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 
 		vector3df pos3=position;
@@ -771,8 +772,8 @@ void TerrainManager::drawBrush()
 		pos4.Z+=sin(degInRad2)*(radius+framesize);
 		pos4.Y=pos2.Y;
 
-		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
-		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
+		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,64));
+		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,64));
 
 	}
 }

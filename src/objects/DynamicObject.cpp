@@ -998,13 +998,17 @@ bool DynamicObject::setAnimation(stringc animName)
 				attackresult=Combat::getInstance()->attack(this,enemyUnderAttack);
 				if (attackresult==0)
 					//enemyUnderAttack->setObjectLabel("Miss!");
-					enemyUnderAttack->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+				{	
+					if (enemyUnderAttack->getLife()!=0)
+						enemyUnderAttack->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+				}
 				else
 				{
 					core::stringw textdam = "Hit! ";
 					textdam.append(stringc(attackresult));
 					//enemyUnderAttack->setObjectLabel(textdam.c_str());
-					enemyUnderAttack->createTextAnim(textdam);
+					if (enemyUnderAttack->getLife()!=0)
+						enemyUnderAttack->createTextAnim(textdam);
 				}
 			}
 		}
@@ -1742,7 +1746,8 @@ void DynamicObject::updateWalk()
 		// This is needed to stop the character before combat or when it reach the destination
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 		{
-			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 1 && this->objectType==OBJECT_TYPE_PLAYER) //Mostly for the reticle
+			//This will stop the player if he reach the target on the ground
+			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 1 && this->objectType==OBJECT_TYPE_PLAYER) 
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
@@ -1750,14 +1755,16 @@ void DynamicObject::updateWalk()
 				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 				return;
 			}
-			else if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize && this->objectType!=OBJECT_TYPE_PLAYER) // NPC
+			// This will stop the NPC if it get in a "correct" range of the player
+			else if ((!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize && this->objectType==OBJECT_TYPE_NPC) &&  // NPC
+				(!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.75f && this->objectType==OBJECT_TYPE_NPC))
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
 				return;
 			}
 			
-			else if ((getPosition().getDistanceFrom(walkTarget) < objectsize) && enemyUnderAttack) // both types if they have a "ennemy" in sight
+			else if ((getPosition().getDistanceFrom(walkTarget) < objectsize) && enemyUnderAttack) // triggered mostly for the player
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
@@ -1768,11 +1775,10 @@ void DynamicObject::updateWalk()
 				return;
 			}
 		}
-
-		//Keep walking to stay in the "range"
+		
+		// If the object is not near the destination point, then move in that direction
 		if( ((this->getPosition().getDistanceFrom(walkTarget) > objectsize*1.10f) &&  (this->getLife()!=0))) // ||
-			//((this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.5f) &&  (this->getLife()!=0)))
-		{
+		{	
 			//if (objectType==OBJECT_TYPE_NPC)
 				//printf ("DEBUG: Object position is now: %f,%f,%f\n      walktarget is set at: %f,%f,%f\n",
 				//this->getPosition().X,this->getPosition().Y,this->getPosition().Z,
@@ -1793,8 +1799,37 @@ void DynamicObject::updateWalk()
 					}
 				}
 			}
+		// This will try to reposition the NPC to get to a better position because its too near of it.
+		} else if ((this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.75f) &&  (this->getPosition().getDistanceFrom(walkTarget) > 1 ) && (this->getLife()!=0))
+		{
+			if (objectType==OBJECT_TYPE_NPC && objectType==OBJECT_TYPE_PLAYER)
+			{
+				printf("Reposition character named: %s \n",getName().c_str());
+				// Trie to recalculate the proper distance position based on the current position
+				vector3df pos1 = (walkTarget-getPosition()).normalize(); //Get the directionnal vector and normalize it
+				vector3df pos2 = getPosition()+(pos1*(objectsize*0.75f));
+				setWalkTarget(pos2);
+				setPosition(pos2);
+				lookAt(Player::getInstance()->getNode()->getPosition());
+
+				if (runningMode)
+				{
+					if (this->getAnimation()!=OBJECT_ANIMATION_RUN)
+					{
+						this->setAnimation("run");
+					}
+				}
+				else
+				{
+					if (this->getAnimation()!=OBJECT_ANIMATION_WALK)
+					{
+						this->setAnimation("walk");
+					}
+				}
+			}
 
 		}
+
 
 		// Move the character only if this character is doing the walk or run animation
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
