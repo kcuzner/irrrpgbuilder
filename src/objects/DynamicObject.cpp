@@ -845,8 +845,6 @@ void DynamicObject::objectLabelSetVisible(bool visible)
 // Create and animate a text over the object head
 void DynamicObject::createTextAnim(core::stringw text, video::SColor color, u32 duration, dimension2d<f32> size)
 {
-	//Problem: The application will crash here if the object was not moved. Reason: Unknown.
-
 	const wchar_t * ttext = L" ";
 	
 	if (!text.empty())

@@ -216,6 +216,9 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 
 	// Translation ---------------------------------
 
+	// New (aug 2013) define the speed based on the camera distance to the target
+	TranslateSpeed = camera->getTarget().getDistanceFrom(camera->getPosition());
+
 	core::vector3df translate(OldTarget);
 	const core::vector3df upVector(camera->getUpVector());
 	const core::vector3df target = camera->getTarget();
