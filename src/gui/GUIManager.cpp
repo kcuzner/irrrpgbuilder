@@ -804,7 +804,8 @@ void GUIManager::createEnvironmentTab()
 
 	//Add empty Segment
 	s32 x=12;
-	guiTerrainAddEmptySegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+	guiTerrainAddEmptySegment = NULL;
+	/*guiTerrainAddEmptySegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
                                      BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_terrain_empty_segments")).c_str());
@@ -817,11 +818,11 @@ void GUIManager::createEnvironmentTab()
 	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
 	terrainSText2->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	terrainSText2->setOverrideFont(guiFont9);
+	terrainSText2->setOverrideFont(guiFont9);*/
 
 
 	//-- Add custom segment (Custom Tiles button)
-	x+= 60;
+	//x+= 60;
 	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
 									 tabEnv,
                                      BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
