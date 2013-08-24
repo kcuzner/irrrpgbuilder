@@ -52,6 +52,7 @@ class TerrainManager
         ISceneNode* getEmptySegment(vector3df pos);
         void removeEmptySegment(vector3df pos, bool force=false);
         void createEmptySegment(vector3df pos);
+		void createEmptySegmentMatrix(u32 x, u32 y);
 		void removeSegment(vector3df pos, bool custom = false);
 		void deleteTaggedSegment();
 

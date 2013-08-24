@@ -34,6 +34,9 @@ TerrainManager* TerrainManager::getInstance()
 
 void TerrainManager::createEmptySegment(vector3df pos)
 {
+
+
+
     //if(getHashCode(pos) == "0_0") return;
 	if (pos.Y==-1000.0f)
 		return;
@@ -49,23 +52,19 @@ void TerrainManager::createEmptySegment(vector3df pos)
 
     ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f,0,100);
 	newEmptySegment->setPosition(vector3df((pos.X)*scale,0,(pos.Z)*scale));
-    //newEmptySegment->setScale(vector3df(scale*50.0f,0.01f,scale*50.0f) ) ;
-	newEmptySegment->setScale(vector3df(scale*50.0f,0.1f,scale*50.0f) ) ;
+    newEmptySegment->setScale(vector3df(scale,0.01f,scale) ) ;
+	
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
     newEmptySegment->setTriangleSelector(sel);
 
     newEmptySegment->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
     newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(51.2f,51.2f);
-	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
-	newEmptySegment->getMaterial(0).setFlag(EMF_POINTCLOUD,true);
+	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(51.2f,51.2f);
+	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
+	//newEmptySegment->getMaterial(0).setFlag(EMF_POINTCLOUD,true);
 
     newEmptySegment->setName(getHashCode(pos).c_str());
-	//vector3df curpos = newEmptySegment->getPosition();
-	//curpos.Y = -100.0f;
-	//newEmptySegment->setPosition(curpos);
-
-	
+		
 	//May have to define a bigger bounding box to be able to select better the empty tiles... This portion in test.
 	//core::aabbox3df box=newEmptySegment->getBoundingBox();
 	//((IMeshSceneNode*)newEmptySegment)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
@@ -103,6 +102,28 @@ void TerrainManager::setEmptyTileVisible(bool visible)
     }
 }
 
+// Create an empty tile matrix, the user should not have to create this by hand.
+void TerrainManager::createEmptySegmentMatrix(u32 x, u32 y)
+{
+	if (x<1)
+		x=1;
+	if (y<1)
+		y=1;
+
+	vector3df pos=vector3df(0,0,0);
+	for (u32 xi=0; xi<x; ++xi)
+	{
+		pos=vector3df(0,0,0);
+		pos.X=-(f32(x)/2) + xi;
+		for (u32 yi=0; yi<x; ++yi)
+		{
+			pos.Z=-((f32(y))/2)+yi;			
+			createEmptySegment(pos);
+		}
+	}
+
+}
+
 void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 {
 	if (pos.Y==-1000)
@@ -137,7 +158,7 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 											getHashCode(pos).c_str());
 		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 
-		//removeEmptySegment(pos, true);
+		removeEmptySegment(pos, true);
 
 #ifdef APP_DEBUG
 cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;

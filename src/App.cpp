@@ -2753,7 +2753,8 @@ void App::createNewProject()
 
 	CameraSystem::getInstance();
 
-	TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
+	//TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
+	//TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
 
 	//smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
 	//driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
@@ -3214,7 +3215,8 @@ void App::initialize()
 	// Initialize the camera (2) is maya type camera for editing
 	CameraSystem::getInstance()->setCamera(2);
 	GUIManager::getInstance()->setupEditorGUI();
-	TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
+//TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
+	TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
 	quickUpdate();
 #endif
 
