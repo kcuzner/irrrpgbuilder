@@ -400,8 +400,9 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
     }
 
-
+	/// Since the empty segments are generated, we don't save them anymore
 	//Save all empty segments to XML
+	/*
 	std::map<std::string, ISceneNode*>::iterator it2;
 	
 	for ( it2=terrainEmptySegmentsMap.begin() ; it2 != terrainEmptySegmentsMap.end(); it2++ )
@@ -413,7 +414,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		terrainXML->LinkEndChild(segmentXML);
 		App::getInstance()->quickUpdate();
 
-	}
+	}*/
     parentElement->LinkEndChild(terrainXML);
 }
 
@@ -453,7 +454,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );
     }
 
-	// Save empty segments to XML
+	/*// Save empty segments to XML
 	TiXmlNode* tSegment2 = parentElement->FirstChild( "emptySegment" );
 	while( tSegment2 != NULL )
     {
@@ -465,7 +466,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 			App::getInstance()->quickUpdate();
 
         tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
-    }
+    }*/
 	return true;
 }
 

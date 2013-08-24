@@ -2754,7 +2754,7 @@ void App::createNewProject()
 	CameraSystem::getInstance();
 
 	//TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
-	//TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
+	TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
 
 	//smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
 	//driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
@@ -2942,8 +2942,12 @@ void App::loadProjectFile(bool value)
 			{
 				//printf("Loading project now!\n");
 				cleanWorkspace();
+				
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
+
+				//Recreate the empty tile matrix so the user can expand his loaded map.
+				TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
 
 				// Put back the player object in the list of the dynamic objects
 				DynamicObjectsManager::getInstance()->setPlayer();
