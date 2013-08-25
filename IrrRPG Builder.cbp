@@ -152,7 +152,7 @@
 			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/ShaderCallBack.cpp">
-			<Option virtualFolder="App/camera/" />
+			<Option virtualFolder="App/fx/" />
 		</Unit>
 		<Unit filename="src/fx/ShaderCallBack.h">
 			<Option virtualFolder="App/fx/" />
