@@ -39,6 +39,8 @@ class TemplateObject
 
 		DynamicObject_Animation currentAnim;
 		vector<DynamicObject_Animation> animations; // Animations in the template
+		vector<DynamicObject_material> materials; // materials in the template
+
 		core::stringw script; // Pre-defined script in the template object
 
 		stringw type; // Contain the type "text" of the object (referenced in the "set" XML name.

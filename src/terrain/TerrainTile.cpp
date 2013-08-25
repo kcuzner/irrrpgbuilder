@@ -44,7 +44,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 		tilename="../media/land.obj";
 
 	static IMesh* baseMesh = smgr->getMesh(tilename.c_str());
-	static IMesh* baseMesh2= smgr->getMesh("../media/irb_waterplane.obj"); //
+	//static IMesh* baseMesh2= smgr->getMesh("../media/irb_waterplane.obj"); //
 		//(scene::IMesh*)App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("water.obj",core::dimension2d<f32>(1.0f,1.0f),core::dimension2d<u32>(1,1));
 
 	SMesh* newMesh = NULL;

@@ -1309,7 +1309,12 @@ void App::eventMousePressed(s32 mouse)
 				if (toolstate==TOOL_NONE)
 				{
 					core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
-					TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
+					ISceneNode * nod = TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
+					
+					if (DynamicObjectsManager::getInstance()->getActiveObject()->materials.size()>0 && nod)
+					{
+						ShaderCallBack::getInstance()->setMaterials(nod,DynamicObjectsManager::getInstance()->getActiveObject()->materials);
+					}
 					return;
 				}
 				if (toolstate==TOOL_TILEROTATE_LEFT)

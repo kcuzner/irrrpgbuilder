@@ -10,5 +10,7 @@
 	</dynamic_object>
 	<dynamic_object name="test terrain" mesh="untitled.obj"  type="walkable" scale="1.0" special="segment"
 					description="test terrain" author="Christian Clavet" licence="Creative Commons" >
+					<material id="0" shader="TERRAIN" />
+					<material id="1" shader="WATER" />
 	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>

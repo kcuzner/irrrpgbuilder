@@ -712,6 +712,11 @@ void DynamicObject::setProp_level(cproperty prop)
 	prop_level=prop;
 }
 
+void DynamicObject::setMaterials(vector<DynamicObject_material> mat)
+{
+	this->materials = mat;	
+}
+
 void DynamicObject::setEnabled(bool enabled)
 {
     this->enabled = enabled;

@@ -1,6 +1,7 @@
 #include "DynamicObjectsManager.h"
 #include "DynamicObject.h"
 #include "../camera/CameraSystem.h"
+#include "../fx/ShaderCallBack.h"
 
 using namespace irr;
 using namespace core;
@@ -152,6 +153,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 		bool inside = false;
 		bool inside2 = false;
+		bool inside3 = false;
 
 		// Language counter (using the XML hierachy)
 		u32 count = 0;
@@ -174,6 +176,38 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
                 case io::EXN_ELEMENT:
                 {
+					if (core::stringw("material") == (core::stringw)xml->getNodeName())
+					{
+
+						if (!inside3) 
+						{
+							printf ("Inside the requested block (material)!\n");
+							inside3=true;
+						}
+
+						core::stringc text="";
+						DynamicObject_material currMaterial;
+
+						//get ID of material
+						text = (core::stringc)xml->getAttributeValue("id");
+						if (text.size()>0)
+							currMaterial.id = (irr::u32)atoi(text.c_str());
+						else
+							currMaterial.id = 0;
+							
+
+						//get The shader of the material
+						currMaterial.shader = (core::stringc)xml->getAttributeValue("shader");
+						currMaterial.texture0 = (core::stringc)xml->getAttributeValue("texture0");
+						currMaterial.texture1 = (core::stringc)xml->getAttributeValue("texture1");
+						currMaterial.texture2 = (core::stringc)xml->getAttributeValue("texture2");
+						currMaterial.texture3 = (core::stringc)xml->getAttributeValue("texture3");
+
+						newObj->materials.push_back(currMaterial);
+						
+						printf("Inside the node for the material!\n");
+					}
+
 
 					if (core::stringw("animation") == (core::stringw)xml->getNodeName())
 					{
@@ -323,6 +357,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 					}
 					inside = false;
 					inside2 = false;
+					inside3 = false;
 					break;
                 
 				default:
@@ -474,10 +509,20 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	newObj->setTemplateScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setType(activeObject->getType());
 	newObj->setTemplate(false);
+	
+	
 
 	//setup material
 	newObj->getNode()->setMaterialType(activeObject->getMaterialType());
 	newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
+
+	//Add the materials definitions if they were defined
+	if (activeObject->materials.size()>0)
+	{
+		ShaderCallBack::getInstance()->setMaterials(newObj->getNode(),activeObject->materials); //Apply the shader from the template
+		newObj->setMaterials(activeObject->materials); //Save the template info inside the dynamic object
+	}
+
 	// Load the script if it was defined in the XML
 	if (activeObject->script.size()>1)
 	{

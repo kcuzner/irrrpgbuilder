@@ -77,6 +77,16 @@ typedef struct data_anim{
 
 }DynamicObject_Animation;
 
+typedef struct data_material{
+	u32 id;
+	stringc shader;
+	stringc texture0;
+	stringc texture1;
+	stringc texture2;
+	stringc texture3;
+
+}DynamicObject_material;
+
 typedef struct data_properties{
 	u32 life;
 	u32 mana;
@@ -157,6 +167,8 @@ class DynamicObject
 
 		cproperty getProp_level();
 		void setProp_level(cproperty prop);
+
+		void setMaterials(vector<DynamicObject_material> mat);
 
 		void setLife(int life);
         int getLife();
@@ -328,6 +340,7 @@ class DynamicObject
         ITextSceneNode* objLabel;
 
 		vector<DynamicObject_Animation> animations;
+		vector<DynamicObject_material> materials;
 
 
 
