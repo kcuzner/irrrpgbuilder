@@ -47,6 +47,8 @@ class TerrainManager
 
 		void drawBrush();
 
+		void update();
+
 		TerrainTile* getSegment(vector3df pos);
         TerrainTile* getSegment(std::string hashCode);
         ISceneNode* getEmptySegment(vector3df pos);
@@ -90,6 +92,7 @@ class TerrainManager
 		stringc terraintexture4;
 
         TerrainManager();
+		u32 timer;
         
 };
 

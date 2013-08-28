@@ -23,6 +23,9 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	ocean=NULL;
 	node=NULL;
 	selector=NULL;
+	timer = 0;
+
+	needrecalc=false; //Define if the tile need to be calculated
 
     scale = TerrainManager::getInstance()->getScale();
 
@@ -477,12 +480,17 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool 
 void TerrainTile::recalculate()
 {
 	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
-
+	u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	//Timed refresh of the recalc to optimize the time it take.
+	if (time-timer>120)
+	{
+		timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 		// Attempt to update the triangle selector with the new mesh
-	ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-	//ITriangleSelector * selector = smgr->createOctTreeTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
-	node->setTriangleSelector(selector);
-	selector->drop();
+		ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+		//----ITriangleSelector * selector = smgr->createOctTreeTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
+		node->setTriangleSelector(selector);
+		selector->drop();
+	}
 
 	core::aabbox3df box=node->getBoundingBox();
 	((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,-256.0f,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));

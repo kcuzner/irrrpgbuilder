@@ -1,4 +1,6 @@
 #include "TerrainManager.h"
+#include "../events/EventReceiver.h"
+#include "../gui/GUIManager.h"
 
 #include <sstream>
 
@@ -18,6 +20,7 @@ TerrainManager::TerrainManager()
     terrainEmptySegmentsMap.clear();
     terrainMap.clear();
 	tileTagged=NULL;
+	timer = 0;
 }
 
 TerrainManager::~TerrainManager()
@@ -817,6 +820,71 @@ void TerrainManager::drawBrush()
 		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,64));
 		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,64));
 
+	}
+}
+
+void TerrainManager::update()
+{
+	APP_STATE app_state;
+	app_state = App::getInstance()->getAppState();
+
+	TerrainManager::getInstance()->drawBrush();
+
+	// Refresh the edition of terrain at 30FPS (Should be uniform now on all system)
+	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && App::getInstance()->cursorIsInEditArea() )
+	{
+		u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		if (time-timer>34)
+		{
+			timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
+			if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
+			{
+				// Activate the "plateau" display in the shader
+				ShaderCallBack::getInstance()->setFlagEditingTerrain(true);
+				if(EventReceiver::getInstance()->isMousePressed(0))
+				{
+					transformSegmentsToValue(App::getInstance()->getMousePosition3D(100),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
+				}
+			}
+			else
+			{
+				// De-Activate the "plateau" display in the shader
+				ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
+				if(EventReceiver::getInstance()->isMousePressed(0))
+				{
+					transformSegments(App::getInstance()->getMousePosition3D(100),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+				}
+				else if(EventReceiver::getInstance()->isMousePressed(1) )
+				{
+					transformSegments(App::getInstance()->getMousePosition3D(100),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						-GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+				}
+			}
+		}
+
+
+		if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION && App::getInstance()->cursorIsInEditArea())
+		{
+			//Add vegetation to the terrain
+			if(EventReceiver::getInstance()->isMousePressed(0))
+			{
+				TerrainManager::getInstance()->paintVegetation(App::getInstance()->getMousePosition3D(100), false);
+			}
+			//Erase vegetation from the terrain
+			if(EventReceiver::getInstance()->isMousePressed(1))
+			{
+				TerrainManager::getInstance()->paintVegetation(App::getInstance()->getMousePosition3D(100), true);
+			}
+		}
 	}
 }
 

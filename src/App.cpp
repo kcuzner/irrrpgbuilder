@@ -2149,6 +2149,10 @@ void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
 
+	// If the app state edit the terrain, then update the terrain
+	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION || app_state == APP_EDIT_TERRAIN_TRANSFORM)
+		TerrainManager::getInstance()->update();
+
 	if (selectedNode  && app_state!=APP_EDIT_CHARACTER)
 		GUIManager::getInstance()->updateEditCameraString(selectedNode);
 	else
@@ -2156,11 +2160,7 @@ void App::updateEditMode()
 
 	if (app_state==APP_EDIT_CHARACTER)
 		GUIManager::getInstance()->updateEditCameraString(Player::getInstance()->getNode());
-
-	// Draw the brush in realtime
-	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() )
-		TerrainManager::getInstance()->drawBrush();
-
+		
 	// Trie to display the node as we go with the mouse cursor in edit mode
 	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
 	{
@@ -2240,59 +2240,7 @@ void App::updateEditMode()
 			}
 
 
-			// Refresh the edition of terrain at 30FPS (Should be uniform now on all system)
-			if(app_state == APP_EDIT_TERRAIN_TRANSFORM && cursorIsInEditArea() && (device->getTimer()->getRealTime()-timer1)>34)
-			{
-				timer1 = device->getTimer()->getRealTime();
-
-				if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
-				{
-					// Activate the "plateau" display in the shader
-					ShaderCallBack::getInstance()->setFlagEditingTerrain(true);
-					if(EventReceiver::getInstance()->isMousePressed(0))
-					{
-						TerrainManager::getInstance()->transformSegmentsToValue(this->getMousePosition3D(100),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
-					}
-				}
-				else
-				{
-					// De-Activate the "plateau" display in the shader
-					ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
-					if(EventReceiver::getInstance()->isMousePressed(0))
-					{
-						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
-					}
-					else if(EventReceiver::getInstance()->isMousePressed(1) )
-					{
-						TerrainManager::getInstance()->transformSegments(this->getMousePosition3D(100),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-							GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-							-GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
-					}
-				}
-			}
-
-
-			if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION && cursorIsInEditArea())
-			{
-				//Add vegetation to the terrain
-				if(EventReceiver::getInstance()->isMousePressed(0))
-				{
-					TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), false);
-				}
-				//Erase vegetation from the terrain
-				if(EventReceiver::getInstance()->isMousePressed(1))
-				{
-					TerrainManager::getInstance()->paintVegetation(this->getMousePosition3D(100), true);
-				}
-			}
+			
 			
 			// Move the selected object in ADD mode
 			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())

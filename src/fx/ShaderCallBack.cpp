@@ -143,6 +143,22 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 	for (u32 i=0; i<mat.size(); ++i)
 	{
 		printf ("Here is the defined material type: %s\n",mat[i].shader.c_str());
+
+		if (mat[i].shader == "SOLID")
+		{
+			printf("Material is a solid..\n");
+			ITexture * tex0 = NULL;
+		
+			if (mat[i].texture0.size()>0)
+				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
+			
+			if (tex0)
+			{
+				node->getMaterial(i).MaterialType=EMT_SOLID;
+				node->getMaterial(i).setTexture(0,tex0);
+			}
+		
+		} 
 		// Assign a custom lightmap to the model
 		if (mat[i].shader == "LIGHTMAP")
 		{
@@ -294,6 +310,8 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 			node->setMaterialFlag(EMF_FOG_ENABLE,true);    
 			node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 		}
+
+	
 	}
 	
 }

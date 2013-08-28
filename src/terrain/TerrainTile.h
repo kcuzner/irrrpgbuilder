@@ -82,6 +82,9 @@ class TerrainTile
         Vegetation* getVegetationAt(vector3df pos);
 
         void transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc=false);
+
+		bool needrecalc;
+		u32 timer;
 };
 
 #endif // TERRAINTILE_H

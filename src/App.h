@@ -141,6 +141,7 @@ class App
 		stringc getProjectName();
 
         void initialize();
+		bool cursorIsInEditArea();
 		
 
 
@@ -189,7 +190,7 @@ class App
 
 		//ConsoleDialog * console_dialog;
 
-        bool cursorIsInEditArea();
+        
 		void setPreviewSelection();
 
 		vector3df oldcampos;
