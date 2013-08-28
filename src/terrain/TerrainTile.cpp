@@ -269,7 +269,30 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 		segmentXML->SetAttribute("custom",customname.c_str());
 		if (node->getRotation().Y!=0)
 			segmentXML->SetAttribute("custom_R",(int)node->getRotation().Y);
+
+		if (vegetationVector.size()>0)
+		{
+			printf ("saving %d trees\n",vegetationVector.size());
+			
+			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
+			{
+				TiXmlElement* vertexXML = new TiXmlElement("vertex");
+				Vegetation * tree = (Vegetation*)vegetationVector[i];
+    		
+				if (tree!=NULL)
+				{
+					vector3df treepos=tree->getPosition();
+					vertexXML->SetAttribute("v",tree->getType());
+					vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
+					vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
+					vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+				}
+				segmentXML->LinkEndChild(vertexXML);
+			}
+			
+		}
 	}
+	
 
 	if (!custom)
 	{
@@ -322,10 +345,16 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 {
     TiXmlNode* vertex = parentElement->FirstChild( "vertex" );
 
+	s32 id = 0;
+	f32 y = 0.0f;
+
     while( vertex != NULL )
     {
-        s32 id = atoi(vertex->ToElement()->Attribute("id"));
-        f32 y = (f32)atof(vertex->ToElement()->Attribute("y"));
+		if (!custom)
+		{
+			id = atoi(vertex->ToElement()->Attribute("id"));
+			y = (f32)atof(vertex->ToElement()->Attribute("y"));
+		}
 
 		//int vegetation = atoi(vertex->ToElement()->Attribute("v"));
 		stringc sttype = vertex->ToElement()->Attribute("v");
@@ -350,11 +379,12 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 			}
 
 		}
-		// This slow down when loading and should be optimized.
-		this->transformMeshByVertex(id,y,false,true);
+		if (!custom)// This slow down when loading and should be optimized.
+			this->transformMeshByVertex(id,y,false,true);
 
         vertex = parentElement->IterateChildren( "vertex", vertex );
     }
+
 	this->recalculate();
 	return true;
 }
@@ -371,7 +401,13 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 	{
 	    if(erase)
         {
-            vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+			vector3df realPos = vector3df (0.0f,0.0f,0.0f);
+			//Should be able to place a tree anywhere on a custom model
+			if (!custom)
+				realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+			else
+				realPos = clickPos;
+
             clickPos.Y = realPos.Y;
             if(realPos.getDistanceFrom(clickPos) < vegetationRange/2 && getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {
@@ -395,7 +431,13 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
         }
         else
         {
-            vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+            vector3df realPos = vector3df (0.0f,0.0f,0.0f);
+			//Should be able to place a tree anywhere on a custom model
+			if (!custom)
+				realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+			else
+				realPos = clickPos;
+
             clickPos.Y = realPos.Y;
             if(realPos.getDistanceFrom(clickPos) < (vegetationRange/2) && !getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {

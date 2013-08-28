@@ -828,13 +828,15 @@ void TerrainManager::update()
 	APP_STATE app_state;
 	app_state = App::getInstance()->getAppState();
 
-	TerrainManager::getInstance()->drawBrush();
+	if (app_state == APP_EDIT_TERRAIN_TRANSFORM)
+		drawBrush();
+
 
 	// Refresh the edition of terrain at 30FPS (Should be uniform now on all system)
-	if(app_state == APP_EDIT_TERRAIN_TRANSFORM && App::getInstance()->cursorIsInEditArea() )
+	if(App::getInstance()->cursorIsInEditArea() )
 	{
 		u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		if (time-timer>34)
+		if (app_state == APP_EDIT_TERRAIN_TRANSFORM && (time-timer>34))
 		{
 			timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
 			if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
@@ -872,7 +874,7 @@ void TerrainManager::update()
 		}
 
 
-		if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION && App::getInstance()->cursorIsInEditArea())
+		if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 		{
 			//Add vegetation to the terrain
 			if(EventReceiver::getInstance()->isMousePressed(0))
