@@ -21,6 +21,7 @@ TerrainManager::TerrainManager()
     terrainMap.clear();
 	tileTagged=NULL;
 	timer = 0;
+	needrecalc=false;
 }
 
 TerrainManager::~TerrainManager()
@@ -409,10 +410,11 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     //Save all segments to XML
     for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
     {
-        ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 		App::getInstance()->quickUpdate();
+        ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
     }
+	
 
 	/// Since the empty segments are generated, we don't save them anymore
 	//Save all empty segments to XML
@@ -437,8 +439,10 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
     clean();
 	
 	TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
+	
 	while( tSegment != NULL )
     {
+		App::getInstance()->quickUpdate();
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
@@ -459,14 +463,15 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 
+
         if(tempTile)
         {
-            tempTile->loadFromXML(tSegment->ToElement());
-			App::getInstance()->quickUpdate();
+            tempTile->loadFromXML(tSegment->ToElement());			
         }
 
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );
     }
+	App::getInstance()->quickUpdate();
 
 	/*// Save empty segments to XML
 	TiXmlNode* tSegment2 = parentElement->FirstChild( "emptySegment" );
@@ -481,6 +486,9 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
         tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
     }*/
+	GUIManager::getInstance()->setTextLoader(L"Creating the collision meshes");
+	App::getInstance()->quickUpdate();
+	recalculate();
 	return true;
 }
 
@@ -505,11 +513,11 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 }
 */
 
-void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radius2, f32 strength)
+void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radius2, f32 strength,  bool norecalc)
 {
     if(mousePick.pickedNode != NULL)
     {
-        for (int i=-1 ; i<2 ; i++)
+		for (int i=-1 ; i<2 ; i++)
         {
             for (int j=-1 ; j<2 ; j++)
             {
@@ -522,13 +530,13 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radi
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength);
+                if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength,norecalc);
             }
         }
     }
 }
 
-void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value)
+void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc)
 {
     if(mousePick.pickedNode != NULL)
     {
@@ -544,10 +552,22 @@ void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,radius2,strength,value);
+                if(tempTile) tempTile->transformMeshToValue(mousePick.pickedPos,radius,radius2,strength,value,norecalc);
             }
         }
     }
+}
+
+//Will recalculate the terrain tiles that are "marked" as needed for recalculation of collision shapes
+void TerrainManager::recalculate()
+{
+	needrecalc=false;
+    std::map<std::string, TerrainTile*>::iterator it;
+    for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
+    {
+		((TerrainTile*)((*it).second))->recalculate();
+    }
+
 }
 
 f32 TerrainManager::getHeightAt(vector3df pos)
@@ -560,6 +580,19 @@ f32 TerrainManager::getHeightAt(vector3df pos)
         return segment->getHeightAt(pos);
     else
         return -1000;
+}
+
+f32 TerrainManager::getVerticeHeight(vector3df pos)
+{
+	 vector3df hashCode = pos/this->getScale();
+
+    TerrainTile* segment = this->getSegment(hashCode);
+
+    if(segment)
+		return segment->getVerticeHeight(pos);
+    else
+        return -1000;
+
 }
 
 stringc TerrainManager::getTileMeshName()
@@ -675,7 +708,7 @@ void TerrainManager::showDebugData(bool show)
     }
 }
 
-void TerrainManager::drawBrush()
+void TerrainManager::drawBrush(bool useray)
 {
 	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
 	vector3df camref = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera()->getPosition();
@@ -694,131 +727,96 @@ void TerrainManager::drawBrush()
 	driver->setTransform(video::ETS_WORLD, core::matrix4());
 
 
+	
+	// Display the inner brush size if the user change the default value of 5 to another value
+	if (useray)
+		drawBrushCircle(position, radius, 20, false, useray);
+	else
+		drawBrushCircle(position, radius, 5, false, useray);
+
+	if (radius2!=5.0f)
+	{
+		if (useray)
+			drawBrushCircle(position, radius2, 30, false, useray);
+		else
+			drawBrushCircle(position, radius, 10, false, useray);
+	}
+	drawBrushCircle(position, 5, 30, true, useray);
+	
+}
+
+void TerrainManager::drawBrushCircle(vector3df position, f32 radius, int step,bool drawlines,bool useray)
+{
+	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	vector3df camref = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera()->getPosition();
+
 	// Render the size of the brush.
 	f32 framesize = position.getDistanceFrom(camref)/400.0f;
-	int step=10;
+
+	f32 height=0.0f;
+	// Display the inner brush size if the user change the default value of 5 to another value
 	for (int i=0; i<(360); i=i+step)
 	{
 		float degInRad = i*DEG2RAD;
 		vector3df pos=position;
+		
 		pos.X+=cos(degInRad)*radius;
 		pos.Z+=sin(degInRad)*radius;
-		height=getHeightAt(pos);
+		
+		if (useray)
+			height=getHeightAt(pos);
+		else
+			height=getVerticeHeight(pos);
+		
 		if (height==-1000.0f)
 			height=0.0f;
+		
 		pos.Y=height+framesize;
 
 		float degInRad2 = (i+step)*DEG2RAD;
+		
 		vector3df pos2=position;
+		
 		pos2.X+=cos(degInRad2)*radius;
 		pos2.Z+=sin(degInRad2)*radius;
-		height=getHeightAt(pos2);
+		
+		if (useray)
+			height=getHeightAt(pos2);
+		else
+			height=getVerticeHeight(pos2);
+		
 		if (height==-1000.0f)
 			height=0.0f;
+		
 		pos2.Y=height+framesize;
-		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-
-		vector3df pos3=position;
-		pos3.X+=cos(degInRad)*(radius+framesize);
-		pos3.Z+=sin(degInRad)*(radius+framesize);
-		pos3.Y=pos.Y;
-
-		vector3df pos4=position;
-		pos4.X+=cos(degInRad2)*(radius+framesize);
-		pos4.Z+=sin(degInRad2)*(radius+framesize);
-		pos4.Y=pos2.Y;
-
-		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,128));
-		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,128));
-
-	}
-
-	// Display the inner brush size if the user change the default value of 5 to another value
-	if (radius2!=5.0f)
-	{
-		// Render the size of the brush.
-		//framesize = 5;
-		step=10;
-		for (int i=0; i<(360); i=i+step)
-		{
-			float degInRad = i*DEG2RAD;
-			vector3df pos=position;
-			pos.X+=cos(degInRad)*radius2;
-			pos.Z+=sin(degInRad)*radius2;
-			height=getHeightAt(pos);
-			if (height==-1000.0f)
-				height=0.0f;
-			pos.Y=height+framesize;
-
-			float degInRad2 = (i+step)*DEG2RAD;
-			vector3df pos2=position;
-			pos2.X+=cos(degInRad2)*radius2;
-			pos2.Z+=sin(degInRad2)*radius2;
-			height=getHeightAt(pos2);
-			if (height==-1000.0f)
-				height=0.0f;
-			pos2.Y=height+framesize;
-			//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-
+		
+		if (drawlines)
+			driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
+		else
+		{	
 			vector3df pos3=position;
-			pos3.X+=cos(degInRad)*(radius2+framesize);
-			pos3.Z+=sin(degInRad)*(radius2+framesize);
+			pos3.X+=cos(degInRad)*(radius+framesize);
+			pos3.Z+=sin(degInRad)*(radius+framesize);
 			pos3.Y=pos.Y;
 
 			vector3df pos4=position;
-			pos4.X+=cos(degInRad2)*(radius2+framesize);
-			pos4.Z+=sin(degInRad2)*(radius2+framesize);
+			pos4.X+=cos(degInRad2)*(radius+framesize);
+			pos4.Z+=sin(degInRad2)*(radius+framesize);
 			pos4.Y=pos2.Y;
 
-			driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,200));
-			driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,200));
+			if (useray)
+			{
+				driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,200));
+				driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,200));
+			}
+			else
+			{
+				driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,64,64));
+				driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,64,64));
+			}
+
+			
 		}
-
-	}
-
-
-	// Center circle for the brush give the center
-	radius=5;
-	//framesize = 2;
-	step=15;
-
-	for (int i=0; i<(360); i=i+step)
-	{
-		float degInRad = i*DEG2RAD;
-		vector3df pos=position;
-		pos.X+=cos(degInRad)*radius;
-		pos.Z+=sin(degInRad)*radius;
-		height=getHeightAt(pos);
-		
-		if (height==-1000.0f)
-			height=0.0f;
-
-		pos.Y=height+framesize;
-
-		float degInRad2 = (i+step)*DEG2RAD;
-		vector3df pos2=position;
-		pos2.X+=cos(degInRad2)*radius;
-		pos2.Z+=sin(degInRad2)*radius;
-		height=getHeightAt(pos2);
-		
-		if (height==-1000.0f)
-			height=0.0f;
-
-		pos2.Y=height+framesize;
-		//driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
-
-		vector3df pos3=position;
-		pos3.X+=cos(degInRad)*(radius+framesize);
-		pos3.Z+=sin(degInRad)*(radius+framesize);
-		pos3.Y=pos.Y;
-
-		vector3df pos4=position;
-		pos4.X+=cos(degInRad2)*(radius+framesize);
-		pos4.Z+=sin(degInRad2)*(radius+framesize);
-		pos4.Y=pos2.Y;
-
-		driver->draw3DTriangle(triangle3df(pos4,pos3,pos),video::SColor(128,255,255,64));
-		driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,255,64));
 
 	}
 }
@@ -829,27 +827,37 @@ void TerrainManager::update()
 	app_state = App::getInstance()->getAppState();
 
 	if (app_state == APP_EDIT_TERRAIN_TRANSFORM)
-		drawBrush();
+		drawBrush(!needrecalc);
 
 
 	// Refresh the edition of terrain at 30FPS (Should be uniform now on all system)
 	if(App::getInstance()->cursorIsInEditArea() )
 	{
 		u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		if (app_state == APP_EDIT_TERRAIN_TRANSFORM && (time-timer>34))
+		if (app_state == APP_EDIT_TERRAIN_TRANSFORM)
 		{
-			timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
+			if(!EventReceiver::getInstance()->isMousePressed(0) && !EventReceiver::getInstance()->isMousePressed(1) && needrecalc)
+				recalculate();
+
+			//Calculate a time offset for the strenght
+			f32 timeoffset = f32((time-timer)/1000.0f);
+			f32 strength = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*(timeoffset/60.0f);
+			
+			//printf("Here is the value of the gui: %f, value of time offset: %f, offset: %d\n",strength,timeoffset,s32(time-timer));
+			timer = time;
+
 			if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
 			{
 				// Activate the "plateau" display in the shader
 				ShaderCallBack::getInstance()->setFlagEditingTerrain(true);
 				if(EventReceiver::getInstance()->isMousePressed(0))
 				{
+					needrecalc=true;
 					transformSegmentsToValue(App::getInstance()->getMousePosition3D(100),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f,
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU));
+						strength,
+						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU), true);
 				}
 			}
 			else
@@ -858,17 +866,19 @@ void TerrainManager::update()
 				ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 				if(EventReceiver::getInstance()->isMousePressed(0))
 				{
+					needrecalc=true;
 					transformSegments(App::getInstance()->getMousePosition3D(100),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+						strength, true);
 				}
 				else if(EventReceiver::getInstance()->isMousePressed(1) )
 				{
+					needrecalc=true;
 					transformSegments(App::getInstance()->getMousePosition3D(100),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
 						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
-						-GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*0.0005f);
+						-strength, true);
 				}
 			}
 		}

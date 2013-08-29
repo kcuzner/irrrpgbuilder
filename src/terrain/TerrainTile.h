@@ -30,8 +30,8 @@ class TerrainTile
 
         void paintVegetation(vector3df clickPos, bool erase);
 
-        void transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength);
-		void transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value);
+        void transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength, bool norecalc=false);
+		void transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value, bool norecalc=false);
 		bool checkModified();
 
         stringc getName();
@@ -47,6 +47,7 @@ class TerrainTile
         bool loadFromXML(TiXmlElement* parentElement);
 
         f32 getHeightAt(vector3df pos);
+		f32 getVerticeHeight(vector3df pos);
 
         void showDebugData(bool show);
 
@@ -54,7 +55,7 @@ class TerrainTile
 		void assignWaterShader(scene::ISceneNode* node);
 
 		
-		void recalculate();
+		void recalculate(bool simple=false); //Recalculate all the mesh (collision + normals), simple is without the collision
 
         virtual ~TerrainTile();
 
@@ -84,7 +85,6 @@ class TerrainTile
         void transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc=false);
 
 		bool needrecalc;
-		u32 timer;
 };
 
 #endif // TERRAINTILE_H

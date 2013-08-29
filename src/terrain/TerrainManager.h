@@ -20,14 +20,17 @@ class TerrainManager
         std::string getHashCode(vector3df pos);
 
         f32 getHeightAt(vector3df pos);
+		f32 getVerticeHeight(vector3df pos);
 
         void paintVegetation(MousePick mousePick, bool erase);
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
-        void transformSegments(MousePick mousePick, f32 radius,f32 radius2, f32 strength);
-        void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value);
+        void transformSegments(MousePick mousePick, f32 radius,f32 radius2, f32 strength,  bool norecalc=false);
+        void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc=false);
+
+		void recalculate();
 
 		stringc getTileMeshName();
 		void setTileMeshName(stringc name);
@@ -45,7 +48,8 @@ class TerrainManager
 
         void showDebugData(bool show);
 
-		void drawBrush();
+		void drawBrush(bool useray = true);
+		void drawBrushCircle(vector3df position, f32 radius, int step,bool drawlines=false, bool useray=true);
 
 		void update();
 
@@ -93,6 +97,7 @@ class TerrainManager
 
         TerrainManager();
 		u32 timer;
+		bool needrecalc;
         
 };
 

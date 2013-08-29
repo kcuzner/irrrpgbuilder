@@ -23,7 +23,6 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	ocean=NULL;
 	node=NULL;
 	selector=NULL;
-	timer = 0;
 
 	needrecalc=false; //Define if the tile need to be calculated
 
@@ -232,12 +231,14 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
                 if((realPos.X == nRealPos.X) && (realPos.Z == nRealPos.Z))
                 {
                     mb_vertices[j].Pos.Y = n_mb_vertices[i].Pos.Y;
+					needrecalc=true;
                 }
             }
         }
 
         smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
 		((IMeshSceneNode*)node)->getMesh()->setDirty();
+		needrecalc = true;
     }
 }
 
@@ -385,7 +386,8 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
         vertex = parentElement->IterateChildren( "vertex", vertex );
     }
 
-	this->recalculate();
+	needrecalc=true;
+	//this->recalculate();
 	return true;
 }
 
@@ -514,34 +516,44 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool 
 	}
 
 	if (!norecalc)
-	{
 		recalculate();
+	else
+	{	
+		needrecalc=true;
+		recalculate(true);
 	}
 }
 
-void TerrainTile::recalculate()
+void TerrainTile::recalculate(bool simple)
 {
-	smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
-	u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	//Timed refresh of the recalc to optimize the time it take.
-	if (time-timer>120)
+	if (custom)
+		return;
+	if (needrecalc)
 	{
-		timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		// Attempt to update the triangle selector with the new mesh
+		//This part only refresh the visual model, will not change the collision shape
+		smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+		core::aabbox3df box=node->getBoundingBox();
+		((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,-256.0f,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
+		((IMeshSceneNode*)node)->getMesh()->setDirty();
+	}
+
+	// Simple is used by the brush when carving, once the carve is done, if needrecalc is activated will redo the collision shape 
+	// also used by terrainManager::recalculate()
+	if (!simple && needrecalc)
+	{
+		// Attempt to update the triangle selector with the new mesh, will get the modified mesh and recreate the collision mesh
 		ITriangleSelector * selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
 		//----ITriangleSelector * selector = smgr->createOctTreeTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
 		node->setTriangleSelector(selector);
 		selector->drop();
+		needrecalc = false;
+		printf("RECALCULATING SEGMENT: %s\n",getName().c_str());
 	}
-
-	core::aabbox3df box=node->getBoundingBox();
-	((IMeshSceneNode*)node)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,-256.0f,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
-	((IMeshSceneNode*)node)->getMesh()->setDirty();
 
 }
 
 
-void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength)
+void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength, bool norecalc)
 {
 
 	if (custom)
@@ -560,6 +572,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32
 
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
+			needrecalc=true; // This will flag the tile since it's in the radius and will modify the tile vertices.
+
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			//- (realPos.getDistanceFrom(clickPos)-radius2)
 			f32 ratio = radius;
@@ -577,12 +591,16 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32
 	    if(mb_vertices[j].Pos.Y < -(nodescale*0.25f)) mb_vertices[j].Pos.Y = -(nodescale*0.25f);
 	}
 
-
-	recalculate();
+	if (norecalc) 
+	{	
+		recalculate(true);
+	}
+	else
+		recalculate();
 
 }
 
-void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value)
+void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value, bool norecalc)
 {
 
 	if (custom)
@@ -602,6 +620,7 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radiu
         clickPos.Y = realPos.Y;
 	    if(realPos.getDistanceFrom(clickPos) < radius)
 	    {
+			needrecalc=true;
             //f32 ratio = sin(radius - realPos.getDistanceFrom(clickPos));
 			f32 ratio = radius;
 
@@ -624,9 +643,16 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radiu
 	    }
 	}
 
-	recalculate();
+	if (norecalc) 
+	{	
+		recalculate(true);
+	}
+	else
+		recalculate();
 }
 
+//Get the elevation from a ray test on the tile.
+//For this to work, the collision mesh must be up to date
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
 	// Check from the top of the character
@@ -659,6 +685,35 @@ f32 TerrainTile::getHeightAt(vector3df pos)
 	else
 		// if not return -1000 (Impossible value, so it failed)
 		return -1000;
+}
+
+f32 TerrainTile::getVerticeHeight(vector3df pos)
+{
+	f32 radius = 100;
+	f32 returnvalue = 0;
+	f32 smallest = radius;
+	IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+
+	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
+
+	u16* mb_indices  = meshBuffer->getIndices();
+
+	//Check all indices in the mesh to find the one that is nearest the position
+	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+	{
+	    vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
+        pos.Y = realPos.Y; //Put the height at the same height
+
+		//Check if its the smallest distance
+	    if((realPos.getDistanceFrom(pos) < smallest))
+	    {
+			smallest = realPos.getDistanceFrom(pos);
+			returnvalue = realPos.Y;            
+	    }
+
+	}
+	return returnvalue;
+
 }
 
 void TerrainTile::showDebugData(bool show)
