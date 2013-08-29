@@ -7528,7 +7528,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1376363563 /home/christian/projets/IRB/src/App.h
+1377748125 /home/christian/projets/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -8614,7 +8614,7 @@
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1376363563 /home/christian/projets/IRB/src/gui/GUIManager.h
+1376858195 /home/christian/projets/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -8751,7 +8751,7 @@
 1375828485 /home/christian/projets/IRB/src/gui/CGUIExtWindow.h
 	<irrlicht.h>
 
-1375828486 /home/christian/projets/IRB/src/objects/DynamicObject.h
+1377404191 /home/christian/projets/IRB/src/objects/DynamicObject.h
 	<vector>
 	<irrlicht.h>
 	"HealthSceneNode.h"
@@ -8784,12 +8784,12 @@
 	<irrlicht.h>
 	"../App.h"
 
-1375828486 /home/christian/projets/IRB/src/terrain/TerrainManager.h
+1377748125 /home/christian/projets/IRB/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"../App.h"
 
-1375828486 /home/christian/projets/IRB/src/terrain/TerrainTile.h
+1377748125 /home/christian/projets/IRB/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -8797,8 +8797,10 @@
 	"Vegetation.h"
 	"../tinyXML/tinyxml.h"
 
-1372537951 /home/christian/projets/IRB/src/fx/ShaderCallBack.h
+1377404191 /home/christian/projets/IRB/src/fx/ShaderCallBack.h
+	<vector>
 	<irrlicht.h>
+	"../objects/DynamicObject.h"
 
 1372537951 /home/christian/projets/IRB/src/terrain/Vegetation.h
 	<irrlicht.h>
@@ -8822,14 +8824,14 @@
 	"Player.h"
 	"../tinyXML/tinyxml.h"
 
-1375828486 /home/christian/projets/IRB/src/objects/TemplateObject.h
+1377404191 /home/christian/projets/IRB/src/objects/TemplateObject.h
 	<irrlicht.h>
 
 1375828486 source:/home/christian/projets/IRB/src/camera/CameraSystem.cpp
 	"CameraSystem.h"
 	"../sound/SoundManager.h"
 
-1375830689 source:/home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
+1377317902 source:/home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	"ICursorControl.h"
 	"ICameraSceneNode.h"
@@ -8910,7 +8912,7 @@
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1372537951 source:/home/christian/projets/IRB/src/gui/GUIManager.cpp
+1377317901 source:/home/christian/projets/IRB/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
@@ -8952,7 +8954,7 @@
 	"../LuaGlobalCaller.h"
 	"Player.h"
 
-1372537951 source:/home/christian/projets/IRB/src/objects/DynamicObject.cpp
+1377404191 source:/home/christian/projets/IRB/src/objects/DynamicObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"combat.h"
@@ -8961,10 +8963,11 @@
 	"../camera/CameraSystem.h"
 	"DynamicObject.h"
 
-1375830689 source:/home/christian/projets/IRB/src/objects/DynamicObjectsManager.cpp
+1377404191 source:/home/christian/projets/IRB/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"DynamicObject.h"
 	"../camera/CameraSystem.h"
+	"../fx/ShaderCallBack.h"
 
 1372537951 source:/home/christian/projets/IRB/src/objects/HealthSceneNode.cpp
 	"irrlicht.h"
@@ -8979,7 +8982,7 @@
 	<irrlicht.h>
 	"../LuaGlobalCaller.h"
 
-1372537951 source:/home/christian/projets/IRB/src/objects/Player.cpp
+1376858195 source:/home/christian/projets/IRB/src/objects/Player.cpp
 	"Player.h"
 	"../App.h"
 	"../tinyXML/tinyxml.h"
