@@ -2132,8 +2132,11 @@ void App::run()
 		if (lastFPS != fps)
 		{
 			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (aug 2013)";
-			str += " FPS:";
-			str += fps;
+			if (app_state>APP_STATE_CONTROL)
+			{
+				str += " FPS:";
+				str += fps;
+			}
 
 			//GUIManager::getInstance()->setStatusText(str.c_str());
 			device->setWindowCaption(str.c_str());

@@ -22,6 +22,8 @@ TerrainManager::TerrainManager()
 	tileTagged=NULL;
 	timer = 0;
 	needrecalc=false;
+	lastbrushtime=0;
+	brushstep = 10; //10 degree increment maximum for the brush circle
 }
 
 TerrainManager::~TerrainManager()
@@ -726,22 +728,40 @@ void TerrainManager::drawBrush(bool useray)
 	driver->setMaterial(m);
 	driver->setTransform(video::ETS_WORLD, core::matrix4());
 
-
+	u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	if (lastbrushtime>35)
+		brushstep+=1;
 	
+	if (lastbrushtime<20)
+		brushstep-=1;
+
+	if (brushstep>45)
+		brushstep=45;
+
+	if (brushstep<10)
+		brushstep=10;
+
 	// Display the inner brush size if the user change the default value of 5 to another value
 	if (useray)
-		drawBrushCircle(position, radius, 20, false, useray);
+		drawBrushCircle(position, radius, brushstep, false , useray);
 	else
 		drawBrushCircle(position, radius, 5, false, useray);
 
 	if (radius2!=5.0f)
 	{
 		if (useray)
-			drawBrushCircle(position, radius2, 30, false, useray);
+			drawBrushCircle(position, radius2, int(brushstep*1.5f), false, useray);
 		else
 			drawBrushCircle(position, radius, 10, false, useray);
 	}
 	drawBrushCircle(position, 5, 30, true, useray);
+	u32 time1 = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	
+	//Update the time comparison only when using the brush with ray
+	if (useray)
+		lastbrushtime=time1-time;
+
+	//printf ("Here is the time delay:%d , step is now: %d\n",int(lastbrushtime),brushstep);
 	
 }
 

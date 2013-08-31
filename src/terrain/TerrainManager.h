@@ -96,8 +96,11 @@ class TerrainManager
 		stringc terraintexture4;
 
         TerrainManager();
-		u32 timer;
-		bool needrecalc;
+		u32 timer; // Used for time differential on the brush
+		bool needrecalc; // Flag to tell the tile need to be recalculated
+		u32 lastbrushtime; //time taken to redraw the brush the last time
+		u16 brushstep; 
+
         
 };
 
