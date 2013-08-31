@@ -59,7 +59,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
     ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f,0,100);
 	newEmptySegment->setPosition(vector3df((pos.X)*scale,0,(pos.Z)*scale));
     newEmptySegment->setScale(vector3df(scale,0.01f,scale) ) ;
-	
+
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
     newEmptySegment->setTriangleSelector(sel);
 
@@ -70,7 +70,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
 	//newEmptySegment->getMaterial(0).setFlag(EMF_POINTCLOUD,true);
 
     newEmptySegment->setName(getHashCode(pos).c_str());
-		
+
 	//May have to define a bigger bounding box to be able to select better the empty tiles... This portion in test.
 	//core::aabbox3df box=newEmptySegment->getBoundingBox();
 	//((IMeshSceneNode*)newEmptySegment)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
@@ -123,7 +123,7 @@ void TerrainManager::createEmptySegmentMatrix(u32 x, u32 y)
 		pos.X=-(f32(x)/2) + xi;
 		for (u32 yi=0; yi<x; ++yi)
 		{
-			pos.Z=-((f32(y))/2)+yi;			
+			pos.Z=-((f32(y))/2)+yi;
 			createEmptySegment(pos);
 		}
 	}
@@ -151,7 +151,7 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
         #endif
         //return;
     }
-  
+
     if (empty)
 	{
 		createEmptySegment(vector3df(pos.X,0,pos.Z));
@@ -211,7 +211,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
     pos.Y = (f32)round32(pos.Y);
     pos.Z = (f32)round32(pos.Z);
 
-	 
+
 	TerrainTile* newTile = NULL;
 
 	bool wasthere = false;
@@ -224,9 +224,9 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
         #endif
         //return;
     }
- 
 
-	if (!wasthere) 
+
+	if (!wasthere)
 	{
 		removeEmptySegment(pos, true);
 
@@ -240,7 +240,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 		newTile->customname = model;
 		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
-	
+
 		//Safety check if the object/model cannot be loaded
 		if (!newTile->getNode())
 		{
@@ -254,7 +254,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 		} else
 			return newTile->getNode();
 
-		
+
 	}
 
 	return NULL;
@@ -262,8 +262,8 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 #ifdef APP_DEBUG
 cout << "DEBUG : TERRAIN MANAGER : CREATED NEW CUSTOM SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
 #endif
-	
-	
+
+
 }
 
 TerrainTile* TerrainManager::getSegment(vector3df pos)
@@ -311,7 +311,7 @@ void TerrainManager::removeEmptySegment(vector3df pos, bool force)
 		return;
     //if(getHashCode(pos)=="0_0") return;
 
-	// Won't allow to remove the last empty segment 
+	// Won't allow to remove the last empty segment
 	if ((terrainEmptySegmentsMap.size()==1) && (terrainMap.size()==0) && !force) return;
 
 
@@ -364,12 +364,12 @@ void TerrainManager::removeSegment(vector3df pos, bool custom)
 		else
 			deleteTaggedSegment();
     }
-	
+
 }
 
 void TerrainManager::deleteTaggedSegment()
 {
-	
+
 	 terrainMap.erase(getHashCode(posTagged));
 
 	 if (tileTagged->getNode()!=NULL)
@@ -416,13 +416,13 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
     }
-	
+
 
 	/// Since the empty segments are generated, we don't save them anymore
 	//Save all empty segments to XML
 	/*
 	std::map<std::string, ISceneNode*>::iterator it2;
-	
+
 	for ( it2=terrainEmptySegmentsMap.begin() ; it2 != terrainEmptySegmentsMap.end(); it2++ )
 	{
 		vector3df pos = ((ISceneNode*)((*it2).second))->getPosition();
@@ -439,9 +439,9 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 {
     clean();
-	
+
 	TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
-	
+
 	while( tSegment != NULL )
     {
 		App::getInstance()->quickUpdate();
@@ -450,11 +450,11 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 		core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
 		core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
-		
+
 		f32 noderot = 0.0f;
-		if (customr!="") 
+		if (customr!="")
 			noderot=(f32)atoi(customr.c_str()); // Custom mesh rotation
-		
+
 		if (customtile=="")
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true);
 		else
@@ -468,7 +468,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
         if(tempTile)
         {
-            tempTile->loadFromXML(tSegment->ToElement());			
+            tempTile->loadFromXML(tSegment->ToElement());
         }
 
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );
@@ -483,7 +483,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 z = (f32)atoi(tSegment2->ToElement()->Attribute("z"));
 
         TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ),true,true);
-       
+
 			App::getInstance()->quickUpdate();
 
         tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
@@ -523,7 +523,7 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radi
         {
             for (int j=-1 ; j<2 ; j++)
             {
-				
+
                 vector3df pos = vector3df((f32)(mousePick.pickedNode->getPosition().X/(mousePick.pickedNode->getScale().X) + (i*tilemeshsize)),
                                           0,
                                           (f32)(mousePick.pickedNode->getPosition().Z/(mousePick.pickedNode->getScale().Z) + (j*tilemeshsize)));
@@ -679,7 +679,7 @@ void TerrainManager::clean()
 
 		if (t->getNode())
 			t->getNode()->remove();
-	
+
         delete t;
     }
 
@@ -716,7 +716,7 @@ void TerrainManager::drawBrush(bool useray)
 	vector3df camref = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera()->getPosition();
 
 	f32 height=0.0f;
-	
+
 	f32 radius = App::getInstance()->getBrushRadius();
 	f32 radius2 = App::getInstance()->getBrushRadius(1); // get the inner brush radius
 	vector3df position = App::getInstance()->getMousePosition3D(100).pickedPos;
@@ -731,12 +731,12 @@ void TerrainManager::drawBrush(bool useray)
 	u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	if (lastbrushtime>35)
 		brushstep+=1;
-	
+
 	if (lastbrushtime<20)
 		brushstep-=1;
 
-	if (brushstep>45)
-		brushstep=45;
+	if (brushstep>60)
+		brushstep=60;
 
 	if (brushstep<10)
 		brushstep=10;
@@ -745,24 +745,24 @@ void TerrainManager::drawBrush(bool useray)
 	if (useray)
 		drawBrushCircle(position, radius, brushstep, false , useray);
 	else
-		drawBrushCircle(position, radius, 5, false, useray);
+		drawBrushCircle(position, radius,int(brushstep/2.0f), false, useray);
 
 	if (radius2!=5.0f)
 	{
 		if (useray)
 			drawBrushCircle(position, radius2, int(brushstep*1.5f), false, useray);
-		else
-			drawBrushCircle(position, radius, 10, false, useray);
+		//else
+			//drawBrushCircle(position, radius, brushstep, false, useray);
 	}
 	drawBrushCircle(position, 5, 30, true, useray);
 	u32 time1 = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	
+
 	//Update the time comparison only when using the brush with ray
 	if (useray)
 		lastbrushtime=time1-time;
 
 	//printf ("Here is the time delay:%d , step is now: %d\n",int(lastbrushtime),brushstep);
-	
+
 }
 
 void TerrainManager::drawBrushCircle(vector3df position, f32 radius, int step,bool drawlines,bool useray)
@@ -779,41 +779,41 @@ void TerrainManager::drawBrushCircle(vector3df position, f32 radius, int step,bo
 	{
 		float degInRad = i*DEG2RAD;
 		vector3df pos=position;
-		
+
 		pos.X+=cos(degInRad)*radius;
 		pos.Z+=sin(degInRad)*radius;
-		
+
 		if (useray)
 			height=getHeightAt(pos);
 		else
 			height=getVerticeHeight(pos);
-		
+
 		if (height==-1000.0f)
 			height=0.0f;
-		
+
 		pos.Y=height+framesize;
 
 		float degInRad2 = (i+step)*DEG2RAD;
-		
+
 		vector3df pos2=position;
-		
+
 		pos2.X+=cos(degInRad2)*radius;
 		pos2.Z+=sin(degInRad2)*radius;
-		
+
 		if (useray)
 			height=getHeightAt(pos2);
 		else
 			height=getVerticeHeight(pos2);
-		
+
 		if (height==-1000.0f)
 			height=0.0f;
-		
+
 		pos2.Y=height+framesize;
-		
+
 		if (drawlines)
 			driver->draw3DLine(pos,pos2,video::SColor(255,255,255,0));
 		else
-		{	
+		{
 			vector3df pos3=position;
 			pos3.X+=cos(degInRad)*(radius+framesize);
 			pos3.Z+=sin(degInRad)*(radius+framesize);
@@ -835,7 +835,7 @@ void TerrainManager::drawBrushCircle(vector3df position, f32 radius, int step,bo
 				driver->draw3DTriangle(triangle3df(pos,pos2,pos4),video::SColor(128,255,64,64));
 			}
 
-			
+
 		}
 
 	}
@@ -862,11 +862,11 @@ void TerrainManager::update()
 			//Calculate a time offset for the strenght
 			f32 timeoffset = f32((time-timer)/1000.0f);
 			f32 strength = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*(timeoffset/60.0f);
-			
+
 			//printf("Here is the value of the gui: %f, value of time offset: %f, offset: %d\n",strength,timeoffset,s32(time-timer));
 			timer = time;
 
-			if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))	
+			if(EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
 			{
 				// Activate the "plateau" display in the shader
 				ShaderCallBack::getInstance()->setFlagEditingTerrain(true);
@@ -939,17 +939,17 @@ void TerrainManager::rotateLeft(core::vector3df pos)
 			core::vector3df rotbase = tileTagged->getNode()->getRotation();
 			rotbase-=vector3df(0.0f,90.0f,0.0f);
 
-			if (rotbase.Y<0) 
+			if (rotbase.Y<0)
 				rotbase.Y=270;
 
 			tileTagged->getNode()->setRotation(rotbase);
-			
+
 			tileTagged=NULL;
 		}
 	 }
 }
 
-// Rotate a custom tile right 
+// Rotate a custom tile right
 void TerrainManager::rotateRight(vector3df pos)
 {
 	if (pos.Y==-1000)
@@ -968,12 +968,12 @@ void TerrainManager::rotateRight(vector3df pos)
 			core::vector3df rotbase = tileTagged->getNode()->getRotation();
 			rotbase+=vector3df(0.0f,90.0f,0.0f);
 
-			if (rotbase.Y>360) 
+			if (rotbase.Y>360)
 				rotbase.Y=0;
 
 			tileTagged->getNode()->setRotation(rotbase);
-			
+
 			tileTagged=NULL;
 		}
 	 }
-} 
+}
