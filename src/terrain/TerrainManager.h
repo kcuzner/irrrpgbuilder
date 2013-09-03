@@ -16,6 +16,7 @@ class TerrainManager
 		ISceneNode * createCustomSegment(vector3df pos, core::stringc model);
 
 		void setEmptyTileVisible(bool visible);
+		void setEmptyTileGridScale(f32 scale); //used for the scale of the texture for the grid
  
         std::string getHashCode(vector3df pos);
 
@@ -100,6 +101,7 @@ class TerrainManager
 		bool needrecalc; // Flag to tell the tile need to be recalculated
 		u32 lastbrushtime; //time taken to redraw the brush the last time
 		u16 brushstep; 
+		f32 empty_texture_scale;
 
         
 };

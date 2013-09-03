@@ -67,6 +67,9 @@ App::App()
 	raytester=0; // Initialize and the ray tester class
 
 	current_listfilter = OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
+
+	combobox_used=false;
+	currentsnapping=64.0f; //set the current snapping distance;
 	
 }
 
@@ -942,6 +945,11 @@ void App::eventGuiCombobox(s32 id)
 	core::stringw item = L"";
 	DynamicObject * object = NULL;
 
+	IGUIComboBox* selectedbox = NULL;
+
+	printf("Got something for a combo box!");
+	combobox_used=true;
+
 	switch (id)
 	{
 		
@@ -1021,6 +1029,22 @@ void App::eventGuiCombobox(s32 id)
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
+	case CB_SCREENCOMBO:
+		break;
+
+	case CB_SNAPCOMBO: // Get the combo box data to set the snap distance
+		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true));
+		if (selectedbox)
+		{
+			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
+			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
+				currentsnapping=64;
+		
+			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping);
+		}
+		
+		break;
+
 
 	default:
 		break;
@@ -1044,9 +1068,35 @@ void App::eventGuiEditBox(s32 id)
 
 	switch (id)
 	{
+
+	default:
+		break;
+	}
+
+}
+
+
+
+#endif
+
+void App::eventGuiSpinbox(s32 id)
+{
+	f32 value=0.0f;
+	core::vector3df newposition=vector3df(0,0,0);
+	core::vector3df newrotation=vector3df(0,0,0);
+	core::vector3df newscale=vector3df(1,1,1);
+	if (selectedNode)
+	{
+		newposition=selectedNode->getPosition();
+		newrotation=selectedNode->getRotation();
+		newscale=selectedNode->getScale();
+	}
+
+	switch (id)
+	{
 	case TI_ID_POS_X:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true)->getText());
-		newposition.X=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true))->getValue();
+		newposition.X=value;
 		if (selectedNode)
 		{
 			selectedNode->setPosition(newposition);
@@ -1054,8 +1104,9 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_POS_Y:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true)->getText());
-		newposition.Y=(irr::f32)atof(text.c_str());
+
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Y,true))->getValue();
+		newposition.Y=value;
 		if (selectedNode)
 		{
 			selectedNode->setPosition(newposition);
@@ -1063,8 +1114,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_POS_Z:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Y,true)->getText());
-		newposition.Z=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Z,true))->getValue();
+		newposition.Z=value;
 		if (selectedNode)
 		{
 			selectedNode->setPosition(newposition);
@@ -1072,8 +1123,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_ROT_X:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_X,true)->getText());
-		newrotation.X=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_X,true))->getValue();
+		newrotation.X=value;
 		if (selectedNode)
 		{
 			selectedNode->setRotation(newrotation);
@@ -1081,8 +1132,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_ROT_Y:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Y,true)->getText());
-		newrotation.Y=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Y,true))->getValue();
+		newrotation.Y=value;
 		if (selectedNode)
 		{
 			selectedNode->setRotation(newrotation);
@@ -1090,8 +1141,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_ROT_Z:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Z,true)->getText());
-		newrotation.Z=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Z,true))->getValue();
+		newrotation.Z=value;
 		if (selectedNode)
 		{
 			selectedNode->setRotation(newrotation);
@@ -1099,8 +1150,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_SCA_X:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_X,true)->getText());
-		newscale.X=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_X,true))->getValue();
+		newscale.X=value;
 		//in case the user enter strange input (should get 0). 0 as a scale is not good.
 		//if (newscale.X==0)
 		//	newscale.X=1.0f;
@@ -1112,8 +1163,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_SCA_Y:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Y,true)->getText());
-		newscale.Y=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Y,true))->getValue();
+		newscale.Y=value;
 		if (selectedNode)
 		{
 			selectedNode->setScale(newscale);
@@ -1121,8 +1172,8 @@ void App::eventGuiEditBox(s32 id)
 		break;
 
 	case TI_ID_SCA_Z:
-		text=core::stringc(guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Z,true)->getText());
-		newscale.Z=(irr::f32)atof(text.c_str());
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Z,true))->getValue();
+		newscale.Z=value;
 		if (selectedNode)
 		{
 			selectedNode->setScale(newscale);
@@ -1134,10 +1185,6 @@ void App::eventGuiEditBox(s32 id)
 	}
 
 }
-
-
-
-#endif
 
 void App::setScreenSize(dimension2d<u32> size)
 {
@@ -1334,6 +1381,12 @@ void App::eventMousePressed(s32 mouse)
 
 				lastMousePick = mousePick;
 				stringc nodeName = "";
+
+				if (combobox_used)
+				{
+					combobox_used=false;
+					return;
+				}
 				
 				// Mouse operation in ADD mode
 				if (toolstate==TOOL_DO_ADD)
@@ -2257,7 +2310,7 @@ void App::updateEditMode()
 					vector3df newposition = vector3df(0,0,0);
 					
 					if (snapfunction) // If snapping is activated use the function
-						newposition=calculateSnap(getMousePosition3D(100).pickedPos,64.0f);
+						newposition=calculateSnap(getMousePosition3D(100).pickedPos,currentsnapping);
 					else
 						newposition=getMousePosition3D(100).pickedPos;
 
@@ -2276,7 +2329,7 @@ void App::updateEditMode()
 					newpos.Y=newpos.Y+((mousepos.Y-mousepos2.Y));
 
 					if (snapfunction) // If snapping is activated use the function
-						lastMousePick.pickedNode->setPosition(calculateSnap(newpos,64.0f));
+						lastMousePick.pickedNode->setPosition(calculateSnap(newpos,currentsnapping));
 					else
 						lastMousePick.pickedNode->setPosition(newpos);
 
@@ -2393,7 +2446,7 @@ void App::updateEditMode()
 						vector3df newposition = vector3df(0,0,0);
 
 						if (snapfunction) // If snapping is activated use the function
-							newposition=calculateSnap(getMousePosition3D(100).pickedPos,64.0f);
+							newposition=calculateSnap(getMousePosition3D(100).pickedPos,currentsnapping);
 						else
 							newposition=getMousePosition3D(100).pickedPos;
 
@@ -2423,7 +2476,7 @@ void App::updateEditMode()
 							return;
 
 						if (snapfunction) // If snapping is activated use the function
-							selectedNode->setPosition(calculateSnap(newposition,64.0f));
+							selectedNode->setPosition(calculateSnap(newposition,currentsnapping));
 						else
 							selectedNode->setPosition(newposition);
 

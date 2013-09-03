@@ -112,6 +112,8 @@ class App
         void eventGuiButton(s32 id);
         void eventKeyPressed(s32 key);
 
+		void eventGuiSpinbox(s32 id);
+
         void eventMousePressed(s32 mouse);
         void eventMouseWheel(f32 value);
 
@@ -180,6 +182,8 @@ class App
 
 		//Multiple selections
 		std::vector<DynamicObject*> selectedSet;
+
+		inline void setComboBoxUsed(bool set) { combobox_used = set;}
 		
     private:
 
@@ -271,6 +275,9 @@ class App
 		video::ITexture * tex_normal;
 
 		DIALOG_FUNCTION df;
+
+		bool combobox_used;
+		f32 currentsnapping;
 
 };
 

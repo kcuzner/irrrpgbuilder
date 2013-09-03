@@ -69,12 +69,12 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
-			mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;
+				mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;
 			//mouse[EMIE_RMOUSE_PRESSED_DOWN] = 1;
 		}
 		else if(event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)
         {
-			mouse[EMIE_LMOUSE_PRESSED_DOWN] = 0;
+				mouse[EMIE_LMOUSE_PRESSED_DOWN] = 0;
         }
 		else if(event.MouseInput.Event == EMIE_RMOUSE_PRESSED_DOWN)
 		{
@@ -130,6 +130,10 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 			case EGET_LISTBOX_CHANGED:
 				App::getInstance()->eventGuiCombobox(id);
+				break;
+
+			case EGET_SPINBOX_CHANGED:
+				App::getInstance()->eventGuiSpinbox(id);
 				break;
 
 			// Perhaps create a real function for this

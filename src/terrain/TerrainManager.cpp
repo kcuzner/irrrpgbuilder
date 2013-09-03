@@ -24,6 +24,7 @@ TerrainManager::TerrainManager()
 	needrecalc=false;
 	lastbrushtime=0;
 	brushstep = 10; //10 degree increment maximum for the brush circle
+	empty_texture_scale = 1.0f;
 }
 
 TerrainManager::~TerrainManager()
@@ -57,6 +58,16 @@ void TerrainManager::createEmptySegment(vector3df pos)
 
 
     ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f,0,100);
+	
+	// in the work, for some reason this is slow when the texture is applied
+	//scene::IAnimatedMesh * mesh = App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("",dimension2d<f32>(1024,1024),dimension2d<u32>(1,1),&tempnode->getMaterial(0));
+	//App::getInstance()->getDevice()->getVideoDriver()->getMeshManipulator()->makePlanarTextureMapping(mesh,1);
+	//ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addMeshSceneNode(mesh);
+	//tempnode->remove();
+	
+	//newEmptySegment->setMaterialFlag(EMF_BACK_FACE_CULLING,false);
+	//newEmptySegment->setMaterialFlag(EMF_WIREFRAME,true);
+	newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	newEmptySegment->setPosition(vector3df((pos.X)*scale,0,(pos.Z)*scale));
     newEmptySegment->setScale(vector3df(scale,0.01f,scale) ) ;
 
@@ -64,8 +75,8 @@ void TerrainManager::createEmptySegment(vector3df pos)
     newEmptySegment->setTriangleSelector(sel);
 
     newEmptySegment->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
-    newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(51.2f,51.2f);
+    //newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(empty_texture_scale,empty_texture_scale);
 	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
 	//newEmptySegment->getMaterial(0).setFlag(EMF_POINTCLOUD,true);
 
@@ -106,6 +117,43 @@ void TerrainManager::setEmptyTileVisible(bool visible)
 		}*/
 
     }
+}
+
+void TerrainManager::setEmptyTileGridScale(f32 scale)
+{
+	std::map<std::string, ISceneNode*>::iterator it;
+
+	// For this to work, the texture MUST use the defined texture.
+		f32 gridsize = 1.0f;
+		 if (scale==64)
+			 gridsize=1.0f;
+		 if (scale==32)
+			 gridsize=2.0f;
+		 if (scale==16)
+			 gridsize=4.0f;
+		 if (scale==8)
+			 gridsize=8.0f;
+		 if (scale==4)
+			 gridsize=16.0f;
+		 if (scale==2)
+			 gridsize=32.0f;
+		 if (scale==128)
+			 gridsize=0.5f;
+		 if (scale==256)
+			 gridsize=0.25f;
+		 if (scale==512)
+			 gridsize=0.125f;
+		 if (scale==1024)
+			 gridsize=0.0635f;
+
+    //Set visibility for all empty nodes
+	//By hiding the node, the selection was disabled. Solution is to put a transparent texture over the mesh
+	//The mesh is still rendered, but is invisible
+	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
+    {
+		((ISceneNode*)((*it).second))->getMaterial(0).getTextureMatrix(0).setTextureScale(gridsize,gridsize);
+    }
+	empty_texture_scale = gridsize;
 }
 
 // Create an empty tile matrix, the user should not have to create this by hand.

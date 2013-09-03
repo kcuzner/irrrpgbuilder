@@ -124,7 +124,10 @@ enum GUI_ID
 	TI_ID_ROT_Z,
 	TI_ID_SCA_X,
 	TI_ID_SCA_Y,
-	TI_ID_SCA_Z
+	TI_ID_SCA_Z,
+
+	CB_SCREENCOMBO,
+	CB_SNAPCOMBO
 
 
 };
@@ -199,6 +202,7 @@ class GUIManager
 		void createMainToolbar();
 		void createMainTabs();
 
+		void createDisplayOptionsGUI();
 		void createAboutWindowGUI();
 		void createTerrainToolbar();
 		void createDynamicObjectChooserGUI();
@@ -399,6 +403,9 @@ class GUIManager
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
+		IGUIComboBox * screencombo; //Screen settings combo box
+		IGUIComboBox * snappingcombo; //snapping distance combo box
+
 		IGUIToolBar * guiDynamicObjectEditModesPanel;
 		IGUIButton* guiDOAddMode;
 		IGUIButton* guiDOSelMode;
@@ -451,23 +458,23 @@ class GUIManager
 		IGUIStaticText * mdl_lic1;
 
 		//Move, Rotate, Scale text input + lock
-		IGUIEditBox * pos_x_text;
-		IGUIEditBox * pos_y_text;
-		IGUIEditBox * pos_z_text;
+		IGUISpinBox * pos_x_text;
+		IGUISpinBox * pos_y_text;
+		IGUISpinBox * pos_z_text;
 		IGUICheckBox * pos_x_lock;
 		IGUICheckBox * pos_y_lock;
 		IGUICheckBox * pos_z_lock;
 
-		IGUIEditBox * rot_x_text;
-		IGUIEditBox * rot_y_text;
-		IGUIEditBox * rot_z_text;
+		IGUISpinBox * rot_x_text;
+		IGUISpinBox * rot_y_text;
+		IGUISpinBox * rot_z_text;
 		IGUICheckBox * rot_x_lock;
 		IGUICheckBox * rot_y_lock;
 		IGUICheckBox * rot_z_lock;
 
-		IGUIEditBox * sca_x_text;
-		IGUIEditBox * sca_y_text;
-		IGUIEditBox * sca_z_text;
+		IGUISpinBox * sca_x_text;
+		IGUISpinBox * sca_y_text;
+		IGUISpinBox * sca_z_text;
 		IGUICheckBox * sca_x_lock;
 		IGUICheckBox * sca_y_lock;
 		IGUICheckBox * sca_z_lock;

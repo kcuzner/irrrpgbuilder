@@ -578,6 +578,38 @@ void GUIManager::setupEditorGUI()
 	// Update and refresh the display
 	App::getInstance()->quickUpdate();
 
+	createDisplayOptionsGUI();
+
+}
+
+void GUIManager::createDisplayOptionsGUI()
+{
+	snappingcombo = guienv->addComboBox(myRect(240,120,120,20),0,CB_SNAPCOMBO);
+	snappingcombo->addItem(L"Grid default size",0);
+	snappingcombo->addItem(L"2 units",2);
+	snappingcombo->addItem(L"4 units",4);
+	snappingcombo->addItem(L"8 units",8);
+	snappingcombo->addItem(L"16 units",16);
+	snappingcombo->addItem(L"32 units",32);
+	snappingcombo->addItem(L"64 units",64);
+	snappingcombo->addItem(L"128 units",128);
+	snappingcombo->addItem(L"256 units",256);
+	snappingcombo->addItem(L"512 units",512);
+	snappingcombo->addItem(L"1024 units",1024);
+	snappingcombo->setMaxSelectionRows(12);
+
+	screencombo = guienv->addComboBox(myRect(30,120,200,20),0,CB_SCREENCOMBO);
+	screencombo->addItem(L"Change view settings");
+	screencombo->addItem(L"top");
+	screencombo->addItem(L"bottom");
+	screencombo->addItem(L"left");
+	screencombo->addItem(L"right");
+	screencombo->addItem(L"front");
+	screencombo->addItem(L"back");
+	screencombo->addItem(L"orthographic");
+	screencombo->addItem(L"perspective");
+	screencombo->setMaxSelectionRows(9);
+	screencombo->setEnabled(false);
 }
 
 void GUIManager::createMainToolbar()
@@ -1465,26 +1497,30 @@ void GUIManager::createDynamicObjectChooserGUI()
 	
 	//position X axis
 	guienv->addStaticText(L"X",myRect(10,28,15,20),false,false,InnerChooser2);
-	pos_x_text = guienv->addEditBox(L"X:",myRect(25,25,100,20), true, InnerChooser2, TI_ID_POS_X);
+	pos_x_text = guienv->addSpinBox(L"X:",myRect(25,25,100,20),true, InnerChooser2, TI_ID_POS_X);
+		//guienv->addEditBox(L"X:",myRect(25,25,100,20), true, InnerChooser2, TI_ID_POS_X);
 	guienv->addStaticText(L"Lock",myRect(130,28,50,20),false,false,InnerChooser2);
-	pos_x_text->setMultiLine(false);
-	pos_x_text->setText(L"0.000000");
+	//pos_x_text->setMultiLine(false);
+	//pos_x_text->setText(L"0.000000");
+	pos_x_text->setValue(0.0f);
 	pos_x_lock = guienv->addCheckBox(false,myRect(160,25,20,20),InnerChooser2,CB_ID_POS_X);
 
 	//position Y axis
 	guienv->addStaticText(L"Y",myRect(10,48,15,20),false,false,InnerChooser2);
-	pos_y_text = guienv->addEditBox(L"X:",myRect(25,45,100,20), true, InnerChooser2, TI_ID_POS_Y);
+	pos_y_text = guienv->addSpinBox(L"X:",myRect(25,45,100,20), true, InnerChooser2, TI_ID_POS_Y);
 	guienv->addStaticText(L"Lock",myRect(130,48,50,20),false,false,InnerChooser2);
-	pos_y_text->setMultiLine(false);
-	pos_y_text->setText(L"0.000000");
+	//pos_y_text->setMultiLine(false);
+	//pos_y_text->setText(L"0.000000");
+	pos_y_text->setValue(0.0f);
 	pos_y_lock = guienv->addCheckBox(false,myRect(160,45,20,20),InnerChooser2, CB_ID_POS_Y);
 
 	//position Z axis
 	guienv->addStaticText(L"Z",myRect(10,68,15,20),false,false,InnerChooser2);
-	pos_z_text = guienv->addEditBox(L"X:",myRect(25,65,100,20), true, InnerChooser2, TI_ID_POS_Z);
+	pos_z_text = guienv->addSpinBox(L"X:",myRect(25,65,100,20), true, InnerChooser2, TI_ID_POS_Z);
 	guienv->addStaticText(L"Lock",myRect(130,68,50,20),false,false,InnerChooser2);
-	pos_z_text->setMultiLine(false);
-	pos_z_text->setText(L"0.000000");
+	//pos_z_text->setMultiLine(false);
+	//pos_z_text->setText(L"0.000000");
+	pos_z_text->setValue(0.0f);
 	pos_z_lock = guienv->addCheckBox(false,myRect(160,65,20,20),InnerChooser2, CB_ID_POS_Z);
 	
 
@@ -1495,26 +1531,29 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	//rotation X axis
 	guienv->addStaticText(L"X",myRect(10,128,15,20),false,false,InnerChooser2);
-	rot_x_text = guienv->addEditBox(L"X:",myRect(25,125,100,20), true, InnerChooser2, TI_ID_ROT_X);
+	rot_x_text = guienv->addSpinBox(L"X:",myRect(25,125,100,20), true, InnerChooser2, TI_ID_ROT_X);
 	guienv->addStaticText(L"Lock",myRect(130,128,50,20),false,false,InnerChooser2);
-	rot_x_text->setMultiLine(false);
-	rot_x_text->setText(L"0.000000");
+	//rot_x_text->setMultiLine(false);
+	//rot_x_text->setText(L"0.000000");
+	rot_x_text->setValue(0.0f);
 	rot_x_lock = guienv->addCheckBox(true,myRect(160,125,20,20),InnerChooser2, CB_ID_ROT_X);
 
 	//rotation Y axis
 	guienv->addStaticText(L"Y",myRect(10,148,15,20),false,false,InnerChooser2);
-	rot_y_text = guienv->addEditBox(L"X:",myRect(25,145,100,20), true, InnerChooser2, TI_ID_ROT_Y);
+	rot_y_text = guienv->addSpinBox(L"X:",myRect(25,145,100,20), true, InnerChooser2, TI_ID_ROT_Y);
 	guienv->addStaticText(L"Lock",myRect(130,148,50,20),false,false,InnerChooser2);
-	rot_y_text->setMultiLine(false);
-	rot_y_text->setText(L"0.000000");
+	//rot_y_text->setMultiLine(false);
+	//rot_y_text->setText(L"0.000000");
+	rot_y_text->setValue(0.0f);
 	rot_y_lock = guienv->addCheckBox(false,myRect(160,145,20,20),InnerChooser2, CB_ID_ROT_Y);
 
 	//rotation Z axis
 	guienv->addStaticText(L"Z",myRect(10,168,15,20),false,false,InnerChooser2);
-	rot_z_text = guienv->addEditBox(L"X:",myRect(25,165,100,20), true, InnerChooser2, TI_ID_ROT_Z);
+	rot_z_text = guienv->addSpinBox(L"X:",myRect(25,165,100,20), true, InnerChooser2, TI_ID_ROT_Z);
 	guienv->addStaticText(L"Lock",myRect(130,168,50,20),false,false,InnerChooser2);
-	rot_z_text->setMultiLine(false);
-	rot_z_text->setText(L"0.000000");
+	//rot_z_text->setMultiLine(false);
+	//rot_z_text->setText(L"0.000000");
+	rot_z_text->setValue(0.0f);
 	rot_z_lock = guienv->addCheckBox(false,myRect(160,165,20,20),InnerChooser2, CB_ID_ROT_Z);
 	
 
@@ -1526,26 +1565,29 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	//Scale X axis
 	guienv->addStaticText(L"X",myRect(10,228,15,20),false,false,InnerChooser2);
-	sca_x_text = guienv->addEditBox(L"X:",myRect(25,225,100,20), true, InnerChooser2, TI_ID_SCA_X);
+	sca_x_text = guienv->addSpinBox(L"X:",myRect(25,225,100,20), true, InnerChooser2, TI_ID_SCA_X);
 	guienv->addStaticText(L"Lock",myRect(130,228,50,20),false,false,InnerChooser2);
-	sca_x_text->setMultiLine(false);
-	sca_x_text->setText(L"0.000000");
+	//sca_x_text->setMultiLine(false);
+	//sca_x_text->setText(L"0.000000");
+	sca_x_text->setValue(0.0f);
 	sca_x_lock = guienv->addCheckBox(false,myRect(160,225,20,20),InnerChooser2, CB_ID_SCA_X);
 
 	//Scale Y axis
 	guienv->addStaticText(L"Y",myRect(10,248,15,20),false,false,InnerChooser2);
-	sca_y_text = guienv->addEditBox(L"X:",myRect(25,245,100,20), true, InnerChooser2, TI_ID_SCA_Y);
+	sca_y_text = guienv->addSpinBox(L"X:",myRect(25,245,100,20), true, InnerChooser2, TI_ID_SCA_Y);
 	guienv->addStaticText(L"Lock",myRect(130,248,50,20),false,false,InnerChooser2);
-	sca_y_text->setMultiLine(false);
-	sca_y_text->setText(L"0.000000");
+	//sca_y_text->setMultiLine(false);
+	//sca_y_text->setText(L"0.000000");
+	sca_y_text->setValue(0.0f);
 	sca_y_lock = guienv->addCheckBox(false,myRect(160,245,20,20),InnerChooser2, CB_ID_SCA_Y);
 
 	//Scale Z axis
 	guienv->addStaticText(L"Z",myRect(10,268,15,20),false,false,InnerChooser2);
-	sca_z_text = guienv->addEditBox(L"X:",myRect(25,265,100,20), true, InnerChooser2, TI_ID_SCA_Z);
+	sca_z_text = guienv->addSpinBox(L"X:",myRect(25,265,100,20), true, InnerChooser2, TI_ID_SCA_Z);
 	guienv->addStaticText(L"Lock",myRect(130,268,50,20),false,false,InnerChooser2);
-	sca_z_text->setMultiLine(false);
-	sca_z_text->setText(L"0.000000");
+	//sca_z_text->setMultiLine(false);
+	//sca_z_text->setText(L"0.000000");
+	sca_z_text->setValue(0.0f);
 	sca_z_lock = guienv->addCheckBox(false,myRect(160,265,20,20),InnerChooser2, CB_ID_SCA_Z);
 	InnerChooser2->setVisible(false);
 
@@ -2188,7 +2230,12 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 #endif
 	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
 		return true;
-
+	
+	if (screencombo->isPointInside(mousepos) || snappingcombo->isPointInside(mousepos))
+	{
+		App::getInstance()->setComboBoxUsed(true); //Lock the left button because the combo box was selected.
+		return true;
+	}
 
 	return false;
 }
@@ -3435,17 +3482,27 @@ void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 	}
 
 	// Set the textbox gui with the information
-	pos_x_text->setText(core::stringw(pos.X).c_str());
-	pos_y_text->setText(core::stringw(pos.Y).c_str());
-	pos_z_text->setText(core::stringw(pos.Z).c_str());
+	//pos_x_text->setText(core::stringw(pos.X).c_str());
+	//pos_y_text->setText(core::stringw(pos.Y).c_str());
+	//pos_z_text->setText(core::stringw(pos.Z).c_str());
 
-	rot_x_text->setText(core::stringw(rot.X).c_str());
-	rot_y_text->setText(core::stringw(rot.Y).c_str());
-	rot_z_text->setText(core::stringw(rot.Z).c_str());
+	//rot_x_text->setText(core::stringw(rot.X).c_str());
+	//rot_y_text->setText(core::stringw(rot.Y).c_str());
+	//rot_z_text->setText(core::stringw(rot.Z).c_str());
 
-	sca_x_text->setText(core::stringw(sca.X).c_str());
-	sca_y_text->setText(core::stringw(sca.Y).c_str());
-	sca_z_text->setText(core::stringw(sca.Z).c_str());
+	//sca_x_text->setText(core::stringw(sca.X).c_str());
+	//sca_y_text->setText(core::stringw(sca.Y).c_str());
+	//sca_z_text->setText(core::stringw(sca.Z).c_str());
+	pos_x_text->setValue(pos.X);
+	pos_y_text->setValue(pos.Y);
+	pos_z_text->setValue(pos.Z);
+	rot_x_text->setValue(rot.X);
+	rot_y_text->setValue(rot.Y);
+	rot_z_text->setValue(rot.Z);
+	sca_x_text->setValue(sca.X);
+	sca_x_text->setValue(sca.Y);
+	sca_z_text->setValue(sca.Z);
+	
 }
 
 // Flush all gui elements
