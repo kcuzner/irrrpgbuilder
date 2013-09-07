@@ -51,6 +51,7 @@ class TerrainManager
 
 		void drawBrush(bool useray = true);
 		void drawBrushCircle(vector3df position, f32 radius, int step,bool drawlines=false, bool useray=true);
+		void drawBrushCircleSmooth(vector3df position, f32 radius, int step,bool drawlines=false, bool useray=true);
 
 		void update();
 

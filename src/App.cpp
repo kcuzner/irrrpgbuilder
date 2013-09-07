@@ -401,6 +401,8 @@ void App::setAppState(APP_STATE newAppState)
 		//GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
+		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
+		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(false);
 	}
 	else if(app_state < APP_STATE_CONTROL)
 	{
@@ -415,6 +417,8 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
+		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(true);
 	} else if(app_state == APP_WAIT_DIALOG)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);

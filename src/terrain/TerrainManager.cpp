@@ -3,6 +3,7 @@
 #include "../gui/GUIManager.h"
 
 #include <sstream>
+#include <vector>
 
 using namespace irr;
 using namespace core;
@@ -78,14 +79,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
     //newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
 	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(empty_texture_scale,empty_texture_scale);
 	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
-	//newEmptySegment->getMaterial(0).setFlag(EMF_POINTCLOUD,true);
-
     newEmptySegment->setName(getHashCode(pos).c_str());
-
-	//May have to define a bigger bounding box to be able to select better the empty tiles... This portion in test.
-	//core::aabbox3df box=newEmptySegment->getBoundingBox();
-	//((IMeshSceneNode*)newEmptySegment)->getMesh()->setBoundingBox(core::aabbox3df(-box.getExtent().X/2,0,-box.getExtent().Z/2,box.getExtent().X/2,1024,box.getExtent().Z/2));
-
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
 
 
@@ -104,21 +98,10 @@ void TerrainManager::setEmptyTileVisible(bool visible)
 	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
     {
 		((ISceneNode*)((*it).second))->setVisible(visible);
-		/* //Empty tiles should not be selectable in gameplay mode
-		if (visible)
-		{
-			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
-			((ISceneNode*)((*it).second))->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-		}
-		else
-		{
-			((ISceneNode*)((*it).second))->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_invisible_segment.png"));
-			((ISceneNode*)((*it).second))->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
-		}*/
-
     }
 }
 
+//Scale the texture on all the present empty tiles to match the grid size
 void TerrainManager::setEmptyTileGridScale(f32 scale)
 {
 	std::map<std::string, ISceneNode*>::iterator it;
@@ -146,14 +129,11 @@ void TerrainManager::setEmptyTileGridScale(f32 scale)
 		 if (scale==1024)
 			 gridsize=0.0635f;
 
-    //Set visibility for all empty nodes
-	//By hiding the node, the selection was disabled. Solution is to put a transparent texture over the mesh
-	//The mesh is still rendered, but is invisible
 	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
     {
 		((ISceneNode*)((*it).second))->getMaterial(0).getTextureMatrix(0).setTextureScale(gridsize,gridsize);
     }
-	empty_texture_scale = gridsize;
+	empty_texture_scale = gridsize; //Redefine the "default" texture size for a new empty tile.
 }
 
 // Create an empty tile matrix, the user should not have to create this by hand.
@@ -777,7 +757,7 @@ void TerrainManager::drawBrush(bool useray)
 	driver->setTransform(video::ETS_WORLD, core::matrix4());
 
 	u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	if (lastbrushtime>35)
+	if (lastbrushtime>25)
 		brushstep+=1;
 
 	if (lastbrushtime<20)
@@ -791,18 +771,19 @@ void TerrainManager::drawBrush(bool useray)
 
 	// Display the inner brush size if the user change the default value of 5 to another value
 	if (useray)
-		drawBrushCircle(position, radius, brushstep, false , useray);
+		drawBrushCircleSmooth(position, radius, brushstep, false , useray);
 	else
-		drawBrushCircle(position, radius,int(brushstep/2.0f), false, useray);
+		drawBrushCircleSmooth(position, radius,int(brushstep/2.0f), false, useray);
 
 	if (radius2!=5.0f)
 	{
 		if (useray)
-			drawBrushCircle(position, radius2, int(brushstep*1.5f), false, useray);
+			drawBrushCircleSmooth(position, radius2, int(brushstep*1.5f), false, useray);
 		//else
 			//drawBrushCircle(position, radius, brushstep, false, useray);
 	}
-	drawBrushCircle(position, 5, 30, true, useray);
+	//drawBrushCircle(position, 5, 30, true, useray);
+	drawBrushCircleSmooth(position, 5, 30, true, useray);
 	u32 time1 = App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	//Update the time comparison only when using the brush with ray
@@ -886,6 +867,89 @@ void TerrainManager::drawBrushCircle(vector3df position, f32 radius, int step,bo
 
 		}
 
+	}
+}
+
+void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int step,bool drawlines,bool useray)
+{
+	IVideoDriver* driver = App::getInstance()->getDevice()->getVideoDriver();
+	vector3df camref = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera()->getPosition();
+
+	// Render the size of the brush.
+	f32 framesize = position.getDistanceFrom(camref)/400.0f;
+
+	f32 height=0.0f;
+	// Display the inner brush size if the user change the default value of 5 to another value
+	std::vector<vector3df>buffer;
+	std::vector<int>deg;
+
+	vector3df pos=position;
+	for (int i=0; i<(360+step); i=i+step)
+	{
+		float degInRad = i*DEG2RAD;
+		vector3df pos=position;
+
+		pos.X+=cos(degInRad)*radius;
+		pos.Z+=sin(degInRad)*radius;
+
+		if (useray)
+			height=getHeightAt(pos);
+		else
+			height=getVerticeHeight(pos);
+
+		if (height==-1000.0f)
+			height=0.0f;
+
+		pos.Y=height+framesize;
+
+		buffer.push_back(pos); //put the positions in the buffer
+		deg.push_back(i);
+	}
+	
+	int step1=5;
+
+	f32 radius1=radius; ///4;
+	for (int i=0; i<buffer.size()-1; i++)
+	{
+
+		for(int j=i; j<(i+1); j++)
+		{
+			//buffer[j]
+			//buffer[j+1]
+			int divide=15;
+			for(float inter=0.0f; inter<1.0f; inter=inter+(1.0f/divide))
+			{
+				vector3df vertice1=buffer[j].getInterpolated(buffer[j+1],inter);
+				vector2df rot=vector2df(0,deg[j]*DEG2RAD);
+				vector2df rot1=vector2df(0,deg[j+1]*DEG2RAD);
+				f32 finrot=(rot.getInterpolated(rot1,inter)).Y;
+				vertice1.X=position.X+cos(finrot)*radius1;
+				vertice1.Z=position.Z+sin(finrot)*radius1;
+
+				vector3df vertice2=buffer[j].getInterpolated(buffer[j+1],inter+(1.0f/divide));
+				finrot=(rot.getInterpolated(rot1,inter+(1.0f/divide))).Y;
+				vertice2.X=position.X+cos(finrot)*radius1;
+				vertice2.Z=position.Z+sin(finrot)*radius1;
+
+				vector3df vertice3=buffer[j].getInterpolated(buffer[j+1],inter);
+				finrot=(rot.getInterpolated(rot1,inter)).Y;
+				vertice3.X=position.X+cos(finrot)*(radius1+framesize);
+				vertice3.Z=position.Z+sin(finrot)*(radius1+framesize);
+
+				vector3df vertice4=buffer[j].getInterpolated(buffer[j+1],inter+(1.0f/divide));
+				finrot=(rot.getInterpolated(rot1,inter+(1.0f/divide))).Y;
+				vertice4.X=position.X+cos(finrot)*(radius1+framesize);
+				vertice4.Z=position.Z+sin(finrot)*(radius1+framesize);
+
+				if (drawlines)
+					driver->draw3DLine(vertice1,vertice2,video::SColor(255,64,255,0));
+				else
+				{
+					driver->draw3DTriangle(triangle3df(vertice1,vertice3,vertice2),video::SColor(128,255,255,200));
+					driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,255,255));
+				}
+			}
+		}
 	}
 }
 
