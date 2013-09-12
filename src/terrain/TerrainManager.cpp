@@ -945,8 +945,17 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 					driver->draw3DLine(vertice1,vertice2,video::SColor(255,64,255,0));
 				else
 				{
-					driver->draw3DTriangle(triangle3df(vertice1,vertice3,vertice2),video::SColor(128,255,255,200));
-					driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,255,255));
+					if (useray)
+					{//Yellow
+						driver->draw3DTriangle(triangle3df(vertice1,vertice3,vertice2),video::SColor(128,255,255,200));
+						driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,255,255));
+					}
+					else
+					{ //Red 
+						driver->draw3DTriangle(triangle3df(vertice1,vertice3,vertice2),video::SColor(128,255,64,64));
+						driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,64,64));
+					}
+
 				}
 			}
 		}
