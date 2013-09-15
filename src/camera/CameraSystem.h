@@ -73,6 +73,9 @@ class CameraSystem
 		void setRTSView();
 		void setRPGView();
 
+		inline void setMAYAPos(vector3df pos){anm->setPosition(pos);}
+		inline void setMAYATarget(vector3df pos){anm->setTarget(pos);}
+
     protected:
     private:
         CameraSystem();

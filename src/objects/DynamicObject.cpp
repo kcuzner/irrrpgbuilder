@@ -862,6 +862,7 @@ void DynamicObject::createTextAnim(core::stringw text, video::SColor color, u32 
 	start.Y+=height-30;
 	vector3df end = start;
 	end.Y+=height+50;
+	smgr=App::getInstance()->getDevice()->getSceneManager();
 
 	IBillboardTextSceneNode * nodetext = smgr->addBillboardTextSceneNode(GUIManager::getInstance()->getFont(FONT_LARGE),ttext,smgr->getRootSceneNode(),size,start,-1,color,color);
 	

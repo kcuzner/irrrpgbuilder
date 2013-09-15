@@ -597,19 +597,21 @@ void GUIManager::createDisplayOptionsGUI()
 	snappingcombo->addItem(L"512 units",512);
 	snappingcombo->addItem(L"1024 units",1024);
 	snappingcombo->setMaxSelectionRows(12);
+	guienv->getRootGUIElement()->sendToBack(snappingcombo);
 
 	screencombo = guienv->addComboBox(myRect(30,120,200,20),0,CB_SCREENCOMBO);
-	screencombo->addItem(L"Change view settings");
-	screencombo->addItem(L"top");
-	screencombo->addItem(L"bottom");
-	screencombo->addItem(L"left");
-	screencombo->addItem(L"right");
-	screencombo->addItem(L"front");
-	screencombo->addItem(L"back");
-	screencombo->addItem(L"orthographic");
-	screencombo->addItem(L"perspective");
+	screencombo->addItem(L"Change view settings",0);
+	screencombo->addItem(L"top",1);
+	screencombo->addItem(L"bottom",2);
+	screencombo->addItem(L"left",3);
+	screencombo->addItem(L"right",4);
+	screencombo->addItem(L"front",5);
+	screencombo->addItem(L"back",6);
+	screencombo->addItem(L"orthographic view",7);
+	screencombo->addItem(L"perspective view",8);
 	screencombo->setMaxSelectionRows(9);
-	screencombo->setEnabled(false);
+	screencombo->setEnabled(true);
+	guienv->getRootGUIElement()->sendToBack(screencombo);
 }
 
 void GUIManager::createMainToolbar()
@@ -1253,7 +1255,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//guiDynamicObjectEditModesPanel->setMaxSize(core::dimension2du(110,40));
 	// Buttons
 
-	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", L"ADD MODE");
+	 device=App::getInstance()->getDevice(); //Get a fresh copy of the device 
+	 guiDOAddMode = new CGUIButton2(device, guienv, guiDynamicObjectsWindowChooser,BT_ID_DO_ADD_MODE,core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40));
+	 //guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", L"ADD MODE");
 	 guiDOAddMode->setImage(driver->getTexture("../media/art/DO_ADD.jpg"));
 	 guiDOAddMode->setPressedImage(driver->getTexture("../media/art/DO_ADD1.jpg"));
 	 guiDOAddMode->setIsPushButton(true);
@@ -1261,7 +1265,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 guiDOAddMode->setPressed(true);
 
 	 pos_X += 40;
-	 guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"", L"SELECT MODE");
+	 guiDOSelMode = new CGUIButton2(device, guienv, guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE,core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40));
+	 //guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"", L"SELECT MODE");
 	 guiDOSelMode->setImage(driver->getTexture("../media/art/DO_SEL.jpg"));
 	 guiDOSelMode->setPressedImage(driver->getTexture("../media/art/DO_SEL1.jpg"));
 	 guiDOSelMode->setIsPushButton(true);
@@ -1269,7 +1274,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 guiDOSelMode->setPressed(false);
 
 	 pos_X += 40;
-	 guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"", L"MOVE MODE");
+	 guiDOMovMode = new CGUIButton2(device, guienv, guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40));
+	 //guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"", L"MOVE MODE");
 	 guiDOMovMode->setImage(driver->getTexture("../media/art/DO_MOV.jpg"));
 	 guiDOMovMode->setPressedImage(driver->getTexture("../media/art/DO_MOV1.jpg"));
 	 guiDOMovMode->setIsPushButton(true);
@@ -1278,7 +1284,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 //guiDOMovMode->setEnabled(false);
 
 	 pos_X += 40;
-	 guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"", L"ROTATE MODE");
+	 guiDORotMode = new CGUIButton2(device, guienv, guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40)); 
+	 //guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"", L"ROTATE MODE");
 	 guiDORotMode->setImage(driver->getTexture("../media/art/DO_ROT.jpg"));
 	 guiDORotMode->setPressedImage(driver->getTexture("../media/art/DO_ROT1.jpg"));
 	 guiDORotMode->setIsPushButton(true);
@@ -1287,7 +1294,8 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 //guiDORotMode->setEnabled(false);
 
 	 pos_X += 40;
-	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"", L"SCALE MODE");
+	 guiDOScaMode = new CGUIButton2(device, guienv, guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40));
+	 //guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"", L"SCALE MODE");
 	 guiDOScaMode->setImage(driver->getTexture("../media/art/DO_SCA.jpg"));
 	 guiDOScaMode->setPressedImage(driver->getTexture("../media/art/DO_SCA1.jpg"));
 	 guiDOScaMode->setIsPushButton(true);
@@ -2784,6 +2792,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
 			guienv->setFocus(guiDynamicObjects_Script);
+			guienv->getRootGUIElement()->bringToFront(guiDynamicObjects_Script);
             break;
         case GCW_TERRAIN_TOOLBAR:
             guiTerrainToolbar->setVisible(visible);

@@ -112,6 +112,12 @@ namespace scene
 		//! Set the distance
 		virtual void setDistance(f32 distance);
 
+		//! Set the new position
+		inline void setPosition(core::vector3df pos){camera->setPosition(pos); FirstUpdate=true;}
+
+		//! Set the new target
+		inline void setTarget(core::vector3df pos){camera->setTarget(pos); FirstUpdate=true;}
+
 		//! This animator will receive events when attached to the active camera
 		virtual bool isEventReceiverEnabled() const
 		{
@@ -153,7 +159,8 @@ namespace scene
 		bool Moving;
 		bool Translating;
 		bool FirstUpdate;
-		bool bypass_switch;
+
+		bool bypass_switch; //Bypass the camera initial position/rotation and re-update
 
 		ICameraSceneNode* camera;
 

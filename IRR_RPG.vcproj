@@ -573,6 +573,14 @@
 				Name="gui"
 				>
 				<File
+					RelativePath=".\src\gui\CGUIButton2.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gui\CGUIButton2.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gui\CGUIEditBoxIRB.cpp"
 					>
 				</File>

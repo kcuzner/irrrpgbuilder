@@ -1034,6 +1034,71 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case CB_SCREENCOMBO:
+		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true));
+		
+
+		if (selectedbox)
+		{
+			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
+			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
+			f32 initdist = initpos.getDistanceFrom(inittar);
+			u32 value=selectedbox->getItemData(selectedbox->getSelected());
+			vector3df newpos = inittar;
+			printf("Here is the result value of the box: %i\n",value);
+			matrix4 projMat; //MAtrix projection 
+			switch (value)
+			{
+			case 1: //TOP
+				//CameraSystem::getInstance()->getNode()->setPosition(vector3df(0,-1000,0));
+				//CameraSystem::getInstance()->getNode()->setTarget(vector3df(0,0,0));
+				newpos.Y+=initdist;
+				newpos.Z-=0.05f;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				printf("View selected is TOP\n");
+
+				break;
+			case 2: //Bottom
+				newpos.Y-=initdist;
+				newpos.Z+=0.05f;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				break;
+			case 3: //Left
+				newpos.X-=initdist;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				break;
+			case 4: // right
+				newpos.X+=initdist;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				break;
+			case 5: //Front
+				newpos.Z-=initdist;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				break;
+			case 6: // Back
+				newpos.Z+=initdist;
+				CameraSystem::getInstance()->setMAYAPos(newpos);
+				CameraSystem::getInstance()->setMAYATarget(inittar);
+				break;
+			case 7: // Orthographic view
+				//Will need the change the distance moving since there is no perspective
+				projMat.buildProjectionMatrixOrthoLH(device->getVideoDriver()->getScreenSize().Width,device->getVideoDriver()->getScreenSize().Height,1,15000);
+				CameraSystem::getInstance()->getNode()->setProjectionMatrix(projMat,true);
+
+				break;
+			case 8: // Back to perspective
+				CameraSystem::getInstance()->getNode()->setFOV(0.45f);
+				break;
+
+			default: 
+				break;
+			}
+		}
+
 		break;
 
 	case CB_SNAPCOMBO: // Get the combo box data to set the snap distance
@@ -1924,7 +1989,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (aug 2013)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (sept 2013)");
 	} else
 		device = IRRdevice;
 
@@ -2188,7 +2253,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (aug 2013)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (sept 2013)";
 			if (app_state>APP_STATE_CONTROL)
 			{
 				str += " FPS:";
@@ -2236,6 +2301,7 @@ void App::updateEditMode()
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{
+			
 			// --- Drag the view when the spacebar is pressed
 			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT 
 				&& app_state != APP_EDIT_WAIT_GUI 
