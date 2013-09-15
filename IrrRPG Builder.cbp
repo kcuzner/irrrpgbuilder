@@ -178,6 +178,12 @@
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.h">
 			<Option virtualFolder="App/fx/" />
 		</Unit>
+		<Unit filename="src/gui/CGUIButton2.cpp">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
+		<Unit filename="src/gui/CGUIButton2.h">
+			<Option virtualFolder="App/gui/" />
+		</Unit>
 		<Unit filename="src/gui/CGUIEditBoxIRB.cpp">
 			<Option virtualFolder="App/gui/" />
 		</Unit>
