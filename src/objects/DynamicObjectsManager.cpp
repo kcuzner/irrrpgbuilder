@@ -551,6 +551,8 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	//Doing a "walk - idle" seem to fix a problem.
 	//Will have to look if the idle stance is set at default (should be pre-spawn)
     newObj->setPosition(pos);
+	newObj->setWalkTarget(pos); //Set the walk target at the current position;
+
 	core::stringc oldname = core::stringc("_").append(newObj->getName());
 
 	newObj->setName(this->createUniqueName(newObj->getType()).append(oldname));
@@ -560,9 +562,9 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
 	if (newObj->getType()==OBJECT_TYPE_NPC)
 	{
-		newObj->setAnimation("walk");
+		//newObj->setAnimation("walk");
 		newObj->setAnimation("idle");
-		newObj->setWalkTarget(newObj->getPosition());
+		newObj->setWalkTarget(pos);
 	}
 	// Add to the dynamic object list.
 	objects.push_back(newObj);

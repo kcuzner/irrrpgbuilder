@@ -179,7 +179,7 @@ class DynamicObject
 
 		void createTextAnim(core::stringw text=L"", video::SColor color=video::SColor(255,255,0,0), u32 duration=2000, dimension2d<f32> size=dimension2d<f32>(18,10));
 
-		 bool hasAnimation(){ return animations.size() != 0; };
+		inline bool hasAnimation(){ return animations.size() != 0; };
         //void setAnimations( vector<DynamicObject_Animation> animations ) {this->animations = animations; };
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
         void setFrameLoop(s32 start, s32 end);
@@ -287,6 +287,7 @@ class DynamicObject
         stringc name;
 
         IMesh* mesh;
+		IMesh* Tmesh; //Tangent mesh
         ISceneNode* node;
 		IAnimatedMeshSceneNode * nodeAnim;
 		ISkinnedMesh* skinnedmesh;

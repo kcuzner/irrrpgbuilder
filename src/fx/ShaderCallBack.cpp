@@ -149,7 +149,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 			printf("Material is a solid..\n");
 			ITexture * tex0 = NULL;
 		
-			if (mat[i].texture0.size()>0)
+			if (mat[i].texture0.size()>0) //Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
 			
 			if (tex0)
@@ -166,10 +166,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 			ITexture * tex0 = NULL;
 			ITexture * tex1 = NULL;
 
-			if (mat[i].texture0.size()>0)
+			if (mat[i].texture0.size()>0) //Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
 			
-			if (mat[i].texture1.size()>0)
+			if (mat[i].texture1.size()>0) // Lightmap slot
 				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
 		
 			
@@ -189,10 +189,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 			ITexture * tex0 = NULL;
 			ITexture * tex1 = NULL;
 
-			if (mat[i].texture0.size()>0)
+			if (mat[i].texture0.size()>0) // Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
 			
-			if (mat[i].texture1.size()>0)
+			if (mat[i].texture1.size()>0) // Lightmap slot
 				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
 				
 			if (tex1)
@@ -207,12 +207,25 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 		
 		if (mat[i].shader == "NORMAL_MAP")
 		{
+			//This is the standard Irrlicht pipeline shader
+			//Does not support animated models
+			//Mesh does need to have it vertices tangents calculated by Irrlicht
+			//Applied in dynamicObject.cpp -> setupObj() and the initialisation of the class (Tmesh)
+
+			ITexture * tex0 = NULL;
+			ITexture * tex1 = NULL;
+
 			printf("Material is a normal map..\n");
-			ITexture * tex = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
-			if (tex)
+			if (mat[i].texture0.size()>0) // Diffuse slot
+				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
+			
+			if (mat[i].texture1.size()>0) // Normal map slot
+				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
+			if (tex0)
 			{
 				node->getMaterial(i).MaterialType=EMT_NORMAL_MAP_SOLID;
-				node->getMaterial(i).setTexture(1,tex);
+				node->getMaterial(i).setTexture(0,tex0);
+				node->getMaterial(i).setTexture(1,tex1);
 			}
 
 		}
@@ -220,6 +233,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 		if (mat[i].shader == "TERRAIN")
 		{
 			printf("Material is the terrain shader\n");
+			//Get the texture names from the terrain manager
 			stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
 			stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 			stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);

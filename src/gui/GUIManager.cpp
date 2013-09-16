@@ -2235,7 +2235,7 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	// old stuff (IRRlicht only editor)
 	if (guiMainWindow->isVisible() && guiMainWindow->isPointInside(mousepos))
 		return true;
-#endif
+
 	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
 		return true;
 	
@@ -2244,6 +2244,8 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 		App::getInstance()->setComboBoxUsed(true); //Lock the left button because the combo box was selected.
 		return true;
 	}
+
+#endif
 
 	return false;
 }
@@ -2476,8 +2478,8 @@ void GUIManager::setupGameplayGUI()
 	// This is called only in the PLAYER application
 	#ifndef EDITOR
 	// ----------------------------------------
-    //guienv->getSkin()->setFont(guiFontC12);
-	guienv->getSkin()->setFont(guiFontCourier12);
+    guienv->getSkin()->setFont(guiFontC12);
+	//guienv->getSkin()->setFont(guiFontCourier12);
 	// Load textures
 	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 

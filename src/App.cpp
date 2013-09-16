@@ -401,8 +401,10 @@ void App::setAppState(APP_STATE newAppState)
 		//GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
+#ifdef EDITOR
 		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
 		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(false);
+#endif
 	}
 	else if(app_state < APP_STATE_CONTROL)
 	{
@@ -417,8 +419,10 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
 		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+#ifdef EDITOR
 		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
 		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(true);
+#endif
 	} else if(app_state == APP_WAIT_DIALOG)
 	{
 		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
@@ -950,10 +954,6 @@ void App::eventGuiCombobox(s32 id)
 	DynamicObject * object = NULL;
 
 	IGUIComboBox* selectedbox = NULL;
-
-	printf("Got something for a combo box!");
-	combobox_used=true;
-
 	switch (id)
 	{
 		
@@ -1035,10 +1035,9 @@ void App::eventGuiCombobox(s32 id)
 
 	case CB_SCREENCOMBO:
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true));
-		
-
 		if (selectedbox)
 		{
+			combobox_used=true;
 			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
 			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
 			f32 initdist = initpos.getDistanceFrom(inittar);
@@ -1086,7 +1085,7 @@ void App::eventGuiCombobox(s32 id)
 				break;
 			case 7: // Orthographic view
 				//Will need the change the distance moving since there is no perspective
-				projMat.buildProjectionMatrixOrthoLH(device->getVideoDriver()->getScreenSize().Width,device->getVideoDriver()->getScreenSize().Height,1,15000);
+				projMat.buildProjectionMatrixOrthoLH((f32)device->getVideoDriver()->getScreenSize().Width,(f32)device->getVideoDriver()->getScreenSize().Height,1,15000);
 				CameraSystem::getInstance()->getNode()->setProjectionMatrix(projMat,true);
 
 				break;
@@ -1102,9 +1101,11 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case CB_SNAPCOMBO: // Get the combo box data to set the snap distance
+		
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
+			combobox_used=true;
 			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
 			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
 				currentsnapping=64;
@@ -2194,13 +2195,19 @@ void App::quickUpdate()
 
 void App::run()
 {
+
+	// Start the post process in the FX Manager
+	EffectsManager::getInstance()->initPostProcess();
+
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
 	this->setAppState(APP_EDIT_LOOK);
 
 	// Update the info panel with the current "active object"
 	GUIManager::getInstance()->getInfoAboutModel();
+	EffectsManager::getInstance()->skydomeVisible(false); //Force the skydome to appear when the application is initialised; (Default state)
 #else
+	EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
@@ -2219,9 +2226,7 @@ void App::run()
 	// Loading is complete
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
-	// Start the post process in the FX Manager
-	EffectsManager::getInstance()->initPostProcess();
-
+	
 	// Hide the fog in the editor
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
 
@@ -3223,7 +3228,9 @@ bool App::loadProjectFromXML(stringc filename)
 		if ( globalScriptXML )
 		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
+#ifdef EDITOR  //only update in the editor
 			quickUpdate();
+#endif
 			scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
 		}
 
@@ -3231,7 +3238,9 @@ bool App::loadProjectFromXML(stringc filename)
 		if ( terrain )
 		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the terrain");
+#ifdef EDITOR
 			quickUpdate();
+#endif
 			TerrainManager::getInstance()->loadFromXML(terrain);
 		}
 
@@ -3239,7 +3248,9 @@ bool App::loadProjectFromXML(stringc filename)
 		if ( dynamicObjs )
 		{
 			GUIManager::getInstance()->setTextLoader(L"Loading the dynamic objects");
+#ifdef EDITOR
 			quickUpdate();
+#endif
 			DynamicObjectsManager::getInstance()->loadFromXML(dynamicObjs);
 		}
 
@@ -3268,10 +3279,13 @@ bool App::loadProjectFromXML(stringc filename)
 
 	//guienv->getSkin()->setDefaultText(EGDT_MSG_BOX_CANCEL,L"Canceller");
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
+#ifdef EDITOR
 	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
 		.append(core::stringw(filename.c_str()))
 		.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
 		,true);
+#endif
 
 	return true;
 }
@@ -3291,7 +3305,6 @@ void App::initialize()
 	// Set the fog to be very far when not in gameplay
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
 
-	quickUpdate();
 	screensize=driver->getScreenSize();
 
 #ifdef EDITOR
@@ -3349,12 +3362,13 @@ stringw App::getLangText(irr::core::stringc node)
 irr::f32 App::getBrushRadius(int number)
 {
 	f32 radius=0.0f;
+#ifdef EDITOR
 	
 	if (number==0) //main radius
 		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
 	if (number==1) // inner radius
 		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2);
-
+#endif
 	return radius;
 }
 

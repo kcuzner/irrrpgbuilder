@@ -36,6 +36,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	//printf("Here is the object: %s \n",realFile.c_str());
 
 	mesh = NULL;
+	Tmesh = NULL;
 
 	if (!directpath)
 		mesh = smgr->getMesh(realFile); //Loading from the Dynamic objects template library
@@ -45,6 +46,9 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		mesh = smgr->getMesh(meshFile); //Loading the file directly from a path (directpath)
 										// Object can be stored anywhere
 										// Used mostly for testing models
+
+	//Try to create a version of the mesh with the tangents for the normal mapping
+	Tmesh = smgr->getMeshManipulator()->createMeshWithTangents(mesh);
 	
 	//meshName = meshFile;
     this->animations = animations;
@@ -56,7 +60,6 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		mesh = smgr->getMesh("../media/editor/error.obj");
 		error=true;
 	}
-
 
 	setupObj(name, mesh);
 
@@ -187,7 +190,11 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
     this->mesh = mesh;
     this->name = name;
 
-	if(hasAnimation())
+	//initialise stuff
+	selector=NULL;
+	node=NULL;
+
+	if(hasAnimation() && mesh)
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
 
@@ -208,18 +215,25 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		// Check the size of the mesh and create it as an octree if it's big. (200 unit min)
 		if (mesh->getBoundingBox().getExtent().X>200 && mesh->getBoundingBox().getExtent().Y>200 && mesh->getBoundingBox().getExtent().Z>200)
-			this->node = smgr->addOctreeSceneNode ((IMesh*)mesh,0,100);
+			this->node = smgr->addOctreeSceneNode ((IMesh*)Tmesh,0,100);
 		else
-			this->node = smgr->addMeshSceneNode((IMesh*)mesh,0,100);
+			this->node = smgr->addMeshSceneNode((IMesh*)Tmesh,0,100);
 		if (node)
 		{
 			// Select the triangle selector for more precision
-			this->selector = smgr->createTriangleSelector((IMesh*)mesh,node);
+			this->selector = smgr->createTriangleSelector((IMesh*)Tmesh,node);
 			//this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
 			//this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 			this->node->setTriangleSelector(selector);
 		}
 	}
+	if (!node) //If a node fail to create. Create this to help find the problem
+	{
+		node=smgr->addEmptySceneNode();
+		GUIManager::getInstance()->setConsoleText(L"Failed to create a node!");
+		printf ("Failed to create a node! Node name should be: %s\n",name.c_str());
+	}
+
 	if (node)
 	{
 		// Setup the animations
@@ -260,10 +274,10 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
-		this->setWalkTarget(node->getPosition());
 		//node->setDebugDataVisible(EDS_BBOX_ALL);
 
-	}
+	} 
+		
 }
 
 DynamicObject* DynamicObject::clone()
@@ -361,8 +375,10 @@ vector3df DynamicObject::getPosition()
 	else
 	*/
 	{
-		return node->getAbsolutePosition();
-		//return vector3df(0,0,0);
+		if (node)
+			return node->getAbsolutePosition();
+		else
+			return vector3df(0,0,0);
 	}
 }
 

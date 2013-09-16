@@ -440,7 +440,9 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     //Save all segments to XML
     for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
     {
+#ifdef EDITOR //Update the display only in editor
 		App::getInstance()->quickUpdate();
+#endif
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
     }
@@ -472,7 +474,9 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 	while( tSegment != NULL )
     {
+#ifdef EDITOR //only update the display in editor
 		App::getInstance()->quickUpdate();
+#endif
         f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
 
@@ -501,7 +505,9 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
         tSegment = parentElement->IterateChildren( "terrainSegment", tSegment );
     }
+#ifdef EDITOR //only update in the editor
 	App::getInstance()->quickUpdate();
+#endif
 
 	/*// Save empty segments to XML
 	TiXmlNode* tSegment2 = parentElement->FirstChild( "emptySegment" );
@@ -517,7 +523,9 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
     }*/
 	GUIManager::getInstance()->setTextLoader(L"Creating the collision meshes");
+#ifdef EDITOR
 	App::getInstance()->quickUpdate();
+#endif
 	recalculate();
 	return true;
 }
@@ -909,7 +917,7 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 	int step1=5;
 
 	f32 radius1=radius; ///4;
-	for (int i=0; i<buffer.size()-1; i++)
+	for (int i=0; i<(int)buffer.size()-1; i++)
 	{
 
 		for(int j=i; j<(i+1); j++)
@@ -964,6 +972,7 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 
 void TerrainManager::update()
 {
+#ifdef EDITOR
 	APP_STATE app_state;
 	app_state = App::getInstance()->getAppState();
 
@@ -1039,6 +1048,7 @@ void TerrainManager::update()
 			}
 		}
 	}
+#endif
 }
 
 // Rotate a custom tile left
