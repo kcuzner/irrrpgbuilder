@@ -7528,7 +7528,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1377748125 /home/christian/projets/IRB/src/App.h
+1378587833 /home/christian/projets/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -8595,7 +8595,7 @@
 	<irrlicht.h>
 	<vector>
 
-1375828486 /home/christian/projets/IRB/src/camera/CameraSystem.h
+1379257059 /home/christian/projets/IRB/src/camera/CameraSystem.h
 	"../App.h"
 	"../objects/Player.h"
 	"CSceneNodeAnimatorCameraMayaIRB.h"
@@ -8614,7 +8614,7 @@
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1376858195 /home/christian/projets/IRB/src/gui/GUIManager.h
+1379257059 /home/christian/projets/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -8622,6 +8622,7 @@
 	"CGUIEditBoxIRB.h"
 	"CGUIGfxStatus.h"
 	"GUIConfigWindow.h"
+	"CGUIButton2.h"
 	"../sound/SoundManager.h"
 	"CGUIExtWindow.h"
 
@@ -8751,7 +8752,7 @@
 1375828485 /home/christian/projets/IRB/src/gui/CGUIExtWindow.h
 	<irrlicht.h>
 
-1377404191 /home/christian/projets/IRB/src/objects/DynamicObject.h
+1379365481 /home/christian/projets/IRB/src/objects/DynamicObject.h
 	<vector>
 	<irrlicht.h>
 	"HealthSceneNode.h"
@@ -8772,7 +8773,7 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1372537951 /home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
+1379257059 /home/christian/projets/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
 	<vector>
 	"ISceneNodeAnimatorCameraMaya.h"
 	"ICameraSceneNode.h"
@@ -8784,7 +8785,7 @@
 	<irrlicht.h>
 	"../App.h"
 
-1377982611 /home/christian/projets/IRB/src/terrain/TerrainManager.h
+1378587833 /home/christian/projets/IRB/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"../App.h"
@@ -8839,7 +8840,7 @@
 	"ISceneManager.h"
 	"../App.h"
 
-1375828486 source:/home/christian/projets/IRB/src/events/EventReceiver.cpp
+1378587833 source:/home/christian/projets/IRB/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
@@ -9036,4 +9037,18 @@
 
 1372537951 source:/home/christian/projets/IRB/src/raytests.cpp
 	"raytests.h"
+
+1379257059 /home/christian/projets/IRB/src/gui/CGUIButton2.h
+	<irrlicht.h>
+	"IrrCompileConfig.h"
+	"IGUIButton.h"
+	"IGUISpriteBank.h"
+	"SColor.h"
+
+1379257059 source:/home/christian/projets/IRB/src/gui/CGUIButton2.cpp
+	"CGUIButton2.h"
+	"IGUISkin.h"
+	"IGUIEnvironment.h"
+	"IVideoDriver.h"
+	"IGUIFont.h"
 
