@@ -54,6 +54,7 @@ function onAnswer()
 end
 
 function onLoad()
+  setSkydomeVisible(true); --Display or not the skydome
   setPlayerLife(100)
   regentoggle=false
   dietoggle=false
