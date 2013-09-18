@@ -11,6 +11,7 @@ using namespace gui;
 
 GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 {
+	mapname="";
     this->device = device;
 
     IGUIEnvironment* guienv = device->getGUIEnvironment();
@@ -137,6 +138,9 @@ void GUIConfigWindow::showWindow()
 
     cfgWindow->setVisible(true);
 
+	cfgWindow->setEnabled(true);
+	device->getGUIEnvironment()->setFocus(cfgWindow);
+
     while(runCfg)
     {
         if(btCancel->isPressed()) runCfg = false;
@@ -154,6 +158,7 @@ void GUIConfigWindow::showWindow()
 
         device->getSceneManager()->drawAll();
         cfgWindow->draw();
+		
 
         device->getVideoDriver()->endScene();
     }
@@ -230,7 +235,12 @@ void GUIConfigWindow::populateResolutionList()
 // Loading is also done in APP that set the application
 void GUIConfigWindow::loadActualSeetings()
 {
+#ifdef EDITOR
     TiXmlDocument doc("config.xml");
+
+#else
+	TiXmlDocument doc("gameconfig.xml");
+#endif
 	if (!doc.LoadFile()) return;
 
 	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
@@ -316,6 +326,15 @@ void GUIConfigWindow::loadActualSeetings()
             ebOceanNormalMap->setText(stringw(oceanXML->ToElement()->Attribute("normalmap")).c_str());
             ebOceanReflection->setText(stringw(oceanXML->ToElement()->Attribute("reflection")).c_str());
         }
+#ifndef EDITOR
+		TiXmlElement* mapXML = root->FirstChildElement( "map" );
+		if ( mapXML )
+		{
+			mapname = mapXML->ToElement()->Attribute("name");
+			printf("The map name is: %s\n",mapname.c_str());
+			///TODO: we are just loading ocean seetings, we need to set it!
+		}
+#endif
     }
 }
 
@@ -360,12 +379,22 @@ void GUIConfigWindow::saveNewSeetings()
     oceanXML->SetAttribute("mesh",stringc(ebOceanMesh->getText()).c_str() );
     oceanXML->SetAttribute("normalmap",stringc(ebOceanNormalMap->getText()).c_str() );
     oceanXML->SetAttribute("reflection",stringc(ebOceanReflection->getText()).c_str() );
+	irb_cfg->LinkEndChild(oceanXML);
 
-    irb_cfg->LinkEndChild(oceanXML);
+#ifndef EDITOR
+	TiXmlElement* mapXML = new TiXmlElement("map");
+	mapXML->SetAttribute("name",mapname.c_str());
+	irb_cfg->LinkEndChild(mapXML);
+#endif
+
+    
 
     doc.LinkEndChild(irb_cfg);
-
+#ifdef EDITOR
     doc.SaveFile("config.xml");
+#else
+	doc.SaveFile("gameconfig.xml");
+#endif
 }
 
 rect<s32> GUIConfigWindow::myRect(s32 x, s32 y, s32 w, s32 h)

@@ -891,6 +891,15 @@ void App::eventGuiButton(s32 id)
 		moveupdown=false;
 		break;
 
+	case BT_PLAYER_START:
+		this->playGame();
+		break;
+
+	case BT_PLAYER_CONFIG:
+		GUIManager::getInstance()->showConfigWindow();
+
+		break;
+
 	default:
 		break;
 	}
@@ -1273,6 +1282,7 @@ dimension2d<u32> App::getScreenSize()
 
 void App::eventKeyPressed(s32 key)
 {
+	bool visible=false; //Used to display hide the gameplay toolbar
 	switch (key)
 	{
 
@@ -1359,9 +1369,7 @@ void App::eventKeyPressed(s32 key)
 	case KEY_RETURN:
 		if (app_state == APP_WAIT_DIALOG)
 			break;
-	case KEY_ESCAPE:
-		//device->drop();
-		break;
+	
 
 	case KEY_LCONTROL:
 
@@ -1369,6 +1377,17 @@ void App::eventKeyPressed(s32 key)
 			snapfunction=true;
 		else
 			snapfunction=false;
+		break;
+
+	case KEY_ESCAPE:
+#ifndef EDITOR
+		if (EventReceiver::getInstance()->isKeyPressed(KEY_ESCAPE))
+		{
+			visible=guienv->getRootGUIElement()->getElementFromId(WIN_GAMEPLAY,true)->isVisible();
+			guienv->getRootGUIElement()->getElementFromId(WIN_GAMEPLAY,true)->setVisible(!visible);
+		}
+#endif
+
 		break;
 
 
@@ -2021,6 +2040,10 @@ IrrlichtDevice* App::getDevice()
 
 void App::playGame()
 {
+	bool visible=false;
+	visible=guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->isVisible();
+	guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->setVisible(!visible);
+	
 	if (app_state<APP_STATE_CONTROL)
 	{
 		EffectsManager::getInstance()->updateSkydome();
@@ -2198,34 +2221,35 @@ void App::run()
 
 	// Start the post process in the FX Manager
 	EffectsManager::getInstance()->initPostProcess();
+	EffectsManager::getInstance()->skydomeVisible(false); //Force the skydome to appear when the application is initialised; (Default state)
 
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
 	this->setAppState(APP_EDIT_LOOK);
 
 	// Update the info panel with the current "active object"
-	GUIManager::getInstance()->getInfoAboutModel();
-	EffectsManager::getInstance()->skydomeVisible(false); //Force the skydome to appear when the application is initialised; (Default state)
+	GUIManager::getInstance()->getInfoAboutModel();	
+	// Loading is complete
+	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
 #else
 	EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
-	CameraSystem::getInstance()->setCamera(1);
-	this->setAppState(APP_GAMEPLAY_NORMAL);
+	//CameraSystem::getInstance()->setCamera(1);
+	//this->setAppState(APP_GAMEPLAY_NORMAL);
 	//Player::getInstance()->getObject()->doScript();
-	LuaGlobalCaller::getInstance()->storeGlobalParams();
-	DynamicObjectsManager::getInstance()->initializeAllScripts();
-	DynamicObjectsManager::getInstance()->showDebugData(false);
-	TerrainManager::getInstance()->showDebugData(false);
-	GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
-	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+	//LuaGlobalCaller::getInstance()->storeGlobalParams();
+	//DynamicObjectsManager::getInstance()->initializeAllScripts();
+	//DynamicObjectsManager::getInstance()->showDebugData(false);
+	//TerrainManager::getInstance()->showDebugData(false);
+	//GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+//	LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 #endif
 
-	// Loading is complete
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
-
+	
 	
 	// Hide the fog in the editor
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
@@ -3261,13 +3285,18 @@ bool App::loadProjectFromXML(stringc filename)
 			// There is no need for now to load from this
 		}
 		CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
+		GUIManager::getInstance()->setTextLoader(L"");
+		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_START,true)->setVisible(true);
+		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_CONFIG,true)->setVisible(true);
 	}
 	else
 	{
 #ifdef APP_DEBUG
 		cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
 #endif
+#ifdef EDITOR
 		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+#endif
 		return false;
 	}
 
@@ -3276,9 +3305,6 @@ bool App::loadProjectFromXML(stringc filename)
 #endif
 
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
-
-	//guienv->getSkin()->setDefaultText(EGDT_MSG_BOX_CANCEL,L"Canceller");
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 #ifdef EDITOR
 	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")

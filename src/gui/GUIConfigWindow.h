@@ -60,6 +60,8 @@ class GUIConfigWindow
         void saveNewSeetings();
 
         rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+
+		core::stringc mapname;
 };
 
 #endif // GUICONFIGWINDOW_H

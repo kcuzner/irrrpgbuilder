@@ -125,7 +125,11 @@ enum GUI_ID
 	TI_ID_SCA_Z,
 
 	CB_SCREENCOMBO,
-	CB_SNAPCOMBO
+	CB_SNAPCOMBO,
+	BT_PLAYER_CONFIG,
+	BT_PLAYER_START,
+	WIN_GAMEPLAY,
+	WIN_LOADER
 
 
 };
@@ -518,6 +522,9 @@ class GUIManager
 		IGUIStaticText* txt_dialog;
 		IGUIButton* guiBtDialogYes;
 		IGUIButton* guiBtDialogCancel;
+
+		IGUIButton* guiBtGamePlay;
+		IGUIButton* guiBtGameConfig;
 
 		// Textures
 		ITexture* backtexture;

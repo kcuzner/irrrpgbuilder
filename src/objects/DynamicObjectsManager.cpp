@@ -562,7 +562,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 
 	if (newObj->getType()==OBJECT_TYPE_NPC)
 	{
-		//newObj->setAnimation("walk");
+		newObj->setAnimation("walk");
 		newObj->setAnimation("idle");
 		newObj->setWalkTarget(pos);
 	}

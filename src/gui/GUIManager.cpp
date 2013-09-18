@@ -61,6 +61,8 @@ GUIManager::GUIManager()
             guienv->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
     }
 
+	configWindow = NULL;
+
 	// Bigger Windows titlebar width
 	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
 	// Fake office style skin colors
@@ -482,7 +484,7 @@ void GUIManager::setupEditorGUI()
 	displaywidth=screensize.Width;
 
 	//LOADER WINDOW
-	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...");
+	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...",0,WIN_LOADER);
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 	guiLoaderWindow->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
@@ -2387,7 +2389,9 @@ void GUIManager::setTextLoader(stringw text)
 	if (guiLoaderDescription)
 	{
 		guiLoaderDescription->setText(text.c_str());
+#ifdef EDITOR
 		App::getInstance()->quickUpdate();
+#endif
 	}
 }
 
@@ -2484,16 +2488,24 @@ void GUIManager::setupGameplayGUI()
 	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 
 	//LOADER WINDOW
-	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...");
+	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...",0,WIN_LOADER);
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 
 	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
-	guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+    guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+
+	//Define 2 buttons to place in the loader windows (player only)
+	guiBtGamePlay = guienv->addButton(core::rect<s32>(400,360,580,380),guiLoaderWindow, BT_PLAYER_START, L"PLAY GAME NOW!");
+	guiBtGamePlay->setVisible(false);
+
+	guiBtGamePlay = guienv->addButton(core::rect<s32>(20,360,200,380),guiLoaderWindow, BT_PLAYER_CONFIG, L"EDIT CONFIGURATION");
+	guiBtGamePlay->setVisible(false);
+
 	App::getInstance()->quickUpdate();
 
 	loadFonts();
-	guiLoaderDescription = guienv->addStaticText(L"Loading interface graphics...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	guiLoaderDescription->setText(L"Loading interface graphics...");
 	//printf("The GUI should display from here...\n");
 	// quick update
 	App::getInstance()->quickUpdate();
@@ -2507,10 +2519,11 @@ void GUIManager::setupGameplayGUI()
 	ITexture* imgConfig = driver->getTexture("../media/art/bt_config.png");
 	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
 
-	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false);
+	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false,0,0,WIN_GAMEPLAY);
 	guiMainToolWindow->setDraggable(false);
 	guiMainToolWindow->setDrawTitlebar(false);
 	guiMainToolWindow->getCloseButton()->setVisible(false);
+	guiMainToolWindow->setVisible(false);
 
 
 	//Play Game
@@ -2581,6 +2594,9 @@ void GUIManager::setupGameplayGUI()
 
 	// Ask the LANGManager to fill the box with the proper Language of the about text.
 	LANGManager::getInstance()->setAboutText(guiAboutText);
+
+	// Create the Configuration window (Need to be updated)
+	configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
 
 	// ---------------------------------------
 	#endif
