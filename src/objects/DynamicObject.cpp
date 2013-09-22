@@ -412,6 +412,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	// - A collision with another object (need to be updated as collision is down)
 	// - Moving into a part of the terrain that is not reachable (based on height of terrain)
 
+	collided=false;
 	if (getType()==OBJECT_TYPE_PLAYER && Player::getInstance()->getTaggedTarget())
 		targetPos = Player::getInstance()->getTaggedTarget()->getPosition();
 	else
@@ -472,13 +473,13 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	// Samples position where the ground is
 	f32 height = rayTest(vector3df(pos.X,pos.Y+2000,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
-	f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
+	//f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
 	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+2000,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
-	f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
-	f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
+	//f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
+	//f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
 
 	// Sample in the front
-	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront1.X,posfront1.Y+36,posfront1.Z));
+	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront.X,posfront.Y+36,posfront.Z));
 	if (frontcol>-1000)
 	{
 		collided=true;
@@ -486,7 +487,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	else
 		collided=false;
 
-	// Test has failed
+	// if test has failed
 	if (height==-1000.0f)
 	{
 		height = TerrainManager::getInstance()->getHeightAt(pos);
@@ -515,10 +516,34 @@ void DynamicObject::walkTo(vector3df targetPos)
 	if (cliff<0)
 		cliff = -cliff;
 
+	//Check the old position and the new position on the Y axis. Must not be too high
+	vector3df oldposition = this->getPosition();
+	f32 result = (oldposition.Y-height);
+	if (result<0)
+		result=-result;
+
+	//This is for detecting "jumps" to avoid player jumps on buildings or modeled geometry
+	if (result>(getNode()->getAbsoluteTransformation().getScale().Y*0.25f))
+	{
+		collided=true; //This mean that the distance it too high for the character to move there
+		printf("Too high! %f units\n",result);
+	}
+
+	if (cliff > 40)
+	{
+		printf("Cliff is too steep! result: %f\n",cliff);
+		collided=true;
+	}
+
+	// The player and NPC should not get into the ocean
+	if (height<-80.0f)
+		collided=true;
+
 	// The "cliff" is the number of unit of difference from one point to another
 	// The limit in the water is to get to -80 (legs into water)
 	// This number should be based on the height of the character and not fixed values
-	if (height>-80 && (cliff < 60) && !collided)
+	//if (height>-80 && (cliff < 60) && !collided)
+	if (!collided)
 	{
 		pos.Y = height;
 		// Get the average of the heights to give a smoother result.
@@ -526,7 +551,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 		this->setPosition(pos);
 		this->getNode()->updateAbsolutePosition();
 		if (getType()==OBJECT_TYPE_PLAYER)
-			CameraSystem::getInstance()->updatePointClickCam();
+			CameraSystem::getInstance()->updatePointClickCam(); //The camera need to be positionned at the same time the player position is updated.
 	}
 	else
 	{

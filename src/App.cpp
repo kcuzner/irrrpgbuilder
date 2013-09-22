@@ -2040,9 +2040,12 @@ IrrlichtDevice* App::getDevice()
 
 void App::playGame()
 {
+
+#ifndef EDITOR 
 	bool visible=false;
 	visible=guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->isVisible();
 	guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->setVisible(!visible);
+#endif
 	
 	if (app_state<APP_STATE_CONTROL)
 	{
