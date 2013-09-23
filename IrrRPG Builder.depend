@@ -7528,7 +7528,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1378587833 /home/christian/projets/IRB/src/App.h
+1379896344 /home/christian/projets/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -8610,11 +8610,11 @@
 	"combat.h"
 	"../sound/SoundManager.h"
 
-1372537951 /home/christian/projets/IRB/src/LANGManager.h
+1379896344 /home/christian/projets/IRB/src/LANGManager.h
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1379257059 /home/christian/projets/IRB/src/gui/GUIManager.h
+1379467669 /home/christian/projets/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -8645,7 +8645,7 @@
 	"IrrlichtDevice.h"
 	"IGUIElement.h"
 
-1372537951 /home/christian/projets/IRB/src/gui/GUIConfigWindow.h
+1379467669 /home/christian/projets/IRB/src/gui/GUIConfigWindow.h
 	<irrlicht.h>
 	<vector>
 
@@ -8872,7 +8872,7 @@
 1372537951 source:/home/christian/projets/IRB/src/fx/postprocess/ShaderPostProcess.cpp
 	"ShaderPostProcess.h"
 
-1377748125 source:/home/christian/projets/IRB/src/fx/ShaderCallBack.cpp
+1379365481 source:/home/christian/projets/IRB/src/fx/ShaderCallBack.cpp
 	"ShaderCallBack.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
@@ -8908,12 +8908,12 @@
 	"IVideoDriver.h"
 	"rect.h"
 
-1372537951 source:/home/christian/projets/IRB/src/gui/GUIConfigWindow.cpp
+1379467669 source:/home/christian/projets/IRB/src/gui/GUIConfigWindow.cpp
 	"GUIConfigWindow.h"
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1377317901 source:/home/christian/projets/IRB/src/gui/GUIManager.cpp
+1379467669 source:/home/christian/projets/IRB/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
@@ -8997,9 +8997,12 @@
 1372537951 source:/home/christian/projets/IRB/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1375828486 source:/home/christian/projets/IRB/src/terrain/TerrainManager.cpp
+1379365481 source:/home/christian/projets/IRB/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
+	"../events/EventReceiver.h"
+	"../gui/GUIManager.h"
 	<sstream>
+	<vector>
 
 1377748125 source:/home/christian/projets/IRB/src/terrain/TerrainTile.cpp
 	"TerrainTile.h"
