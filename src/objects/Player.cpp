@@ -102,11 +102,13 @@ DynamicObject* Player::getObject()
 // Determine also the attack rate(animation) and the distance the player can attack an object that was found.
 void Player::update()
 {
+	
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
 	// Standard checks updated by timer (update the tagged object, the range etc.
 	if (timercheck-timer3>17)
 	{
+
 		timer3=timercheck;
 		//printf("current state of animation is %i\n",playerObject->getAnimation());
 	

@@ -1285,17 +1285,23 @@ void DynamicObjectsManager::displayShadow(bool visible)
 void DynamicObjectsManager::updateAll()
 {
 
+	bool foundplayer = false;
     for(int i=0;i<(int)objects.size();i++)
     {
 		// Non interactive objects will not be refreshed (update callback)
 		// Should help with performance and allow for more NPC/Interactive objects.
 		if (objects[i])
 		{
+
+			if (objects[i]->getType()==OBJECT_TYPE_PLAYER)
+				foundplayer=true;
 			if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE  || objects[i]->getType()!=OBJECT_TYPE_WALKABLE )
 			{
 				((DynamicObject*)objects[i])->update();
 			}
 		}
+		if (!foundplayer)
+			printf("The player was lost!!\n");
     }
 
 	//Update player code
@@ -1433,19 +1439,20 @@ void DynamicObjectsManager::clean(bool full)
         DynamicObject* d = objects[i];
 		if (d)
 		{
-			d->clearEnemy();
-			if (!d->isTemplate())
+			if (d->getType()!=OBJECT_TYPE_PLAYER)
 			{
-				delete d;
-          		objects[i]=NULL;
-
+				d->clearEnemy();
+				if (!d->isTemplate())
+				{
+					delete d;
+          			objects[i]=NULL;
+				}
 			}
-			// else
-			//	object_backup.push_back(d);
 		}
     }
 	// Cleanup
 	objects.clear();
+	objects.push_back(playerObject); //Put back the player object pointer in the list after deleting it
 	objsCounter_npc=0;
 	objsCounter_regular=0;
 	objsCounter_walkable=0;

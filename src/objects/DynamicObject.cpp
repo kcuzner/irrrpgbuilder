@@ -526,7 +526,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	if (result>(getNode()->getAbsoluteTransformation().getScale().Y*0.25f))
 	{
 		collided=true; //This mean that the distance it too high for the character to move there
-		printf("Too high! %f units\n",result);
+		printf("Too high! %f units. Name is: %s\n",result,getName().c_str());
+		printf("Old position: %f,%f,%f. desired height is: %f\n",pos.X,pos.Y,pos.Z,result);
 	}
 
 	if (cliff > 40)
@@ -651,6 +652,7 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 	} else
 	{
 		walkTarget=newTarget;
+		reached=false;
 	}
 }
 
@@ -1207,6 +1209,10 @@ bool DynamicObject::setAnimation(stringc animName)
 void DynamicObject::checkAnimationEvent()
 {
 
+    //TODO: Return when the object has no animation
+	if (!nodeAnim)
+		return;
+
 	// Check if the character is hurt and tell the combat manager to stop the attack while the character play all the animation
 	// Need to update this to support more specific animation that MUST not be stopped
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_INJURED)
@@ -1612,7 +1618,7 @@ void DynamicObject::update()
 
 	if (rotationupdater)
 		updateRotation();
-
+	
 	// Check for an event in the current animation. This will be done at the fastest speed possible
 	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 	{
@@ -1658,9 +1664,10 @@ void DynamicObject::update()
 		//if ((currentAnimation==OBJECT_ANIMATION_WALK || currentAnimation==OBJECT_ANIMATION_RUN) && !culled)
 		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN) && !culled)
 		{ // timerLUA=17
+		
 			updateWalk();
 			if (currentSpeed!=0)
-			timerLUA=timerobject;
+				timerLUA=timerobject;
 		}
 	}
 
@@ -1676,7 +1683,6 @@ void DynamicObject::update()
 			}
 		} else
 		{// if not then check if the node is culled to refresh
-
 			luaRefresh();
 			timerAnimation = timerobject;
 		}

@@ -1204,13 +1204,15 @@ bool result = false;
 
 		stringc filename = "../projects/";
 		filename += name;
-		//App::getInstance()->setAppState(APP_WAIT_DIALOG);
+
+		App::getInstance()->loadProjectGame(filename);
+		/*//App::getInstance()->setAppState(APP_WAIT_DIALOG);
 		App::getInstance()->stopGame();
 		App::getInstance()->cleanWorkspace();
 		result = App::getInstance()->loadProjectFromXML(filename);
 		Player::getInstance()->getObject()->setAnimation("idle");
 		if (result)
-			App::getInstance()->playGame();
+			App::getInstance()->playGame();*/
     }
     else
     {

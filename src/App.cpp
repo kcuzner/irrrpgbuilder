@@ -53,6 +53,7 @@ App::App()
 	moveupdown = false; // Mouse item move up/down in dynamic object ADD mode
 	snapfunction = false;
 
+	levelchange=false;
 
 	overdraw=false;
 	tex_occluded=NULL; // Texture to put on the player when he is occluded
@@ -2664,6 +2665,19 @@ void App::updateGameplay()
 {
 
 	timer = device->getTimer()->getRealTime();
+
+	//Levelchange as been asked
+	//This is used when we use the lua command to load another project
+	if (levelchange && (timer_lua-timer)>1000)
+	{
+		Player::getInstance()->setTaggedTarget(NULL);
+		stopGame();
+		cleanWorkspace(); 
+		this->loadProjectFromXML(levelfilename);
+		playGame();
+		levelchange=false;
+	}
+
 	vector2d<f32> pom = vector2d<f32>(0,0);
 	
 	//Left mouse button in gameplay to change the cam direction
@@ -3121,6 +3135,14 @@ void App::loadProjectFile(bool value)
 	//setAppState(old_state);
 }
 
+// Timed load of the new project, give a chance to LUA to close and start the new thing.
+void App::loadProjectGame(irr::core::stringc filename)
+{
+	this->timer_lua=device->getTimer()->getRealTime();
+	levelchange=true;
+	levelfilename = filename;
+}
+
 void App::saveProject()
 {
 	//Save current state, disabled for now
@@ -3288,9 +3310,15 @@ bool App::loadProjectFromXML(stringc filename)
 			// There is no need for now to load from this
 		}
 		CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
+#ifndef EDITOR
 		GUIManager::getInstance()->setTextLoader(L"");
 		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_START,true)->setVisible(true);
 		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_CONFIG,true)->setVisible(true);
+#endif
+#ifdef EDITOR
+		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+#endif
+
 	}
 	else
 	{
