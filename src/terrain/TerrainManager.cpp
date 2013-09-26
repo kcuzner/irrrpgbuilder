@@ -433,6 +433,12 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     //write header and number of segments
 
     TiXmlElement* terrainXML = new TiXmlElement("terrain");
+	terrainXML->SetAttribute("texture0",terraintexture0.c_str());
+	terrainXML->SetAttribute("texture1",terraintexture1.c_str());
+	terrainXML->SetAttribute("texture2",terraintexture2.c_str());
+	terrainXML->SetAttribute("texture3",terraintexture3.c_str());
+	terrainXML->SetAttribute("texture4",terraintexture4.c_str());
+
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
 
     std::map<std::string, TerrainTile*>::iterator it;
@@ -469,6 +475,24 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 {
     clean();
+
+	core::stringc tempstr="";
+	tempstr = parentElement->ToElement()->Attribute("texture0");
+	if (tempstr.size()>0)
+		terraintexture0 = tempstr;
+	tempstr = parentElement->ToElement()->Attribute("texture1");
+	if (tempstr.size()>0)
+		terraintexture1 = tempstr;
+	tempstr = parentElement->ToElement()->Attribute("texture2");
+	if (tempstr.size()>0)
+		terraintexture2 = tempstr;
+	tempstr = parentElement->ToElement()->Attribute("texture3");
+	if (tempstr.size()>0)
+		terraintexture3 = tempstr;
+	tempstr = parentElement->ToElement()->Attribute("texture4");
+	if (tempstr.size()>0)
+		terraintexture4 = tempstr;
+
 
 	TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
 
