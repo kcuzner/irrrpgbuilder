@@ -141,7 +141,7 @@ class App
 		void loadProjectFile(bool value);
 
 		void loadProjectGame(stringc filename); //This is called from a Lua SCRIPT and reset and load a new game.
-        void saveProject();
+        void saveProjectDialog();
 		stringc getProjectName();
 
         void initialize();
@@ -216,7 +216,7 @@ class App
 		u32 timer3;
 		u32 timer4;
 		u32 timer_lua; //Used when a script ask for a level change
-		bool levelchange; //used to check if a new level change is needed
+		bool levelchange; //used to check if a new level change is needed (Loading a new project or level)
 		core::stringc levelfilename;
 		
 		dimension2d<u32> screensize;

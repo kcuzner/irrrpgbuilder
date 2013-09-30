@@ -2,17 +2,14 @@ uniform sampler2D terrainLayer0;
 uniform sampler2D terrainLayer1;
 uniform sampler2D terrainLayer2;
 uniform sampler2D terrainLayer3;
-uniform sampler2D terrainLayer4;
 
 uniform float plateau;
 uniform int terrainTextureScale;
 uniform int terrainScale;
 
-uniform int editingTerrain;
+uniform bool editingTerrain;
 
 uniform vec4 AmbientLight;
-uniform vec3 mLightPos;
-uniform vec3 mCamPos;
 
 varying vec3 normal;
 varying vec3 position;
@@ -20,38 +17,63 @@ varying vec4 worldCoord;
 
 void main() 
 {
-    float scale = float(terrainScale) / 4.0;
-	if (terrainScale==1)
-		scale = 1.0;
+    float scale = float(terrainScale);
 		
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
-	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*float(terrainTextureScale) );
-	vec4 tex1    = texture2D( terrainLayer1, texCoord.xy*float(terrainTextureScale) );
-	vec4 tex2    = texture2D( terrainLayer2, texCoord.xy*float(terrainTextureScale) );
-	vec4 tex3    = texture2D( terrainLayer3, texCoord.xy*float(terrainTextureScale) );
+	vec4 tex0    = texture2D( terrainLayer0, texCoord.xy*float(terrainTextureScale));
+	vec4 tex1    = texture2D( terrainLayer1, texCoord.xy*float(terrainTextureScale));
+	vec4 tex2    = texture2D( terrainLayer2, texCoord.xy*float(terrainTextureScale));
+	vec4 tex3    = texture2D( terrainLayer3, texCoord.xy*float(terrainTextureScale));
 
-	tex1 = mix( tex1, tex0, min(1.0-normal.y,1.0) );
-	tex2 = mix( tex1, tex2, (position.y/float(terrainScale/3)));
+	//tex1 = mix( tex0, tex1, min(1.0-normal.y,1.0) );
 	
+	// First layer of composition soil & grass blending
+	float position2=position.y+200.0;
+	if (position2>128.0 && position2<256.0)
+		tex1 = mix( tex1, tex0, 1.0-(position2-128.0)/128.0);
+	
+	if (position2<=128.0)	
+		tex1=tex0;
+	
+	// Second composition of first block and rock blending
+	if (position2>256.0 && position2<512.0)
+	    tex2 = mix( tex1, tex2, ((position2-256.0)/256.0));
+
+	if (position2<=256.0)
+		tex2 = tex1;
+		
+	// Third composition of first block and snow blending
+	if (position2>620.0 && position2<768.0)
+		tex3 = mix( tex2, tex3, ((position2-620.0)/148.0));
+		
+	if (position2<=620.0)
+		tex3 = tex2;
+
 	vec4 tex10;
+	//tex10 = mix( tex2, tex3, position.y/scale);
+	tex10 = tex3;
 	
-	float pos2 = (position.y/scale)*10.0;
+	//Plateau band
+	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+		
+	// Directional light no attenuation (Sun)
+	vec3 norm = normalize(normal);
+	vec3 sunVector = normalize(vec3(25000,50000,-50000) - worldCoord.xyz);
+	float sunDir = max(0.0, dot(norm, sunVector));
 	
-	if(position.y >= 0.0)
-	{
-	  tex10 = mix( tex1, tex3, (position.y/float(terrainScale/2)));
-	  tex10 = mix( tex10, tex2, (min(1.0-normal.y-0.2,1.0)) );
-	}
-	else
-	{
-	  tex10 = mix( tex1, tex2, min(1.0-normal.y-0.2,1.0));
-	  tex10 = mix( tex10, tex0, min(1.0,-(position.y/float(scale))*10.0));
-	}
+	vec4 diffuse;
+	diffuse = (gl_LightSource[0].ambient/4.0) + (gl_LightSource[0].diffuse * sunDir);
 	
-	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain==1) tex10*=vec4(1.0,0.6,0.4,1.0);
+	// Rendering with 1 directional light source 
+	vec4 finalColor = (diffuse * vec4(tex10.rgb, 1.0))*AmbientLight;
+	
+	// Rendering with no light source
+	//vec4 finalColor = (vec4(tex10.rgb, 1.0))*AmbientLight;
+	
+	//Fog blending
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
-	gl_FragColor = mix(gl_Fog.color,(tex10*AmbientLight), fog);
+	gl_FragColor = mix(gl_Fog.color,finalColor, fog);
 }
 
 

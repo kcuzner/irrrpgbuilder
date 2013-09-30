@@ -138,8 +138,8 @@ void CameraSystem::setCamera(int tempCamera)
 	if (lightset)
 	{
 		SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
-		light = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(gameCam,vector3df(0,0,250),video::SColorf(0.5f,0.5f,0.6f),250);
-		sun = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(0,vector3df(0,500,0),color,250);
+		//light = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(gameCam,vector3df(0,0,250),video::SColorf(0.5f,0.5f,0.6f),250);
+		//sun = App::getInstance()->getDevice()->getSceneManager()->addLightSceneNode(0,vector3df(0,500,0),color,250);
 		lightset=true;
 	}
 }

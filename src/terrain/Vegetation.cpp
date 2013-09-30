@@ -39,6 +39,7 @@ Vegetation::Vegetation(int type)
     }
 
 	trunk->setAutomaticCulling(EAC_FRUSTUM_BOX);
+	trunk->setMaterialFlag(EMF_LIGHTING,true);
 
 	//two options to set vegetation scale: load from XML or export in the right size
 	//trunk->setScale(vector3df(25,25,25));//PS: remove this line after decide this...
@@ -51,6 +52,7 @@ Vegetation::Vegetation(int type)
 	leafs->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 	leafs->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	leafs->setMaterialFlag(EMF_FOG_ENABLE,true);
+	leafs->setMaterialFlag(EMF_LIGHTING,true);
 
     //Fake Shadow
     fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/vegetation/shadow.obj"),trunk);

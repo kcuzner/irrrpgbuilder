@@ -480,7 +480,7 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case BT_ID_SAVE_PROJECT:
-		this->saveProject();
+		this->saveProjectDialog();
 		this->setAppState(APP_EDIT_LOOK);
 		break;
 #ifdef EDITOR
@@ -3143,7 +3143,7 @@ void App::loadProjectGame(irr::core::stringc filename)
 	levelfilename = filename;
 }
 
-void App::saveProject()
+void App::saveProjectDialog()
 {
 	//Save current state, disabled for now
 	//APP_STATE old_state = getAppState();
@@ -3357,10 +3357,16 @@ void App::initialize()
 	GUIManager::getInstance();
 
 	// Set the ambient light
-	smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
+	//smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
+	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,75.5f));
 
 	// Set the fog to be very far when not in gameplay
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
+
+	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(250,500,-500));
+	light->setLightType(ELT_DIRECTIONAL);
+	light->setRadius(50000);
+	light->setRotation(vector3df(45,45,0));
 
 	screensize=driver->getScreenSize();
 
