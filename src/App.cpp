@@ -2060,7 +2060,8 @@ void App::playGame()
 		//DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(1);
 		// setback the fog as before (will need to check with LUA)
-		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,9100);
+		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,5000);
+		smgr->getActiveCamera()->setFarValue(5000.0f);
 
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
@@ -2235,6 +2236,13 @@ void App::run()
 	GUIManager::getInstance()->getInfoAboutModel();	
 	// Loading is complete
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+
+	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
+	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
+	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
+	CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
+		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
 #else
 	EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
@@ -3358,15 +3366,17 @@ void App::initialize()
 
 	// Set the ambient light
 	//smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
-	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,75.5f));
+	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,1.0f));
 
 	// Set the fog to be very far when not in gameplay
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
 
-	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(250,500,-500));
+	//Create a sun light
+	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,5000,-5000));
 	light->setLightType(ELT_DIRECTIONAL);
 	light->setRadius(50000);
 	light->setRotation(vector3df(45,45,0));
+	
 
 	screensize=driver->getScreenSize();
 

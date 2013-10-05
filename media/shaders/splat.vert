@@ -1,3 +1,4 @@
+#version 150 compatibility
 varying vec3 normal;
 varying vec3 position;
 varying vec4 worldCoord;

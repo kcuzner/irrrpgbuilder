@@ -1,3 +1,5 @@
+#version 150 compatibility
+
 uniform sampler2D terrainLayer0;
 uniform sampler2D terrainLayer1;
 uniform sampler2D terrainLayer2;
@@ -7,7 +9,7 @@ uniform float plateau;
 uniform int terrainTextureScale;
 uniform int terrainScale;
 
-uniform bool editingTerrain;
+uniform int editingTerrain;
 
 uniform vec4 AmbientLight;
 
@@ -50,26 +52,25 @@ void main()
 	if (position2<=620.0)
 		tex3 = tex2;
 
-	vec4 tex10;
-	//tex10 = mix( tex2, tex3, position.y/scale);
-	tex10 = tex3;
+	vec4 tex10 = tex3;
 	
 	//Plateau band
-	if(position.y>(plateau-2.5) && position.y<(plateau+2.5) && editingTerrain) tex10*=vec4(1,0.6,0.4,1);
+	if(position.y>(plateau-1.5) && position.y<(plateau+1.5) && editingTerrain==1) 
+		tex10=vec4(0.0,0.5,0.0,0.5);
 		
 	// Directional light no attenuation (Sun)
 	vec3 norm = normalize(normal);
-	vec3 sunVector = normalize(vec3(25000,50000,-50000) - worldCoord.xyz);
+	vec3 sunVector = normalize(vec3(0,50000,-50000) - worldCoord.xyz);
 	float sunDir = max(0.0, dot(norm, sunVector));
 	
 	vec4 diffuse;
-	diffuse = (gl_LightSource[0].ambient/4.0) + (gl_LightSource[0].diffuse * sunDir);
+	diffuse = (gl_LightSource[0].diffuse * sunDir*1.45); //1.45 brighten the whole texture
 	
 	// Rendering with 1 directional light source 
-	vec4 finalColor = (diffuse * vec4(tex10.rgb, 1.0))*AmbientLight;
+	//vec4 finalColor = ((0.45+diffuse) * vec4(tex10.rgb, 1.0))*AmbientLight; //0.45 diffuse the shadowing
 	
 	// Rendering with no light source
-	//vec4 finalColor = (vec4(tex10.rgb, 1.0))*AmbientLight;
+	vec4 finalColor = (vec4(tex10.rgb, 1.0))*AmbientLight;
 	
 	//Fog blending
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;

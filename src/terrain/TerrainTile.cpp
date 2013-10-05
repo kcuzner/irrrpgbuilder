@@ -63,6 +63,8 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 
 	// Create the terrain mesh node
 	node = smgr->addMeshSceneNode(newMesh,parent,100);
+	node->setMaterialFlag(EMF_LIGHTING,false);
+	node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	// Create the terrain mesh node
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
@@ -77,6 +79,8 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 	
 	// Create the ocean mesh node
     ocean=smgr->addMeshSceneNode(newMesh,node,0);
+	ocean->setMaterialFlag(EMF_LIGHTING,false);
+	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	vector3df oldpos = ocean->getPosition();
 	oldpos.Y=oldpos.Y-5.0f;
 	ocean->setPosition(oldpos); 
@@ -806,6 +810,6 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 	node->setMaterialTexture(0,oceanLayer0);
 	node->setMaterialTexture(1,oceanLayer1);
 
-	node->setMaterialFlag(EMF_FOG_ENABLE,true);    
-	node->setMaterialFlag(EMF_BLEND_OPERATION,true);
+	//node->setMaterialFlag(EMF_FOG_ENABLE,true);    
+	//node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 }
