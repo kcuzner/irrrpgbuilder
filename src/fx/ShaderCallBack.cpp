@@ -322,7 +322,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 			node->getMaterial(i).setTexture(1,oceanLayer1);
 
 			node->setMaterialFlag(EMF_FOG_ENABLE,true);    
-			node->setMaterialFlag(EMF_BLEND_OPERATION,true);
+			node->setMaterialFlag(EMF_BLEND_OPERATION,true); //This must be used for transparent material now.
 		}
 
 	

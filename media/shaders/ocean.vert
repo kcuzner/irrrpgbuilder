@@ -1,6 +1,7 @@
 #version 150 compatibility
-varying float posY;
+
 uniform int terrainScale;
+varying float posY;
 
 void main(void)
 {
@@ -8,11 +9,8 @@ void main(void)
 			
 	posY = gl_Vertex.y;
 	
-	//gl_Vertex.y = -scale;
-	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
-	//gl_Position = ftransform();
 	vec4 vertex = gl_Vertex;
 	vertex.y = -scale;
 	gl_Position = gl_ModelViewProjectionMatrix * vertex;

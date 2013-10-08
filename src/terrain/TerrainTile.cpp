@@ -53,10 +53,10 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 	SMesh* newMesh2 = NULL;
 
 	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-	newMesh2 = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
+	//newMesh2 = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 
 	newMesh->setHardwareMappingHint(EHM_STATIC);
-	newMesh2->setHardwareMappingHint(EHM_STATIC);
+	//newMesh2->setHardwareMappingHint(EHM_STATIC);
 
 	if (node)
 		node->drop();
@@ -64,7 +64,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 	// Create the terrain mesh node
 	node = smgr->addMeshSceneNode(newMesh,parent,100);
 	node->setMaterialFlag(EMF_LIGHTING,false);
-	node->setMaterialFlag(EMF_BLEND_OPERATION,true);
+	// node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	// Create the terrain mesh node
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
@@ -78,20 +78,18 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 	//node->setVisible(false);
 	
 	// Create the ocean mesh node
-    ocean=smgr->addMeshSceneNode(newMesh,node,0);
-	ocean->setMaterialFlag(EMF_LIGHTING,false);
+	// Temporary use a simple mesh/texture until the shader is fixed to work also on the AMD Radeon.
+	// When fixed, put newMesh and remove the "1" for the names of the water shader
+	newMesh2 = (scene::SMesh*)App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("water.obj",core::dimension2d<f32>(1000.0f,1000.0f),core::dimension2d<u32>(1,1));
+    
+	ocean=smgr->addMeshSceneNode(newMesh2,node,0);
+	//ocean->setMaterialFlag(EMF_LIGHTING,false);
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	vector3df oldpos = ocean->getPosition();
-	oldpos.Y=oldpos.Y-5.0f;
+	//oldpos.Y=oldpos.Y-5.0f;
+	oldpos.Y=-40.0f; // New position for the simple water, a little lower.
 	ocean->setPosition(oldpos); 
 	assignWaterShader(ocean);
-
-	
-	//assignTerrainShader(ocean);
-	
-	//Testing if I can use Irrlicht generated mesh for base
-	//ocean=smgr->addMeshSceneNode(smgr->addHillPlaneMesh("water",dimension2df(scale/nodescale,scale/nodescale),dimension2du(1,1)),node,0);
-
  
 	// Reset the vertices height of the mesh to 0.0f (Y axis)
 	IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
@@ -798,8 +796,8 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 {
 	 //Create a Custom GLSL Material (Water shader)
 	static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_4,
+        "../media/shaders/ocean1.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/ocean1.frag", "pixelMain", video::EPST_PS_1_4,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
