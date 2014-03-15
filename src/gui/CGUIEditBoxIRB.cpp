@@ -20,6 +20,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <algorithm> //For VS2013
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
 	std::stringstream ss(s);

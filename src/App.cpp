@@ -3394,6 +3394,8 @@ void App::initialize()
 	quickUpdate();
 	Player::getInstance();
 	driver->setMinHardwareBufferVertexCount(0);
+	core::stringc vendor = driver->getVendorInfo();
+	printf ("Here is the vendor information: %s\n",vendor.c_str());
 	this->currentProjectName = "irb_temp_project";
 }
 

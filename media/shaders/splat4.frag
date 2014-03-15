@@ -64,17 +64,18 @@ void main()
 	float sunDir = max(0.0, dot(norm, sunVector));
 	
 	vec4 diffuse;
-	diffuse = (gl_LightSource[0].diffuse * sunDir*1.45); //1.45 brighten the whole texture
+	diffuse = (gl_LightSource[0].diffuse * sunDir); //1.45 brighten the whole texture
 	
 	// Rendering with 1 directional light source 
-	//vec4 finalColor = ((0.45+diffuse) * vec4(tex10.rgb, 1.0))*AmbientLight; //0.45 diffuse the shadowing
+	vec4 finalColor = vec4(diffuse.rgb * tex10.rgb, 1.0);  //*AmbientLight; //0.45 diffuse the shadowing
 	
 	// Rendering with no light source
-	vec4 finalColor = (vec4(tex10.rgb, 1.0))*AmbientLight;
+	//vec4 finalColor = (vec4(tex10.rgb, 1.0))*AmbientLight;
 	
 	//Fog blending
 	float fog = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale;
-	gl_FragColor = mix(gl_Fog.color,finalColor, fog);
+	finalColor = mix(gl_Fog.color,finalColor, fog);
+	gl_FragColor = vec4(finalColor.rgb,1.0);
 }
 
 
