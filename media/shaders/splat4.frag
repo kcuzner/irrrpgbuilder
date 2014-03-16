@@ -1,5 +1,3 @@
-#version 150 compatibility
-
 uniform sampler2D terrainLayer0;
 uniform sampler2D terrainLayer1;
 uniform sampler2D terrainLayer2;

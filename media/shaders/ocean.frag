@@ -1,4 +1,3 @@
-#version 150 compatibility
 uniform sampler2D oceanNormalMap;
 uniform sampler2D oceanReflection;
 

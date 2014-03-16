@@ -1,5 +1,3 @@
-#version 150 compatibility
-
 uniform int terrainScale;
 varying float posY;
 
