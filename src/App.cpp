@@ -2245,7 +2245,7 @@ void App::run()
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
 #else
-	EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
+	//EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
@@ -2268,7 +2268,8 @@ void App::run()
 
 	// Define the occlusion texture for the player (occlusion query)
 	tex_occluded=driver->getTexture("../media/player/swordman_red.png");
-	tex_normal=driver->getTexture("../media/player/swordman.png");
+	tex_normal=Player::getInstance()->getNode()->getMaterial(0).getTexture(0);
+	//tex_normal=driver->getTexture("../media/player/swordman.png");
 
 	// Occlusing query
 	//driver->addOcclusionQuery(Player::getInstance()->getNode(), ((scene::IMeshSceneNode*)Player::getInstance()->getNode())->getMesh());
