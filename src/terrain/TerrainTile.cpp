@@ -50,13 +50,9 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
 		//(scene::IMesh*)App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("water.obj",core::dimension2d<f32>(1.0f,1.0f),core::dimension2d<u32>(1,1));
 
 	SMesh* newMesh = NULL;
-	SMesh* newMesh2 = NULL;
 
 	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-	//newMesh2 = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-
 	newMesh->setHardwareMappingHint(EHM_STATIC);
-	//newMesh2->setHardwareMappingHint(EHM_STATIC);
 
 	if (node)
 		node->drop();
@@ -74,21 +70,10 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name)
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);
 	assignTerrainShader(node);
-
-	//node->setVisible(false);
-	
-	// Create the ocean mesh node
-	// Temporary use a simple mesh/texture until the shader is fixed to work also on the AMD Radeon.
-	// When fixed, put newMesh and remove the "1" for the names of the water shader
-	newMesh2 = (scene::SMesh*)App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("water.obj",core::dimension2d<f32>(1000.0f,1000.0f),core::dimension2d<u32>(1,1));
     
-	ocean=smgr->addMeshSceneNode(newMesh2,node,0);
-	//ocean->setMaterialFlag(EMF_LIGHTING,false);
+	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
+	ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
-	vector3df oldpos = ocean->getPosition();
-	//oldpos.Y=oldpos.Y-5.0f;
-	oldpos.Y=-40.0f; // New position for the simple water, a little lower.
-	ocean->setPosition(oldpos); 
 	assignWaterShader(ocean);
  
 	// Reset the vertices height of the mesh to 0.0f (Y axis)
@@ -796,8 +781,8 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 {
 	 //Create a Custom GLSL Material (Water shader)
 	static s32 materialOcean=smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
-        "../media/shaders/ocean1.vert", "vertexMain", video::EVST_VS_1_1,
-        "../media/shaders/ocean1.frag", "pixelMain", video::EPST_PS_1_4,
+        "../media/shaders/ocean.vert", "vertexMain", video::EVST_VS_1_1,
+        "../media/shaders/ocean.frag", "pixelMain", video::EPST_PS_1_4,
         ShaderCallBack::getInstance(), video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
