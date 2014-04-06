@@ -2362,6 +2362,7 @@ void App::updateEditMode()
 					{
 						old_state = app_state;
 						setAppState(APP_EDIT_VIEWDRAG);
+						printf("Set camera settings...\n");
 					}
 				}
 			}
