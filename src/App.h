@@ -230,8 +230,6 @@ class App
 		bool silouette; // This will determine if we need to activate the player silouette rendering when occluded
 
 		bool keytoggled; // Toggle check for a combo key press
-
-		bool requests;
 		
 		stringc language;
 		

@@ -71,8 +71,6 @@ App::App()
 
 	combobox_used=false;
 	currentsnapping=64.0f; //set the current snapping distance;
-
-	requests = false;
 	
 }
 
@@ -2318,8 +2316,22 @@ void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
 
-	if (cursorIsInEditArea() && (!requests))
-		guienv->setFocus(guienv->getRootGUIElement()); // DEBUG: REset the focus. Problem loosing focus. Need to fix the problem but hack does it.
+	if (guienv->getFocus()!=guienv->getRootGUIElement())  // DEBUG: REset the focus. Problem loosing focus. Need to fix the problem but hack does it.
+	{
+		if (app_state == APP_EDIT_VIEWDRAG) // Viewdrag mode will reset the focus to the root (pressing spacebar)
+		{
+			if (cursorIsInEditArea())
+				guienv->setFocus(guienv->getRootGUIElement());
+				
+			printf("In viewdrag mode\n");
+		}
+
+		if (!guienv->getFocus()) // Focus is pointer to an invalid pointer. Reset it.
+		{
+			guienv->setFocus(guienv->getRootGUIElement());
+		}
+
+	}
 
 	// If the app state edit the terrain, then update the terrain
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION || app_state == APP_EDIT_TERRAIN_TRANSFORM)
@@ -2375,6 +2387,7 @@ void App::updateEditMode()
 			if ((app_state == APP_EDIT_VIEWDRAG) && !(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE)))
 			{
 				setAppState(old_state);
+				guienv->setFocus(guienv->getRootGUIElement()); // reset the focus when we release the spacebar
 				return;
 			}
 			// --- End of code for drag of view
@@ -2919,8 +2932,6 @@ void App::loadProject(DIALOG_FUNCTION function)
 {
 	old_state = getAppState();
 
-	requests = true;
-
 	// Store the dialog function value and remember it.
 	df = function;
 
@@ -3166,8 +3177,6 @@ void App::saveProjectDialog()
 	//APP_STATE old_state = getAppState();
 	setAppState(APP_WAIT_FILEREQUEST);
 
-	requests = true;
-
 	// Old method of request for save file (only a text input)
 	/*
 	if(currentProjectName == stringc("irb_temp_project"))
@@ -3258,12 +3267,10 @@ void App::saveProjectToXML(stringc filename)
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
 
-	//guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
-	//	.append(core::stringw(filename.c_str()))
-	//	.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
-	//	,true);
-
-	requests = false;
+	guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
+		.append(core::stringw(filename.c_str()))
+		.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
+		,true);
 
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
@@ -3359,13 +3366,12 @@ bool App::loadProjectFromXML(stringc filename)
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 
 #ifdef EDITOR
-	//guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
-	//	.append(core::stringw(filename.c_str()))
-	//	.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
-	//	,true);
+	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
+		.append(core::stringw(filename.c_str()))
+		.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
+		,true);
 #endif
 
-	requests = false;
 	return true;
 }
 
