@@ -29,18 +29,18 @@ void main()
 	//tex1 = mix( tex0, tex1, min(1.0-normal.y,1.0) );
 	
 	// First layer of composition soil & grass blending
-	float position2=position.y+200.0;
-	if (position2>128.0 && position2<256.0)
-		tex1 = mix( tex1, tex0, 1.0-(position2-128.0)/128.0);
+	float position2=position.y+160.0;
+	if (position2>128.0 && position2<178.0)
+		tex1 = mix( tex1, tex0, 1.0-(position2-128.0)/50.0);
 	
 	if (position2<=128.0)	
 		tex1=tex0;
 	
 	// Second composition of first block and rock blending
-	if (position2>256.0 && position2<512.0)
+	if (position2>178.0 && position2<512.0)
 	    tex2 = mix( tex1, tex2, ((position2-256.0)/256.0));
 
-	if (position2<=256.0)
+	if (position2<=178.0)
 		tex2 = tex1;
 		
 	// Third composition of first block and snow blending
