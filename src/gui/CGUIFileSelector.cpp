@@ -140,7 +140,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 
 	fillListBox();
 	// Will set the focus on the text box on initialisation.
-	Environment->setFocus(FileNameText);
+	//Environment->setFocus(FileNameText);
 
 #ifndef _IRR_WINDOWS_
 
@@ -203,180 +203,182 @@ const wchar_t* CGUIFileSelector::getFileName() const
 //! called if an event happened.
 bool CGUIFileSelector::OnEvent(const SEvent& event)
 {
-	switch(event.EventType)
+	if (isEnabled() && isVisible())
 	{
-	case EET_KEY_INPUT_EVENT:
-		switch (event.KeyInput.Key)
+		switch(event.EventType)
 		{
-
-		case KEY_RETURN:
-			if (FileSystem)
+		case EET_KEY_INPUT_EVENT:
+			switch (event.KeyInput.Key)
 			{
 
-				FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
-				fillListBox();
-				PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
-				//printf ("Enter key being pressed\n");
-				if (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))
-				{
-					// Will save the file if the user press enter key.
-					core::stringw strw = FileSystem->getWorkingDirectory();
-					if (strw[strw.size()-1] != '/')
-						strw += "/";
-					fullpathname = strw+FileNameText->getText();
-					sendSelectedEvent();
-					remove();
-					return true;
-				} else
-				{
-					// If the user did not enter the extension, will add it automaticaly
-					u32 i = FilterComboBox->getSelected();
-					core::stringw strw = FileSystem->getWorkingDirectory();
-					if (strw[strw.size()-1] != '/')
-						strw += "/";
-					fullpathname = strw+FileNameText->getText();
-					fullpathname+=".";
-					fullpathname+=FileFilters[i].FileExtension;
-					sendSelectedEvent();
-					remove();
-					return true;
-				}
-			}
-			return true;
-			break;
-        default: break;
-		}
-    break;
-
-	case EET_GUI_EVENT:
-		switch(event.GUIEvent.EventType)
-		{
-		case EGET_COMBO_BOX_CHANGED:
-			if (event.GUIEvent.Caller == FilterComboBox)
-			{
-				fillListBox();
-			} else {  // change drive
-				if (FileSystem) {
-					FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
-					fillListBox();
-				}
-			}
-			break;
-
-		case EGET_MESSAGEBOX_OK:
-				sendSelectedEvent();
-				remove();
-			break;
-
-		case EGET_MESSAGEBOX_YES:
-				sendSelectedEvent();
-				remove();
-			break;
-
-		case EGET_ELEMENT_FOCUS_LOST:
-			Dragging = false;
-			break;
-
-		case EGET_BUTTON_CLICKED:
-			if (event.GUIEvent.Caller == CloseButton ||
-				event.GUIEvent.Caller == CancelButton)
-			{
+			case KEY_RETURN:
 				if (FileSystem)
 				{
-					FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
-					//printf("working directory reset to: %s\n", prev_working_dir.c_str());
-				}
-				sendCancelEvent();
-				remove();
-				return true;
-			}
-			else
-				// If the user enter the complete extension of the filename (mostly for loading)
-				if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
-					if (DialogType==EFST_SAVE_DIALOG && FileSystem)
+
+					FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
+					fillListBox();
+					PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+					//printf ("Enter key being pressed\n");
+					if (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))
 					{
+						// Will save the file if the user press enter key.
 						core::stringw strw = FileSystem->getWorkingDirectory();
 						if (strw[strw.size()-1] != '/')
 							strw += "/";
 						fullpathname = strw+FileNameText->getText();
-						// Temporary: Will cancel the save if the file exists.
-						if (checkExistingFile())
-							return true;
+						sendSelectedEvent();
+						remove();
+						return true;
+					} else
+					{
+						// If the user did not enter the extension, will add it automaticaly
+						u32 i = FilterComboBox->getSelected();
+						core::stringw strw = FileSystem->getWorkingDirectory();
+						if (strw[strw.size()-1] != '/')
+							strw += "/";
+						fullpathname = strw+FileNameText->getText();
+						fullpathname+=".";
+						fullpathname+=FileFilters[i].FileExtension;
+						sendSelectedEvent();
+						remove();
+						return true;
 					}
+				}
+				return true;
+				break;
+			default: break;
+			}
+		break;
 
+		case EET_GUI_EVENT:
+			switch(event.GUIEvent.EventType)
+			{
+			case EGET_COMBO_BOX_CHANGED:
+				if (event.GUIEvent.Caller == FilterComboBox)
+				{
+					fillListBox();
+				} else {  // change drive
+					if (FileSystem) {
+						FileSystem->changeWorkingDirectoryTo(core::stringc(DriveBox->getText()).c_str());
+						fillListBox();
+					}
+				}
+				break;
+
+			case EGET_MESSAGEBOX_OK:
+					sendSelectedEvent();
+					remove();
+				break;
+
+			case EGET_MESSAGEBOX_YES:
+					sendSelectedEvent();
+					remove();
+				break;
+
+			case EGET_ELEMENT_FOCUS_LOST:
+				Dragging = false;
+				break;
+
+			case EGET_BUTTON_CLICKED:
+				if (event.GUIEvent.Caller == CloseButton ||
+					event.GUIEvent.Caller == CancelButton)
+				{
 					if (FileSystem)
 					{
 						FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
 						//printf("working directory reset to: %s\n", prev_working_dir.c_str());
 					}
-					sendSelectedEvent();
-					remove();
-					return true;
-				} else
-				// In case the user did not enter the extension (assumed it would not enter it)
-				if (DialogType==EFST_SAVE_DIALOG)
-				{
-					u32 i = FilterComboBox->getSelected();
-					core::stringw strw = FileSystem->getWorkingDirectory();
-					if (strw[strw.size()-1] != '/')
-						strw += "/";
-					fullpathname = strw+FileNameText->getText();
-					fullpathname+=".";
-					fullpathname+=FileFilters[i].FileExtension;
-
-					sendSelectedEvent();
+					sendCancelEvent();
 					remove();
 					return true;
 				}
-				break;
+				else
+					// If the user enter the complete extension of the filename (mostly for loading)
+					if (event.GUIEvent.Caller == OKButton && (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))) {
+						if (DialogType==EFST_SAVE_DIALOG && FileSystem)
+						{
+							core::stringw strw = FileSystem->getWorkingDirectory();
+							if (strw[strw.size()-1] != '/')
+								strw += "/";
+							fullpathname = strw+FileNameText->getText();
+							// Temporary: Will cancel the save if the file exists.
+							if (checkExistingFile())
+								return true;
+						}
 
-		case EGET_LISTBOX_CHANGED:
-			{
-				s32 selected = FileBox->getSelected();
-				if (event.GUIEvent.Caller == FileBox)
-				{
-					s32 selected = FileBox->getSelected();
-					if (FileList && FileSystem)
+						if (FileSystem)
+						{
+							FileSystem->changeWorkingDirectoryTo(prev_working_dir.c_str());
+							//printf("working directory reset to: %s\n", prev_working_dir.c_str());
+						}
+						sendSelectedEvent();
+						remove();
+						return true;
+					} else
+					// In case the user did not enter the extension (assumed it would not enter it)
+					if (DialogType==EFST_SAVE_DIALOG)
 					{
-						this->fullpathname=FileSystem->getWorkingDirectory();
-						core::stringw strw;
-						strw = FileSystem->getWorkingDirectory();
+						u32 i = FilterComboBox->getSelected();
+						core::stringw strw = FileSystem->getWorkingDirectory();
 						if (strw[strw.size()-1] != '/')
 							strw += "/";
-						fullpathname = strw+FileBox->getListItem(selected);
-						FileNameText->setText(FileBox->getListItem(selected));
-						PathNameText->setText(strw.c_str());
-						//printf("Are in the listbox changed section: path is %s\n",((core::stringc)fullpathname).c_str());
-					}
-				}
-				if (event.GUIEvent.Caller == PlacesBox)
-				{
-					s32 selected = PlacesBox->getSelected();
-					FileSystem->changeWorkingDirectoryTo(core::stringc(placespaths[selected]).c_str());
-					fillListBox();
-				}
-			}
-			break;
+						fullpathname = strw+FileNameText->getText();
+						fullpathname+=".";
+						fullpathname+=FileFilters[i].FileExtension;
 
-		case EGET_LISTBOX_SELECTED_AGAIN:
-			{
-				s32 selected = FileBox->getSelected();
-				if (event.GUIEvent.Caller == FileBox)
+						sendSelectedEvent();
+						remove();
+						return true;
+					}
+					break;
+
+			case EGET_LISTBOX_CHANGED:
 				{
 					s32 selected = FileBox->getSelected();
-					if (FileList && FileSystem)
+					if (event.GUIEvent.Caller == FileBox)
 					{
-						if (FileList->isDirectory(selected))
-						{
-							FileSystem->changeWorkingDirectoryTo(FileList->getFileName(selected));
-							PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
-							fillListBox();
-							FileNameText->setText(L"");
-						}
-						else
+						s32 selected = FileBox->getSelected();
+						if (FileList && FileSystem)
 						{
 							this->fullpathname=FileSystem->getWorkingDirectory();
 							core::stringw strw;
+							strw = FileSystem->getWorkingDirectory();
+							if (strw[strw.size()-1] != '/')
+								strw += "/";
+							fullpathname = strw+FileBox->getListItem(selected);
+							FileNameText->setText(FileBox->getListItem(selected));
+							PathNameText->setText(strw.c_str());
+							//printf("Are in the listbox changed section: path is %s\n",((core::stringc)fullpathname).c_str());
+						}
+					}
+					if (event.GUIEvent.Caller == PlacesBox)
+					{
+						s32 selected = PlacesBox->getSelected();
+						FileSystem->changeWorkingDirectoryTo(core::stringc(placespaths[selected]).c_str());
+						fillListBox();
+					}
+				}
+				break;
+
+			case EGET_LISTBOX_SELECTED_AGAIN:
+				{
+					s32 selected = FileBox->getSelected();
+					if (event.GUIEvent.Caller == FileBox)
+					{
+						s32 selected = FileBox->getSelected();
+						if (FileList && FileSystem)
+						{
+							if (FileList->isDirectory(selected))
+							{
+								FileSystem->changeWorkingDirectoryTo(FileList->getFileName(selected));
+								PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+								fillListBox();
+								FileNameText->setText(L"");
+							}
+							else
+							{
+								this->fullpathname=FileSystem->getWorkingDirectory();
+								core::stringw strw;
 							strw = FileSystem->getWorkingDirectory();
 							if (strw[strw.size()-1] != '/')
 								strw += "/";
@@ -407,7 +409,7 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 			DragStart.X = event.MouseInput.X;
 			DragStart.Y = event.MouseInput.Y;
 			Dragging = true;
-			Environment->setFocus(this);
+			//Environment->setFocus(this);
 			return true;
 		case EMIE_LMOUSE_LEFT_UP:
 			Dragging = false;
@@ -435,6 +437,8 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 
 		}
     default: break;
+	}
+
 	}
 
 	return Parent ? Parent->OnEvent(event) : false;

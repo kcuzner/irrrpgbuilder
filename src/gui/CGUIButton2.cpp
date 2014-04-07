@@ -106,8 +106,11 @@ void CGUIButton2::setSprite(EGUI_BUTTON_STATE state, s32 index, video::SColor co
 //! called if an event happened.
 bool CGUIButton2::OnEvent(const SEvent& event)
 {
-	if (!isEnabled())
+	if (!isEnabled() || !isVisible())
 		return IGUIElement::OnEvent(event);
+
+	if (!device->getCursorControl()->getPosition().isBetweenPoints(this->getAbsoluteClippingRect().UpperLeftCorner,this->getAbsoluteClippingRect().LowerRightCorner))
+		return IGUIElement::OnEvent(event); // This will only accept events if the pointer is over the button.
 
 	switch(event.EventType)
 	{
@@ -182,7 +185,7 @@ bool CGUIButton2::OnEvent(const SEvent& event)
 			if (!IsPushButton)
 				setPressed(true);
 
-			Environment->setFocus(this);
+			//Environment->setFocus(this);
 			return true;
 		}
 		else

@@ -139,7 +139,7 @@ void GUIConfigWindow::showWindow()
     cfgWindow->setVisible(true);
 
 	cfgWindow->setEnabled(true);
-	device->getGUIEnvironment()->setFocus(cfgWindow);
+	//device->getGUIEnvironment()->setFocus(cfgWindow);
 
     while(runCfg)
     {

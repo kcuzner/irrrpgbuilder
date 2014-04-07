@@ -163,7 +163,7 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	menustring[CM_REDO]=L"Redo";
 	menustring[BT_LINECOUNT]=L"Toggle linecount display";
 	LineToggle->setToolTipText(menustring[BT_LINECOUNT].c_str());
-	Environment->setFocus(this);
+	//Environment->setFocus(this);
 }
 
 
@@ -377,7 +377,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 					redo();
 
 
-				Environment->setFocus(this);
+				//Environment->setFocus(this);
 				InMenu = false;
 			}
 			if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
@@ -388,7 +388,7 @@ bool CGUIEditBoxIRB::OnEvent(const SEvent& event)
 					OldMarkBegin = MarkBegin;
 					OldMarkEnd = MarkEnd;
 					//setTextMarkers(0,0);
-					Environment->setFocus(this);
+					//Environment->setFocus(this);
 				}
 				break;
 			}
@@ -815,7 +815,7 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			break;
 
 		case KEY_TAB:
-			Environment->setFocus(this);
+			//Environment->setFocus(this);
 			inputChar(L' ');
 			inputChar(L' ');
 			inputChar(L' ');

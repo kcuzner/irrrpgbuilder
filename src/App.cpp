@@ -2316,6 +2316,9 @@ void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
 
+	if (cursorIsInEditArea())
+		guienv->setFocus(guienv->getRootGUIElement()); // DEBUG: REset the focus. Problem loosing focus. Need to fix the problem but hack does it.
+
 	// If the app state edit the terrain, then update the terrain
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION || app_state == APP_EDIT_TERRAIN_TRANSFORM)
 		TerrainManager::getInstance()->update();

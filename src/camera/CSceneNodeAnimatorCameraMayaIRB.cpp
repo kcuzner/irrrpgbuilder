@@ -216,7 +216,7 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 
 	// Translation ---------------------------------
 
-	// New (aug 2013) define the speed based on the camera distance to the target
+		// New (aug 2013) define the speed based on the camera distance to the target
 	TranslateSpeed = camera->getTarget().getDistanceFrom(camera->getPosition());
 
 	core::vector3df translate(OldTarget);
@@ -265,12 +265,14 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 		}
 		else
 		{
+			printf("DEBUG: Translating the node position:\n");
 			translate +=  tvectX * (TranslateStart.X - MousePos.X)*TranslateSpeed +
 			              tvectY * (TranslateStart.Y - MousePos.Y)*TranslateSpeed;
 		}
 	}
 	else if (Translating)
 	{
+		printf("DEBUG: Translating --- Stop translating:\n");
 		translate += tvectX * (TranslateStart.X - MousePos.X)*TranslateSpeed +
 		             tvectY * (TranslateStart.Y - MousePos.Y)*TranslateSpeed;
 		OldTarget = translate;
