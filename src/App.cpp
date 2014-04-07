@@ -71,6 +71,8 @@ App::App()
 
 	combobox_used=false;
 	currentsnapping=64.0f; //set the current snapping distance;
+
+	requests = false;
 	
 }
 
@@ -2316,7 +2318,7 @@ void App::updateEditMode()
 {
 	timer = device->getTimer()->getRealTime();
 
-	if (cursorIsInEditArea())
+	if (cursorIsInEditArea() && (!requests))
 		guienv->setFocus(guienv->getRootGUIElement()); // DEBUG: REset the focus. Problem loosing focus. Need to fix the problem but hack does it.
 
 	// If the app state edit the terrain, then update the terrain
@@ -2917,6 +2919,8 @@ void App::loadProject(DIALOG_FUNCTION function)
 {
 	old_state = getAppState();
 
+	requests = true;
+
 	// Store the dialog function value and remember it.
 	df = function;
 
@@ -3162,6 +3166,8 @@ void App::saveProjectDialog()
 	//APP_STATE old_state = getAppState();
 	setAppState(APP_WAIT_FILEREQUEST);
 
+	requests = true;
+
 	// Old method of request for save file (only a text input)
 	/*
 	if(currentProjectName == stringc("irb_temp_project"))
@@ -3252,10 +3258,12 @@ void App::saveProjectToXML(stringc filename)
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
 
-	guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
-		.append(core::stringw(filename.c_str()))
-		.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
-		,true);
+	//guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
+	//	.append(core::stringw(filename.c_str()))
+	//	.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
+	//	,true);
+
+	requests = false;
 
 #ifdef APP_DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
@@ -3351,12 +3359,13 @@ bool App::loadProjectFromXML(stringc filename)
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 
 #ifdef EDITOR
-	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
-		.append(core::stringw(filename.c_str()))
-		.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
-		,true);
+	//guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
+	//	.append(core::stringw(filename.c_str()))
+	//	.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
+	//	,true);
 #endif
 
+	requests = false;
 	return true;
 }
 
