@@ -2932,6 +2932,13 @@ void App::loadProject(DIALOG_FUNCTION function)
 {
 	old_state = getAppState();
 
+	setAppState(APP_EDIT_WAIT_GUI);
+	if (lastScannedPick.pickedNode!=NULL)
+	{
+			lastScannedPick.pickedNode=NULL;
+			selectedNode=NULL;
+		}
+
 	// Store the dialog function value and remember it.
 	df = function;
 
