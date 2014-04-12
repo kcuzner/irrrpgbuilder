@@ -218,14 +218,16 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
                 if((realPos.X == nRealPos.X) && (realPos.Z == nRealPos.Z))
                 {
                     mb_vertices[j].Pos.Y = n_mb_vertices[i].Pos.Y;
+					mb_vertices[j].Normal = n_mb_vertices[i].Normal; //New Copy the normal information
 					needrecalc=true;
                 }
             }
         }
 
-        smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
+        //smgr->getMeshManipulator()->recalculateNormals(((IMeshSceneNode*)node)->getMesh(),true);
 		((IMeshSceneNode*)node)->getMesh()->setDirty();
 		needrecalc = true;
+
     }
 }
 
@@ -787,11 +789,13 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 
     static ITexture* oceanLayer0 = smgr->getVideoDriver()->getTexture("../media/waveNM.png");
     static ITexture* oceanLayer1 = smgr->getVideoDriver()->getTexture("../media/sky.jpg");
+	static ITexture* oceanLayer2 = smgr->getVideoDriver()->getTexture("../media/WaterFoam01.jpg");
 	// Water shader
 
 	node->setMaterialType((E_MATERIAL_TYPE)materialOcean);
 	node->setMaterialTexture(0,oceanLayer0);
 	node->setMaterialTexture(1,oceanLayer1);
+	node->setMaterialTexture(2,oceanLayer2);
 
 	//node->setMaterialFlag(EMF_FOG_ENABLE,true);    
 	//node->setMaterialFlag(EMF_BLEND_OPERATION,true);

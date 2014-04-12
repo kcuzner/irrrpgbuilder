@@ -102,8 +102,8 @@ bool CGUIExtWindow::OnEvent(const SEvent& evt)
 	if (!isVisible() || !isEnabled())
 			return IGUIElement::OnEvent(evt);
 
-	if (!device->getCursorControl()->getPosition().isBetweenPoints(this->getAbsoluteClippingRect().UpperLeftCorner,this->getAbsoluteClippingRect().LowerRightCorner))
-		return IGUIElement::OnEvent(evt); // This will only accept events if the pointer is over the button.
+	//if (!device->getCursorControl()->getPosition().isBetweenPoints(this->getAbsoluteClippingRect().UpperLeftCorner,this->getAbsoluteClippingRect().LowerRightCorner))
+	//	return IGUIElement::OnEvent(evt); // This will only accept events if the pointer is over the button.
 
 	switch(evt.EventType)
 	{

@@ -267,14 +267,14 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 		}
 		else
 		{
-			printf("DEBUG: Translating the node position:\n");
+			//printf("DEBUG: Translating the node position:\n");
 			translate +=  tvectX * (TranslateStart.X - MousePos.X)*TranslateSpeed +
 			              tvectY * (TranslateStart.Y - MousePos.Y)*TranslateSpeed;
 		}
 	}
 	else if (Translating)
 	{
-		printf("DEBUG: Translating --- Stop translating:\n");
+		//printf("DEBUG: Translating --- Stop translating:\n");
 		translate += tvectX * (TranslateStart.X - MousePos.X)*TranslateSpeed +
 		             tvectY * (TranslateStart.Y - MousePos.Y)*TranslateSpeed;
 		OldTarget = translate;

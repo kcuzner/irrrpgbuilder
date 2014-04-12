@@ -66,6 +66,9 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     layer=1;
     services->setPixelShaderConstant("oceanReflection",(int*)&layer,1);
 
+	layer=2;
+    services->setPixelShaderConstant("oceanFoam",(int*)&layer,1);
+
     SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
     services->setVertexShaderConstant("AmbientLight",reinterpret_cast<f32*>(&color), 4);
 
@@ -130,6 +133,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
 
     f32 time=device->getTimer()->getTime()/10000.0f;
+	time=time/3.0f;
     services->setVertexShaderConstant("waterTime",&time,1);
 }
 

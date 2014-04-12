@@ -577,7 +577,7 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 
 void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radius2, f32 strength,  bool norecalc)
 {
-    if(mousePick.pickedNode != NULL)
+	if(mousePick.pickedNode != NULL)
     {
 		for (int i=-1 ; i<2 ; i++)
         {
@@ -592,7 +592,8 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radi
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength,norecalc);
+                if(tempTile) 
+					tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength,norecalc);
             }
         }
     }
