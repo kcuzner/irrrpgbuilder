@@ -1097,9 +1097,10 @@ void App::eventGuiCombobox(s32 id)
 				//Will need the change the distance moving since there is no perspective
 				projMat.buildProjectionMatrixOrthoLH((f32)device->getVideoDriver()->getScreenSize().Width,(f32)device->getVideoDriver()->getScreenSize().Height,1,15000);
 				CameraSystem::getInstance()->getNode()->setProjectionMatrix(projMat,true);
-
 				break;
 			case 8: // Back to perspective
+				projMat.buildProjectionMatrixPerspectiveFovRH((f32)device->getVideoDriver()->getScreenSize().Width,(f32)device->getVideoDriver()->getScreenSize().Height,1,15000);
+				CameraSystem::getInstance()->getNode()->setProjectionMatrix(projMat,false);
 				CameraSystem::getInstance()->getNode()->setFOV(0.45f);
 				break;
 
