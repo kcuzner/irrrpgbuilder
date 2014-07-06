@@ -29,33 +29,33 @@ ECF_UNKNOWN =       10,
 <PostProcess>
   <Setup>
     <!-- default auxiliary buffers (auxIn, auxOut and rttDepth)-->
-    <RenderTarget id="auxIn" colorFormat="10" scale="2.0" />
-    <RenderTarget id="auxOut" colorFormat="10" scale="2.0" />
-    <RenderTarget id="rttDepth" colorFormat="6" scale="1.0" />
+    <RenderTarget id="auxIn" colorFormat="10" scale="2.0" /> <!-- WAs 10 before -->
+    <RenderTarget id="auxOut" colorFormat="10" scale="2.0" /> <!-- WAs 10 before -->
+    <RenderTarget id="rttDepth" colorFormat="10" scale="1.0" /> <!-- WAs 6 before -->
 
     <!-- additional render target textures adaptive bloom-->
 	<!-- colorformat was 10 before-->
-    <RenderTarget id="rtt0" colorFormat="10" scale="0.5"/>
-    <RenderTarget id="rtt1" colorFormat="10" scale="0.5"/>
-    <RenderTarget id="rtt2" colorFormat="10" scale="0.25"/>
-    <RenderTarget id="rtt3" colorFormat="10" scale="0.25"/>
-    <RenderTarget id="rtt4" colorFormat="10" scale="0.125"/>
-    <RenderTarget id="rtt5" colorFormat="10" scale="0.125"/>
-    <RenderTarget id="rtt6" colorFormat="10" scale="0.0625"/>
-    <RenderTarget id="rtt7" colorFormat="10" scale="0.0625"/>
-    <RenderTarget id="rtt_lg0" colorFormat="10" width="256" height="256" />
-    <RenderTarget id="rtt_lg1" colorFormat="10" width="64" height="64" />
-    <RenderTarget id="rtt_lg2" colorFormat="10" width="16" height="16" />
-    <RenderTarget id="rtt_lg3" colorFormat="10" width="4" height="4" />
-    <RenderTarget id="rtt_lg4" colorFormat="10" width="1" height="1" />
-    <RenderTarget id="prevLum" colorFormat="10" width="1" height="1" />
-    <RenderTarget id="finalLum" colorFormat="10" width="1" height="1" />
+    <RenderTarget id="rtt0" colorFormat="10" scale="0.5"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt1" colorFormat="10" scale="0.5"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt2" colorFormat="10" scale="0.25"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt3" colorFormat="10" scale="0.25"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt4" colorFormat="10" scale="0.125"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt5" colorFormat="10" scale="0.125"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt6" colorFormat="10" scale="0.0625"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt7" colorFormat="10" scale="0.0625"/> <!-- WAs 10 before -->
+    <RenderTarget id="rtt_lg0" colorFormat="10" width="256" height="256" /> <!-- WAs 10 before -->
+    <RenderTarget id="rtt_lg1" colorFormat="10" width="64" height="64" /> <!-- WAs 10 before -->
+    <RenderTarget id="rtt_lg2" colorFormat="10" width="16" height="16" /> <!-- WAs 10 before -->
+    <RenderTarget id="rtt_lg3" colorFormat="10" width="4" height="4" /> <!-- WAs 10 before -->
+    <RenderTarget id="rtt_lg4" colorFormat="10" width="1" height="1" /> <!-- WAs 10 before -->
+    <RenderTarget id="prevLum" colorFormat="10" width="1" height="1" /> <!-- WAs 10 before -->
+    <RenderTarget id="finalLum" colorFormat="10" width="1" height="1" /> <!-- WAs 10 before -->
     
     <!-- motionblur -->
-    <RenderTarget id="prevBuffer" colorFormat="10" scale ="2.0" />
+    <RenderTarget id="prevBuffer" colorFormat="10" scale ="2.0" /> <!-- WAs 10 before -->
     
     <!-- depth of field and blur-->    
-    <RenderTarget id="blur0" colorFormat="10" scale="1.0" />
+    <RenderTarget id="blur0" colorFormat="10" scale="1.0" /> 
     <RenderTarget id="blur1" colorFormat="10" scale ="1.0" />
   </Setup>
 </PostProcess>

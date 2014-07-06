@@ -12,7 +12,7 @@ CShaderPostProcess::CShaderPostProcess(IrrlichtDevice* device, const core::strin
 	// set material parameters 
 	getMaterial().Lighting = false;
 	getMaterial().BackfaceCulling = false;
-	getMaterial().ZBuffer = video::ECFN_NEVER; 
+	getMaterial().ZBuffer = video::ECFN_ALWAYS; 
 }
 
 CShaderPostProcess::~CShaderPostProcess()
