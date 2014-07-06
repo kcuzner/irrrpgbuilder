@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>irrKlang: irrKlang 1.3.0 API documentation</title>
+<title>irrKlang: irrKlang 1.5.0 API documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -38,7 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <div class="contents">
-<h1>irrKlang 1.3.0 API documentation</h1><div align="center"><div align="center">
+<h1>irrKlang 1.5.0 API documentation</h1><div align="center"><div align="center">
 <img src="logobig.png" alt="logobig.png"/>
 </div>
 </div><h2><a class="anchor" id="contents">
@@ -65,6 +65,7 @@ Contents</a></h2>
  <a class="el" href="index.html#staticLib">Using irrKlang as static Lib</a> <br/>
  <a class="el" href="index.html#enumeratingDevices">Enumerating sound devices</a> <br/>
  <a class="el" href="index.html#recordingAudio">Recording Audio</a> <br/>
+ <a class="el" href="index.html#unicode">Unicode support</a> <br/>
  <br/>
  Short full examples:<br/>
  <a class="el" href="index.html#quickstartexample">Quick Start Example</a> <br/>
@@ -103,7 +104,7 @@ Fast Tracker 2 (*.xm) </li>
 <p>It is also able to run on different operating systems and use several output drivers: </p>
 <ul>
 <li>
-Windows 98, ME, NT 4, 2000, XP, Vista, Windows 7 <ul>
+Windows 98, ME, NT 4, 2000, XP, Vista, Windows 7, Windows 8 <ul>
 <li>
 DirectSound </li>
 <li>
@@ -551,6 +552,23 @@ Recording Audio</a></h2>
  <br/>
  <br/>
 </p>
+<h2><a class="anchor" id="unicode">
+Unicode support</a></h2>
+<p>irrKlang supports unicode on all operating systems. Internally, it uses UTF8, and all functions accepting strings and file names take UTF8 strings. If you are running irrKlang on Windows, and are using the UNICODE define or using wchar_t* strings directly, you can do this as well. Use the irrKlang provided function <a class="el" href="namespaceirrklang.html#a2552f41aac247b77e0f1287c28744cd7" title="Converts a wchar_t string to an utf8 string, useful when using Windows in unicode...">makeUTF8fromUTF16string()</a> to convert your wchar_t* string to a char* string.</p>
+<p>This example shows how:</p>
+<div class="fragment"><pre class="fragment"> <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* yourFilename = L<span class="stringliteral">&quot;SomeUnicodeFilename.wav&quot;</span>; <span class="comment">// assuming this is the file name you get from some of your functions</span>
+
+ <span class="keyword">const</span> <span class="keywordtype">int</span> nBufferSize = 2048; <span class="comment">// large enough, but best would be wcslen(yourFilename)*3.</span>
+ <span class="keywordtype">char</span> strBuffer[nBufferSize]; 
+ <a class="code" href="namespaceirrklang.html#a2552f41aac247b77e0f1287c28744cd7" title="Converts a wchar_t string to an utf8 string, useful when using Windows in unicode...">irrklang::makeUTF8fromUTF16string</a>(yourFilename, strBuffer, nBufferSize);
+
+ <span class="comment">// now the converted file name is in strBuffer. We can play it for example now:</span>
+ engine-&gt;<a class="code" href="classirrklang_1_1_i_sound_engine.html#a25f612fe6479d3b22dc5bab2a2eaa927" title="loads a sound source (if not loaded already) from a file and plays it.">play2D</a>(strBuffer);
+</pre></div><p>Of course, you can use any other unicode converion function for this. <a class="el" href="namespaceirrklang.html#a2552f41aac247b77e0f1287c28744cd7" title="Converts a wchar_t string to an utf8 string, useful when using Windows in unicode...">makeUTF8fromUTF16string()</a> is only provided for convenience. <br/>
+ <br/>
+ <br/>
+ <br/>
+</p>
 <h2><a class="anchor" id="quickstartexample">
 Quick Start Example</a></h2>
 <p>To simply start the engine and play a mp3 file, use code like this:</p>
@@ -638,7 +656,7 @@ Quick Start Example 2</a></h2>
   <tr> 
     <td width="0"> <div align="left"><small><a href="http://www.ambiera.com/irrklang" target="_blank"><img src="irrklang.png" alt="irrKlang Audio Library" align="middle" border=0 width=88 height=30></a></small></div></td>
     <td> <div align="left"><small><em><font size="2">The <a href="http://www.ambiera.com/irrklang" target="_blank">irrKlang 
-        Engine</a> Documentation &copy; 2003-2009 by Nikolaus Gebhardt. Generated 
+        Engine</a> Documentation &copy; 2003-2014 by Nikolaus Gebhardt. Generated 
         by <a href="http://www.doxygen.org" target="_blank">Doxygen</a> 
         (1.6.1)</font></em></small></div></td>
   </tr>

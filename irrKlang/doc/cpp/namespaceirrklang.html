@@ -176,6 +176,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">IRRKLANG_API <a class="el" href="classirrklang_1_1_i_sound_device_list.html">ISoundDeviceList</a> <br class="typebreak"/>
 *IRRKLANGCALLCONV&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceirrklang.html#a0e8013b9e8f11231e69ce1da9457a339">createAudioRecorderDeviceList</a> (<a class="el" href="namespaceirrklang.html#a77f31ac02a7d33fe94807be709f72afe">E_SOUND_OUTPUT_DRIVER</a> driver=ESOD_AUTO_DETECT, const char *sdk_version_do_not_use=IRR_KLANG_VERSION)</td></tr>
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a list of available recording devices for the driver type.  <a href="#a0e8013b9e8f11231e69ce1da9457a339"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IRRKLANG_API bool IRRKLANGCALLCONV&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceirrklang.html#a2552f41aac247b77e0f1287c28744cd7">makeUTF8fromUTF16string</a> (const wchar_t *pInputString, char *pOutputBuffer, int outputBufferSize)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Converts a wchar_t string to an utf8 string, useful when using Windows in unicode mode.  <a href="#a2552f41aac247b77e0f1287c28744cd7"></a><br/></td></tr>
 <tr><td colspan="2"><h2>Variables</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceirrklang.html#a6fa5a4dd85b476308461136072ef4e0f">ik_f32</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceirrklang.html#a37e23177810db5355a4fb31038e71634">IK_ROUNDING_ERROR_32</a> = 0.000001f</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceirrklang.html#a1c98510aa3989b1780723e2fb15f7c3d">ik_f64</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceirrklang.html#a94bfcb20851dee7c360142f3db288538">IK_PI64</a> = 3.1415926535897932384626433832795028841971693993751</td></tr>
@@ -771,6 +773,51 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div>
 </div>
+<a class="anchor" id="a2552f41aac247b77e0f1287c28744cd7"></a><!-- doxytag: member="irrklang::makeUTF8fromUTF16string" ref="a2552f41aac247b77e0f1287c28744cd7" args="(const wchar_t *pInputString, char *pOutputBuffer, int outputBufferSize)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IRRKLANG_API bool IRRKLANGCALLCONV irrklang::makeUTF8fromUTF16string </td>
+          <td>(</td>
+          <td class="paramtype">const wchar_t *&nbsp;</td>
+          <td class="paramname"> <em>pInputString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>pOutputBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>outputBufferSize</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Converts a wchar_t string to an utf8 string, useful when using Windows in unicode mode. </p>
+<p>irrKlang works with unicode file names, and accepts char* strings as parameters for names and filenames. If you are running irrKlang in Windows, and working with wchar_t* pointers instead of char* ones, you can use this function to create a char* (UTF8) representation of your wchar_t* (UTF16) string. Works for filenames and other strings. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>pInputString</em>&nbsp;</td><td>zero terminated input string. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>pOutputBuffer</em>&nbsp;</td><td>the buffer where the converted string is written to. Be sure that this buffer has a big enough size. A good size would be three times the string length of your input buffer, like wcslen(yourInputBuffer)*3. Because each wchar_t can be represented by up to 3 chars. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>outputBufferSize</em>&nbsp;</td><td>size of your output buffer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns true if successful, and false if not. If 'false' is returned, maybe your buffer was too small. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="adad19b8b2635a866577971754c9e5f90"></a><!-- doxytag: member="irrklang::operator*" ref="adad19b8b2635a866577971754c9e5f90" args="(const S scalar, const vec3d&lt; T &gt; &amp;vector)" -->
 <div class="memitem">
 <div class="memproto">
@@ -915,7 +962,7 @@ template&lt;class S , class T &gt; </div>
   <tr> 
     <td width="0"> <div align="left"><small><a href="http://www.ambiera.com/irrklang" target="_blank"><img src="irrklang.png" alt="irrKlang Audio Library" align="middle" border=0 width=88 height=30></a></small></div></td>
     <td> <div align="left"><small><em><font size="2">The <a href="http://www.ambiera.com/irrklang" target="_blank">irrKlang 
-        Engine</a> Documentation &copy; 2003-2009 by Nikolaus Gebhardt. Generated 
+        Engine</a> Documentation &copy; 2003-2014 by Nikolaus Gebhardt. Generated 
         by <a href="http://www.doxygen.org" target="_blank">Doxygen</a> 
         (1.6.1)</font></em></small></div></td>
   </tr>

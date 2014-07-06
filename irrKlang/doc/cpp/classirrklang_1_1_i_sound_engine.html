@@ -293,7 +293,7 @@ Inheritance diagram for irrklang::ISoundEngine:</div>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Returns the pointer to the added sound source or 0 if not sucessful because for example a sound already existed with that name. If not successful, the reason will be printed into the log. </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Returns the pointer to the added sound source or 0 if not sucessful because for example a sound already existed with that name. If not successful, the reason will be printed into the log. Note: Don't call <a class="el" href="classirrklang_1_1_i_ref_counted.html#a869fe3adc6e49e8da105e95837a565b1">drop()</a> to this pointer, it will be managed by irrKlang and exist as long as you don't delete irrKlang or call <a class="el" href="classirrklang_1_1_i_sound_engine.html#a82e712f7816f933145690983dbd8be9e" title="Removes a sound source from the engine, freeing the memory it occupies.">removeSoundSource()</a>. However, you are free to call <a class="el" href="classirrklang_1_1_i_ref_counted.html#a737b09ee717069b964a3bd0451690388">grab()</a> if you want and <a class="el" href="classirrklang_1_1_i_ref_counted.html#a869fe3adc6e49e8da105e95837a565b1">drop()</a> it then later of course. </dd></dl>
 
 </div>
 </div>
@@ -1266,7 +1266,7 @@ Inheritance diagram for irrklang::ISoundEngine:</div>
   <tr> 
     <td width="0"> <div align="left"><small><a href="http://www.ambiera.com/irrklang" target="_blank"><img src="irrklang.png" alt="irrKlang Audio Library" align="middle" border=0 width=88 height=30></a></small></div></td>
     <td> <div align="left"><small><em><font size="2">The <a href="http://www.ambiera.com/irrklang" target="_blank">irrKlang 
-        Engine</a> Documentation &copy; 2003-2009 by Nikolaus Gebhardt. Generated 
+        Engine</a> Documentation &copy; 2003-2014 by Nikolaus Gebhardt. Generated 
         by <a href="http://www.doxygen.org" target="_blank">Doxygen</a> 
         (1.6.1)</font></em></small></div></td>
   </tr>

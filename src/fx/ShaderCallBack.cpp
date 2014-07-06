@@ -62,7 +62,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);
 
     layer=0;
-    services->setPixelShaderConstant("oceanNormalMap",(int*)&layer,1);
+    services->setPixelShaderConstant("oceanNormalMap", (int*)&layer,1);
     layer=1;
     services->setPixelShaderConstant("oceanReflection",(int*)&layer,1);
 

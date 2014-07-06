@@ -1,3 +1,112 @@
+--------------------------
+Changes in 1.9 (not yet released)
+
+- Fixed maximize/minimize under Linux by supporting NETWM hints. Patch provided by hendu.
+- ISceneNode::deserializeAttributes uses now old values for parameters which are not in the attributes (thx @entity for noticing).
+- Add interface for easier access to scrollbars for IGUIListBox, IGUITreeView and IGUITable
+- Fix serializing colors as strings. Was previously mixing up strings with number-arrays and hex color values. Now using hex color values always, but also fixed the the handling when it get's number-array strings.
+- Fix IAttributes::setAttribute implementation for textures (did do nothing before).
+- Added support for separate blending in OpenGL and D3D9 drivers.
+- Added pack_textureBlendFuncSeparate and unpack_textureBlendFuncSeparate functions, which allow to use separate blending functions in OpenGL.
+- Added BlendFactor field to SMaterial which allow user to set blending factor per SMaterial set call without use EMT_ONETEXTURE_BLEND type.
+- Fixed issue with blending operation set to EBO_NONE and some transparent material types.
+- Add a code profiler (stop-watch style)
+- Add IGUITable::getItemHeight to access item (row) height
+- Add override font to IGUITable
+- IGUITable can now disable the active column.
+- IGUIElement::getElementFromPoint now virtual
+- Fixed issue with wrongly enabled Z-writing for transparent shader materials. Thanks Hendu for this fix.
+- Allow more control over particle behavior. This also changed the default behavior.
+- ISceneNodeAnimators can now be disabled and paused.
+- Maya camera no longer get's stuck in "rotating" state when a mouse-up event is lost (thx @ JLouisB for reporting).
+- Focus behavior of IGUIEnvironment now controllable (right-click focus, mouse-over focus). Disabled elements no longer get the focus unless users enforce it.
+- Buttons can now now have 7 more image-states, 1 more sprite-state and the sprites are now scaleable.
+- Spritebanks can now draw scaled sprites and are a little easier to use.
+- Improved i18n key input for X11 (languages like cyrillic work now).
+- Fix bug that ListBox would not allow to 'tab' to the next element (thx @ FlavourBoat for reporting)
+- IGUIEnvironment::getNextElement now public (was only in CGUIEnvironment before).
+- Add an overwrite mode to editbox. Patch provided by Adam(aka kingadami).
+- Add IGUIImages::setDrawBounds/getDrawBounds to allow coding stuff like progress bars.
+- Add IGUIImages::setSourceRect/getSourceRect to allow using only parts of an image (can also be used to mirror and scroll them).
+- Dev-Cpp project file removed (wasn't really supported for some time already)
+- Collada dae-loader now set's the vertex colors (thx @sf17k for report and test-models)
+- IAttributes interface changed. Parameters are now passed by const-ref instead of per value.
+- Fix c::b project obj folder names. Some static builds had used the shared folders (thx @ gerdb for reporting)
+- Add ITexture::getSource which can be used to check where the last IVideoDriver::getTexture call found the texture.
+- Add IMeshTextureLoader interface and replace texture-loading algorithms in most meshloaders.
+- CGUICheckBox no longer gives up focus on EMIE_LMOUSE_LEFT_UP (thx @Demre and @REDDemon for reporting)
+- Bugfix: IGUIElement::addChild now prevents setting an element as it's own child.
+- GUI editor improvements (prevent crash, improve UI)
+- Add IrrlichtDevice::setWindowSize.
+- Bugfix: getFont for xml-fonts now also works for fonts inside archives (thx @Neirdan for bugreport)
+- Added function irr::core::mergeFilename
+- Add ISceneNodeAnimator::setStartTime/getStartTime to allow resetting movement animators.
+- Improve speed for finalizing skinned meshes (removal of unnecessary frames after loading) (thx @ichtyander for the testmodel)
+- Collada loader now instantiates camera nodes which had been ignore so far (thx @NemoStein for the test .dae)
+- line2d::intersectWith has a new parameter to allow ignoring intersections with coincident lines
+- vector2d::equals now has an tolerance parameter for passing the epsilon (like vector3d had). Note that this changes the default
+  behavior of vector2d::equals as well as functions using it like the operators for ==, !=, <, >, <=, >= when using vector2d with f64
+  as the tolerance is increased in that case (for f32 and integer values it shouldn't make any difference).
+- Material renderers which offers blending feature (eg. EMT_TRANSPARENT_ALPHA_CHANNEL, EMT_ONETEXTURE_BLEND etc.) require SMaterial::BlendOperation set to other value than EBO_NONE.
+- Removed support for built-in T&L variables in ASM/GLSL shaders (variables related to vertices eg. gl_MultiTexCoord0 are still supported). This change allow us to reduce CPU overhead in shader material renderers.
+- IGUIEnvironment::hasFocus has now a parameter checkSubElements as subelements are usually seen as part of an element. Default unfortunately must be false due to backward compatibility.
+- Add IGUIElement::isTrulyVisible which works like ISceneNode::isTrulyVisible and checks for parent visibility as well.
+- Improved DDS loader and added support for DXTn (DXT1-5) compressed textures in OpenGL and Direct3D9 drivers.
+- Add function ISceneNode::getTransformedBoundingBoxEdges.
+- Improve automatic compiling under solaris (proposed by curaga)
+- Add in IGUICheckBox: setDrawBackground, isDrawBackgroundEnabled, setDrawBorder, isDrawBorderEnabled
+- IGUISpinBox now passes on the EGET_BUTTON_CLICKED, EGET_EDITBOX_CHANGED and EGET_EDITBOX_ENTER events from it's sub-elements.
+- IGUISpinBox no longer validates values after each character type but only on KEY_ENTER and when losing focus. New behavior can be set with IGUISpinBox::setValidateOn
+- IAttributes::getAttributeAs functions now can have a customizable default-parameter to return when attributeName is not found
+- Added ECFN_DISABLED value (it works like ECFN_NEVER worked before) and changed ECFN_NEVER behaviour
+  (it works like its equivalent value in OpenGL/Direct3D).
+- Removed boolean interface from IShaderConstantSetCallBack, please use integer interface instead of them.
+- Add a LeakHunter class which can be enabled with compile-flag _IRR_COMPILE_WITH_LEAK_HUNTER_ to find leaking IReferenceCounted objects.
+- Add _IRR_COMPILE_WITH_XML_ define to allow compiling Irrlicht without xml (patch written by curaga)
+- Add functions to set/get cursor character and blinktime to IGUIEditBox
+- Collada exporter calculates values for orthographic camera now on export
+- Collada exporter now exports the camera up-vector correctly.
+- Add IColladaMeshWriter::findGeometryNameForNode
+- Add getters IGUIButton::isDrawBorderEnabled and IGUIButton::isDrawBackgroundEnabled
+
+--------------------------
+Changes in 1.8.2
+
+ - Example 22 no longer select a random texture after loading a new texture (thanks at mongoose7 for reporting).
+ - Fix bug in IGUISkin serialization which messed up serialization of the button-pressed offsets (thanks at Midnight for reporting).
+ - IGUIStaticText::getTextHeight returns now the correct height for texts with newlines even WordWrap is not set.
+ - Crashfix for CGUIEditBox. CGUIEditBox::setMultiLine must break text when changed or other functions like getTextDimension can crash afterward for strings with newline characters.
+ - CGUIEditBox and the GUI-Editor now convert pasted text correctly using mbstowcs.
+ - C::B project files work again on newer Linux-distributions which have cleaned up their dev-lib dependencies.
+ - Makefile for the new IrrFontTool links now correctly to libfontconfig
+
+--------------------------
+Changes in 1.8.1 (17.11.2013)
+
+ - Improved OpenGL performance under OSX (Thanks devonsoft for reporting).
+ - Fixed OSX compilation issues.
+ - [KNOWN BUG] Software driver doesn't work properly under OSX 10.9.
+ - For speed improvement the following attributes accessible by ISceneManager::getParameters() are no longer updated in release:
+   "culled", "calls", "drawn_solid", "drawn_transparent", "drawn_transparent_effect".
+   They can be enabled by compiling Irrlicht with the define _IRR_SCENEMANAGER_DEBUG.
+   Thanks @hendu for reporting, see http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=48211 for the discussion.
+ - Fix compile problem with CIrrDeviceSDL on VS2008 (and maybe other systems). Thanks @HellFlip for reporting.
+ - Fix quaternion::rotationFromTo() (Thanks @takamoto for reporting)
+ - Fix iszero for s64 (Thanks @chronologicaldot for reporting)
+ - Fix crash in SoftwareDriver2 when Material was EMT_DETAIL_MAP but texture[1] was not set (Thanks for fix by chronologicaldot)
+ - Fix buffer overrun in x-loader (Thanks for fix by Otaka)
+ - Fix cursor visibility update problem under Windows 8 (Thanks @luthyr for reporting)
+ - Fix irredit links in loadScene/saveScene docs.
+ - Fix issue in CAnimatedMeshSceneNode::clone which caused a crash. (reported and fixed by luthyr)
+ - Fix compiling errors for c++ builder (thx @Greatwolf for many patches and @cfanderek for reminding)
+ - Initialized IColladaMeshWriter::GeometryWriting which was uninitialized.
+ - Fix linker trouble with irr::core::equalsByUl when compiling Irrlicht as managed code (thx @  Memorial76 for a report + testcase)
+ - Fix crashes in CCubeSceneNode::clone and CSphereSceneNode::clone (reported by  marsupial)
+ - Fix the clipping in the listbox drawing which was only showing the right line of the sunken pane (reported by Mloren and Abraxas).
+ - Initialize slider in example 05 correct (reported by Zerochen)
+ - Fix crash in CMeshSceneNode::clone when the mesh had no shadow (reported by  christianclavet, bug-fix found by Nadro)
+
+--------------------------
 Changes in 1.8 (7.11.2012)
 
  - Let sphere mesh use full opaque color, just as all the other ones do
@@ -17,7 +126,7 @@ Changes in 1.8 (7.11.2012)
 
  - Add another saveScene overload which allows to pass in a user-created XMLWriter. Patch suggested by eversilver.
 
- - quaternion conversions to and from matrix4 no longer invert rotations. 
+ - quaternion conversions to and from matrix4 no longer invert rotations.
    To test if your code was affected by this you can set IRR_TEST_BROKEN_QUATERNION_USE in quaternion.h and try to compile your application.
    Then on all compile-errors when you pass the matrix to the quaternion you can replace the matrix transposed matrix.
    For all errors you get on getMatrix() you can use quaternion::getMatrix_transposed instead.
@@ -25,13 +134,13 @@ Changes in 1.8 (7.11.2012)
  - CGUIEnvironment::loadGui - loading a gui into a target-element no longer messes up when the gui-file contained guienvironment serialization.
 
  - Colladawriter now exports materials per node when those are used in Irrlicht
- 
+
  - Colladawriter now writing matrices for node transformations as old solution did not work with CDummyTransformationSceneNode's.
- 
+
  - Colladawriter no longer create an extra node for the scenemanger as <visual_scene> has that job in Collada.
- 
+
  - Colladwriter no longer makes all Scenenodes children of ambient-light as that can be parallel on the same layer instead.
- 
+
  - Colladareader now creates the ambient-light correct instead of creating a point-light for it.
 
  - Add new parameter to array reallocate function. This prevents a reallocation in case the array would become smaller. As the reallocation operation is quite time consuming, this can be avoided on request now, on the expense of more memory consumption.
@@ -575,7 +684,13 @@ The following names can be queried for the given types:
  - Support new OpenGL 2.x shader creation
 
 -----------------------------
-Changes in 1.7.4
+Changes in 1.7.4 (not yet released)
+
+ - fixed getDepthFunction in IQ3Shader which always returned ECFN_EQUAL due to missing break (found by the cppcheck tool)
+
+ - STL loader improved to handle arbitrary file starts
+
+ - Compiler problem with gcc4.6 and big endian systems fixed
 
  - Change include order to get example 21 compiling on MinGW.
 

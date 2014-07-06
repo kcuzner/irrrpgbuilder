@@ -1,7 +1,5 @@
 #include "SoundManager.h"
 
-using namespace irrklang;
-
 SoundManager::SoundManager()
 {
     engine = createIrrKlangDevice();

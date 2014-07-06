@@ -11,9 +11,9 @@ class SoundManager
     public:
         static SoundManager* getInstance();
 
-        ISound* playSound2D(std::string file, bool looped = false);
+		irrklang::ISound* playSound2D(std::string file, bool looped = false);
 
-        ISound* playSound3D(std::string file, vec3df pos, bool looped = false);
+		irrklang::ISound* playSound3D(std::string file, vec3df pos, bool looped = false);
 
         void setListenerPosition(vec3df pos, vec3df lookDir);
 
@@ -29,7 +29,7 @@ class SoundManager
     private:
         SoundManager();
 
-        ISoundEngine* engine;
+		irrklang::ISoundEngine* engine;
 };
 
 #endif // SOUNDMANAGER_H
