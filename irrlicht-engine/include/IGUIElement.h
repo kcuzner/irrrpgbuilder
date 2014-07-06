@@ -239,14 +239,14 @@ public:
 	\return The topmost GUI element at that point, or 0 if there are
 	no candidate elements at this point.
 	*/
-	IGUIElement* getElementFromPoint(const core::position2d<s32>& point)
+	virtual IGUIElement* getElementFromPoint(const core::position2d<s32>& point)
 	{
 		IGUIElement* target = 0;
 
 		// we have to search from back to front, because later children
 		// might be drawn over the top of earlier ones.
 
-		core::list<IGUIElement*>::Iterator it = Children.getLast();
+		core::list<IGUIElement*>::ConstIterator it = Children.getLast();
 
 		if (isVisible())
 		{
@@ -278,9 +278,9 @@ public:
 	//! Adds a GUI element as new child of this element.
 	virtual void addChild(IGUIElement* child)
 	{
-		addChildToEnd(child);
-		if (child)
+		if ( child && child != this )
 		{
+			addChildToEnd(child);
 			child->updateAbsolutePosition();
 		}
 	}
@@ -346,6 +346,20 @@ public:
 		return IsVisible;
 	}
 
+	//! Check whether the element is truly visible, taking into accounts its parents' visibility
+	/** \return true if the element and all its parents are visible,
+	false if this or any parent element is invisible. */
+	virtual bool isTrulyVisible() const
+	{
+		_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
+		if(!IsVisible)
+			return false;
+
+		if(!Parent)
+			return true;
+
+		return Parent->isTrulyVisible();
+	}
 
 	//! Sets the visible state of this element.
 	virtual void setVisible(bool visible)
@@ -550,7 +564,7 @@ public:
 	virtual bool sendToBack(IGUIElement* child)
 	{
 		core::list<IGUIElement*>::Iterator it = Children.begin();
-		if (child == (*it))	// already there
+		if (child == (*it)) // already there
 			return true;
 		for (; it != Children.end(); ++it)
 		{
@@ -626,9 +640,11 @@ public:
 	\param first: element with the highest/lowest known tab order depending on search direction
 	\param closest: the closest match, depending on tab order and direction
 	\param includeInvisible: includes invisible elements in the search (default=false)
+	\param includeDisabled: includes disabled elements in the search (default=false)
 	\return true if successfully found an element, false to continue searching/fail */
 	bool getNextElement(s32 startOrder, bool reverse, bool group,
-		IGUIElement*& first, IGUIElement*& closest, bool includeInvisible=false) const
+		IGUIElement*& first, IGUIElement*& closest, bool includeInvisible=false,
+		bool includeDisabled=false) const
 	{
 		// we'll stop searching if we find this number
 		s32 wanted = startOrder + ( reverse ? -1 : 1 );
@@ -645,47 +661,51 @@ public:
 			if ( ( (*it)->isVisible() || includeInvisible ) &&
 				(group == true || (*it)->isTabGroup() == false) )
 			{
-				// only check tab stops and those with the same group status
-				if ((*it)->isTabStop() && ((*it)->isTabGroup() == group))
+				// ignore disabled, but children are checked (disabled is currently per element ignoring parent states)
+				if ( (*it)->isEnabled() || includeDisabled )
 				{
-					currentOrder = (*it)->getTabOrder();
-
-					// is this what we're looking for?
-					if (currentOrder == wanted)
+					// only check tab stops and those with the same group status
+					if ((*it)->isTabStop() && ((*it)->isTabGroup() == group))
 					{
-						closest = *it;
-						return true;
-					}
+						currentOrder = (*it)->getTabOrder();
 
-					// is it closer than the current closest?
-					if (closest)
-					{
-						closestOrder = closest->getTabOrder();
-						if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
-							||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
+						// is this what we're looking for?
+						if (currentOrder == wanted)
+						{
+							closest = *it;
+							return true;
+						}
+
+						// is it closer than the current closest?
+						if (closest)
+						{
+							closestOrder = closest->getTabOrder();
+							if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
+								||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
+							{
+								closest = *it;
+							}
+						}
+						else
+						if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
 						{
 							closest = *it;
 						}
-					}
-					else
-					if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
-					{
-						closest = *it;
-					}
 
-					// is it before the current first?
-					if (first)
-					{
-						closestOrder = first->getTabOrder();
+						// is it before the current first?
+						if (first)
+						{
+							closestOrder = first->getTabOrder();
 
-						if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
+							if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
+							{
+								first = *it;
+							}
+						}
+						else
 						{
 							first = *it;
 						}
-					}
-					else
-					{
-						first = *it;
 					}
 				}
 				// search within children
@@ -734,7 +754,7 @@ public:
 	{
 		return GUIElementTypeNames[Type];
 	}
-	
+
 	//! Returns the name of the element.
 	/** \return Name as character string. */
 	virtual const c8* getName() const
@@ -764,7 +784,7 @@ public:
 	scripting languages, editors, debuggers or xml serialization purposes. */
 	virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
 	{
-		out->addString("Name", Name.c_str());		
+		out->addString("Name", Name.c_str());
 		out->addInt("Id", ID );
 		out->addString("Caption", getText());
 		out->addRect("Rect", DesiredRect);
@@ -841,7 +861,7 @@ protected:
 			if (NoClip)
 			{
 				IGUIElement* p=this;
-				while (p && p->Parent)
+				while (p->Parent)
 					p = p->Parent;
 				parentAbsoluteClip = p->AbsoluteClippingRect;
 			}
@@ -1003,7 +1023,7 @@ protected:
 
 	//! tooltip
 	core::stringw ToolTipText;
-	
+
 	//! users can set this for identificating the element by string
 	core::stringc Name;
 

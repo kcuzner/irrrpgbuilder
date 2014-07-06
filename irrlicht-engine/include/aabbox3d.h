@@ -115,6 +115,14 @@ class aabbox3d
 			return MaxEdge - MinEdge;
 		}
 
+		//! Get radius of the bounding sphere
+		/** \return Radius of the bounding sphere. */
+		T getRadius() const
+		{
+			const T radius = getExtent().getLength() / 2;
+			return radius;
+		}
+
 		//! Check if the box is empty.
 		/** This means that there is no space between the min and max edge.
 		\return True if box is empty, else false. */
@@ -224,6 +232,25 @@ class aabbox3d
 		{
 			return (MinEdge.X >= other.MinEdge.X && MinEdge.Y >= other.MinEdge.Y && MinEdge.Z >= other.MinEdge.Z &&
 				MaxEdge.X <= other.MaxEdge.X && MaxEdge.Y <= other.MaxEdge.Y && MaxEdge.Z <= other.MaxEdge.Z);
+		}
+
+		//! Returns the intersection of this box with another, if possible.
+		aabbox3d<T> intersect(const aabbox3d<T>& other) const
+		{
+			aabbox3d<T> out;
+
+			if (!intersectsWithBox(other))
+				return out;
+
+			out.MaxEdge.X = min_(MaxEdge.X, other.MaxEdge.X);
+			out.MaxEdge.Y = min_(MaxEdge.Y, other.MaxEdge.Y);
+			out.MaxEdge.Z = min_(MaxEdge.Z, other.MaxEdge.Z);
+
+			out.MinEdge.X = max_(MinEdge.X, other.MinEdge.X);
+			out.MinEdge.Y = max_(MinEdge.Y, other.MinEdge.Y);
+			out.MinEdge.Z = max_(MinEdge.Z, other.MinEdge.Z);
+
+			return out;
 		}
 
 		//! Determines if the axis-aligned box intersects with another axis-aligned box.

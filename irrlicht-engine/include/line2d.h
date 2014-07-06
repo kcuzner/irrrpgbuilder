@@ -73,25 +73,26 @@ class line2d
 		When set to false the function will check for the first intersection point when extending the lines.
 		\param out: If there is an intersection, the location of the
 		intersection will be stored in this vector.
+		\param ignoreCoincidentLines: When true coincident lines (lines above each other) are never considered as interesecting. When false the center of the overlapping part is returned.
 		\return True if there is an intersection, false if not. */
-		bool intersectWith(const line2d<T>& l, vector2d<T>& out, bool checkOnlySegments=true) const
+		bool intersectWith(const line2d<T>& l, vector2d<T>& out, bool checkOnlySegments=true, bool ignoreCoincidentLines=false) const
 		{
 			// Uses the method given at:
 			// http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
-			const f32 commonDenominator = (f32)(l.end.Y - l.start.Y)*(end.X - start.X) -
-											(l.end.X - l.start.X)*(end.Y - start.Y);
+			const f32 commonDenominator = (f32)((l.end.Y - l.start.Y)*(end.X - start.X) -
+											(l.end.X - l.start.X)*(end.Y - start.Y));
 
-			const f32 numeratorA = (f32)(l.end.X - l.start.X)*(start.Y - l.start.Y) -
-											(l.end.Y - l.start.Y)*(start.X -l.start.X);
+			const f32 numeratorA = (f32)((l.end.X - l.start.X)*(start.Y - l.start.Y) -
+											(l.end.Y - l.start.Y)*(start.X -l.start.X));
 
-			const f32 numeratorB = (f32)(end.X - start.X)*(start.Y - l.start.Y) -
-											(end.Y - start.Y)*(start.X -l.start.X);
+			const f32 numeratorB = (f32)((end.X - start.X)*(start.Y - l.start.Y) -
+											(end.Y - start.Y)*(start.X -l.start.X));
 
 			if(equals(commonDenominator, 0.f))
 			{
 				// The lines are either coincident or parallel
 				// if both numerators are 0, the lines are coincident
-				if(equals(numeratorA, 0.f) && equals(numeratorB, 0.f))
+				if(!ignoreCoincidentLines && equals(numeratorA, 0.f) && equals(numeratorB, 0.f))
 				{
 					// Try and find a common endpoint
 					if(l.start == start || l.end == start)
@@ -218,7 +219,7 @@ class line2d
 			vector2d<f64> c((f64)(point.X-start.X), (f64)(point.Y- start.Y));
 			vector2d<f64> v((f64)(end.X-start.X), (f64)(end.Y-start.Y));
 			f64 d = v.getLength();
-			if ( d == 0 )	// can't tell much when the line is just a single point
+			if ( d == 0 ) // can't tell much when the line is just a single point
 				return start;
 			v /= d;
 			f64 t = v.dotProduct(c);
@@ -246,7 +247,7 @@ class line2d
 		vector2df c = point - start;
 		vector2df v = end - start;
 		f32 d = (f32)v.getLength();
-		if ( d == 0 )	// can't tell much when the line is just a single point
+		if ( d == 0 ) // can't tell much when the line is just a single point
 			return start;
 		v /= d;
 		f32 t = v.dotProduct(c);

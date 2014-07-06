@@ -173,8 +173,15 @@ namespace core
 			//! Make a rotation matrix from Euler angles. The 4th row and column are unmodified.
 			CMatrix4<T>& setRotationDegrees( const vector3d<T>& rotation );
 
+			//! Get the rotation, as set by setRotation() when you already know the scale.
+			/** If you already know the scale then this function is faster than the other getRotationDegrees overload.
+			NOTE: You will have the same end-rotation as used in setRotation, but it might not use the same axis values.
+			*/
+			core::vector3d<T> getRotationDegrees(const vector3d<T>& scale) const;
+
 			//! Returns the rotation, as set by setRotation().
-			/** This code was orginally written by by Chev. */
+			/** NOTE: You will have the same end-rotation as used in setRotation, but it might not use the same axis values.
+			*/
 			core::vector3d<T> getRotationDegrees() const;
 
 			//! Make an inverted rotation matrix from Euler angles.
@@ -855,12 +862,14 @@ namespace core
 	//! Returns a rotation that is equivalent to that set by setRotationDegrees().
 	/** This code was sent in by Chev.  Note that it does not necessarily return
 	the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
-	be equivalent, i.e. will have the same result when used to rotate a vector or node. */
+	be equivalent, i.e. will have the same result when used to rotate a vector or node. 
+	This code was orginally written by by Chev. 
+	*/
 	template <class T>
-	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees() const
+	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees(const vector3d<T>& scale_) const
 	{
 		const CMatrix4<T> &mat = *this;
-		core::vector3d<T> scale = getScale();
+		core::vector3d<T> scale(scale_);
 		// we need to check for negative scale on to axes, which would bring up wrong results
 		if (scale.Y<0 && scale.Z<0)
 		{
@@ -911,6 +920,17 @@ namespace core
 		return vector3d<T>((T)X,(T)Y,(T)Z);
 	}
 
+	//! Returns a rotation that is equivalent to that set by setRotationDegrees().
+	/** This code was sent in by Chev.  Note that it does not necessarily return
+	the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
+	be equivalent, i.e. will have the same result when used to rotate a vector or node. 
+	This code was orginally written by by Chev. */
+	template <class T>
+	inline core::vector3d<T> CMatrix4<T>::getRotationDegrees() const
+	{
+		return getRotationDegrees(getScale());
+	}
+
 
 	//! Sets matrix to rotation matrix of inverse angles given as parameters
 	template <class T>
@@ -947,18 +967,18 @@ namespace core
 	template <class T>
 	inline CMatrix4<T>& CMatrix4<T>::setRotationAxisRadians( const T& angle, const vector3d<T>& axis )
 	{
- 		const f64 c = cos(angle);
+		const f64 c = cos(angle);
 		const f64 s = sin(angle);
 		const f64 t = 1.0 - c;
 
 		const f64 tx  = t * axis.X;
-		const f64 ty  = t * axis.Y;		
+		const f64 ty  = t * axis.Y;
 		const f64 tz  = t * axis.Z;
 
 		const f64 sx  = s * axis.X;
 		const f64 sy  = s * axis.Y;
 		const f64 sz  = s * axis.Z;
-		
+
 		M[0] = (T)(tx * axis.X + c);
 		M[1] = (T)(tx * axis.Y + sz);
 		M[2] = (T)(tx * axis.Z - sy);
@@ -2138,7 +2158,7 @@ namespace core
 		M[6] = (T)y;
 
 #if defined ( USE_MATRIX_TEST )
-		definitelyIdentityMatrix = definitelyIdentityMatrix && (x==0.0f) && (y==0.0f) ;
+		definitelyIdentityMatrix = definitelyIdentityMatrix && (x==0.0f) && (y==0.0f);
 #endif
 		return *this;
 	}

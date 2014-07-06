@@ -115,11 +115,14 @@ namespace video
 		//! Support for different blend functions. Without, only ADD is available
 		EVDF_BLEND_OPERATIONS,
 
+		//! Support for separate blending for RGB and Alpha.
+		EVDF_BLEND_SEPARATE,
+
 		//! Support for texture coord transformation via texture matrix
 		EVDF_TEXTURE_MATRIX,
 
-		//! Support for NVidia's CG shader language
-		EVDF_CG,
+		//! Support for DXTn compressed textures.
+		EVDF_TEXTURE_COMPRESSED_DXT,
 
 		//! Only used for counting the elements of this enum
 		EVDF_COUNT

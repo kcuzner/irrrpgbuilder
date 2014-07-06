@@ -119,7 +119,7 @@ namespace scene
 		}
 
 		//! Scales the actual mesh, not a scene node.
-		/** \deprecated Use scale() instead. This method may be removed by Irrlicht 1.9 
+		/** \deprecated Use scale() instead. This method may be removed by Irrlicht 1.9
 		\param mesh Mesh on which the operation is performed.
 		\param factor Scale factor for each axis. */
 		_IRR_DEPRECATED_ void scaleMesh(IMesh* mesh, const core::vector3df& factor) const {return scale(mesh,factor);}
@@ -159,7 +159,7 @@ namespace scene
 		}
 
 		//! Applies a transformation to a mesh
-		/** \deprecated Use transform() instead. This method may be removed by Irrlicht 1.9 
+		/** \deprecated Use transform() instead. This method may be removed by Irrlicht 1.9
 		\param mesh Mesh on which the operation is performed.
 		\param m transformation matrix. */
 		_IRR_DEPRECATED_ virtual void transformMesh(IMesh* mesh, const core::matrix4& m) const {return transform(mesh,m);}
@@ -294,6 +294,32 @@ namespace scene
 		\param mesh Source mesh for the operation.
 		\return A new mesh optimized for the vertex cache. */
 		virtual IMesh* createForsythOptimizedMesh(const IMesh *mesh) const = 0;
+
+		//! Optimize the mesh with an algorithm tuned for heightmaps.
+		/**
+		This differs from usual simplification methods in two ways:
+		- it's intended to be lossless
+		- it has special care for the borders, which are useful with heightmap tiles
+
+		This function is thread-safe. Remember to weld afterwards - this
+		function only moves vertices, it does not weld.
+
+		\param mesh Mesh to operate on.
+		*/
+		virtual void heightmapOptimizeMesh(IMesh * const mesh, const f32 tolerance = core::ROUNDING_ERROR_f32) const = 0;
+
+		//! Optimize the meshbuffer with an algorithm tuned for heightmaps.
+		/**
+		This differs from usual simplification methods in two ways:
+		- it's intended to be lossless
+		- it has special care for the borders, which are useful with heightmap tiles
+
+		This function is thread-safe. Remember to weld afterwards - this
+		function only moves vertices, it does not weld.
+
+		\param mb Meshbuffer to operate on.
+		*/
+		virtual void heightmapOptimizeMesh(IMeshBuffer * const mb, const f32 tolerance = core::ROUNDING_ERROR_f32) const = 0;
 
 		//! Apply a manipulator on the Meshbuffer
 		/** \param func A functor defining the mesh manipulation.

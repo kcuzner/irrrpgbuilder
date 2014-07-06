@@ -9,7 +9,6 @@
 #include "CGUIEditBoxIRB.h"
 #include "CGUIGfxStatus.h"
 #include "GUIConfigWindow.h"
-#include "CGUIButton2.h"
 #include "../sound/SoundManager.h"
 
 // Stretching window class

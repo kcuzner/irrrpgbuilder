@@ -24,7 +24,7 @@ namespace core
 		//! Constructor for an all 0 triangle
 		triangle3d() {}
 		//! Constructor for triangle with given three vertices
-		triangle3d(vector3d<T> v1, vector3d<T> v2, vector3d<T> v3) : pointA(v1), pointB(v2), pointC(v3) {}
+		triangle3d(const vector3d<T>& v1, const vector3d<T>& v2, const vector3d<T>& v3) : pointA(v1), pointB(v2), pointC(v3) {}
 
 		//! Equality operator
 		bool operator==(const triangle3d<T>& other) const
@@ -93,8 +93,8 @@ namespace core
 			vector3d<f64> cf64((f64)pointC.X, (f64)pointC.Y, (f64)pointC.Z);
 			vector3d<f64> pf64((f64)p.X, (f64)p.Y, (f64)p.Z);
 			return (isOnSameSide(pf64, af64, bf64, cf64) &&
- 				isOnSameSide(pf64, bf64, af64, cf64) &&
- 				isOnSameSide(pf64, cf64, af64, bf64));
+				isOnSameSide(pf64, bf64, af64, cf64) &&
+				isOnSameSide(pf64, cf64, af64, bf64));
 		}
 
 		//! Check if a point is inside the triangle (border-points count also as inside)
@@ -254,9 +254,9 @@ namespace core
 				// This catches some floating point troubles.
 				// Unfortunately slightly expensive and we don't really know the best epsilon for iszero.
 				vector3d<f64> cp1 = bminusa.normalize().crossProduct((p1 - a).normalize());
-				if ( 	core::iszero(cp1.X, (f64)ROUNDING_ERROR_f32)
-					&& 	core::iszero(cp1.Y, (f64)ROUNDING_ERROR_f32)
-					&& 	core::iszero(cp1.Z, (f64)ROUNDING_ERROR_f32) )
+				if (core::iszero(cp1.X, (f64)ROUNDING_ERROR_f32)
+					&& core::iszero(cp1.Y, (f64)ROUNDING_ERROR_f32)
+					&& core::iszero(cp1.Z, (f64)ROUNDING_ERROR_f32) )
 				{
 					res = 0.f;
 				}

@@ -15,6 +15,7 @@ namespace gui
 {
 	class IGUIFont;
 	class IGUITreeView;
+	class IGUIScrollBar;
 
 
 	//! Node for gui tree view
@@ -88,7 +89,7 @@ namespace gui
 		virtual bool hasChildren() const = 0;
 
 		//! returns true if this node has child nodes
-		/** \deprecated Deprecated in 1.8, use hasChildren() instead. 
+		/** \deprecated Deprecated in 1.8, use hasChildren() instead.
 		This method may be removed by Irrlicht 1.9 */
 		_IRR_DEPRECATED_ bool hasChilds() const
 		{
@@ -268,6 +269,12 @@ namespace gui
 		//! Returns the node which is associated to the last event.
 		/** This pointer is only valid inside the OnEvent call! */
 		virtual IGUITreeViewNode* getLastEventNode() const = 0;
+
+		//! Access the vertical scrollbar
+		virtual IGUIScrollBar* getVerticalScrollBar() const = 0;
+
+		//! Access the horizontal scrollbar
+		virtual IGUIScrollBar* getHorizontalScrollBar() const = 0;
 	};
 
 

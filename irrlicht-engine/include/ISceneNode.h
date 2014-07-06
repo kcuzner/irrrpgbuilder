@@ -119,7 +119,10 @@ namespace scene
 					// node without the iterator becoming invalid
 					ISceneNodeAnimator* anim = *ait;
 					++ait;
-					anim->animateNode(this, timeMs);
+					if ( anim->isEnabled() )
+					{
+						anim->animateNode(this, timeMs);
+					}
 				}
 
 				// update absolute position
@@ -174,7 +177,9 @@ namespace scene
 
 
 		//! Get the axis aligned, transformed and animated absolute bounding box of this node.
-		/** \return The transformed bounding box. */
+		/** Note: The result is still an axis-aligned bounding box, so it's size
+		changes with rotation.
+		\return The transformed bounding box. */
 		virtual const core::aabbox3d<f32> getTransformedBoundingBox() const
 		{
 			core::aabbox3d<f32> box = getBoundingBox();
@@ -182,12 +187,24 @@ namespace scene
 			return box;
 		}
 
+		//! Get a the 8 corners of the original bounding box transformed and
+		//! animated by the absolute transformation.
+		/** Note: The result is _not_ identical to getTransformedBoundingBox().getEdges(),
+		but getting an aabbox3d of these edges would then be identical.
+		\param edges Receives an array with the transformed edges */
+		virtual void getTransformedBoundingBoxEdges(core::array< core::vector3d<f32> >& edges) const
+		{
+			edges.set_used(8);
+			getBoundingBox().getEdges( edges.pointer() );
+			for ( u32 i=0; i<8; ++i )
+				AbsoluteTransformation.transformVect( edges[i] );
+		}
 
 		//! Get the absolute transformation of the node. Is recalculated every OnAnimate()-call.
-		/** NOTE: For speed reasons the absolute transformation is not 
-		automatically recalculated on each change of the relative 
+		/** NOTE: For speed reasons the absolute transformation is not
+		automatically recalculated on each change of the relative
 		transformation or by a transformation change of an parent. Instead the
-		update usually happens once per frame in OnAnimate. You can enforce 
+		update usually happens once per frame in OnAnimate. You can enforce
 		an update with updateAbsolutePosition().
 		\return The absolute transformation matrix. */
 		virtual const core::matrix4& getAbsoluteTransformation() const
@@ -513,10 +530,10 @@ namespace scene
 		//! Gets the absolute position of the node in world coordinates.
 		/** If you want the position of the node relative to its parent,
 		use getPosition() instead.
-		NOTE: For speed reasons the absolute position is not 
-		automatically recalculated on each change of the relative 
-		position or by a position change of an parent. Instead the 
-		update usually happens once per frame in OnAnimate. You can enforce 
+		NOTE: For speed reasons the absolute position is not
+		automatically recalculated on each change of the relative
+		position or by a position change of an parent. Instead the
+		update usually happens once per frame in OnAnimate. You can enforce
 		an update with updateAbsolutePosition().
 		\return The current absolute position of the scene node (updated on last call of updateAbsolutePosition). */
 		virtual core::vector3df getAbsolutePosition() const
@@ -525,12 +542,12 @@ namespace scene
 		}
 
 
-		//! Enables or disables automatic culling based on the bounding box.
-		/** Automatic culling is enabled by default. Note that not
+		//! Set a culling style or disable culling completely.
+		/** Box cullling (EAC_BOX) is set by default. Note that not
 		all SceneNodes support culling and that some nodes always cull
 		their geometry because it is their only reason for existence,
 		for example the OctreeSceneNode.
-		\param state The culling state to be used. */
+		\param state The culling state to be used. Check E_CULLING_TYPE for possible values.*/
 		void setAutomaticCulling( u32 state)
 		{
 			AutomaticCullingState = state;
@@ -688,17 +705,17 @@ namespace scene
 		{
 			if (!out)
 				return;
-			out->addString	("Name", Name.c_str());
-			out->addInt	("Id", ID );
+			out->addString("Name", Name.c_str());
+			out->addInt("Id", ID );
 
 			out->addVector3d("Position", getPosition() );
 			out->addVector3d("Rotation", getRotation() );
 			out->addVector3d("Scale", getScale() );
 
-			out->addBool	("Visible", IsVisible );
-			out->addInt	("AutomaticCulling", AutomaticCullingState);
-			out->addInt	("DebugDataVisible", DebugDataVisible );
-			out->addBool	("IsDebugObject", IsDebugObject );
+			out->addBool("Visible", IsVisible );
+			out->addInt("AutomaticCulling", AutomaticCullingState);
+			out->addInt("DebugDataVisible", DebugDataVisible );
+			out->addBool("IsDebugObject", IsDebugObject );
 		}
 
 
@@ -713,23 +730,26 @@ namespace scene
 		{
 			if (!in)
 				return;
-			Name = in->getAttributeAsString("Name");
-			ID = in->getAttributeAsInt("Id");
+			Name = in->getAttributeAsString("Name", Name);
+			ID = in->getAttributeAsInt("Id", ID);
 
-			setPosition(in->getAttributeAsVector3d("Position"));
-			setRotation(in->getAttributeAsVector3d("Rotation"));
-			setScale(in->getAttributeAsVector3d("Scale"));
+			setPosition(in->getAttributeAsVector3d("Position", RelativeTranslation));
+			setRotation(in->getAttributeAsVector3d("Rotation", RelativeRotation));
+			setScale(in->getAttributeAsVector3d("Scale", RelativeRotation));
 
-			IsVisible = in->getAttributeAsBool("Visible");
-			s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
-					scene::AutomaticCullingNames);
-			if (tmpState != -1)
-				AutomaticCullingState = (u32)tmpState;
-			else
-				AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
+			IsVisible = in->getAttributeAsBool("Visible", IsVisible);
+			if (in->existsAttribute("AutomaticCulling"))
+			{
+				s32 tmpState = in->getAttributeAsEnumeration("AutomaticCulling",
+						scene::AutomaticCullingNames);
+				if (tmpState != -1)
+					AutomaticCullingState = (u32)tmpState;
+				else
+					AutomaticCullingState = in->getAttributeAsInt("AutomaticCulling");
+			}
 
-			DebugDataVisible = in->getAttributeAsInt("DebugDataVisible");
-			IsDebugObject = in->getAttributeAsBool("IsDebugObject");
+			DebugDataVisible = in->getAttributeAsInt("DebugDataVisible", DebugDataVisible);
+			IsDebugObject = in->getAttributeAsBool("IsDebugObject", IsDebugObject);
 
 			updateAbsolutePosition();
 		}
