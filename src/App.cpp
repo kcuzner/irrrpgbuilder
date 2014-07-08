@@ -1039,6 +1039,8 @@ void App::eventGuiCombobox(s32 id)
 			current_listfilter = OBJECT_TYPE_INTERACTIVE;
 		if (item == core::stringc("Walkables"))
 			current_listfilter = OBJECT_TYPE_WALKABLE; 
+		if (item == core::stringc("Loot"))
+			current_listfilter = OBJECT_TYPE_LOOT; 
 
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
@@ -2497,6 +2499,10 @@ void App::updateEditMode()
 
 							case OBJECT_TYPE_NPC:
 								objtype = "Object is a NPC";
+								break;
+
+							case OBJECT_TYPE_LOOT:
+								objtype = "Object is loot";
 								break;
 
 							case OBJECT_TYPE_INTERACTIVE:

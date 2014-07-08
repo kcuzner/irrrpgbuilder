@@ -13,6 +13,8 @@ using namespace gui;
 DynamicObjectsManager::DynamicObjectsManager()
 {
 	device = App::getInstance()->getDevice();
+	playerObject=NULL;
+
 
 	newObj=new TemplateObject("");
 
@@ -45,7 +47,7 @@ bool DynamicObjectsManager::loadTemplates()
 	TemplateObject* pObject = searchTemplate("player_normal");
 	
 	//Create the player avatar needed in the game
-	if (pObject->getName()=="player_normal")	
+	if (pObject->getName()=="player_normal" && playerObject==NULL)	
 	{
 		playerObject = new DynamicObject(pObject->getName(), pObject->meshFile, pObject->animations);
 		playerObject->setScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
@@ -159,6 +161,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		u32 count = 0;
 		u32 linecount = 0;
 		u32 npccount = 0;
+		u32 lootcount = 0;
 		u32 playercount = 0;
 		u32 propscount = 0;
 		u32 editorcount = 0;
@@ -314,6 +317,8 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						// simply count the object types for the statistics
 						if (objectType==(core::stringc)"npc")
 							npccount++;
+						if (objectType==(core::stringc)"loot")
+							lootcount++;
 						if (objectType==(core::stringc)"non-interactive")
 							propscount++;
 						if (objectType==(core::stringc)"editor")
@@ -504,6 +509,7 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
 
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
+
   	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);
 	newObj->setScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setTemplateScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
@@ -648,6 +654,7 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
 {
 	core::stringc notfound=(core::stringc)"Template not found:";
 	notfound+=name; notfound+=(core::stringc)"!";
+	TemplateObject* oldActive = activeObject;
     bool found=false;
 	for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
@@ -663,6 +670,7 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
 		printf ("This item is the active object now: %s \n\n",name.c_str());
 	if (!found)
 	{
+		activeObject = oldActive;
 		GUIManager::getInstance()->setConsoleText(notfound.c_str(),video::SColor(255,240,0,0));
 		return false;
 	} else
@@ -1009,68 +1017,74 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			else
 				result = setActiveObject(templateObj);
 			
+			
 			// If those fail then will use the error mesh
 			if (!result)
 			{
-				setActiveObject("error");
+				return false;
+				//setActiveObject("error");
 			}
-			newObj = createActiveObjectAt(vector3df(posX,posY,posZ));			
+			if (activeObject->getName()!="") //If the object has no name should not be created.
+				newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		} 
 		else
 		// If this is the player, retrieve only it's position (permanent dynamic object)
+		// Will need to update player data.
 		{
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
 			newObj->setTemplateScale(newObj->getScale());
 		}
 		
-		// if the "r" is not 0 then use this information to set the rotation of the model (compatibility mode)
-		if (rot!=0)
-			newObj->setRotation(vector3df(0,rot,0));
-		else
+		if (activeObject->getName()!="") //	Failsafe if for some reason there is no object found at all in the system
 		{
-			// This is the new rotation model. User can set any angle.
-			newObj->setRotation(vector3df(rotX,rotY,rotZ));
-		}
+			// if the "r" is not 0 then use this information to set the rotation of the model (compatibility mode)
+			if (rot!=0 )
+				newObj->setRotation(vector3df(0,rot,0));
+			else
+			{
+				// This is the new rotation model. User can set any angle.
+				newObj->setRotation(vector3df(rotX,rotY,rotZ));
+			}
 
-		//If there is no scale information then don't set the scale, let it as the template was.
-		if ((sclX+sclY+sclZ)>0)
-			newObj->setScale(vector3df(sclX,sclY,sclZ));
+			//If there is no scale information then don't set the scale, let it as the template was.
+			if ((sclX+sclY+sclZ)>0)
+				newObj->setScale(vector3df(sclX,sclY,sclZ));
 
 
-		// If a script is assigned to the mesh then load it.
-        newObj->setScript(convert(script));
+			// If a script is assigned to the mesh then load it.
+			newObj->setScript(convert(script));
 	
         
-		cproperty a=newObj->initProperties();
+			cproperty a=newObj->initProperties();
 		
-		// Default properties values for the player and the NPCS
-		if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
-		{
-			// If LUA or a loaded value redefine a properties, it will override thoses values
-			a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
-			a.mindamage=1;
-			a.maxdamage=3;
-			a.life = 100;
-			a.maxlife=100;
-			a.hurt_resist=50;
-			if (type==OBJECT_TYPE_PLAYER)
+			// Default properties values for the player and the NPCS
+			if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
 			{
-				a.mana = 100;
-				a.maxmana=100;
-				a.dodge_prop=25;
-				a.hit_prob=70;
-				a.regenlife=1;
-				a.regenmana=1;
-				a.mindamage=3;
-				a.maxdamage=10;
-			} else
-			{
-				a.dodge_prop=12;
-				a.hit_prob=50;
-			}
+				// If LUA or a loaded value redefine a properties, it will override thoses values
+				a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
+				a.mindamage=1;
+				a.maxdamage=3;
+				a.life = 100;
+				a.maxlife=100;
+				a.hurt_resist=50;
+				if (type==OBJECT_TYPE_PLAYER)
+				{
+					a.mana = 100;
+					a.maxmana=100;
+					a.dodge_prop=25;
+					a.hit_prob=70;
+					a.regenlife=1;
+					a.regenmana=1;
+					a.mindamage=3;
+					a.maxdamage=10;
+				} else
+				{
+					a.dodge_prop=12;
+					a.hit_prob=50;
+				}
 			
-		}
+			}
 
 		// Loading values
 		stringc life = "";
@@ -1144,6 +1158,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			stringw nametext="Loading Dynamic object: ";
 			nametext.append(newObj->getName().c_str());
 			GUIManager::getInstance()->setTextLoader(nametext);
+	}
 
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }

@@ -780,6 +780,8 @@ void DynamicObject::setType(stringc name)
 {
 	if (name=="npc")
 		this->objectType=OBJECT_TYPE_NPC;
+	if (name=="loot")
+		this->objectType=OBJECT_TYPE_LOOT;
 	if (name=="interactive")
 		this->objectType=OBJECT_TYPE_INTERACTIVE;
 	if (name=="non-interactive")
@@ -1780,7 +1782,7 @@ void DynamicObject::updateWalk()
 	walkTarget.Y=this->getPosition().Y;
 
 
-	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
+	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER || objectType==OBJECT_TYPE_LOOT)
 	{
 		// Stop the walk when in range
 		//if ((this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN ) && (this->getPosition().getDistanceFrom(walkTarget) < ((meshScale*meshSize)*2) || collided))

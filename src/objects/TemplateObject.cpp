@@ -46,6 +46,8 @@ void TemplateObject::setType(stringc name)
 {
 	if (name=="npc")
 		this->objectType=OBJECT_TYPE_NPC;
+	if (name=="loot")
+		this->objectType=OBJECT_TYPE_LOOT;
 	if (name=="interactive")
 		this->objectType=OBJECT_TYPE_INTERACTIVE;
 	if (name=="non-interactive")

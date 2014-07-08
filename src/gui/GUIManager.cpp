@@ -1623,6 +1623,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjects_listfilter->setMaxSelectionRows(24);
 	guiDynamicObjects_listfilter->addItem(L"All");
 	guiDynamicObjects_listfilter->addItem(L"NPC");
+	guiDynamicObjects_listfilter->addItem(L"Loot");
 	guiDynamicObjects_listfilter->addItem(L"Props");
 	guiDynamicObjects_listfilter->addItem(L"Interactive Props");
 	guiDynamicObjects_listfilter->addItem(L"Walkables");
