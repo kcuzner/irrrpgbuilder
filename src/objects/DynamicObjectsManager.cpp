@@ -863,7 +863,46 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
         //objects[i]->saveToXML(dynamicObjectsXML);
 		TiXmlElement* dynamicObjectXML = new TiXmlElement("obj");
 
-		dynamicObjectXML->SetAttribute("type",(int)objects[i]->getType());
+		// Old method, was "dumping" directly the type as a INT - BAD, the reference could be changed
+		//dynamicObjectXML->SetAttribute("type",(int)objects[i]->getType());
+
+		// Cleaner way to save the type of the dynamic object in the project
+		switch (objects[i]->getType())
+		{
+			case OBJECT_TYPE_NPC:
+				dynamicObjectXML->SetAttribute("type","npc");
+				break;
+
+			case OBJECT_TYPE_INTERACTIVE:
+				dynamicObjectXML->SetAttribute("type","interactive");
+				break;
+
+			case OBJECT_TYPE_NON_INTERACTIVE:
+				dynamicObjectXML->SetAttribute("type","non-interactive");
+				break;
+
+			case OBJECT_TYPE_WALKABLE:
+				dynamicObjectXML->SetAttribute("type","walkable");
+				break;
+
+			case OBJECT_TYPE_PLAYER:
+				dynamicObjectXML->SetAttribute("type","player");
+				break;
+
+			case OBJECT_TYPE_EDITOR:
+				dynamicObjectXML->SetAttribute("type","editor");
+				break;
+
+			case OBJECT_TYPE_LOOT:
+				dynamicObjectXML->SetAttribute("type","loot");
+				break;
+
+			default: //Should not be triggered
+				dynamicObjectXML->SetAttribute("type","none");
+				break;
+
+
+		}
 		dynamicObjectXML->SetAttribute("x",stringc(this->objects[i]->getPosition().X).c_str());
 		dynamicObjectXML->SetAttribute("y",stringc(this->objects[i]->getPosition().Y).c_str());
 		dynamicObjectXML->SetAttribute("z",stringc(this->objects[i]->getPosition().Z).c_str());
@@ -946,14 +985,50 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 		stringc templateObj = "";
 		stringc fileObj= "";
-		int type=0;
+		TYPE type=OBJECT_TYPE_NONE;
 		DynamicObject* newObj = NULL;
 
 		stringc stype = dynamicObjectXML->ToElement()->Attribute("type");
 		// Get the type of the object that was saved (if there is one)
 		
+		
+		// New way of getting type. A number is not clear enough
+		//OBJECT_TYPE_NONE = 0,
+		//OBJECT_TYPE_NPC = 1,
+		//OBJECT_TYPE_INTERACTIVE = 2,
+		//OBJECT_TYPE_NON_INTERACTIVE = 3,
+		//OBJECT_TYPE_WALKABLE = 4,
+		//OBJECT_TYPE_PLAYER	= 5,
+		//OBJECT_TYPE_EDITOR	= 6,
+		//OBJECT_TYPE_LOOT = 7,
+
+		//Old method, could caused problems
+		//if (stype.size()>0)
+		//	type=atoi(stype.c_str());
+
 		if (stype.size()>0)
-			type=atoi(stype.c_str());
+		{
+			if (stype=="1" || stype=="npc")
+				type=OBJECT_TYPE_NPC;
+
+			if (stype=="2" || stype=="interactive")
+				type=OBJECT_TYPE_INTERACTIVE;
+
+			if (stype=="3" || stype=="non-interactive")
+				type=OBJECT_TYPE_NON_INTERACTIVE;
+
+			if (stype=="4" || stype=="walkable")
+				type=OBJECT_TYPE_WALKABLE;
+
+			if (stype=="5" || stype=="player")
+				type=OBJECT_TYPE_PLAYER;
+
+			if (stype=="6" || stype=="editor")
+				type=OBJECT_TYPE_EDITOR;
+
+			if (stype=="7" || stype=="loot")
+				type=OBJECT_TYPE_LOOT;
+		}
 
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
 
@@ -1008,7 +1083,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 			templateObj = dynamicObjectXML->ToElement()->Attribute("template");
 			fileObj = dynamicObjectXML->ToElement()->Attribute("filename");
-	
+			
 			bool result=false;
 			// If the "filename" was stored in the XML, then use this for retrieving the proper template
 			// if not, then trie to load based on the template name.
@@ -1028,12 +1103,13 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 				newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
 		} 
 		else
-		// If this is the player, retrieve only it's position (permanent dynamic object)
-		// Will need to update player data.
 		{
+			// If this is the player, retrieve only it's position (permanent dynamic object)
+			// Will need to update player data.
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
 			newObj->setTemplateScale(newObj->getScale());
+			
 		}
 		
 		if (activeObject->getName()!="") //	Failsafe if for some reason there is no object found at all in the system

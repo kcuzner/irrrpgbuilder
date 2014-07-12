@@ -792,6 +792,9 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_EDITOR;
 	if (name=="walkable")
 		this->objectType=OBJECT_TYPE_WALKABLE;
+	if (name=="loot")
+		this->objectType=OBJECT_TYPE_LOOT;
+
 	this->typeText = name;
 }
 
