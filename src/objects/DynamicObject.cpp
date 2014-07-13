@@ -1,5 +1,8 @@
-
-
+// IRR RPG BUILDER
+// DYNAMIC OBJECT CLASS
+//
+//
+//
 #include "../App.h"
 #include "DynamicObjectsManager.h"
 #include "combat.h"
@@ -1423,11 +1426,11 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 		}
     }
 
-	printf("Passed here: attackEnnemy()\n");
+	//printf("Passed here: attackEnnemy()\n");
 }
 
 //-----------------------------------------------------------------------
-// INVENTORY features
+// INVENTORY features (need to be changed to use dynamic objects instead of text)
 //-----------------------------------------------------------------------
 void DynamicObject::addItem(stringc itemName)
 {
@@ -1483,6 +1486,31 @@ void DynamicObject::removeAllItems()
 {
     items.clear();
 }
+//-----------------------------------------------------------------------
+//Loot Management (work with dynamic object pointers)
+//-----------------------------------------------------------------------
+void DynamicObject::addLoot(DynamicObject* loot)
+{
+	lootitems.push_back(loot);
+}
+
+void DynamicObject::removeLoot(DynamicObject* loot)
+{
+	for(int i=0;i<(int)lootitems.size();i++)
+    {
+        if(lootitems[i] == loot)
+        {
+            lootitems.erase(lootitems.begin() + i);
+            return;//remove only one loot item
+        }
+    }
+}
+
+void DynamicObject::removeAllLoot()
+{
+	lootitems.clear();
+}
+
 //-----------------------------------------------------------------------
 //Script management
 //-----------------------------------------------------------------------
@@ -1550,6 +1578,7 @@ void DynamicObject::doScript()
     lua_register(LS,"hideObjectLabel",hideObjectLabel);
     lua_register(LS,"setObjectLabel",setObjectLabel);
 	lua_register(LS,"setObjectType",setObjectType);
+	lua_register(LS,"addPlayerLoot",addPlayerLoot);
 
 	//Dialog Functions
     lua_register(LS,"showDialogMessage",showDialogMessage);
@@ -2647,6 +2676,32 @@ int DynamicObject::setObjectType(lua_State *LS)
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
 	if(tempObj) tempObj->setType(type);
+
+    return 0;
+}
+
+int DynamicObject::addPlayerLoot(lua_State *LS)
+{
+	//core::stringc type = (core::stringc)lua_tostring(LS, -1);
+    //lua_pop(LS, 1);
+
+    lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	if(tempObj) // Was the object found?
+	{
+		if (tempObj->getType()==OBJECT_TYPE_LOOT) // Was the object a loot object?
+		{
+			Player::getInstance()->getObject()->addLoot(tempObj); //Add this pointer object to the player loot
+			tempObj->getNode()->setVisible(false); //Hide the node
+			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
+			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
+			Player::getInstance()->getObject()->addItem(tempObj->getName()); //Will add the name of the dynamic object (temporary)
+		}
+	}
 
     return 0;
 }

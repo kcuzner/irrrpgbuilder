@@ -2808,6 +2808,7 @@ void App::updateGameplay()
 				// Check for a node(need to get the name of the node)
 				if (mousePick.pickedNode != NULL)
 				{
+					// Get the name of the object that has been clicked on
 					stringc nodeName = mousePick.pickedNode->getName();
 
 					//if you click on a Dynamic Object...
@@ -2837,7 +2838,8 @@ void App::updateGameplay()
 							Player::getInstance()->setTaggedTarget(obj);
 						}
 
-
+						// If the distance is ok notify the object lua script that it's being clicked
+						// Currently set at 100 unit
 						if (obj && (obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 100.0f))
 							obj->notifyClick();
 

@@ -1002,7 +1002,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		//OBJECT_TYPE_EDITOR	= 6,
 		//OBJECT_TYPE_LOOT = 7,
 
-		//Old method, could caused problems
+		//Old method, could cause problems
 		//if (stype.size()>0)
 		//	type=atoi(stype.c_str());
 
@@ -1326,7 +1326,7 @@ stringc DynamicObjectsManager::createUniqueName(TYPE objtype)
 		return uniqueName;
 	}
 
-	if (objtype==OBJECT_TYPE_INTERACTIVE || objtype==OBJECT_TYPE_NON_INTERACTIVE)
+	if (objtype==OBJECT_TYPE_INTERACTIVE || objtype==OBJECT_TYPE_NON_INTERACTIVE || objtype==OBJECT_TYPE_LOOT)
 	{
 		uniqueName = "dynamic_object_";
 		uniqueName += objsCounter_regular++;

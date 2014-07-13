@@ -176,6 +176,7 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
             Player::getInstance()->getObject()->setMoney(money);
 
             Player::getInstance()->getObject()->removeAllItems();
+			Player::getInstance()->getObject()->removeAllLoot();
 
 
             //load player items

@@ -205,6 +205,11 @@ class DynamicObject
         bool hasItem(stringc itemName);
         void removeAllItems();
 
+		// loot management
+		void addLoot(DynamicObject* loot);
+		void removeLoot(DynamicObject* loot);
+		void removeAllLoot();
+
 		stringc getScript();
         void setScript(stringw script);
 		void clearScripts();//delete lua_State
@@ -286,6 +291,7 @@ class DynamicObject
 
 		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
 		static int setObjectType(lua_State *LS); // change the object type
+		static int addPlayerLoot(lua_State *LS); // add an object to the player loot
 
         stringc name;
 
@@ -331,7 +337,8 @@ class DynamicObject
 		vector3df originalRotation;
 		vector3df oldpos;
 
-		// Used for timed rotation
+		// Used for timed rotation (fully implemented?) should be used to rotate things over time (doors, bridges, etc)
+		// Could be used for the player to make it rotate at a speed limit (degrees per seconds)
 		vector3df rotfrom;
 		vector3df rotto;
 		u32 rotationcounter;
@@ -341,6 +348,7 @@ class DynamicObject
 		int original_life;
 		int original_maxlife;
 		vector<stringc> items;
+		vector<DynamicObject*> lootitems; // used to store loot items pointers.
         ITextSceneNode* objLabel;
 
 		vector<DynamicObject_Animation> animations;

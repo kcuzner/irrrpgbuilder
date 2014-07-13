@@ -2020,6 +2020,9 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
+
 	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("showDialogMessage",SColor(255,128,0,255),true);
