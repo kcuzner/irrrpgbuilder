@@ -3490,8 +3490,13 @@ void GUIManager::updateItemsList()
 {
     guiPlayerItems->clear();
     vector<stringc> items = Player::getInstance()->getObject()->getItems();
+	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
 
-    for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
+    //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
+	for(int i = 0; i<(int)lootitems.size(); i++) 
+	{
+		guiPlayerItems->addItem(stringw(lootitems[i]->displayName).c_str());
+	}
 }
 
 void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)

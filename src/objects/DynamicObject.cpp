@@ -1506,6 +1506,11 @@ void DynamicObject::removeLoot(DynamicObject* loot)
     }
 }
 
+vector<DynamicObject*> DynamicObject::getLootItems()
+{
+	return lootitems;
+}
+
 void DynamicObject::removeAllLoot()
 {
 	lootitems.clear();
@@ -2562,7 +2567,12 @@ int DynamicObject::setObjectLabel(lua_State *LS)
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
-    if(tempObj) tempObj->setObjectLabel(newLabel.c_str());
+	if(tempObj) 
+	{
+		tempObj->setObjectLabel(newLabel.c_str());
+		tempObj->displayName=(core::stringw)newLabel.c_str();
+	}
+
 
     return 0;
 }
@@ -2699,7 +2709,7 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 			tempObj->getNode()->setVisible(false); //Hide the node
 			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
 			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
-			Player::getInstance()->getObject()->addItem(tempObj->getName()); //Will add the name of the dynamic object (temporary)
+			//Player::getInstance()->getObject()->addItem(tempObj->getName()); //Will add the name of the dynamic object (temporary)
 		}
 	}
 

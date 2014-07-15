@@ -209,6 +209,7 @@ class DynamicObject
 		void addLoot(DynamicObject* loot);
 		void removeLoot(DynamicObject* loot);
 		void removeAllLoot();
+		vector<DynamicObject*> getLootItems();
 
 		stringc getScript();
         void setScript(stringw script);
@@ -234,10 +235,11 @@ class DynamicObject
 		DynamicObject_Animation currentAnim;
 		AI_INFO AI_State;
 
-		// WAs protected before
+		// DIRECT ACCESS VARIABLES WAs protected before
 		stringc templateObjectName;//The original object name
 		stringc fileName; // Information about the given filename 
-		stringw script;
+		stringw script;  // The script of this object
+		stringw displayName; // The display name
 
 		cproperty prop_base;
 		cproperty prop_level;
