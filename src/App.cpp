@@ -2331,6 +2331,7 @@ void App::updateEditMode()
 
 		if (!guienv->getFocus()) // Focus is pointer to an invalid pointer. Reset it.
 		{
+			printf("We lost the focus!\n");
 			guienv->setFocus(guienv->getRootGUIElement());
 		}
 
@@ -3128,7 +3129,7 @@ void App::loadProjectFile(bool value)
 				//printf("Saving project now!\n");
 				this->saveProjectToXML(file);
 			}
-			guienv->setFocus(0);
+			guienv->setFocus(guienv->getRootGUIElement());
 			//Destroy the selector
 			selector->remove();
 			selector=NULL;
@@ -3149,7 +3150,7 @@ void App::loadProjectFile(bool value)
 
 			this->saveProjectToXML(file);
 
-			guienv->setFocus(0);
+			guienv->setFocus(guienv->getRootGUIElement());
 			saveselector->remove();
 			saveselector=NULL;
 			setAppState(old_state);
@@ -3162,13 +3163,13 @@ void App::loadProjectFile(bool value)
 		setAppState(old_state);
 		if (selector)
 		{
-			guienv->setFocus(0);
+			guienv->setFocus(guienv->getRootGUIElement());
 			selector->remove();
 			selector=NULL;
 		}
 		if (saveselector)
 		{
-			guienv->setFocus(0);
+			guienv->setFocus(guienv->getRootGUIElement());
 			saveselector->remove();
 			saveselector=NULL;
 		}

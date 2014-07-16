@@ -83,14 +83,22 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 			{
 				if (KeyMap[i].KeyCode == evt.KeyInput.Key)
 				{
-					printf("Received a keyboard event here!: Action= %d",(int)i);
-					App::getInstance()->getDevice()->getGUIEnvironment()->setFocus(App::getInstance()->getDevice()->getGUIEnvironment()->getRootGUIElement()); // DEBUG: Reset the FOCUS when theses keys are pressed
-					
+					//printf("Received a keyboard event here!: Action= %d",(int)i);
+					// Before reset be sure a windows is not selected
+					// Reset the FOCUS when theses keys are pressed
+
+					gui::IGUIElement *element = App::getInstance()->getDevice()->getGUIEnvironment()->getFocus();
+					if (element!=NULL)
+					{
+						if ((element->getType())!=EGUIET_WINDOW && (element->getType()!=EGUIET_EDIT_BOX))
+							App::getInstance()->getDevice()->getGUIEnvironment()->setFocus(App::getInstance()->getDevice()->getGUIEnvironment()->getRootGUIElement());
+					}
+
 					ActionKeys[KeyMap[i].Action] = evt.KeyInput.PressedDown;
-					if (evt.KeyInput.PressedDown)
-						printf(" pressed down!\n");
-					else
-						printf(" released!\n");
+					//if (evt.KeyInput.PressedDown)
+					//	printf(" pressed down!\n");
+					//else
+					//	printf(" released!\n");
 				} 
 					
 			}
