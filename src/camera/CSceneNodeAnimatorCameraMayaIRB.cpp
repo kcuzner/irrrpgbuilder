@@ -158,7 +158,6 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	{
 		// If the input receiver is down, then reset the camera, so it take the new position to start
 		FirstUpdate=true;
-		//printf("keycode?\n");
 		return;
 	}
 	//reset the bypass switch
@@ -167,7 +166,7 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	scene::ISceneManager * smgr = camera->getSceneManager();
 	if (smgr && smgr->getActiveCamera() != camera)
 	{
-		//printf("Camera is inactive!\n");
+		//GUIManager::getInstance()->setConsoleText("LCamera is inactive!",SColor(255,255,0,0));
 		return;
 	}
 

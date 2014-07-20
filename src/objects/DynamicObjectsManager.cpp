@@ -118,7 +118,9 @@ TemplateObject* DynamicObjectsManager::searchTemplate(stringc name)
 			}
 		}
     }
+#ifdef DEBUG
 	printf ("Warning: Failed to find the proper object: %s\n",name.c_str());
+#endif
     return NULL;
 }
 
@@ -184,7 +186,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						if (!inside3) 
 						{
-							printf ("Inside the requested block (material)!\n");
+							App::getInstance()->getDevice()->getLogger()->log(L"Inside the requested XML block (material)!");
 							inside3=true;
 						}
 
@@ -208,7 +210,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						newObj->materials.push_back(currMaterial);
 						
-						printf("Inside the node for the material!\n");
+						//printf("Inside the node for the material!\n");
 					}
 
 
@@ -413,7 +415,9 @@ bool DynamicObjectsManager::loadSet()
 	io::IXMLReaderUTF8* xmlmain = App::getInstance()->getDevice()->getFileSystem()->createXMLReaderUTF8("../media/dynamic_objects/dynamic_objects.xml");
 	if (!xmlmain)
 	{
+#ifdef DEBUG
 		printf ("Failed to load the dynamic object template list!\n");
+#endif
 		return false;
 	}
 
@@ -601,7 +605,9 @@ void DynamicObjectsManager::removeObject(stringc uniqueName)
     {
         if( stringc(objects[i]->getName()) == uniqueName )
         {
+#ifdef DEBUG
 			printf("Deleting %s\n",uniqueName.c_str());
+#endif
             delete ((DynamicObject*)objects[i]);
 			
             objects.erase(objects.begin() + i);
@@ -666,8 +672,12 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
     	    break;
     	} 
     }
+
+#ifdef DEBUG
 	if (found)
 		printf ("This item is the active object now: %s \n\n",name.c_str());
+#endif 
+
 	if (!found)
 	{
 		activeObject = oldActive;

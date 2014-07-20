@@ -234,7 +234,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	{
 		node=smgr->addEmptySceneNode();
 		GUIManager::getInstance()->setConsoleText(L"Failed to create a node!");
-		printf ("Failed to create a node! Node name should be: %s\n",name.c_str());
+		//printf ("Failed to create a node! Node name should be: %s\n",name.c_str());
 	}
 
 	if (node)
@@ -529,13 +529,19 @@ void DynamicObject::walkTo(vector3df targetPos)
 	if (result>(getNode()->getAbsoluteTransformation().getScale().Y*0.25f))
 	{
 		collided=true; //This mean that the distance it too high for the character to move there
+#ifdef DEBUG
 		printf("Too high! %f units. Name is: %s\n",result,getName().c_str());
 		printf("Old position: %f,%f,%f. desired height is: %f\n",pos.X,pos.Y,pos.Z,result);
+#endif
+
 	}
 
 	if (cliff > 40)
 	{
+
+#ifdef DEBUG
 		printf("Cliff is too steep! result: %f\n",cliff);
+#endif
 		collided=true;
 	}
 
@@ -1894,7 +1900,10 @@ void DynamicObject::updateWalk()
 		{
 			if (objectType==OBJECT_TYPE_NPC && objectType==OBJECT_TYPE_PLAYER)
 			{
+#ifdef DEBUG
 				printf("Reposition character named: %s \n",getName().c_str());
+#endif
+
 				// Trie to recalculate the proper distance position based on the current position
 				vector3df pos1 = (walkTarget-getPosition()).normalize(); //Get the directionnal vector and normalize it
 				vector3df pos2 = getPosition()+(pos1*(objectsize*0.75f));
@@ -1940,7 +1949,6 @@ void DynamicObject::luaRefresh()
 		{
 			if (lua_pcall(LS,0,0,0)!=0)
 			{
-				printf("error running function `onUpdate'\n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",SColor(255,255,0,0));
 			}
 
@@ -1953,7 +1961,6 @@ void DynamicObject::luaRefresh()
 		{
 			if (lua_pcall(LS,0,0,0)!=0)
 			{
-				printf("error running function `step': \n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",SColor(255,255,0,0));
 			}
 
@@ -1967,7 +1974,6 @@ void DynamicObject::luaRefresh()
 		{
 			if (lua_pcall(LS,0,0,0)!=0)
 			{
-				printf("error running function `CustomDynamicObjectUpdate': \n");
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",SColor(255,255,0,0));
 			}
 		}

@@ -456,9 +456,6 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 			sct+=(core::stringw)rot.Z;
 			return sct;
 		}
-		//} else
-		//	printf ("failed to retrieve node\n");
-	//}
 	return sct;
 }
 
@@ -3279,6 +3276,8 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 	//Temporary disable of this method to gain speed
 	//Will have a toggle to use/not use this in the future
 
+	if (!device)
+		return;
 
 	u32 maxitem = 5000;
 	// If the GUI is not displayed, accumulate the info in a buffer

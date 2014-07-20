@@ -173,11 +173,10 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
     if( getSegment(pos) )
     {
 		wasthere=true;
-		printf("Hey there is a tile here!\n");
-        #ifdef APP_DEBUG
+#ifdef DEBUG
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
-        #endif
-        //return;
+#endif
+        return;
     }
 
     if (empty)
@@ -194,8 +193,8 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 
 		removeEmptySegment(pos, true);
 
-#ifdef APP_DEBUG
-cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
+#ifdef DEBUG
+	cout << "DEBUG : TERRAIN MANAGER : CREATED NEW TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
 #endif
 
 		/*Merge New tile to Neighbors (correcting edges according the neighbord edge)
@@ -247,10 +246,10 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
     if( getSegment(pos) )
     {
 		wasthere=true;
-        #ifdef APP_DEBUG
+#ifdef DEBUG
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
-        #endif
-        //return;
+#endif
+        return NULL;
     }
 
 
@@ -258,7 +257,9 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 	{
 		removeEmptySegment(pos, true);
 
-		printf("REmoving empty and placing the custom tile\n");
+#ifdef DEBUG
+	cout << "REmoving empty and placing the custom tile" << endl;
+#endif
 
 		newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
 											0,

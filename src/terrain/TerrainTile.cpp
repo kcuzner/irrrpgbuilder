@@ -27,11 +27,6 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	needrecalc=false; //Define if the tile need to be calculated
 
     scale = TerrainManager::getInstance()->getScale();
-
-	#ifdef APP_DEBUG
-	printf("DEBUG : TERRAIN MANAGER : Here is the tile name: %s\n",tilename.c_str());
-    #endif
-	
 	//if (!custom)
 	createTerrain(parent,pos,name);
 
@@ -262,7 +257,9 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
 		if (vegetationVector.size()>0)
 		{
+#ifdef DEBUG
 			printf ("saving %d trees\n",vegetationVector.size());
+#endif
 			
 			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
 			{
@@ -441,7 +438,9 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                 treesize*= 0.3f;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 
+#ifdef DEBUG
 				printf("Attempting to place a tree with this size: %f\n",treesize);
+#endif
                 vegetationVector.push_back(v);
 
                 #ifdef APP_DEBUG
@@ -536,7 +535,9 @@ void TerrainTile::recalculate(bool simple)
 		node->setTriangleSelector(selector);
 		selector->drop();
 		needrecalc = false;
+#ifdef DEBUG
 		printf("RECALCULATING SEGMENT: %s\n",getName().c_str());
+#endif
 	}
 
 }

@@ -464,8 +464,12 @@ void App::eventGuiButton(s32 id)
 			selectedNode=NULL;
 		}
 		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+
+#ifdef DEBUG
 		if (!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 			printf("Context menu is hidden!\n");
+#endif
+
 		this->createNewProject();
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
@@ -1055,7 +1059,9 @@ void App::eventGuiCombobox(s32 id)
 			f32 initdist = initpos.getDistanceFrom(inittar);
 			u32 value=selectedbox->getItemData(selectedbox->getSelected());
 			vector3df newpos = inittar;
+#ifdef DEBUG
 			printf("Here is the result value of the box: %i\n",value);
+#endif
 			matrix4 projMat; //MAtrix projection 
 			switch (value)
 			{
@@ -1066,7 +1072,9 @@ void App::eventGuiCombobox(s32 id)
 				newpos.Z-=0.05f;
 				CameraSystem::getInstance()->setMAYAPos(newpos);
 				CameraSystem::getInstance()->setMAYATarget(inittar);
+#ifdef DEBUG
 				printf("View selected is TOP\n");
+#endif
 
 				break;
 			case 2: //Bottom
@@ -1969,21 +1977,23 @@ bool App::loadConfig()
 		if ( mapXML )
 		{
 			mapname = mapXML->ToElement()->Attribute("name");
+#ifdef DEBUG
 			printf("The map name is: %s\n",mapname.c_str());
+#endif
 			///TODO: we are just loading ocean seetings, we need to set it!
 		}
 #endif
 	}
 	else
 	{
-#ifdef APP_DEBUG
+#ifdef DEBUG
 		cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
 #endif
 
 		return false;
 	}
 
-#ifdef APP_DEBUG
+#ifdef DEBUG
 	cout << "DEBUG : XML : PROJECT LOADED! "<< endl;
 #endif
 
@@ -2013,7 +2023,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.21 (sept 2013)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.03 (aug 2014)");
 	} else
 		device = IRRdevice;
 
@@ -2035,7 +2045,9 @@ IrrlichtDevice* App::getDevice()
 {
 	if(!device)
 	{
+#ifdef DEBUG
 		printf("ERROR: Device is NULL, please call SetupDevice first!");
+#endif
 		exit(0);
 	}
 	return device;
@@ -2298,7 +2310,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.21 (sept 2013)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.3 (aug 2014)";
 			if (app_state>APP_STATE_CONTROL)
 			{
 				str += " FPS:";
@@ -2325,13 +2337,16 @@ void App::updateEditMode()
 		{
 			if (cursorIsInEditArea())
 				guienv->setFocus(guienv->getRootGUIElement());
-				
+#ifdef DEBUG				
 			printf("In viewdrag mode\n");
+#endif
 		}
 
 		if (!guienv->getFocus()) // Focus is pointer to an invalid pointer. Reset it.
 		{
+#ifdef DEBUG
 			printf("We lost the focus!\n");
+#endif
 			guienv->setFocus(guienv->getRootGUIElement());
 		}
 
@@ -2383,7 +2398,9 @@ void App::updateEditMode()
 					{
 						old_state = app_state;
 						setAppState(APP_EDIT_VIEWDRAG);
+#ifdef DEBUG
 						printf("Set camera settings...\n");
+#endif
 					}
 				}
 			}
@@ -3279,7 +3296,9 @@ void App::saveProjectToXML(stringc filename)
 	doc.LinkEndChild( irb_project );
 
 	bool result = doc.SaveFile( filename.c_str() );
+#ifdef DEBUG
 	if (result) printf("Saved %s OK!\n",filename.c_str());
+#endif
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
@@ -3301,7 +3320,7 @@ bool App::loadProjectFromXML(stringc filename)
 	TiXmlDocument doc(filename.c_str());
 	if (!doc.LoadFile()) return false;
 
-#ifdef APP_DEBUG
+#ifdef DEBUG
 	cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
 #endif
 
@@ -3311,7 +3330,7 @@ bool App::loadProjectFromXML(stringc filename)
 	{
 		if( atof(root->Attribute("version"))!=APP_VERSION )
 		{
-#ifdef APP_DEBUG
+#ifdef DEBUG
 			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
 #endif
 

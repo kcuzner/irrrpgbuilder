@@ -89,8 +89,9 @@ void EffectsManager::initPostProcess()
 	// Temporary disable the post FX to check the shaders
 	// Init the postProcess FX manager
 	postProcessManager = new CPostProcessManager(App::getInstance()->getDevice());
+
 	if (postProcessManager == 0)
-		printf ("Success initialized the postprocess manager.\n");
+		GUIManager::getInstance()->setConsoleText("LSuccess initialized the postprocess manager.",SColor(255,200,200,0));
 	//postProcessManager->prepare(false);
 	postProcessMode = 0;
 

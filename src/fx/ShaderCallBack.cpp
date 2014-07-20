@@ -142,15 +142,23 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 	scene::ISceneManager * smgr=App::getInstance()->getDevice()->getSceneManager();
 	video::IVideoDriver * driver=App::getInstance()->getDevice()->getVideoDriver();
 
+#ifdef DEBUG
 	printf ("Here is the current material count for this model: %d\n",mat.size());
+#endif
 
 	for (u32 i=0; i<mat.size(); ++i)
 	{
+
+#ifdef DEBUG
 		printf ("Here is the defined material type: %s\n",mat[i].shader.c_str());
+#endif
 
 		if (mat[i].shader == "SOLID")
 		{
+
+#ifdef DEBUG
 			printf("Material is a solid..\n");
+#endif
 			ITexture * tex0 = NULL;
 		
 			if (mat[i].texture0.size()>0) //Diffuse slot
@@ -166,7 +174,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 		// Assign a custom lightmap to the model
 		if (mat[i].shader == "LIGHTMAP")
 		{
+
+#ifdef DEBUG
 			printf("Material is a lightmap..\n");
+#endif
 			ITexture * tex0 = NULL;
 			ITexture * tex1 = NULL;
 
@@ -189,7 +200,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 		
 		if (mat[i].shader == "LIGHTMAP_LIGHTING")
 		{
+
+#ifdef DEBUG
 			printf("Material is a lightmap..\n");
+#endif
 			ITexture * tex0 = NULL;
 			ITexture * tex1 = NULL;
 
@@ -218,8 +232,9 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 
 			ITexture * tex0 = NULL;
 			ITexture * tex1 = NULL;
-
+#ifdef DEBUG
 			printf("Material is a normal map..\n");
+#endif 
 			if (mat[i].texture0.size()>0) // Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
 			
@@ -236,7 +251,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_materi
 		
 		if (mat[i].shader == "TERRAIN")
 		{
+
+#ifdef DEBUG
 			printf("Material is the terrain shader\n");
+#endif
 			//Get the texture names from the terrain manager
 			stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
 			stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
