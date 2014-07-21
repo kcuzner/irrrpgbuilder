@@ -17,7 +17,6 @@ class LANGManager
 		vector<core::stringw> getAboutText();
 		irr::core::stringw getText(irr::core::stringc node);
 		irr::core::stringc getLanguage();
-		bool Load();
 		void setDefaultLanguage(irr::core::stringc language);
 		vector<Lang> language;
 		vector<Lang> aboutext;	

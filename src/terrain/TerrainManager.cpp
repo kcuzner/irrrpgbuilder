@@ -51,7 +51,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
 
     if(getEmptySegment(pos) || getSegment(pos))
     {
-        #ifdef APP_DEBUG
+        #ifdef DEBUG
         cout << "DEBUG : TERRAIN MANAGER : SEGMENT ALREADY EXIST: " << getHashCode(pos) << endl;
         #endif
         return;
@@ -83,7 +83,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
 
 
-    #ifdef APP_DEBUG
+    #ifdef DEBUG
     cout << "DEBUG : TERRAIN MANAGER : CREATED NEW EMPTY TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;
     #endif
 }
@@ -288,7 +288,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 
 	return NULL;
 
-#ifdef APP_DEBUG
+#ifdef DEBUG
 cout << "DEBUG : TERRAIN MANAGER : CREATED NEW CUSTOM SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainMap.size() << endl;
 #endif
 
@@ -351,7 +351,7 @@ void TerrainManager::removeEmptySegment(vector3df pos, bool force)
         terrainEmptySegmentsMap.erase(getHashCode(pos));
         temp->remove();
 
-        #ifdef APP_DEBUG
+        #ifdef DEBUG
         cout << "DEBUG : TERRAIN MANAGER : EMPTY SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;
         #endif
     }
@@ -410,8 +410,8 @@ void TerrainManager::deleteTaggedSegment()
 	 // Put back the empty segment
 	 createEmptySegment(vector3df(posTagged.X,0,posTagged.Z));
 
-     #ifdef APP_DEBUG
-     cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(pos) << " TOTAL:" << TerrainMap.size() << endl;
+     #ifdef DEBUG
+ 	 //cout << "DEBUG : TERRAIN MANAGER : SEGMENT REMOVED: " << getHashCode(posTagged) << " TOTAL:" << TerrainMap.size() << endl;
      #endif
 
 }

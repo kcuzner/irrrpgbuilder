@@ -187,7 +187,7 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 {
     if(!tile || custom)
     {
-        #ifdef APP_DEBUG
+        #ifdef DEBUG
         cout << "DEBUG : TERRAIN TILE : MERGE FAILED, TILE IS NULL: " << endl;
         #endif
         return;

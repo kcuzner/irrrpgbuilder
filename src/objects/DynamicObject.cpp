@@ -1203,7 +1203,7 @@ bool DynamicObject::setAnimation(stringc animName)
         }
     }
 
-	#ifdef APP_DEBUG
+	#ifdef DEBUG
     cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
     #endif
 

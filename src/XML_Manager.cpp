@@ -1,6 +1,13 @@
 #include "XML_Manager.h"
 #include "LANGManager.h"
 
+// This class should be able to load all XML data for the need of IRB, and would only use IrrXML (part of the Irrlicht)
+// Currently only the language (lang) have a working implementation
+// The idead would be to load all definition in memory and then let IRB check the information from there and not load it each time.
+// Should help improve response when loading stuff.
+
+// Will also have to check on a way to save stuff in XML using Irrlicht. 
+
 xmldata::xmldata()
 {
 }
@@ -61,6 +68,7 @@ core::stringw xmldata::winconvert(core::stringw str)
 	return textline;
 }
 
+// Not yet used.. Need to be completed, will replace code that is used in TinyXml
 void xmldata::loadBlock(IrrlichtDevice * device, core::stringc file )
 {
 	// --> Loader code
@@ -250,13 +258,14 @@ void xmldata::loadBlock(IrrlichtDevice * device, core::stringc file )
 }
 
 
-
+// Not yet used.. Need to be completed, will replace code that is used in TinyXml
 void xmldata::loadSet(IrrlichtDevice * device)
 {
 	// File to seek is: dynamic_objects.xml
 	// Will provide the path and "sets" to load
 	// --> Loader code
 	// read configuration from xml file
+	
 
 	const u32 starttime = device->getTimer()->getRealTime();
 

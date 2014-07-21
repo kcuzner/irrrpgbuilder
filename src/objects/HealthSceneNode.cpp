@@ -34,7 +34,7 @@ namespace irr
 			isVisible(false), 
 			m_s32Percent(100) 
 		{ 
-#ifdef _DEBUG 
+#ifdef DEBUG 
 			setDebugName("HealthSceneNode"); 
 #endif 
 

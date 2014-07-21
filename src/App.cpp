@@ -112,7 +112,7 @@ void App::draw2DImages()
 	{
 		//GUIManager::getInstance()->drawPlayerStats();
 	}
-	#ifdef APP_DEBUG
+	#ifdef DEBUG
 	//GUIManager::getInstance()->drawHelpImage(HELP_IRR_RPG_BUILDER_1);
 	#endif
 #endif
@@ -1885,7 +1885,7 @@ bool App::loadConfig()
 
 	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
 
-#ifdef APP_DEBUG
+#ifdef DEBUG
 	cout << "DEBUG : XML : LOADING CONFIGURATION : " << endl;
 #endif
 
@@ -1895,7 +1895,7 @@ bool App::loadConfig()
 	{
 		if( atof(root->Attribute("version"))!=APP_VERSION )
 		{
-#ifdef APP_DEBUG
+#ifdef DEBUG
 			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
 #endif
 
@@ -3308,7 +3308,7 @@ void App::saveProjectToXML(stringc filename)
 		.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
 		,true);
 
-#ifdef APP_DEBUG
+#ifdef DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
 #endif
 }
