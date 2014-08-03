@@ -544,9 +544,35 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 		ifstream fileScript (filename.c_str());
 		if (fileScript.is_open())
 		{
+			//printf("Opening script file: %s\n",filename.c_str());
 			while (! fileScript.eof() )
 			{
+				std::string line2="";
 				getline (fileScript,line);
+				// --- tried to display the loading of the script to the console:: DEBUG
+				//printf ("Line size is: %d, characters\n",line.size());
+				/*int b=line.size();
+				for (int a=0; a<b; a++)
+				{
+					std::string line1 = line.substr(a,1);
+					char* charac = (char*)line1.c_str();
+			
+					unsigned char numeric =unsigned char (*charac);
+					
+					//printf("%s",charac);<
+					
+					if ((int)numeric>128)
+					{
+						line2+=numeric;
+						printf ("Extended character!:%d \n",(int)numeric);
+					} else
+						line2+=numeric;
+
+				}
+				//printf("%s \n",line2.c_str());
+				// ---
+				//
+				newScript += line2.c_str();*/
 				newScript += line.c_str();
 				newScript += '\n';
 			}
@@ -1139,7 +1165,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 
 			// If a script is assigned to the mesh then load it.
-			newObj->setScript(convert(script));
+			core::stringw ss = convert(script) ;
+
+			newObj->setScript(ss);
+			//newObj->setScript(script);
 	
         
 			cproperty a=newObj->initProperties();

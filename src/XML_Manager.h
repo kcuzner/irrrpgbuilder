@@ -2,7 +2,6 @@
 #define XML_MANAGER_H
 
 #include "App.h"
-//#include "LANGManager.h"
 
 using namespace irr;
 using namespace core;

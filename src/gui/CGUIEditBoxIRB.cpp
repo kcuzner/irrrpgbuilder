@@ -1063,6 +1063,12 @@ void CGUIEditBoxIRB::draw()
 						// Find the end of this current word
 						u32 end = u;
 						for (u32 v = u; v < lineCStr.size(); v++) {
+							// keyword must be in english
+							if ((int)lineCStr.c_str()[v]<0 || (int)lineCStr.c_str()[v]>128) {
+								end = v;
+								break;
+							}
+							// check if not alpha or digit
 							if (!isalnum(lineCStr.c_str()[v])) {
 								end = v;
 								break;

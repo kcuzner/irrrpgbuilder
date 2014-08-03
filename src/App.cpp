@@ -2023,7 +2023,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.03 (aug 2014)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.3 (aug 2014)");
 	} else
 		device = IRRdevice;
 
@@ -2344,9 +2344,9 @@ void App::updateEditMode()
 
 		if (!guienv->getFocus()) // Focus is pointer to an invalid pointer. Reset it.
 		{
-#ifdef DEBUG
-			printf("We lost the focus!\n");
-#endif
+//#ifdef DEBUG
+//printf("We lost the focus!\n");
+//#endif
 			guienv->setFocus(guienv->getRootGUIElement());
 		}
 
@@ -3270,7 +3270,7 @@ void App::saveProjectToXML(stringc filename)
 
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	TiXmlDocument doc;
-	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );
+	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
 
 	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
 	irb_project->SetAttribute("version","1.0");

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
 <IrrRPG_Builder_TemplateScripts version="1.0">
   <script file="generic_player.lua"/>
   <script file="generic_enemy.lua"/>

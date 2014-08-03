@@ -24,7 +24,7 @@ function setStrings()
     tx_lose = "VOCE PERDEU!"
   end
   
- -- Support for French 
+ -- Support for Français 
   if (getLanguage()=='fr-ca') then
     tx_continue = "Voulez-vous continuer le jeu?"
     tx_lose = "VOUS PERDEZ!"

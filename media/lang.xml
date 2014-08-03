@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="legacy"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <IrrRPG_Builder_LanguageFile version="1.0">
 	<language name="en-us" description="English, United States">
 		<text id="tab_project" str="Project"/>

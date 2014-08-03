@@ -2946,13 +2946,21 @@ void GUIManager::updateGuiPositions(dimension2d<u32> screensize)
 
 void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
+
+	// Temp fix to get the extended characters not being removed inside.
+	core::stringc source = text.c_str(); // Irrlicht widestrings
+	char *mtext = (char *)source.c_str(); // char buffer
+    wchar_t buffer[65536];  //widestring buffer (64k limit)
+    mbstowcs(buffer, mtext, strlen(mtext));
+	// ----------------------------------------------------
+
 	switch(id)
     {
         case EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE:
             guiDynamicObjects_Script_Console->setText(text.c_str());
             break;
         case EB_ID_DYNAMIC_OBJECT_SCRIPT:
-            guiDynamicObjects_Script->setText(text.c_str());
+			guiDynamicObjects_Script->setText(buffer);
             break;
         default:
             break;

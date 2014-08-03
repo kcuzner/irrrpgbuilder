@@ -25,13 +25,15 @@ xmldata* xmldata::getInstance()
 
 core::stringw xmldata::winconvert(core::stringw str)
 // Convert accents from loaded XML files (irrXML)
-// WARNING: Tested only on windows
-// might not work on Linux or other platform.
+// WARNING: Does not work on Linux (no accents) (Return 2bytes on windows and expected to return 4 on special characters)
+
 {
 	bool debug = false;
 	core::stringw textline = L"";
 	core::stringw text = L"";
 	u32 base = 0;
+	
+	//textline = str;
 	
 	char test2 = ' ';
 
@@ -215,7 +217,7 @@ void xmldata::loadBlock(IrrlichtDevice * device, core::stringc file )
 						count++;
 					}
 					inside = false;
-					printf("The element has ended\n\n");
+					//irr::os::Printer::log("The element has ended.", irr::ELL_DEBUG);
 					break;
                 
 				default:

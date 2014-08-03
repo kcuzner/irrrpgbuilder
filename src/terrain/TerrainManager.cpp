@@ -83,9 +83,9 @@ void TerrainManager::createEmptySegment(vector3df pos)
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
 
 
-    #ifdef DEBUG
-    cout << "DEBUG : TERRAIN MANAGER : CREATED NEW EMPTY TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;
-    #endif
+   // #ifdef DEBUG
+   // cout << "DEBUG : TERRAIN MANAGER : CREATED NEW EMPTY TERRAIN SEGMENT : " << getHashCode(pos) << " TOTAL:" << terrainEmptySegmentsMap.size() << endl;
+   // #endif
 }
 
 void TerrainManager::setEmptyTileVisible(bool visible)
