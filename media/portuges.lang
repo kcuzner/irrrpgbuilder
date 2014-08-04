@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<IrrRPG_Builder_LanguageFile version="1.0">
+	<text id="tab_project" str="Projetos"/>
+	<text id="tab_environment" str="Ambientes"/>
+	<text id="tab_objects" str="Objetos"/>
+	<text id="tab_tools" str="Ferramentas"/>
+	<text id="tab_setup" str="Configurações"/>
+	<text id="tab_script_debug" str="Painel debug"/>
+	<text id="tab_script_templates" str="Modelos Script"/>
+	<text id="tab_console_message" str="Messages"/>
+	<text id="tab_console_log" str="Log"/>
+	<text id="bt_script_editor_linecount" str="Alterna números de linha"/>
+	<text id="bt_dynamic_objects_close_script" str="Fechar"/>
+	<text id="bt_dynamic_objects_script_noerror" str="Não foram encontrados erros"/>
+	<text id="bt_dynamic_objects_validate_script" str="Validar Script (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Carregar Modelo de Script"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Mover/Rotacionar"/>
+	<text id="bt_dynamic_objects_remove" str="Remover Objeto"/>
+	<text id="bt_dynamic_objects_edit_script" str="Editar Script Lua"/>
+	<text id="bt_dynamic_objects_cancel" str="Cancelar"/>
+	<text id="bt_dynamic_objects_has_action" str="Tem Ação"/>
+	<text id="bt_dynamic_objects_mode" str="Editar objeto"/>
+	<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+	<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
+	<text id="bt_paint_vegetation" str="Pintar vegetação"/>
+	<text id="bt_new_project" str="Novo Projeto"/>
+	<text id="bt_save_project" str="Salvar"/>
+	<text id="bt_load_project" str="Carregar"/>
+	<text id="bt_show_playable_area" str="Planalto Altura"/>
+	<text id="bt_terrain_segments" str="Editar Segmentos"/>
+	<text id="bt_terrain_custom_segments" str="Custom tiles"/>
+	<text id="bt_terrain_empty_segments" str="Empty tiles"/>
+	<text id="bt_terrain_transform" str="Editar Elevação"/>
+	<text id="bt_terrain_brush" str="Escova"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Forca do escova:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Escova radius:"/>
+	<text id="bt_terrain_transform_plateau" str="Altura do planalto:"/>
+	<text id="bt_play_game" str="Executar o Jogo"/>
+	<text id="bt_stop_game" str="Parar o Jogo"/>
+	<text id="bt_edit_character" str="Editar Personagem"/>
+	<text id="bt_player_edit_script" str="Script do Personagem"/>
+	<text id="bt_close_program" str="Fechar Programa"/>
+	<text id="bt_about" str="Sobre o IrrRPG Builder"/>
+	<text id="bt_help" str="Console"/>
+	<text id="bt_dialog_yes" str="Sim"/>
+	<text id="bt_dialog_no" str="Não"/>
+	<text id="bt_view_items" str="Ver Ítens"/>
+	<text id="bt_use_item" str="Usar Item"/>
+	<text id="bt_drop_item" str="Jogar Fora o Item Atual"/>
+	<text id="bt_close_items_window" str="Voltar ao Jogo"/>
+	<text id="bt_edit_script_global" str="Script Global"/>	
+	<text id="bt_cfg_window_ok" str="OK"/>
+	<text id="bt_cfg_window_cancel" str="Cancelar"/>
+	<text id="bt_config" str="Editora"/>
+	<text id="bt_terrain_transform_vegetation_paint_strength" str="Tamanho do pincel"/>
+	<text id="txt_cfg_window_changes_msg" str="As alteracoes terão efeito depois que você reiniciar o programa"/>
+	<text id="txt_cfg_window_caption" str="Preferências"/>
+	<text id="txt_cfg_window_resolution" str="Resolução de Tela"/>
+	<text id="txt_cfg_window_language" str="Idioma"/>
+	<text id="txt_cfg_window_tab_system" str="Sistema"/>
+	<text id="txt_cfg_window_tab_scenary" str="Cenário"/>
+	<text id="txt_cfg_window_fullscreen" str="Tela Cheia"/>
+	<text id="txt_cfg_window_resizeable" str="Redimensionavel"/>
+	<text id="txt_cfg_window_vsync" str="VSync"/>
+	<text id="txt_cfg_window_antialias" str="Antialias"/>
+	<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
+	<text id="txt_cfg_window_terrain_mesh" str="Mesh do terreno"/>
+	<text id="txt_cfg_window_terrain_scale" str="Escala"/>
+	<text id="txt_cfg_window_terrain_layers" str="Camadas de textura do terreno"/>
+	<text id="txt_cfg_window_ocean_mesh" str="Mesh do oceano"/>
+	<text id="txt_cfg_window_ocean_normalmap" str="Normal Map do Oceano"/>
+	<text id="txt_cfg_window_ocean_reflection" str="Reflexão do Oceano"/>	
+	<text id="txt_player_life" str="VIDA:"/>
+	<text id="txt_player_money" str="DINHEIRO:"/>
+	<text id="msg_error" str="Erro"/>
+	<text id="msg_invalid_project_file" str="Arquivo de Projeto Invalido"/>
+	<text id="msg_override_project" str="Salvar o projeto atual antes de prosseguir?"/>
+	<text id="msg_saved_ok" str=" salvo com sucesso!"/>
+	<text id="msg_new_project_name" str="Insira o nome do Projeto:"/>
+	<text id="msg_loaded_error" str="Erro ao Carregar!"/>
+	<text id="msg_loaded_ok" str=" carregado com sucesso!"/>
+	<text id="msg_override_script" str="Esta operacao ira substituir o script atual, deseja prosseguir?"/>
+	<text id="txt_dynobjsel" str="Dinâmica de seleção de objeto" />
+	<text id="txt_cussegsel" str="Custom tile selection" />
+	<text id="txt_dynobjcur" str="Atual modelo" />
+	<text id="txt_objectcol" str="Object collection" />
+	<text id="txt_dynobjcat" str="Categoria" />
+	<text id="txt_dynobjitm" str="Item" />
+	<text id="txt_tool_des0" str="Ferramentas IRB Project" />
+	<text id="txt_tool_des1" str="Edição" />
+	<text id="txt_tool_des2" str="Scripts" />
+	<text id="txt_tool_des3" str="Configuração" />
+	<text id="txt_tool_des4" str="Teste Tocar" />
+	<text id="txt_tool_des5" str="Ferramentas de terreno" />
+	<text id="txt_tool_des6" str="Ferramentas de Vegetação" />
+	<text id="txt_tool_edit" str="Modo edição" />
+	<text id="txt_tool_edpl" str="Modo de jogos" />
+	<text id="txt_tool_scrp" str="Player script" />
+	<text id="txt_tool_scrg" str="Script global" />
+	<text id="txt_tool_sete" str="Editor de configuração" />
+	<text id="txt_tool_setg" str="do jogo" />
+	<text id="txt_tool_gc" str="Mostrar consola" />
+	<text id="txt_tool_play" str="Modo de jogos" />
+	<text id="txt_tool_edim" str="Modo de edição" />
+	<text id="txt_tool_edsg" str="Editar segmentos" />
+	<text id="txt_tool_edel" str="Editar elevação" />
+	<text id="txt_tool_tree" str="Árvores" />
+	<text id="txt_tool_bush" str="Arbustos" />
+	<text id="txt_tool_rock" str="Pedras" />
+	<text id="msg_welcome" str="Bem-vindo ao IRR RPG Builder" />
+	<text id="msg_prj_np0" str="Novo projeto" />
+	<text id="msg_prj_np1" str='Isso irá criar um novo projeto. Você tem certeza?' />
+	<text id="msg_prj_np2" str="Novo projeto criado!" />
+	<text id="msg_prj_sp0" str="Salvando projeto" />
+	<text id="msg_prj_sp1" str="Quer salvar este projeto?" />
+	<text id="msg_prj_sp2" str="Projeto salva com sucesso!" />
+	<text id="msg_prj_lp0" str="Carregando um novo projeto" />
+	<text id="msg_prj_lp1" str="Você pode salvar o projeto atual?" />
+	<text id="msg_prj_lp2" str="Projeto salva" />
+	<text id="msg_prj_lp3" str="Especifique o arquivo de projeto para carregar" />
+	<text id="msg_prj_lp4" str="Projeto carregado com sucesso!" />
+	<text id="msg_dlg_warn" str="IRR Rpg Builder aviso" />
+	<text id="msg_dlg_yes" str="&Sim" />
+	<text id="msg_dlg_no" str="&Não" />
+	<text id="msg_dlg_cancel" str="Cancelar" />
+	<about str="IrrRPG Builder v0.3 Alpha" />
+	<about str="    por Andres Jesse Porfirio," />
+	<about str="    Christian Clavet" />
+	<about str=" " />
+	<about str="Programacao e scripts de:"/>
+	<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
+	<about str="    Christian Clavet (www.clavet.org)" />
+	<about str="    Seu nome aqui" />
+	<about str=" " />
+	<about str="Design de interface:" />
+	<about str="    Andres Jesse Porfirio" />
+	<about str="    Christian Clavet" />
+	<about str=" " />
+	<about str="O projeto do logotipo:" />
+	<about str="    Borges (www.vhborges.tk)" />
+	<about str=" " />
+	<about str="Modelos de:" />
+	<about str="    Seu nome aqui" />
+	<about str="    Seu nome aqui" />
+	<about str=" " />
+	<about str="Animação:" />
+	<about str="    Seu nome aqui" />
+	<about str="    Seu nome aqui" />
+	<about str=" " />
+	<about str="Shaders:" />
+	<about str="    Andres Jesse Porfirio" />
+	<about str="    Seu nome aqui" />
+	<about str="    Seu nome aqui" />
+	<about str=" " />
+	<about str="Agradecimentos: " />
+	<about str="A equipe Irrlicht (irrlicht.sourceforge.net) " />
+	<about str="TBW do fórum Irrlicht para o sistema PostFX " />
+	<about str="confira irrrpgbuilder.sourceforge.net" />
+	<about str="diverta-se!"/>
+</IrrRPG_Builder_LanguageFile>
+	

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<IrrRPG_Builder_LanguageFile version="1.0">
+	<text id="tab_project" str="Projekte"/>
+	<text id="tab_environment" str="Umgebungen"/>
+	<text id="tab_objects" str="Objekte"/>
+	<text id="tab_tools" str="Werkzeuge"/>
+	<text id="tab_setup" str="Einstellungen"/>
+	<text id="tab_script_debug" str="Debug Panel"/>
+	<text id="tab_script_templates" str="Script Vorlagen"/>
+	<text id="tab_console_message" str="Messages"/>
+	<text id="tab_console_log" str="Log"/>
+	<text id="bt_script_editor_linecount" str="Sehen Zeilennummern"/>
+	<text id="bt_dynamic_objects_close_script" str="Schliessen"/>
+	<text id="bt_dynamic_objects_script_noerror" str="Keine Fehler gefunden"/>
+	<text id="bt_dynamic_objects_validate_script" str="Script ueberprufen (F5)"/>
+	<text id="bt_dynamic_objects_load_script_template" str="Scriptvorlage laden"/>
+	<text id="bt_dynamic_objects_move_rotate" str="Bewegen/Drehen"/>
+	<text id="bt_dynamic_objects_remove" str="Objekt entfernen"/>
+	<text id="bt_dynamic_objects_edit_script" str="Lua Script bearbeiten"/>
+	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
+	<text id="bt_dynamic_objects_has_action" str="wird benutzt"/>
+	<text id="bt_dynamic_objects_mode" str="Dynamischer Objekt Modus"/>
+	<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
+	<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
+	<text id="bt_paint_vegetation" str="Vegetation einfuegen"/>
+	<text id="bt_new_project" str="Neues Projekt"/>
+	<text id="bt_save_project" str="Projekt speichern"/>
+	<text id="bt_load_project" str="Projekt laden"/>
+	<text id="bt_show_playable_area" str="Bereich anzeigen"/>
+	<text id="bt_terrain_segments" str="Gelaende bearbeiten"/>
+	<text id="bt_terrain_custom_segments" str="Custom tiles"/>
+	<text id="bt_terrain_empty_segments" str="Empty tiles"/>
+	<text id="bt_terrain_transform" str="Höhe"/>
+	<text id="bt_terrain_brush" str="Pinsel-Werkzeug"/>
+	<text id="bt_terrain_transform_brush_strength_label" str="Pinselstaerke:"/>
+	<text id="bt_terrain_transform_brush_radius_label" str="Pinselradius:"/>
+	<text id="bt_terrain_transform_plateau" str="Höhe des Plateaus:"/>
+	<text id="bt_play_game" str="Spielen"/>
+	<text id="bt_stop_game" str="Stoppen"/>
+	<text id="bt_edit_character" str="Character bearbeiten"/>
+	<text id="bt_player_edit_script" str="Charakter"/>
+	<text id="bt_close_program" str="Verlassen"/>
+	<text id="bt_about" str="Ueber"/>
+	<text id="bt_help" str="Console"/>
+	<text id="bt_dialog_yes" str="Ja"/>
+	<text id="bt_dialog_no" str="Nein"/>
+	<text id="bt_view_items" str="Zeige Items"/>
+	<text id="bt_use_item" str="Gegenstand benutzen"/>
+	<text id="bt_drop_item" str="Gegenstand fallen lassen"/>
+	<text id="bt_close_items_window" str="Zurueck zum Spiel"/>
+	<text id="bt_edit_script_global" str="Globalen"/>
+	<text id="bt_cfg_window_ok" str="OK"/>
+	<text id="bt_cfg_window_cancel" str="Abbrechen"/>
+	<text id="bt_config" str="Konfiguration"/>
+	<text id="bt_terrain_transform_vegetation_paint_strength" str="{TO TRANSLATE}"/>
+	<text id="txt_cfg_window_changes_msg" str="Aenderungen werden beim nächsten Start vorgenommen"/>
+	<text id="txt_cfg_window_caption" str="Konfiguration"/>
+	<text id="txt_cfg_window_resolution" str="Fensteraufloesung"/>
+	<text id="txt_cfg_window_language" str="Sprache"/>
+	<text id="txt_cfg_window_tab_system" str="System"/>
+	<text id="txt_cfg_window_tab_scenary" str="Landschaft"/>
+	<text id="txt_cfg_window_fullscreen" str="Vollbild"/>
+	<text id="txt_cfg_window_resizeable" str="Aendern"/>
+	<text id="txt_cfg_window_vsync" str="VSync"/>
+	<text id="txt_cfg_window_antialias" str="Antialias"/>
+	<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
+	<text id="txt_cfg_window_terrain_mesh" str="Gelaendenetz"/>
+	<text id="txt_cfg_window_terrain_scale" str="Skala"/>
+	<text id="txt_cfg_window_terrain_layers" str="Landschaftebenen"/>
+	<text id="txt_cfg_window_ocean_mesh" str="Wassernetz"/>
+	<text id="txt_cfg_window_ocean_normalmap" str="Ozean normale karte"/>
+	<text id="txt_cfg_window_ocean_reflection" str="Ozean Reflektions Karte"/>
+	<text id="txt_player_life" str="LEBENSPUNKTE:"/>
+	<text id="txt_player_money" str="Geld:"/>
+	<text id="msg_error" str="Fehler"/>
+	<text id="msg_invalid_project_file" str="Ungueltige Projektdatei"/>
+	<text id="msg_override_project" str="Das aktuelle Projekt speichern?"/>
+	<text id="msg_saved_ok" str=" speichern erfolgreich!"/>
+	<text id="msg_new_project_name" str="Geben Sie den Projektnamen ein:"/>
+	<text id="msg_loaded_error" str="Fehler beim Laden"/>
+	<text id="msg_loaded_ok" str=" laden erfolgreich!"/>
+	<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
+	<text id="txt_dynobjsel" str="Dynamische Objekt-Selektion" />
+	<text id="txt_cussegsel" str="Custom tile selection" />
+	<text id="txt_dynobjcur" str="Aktuelles Modell" />
+	<text id="txt_objectcol" str="Object collection" />
+	<text id="txt_dynobjcat" str="Kategorie" />
+	<text id="txt_dynobjitm" str="Artikel" />
+	<text id="txt_tool_des0" str="IRB Project tools" />
+	<text id="txt_tool_des1" str="Bearbeiten" />
+	<text id="txt_tool_des2" str="Scripting" />
+	<text id="txt_tool_des3" str="Konfiguration" />
+	<text id="txt_tool_des4" str="Spiel testen" />
+	<text id="txt_tool_des5" str="Terrain tools" />
+	<text id="txt_tool_des6" str="Vegetation Werkzeuge" />
+	<text id="txt_tool_edit" str="Edit-Modus" />
+	<text id="txt_tool_edpl" str="Spieler" />
+	<text id="txt_tool_scrp" str="Skript Spieler" />
+	<text id="txt_tool_scrg" str="Skript global" />
+	<text id="txt_tool_sete" str="Editor setup" />
+	<text id="txt_tool_setg" str="Game setup" />
+	<text id="txt_tool_gc" str="Display-Konsole" />
+	<text id="txt_tool_play" str="Spiel modus" />
+	<text id="txt_tool_edim" str="Bearbeiten modus" />
+	<text id="txt_tool_edsg" str="Bearbeiten Segmente" />
+	<text id="txt_tool_edel" str="Bearbeiten Höhe" />
+	<text id="txt_tool_tree" str="Bäume" />
+	<text id="txt_tool_bush" str="Gebüsch" />
+	<text id="txt_tool_rock" str="Steine" />
+	<text id="msg_welcome" str="Willkommen auf IRR RPG Builder" />
+	<text id="msg_prj_np0" str="Neues Projekt" />
+	<text id="msg_prj_np1" str='Dadurch entsteht ein neues Projekt. Sind Sie sicher?' />
+	<text id="msg_prj_np2" str="Neues Projekt erstellt!" />
+	<text id="msg_prj_sp0" str="Projekt speichern" />
+	<text id="msg_prj_sp1" str="Möchten Sie dieses Projekt zu retten?" />
+	<text id="msg_prj_sp2" str="Projekt erfolgreich gespeichert!" />
+	<text id="msg_prj_lp0" str="Lädt ein neues Projekt" />
+	<text id="msg_prj_lp1" str="Werden Sie das aktuelle Projekt speichern?" />
+	<text id="msg_prj_lp2" str="Projekt gespeichert" />
+	<text id="msg_prj_lp3" str="Geben Sie die Projekt-Datei zu laden" />
+	<text id="msg_prj_lp4" str="Projekt erfolgreich geladen!" />
+	<text id="msg_dlg_warn" str="IRR Rpg Builder Warnung" />
+	<text id="msg_dlg_yes" str="&Ja" />
+	<text id="msg_dlg_no" str="&Nein" />
+	<text id="msg_dlg_cancel" str="Abbrechen" />
+	<about str="IrrRPG Builder v0.3 Alpha" />
+	<about str="    von Andres Jesse Porfirio," />
+	<about str="   Christian Clavet" />
+	<about str=" " />
+	<about str="Programmierung & Scripte von:" />
+	<about str="    Andres Jesse Porfirio (www.andresjesse.com)" />
+	<about str="    Christian Clavet (www.clavet.org)" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str=" " />
+	<about str="Oberflachendesign:" />
+	<about str="    Andres Jesse Porfirio" />
+	<about str="    Christian Clavet" />
+	<about str=" " />
+	<about str="Logo design:" />
+	<about str="    Borges (www.vhborges.tk)" />
+	<about str=" " />
+	<about str="Modele von:" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str=" " />
+	<about str="Animationen:" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str=" " />
+	<about str="Shaders:" />
+	<about str="    Andres Jesse Porfirio" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str="    Ihren Namen hier einfugen" />
+	<about str=" " />
+	<about str="Dank " />
+	<about str="Das Irrlicht-Team(irrlicht.sourceforge.net) " />
+	<about str="TBW aus dem Irrlicht Forum für die PostFX System" />
+	<about str="besuchen Sie irrrpgbuilder.sourceforge.net" />
+	<about str="Viel Spaß!"/>
+</IrrRPG_Builder_LanguageFile>

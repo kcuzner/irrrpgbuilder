@@ -10,6 +10,7 @@
 
 xmldata::xmldata()
 {
+	device=NULL;
 }
 
 xmldata::~xmldata()
@@ -267,6 +268,8 @@ void xmldata::loadSet(IrrlichtDevice * device)
 	// Will provide the path and "sets" to load
 	// --> Loader code
 	// read configuration from xml file
+
+	device = device;
 	
 
 	const u32 starttime = device->getTimer()->getRealTime();
@@ -354,6 +357,7 @@ void xmldata::loadLang(IrrlichtDevice * device)
 {
 	// --> Loader code
 	// read configuration from xml file
+	this->device=device;
 		const u32 starttime = device->getTimer()->getRealTime();
         io::IXMLReaderUTF8* xml = device->getFileSystem()->createXMLReaderUTF8("../media/lang.xml");
 
@@ -362,6 +366,7 @@ void xmldata::loadLang(IrrlichtDevice * device)
 		core::stringc  MessageText = "";
 		core::stringc  language = "";
 		core::stringc  description = "";
+		core::stringc  filename = "";
 		core::stringw  result = L"";
 
 		bool inside = false;
@@ -392,31 +397,26 @@ void xmldata::loadLang(IrrlichtDevice * device)
 							}
 
                             language = winconvert(xml->getAttributeValue("name"));
-							description = winconvert(xml->getAttributeValue("description"));
+							description = winconvert(xml->getAttributeValue("description"));								
 							if (LANGManager::getInstance()->defaultLanguage==language)
-								found=true;
+							{
+								found=true; //Get the filename of the xml file for the lang if it's the current one and if it's exist
+								filename = winconvert(xml->getAttributeValue("filename"));
+							}
 						}
 
-						if (core::stringw("text") == xml->getNodeName())
+						if ((core::stringw("text") == xml->getNodeName()) && filename=="" && (language==LANGManager::getInstance()->defaultLanguage))
 						{
-
-
-							if (language==LANGManager::getInstance()->defaultLanguage)
-							{
 								CurrentLang.name = winconvert(xml->getAttributeValue("id"));
 								CurrentLang.text = winconvert(xml->getAttributeValue("str"));
 								LANGManager::getInstance()->language.push_back(CurrentLang);
 								linecount++;
-							}
 						}
-						if (core::stringw("about") == xml->getNodeName())
+						if (core::stringw("about") == xml->getNodeName() && filename=="" && (language==LANGManager::getInstance()->defaultLanguage))
 						{
-							if (language==LANGManager::getInstance()->defaultLanguage)
-							{
 								CurrentLang.name=L"txt_about";
 								CurrentLang.text=winconvert(xml->getAttributeValue("str"));
 								LANGManager::getInstance()->aboutext.push_back(CurrentLang);
-							}
 						}
 				}
                 break;
@@ -449,6 +449,81 @@ void xmldata::loadLang(IrrlichtDevice * device)
 
         if (xml)
                 xml->drop(); // don't forget to delete the xml reader
+
+		if (filename!="") // If the langage string is not stored in lang, get it from the associated filename.
+			loadLangFile(filename);
 	// <-- Loader code
+
+}
+
+void xmldata::loadLangFile(core::stringc  filename )
+{
+		core::stringc file="../media/";
+		file+=filename;
+		if (!device)
+		{ 
+			printf("Problems!\n");
+			return;
+		}
+
+		const u32 starttime = device->getTimer()->getRealTime();
+		io::IXMLReaderUTF8* xml = device->getFileSystem()->createXMLReaderUTF8(file.c_str());
+
+		Lang CurrentLang;
+
+		bool inside = false;
+		bool found = false;
+
+		// Language counter (using the XML hierachy)
+		u32 count = 0;
+		u32 linecount = 0;
+		u32 linecount2 = 0;
+
+        while(xml && xml->read())
+        {
+                switch(xml->getNodeType())
+                {
+                case io::EXN_TEXT:		
+                        break;
+
+                case io::EXN_ELEMENT:
+                {
+					
+						if ((core::stringw("text") == xml->getNodeName()))
+						{
+								CurrentLang.name = winconvert(xml->getAttributeValue("id"));
+								CurrentLang.text = winconvert(xml->getAttributeValue("str"));
+								LANGManager::getInstance()->language.push_back(CurrentLang);
+								linecount++;
+						}
+						if (core::stringw("about") == xml->getNodeName())
+						{
+								CurrentLang.name=L"txt_about";
+								CurrentLang.text=winconvert(xml->getAttributeValue("str"));
+								LANGManager::getInstance()->aboutext.push_back(CurrentLang);
+						}
+				}
+                break;
+
+				case io::EXN_ELEMENT_END:
+					if (!inside)
+					{
+						linecount=0;
+						linecount2=0;
+					}
+
+					if (inside)
+						count++;
+
+					inside = false;
+					break;
+                default:
+                        break;
+                }
+        }
+
+
+        if (xml)
+                xml->drop(); // don't forget to delete the xml reader
 
 }

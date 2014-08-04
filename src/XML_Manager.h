@@ -19,11 +19,15 @@ class xmldata
 		void loadBlock(IrrlichtDevice * device, core::stringc file );
 		void loadSet(IrrlichtDevice * device);
 		void loadLang(IrrlichtDevice * device);
+		
 	
 
 	private:
 		xmldata();
 		~xmldata();
+
+		void loadLangFile(core::stringc  filename);
+		IrrlichtDevice * device;
 };
 
 #endif // XML_MANAGER_H
