@@ -164,6 +164,13 @@
 	<text id="panel_sel_type" str="Selected object type:" />
 	<text id="panel_sel_script" str="Object has a script?:" />
 	<text id="panel_sel_template" str="Current template:" />
+	<text id="panel_sel_position" str="Position" />
+	<text id="panel_sel_rotation" str="Rotation" />
+	<text id="panel_sel_scale" str="Scale" />
+	<text id="panel_sel_lock" str="Lock" />
+	<text id="panel_tile_rmode" str="Rotation modes" />
+	<text id="panel_tile_rleft" str="Rotate\ntile\nleft" />
+	<text id="panel_tile_rright" str="Rotate\ntile\nright" />
 	<text id="panel_sellist" str="Selection lists" />
 	<text id="panel_sellist_filter" str="Object type filter:" />
 	<text id="panel_selcombo_all" str="All" />
@@ -173,8 +180,13 @@
 	<text id="panel_selcombo_intprop" str="Interactive Props" />
 	<text id="panel_selcombo_walk" str="Walkables" />
 	<text id="panel_sel_noscene" str="No item in the scene" />
+	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Replace with current template" />
 	<text id="bt_dynamic_objects_centerview" str="Center view on object" />
+	<text id="txt_context_spawn" str="Create item here" />
+	<text id="txt_context_replace_file" str="Replace with a model file" />
+	<text id="script_window_title" str="Script editor" />
+	<text id="console_window_title" str="Console window" />
 	<about str="IrrRPG Builder v0.3 Alpha" />
 	<about str="    by Andres Jesse Porfirio" />
 	<about str="    and Christian Clavet" />

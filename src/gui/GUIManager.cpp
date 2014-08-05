@@ -1495,13 +1495,13 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	//Line 1 Position
 	guienv->addStaticText(L"",myRect(5,5,190,90),true,true,InnerChooser2);
-	guienv->addStaticText(L"Position",myRect(10,10,160,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_position").c_str(),myRect(10,10,160,20),false,false,InnerChooser2);
 	
 	//position X axis
 	guienv->addStaticText(L"X",myRect(10,28,15,20),false,false,InnerChooser2);
 	pos_x_text = guienv->addSpinBox(L"X:",myRect(25,25,100,20),true, InnerChooser2, TI_ID_POS_X);
 		//guienv->addEditBox(L"X:",myRect(25,25,100,20), true, InnerChooser2, TI_ID_POS_X);
-	guienv->addStaticText(L"Lock",myRect(130,28,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,28,50,20),false,false,InnerChooser2);
 	//pos_x_text->setMultiLine(false);
 	//pos_x_text->setText(L"0.000000");
 	pos_x_text->setValue(0.0f);
@@ -1510,7 +1510,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//position Y axis
 	guienv->addStaticText(L"Y",myRect(10,48,15,20),false,false,InnerChooser2);
 	pos_y_text = guienv->addSpinBox(L"X:",myRect(25,45,100,20), true, InnerChooser2, TI_ID_POS_Y);
-	guienv->addStaticText(L"Lock",myRect(130,48,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,48,50,20),false,false,InnerChooser2);
 	//pos_y_text->setMultiLine(false);
 	//pos_y_text->setText(L"0.000000");
 	pos_y_text->setValue(0.0f);
@@ -1519,7 +1519,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//position Z axis
 	guienv->addStaticText(L"Z",myRect(10,68,15,20),false,false,InnerChooser2);
 	pos_z_text = guienv->addSpinBox(L"X:",myRect(25,65,100,20), true, InnerChooser2, TI_ID_POS_Z);
-	guienv->addStaticText(L"Lock",myRect(130,68,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,68,50,20),false,false,InnerChooser2);
 	//pos_z_text->setMultiLine(false);
 	//pos_z_text->setText(L"0.000000");
 	pos_z_text->setValue(0.0f);
@@ -1529,12 +1529,12 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	//Rotation
 	guienv->addStaticText(L"",myRect(5,100,190,90),true,true,InnerChooser2);
-	guienv->addStaticText(L"Rotation",myRect(10,110,160,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_rotation").c_str(),myRect(10,110,160,20),false,false,InnerChooser2);
 
 	//rotation X axis
 	guienv->addStaticText(L"X",myRect(10,128,15,20),false,false,InnerChooser2);
 	rot_x_text = guienv->addSpinBox(L"X:",myRect(25,125,100,20), true, InnerChooser2, TI_ID_ROT_X);
-	guienv->addStaticText(L"Lock",myRect(130,128,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,128,50,20),false,false,InnerChooser2);
 	//rot_x_text->setMultiLine(false);
 	//rot_x_text->setText(L"0.000000");
 	rot_x_text->setValue(0.0f);
@@ -1543,7 +1543,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//rotation Y axis
 	guienv->addStaticText(L"Y",myRect(10,148,15,20),false,false,InnerChooser2);
 	rot_y_text = guienv->addSpinBox(L"X:",myRect(25,145,100,20), true, InnerChooser2, TI_ID_ROT_Y);
-	guienv->addStaticText(L"Lock",myRect(130,148,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,148,50,20),false,false,InnerChooser2);
 	//rot_y_text->setMultiLine(false);
 	//rot_y_text->setText(L"0.000000");
 	rot_y_text->setValue(0.0f);
@@ -1552,7 +1552,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//rotation Z axis
 	guienv->addStaticText(L"Z",myRect(10,168,15,20),false,false,InnerChooser2);
 	rot_z_text = guienv->addSpinBox(L"X:",myRect(25,165,100,20), true, InnerChooser2, TI_ID_ROT_Z);
-	guienv->addStaticText(L"Lock",myRect(130,168,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,168,50,20),false,false,InnerChooser2);
 	//rot_z_text->setMultiLine(false);
 	//rot_z_text->setText(L"0.000000");
 	rot_z_text->setValue(0.0f);
@@ -1563,12 +1563,12 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 
 	guienv->addStaticText(L"",myRect(5,200,190,90),true,true,InnerChooser2);
-	guienv->addStaticText(L"Scale",myRect(10,210,160,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_scale").c_str(),myRect(10,210,160,20),false,false,InnerChooser2);
 
 	//Scale X axis
 	guienv->addStaticText(L"X",myRect(10,228,15,20),false,false,InnerChooser2);
 	sca_x_text = guienv->addSpinBox(L"X:",myRect(25,225,100,20), true, InnerChooser2, TI_ID_SCA_X);
-	guienv->addStaticText(L"Lock",myRect(130,228,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,228,50,20),false,false,InnerChooser2);
 	//sca_x_text->setMultiLine(false);
 	//sca_x_text->setText(L"0.000000");
 	sca_x_text->setValue(0.0f);
@@ -1577,7 +1577,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//Scale Y axis
 	guienv->addStaticText(L"Y",myRect(10,248,15,20),false,false,InnerChooser2);
 	sca_y_text = guienv->addSpinBox(L"X:",myRect(25,245,100,20), true, InnerChooser2, TI_ID_SCA_Y);
-	guienv->addStaticText(L"Lock",myRect(130,248,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,248,50,20),false,false,InnerChooser2);
 	//sca_y_text->setMultiLine(false);
 	//sca_y_text->setText(L"0.000000");
 	sca_y_text->setValue(0.0f);
@@ -1586,7 +1586,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//Scale Z axis
 	guienv->addStaticText(L"Z",myRect(10,268,15,20),false,false,InnerChooser2);
 	sca_z_text = guienv->addSpinBox(L"X:",myRect(25,265,100,20), true, InnerChooser2, TI_ID_SCA_Z);
-	guienv->addStaticText(L"Lock",myRect(130,268,50,20),false,false,InnerChooser2);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_lock").c_str(),myRect(130,268,50,20),false,false,InnerChooser2);
 	//sca_z_text->setMultiLine(false);
 	//sca_z_text->setText(L"0.000000");
 	sca_z_text->setValue(0.0f);
@@ -1676,7 +1676,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	if (boxend<10)
 		boxend=10;
 
-	gui::IGUIStaticText* text0 = guienv->addStaticText(L"Rotation modes",core::rect<s32>(pos_X-5,pos_Y,200,pos_Y+110),true,true,InnerChooser,-1);
+	gui::IGUIStaticText* text0 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_tile_rmode").c_str(),core::rect<s32>(pos_X-5,pos_Y,200,pos_Y+110),true,true,InnerChooser,-1);
 	text0->setOverrideFont(guiFont12);
 
 	pos_Y += 20;
@@ -1702,7 +1702,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	pos_X=20;
 
 	pos_Y += 39; // Text under the buttons
-	IGUIStaticText * tilerotationTextL = guienv->addStaticText(L"Rotate\ntile\nleft",
+	IGUIStaticText * tilerotationTextL = guienv->addStaticText(LANGManager::getInstance()->getText("panel_tile_rleft").c_str(),
 		core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+42),false,true,InnerChooser,-1);
 	//tilerotationTextL->setBackgroundColor(video::SColor(255,238,240,242));
 	//tilerotationTextL->setOverrideColor(video::SColor(255,86,95,109));
@@ -1710,7 +1710,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	tilerotationTextL->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
 	pos_X+=120;
-	IGUIStaticText * tilerotationTextR = guienv->addStaticText(L"Rotate\ntile\nright",
+	IGUIStaticText * tilerotationTextR = guienv->addStaticText(LANGManager::getInstance()->getText("panel_tile_rright").c_str(),
 		core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+42),false,true,InnerChooser,-1);
 	//tilerotationTextL->setBackgroundColor(video::SColor(255,238,240,242));
 	//tilerotationTextL->setOverrideColor(video::SColor(255,86,95,109));
@@ -1760,7 +1760,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	/// ---------------- Info portions
 	u16 posx = 200;
 	u16 posy = 260;
-	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(posx+5,5,posx+310,20),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infotext").c_str(),core::rect<s32>(posx+5,5,posx+310,20),false,true,InnerChooser,-1);
 	infotext->setDrawBackground(true);
 	infotext->setDrawBorder(true);
 	infotext->setBackgroundColor(video::SColor(255,237,242,248));
@@ -1770,7 +1770,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 
 	thumbnail1=guienv->addImage(info_current1,vector2d<s32>(posx+5,50),true,InnerChooser);
 
-	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext1 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infomodel").c_str(),core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
 	infotext1->setOverrideFont(guiFont12);
 
 	posy+=15;
@@ -1782,7 +1782,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 
 	posy+=25;
 
-	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext2 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infodesc").c_str(),core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
 	infotext2->setOverrideFont(guiFont12);
 
 	posy+=15;
@@ -1792,7 +1792,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	mdl_desc1->setOverrideFont(guiFont10);
 
 	posy+=110;
-	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext3 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infoauthor").c_str(),core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
 	infotext3->setOverrideFont(guiFont12);
 
 	posy+=15;
@@ -1803,7 +1803,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	mdl_auth1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
 	posy+=25;
-	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext4 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infolicence").c_str(),core::rect<s32>(posx+5,posy,posx+310,posy+39),false,true,InnerChooser,-1);
 	infotext4->setOverrideFont(guiFont12);
 
 	posy+=15;
@@ -1829,7 +1829,7 @@ void GUIManager::createContextMenuGUI()
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window->setVisible(false);
 	
-	IGUIStaticText* contexttitle = guienv->addStaticText(L"Action",core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window,-1);
+	IGUIStaticText* contexttitle = guienv->addStaticText(LANGManager::getInstance()->getText("txt_context_title").c_str(),core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window,-1);
 	contexttitle->setOverrideFont(guiFont14);
 	contexttitle->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	//contexttitle->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
@@ -1853,14 +1853,14 @@ void GUIManager::createContextMenuGUI()
 	guiDynamicObjects_Context_btSpawn = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_SPAWN,
-                                                           L"Create item here");
+                                                           LANGManager::getInstance()->getText("txt_context_spawn").c_str());
 	guiDynamicObjects_Context_btSpawn->setOverrideFont(guiFontC12);
 	pby+=25;
 
 	guiDynamicObjects_Context_btReplace = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REPLACE,
-                                                           L"Replace with a model file");
+                                                           LANGManager::getInstance()->getText("txt_context_replace_file").c_str());
 	guiDynamicObjects_Context_btReplace->setOverrideFont(guiFontC12);
 	guiDynamicObjects_Context_btReplace->setEnabled(true);
 	pby+=25;
@@ -1868,7 +1868,7 @@ void GUIManager::createContextMenuGUI()
 	guiDynamicObjects_Context_btReplace2 = guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REPLACE2,
-                                                           L"Replace with current template");
+                                                           LANGManager::getInstance()->getText("bt_dynamic_objects_replace").c_str());
 	guiDynamicObjects_Context_btReplace2->setOverrideFont(guiFontC12);
 	pby+=30;
 	
@@ -1880,7 +1880,7 @@ void GUIManager::createContextMenuGUI()
 
 	pby+=30;
 
-	IGUIButton * button = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+	IGUIButton * button = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window, BT_ID_DYNAMIC_OBJECT_BT_CENTER, LANGManager::getInstance()->getText("bt_dynamic_objects_centerview").c_str());
 	button->setOverrideFont(guiFontC12);
 	
 	pby+=25;
@@ -1909,7 +1909,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);*/
 
 	// NEW (oct 2012) Create a stretching windows for the script editor
-	guiDynamicObjectsWindowEditAction=new CGUIExtWindow(L"Script editor",guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
+	guiDynamicObjectsWindowEditAction=new CGUIExtWindow(LANGManager::getInstance()->getText("script_window_title").c_str(),guienv, guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,myRect(1,120,displaywidth-1,displayheight-140));
 	guiDynamicObjectsWindowEditAction->setDevice(device);
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	//guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
@@ -2397,7 +2397,7 @@ void GUIManager::createConsole()
 
 	core::dimension2d<u32> center = screensize/2;
 	// consolewin = guienv->addWindow(rect<s32>(20,20,800,400),false,L"Console window",0,GCW_CONSOLE);
-	consolewin = new CGUIExtWindow(L"Console window", guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(center.Width-400,center.Height-200,center.Width+400,center.Height+200));
+	consolewin = new CGUIExtWindow(LANGManager::getInstance()->getText("console_window_title").c_str(), guienv, guienv->getRootGUIElement(),GCW_CONSOLE,rect<s32>(center.Width-400,center.Height-200,center.Width+400,center.Height+200));
 	consolewin->setDevice(App::getInstance()->getDevice());
 	//consolewin->getCloseButton()->setVisible(false);
 	consolewin->setCloseHide(true);

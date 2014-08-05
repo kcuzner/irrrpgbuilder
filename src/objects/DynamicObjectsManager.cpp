@@ -766,7 +766,7 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(SPECIAL special)
 vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType, SPECIAL special)
 {
     vector<stringw> listObjs;
-	listObjs.push_back((core::stringw)"All");
+	listObjs.push_back(LANGManager::getInstance()->getText("panel_selcombo_all").c_str());
 	bool found = false;
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
