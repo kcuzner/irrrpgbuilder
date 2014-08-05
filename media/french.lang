@@ -123,6 +123,57 @@
 		<text id="msg_dlg_yes" str="&Oui" />
 		<text id="msg_dlg_no" str="&Non" />
 		<text id="msg_dlg_cancel" str="Annuler" />
+		<!-- New stuff added august 2014 -->
+	<text id="status_title" str="Welcome to IRR RPG Builder!" />
+	<text id="status_campos" str="Camera position:" />
+	<text id="status_target" str="    Target:  " />
+	<text id="status_objpos" str="Object position: " />
+	<text id="status_objrot" str="    Rotation:  " />
+	<text id="loader_gen" str="Loading..." />
+	<text id="loader_fonts" str="Loading fonts..." />
+	<text id="loader_graphics" str="Loading interface graphics..." />
+	<text id="sgrid_default" str="Grid default size" />
+	<text id="sgrid2" str="2 units" />
+	<text id="sgrid4" str="4 units" />
+	<text id="sgrid8" str="8 units" />
+	<text id="sgrid16" str="16 units" />
+	<text id="sgrid32" str="32 units" />
+	<text id="sgrid64" str="64 units" />
+	<text id="sgrid128" str="128 units" />
+	<text id="sgrid256" str="256 units" />
+	<text id="sgrid512" str="512 units" />
+	<text id="sgrid1024" str="1024 units" />
+	<text id="view_gen" str="Change view settings" />
+	<text id="view_top" str="top" />
+	<text id="view_bottom" str="bottom" />
+	<text id="view_left" str="left" />
+	<text id="view_right" str="right" />
+	<text id="view_front" str="front" />
+	<text id="view_back" str="back" />
+	<text id="view_ortho" str="orthographic view" />
+	<text id="view_pers" str="perspective view" />
+	<text id="panel_infobut" str=">> Information panel" />
+	<text id="panel_infotext" str="Informations about this object" />
+	<text id="panel_infomodel" str="Model name:" />
+	<text id="panel_infodesc" str="Description:" />
+	<text id="panel_infoauthor" str="Author:" />
+	<text id="panel_infolicence" str="Licence:" />
+	<text id="panel_sel_object" str="Selected object:" />
+	<text id="panel_sel_sel1" str="no selection:" />
+	<text id="panel_sel_type" str="Selected object type:" />
+	<text id="panel_sel_script" str="Object has a script?:" />
+	<text id="panel_sel_template" str="Current template:" />
+	<text id="panel_sellist" str="Selection lists" />
+	<text id="panel_sellist_filter" str="Object type filter:" />
+	<text id="panel_selcombo_all" str="All" />
+	<text id="panel_selcombo_npc" str="NPC" />
+	<text id="panel_selcombo_loot" str="Loot" />
+	<text id="panel_selcombo_prop" str="Props" />
+	<text id="panel_selcombo_intprop" str="Interactive Props" />
+	<text id="panel_selcombo_walk" str="Walkables" />
+	<text id="panel_sel_noscene" str="No item in the scene" />
+	<text id="bt_dynamic_objects_replace" str="Replace with current template" />
+	<text id="bt_dynamic_objects_centerview" str="Center view on object" />
 		<about str="IrrRPG Builder v0.3 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
 		<about str="    et Christian Clavet"/>

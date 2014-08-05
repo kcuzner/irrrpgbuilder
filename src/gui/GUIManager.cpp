@@ -413,14 +413,14 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 	// Display this when working with segments or when there no node selected.
 	if (!node || App::getInstance()->getAppState()==APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
-		sct += L"Camera position: ";
+		sct += LANGManager::getInstance()->getText("status_campos");
 		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
 		sct+=(core::stringw)pos.X;
 		sct+=L",";
 		sct+=(core::stringw)pos.Y;
 		sct+=L",";
 		sct+=(core::stringw)pos.Z;
-		sct+=L"    Target:  ";
+		sct+=LANGManager::getInstance()->getText("status_target");
 		pos = CameraSystem::getInstance()->getNode()->getTarget();
 		sct+=(core::stringw)pos.X;
 		sct+=L",";
@@ -441,14 +441,14 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 			core::vector3df pos = node->getPosition();
 			core::vector3df rot = node->getRotation();
 
-			sct += L"Object position: ";
+			sct += LANGManager::getInstance()->getText("status_objpos");
 			sct+=(core::stringw)pos.X;
 			sct+=L",";
 			sct+=(core::stringw)pos.Y;
 			sct+=L",";
 			sct+=(core::stringw)pos.Z;
 
-			sct+=L"    Rotation:  ";
+			sct+=LANGManager::getInstance()->getText("status_objrot");
 			sct+=(core::stringw)rot.X;
 			sct+=L",";
 			sct+=(core::stringw)rot.Y;
@@ -481,19 +481,19 @@ void GUIManager::setupEditorGUI()
 	displaywidth=screensize.Width;
 
 	//LOADER WINDOW
-	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,L"Loading...",0,WIN_LOADER);
+	guiLoaderWindow = guienv->addWindow(myRect(displaywidth/2-300,displayheight/2-200,600,400),false,LANGManager::getInstance()->getText("loader_gen").c_str(),0,WIN_LOADER);
 	guiLoaderWindow->setDrawTitlebar(false);
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 	guiLoaderWindow->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
 
 	//guienv->addImage(imgLogo,vector2d<s32>(200,50),true,guiLoaderWindow);
 	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
-	guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+	guiLoaderDescription = guienv->addStaticText(LANGManager::getInstance()->getText("loader_font").c_str(),myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
 	App::getInstance()->quickUpdate();
 
 	loadFonts();
 	guienv->getSkin()->setFont(guiFont10);
-	guiLoaderDescription->setText(L"Loading interface graphics...");
+	guiLoaderDescription->setText(LANGManager::getInstance()->getText("loader_graphics").c_str());
 
 	// quick update of the Irrlicht display while loading.
 	App::getInstance()->quickUpdate();
@@ -528,7 +528,7 @@ void GUIManager::setupEditorGUI()
 	guiStatus->setDrawBackground(true);
 	guiStatus->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	guiStatusText = guienv->addStaticText(L"Welcome to IRR RPG Builder!",myRect(10,4,displaywidth-200,18),false,false,guiStatus);
+	guiStatusText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("status_title")).c_str(),myRect(10,4,displaywidth-200,18),false,false,guiStatus);
 
 	guiStatusCameraText = guienv->addStaticText(getEditCameraString(NULL).c_str(),myRect(displaywidth-600,4,displaywidth-700,18),true,false,guiStatus);
 	guiStatusCameraText->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
@@ -584,30 +584,30 @@ void GUIManager::setupEditorGUI()
 void GUIManager::createDisplayOptionsGUI()
 {
 	snappingcombo = guienv->addComboBox(myRect(240,120,120,20),0,CB_SNAPCOMBO);
-	snappingcombo->addItem(L"Grid default size",0);
-	snappingcombo->addItem(L"2 units",2);
-	snappingcombo->addItem(L"4 units",4);
-	snappingcombo->addItem(L"8 units",8);
-	snappingcombo->addItem(L"16 units",16);
-	snappingcombo->addItem(L"32 units",32);
-	snappingcombo->addItem(L"64 units",64);
-	snappingcombo->addItem(L"128 units",128);
-	snappingcombo->addItem(L"256 units",256);
-	snappingcombo->addItem(L"512 units",512);
-	snappingcombo->addItem(L"1024 units",1024);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid_default").c_str(),0);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid2").c_str(),2);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid4").c_str(),4);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid8").c_str(),8);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid16").c_str(),16);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid32").c_str(),32);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid64").c_str(),64);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid128").c_str(),128);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid256").c_str(),256);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid512").c_str(),512);
+	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid1024").c_str(),1024);
 	snappingcombo->setMaxSelectionRows(12);
 	guienv->getRootGUIElement()->sendToBack(snappingcombo);
 
 	screencombo = guienv->addComboBox(myRect(30,120,200,20),0,CB_SCREENCOMBO);
-	screencombo->addItem(L"Change view settings",0);
-	screencombo->addItem(L"top",1);
-	screencombo->addItem(L"bottom",2);
-	screencombo->addItem(L"left",3);
-	screencombo->addItem(L"right",4);
-	screencombo->addItem(L"front",5);
-	screencombo->addItem(L"back",6);
-	screencombo->addItem(L"orthographic view",7);
-	screencombo->addItem(L"perspective view",8);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_gen").c_str(),0);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_top").c_str(),1);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_bottom").c_str(),2);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_left").c_str(),3);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_right").c_str(),4);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_front").c_str(),5);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_back").c_str(),6);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_ortho").c_str(),7);
+	screencombo->addItem(LANGManager::getInstance()->getText("view_pers").c_str(),8);
 	screencombo->setMaxSelectionRows(9);
 	screencombo->setEnabled(true);
 	guienv->getRootGUIElement()->sendToBack(screencombo);
@@ -1352,7 +1352,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsInfo= guienv->addButton(myRect(5,pos_Y+boxend+10,190,20),
                                                            InnerChooser,
                                                            BT_ID_DYNAMIC_OBJECT_INFO,
-                                                           L">> Information panel" );
+                                                           LANGManager::getInstance()->getText("panel_infobut").c_str());
 	guiDynamicObjectsInfo->setOverrideFont(guiFontC12);
 	guiDynamicObjectsInfo->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
@@ -1360,7 +1360,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//---------------------------------------------- Info portions - ADD MODE
 	pos_X = 200;
 	pos_Y = 5;
-	IGUIStaticText * infotext = guienv->addStaticText(L"Informations about this object",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,20),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infotext").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,20),false,true,InnerChooser,-1);
 	infotext->setDrawBackground(true);
 	infotext->setDrawBorder(true);
 	infotext->setBackgroundColor(video::SColor(255,237,242,248));
@@ -1372,7 +1372,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	pos_Y+=220;
 
-	IGUIStaticText * infotext1 = guienv->addStaticText(L"Model name:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext1 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infomodel").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext1->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
@@ -1384,7 +1384,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	pos_Y+=25;
 
-	IGUIStaticText * infotext2 = guienv->addStaticText(L"Description:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext2 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infodesc").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext2->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
@@ -1394,7 +1394,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	mdl_desc->setOverrideFont(guiFont10);
 
 	pos_Y+=110;
-	IGUIStaticText * infotext3 = guienv->addStaticText(L"Author:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext3 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infoauthor").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext3->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
@@ -1405,7 +1405,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	mdl_auth->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 
 	pos_Y+=25;
-	IGUIStaticText * infotext4 = guienv->addStaticText(L"Licence:",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
+	IGUIStaticText * infotext4 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_infolicence").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser,-1);
 	infotext4->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
@@ -1435,35 +1435,35 @@ void GUIManager::createDynamicObjectChooserGUI()
 	IGUIStaticText * background = guienv->addStaticText(L"",core::rect<s32>(pos_X-5,pos_Y,pos_X+185,pos_Y+140),true,false,InnerChooser1,-1,true); //Box border & background for infos
 	background->setBackgroundColor(video::SColor(255,240,240,240));
 
-	IGUIStaticText * objinfotext1 =  guienv->addStaticText(L"Selected object:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	IGUIStaticText * objinfotext1 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_object").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
 	objinfotext1->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
-	IGUIStaticText * objtext1 =  guienv->addStaticText(L"no selection:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT);
+	IGUIStaticText * objtext1 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT);
 	objtext1->setOverrideColor(video::SColor(255,60,129,220));
 
 	pos_Y+=20;
-	IGUIStaticText * objinfotext2 =  guienv->addStaticText(L"Selected object type:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	IGUIStaticText * objinfotext2 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_type").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
 	objinfotext2->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
-	IGUIStaticText * objtext2 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT_TYPE);
+	IGUIStaticText * objtext2 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_SELOBJECT_TYPE);
 	objtext2->setOverrideColor(video::SColor(255,60,129,220));
 
 	pos_Y+=20;
-	IGUIStaticText * objinfotext4 =  guienv->addStaticText(L"Object has a script?:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	IGUIStaticText * objinfotext4 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_script").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
 	objinfotext4->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
-	IGUIStaticText * objtext4 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_OBJ_SCRIPT);
+	IGUIStaticText * objtext4 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1,TXT_ID_OBJ_SCRIPT);
 	objtext4->setOverrideColor(video::SColor(255,60,129,220));
 
 	pos_Y+=20;
-	IGUIStaticText * objinfotext3 =  guienv->addStaticText(L"Current template:",core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
+	IGUIStaticText * objinfotext3 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_template").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+180,pos_Y+30),false,true,InnerChooser1);
 	objinfotext3->setOverrideFont(guiFont12);
 
 	pos_Y+=15;
-	IGUIStaticText * objtext3 =  guienv->addStaticText(L"no selection",core::rect<s32>(pos_X,pos_Y,pos_X+185,pos_Y+30),false,true,InnerChooser1,TXT_ID_CUR_TEMPLATE);
+	IGUIStaticText * objtext3 =  guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str(),core::rect<s32>(pos_X,pos_Y,pos_X+185,pos_Y+30),false,true,InnerChooser1,TXT_ID_CUR_TEMPLATE);
 	objtext3->setOverrideColor(video::SColor(255,60,129,220));
 
 	pos_X-=5;
@@ -1476,10 +1476,10 @@ void GUIManager::createDynamicObjectChooserGUI()
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 
 	pos_Y+=30;
-	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, L"Replace with current template");
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REPLACE2, LANGManager::getInstance()->getText("bt_dynamic_objects_replace").c_str());
 
 	pos_Y+=30;
-	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, L"Center view on object");
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_CENTER, LANGManager::getInstance()->getText("bt_dynamic_objects_centerview").c_str());
 
 	InnerChooser1->setVisible(false);
 
@@ -1611,23 +1611,23 @@ void GUIManager::createDynamicObjectChooserGUI()
 	pos_X=0; 
 	pos_Y=5;
 	//Elements of this windows
-	IGUIStaticText * it_1 = guienv->addStaticText(L"Selection lists",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser3,-1);
+	IGUIStaticText * it_1 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_sellist").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser3,-1);
 	it_1->setOverrideFont(guiFont12);
 
 	pos_Y+=20;
-	guienv->addStaticText(L"Object type filter:",core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3);
+	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sellist_filter").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+100,pos_Y+39),false,true,InnerChooser3);
 	guiDynamicObjects_listfilter = guienv->addComboBox(myRect(120,pos_Y+5,180,20),InnerChooser3,CO_ID_ACTIVE_LIST_FILTER);
 	guiDynamicObjects_listfilter->setMaxSelectionRows(24);
-	guiDynamicObjects_listfilter->addItem(L"All");
-	guiDynamicObjects_listfilter->addItem(L"NPC");
-	guiDynamicObjects_listfilter->addItem(L"Loot");
-	guiDynamicObjects_listfilter->addItem(L"Props");
-	guiDynamicObjects_listfilter->addItem(L"Interactive Props");
-	guiDynamicObjects_listfilter->addItem(L"Walkables");
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_all").c_str());
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_npc").c_str());
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_loot").c_str());
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_prop").c_str());
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_intprop").c_str());
+	guiDynamicObjects_listfilter->addItem(LANGManager::getInstance()->getText("panel_selcombo_walk").c_str());
 
 	pos_Y+=60;
 	guiSceneObjectList = guienv->addListBox(myRect(5,pos_Y,260,320),InnerChooser3, CO_ID_ACTIVE_SCENE_LIST,true);
-	guiSceneObjectList->addItem(L"No item in the scene");
+	guiSceneObjectList->addItem(LANGManager::getInstance()->getText("panel_sel_noscene").c_str());
 	guiSceneObjectList->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	InnerChooser3->setVisible(false);
 	
