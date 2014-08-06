@@ -2512,27 +2512,27 @@ void App::updateEditMode()
 						{ 
 
 							case OBJECT_TYPE_PLAYER:
-								objtype = "Object is a PLAYER";
+								objtype = LANGManager::getInstance()->getText("objtype_player").c_str();
 								break;
 
 							case OBJECT_TYPE_NPC:
-								objtype = "Object is a NPC";
+								objtype = LANGManager::getInstance()->getText("objtype_NPC").c_str();
 								break;
 
 							case OBJECT_TYPE_LOOT:
-								objtype = "Object is loot";
+								objtype = LANGManager::getInstance()->getText("objtype_loot").c_str();
 								break;
 
 							case OBJECT_TYPE_INTERACTIVE:
-								objtype = "Object is interactive";
+								objtype = LANGManager::getInstance()->getText("objtype_int").c_str();
 								break;
 
 							case OBJECT_TYPE_NON_INTERACTIVE:
-								objtype = "Object is non interactive";
+								objtype = LANGManager::getInstance()->getText("objtype_nint").c_str();
 								break;
 
 							case OBJECT_TYPE_WALKABLE:
-								objtype = "Object is a walkable mesh";
+								objtype = LANGManager::getInstance()->getText("objtype_walkable").c_str();
 								break;
 
 						
@@ -2553,9 +2553,9 @@ void App::updateEditMode()
 					if (text && object)
 					{
 						if (object->getScript().size()>0)
-							text->setText(L"Yes");
+							text->setText(LANGManager::getInstance()->getText("bt_dialog_yes").c_str());
 						else
-							text->setText(L"No");
+							text->setText(LANGManager::getInstance()->getText("bt_dialog_no").c_str());
 					}
 
 					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
@@ -2571,15 +2571,15 @@ void App::updateEditMode()
 
 					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT,true));
 					if (text)
-						text->setText(L"No selection");
+						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
 					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT_TYPE,true));
 					if (text)
-						text->setText(L"No selection");
+						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
 					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_OBJ_SCRIPT,true));
 					if (text)
-						text->setText(L"No selection");
+						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
 					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
 					if (text)

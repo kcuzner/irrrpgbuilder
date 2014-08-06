@@ -1947,6 +1947,12 @@ void GUIManager::createCodeEditorGUI()
 	//Old code now changed to setElementText()
 	//guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
 	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->BT_LINECOUNT,LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_COPY,LANGManager::getInstance()->getText("script_editor_copy").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_CUT,LANGManager::getInstance()->getText("script_editor_cut").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_DELETE,LANGManager::getInstance()->getText("script_editor_delete").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_PASTE,LANGManager::getInstance()->getText("script_editor_paste").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_REDO,LANGManager::getInstance()->getText("script_editor_redo").c_str());
+	guiDynamicObjects_Script->setElementText(guiDynamicObjects_Script->CM_UNDO,LANGManager::getInstance()->getText("script_editor_undo").c_str());
 
 	// Set the IRB commands Highlights
 

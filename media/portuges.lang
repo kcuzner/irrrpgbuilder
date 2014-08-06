@@ -186,6 +186,18 @@
 	<text id="txt_context_replace_file" str="Replace with a model file" />
 	<text id="script_window_title" str="Script editor" />
 	<text id="console_window_title" str="Console window" />
+	<text id="objtype_player" str="Object is a PLAYER" />
+	<text id="objtype_NPC" str="Object is a NPC" />
+	<text id="objtype_loot" str="Object is loot" />
+	<text id="objtype_int" str="Object is interactive" />
+	<text id="objtype_nint" str="Object is non-interactive" />
+	<text id="objtype_walkable" str="Object is a walkable mesh" />
+	<text id="script_editor_copy" str="copy" />
+	<text id="script_editor_cut" str="cut" />
+	<text id="script_editor_delete" str="delete" />
+	<text id="script_editor_paste" str="paste" />
+	<text id="script_editor_redo" str="redo" />
+	<text id="script_editor_undo" str="undo" />	
 	<about str="IrrRPG Builder v0.3 Alpha" />
 	<about str="    por Andres Jesse Porfirio," />
 	<about str="    Christian Clavet" />

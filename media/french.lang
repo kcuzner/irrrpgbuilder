@@ -158,26 +158,26 @@
 	<text id="panel_infodesc" str="Description:" />
 	<text id="panel_infoauthor" str="Auteur:" />
 	<text id="panel_infolicence" str="License:" />
-	<text id="panel_sel_object" str="Object sélectionné:" />
-	<text id="panel_sel_sel1" str="aucune selection:" />
+	<text id="panel_sel_object" str="Objet sélectionné:" />
+	<text id="panel_sel_sel1" str="aucune selection" />
 	<text id="panel_sel_type" str="Type object sélectionné:" />
-	<text id="panel_sel_script" str="Objet est scripté?:" />
+	<text id="panel_sel_script" str="L'objet est scripté?:" />
 	<text id="panel_sel_template" str="Item actuel:" />
 	<text id="panel_sel_position" str="Position" />
 	<text id="panel_sel_rotation" str="Rotation" />
 	<text id="panel_sel_scale" str="Grandeur" />
 	<text id="panel_sel_lock" str="Fixé" />
 	<text id="panel_tile_rmode" str="Mode de rotation" />
-	<text id="panel_tile_rleft" str="Rotation à gauche" />
-	<text id="panel_tile_rright" str="Rotation à droite" />
+	<text id="panel_tile_rleft" str="À gauche" />
+	<text id="panel_tile_rright" str="À droite" />
 	<text id="panel_sellist" str="Liste de sélections" />
 	<text id="panel_sellist_filter" str="Filtre par type d'objet:" />
 	<text id="panel_selcombo_all" str="Tous" />
 	<text id="panel_selcombo_npc" str="NPC" />
 	<text id="panel_selcombo_loot" str="Butin" />
-	<text id="panel_selcombo_prop" str="'Props'" />
-	<text id="panel_selcombo_intprop" str="'Props' intéractif" />
-	<text id="panel_selcombo_walk" str="Walkables" />
+	<text id="panel_selcombo_prop" str="Objet non-intéractif" />
+	<text id="panel_selcombo_intprop" str="Objet intéractif" />
+	<text id="panel_selcombo_walk" str="'Marchable'" />
 	<text id="panel_sel_noscene" str="Aucun item dans la scène" />
 	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Remplacer avec l'item courant" />
@@ -186,6 +186,18 @@
 	<text id="txt_context_replace_file" str="Remplacer avec un modèle fichier" />
 	<text id="script_window_title" str="Éditeur de script" />
 	<text id="console_window_title" str="Fenêtre console" />
+	<text id="objtype_player" str="L'objet est le joueur" />
+	<text id="objtype_NPC" str="L'objet est un NPC" />
+	<text id="objtype_loot" str="L'objet est du butin" />
+	<text id="objtype_int" str="L'objet est intéractif" />
+	<text id="objtype_nint" str="L'objet est non-intéractif" />
+	<text id="objtype_walkable" str="L'objet est du type 'marchable'" />
+	<text id="script_editor_copy" str="copier" />
+	<text id="script_editor_cut" str="couper" />
+	<text id="script_editor_delete" str="effacer" />
+	<text id="script_editor_paste" str="coller" />
+	<text id="script_editor_redo" str="rétablir" />
+	<text id="script_editor_undo" str="annuler" />	
 		<about str="IrrRPG Builder v0.3 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
 		<about str="    et Christian Clavet"/>
