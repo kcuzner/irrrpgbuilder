@@ -18,7 +18,6 @@
 	<text id="bt_dynamic_objects_remove" str="Objekt entfernen"/>
 	<text id="bt_dynamic_objects_edit_script" str="Lua Script bearbeiten"/>
 	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
-	<text id="bt_dynamic_objects_has_action" str="wird benutzt"/>
 	<text id="bt_dynamic_objects_mode" str="Dynamischer Objekt Modus"/>
 	<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
 	<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
@@ -198,6 +197,37 @@
 	<text id="script_editor_paste" str="paste" />
 	<text id="script_editor_redo" str="redo" />
 	<text id="script_editor_undo" str="undo" />	
+	<text id="game_stats_title" str="Character stats" />
+	<text id="game_inventory_title" str="Inventory" />
+	<text id="game_skills_title" str="Skills" />
+	<text id="game_quests_title" str="Quests" />
+	<text id="file_close_button" str="Close" />	
+	<text id="file_open_button" str="Open" />
+	<text id="file_save_button" str="Save" />
+	<text id="file_cancel_button" str="Cancel" />
+	<text id="file_text_favorites" str="Favorites" />
+	<text id="file_text_files" str="Files" />
+	<text id="file_text_allfiles" str="All files" />
+	<text id="file_text_warning" str="Warning" />
+	<text id="file_text_overwrite" str="Do you really want to overwrite this file?!" />
+	<text id="file_text_supported" str="Supported " />
+	<text id="file_text_desktop" str="Desktop" />
+	<text id="file_text_documents" str="My documents" />
+	<text id="file_text_pictures" str="My pictures" />
+	<text id="file_text_music" str="My music" />
+	<text id="file_text_videos" str="My videos" />
+	<text id="file_text_pubdocuments" str="Public documents" />
+	<text id="file_text_pubpictures" str="Public pictures" />
+	<text id="file_text_pubmusic" str="Public music" />
+	<text id="file_text_pubvideos" str="Public videos" />
+	<text id="file_text_home" str="Home folder" />
+	<text id="file_text_media" str="Media folder" />
+	<text id="file_text_usr" str="Usr folder" />
+	<text id="file_text_dev" str="Dev folder" />
+	<text id="file_text_mnt" str="Mnt folder" />
+	<text id="file_IRB_files" str="IRB Project files" />
+	<text id="file_IRB_path" str="IRB Project path" />
+	
 	<about str="IrrRPG Builder v0.3 Alpha" />
 	<about str="    von Andres Jesse Porfirio," />
 	<about str="   Christian Clavet" />

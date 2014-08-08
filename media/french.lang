@@ -18,7 +18,6 @@
 		<text id="bt_dynamic_objects_remove" str="Enlever l'objet"/>
 		<text id="bt_dynamic_objects_edit_script" str="Éditer le script Lua"/>
 		<text id="bt_dynamic_objects_cancel" str="Abandonner"/>
-		<text id="bt_dynamic_objects_has_action" str="Has Action"/>
 		<text id="bt_dynamic_objects_mode" str="Édition objet"/>
 		<text id="info_dynamic_objects_mode" str="Pressez et maintenez la touche <ESPACE> pour aller en mode navigation"/>
 		<text id="info_drag" str="Mode navigation actif. Souris gauche: rotation, Souris droite: déplacement, Molette: Zoom"/>
@@ -177,7 +176,7 @@
 	<text id="panel_selcombo_loot" str="Butin" />
 	<text id="panel_selcombo_prop" str="Objet non-intéractif" />
 	<text id="panel_selcombo_intprop" str="Objet intéractif" />
-	<text id="panel_selcombo_walk" str="'Marchable'" />
+	<text id="panel_selcombo_walk" str="praticable" />
 	<text id="panel_sel_noscene" str="Aucun item dans la scène" />
 	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Remplacer avec l'item courant" />
@@ -191,13 +190,44 @@
 	<text id="objtype_loot" str="L'objet est du butin" />
 	<text id="objtype_int" str="L'objet est intéractif" />
 	<text id="objtype_nint" str="L'objet est non-intéractif" />
-	<text id="objtype_walkable" str="L'objet est du type 'marchable'" />
+	<text id="objtype_walkable" str="L'objet est praticable" />
 	<text id="script_editor_copy" str="copier" />
 	<text id="script_editor_cut" str="couper" />
 	<text id="script_editor_delete" str="effacer" />
 	<text id="script_editor_paste" str="coller" />
 	<text id="script_editor_redo" str="rétablir" />
 	<text id="script_editor_undo" str="annuler" />	
+	<text id="game_stats_title" str="Statistiques" />
+	<text id="game_inventory_title" str="Inventaire" />
+	<text id="game_skills_title" str="Habiletés" />
+	<text id="game_quests_title" str="Quêtes" />
+	<text id="file_close_button" str="Fermer" />	
+	<text id="file_open_button" str="Ouvrir" />
+	<text id="file_save_button" str="Sauver" />
+	<text id="file_cancel_button" str="Annuler" />
+	<text id="file_text_favorites" str="Favoris" />
+	<text id="file_text_files" str="Fichers" />
+	<text id="file_text_allfiles" str="Tous" />
+	<text id="file_text_warning" str="Avertissement " />
+	<text id="file_text_overwrite" str="Voulez-vous écrire sur ce fichier?!" />
+	<text id="file_text_supported" str="Supporté " />
+	<text id="file_text_desktop" str="Bureau" />
+	<text id="file_text_documents" str="Mes documents" />
+	<text id="file_text_pictures" str="Mes images" />
+	<text id="file_text_music" str="Ma musique" />
+	<text id="file_text_videos" str="Mes vidéos" />
+	<text id="file_text_pubdocuments" str="Documents public" />
+	<text id="file_text_pubpictures" str="Images publique" />
+	<text id="file_text_pubmusic" str="Musique publique" />
+	<text id="file_text_pubvideos" str="Vidéos public" />
+	<text id="file_text_home" str="Dossier maison" />
+	<text id="file_text_media" str="Dossier Media" />
+	<text id="file_text_usr" str="Dossier Usr" />
+	<text id="file_text_dev" str="Dossier Dev" />
+	<text id="file_text_mnt" str="Dossier Mnt" />
+	<text id="file_IRB_files" str="Fichiers projets IRB" />
+	<text id="file_IRB_path" str="Dossier projets IRB" />
+	
 		<about str="IrrRPG Builder v0.3 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
 		<about str="    et Christian Clavet"/>

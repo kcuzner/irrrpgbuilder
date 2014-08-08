@@ -1,4 +1,5 @@
 #include "CGUIFileSelector.h"
+#include "../LANGManager.h"
 
 
 const s32 FOD_WIDTH = 640;
@@ -46,7 +47,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	s32 posx = 4;
 #endif
 	CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-		L"", L"Close");
+		L"", LANGManager::getInstance()->getText("file_close_button").c_str());
 	CloseButton->setSubElement(true);
 	if (sprites) {
 		CloseButton->setSpriteBank(sprites);
@@ -63,22 +64,22 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	// Ok button
 	OKButton = Environment->addButton(
 		core::rect<s32>(RelativeRect.getWidth()-160, RelativeRect.getHeight()-30, RelativeRect.getWidth()-90, RelativeRect.getHeight()-10),
-		this, -1, (DialogType==EFST_OPEN_DIALOG?L"Open":L"Save"));
+		this, -1, (DialogType==EFST_OPEN_DIALOG?LANGManager::getInstance()->getText("file_open_button").c_str():LANGManager::getInstance()->getText("file_save_button").c_str()));
 	OKButton->setSubElement(true);
 	OKButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	OKButton->grab();
 
 	CancelButton = Environment->addButton(
 		core::rect<s32>(RelativeRect.getWidth()-80, RelativeRect.getHeight()-30, RelativeRect.getWidth()-10, RelativeRect.getHeight()-10),
-		this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : L"Cancel");
+		this, -1, skin ? skin->getDefaultText(EGDT_MSG_BOX_CANCEL) : LANGManager::getInstance()->getText("file_cancel_button").c_str());
 
 	CancelButton->setSubElement(true);
 	CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	CancelButton->grab();
 
 	//Description
-	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(L"Favorites",irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
-	irr::gui::IGUIStaticText * but2 = Environment->addStaticText(L"Files",irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
+	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(LANGManager::getInstance()->getText("file_text_favorites").c_str(),irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
+	irr::gui::IGUIStaticText * but2 = Environment->addStaticText(LANGManager::getInstance()->getText("file_text_files").c_str(),irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
 
 	FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
 	FileBox->setSubElement(true);
@@ -102,7 +103,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	FilterComboBox->setSubElement(true);
 	FilterComboBox->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	FilterComboBox->grab();
-	FilterComboBox->addItem(L"All Files");
+	FilterComboBox->addItem(LANGManager::getInstance()->getText("file_text_allfiles").c_str());
 
 	// Contain the names of the favorites folders
 	PlacesBox = Environment->addListBox(core::rect<s32>(10, 50+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
@@ -703,7 +704,7 @@ bool CGUIFileSelector::checkExistingFile()
 	{
 		video::IVideoDriver * driver = device->getVideoDriver();
 		video::ITexture * flag = driver->getTexture("../media/art/status-dialog-warning-icon64.png");
-		Environment->addMessageBox(core::stringw("Warning").c_str(),core::stringw("Do you really want to overwrite this file?!").c_str(),
+		Environment->addMessageBox(LANGManager::getInstance()->getText("file_text_warning").c_str(),LANGManager::getInstance()->getText("file_text_overwrite").c_str(),
 			true,EMBF_OK+EMBF_CANCEL, this, -1, flag);
 		return true;
 	}
@@ -808,7 +809,7 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 	core::stringw strw;
 
 	if (FileFilters.size() > 1) {
-		strw = "Supported ";
+		strw = LANGManager::getInstance()->getText("file_text_supported");
 		for (u32 i = 0 ; i < FileFilters.size() ; i++) {
 			strw += ".";
 			strw += FileFilters[i].FileExtension;
@@ -824,7 +825,7 @@ void CGUIFileSelector::addFileFilter(wchar_t* name, wchar_t* ext, video::ITextur
 		strw += ")";
 		FilterComboBox->addItem(strw.c_str());
 	}
-	FilterComboBox->addItem(L"All Files");
+	FilterComboBox->addItem(LANGManager::getInstance()->getText("file_text_allfiles").c_str());
 
 	fillListBox();
 }
@@ -955,39 +956,39 @@ void CGUIFileSelector::populateWindowsFAV()
 
 	// Get the special folder path. (Desktop)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_DESKTOPDIRECTORY, FALSE );
-	addPlacePaths(L"Desktop",(wchar_t *)strPath,driver->getTexture("../media/art/places_desktop.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_desktop").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_desktop.png"));
 
 	// Get the special folder path. (My documents)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_PERSONAL, FALSE );
-	addPlacePaths(L"My documents",(wchar_t *)strPath,driver->getTexture("../media/art/places_documents.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_documents").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_documents.png"));
 
 	// Get the special folder path. (My pictures)
 	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYPICTURES, FALSE );
-	addPlacePaths(L"My pictures",(wchar_t *)strPath,driver->getTexture("../media/art/places_pictures.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pictures").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_pictures.png"));
 
 	// Get the special folder path. (My music)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_MYMUSIC, FALSE );
-	addPlacePaths(L"My music",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_music").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (My video)
 	SHGetSpecialFolderPath( 0, strPath, CSIDL_MYVIDEO, FALSE );
-	addPlacePaths(L"My videos",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_videos").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public documents)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_DOCUMENTS, FALSE );
-	addPlacePaths(L"Public documents",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pubdocuments").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public pictures)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_PICTURES, FALSE );
-	addPlacePaths(L"Public pictures",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pubpictures").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public music)
 	SHGetSpecialFolderPath(	0, strPath, CSIDL_COMMON_MUSIC, FALSE );
-	addPlacePaths(L"Public music",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pubmusic").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 
 	// Get the special folder path. (Public videos)
 	SHGetSpecialFolderPath( 0, strPath, CSIDL_COMMON_VIDEO, FALSE );
-	addPlacePaths(L"Public videos",(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pubvideos").c_str(),(wchar_t *)strPath,driver->getTexture("../media/art/places_folder.png"));
 #endif
 }
 
@@ -1003,15 +1004,15 @@ void CGUIFileSelector::populateLinuxFAV()
 	// Can't get the other subfolders as they are translated for each language.
 	//addPlacePaths(L"User Home folder",L"~/",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths(L"Home folder",L"/home",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_home").c_str(),L"/home",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths(L"Media folder",L"/media",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_media").c_str(),L"/media",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths(L"Usr folder",L"/usr",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_usr").c_str(),L"/usr",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths(L"Dev folder",L"/dev",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_dev").c_str(),L"/dev",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths(L"Mnt folder",L"/mnt",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_mnt").c_str(),L"/mnt",driver->getTexture("../media/art/places_folder.png"));
 
 
 }

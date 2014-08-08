@@ -2664,10 +2664,10 @@ void GUIManager::setupGameplayGUI()
     guiWindowItems->setDraggable(false);
 	guiWindowItems->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
     gameTabCtrl = guienv->addTabControl(core::rect<s32>(10,30,displaywidth-240,displayheight-200),guiWindowItems,false,true,-1);
-	IGUITab * tab1 = gameTabCtrl->addTab(L"Character stats");
-	IGUITab * tab2 = gameTabCtrl->addTab(L"Inventory");
-	IGUITab * tab3 = gameTabCtrl->addTab(L"Skills");
-	IGUITab * tab4 = gameTabCtrl->addTab(L"Quests");
+	IGUITab * tab1 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_stats_title").c_str());
+	IGUITab * tab2 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_inventory_title").c_str());
+	IGUITab * tab3 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_skills_title").c_str());
+	IGUITab * tab4 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_quests_title").c_str());
 
 
 	guiPlayerNodePreview = new NodePreview(guienv,tab1,rect<s32>(440,40,740,370),-1);

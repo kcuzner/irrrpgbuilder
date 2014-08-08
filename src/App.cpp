@@ -3021,9 +3021,9 @@ void App::loadProject(DIALOG_FUNCTION function)
 		//selector->setStartingPath(L"../");
 		if (function == DF_PROJECT)
 		{
-			selector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+			selector->addFileFilter((wchar_t *)LANGManager::getInstance()->getText("file_IRB_files").c_str(), L"xml", driver->getTexture("../media/art/wma.png"));
 			// Create a "favorite places"
-			selector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+			selector->addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_IRB_path").c_str(),L"../projects",driver->getTexture("../media/art/places_folder.png"));
 			// Define in what path the request will open (it accept full or relative paths)
 			
 		}
@@ -3236,13 +3236,13 @@ void App::saveProjectDialog()
 		// Create a base icon for the folders
 		saveselector->setCustomDirectoryIcon(driver->getTexture("../media/art/folder.png"));
 		// Add a new file filters (Normally for what is required to load)
-		saveselector->addFileFilter(L"IRB Project files", L"xml", driver->getTexture("../media/art/wma.png"));
+		saveselector->addFileFilter((wchar_t *)LANGManager::getInstance()->getText("file_IRB_files").c_str(), L"xml", driver->getTexture("../media/art/wma.png"));
 
 		// This is required for the window stretching feature
 		saveselector->setDevice(device);
 
 		// Create a "favorite places"
-		saveselector->addPlacePaths(L"IRB Project path",L"../projects",driver->getTexture("../media/art/places_folder.png"));
+		saveselector->addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_IRB_path").c_str(),L"../projects",driver->getTexture("../media/art/places_folder.png"));
 #ifdef WIN32
 
 		// Populate with standard windows favorites paths
