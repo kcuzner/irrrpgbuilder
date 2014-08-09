@@ -33,6 +33,7 @@
 	<text id="bt_terrain_brush" str="Brush tool"/>
 	<text id="bt_terrain_transform_brush_strength_label" str="Strength:"/>
 	<text id="bt_terrain_transform_brush_radius_label" str="Radius:"/>
+	<text id="bt_terrain_transform_brush_radius_inner" str="Inner radius"/>
 	<text id="bt_terrain_transform_plateau" str="Height of the plateau:"/>
 	<text id="bt_play_game" str="Play Game"/>
 	<text id="bt_stop_game" str="Stop Game"/>
@@ -91,6 +92,7 @@
 	<text id="txt_tool_des2" str="Scripting" />
 	<text id="txt_tool_des3" str="Configuration" />
 	<text id="txt_tool_des4" str="Playtest" />
+	<text id="txt_tool_des_tile" str="Tiles" />
 	<text id="txt_tool_des5" str="Terrain tools" />
 	<text id="txt_tool_des6" str="Vegetation tools" />
 	<text id="txt_tool_edit" str="Editor mode" />
@@ -228,6 +230,17 @@
 	<text id="file_text_mnt" str="Mnt folder" />
 	<text id="file_IRB_files" str="IRB Project files" />
 	<text id="file_IRB_path" str="IRB Project path" />
+	<text id="float_text_hit" str="Hit! " />
+	<text id="float_text_miss" str="Missed" />
+	<text id="float_text_die" str="Died" />
+	<text id="btn_obj_add_mode" str="Add mode" />
+	<text id="btn_obj_select_mode" str="Select mode" />
+	<text id="btn_obj_move_mode" str="Move mode" />
+	<text id="btn_obj_rotate_mode" str="Rotate mode" />
+	<text id="btn_obj_scale_mode" str="Scale mode" />
+	<text id="text_file_save_report" str="Save report">
+	<text id="text_file_load_report" str="Load report">
+	<text id="text_file_scene" str="Scene ">
 	
 	
 	<about str="IrrRPG Builder v0.3 Alpha" />

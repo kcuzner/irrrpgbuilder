@@ -1000,7 +1000,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		node->removeAnimator(animator);
 
 		//
-		createTextAnim(L"Died!",video::SColor(255,240,240,240),5000,dimension2d<f32>(25,12));
+		createTextAnim(LANGManager::getInstance()->getText("float_text_die").c_str(),video::SColor(255,240,240,240),5000,dimension2d<f32>(25,12));
 
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -1061,11 +1061,11 @@ bool DynamicObject::setAnimation(stringc animName)
 					//enemyUnderAttack->setObjectLabel("Miss!");
 				{	
 					if (enemyUnderAttack->getLife()!=0)
-						enemyUnderAttack->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+						enemyUnderAttack->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
 				}
 				else
 				{
-					core::stringw textdam = "Hit! ";
+					core::stringw textdam = LANGManager::getInstance()->getText("float_text_hit");
 					textdam.append(stringc(attackresult));
 					//enemyUnderAttack->setObjectLabel(textdam.c_str());
 					if (enemyUnderAttack->getLife()!=0)
@@ -1084,11 +1084,11 @@ bool DynamicObject::setAnimation(stringc animName)
 					attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
 					if (attackresult==0)
 						//Player::getInstance()->getObject()->setObjectLabel("Miss!");
-						Player::getInstance()->getObject()->createTextAnim(L"Miss",video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+						Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
 						
 					else
 					{
-						stringc textdam = "Hit! ";
+						stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
 						textdam.append(stringc(attackresult));
 						//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
 						Player::getInstance()->getObject()->createTextAnim(textdam);

@@ -186,9 +186,9 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 				gameCam->setFarValue(10000.0f);
 				gameCam->setNearValue(1.0f);
 				break;
-		case 2: max = 10000;
+		case 2: max = 30000;
 				min = 30;
-				editCamMaya->setFarValue(35000.0f);
+				editCamMaya->setFarValue(55000.0f);
 				editCamMaya->setNearValue(1.0f);
 				break;
 	}

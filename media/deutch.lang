@@ -7,7 +7,7 @@
 	<text id="tab_setup" str="Einstellungen"/>
 	<text id="tab_script_debug" str="Debug Panel"/>
 	<text id="tab_script_templates" str="Script Vorlagen"/>
-	<text id="tab_console_message" str="Messages"/>
+	<text id="tab_console_message" str="Beiträge"/>
 	<text id="tab_console_log" str="Log"/>
 	<text id="bt_script_editor_linecount" str="Sehen Zeilennummern"/>
 	<text id="bt_dynamic_objects_close_script" str="Schliessen"/>
@@ -18,21 +18,22 @@
 	<text id="bt_dynamic_objects_remove" str="Objekt entfernen"/>
 	<text id="bt_dynamic_objects_edit_script" str="Lua Script bearbeiten"/>
 	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
-	<text id="bt_dynamic_objects_mode" str="Dynamischer Objekt Modus"/>
-	<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
-	<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
+	<text id="bt_dynamic_objects_mode" str="Objekt Modus"/>
+	<text id="info_dynamic_objects_mode" str="Drücken und halten Sie die Leertaste, um navigationsmodus"/>
+	<text id="info_drag" str="Navigationsmodus eingegeben. Linke Maus: drehen, rechts Maus: Drag, Mausrad: Zoom"/>
 	<text id="bt_paint_vegetation" str="Vegetation einfuegen"/>
 	<text id="bt_new_project" str="Neues Projekt"/>
 	<text id="bt_save_project" str="Projekt speichern"/>
 	<text id="bt_load_project" str="Projekt laden"/>
 	<text id="bt_show_playable_area" str="Bereich anzeigen"/>
-	<text id="bt_terrain_segments" str="Gelaende bearbeiten"/>
-	<text id="bt_terrain_custom_segments" str="Custom tiles"/>
-	<text id="bt_terrain_empty_segments" str="Empty tiles"/>
+	<text id="bt_terrain_segments" str="Gelände- felder"/>
+	<text id="bt_terrain_custom_segments" str="Individuellen fliesen"/>
+	<text id="bt_terrain_empty_segments" str="Leere kacheln"/>
 	<text id="bt_terrain_transform" str="Höhe"/>
 	<text id="bt_terrain_brush" str="Pinsel-Werkzeug"/>
 	<text id="bt_terrain_transform_brush_strength_label" str="Pinselstaerke:"/>
 	<text id="bt_terrain_transform_brush_radius_label" str="Pinselradius:"/>
+	<text id="bt_terrain_transform_brush_radius_inner" str="Innenradius"/>
 	<text id="bt_terrain_transform_plateau" str="Höhe des Plateaus:"/>
 	<text id="bt_play_game" str="Spielen"/>
 	<text id="bt_stop_game" str="Stoppen"/>
@@ -50,7 +51,7 @@
 	<text id="bt_edit_script_global" str="Globalen"/>
 	<text id="bt_cfg_window_ok" str="OK"/>
 	<text id="bt_cfg_window_cancel" str="Abbrechen"/>
-	<text id="bt_config" str="Konfiguration"/>
+	<text id="bt_config" str="Konfig- uration"/>
 	<text id="bt_terrain_transform_vegetation_paint_strength" str="{TO TRANSLATE}"/>
 	<text id="txt_cfg_window_changes_msg" str="Aenderungen werden beim nächsten Start vorgenommen"/>
 	<text id="txt_cfg_window_caption" str="Konfiguration"/>
@@ -62,7 +63,7 @@
 	<text id="txt_cfg_window_resizeable" str="Aendern"/>
 	<text id="txt_cfg_window_vsync" str="VSync"/>
 	<text id="txt_cfg_window_antialias" str="Antialias"/>
-	<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
+	<text id="txt_cfg_window_silouette" str="Zeichnen Silhouette verborgen, wenn"/>
 	<text id="txt_cfg_window_terrain_mesh" str="Gelaendenetz"/>
 	<text id="txt_cfg_window_terrain_scale" str="Skala"/>
 	<text id="txt_cfg_window_terrain_layers" str="Landschaftebenen"/>
@@ -80,18 +81,19 @@
 	<text id="msg_loaded_ok" str=" laden erfolgreich!"/>
 	<text id="msg_override_script" str="Diese Operation wird das aktuelle Script überschreiben, mochten Sie fortfahren?"/>
 	<text id="txt_dynobjsel" str="Dynamische Objekt-Selektion" />
-	<text id="txt_cussegsel" str="Custom tile selection" />
+	<text id="txt_cussegsel" str="Eigene fliese auswahl" />
 	<text id="txt_dynobjcur" str="Aktuelles Modell" />
-	<text id="txt_objectcol" str="Object collection" />
+	<text id="txt_objectcol" str="Objektsammlung" />
 	<text id="txt_dynobjcat" str="Kategorie" />
 	<text id="txt_dynobjitm" str="Artikel" />
-	<text id="txt_tool_des0" str="IRB Project tools" />
+	<text id="txt_tool_des0" str="IRB-Projektwerkzeugen" />
 	<text id="txt_tool_des1" str="Bearbeiten" />
 	<text id="txt_tool_des2" str="Scripting" />
 	<text id="txt_tool_des3" str="Konfiguration" />
 	<text id="txt_tool_des4" str="Spiel testen" />
-	<text id="txt_tool_des5" str="Terrain tools" />
-	<text id="txt_tool_des6" str="Vegetation Werkzeuge" />
+	<text id="txt_tool_des5" str="Gelände" />
+	<text id="txt_tool_des_tile" str="Fliesen" />
+	<text id="txt_tool_des6" str="Vegetation" />
 	<text id="txt_tool_edit" str="Edit-Modus" />
 	<text id="txt_tool_edpl" str="Spieler" />
 	<text id="txt_tool_scrp" str="Skript Spieler" />
@@ -123,110 +125,121 @@
 	<text id="msg_dlg_no" str="&Nein" />
 	<text id="msg_dlg_cancel" str="Abbrechen" />
 	<!-- New stuff added august 2014 -->
-	<text id="status_title" str="Welcome to IRR RPG Builder!" />
-	<text id="status_campos" str="Camera position:" />
-	<text id="status_target" str="    Target:  " />
-	<text id="status_objpos" str="Object position: " />
+	<text id="status_title" str="Willkommen bei RPG Builder IRR!" />
+	<text id="status_campos" str="Kameraposition:" />
+	<text id="status_target" str="    Ziel:  " />
+	<text id="status_objpos" str="Objektlage: " />
 	<text id="status_objrot" str="    Rotation:  " />
-	<text id="loader_gen" str="Loading..." />
-	<text id="loader_fonts" str="Loading fonts..." />
-	<text id="loader_graphics" str="Loading interface graphics..." />
-	<text id="sgrid_default" str="Grid default size" />
-	<text id="sgrid2" str="2 units" />
-	<text id="sgrid4" str="4 units" />
-	<text id="sgrid8" str="8 units" />
-	<text id="sgrid16" str="16 units" />
-	<text id="sgrid32" str="32 units" />
-	<text id="sgrid64" str="64 units" />
-	<text id="sgrid128" str="128 units" />
-	<text id="sgrid256" str="256 units" />
-	<text id="sgrid512" str="512 units" />
-	<text id="sgrid1024" str="1024 units" />
-	<text id="view_gen" str="Change view settings" />
-	<text id="view_top" str="top" />
-	<text id="view_bottom" str="bottom" />
-	<text id="view_left" str="left" />
-	<text id="view_right" str="right" />
-	<text id="view_front" str="front" />
-	<text id="view_back" str="back" />
-	<text id="view_ortho" str="orthographic view" />
-	<text id="view_pers" str="perspective view" />
-	<text id="panel_infobut" str=">> Information panel" />
-	<text id="panel_infotext" str="Informations about this object" />
-	<text id="panel_infomodel" str="Model name:" />
-	<text id="panel_infodesc" str="Description:" />
-	<text id="panel_infoauthor" str="Author:" />
-	<text id="panel_infolicence" str="Licence:" />
-	<text id="panel_sel_object" str="Selected object:" />
-	<text id="panel_sel_sel1" str="no selection:" />
-	<text id="panel_sel_type" str="Selected object type:" />
-	<text id="panel_sel_script" str="Object has a script?:" />
-	<text id="panel_sel_template" str="Current template:" />
+	<text id="loader_gen" str="Lade..." />
+	<text id="loader_fonts" str="Laden schriften ..." />
+	<text id="loader_graphics" str="Ladeschnitt Grafiken..." />
+	<text id="sgrid_default" str="Grid standardgröße" />
+	<text id="sgrid2" str="2 geräte" />
+	<text id="sgrid4" str="4 geräte" />
+	<text id="sgrid8" str="8 geräte" />
+	<text id="sgrid16" str="16 geräte" />
+	<text id="sgrid32" str="32 geräte" />
+	<text id="sgrid64" str="64 geräte" />
+	<text id="sgrid128" str="128 geräte" />
+	<text id="sgrid256" str="256 geräte" />
+	<text id="sgrid512" str="512 geräte" />
+	<text id="sgrid1024" str="1024 geräte" />
+	<text id="view_gen" str="Einstellungen ansicht wechseln" />
+	<text id="view_top" str="Aufsicht" />
+	<text id="view_bottom" str="Ansicht von unten" />
+	<text id="view_left" str="Ansicht von links" />
+	<text id="view_right" str="Ansicht von rechts" />
+	<text id="view_front" str="Vorderansicht" />
+	<text id="view_back" str="Rückansicht" />
+	<text id="view_ortho" str="Orthographische ansicht" />
+	<text id="view_pers" str="Perspektivische ansicht" />
+	<text id="panel_infobut" str=">> Informationstafel" />
+	<text id="panel_infotext" str="Informationen zu diesem objekt" />
+	<text id="panel_infomodel" str="Modellnamen:" />
+	<text id="panel_infodesc" str="Beschreibung:" />
+	<text id="panel_infoauthor" str="Autor:" />
+	<text id="panel_infolicence" str="Lizenz:" />
+	<text id="panel_sel_object" str="Ausgewählte objekt:" />
+	<text id="panel_sel_sel1" str="Keine auswahl:" />
+	<text id="panel_sel_type" str="Ausgewählten objekttyp:" />
+	<text id="panel_sel_script" str="Objekt hat ein skript?:" />
+	<text id="panel_sel_template" str="Aktuelle Vorlage:" />
 	<text id="panel_sel_position" str="Position" />
 	<text id="panel_sel_rotation" str="Rotation" />
-	<text id="panel_sel_scale" str="Scale" />
-	<text id="panel_sel_lock" str="Lock" />
-	<text id="panel_tile_rmode" str="Rotation modes" />
-	<text id="panel_tile_rleft" str="Rotate\ntile\nleft" />
-	<text id="panel_tile_rright" str="Rotate\ntile\nright" />
-	<text id="panel_sellist" str="Selection lists" />
-	<text id="panel_sellist_filter" str="Object type filter:" />
-	<text id="panel_selcombo_all" str="All" />
+	<text id="panel_sel_scale" str="Maßstab" />
+	<text id="panel_sel_lock" str="Sperren" />
+	<text id="panel_tile_rmode" str="Dreh Modi" />
+	<text id="panel_tile_rleft" str="Nach links drehen" />
+	<text id="panel_tile_rright" str="Nach rechts drehen" />
+	<text id="panel_sellist" str="Auswahllisten" />
+	<text id="panel_sellist_filter" str="Objekttyp-filter:" />
+	<text id="panel_selcombo_all" str="Alle" />
 	<text id="panel_selcombo_npc" str="NPC" />
-	<text id="panel_selcombo_loot" str="Loot" />
-	<text id="panel_selcombo_prop" str="Props" />
-	<text id="panel_selcombo_intprop" str="Interactive Props" />
-	<text id="panel_selcombo_walk" str="Walkables" />
-	<text id="panel_sel_noscene" str="No item in the scene" />
-	<text id="txt_context_title" str="Action" />
-	<text id="bt_dynamic_objects_replace" str="Replace with current template" />
-	<text id="bt_dynamic_objects_centerview" str="Center view on object" />
-	<text id="txt_context_spawn" str="Create item here" />
-	<text id="txt_context_replace_file" str="Replace with a model file" />
-	<text id="script_window_title" str="Script editor" />
-	<text id="console_window_title" str="Console window" />
-	<text id="objtype_player" str="Object is a PLAYER" />
-	<text id="objtype_NPC" str="Object is a NPC" />
-	<text id="objtype_loot" str="Object is loot" />
-	<text id="objtype_int" str="Object is interactive" />
-	<text id="objtype_nint" str="Object is non-interactive" />
-	<text id="objtype_walkable" str="Object is a walkable mesh" />
-	<text id="script_editor_copy" str="copy" />
-	<text id="script_editor_cut" str="cut" />
-	<text id="script_editor_delete" str="delete" />
+	<text id="panel_selcombo_loot" str="Beute" />
+	<text id="panel_selcombo_prop" str="Objekt" />
+	<text id="panel_selcombo_intprop" str="Interaktive objekt" />
+	<text id="panel_selcombo_walk" str="Begehbare objekt" />
+	<text id="panel_sel_noscene" str="Kein element in der Szene" />
+	<text id="txt_context_title" str="Aktion" />
+	<text id="bt_dynamic_objects_replace" str="Ersetzen Sie mit aktuellen vorlage" />
+	<text id="bt_dynamic_objects_centerview" str="Center-sicht auf das objekt" />
+	<text id="txt_context_spawn" str="Artikel erstellen hier" />
+	<text id="txt_context_replace_file" str="Setzen Sie eine modelldatei" />
+	<text id="script_window_title" str="Script-editor" />
+	<text id="console_window_title" str="Konsolenfenster" />
+	<text id="objtype_player" str="Objekt ist ein SPIELER" />
+	<text id="objtype_NPC" str="Objekt ist ein NPC" />
+	<text id="objtype_loot" str="Objekt Beute" />
+	<text id="objtype_int" str="Objekt ist interaktiv" />
+	<text id="objtype_nint" str="Objekt ist nicht interaktiv" />
+	<text id="objtype_walkable" str="Ziel ist eine begehbare gitter" />
+	<text id="script_editor_copy" str="kopie" />
+	<text id="script_editor_cut" str="schnitt" />
+	<text id="script_editor_delete" str="löschen" />
 	<text id="script_editor_paste" str="paste" />
 	<text id="script_editor_redo" str="redo" />
-	<text id="script_editor_undo" str="undo" />	
-	<text id="game_stats_title" str="Character stats" />
-	<text id="game_inventory_title" str="Inventory" />
-	<text id="game_skills_title" str="Skills" />
+	<text id="script_editor_undo" str="rückgängig" />	
+	<text id="game_stats_title" str="Charakterwerte" />
+	<text id="game_inventory_title" str="Inventar" />
+	<text id="game_skills_title" str="Fähigkeiten" />
 	<text id="game_quests_title" str="Quests" />
-	<text id="file_close_button" str="Close" />	
-	<text id="file_open_button" str="Open" />
-	<text id="file_save_button" str="Save" />
-	<text id="file_cancel_button" str="Cancel" />
-	<text id="file_text_favorites" str="Favorites" />
-	<text id="file_text_files" str="Files" />
-	<text id="file_text_allfiles" str="All files" />
-	<text id="file_text_warning" str="Warning" />
-	<text id="file_text_overwrite" str="Do you really want to overwrite this file?!" />
-	<text id="file_text_supported" str="Supported " />
-	<text id="file_text_desktop" str="Desktop" />
-	<text id="file_text_documents" str="My documents" />
-	<text id="file_text_pictures" str="My pictures" />
-	<text id="file_text_music" str="My music" />
-	<text id="file_text_videos" str="My videos" />
-	<text id="file_text_pubdocuments" str="Public documents" />
-	<text id="file_text_pubpictures" str="Public pictures" />
-	<text id="file_text_pubmusic" str="Public music" />
-	<text id="file_text_pubvideos" str="Public videos" />
-	<text id="file_text_home" str="Home folder" />
-	<text id="file_text_media" str="Media folder" />
-	<text id="file_text_usr" str="Usr folder" />
-	<text id="file_text_dev" str="Dev folder" />
-	<text id="file_text_mnt" str="Mnt folder" />
-	<text id="file_IRB_files" str="IRB Project files" />
-	<text id="file_IRB_path" str="IRB Project path" />
+	<text id="file_close_button" str="Schließen" />	
+	<text id="file_open_button" str="Offen" />
+	<text id="file_save_button" str="Speichern" />
+	<text id="file_cancel_button" str="Stornieren" />
+	<text id="file_text_favorites" str="Favoriten" />
+	<text id="file_text_files" str="Dateien" />
+	<text id="file_text_allfiles" str="Alle dateien" />
+	<text id="file_text_warning" str="Warnung" />
+	<text id="file_text_overwrite" str="Glaubst du wirklich, diese Datei zu überschreiben möchten ?!" />
+	<text id="file_text_supported" str="Unterstützte " />
+	<text id="file_text_desktop" str="Büro" />
+	<text id="file_text_documents" str="Meine dokumente" />
+	<text id="file_text_pictures" str="Meine bilder" />
+	<text id="file_text_music" str="Meine musik" />
+	<text id="file_text_videos" str="Meine videos" />
+	<text id="file_text_pubdocuments" str="Öffentlichen dokumenten" />
+	<text id="file_text_pubpictures" str="Öffentlichen bilder" />
+	<text id="file_text_pubmusic" str="Öffentlichen musik" />
+	<text id="file_text_pubvideos" str="Öffentliche videos" />
+	<text id="file_text_home" str="Home-ordner" />
+	<text id="file_text_media" str="Media-ordner" />
+	<text id="file_text_usr" str="Usr-ordner" />
+	<text id="file_text_dev" str="Dev-ordner" />
+	<text id="file_text_mnt" str="Mnt-ordner" />
+	<text id="file_IRB_files" str="IRB-Project-Dateien" />
+	<text id="file_IRB_path" str="IRB-Projektpfad" />
+	<text id="float_text_hit" str="Hit! " />
+	<text id="float_text_miss" str="Verpasste " />
+	<text id="float_text_die" str="Gestorben" />
+	<text id="btn_obj_add_mode" str="Modus hinzufügen" />
+	<text id="btn_obj_select_mode" str="Auswahlmodus" />
+	<text id="btn_obj_move_mode" str="Bewegungsmodus" />
+	<text id="btn_obj_rotate_mode" str="Drehmodus" />
+	<text id="btn_obj_scale_mode" str="Stufenmodus" />
+	<text id="text_file_save_report" str="Bericht speichern:">
+	<text id="text_file_load_report" str="Last Bericht:">
+	<text id="text_file_scene" str="Szene ">
 	
 	<about str="IrrRPG Builder v0.3 Alpha" />
 	<about str="    von Andres Jesse Porfirio," />

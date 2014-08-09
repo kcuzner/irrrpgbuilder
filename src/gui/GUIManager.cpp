@@ -583,7 +583,7 @@ void GUIManager::setupEditorGUI()
 
 void GUIManager::createDisplayOptionsGUI()
 {
-	snappingcombo = guienv->addComboBox(myRect(240,120,120,20),0,CB_SNAPCOMBO);
+	snappingcombo = guienv->addComboBox(myRect(240,120,140,20),0,CB_SNAPCOMBO);
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid_default").c_str(),0);
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid2").c_str(),2);
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid4").c_str(),4);
@@ -814,8 +814,17 @@ void GUIManager::createEnvironmentTab()
 	mainToolbarPos.Y=3;
 	tabEnv = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_environment").c_str());
 	// Tab description box text
+	IGUIStaticText * tileTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des_tile")).c_str(),
+		core::rect<s32>(0,64,120,76),false,true,tabEnv,-1);
+	//environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
+	//environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
+	tileTabText->setBackgroundColor(video::SColor(255,238,240,242));
+	tileTabText->setOverrideColor(video::SColor(255,86,95,109));
+	tileTabText->setOverrideFont(guiFont10);
+	tileTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
 	IGUIStaticText * environmentTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des5")).c_str(),
-		core::rect<s32>(0,64,240,76),false,true,tabEnv,-1);
+		core::rect<s32>(130,64,240,76),false,true,tabEnv,-1);
 	//environmentTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	//environmentTabText->setOverrideColor(video::SColor(255,65,66,174));
 	environmentTabText->setBackgroundColor(video::SColor(255,238,240,242));
@@ -1148,7 +1157,7 @@ void GUIManager::createTerrainToolbar()
                                                          myRect(10,mainToolbarPos.Y+90,150,20),
                                                          false,true, guiTerrainToolbar);
 
-	guienv->addStaticText(stringw("Inner radius").c_str(),myRect(10,mainToolbarPos.Y+150,150,20),
+	guienv->addStaticText(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_inner").c_str(),myRect(10,mainToolbarPos.Y+150,150,20),
                                                          false,true, guiTerrainToolbar);
 
 	guiTerrainBrushRadiusValue = guienv->addStaticText(L"100",
@@ -1255,7 +1264,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	// Buttons
 
 	 device=App::getInstance()->getDevice(); //Get a fresh copy of the device 
-	guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", L"ADD MODE");
+	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", LANGManager::getInstance()->getText("btn_obj_add_mode").c_str());
 	 guiDOAddMode->setImage(driver->getTexture("../media/art/DO_ADD.jpg"));
 	 guiDOAddMode->setPressedImage(driver->getTexture("../media/art/DO_ADD1.jpg"));
 	 guiDOAddMode->setIsPushButton(true);
@@ -1263,7 +1272,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 guiDOAddMode->setPressed(true);
 
 	 pos_X += 40;
-	guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"", L"SELECT MODE");
+	guiDOSelMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SEL_MODE, L"", LANGManager::getInstance()->getText("btn_obj_select_mode").c_str());
 	 guiDOSelMode->setImage(driver->getTexture("../media/art/DO_SEL.jpg"));
 	 guiDOSelMode->setPressedImage(driver->getTexture("../media/art/DO_SEL1.jpg"));
 	 guiDOSelMode->setIsPushButton(true);
@@ -1271,7 +1280,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 guiDOSelMode->setPressed(false);
 
 	 pos_X += 40;
-	guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"", L"MOVE MODE");
+	guiDOMovMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_MOV_MODE, L"", LANGManager::getInstance()->getText("btn_obj_move_mode").c_str());
 	 guiDOMovMode->setImage(driver->getTexture("../media/art/DO_MOV.jpg"));
 	 guiDOMovMode->setPressedImage(driver->getTexture("../media/art/DO_MOV1.jpg"));
 	 guiDOMovMode->setIsPushButton(true);
@@ -1280,7 +1289,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 //guiDOMovMode->setEnabled(false);
 
 	 pos_X += 40;
-	guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"", L"ROTATE MODE");
+	guiDORotMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ROT_MODE, L"", LANGManager::getInstance()->getText("btn_obj_rotate_mode").c_str());
 	 guiDORotMode->setImage(driver->getTexture("../media/art/DO_ROT.jpg"));
 	 guiDORotMode->setPressedImage(driver->getTexture("../media/art/DO_ROT1.jpg"));
 	 guiDORotMode->setIsPushButton(true);
@@ -1289,7 +1298,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	 //guiDORotMode->setEnabled(false);
 
 	 pos_X += 40;
-	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"", L"SCALE MODE");
+	 guiDOScaMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_SCA_MODE, L"", LANGManager::getInstance()->getText("btn_obj_scale_mode").c_str());
 	 guiDOScaMode->setImage(driver->getTexture("../media/art/DO_SCA.jpg"));
 	 guiDOScaMode->setPressedImage(driver->getTexture("../media/art/DO_SCA1.jpg"));
 	 guiDOScaMode->setIsPushButton(true);

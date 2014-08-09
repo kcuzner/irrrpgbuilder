@@ -3303,9 +3303,8 @@ void App::saveProjectToXML(stringc filename)
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
 
-	guienv->addMessageBox(L"Save report:",(core::stringw("Scene ")
-		.append(core::stringw(filename.c_str()))
-		.append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()).c_str())
+	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_save_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
+		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()))).c_str()
 		,true);
 
 #ifdef DEBUG
@@ -3402,9 +3401,8 @@ bool App::loadProjectFromXML(stringc filename)
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 
 #ifdef EDITOR
-	guienv->addMessageBox(L"Load report:",(core::stringw("Scene ")
-		.append(core::stringw(filename.c_str()))
-		.append(LANGManager::getInstance()->getText("msg_loaded_ok").c_str()).c_str())
+	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_load_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
+		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_loaded_ok")))).c_str()
 		,true);
 #endif
 

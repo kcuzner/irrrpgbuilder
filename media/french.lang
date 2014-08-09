@@ -33,6 +33,7 @@
 		<text id="bt_terrain_brush" str="Outils brosse"/>
 		<text id="bt_terrain_transform_brush_strength_label" str="Force:"/>
 		<text id="bt_terrain_transform_brush_radius_label" str="Grandeur:"/>
+		<text id="bt_terrain_transform_brush_radius_inner" str="Rayon interne"/>
 		<text id="bt_terrain_transform_plateau" str="Hauteur du plateau:"/>
 		<text id="bt_play_game" str="Jouer"/>
 		<text id="bt_stop_game" str="Arrêter le jeu"/>
@@ -62,7 +63,7 @@
 		<text id="txt_cfg_window_resizeable" str="Agrandissable"/>
 		<text id="txt_cfg_window_vsync" str="VSync"/>
 		<text id="txt_cfg_window_antialias" str="Antialias"/>
-		<text id="txt_cfg_window_silouette" str="Silouette rendering when occluded"/>
+		<text id="txt_cfg_window_silouette" str="Dessiner silouhette quand caché"/>
 		<text id="txt_cfg_window_terrain_mesh" str="Modèle du terrain"/>
 		<text id="txt_cfg_window_terrain_scale" str="Grandeur"/>
 		<text id="txt_cfg_window_terrain_layers" str="Texture de la couche du terrain"/>
@@ -79,8 +80,8 @@
 		<text id="msg_loaded_error" str="Erreur chargement!"/>
 		<text id="msg_loaded_ok" str=" chargement réussi!"/>
 		<text id="msg_override_script" str="Cette operation va anuler les scripts actuels, voulez-vous poursuivre?"/>
-		<text id="txt_dynobjsel" str="Sélection d'objet dynamique" />
-		<text id="txt_cussegsel" str="Sélection tuile spéciale" />
+		<text id="txt_dynobjsel" str="Édition d'objets dynamique" />
+		<text id="txt_cussegsel" str="Édition de tuiles spéciale" />
 		<text id="txt_dynobjcur" str="Modèle actuel" />
 		<text id="txt_objectcol" str="Collection d'objet" />
 		<text id="txt_dynobjcat" str="Catégorie" />
@@ -90,7 +91,8 @@
 		<text id="txt_tool_des2" str="Scripts" />
 		<text id="txt_tool_des3" str="Configuration" />
 		<text id="txt_tool_des4" str="Playtest" />
-		<text id="txt_tool_des5" str="Outils de terrain" />
+		<text id="txt_tool_des_tile" str="Tuiles" />
+		<text id="txt_tool_des5" str="Terrain" />
 		<text id="txt_tool_des6" str="Végétation" />
 		<text id="txt_tool_edit" str="Mode édition" />
 		<text id="txt_tool_edpl" str="Mode jeu" />
@@ -176,7 +178,7 @@
 	<text id="panel_selcombo_loot" str="Butin" />
 	<text id="panel_selcombo_prop" str="Objet non-intéractif" />
 	<text id="panel_selcombo_intprop" str="Objet intéractif" />
-	<text id="panel_selcombo_walk" str="praticable" />
+	<text id="panel_selcombo_walk" str="Objet praticable" />
 	<text id="panel_sel_noscene" str="Aucun item dans la scène" />
 	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Remplacer avec l'item courant" />
@@ -227,6 +229,18 @@
 	<text id="file_text_mnt" str="Dossier Mnt" />
 	<text id="file_IRB_files" str="Fichiers projets IRB" />
 	<text id="file_IRB_path" str="Dossier projets IRB" />
+	<text id="float_text_hit" str="Touché! " />
+	<text id="float_text_miss" str="Manqué." />
+	<text id="float_text_die" str="Mort." />
+	<text id="btn_obj_add_mode" str="Mode ajout" />
+	<text id="btn_obj_select_mode" str="Mode sélection" />
+	<text id="btn_obj_move_mode" str="Mode déplacement" />
+	<text id="btn_obj_rotate_mode" str="Mode rotation" />
+	<text id="btn_obj_scale_mode" str="Mode agrandissement" />
+	<text id="text_file_save_report" str="Résultat de la sauvegarde:">
+	<text id="text_file_load_report" str="Résulat du chargement:">
+	<text id="text_file_scene" str="Scene ">
+	
 	
 		<about str="IrrRPG Builder v0.3 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>
