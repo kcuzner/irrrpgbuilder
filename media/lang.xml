@@ -10,4 +10,6 @@
 	</language>
 	<language name="sp-sp" description="Spanish, spain" filename="espagnol.lang">
 	</language>
+	<language name="su-su" description="Suomi, Suomi" filename="suomi.lang">
+	</language>
 </IrrRPG_Builder_LanguageFile>

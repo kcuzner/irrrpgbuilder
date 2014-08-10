@@ -4,7 +4,7 @@
 
 const s32 FOD_WIDTH = 640;
 const s32 FOD_HEIGHT = 400;
-const s32 yoffset = 10;
+const s32 yoffset = 30;
 
 s32 CGUIFileSelector::numFileSelectors = 0;
 
@@ -77,8 +77,9 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	CancelButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT);
 	CancelButton->grab();
 
+
 	//Description
-	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(LANGManager::getInstance()->getText("file_text_favorites").c_str(),irr::core::rect<s32>(20,35+yoffset,170,48+yoffset),false,false,this,-1);
+	irr::gui::IGUIStaticText * but1 = Environment->addStaticText(LANGManager::getInstance()->getText("file_text_favorites").c_str(),irr::core::rect<s32>(20,10+yoffset,170,48+yoffset),false,false,this,-1);
 	irr::gui::IGUIStaticText * but2 = Environment->addStaticText(LANGManager::getInstance()->getText("file_text_files").c_str(),irr::core::rect<s32>(190,35+yoffset,300,48+yoffset),false,false, this,-1);
 
 	FileBox = Environment->addListBox(core::rect<s32>(180, 50+yoffset, RelativeRect.getWidth()-10, RelativeRect.getHeight()-60), this, -1, true);
@@ -106,7 +107,7 @@ CGUIFileSelector::CGUIFileSelector(const wchar_t* title, IGUIEnvironment* enviro
 	FilterComboBox->addItem(LANGManager::getInstance()->getText("file_text_allfiles").c_str());
 
 	// Contain the names of the favorites folders
-	PlacesBox = Environment->addListBox(core::rect<s32>(10, 50+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
+	PlacesBox = Environment->addListBox(core::rect<s32>(10, 30+yoffset, 170, RelativeRect.getHeight()-60), this, -1, true);
 	PlacesBox->setSubElement(true);
 	PlacesBox->setAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 	PlacesBox->grab();
