@@ -80,6 +80,8 @@ class LuaGlobalCaller
 
 		static int setCameraTarget(lua_State *LS);
         static int getCameraTarget(lua_State *LS);
+		static int setCameraRange(lua_State *LS);
+        static int getCameraRange(lua_State *LS);
         static int setCameraPosition(lua_State *LS);
         static int getCameraPosition(lua_State *LS);
 		static int cutsceneMode(lua_State *LS);

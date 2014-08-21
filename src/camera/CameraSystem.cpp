@@ -49,6 +49,10 @@ CameraSystem::CameraSystem()
 
 	counter=0;
 
+	//Set default values for the ingame camera range
+	this->gameCamRangeMin=72;
+	this->gameCamRangeMax=2000;
+
 	
 	
 }
@@ -181,8 +185,8 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		/*case 1: max = 6;
 				min = 2;
 				break;*/
-		case 1: max = 2000;
-				min = 72;
+		case 1: max = gameCamRangeMax;
+				min = gameCamRangeMin;
 				gameCam->setFarValue(10000.0f);
 				gameCam->setNearValue(1.0f);
 				break;
@@ -196,13 +200,22 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	if (camera==1) // point n click
 		updatePointClickCam();
 
+	// Get the current camera height
 	if (camera==2) // edit cam
 		cameraHeight=anm->getDistance();
+	else
+		{
+		// Get the distance and set it on the ingame camera (point & click)
+			f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
+			cameraHeight-=(increments*(distance/10));
+		}
 
+	// Fix the limits of the cam (not going out of range)
 	if (cameraHeight>max)
 		cameraHeight=max;
 	if (cameraHeight<min)
 		cameraHeight=min;
+
 	if (camera==2)
 	{
 		// Get the distance and set it on the edit camera
@@ -223,9 +236,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	{
 		if (camera==1)
 		{
-			// Get the distance and set it on the ingame camera (point & click)
-			f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
-			cameraHeight-=(increments*(distance/10));
+			
 			updatePointClickCam();
 		}
 	}

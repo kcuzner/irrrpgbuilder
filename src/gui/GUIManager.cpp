@@ -2008,6 +2008,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getCameraPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setObjectRotation",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
@@ -2032,6 +2034,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
+	
 
 	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
 

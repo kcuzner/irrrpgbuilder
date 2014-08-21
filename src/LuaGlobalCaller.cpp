@@ -244,6 +244,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
     lua_register(LS,"setCameraTarget",setCameraTarget);//setCameraTarget(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraTarget",getCameraTarget);//x,y,z = getCameraTarget()
+	lua_register(LS,"getCameraRange",getCameraRange);//near,far = getCamRange()
+	lua_register(LS,"setCameraRange",setCameraRange);//near,far = setCamRange()
 	lua_register(LS,"setCameraPosition",setCameraPosition);//setCameraPosition(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraPosition",getCameraPosition);//x,y,z = getCameraPosition()
 	lua_register(LS,"cutsceneMode",cutsceneMode); // Activate cutscene mode
@@ -757,6 +759,38 @@ int LuaGlobalCaller::getCameraTarget(lua_State *LS)
     lua_pushnumber(LS,pos.Z);
 
     return 3;
+}
+
+int LuaGlobalCaller::setCameraRange(lua_State *LS)
+{
+    f32 start;
+    f32 end;
+
+    end = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	start = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	CameraSystem::getInstance()->setGameCameraRange(start,end);
+	printf("LUA Command setCameraRange() was called!\n near:%f, far:%f\n",start,end);
+    return 0;
+}
+
+int LuaGlobalCaller::getCameraRange(lua_State *LS)
+{
+	
+    f32 start;
+    f32 end;
+  
+	end=CameraSystem::getInstance()->getGameCameraRange().Y;
+	start=CameraSystem::getInstance()->getGameCameraRange().X;
+
+    lua_pushnumber(LS,start);
+    lua_pushnumber(LS,end);
+	printf("LUA Command getCameraRange() was called!, near: %f, far: %f\n",start,end);
+
+    return 2;
 }
 
 int LuaGlobalCaller::setCameraPosition(lua_State *LS)

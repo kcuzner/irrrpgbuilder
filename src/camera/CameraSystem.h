@@ -63,24 +63,26 @@ class CameraSystem
 
 		ICameraSceneNode* editCamMaya;
 		ICameraSceneNode* cutsceneCam;
+		ICameraSceneNode* gameCam;
+
 		void SetPointNClickAngle(vector2df angle);
 
 		void moveCamera(vector3df pos);
 		vector3df getPosition();
 		void setPosition(vector3df pos);
 		core::vector3df getTarget();
-		inline vector3df getAngle() {return cameraAngle;};
+		inline vector3df getAngle() {return cameraAngle;}
 		void setRTSView();
 		void setRPGView();
 
 		inline void setMAYAPos(vector3df pos){anm->setPosition(pos);}
 		inline void setMAYATarget(vector3df pos){anm->setTarget(pos);}
+		inline void setGameCameraRange(f32 min,f32 max) {gameCamRangeMin=min; gameCamRangeMax=max;}
+		inline core::position2df getGameCameraRange() {position2df ranges; ranges.X=gameCamRangeMin; ranges.Y=gameCamRangeMax; return ranges;}
 
     protected:
     private:
         CameraSystem();
-
-        ICameraSceneNode* gameCam;
 
 		ICameraSceneNode* editCamFPS;
 		ICameraSceneNode* currentCam;
@@ -110,6 +112,9 @@ class CameraSystem
 		u32 counter;
 
 		u32 refreshdelay;
+
+		f32 gameCamRangeMin;
+		f32 gameCamRangeMax;
 };
 
 #endif // CameraSystem_H
