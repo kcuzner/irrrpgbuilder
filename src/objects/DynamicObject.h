@@ -19,103 +19,101 @@ extern "C" { // Access to the LUA library
 #include <lauxlib.h>
 }
 
-enum OBJECT_ANIMATION
-{
-	OBJECT_ANIMATION_IDLE = 0,
-	OBJECT_ANIMATION_WALK = 1,
-	OBJECT_ANIMATION_RUN = 2,
-	OBJECT_ANIMATION_ATTACK = 3,
-	OBJECT_ANIMATION_INJURED = 4,
-	OBJECT_ANIMATION_KNOCKBACK = 5,
-	OBJECT_ANIMATION_DIE = 6,
-	OBJECT_ANIMATION_DIE_KNOCKBACK = 7,
-	OBJECT_ANIMATION_SPAWN = 7,
-	OBJECT_ANIMATION_DESPAWN = 8,
-	OBJECT_ANIMATION_DESPAWN_KNOCKBACK = 9,
-	OBJECT_ANIMATION_OPEN = 10,
-	OBJECT_ANIMATION_CLOSE = 11,
-	OBJECT_ANIMATION_PRESPAWN = 12,
-	OBJECT_ANIMATION_CUSTOM = 99
-};
-
-enum TYPE
-{
-	OBJECT_TYPE_NONE = 0,
-	OBJECT_TYPE_NPC = 1,
-	OBJECT_TYPE_INTERACTIVE = 2,
-	OBJECT_TYPE_NON_INTERACTIVE = 3,
-	OBJECT_TYPE_WALKABLE = 4,
-	OBJECT_TYPE_PLAYER	= 5,
-	OBJECT_TYPE_EDITOR	= 6,
-	OBJECT_TYPE_LOOT = 7,
-	
-	
-};
-
-enum SPECIAL
-{
-	SPECIAL_NONE = 0,
-	SPECIAL_SEGMENT,
-	SPECIAL_LOOT
-};
-
-enum AI_INFO
-{
-	AI_STATE_IDLE = 0,
-	AI_STATE_BUSY
-};
-
-typedef struct data_anim{
-	stringc name;
-	stringc meshname;
-	IAnimatedMesh* mesh;
-	stringc sound;
-	s32 startFrame;
-	s32 endFrame;
-	s32 attackevent;
-	s32 soundevent;
-	f32 speed;
-	f32 walkspeed;
-	bool loop;
-
-}DynamicObject_Animation;
-
-typedef struct data_material{
-	u32 id;
-	stringc shader;
-	stringc texture0;
-	stringc texture1;
-	stringc texture2;
-	stringc texture3;
-
-}DynamicObject_material;
-
-typedef struct data_properties{
-	u32 life;
-	u32 mana;
-	u32 maxlife;
-	u32 maxmana;
-	u32 regenlife;
-	u32 regenmana;
-	u32 money;
-	u32 level;
-	u32 experience;
-	u32 mindamage;
-	u32 maxdamage;
-	u32 armor;
-	u32 magic_armor;
-	u32 hurt_resist;
-	u32 dotduration;
-	f32 hit_prob;
-	f32 dodge_prop;
-	u32 attackdelay;
-	u32 mindefense;
-	u32 maxdefense;
-}cproperty;
-
 class DynamicObject
 {
     public:
+
+		typedef struct data_anim{
+			stringc name;
+			stringc meshname;
+			IAnimatedMesh* mesh;
+			stringc sound;
+			s32 startFrame;
+			s32 endFrame;
+			s32 attackevent;
+			s32 soundevent;
+			f32 speed;
+			f32 walkspeed;
+			bool loop;
+
+		}DynamicObject_Animation;
+
+		typedef struct data_material{
+			u32 id;
+			stringc shader;
+			stringc texture0;
+			stringc texture1;
+			stringc texture2;
+			stringc texture3;
+
+		}DynamicObject_material;
+
+	typedef struct data_properties{
+			u32 life;
+			u32 mana;
+			u32 maxlife;
+			u32 maxmana;
+			u32 regenlife;
+			u32 regenmana;
+			u32 money;
+			u32 level;
+			u32 experience;
+			u32 mindamage;
+			u32 maxdamage;
+			u32 armor;
+			u32 magic_armor;
+			u32 hurt_resist;
+			u32 dotduration;
+			f32 hit_prob;
+			f32 dodge_prop;
+			u32 attackdelay;
+			u32 mindefense;
+			u32 maxdefense;
+		}cproperty;
+
+		enum TYPE
+		{
+			OBJECT_TYPE_NONE = 0,
+			OBJECT_TYPE_NPC = 1,
+			OBJECT_TYPE_INTERACTIVE = 2,
+			OBJECT_TYPE_NON_INTERACTIVE = 3,
+			OBJECT_TYPE_WALKABLE = 4,
+			OBJECT_TYPE_PLAYER	= 5,
+			OBJECT_TYPE_EDITOR	= 6,
+			OBJECT_TYPE_LOOT = 7,	
+		};
+
+		enum OBJECT_ANIMATION
+		{
+			OBJECT_ANIMATION_IDLE = 0,
+			OBJECT_ANIMATION_WALK = 1,
+			OBJECT_ANIMATION_RUN = 2,
+			OBJECT_ANIMATION_ATTACK = 3,
+			OBJECT_ANIMATION_INJURED = 4,
+			OBJECT_ANIMATION_KNOCKBACK = 5,
+			OBJECT_ANIMATION_DIE = 6,
+			OBJECT_ANIMATION_DIE_KNOCKBACK = 7,
+			OBJECT_ANIMATION_SPAWN = 7,
+			OBJECT_ANIMATION_DESPAWN = 8,
+			OBJECT_ANIMATION_DESPAWN_KNOCKBACK = 9,
+			OBJECT_ANIMATION_OPEN = 10,
+			OBJECT_ANIMATION_CLOSE = 11,
+			OBJECT_ANIMATION_PRESPAWN = 12,
+			OBJECT_ANIMATION_CUSTOM = 99
+		};
+
+		enum SPECIAL
+		{
+			SPECIAL_NONE = 0,
+			SPECIAL_SEGMENT,
+			SPECIAL_LOOT
+		};
+
+		enum AI_INFO
+		{
+			AI_STATE_IDLE = 0,
+			AI_STATE_BUSY
+		};
 
 		DynamicObject(stringc name, stringc meshFile, vector<DynamicObject_Animation> animations, bool directpath = false);
 		virtual ~DynamicObject();
@@ -187,8 +185,8 @@ class DynamicObject
         //vector<DynamicObject_Animation> getAnimations() {return this->animations;};
         void setFrameLoop(s32 start, s32 end);
         void setAnimationSpeed(f32 speed);
-		OBJECT_ANIMATION getAnimationState(stringc animName);
-		OBJECT_ANIMATION getAnimation(void);
+		DynamicObject::OBJECT_ANIMATION getAnimationState(stringc animName);
+		DynamicObject::OBJECT_ANIMATION getAnimation(void);
         bool setAnimation(stringc animName);
 		void checkAnimationEvent();
 		void setRunningMode(bool run); // Switche the walk animation to a run animation

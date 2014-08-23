@@ -49,15 +49,15 @@ class DynamicObjectsManager
 
 		scene::ISceneNode* findActiveObject(void);
 
-		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category, SPECIAL special = SPECIAL_NONE);
-		vector<stringw> getObjectsListCategories(stringw objectType, SPECIAL special = SPECIAL_NONE);
-		vector<stringw> getObjectsCollections(SPECIAL special = SPECIAL_NONE);
-		vector<stringw> getObjectsSceneList(TYPE objectType);
+		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsListCategories(stringw objectType, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsCollections(DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsSceneList(DynamicObject::TYPE objectType);
 
 
-		void setObjectsID(TYPE objectType, s32 ID);
-		void setObjectsVisible(TYPE objectType, bool visible);
-		void resetObjectsWalkTarget(TYPE objectType);
+		void setObjectsID(DynamicObject::TYPE objectType, s32 ID);
+		void setObjectsVisible(DynamicObject::TYPE objectType, bool visible);
+		void resetObjectsWalkTarget(DynamicObject::TYPE objectType);
 
         void showDebugData(bool show);
 
@@ -123,7 +123,7 @@ class DynamicObjectsManager
 		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;
 
-        stringc createUniqueName(TYPE objtype);
+        stringc createUniqueName(DynamicObject::TYPE objtype);
 		int objectCounter;
 		core::stringw setname;
 

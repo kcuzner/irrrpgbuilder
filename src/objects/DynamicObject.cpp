@@ -157,9 +157,9 @@ DynamicObject::~DynamicObject()
 
 }
 
-cproperty DynamicObject::initProperties()
+DynamicObject::cproperty DynamicObject::initProperties()
 {
-	cproperty prop;
+	DynamicObject::cproperty prop;
 	// Initialize the property
 	prop.armor=0;
 	prop.dodge_prop=0;
@@ -271,7 +271,7 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 		node->setMaterialFlag(EMF_LIGHTING, true);
 		node->setMaterialFlag(EMF_ANTI_ALIASING,true);
 
-		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));
+		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(GUIManager::FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));
 		objLabel->setVisible(false);
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
@@ -643,7 +643,7 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination.
 	// (This allow the NPC not to go directly a the player position)
 	// This need to be improved further as this should apply only when a NPC destination is selected.
-	if (objectType!=OBJECT_TYPE_PLAYER && App::getInstance()->getAppState()==APP_GAMEPLAY_NORMAL)
+	if (objectType!=OBJECT_TYPE_PLAYER && App::getInstance()->getAppState()==App::APP_GAMEPLAY_NORMAL)
 	{
 		f32 desiredDistance=0.0f;
 			
@@ -733,38 +733,38 @@ bool DynamicObject::isTemplate()
 	return this->templateobject;
 }
 
-cproperty DynamicObject::getProperties()
+DynamicObject::cproperty DynamicObject::getProperties()
 {
 	return this->properties;
 }
 
-void DynamicObject::setProperties(cproperty prop)
+void DynamicObject::setProperties(DynamicObject::cproperty prop)
 {
 	properties = prop;
 }
 
 
-cproperty DynamicObject::getProp_base()
+DynamicObject::cproperty DynamicObject::getProp_base()
 {
 	return this->prop_base;
 }
 
-void DynamicObject::setProp_base(cproperty prop)
+void DynamicObject::setProp_base(DynamicObject::cproperty prop)
 {
 	prop_base=prop;
 }
 
-cproperty DynamicObject::getProp_level()
+DynamicObject::cproperty DynamicObject::getProp_level()
 {
 	return this->prop_level;
 }
 
-void DynamicObject::setProp_level(cproperty prop)
+void DynamicObject::setProp_level(DynamicObject::cproperty prop)
 {
 	prop_level=prop;
 }
 
-void DynamicObject::setMaterials(vector<DynamicObject_material> mat)
+void DynamicObject::setMaterials(vector<DynamicObject::DynamicObject_material> mat)
 {
 	this->materials = mat;	
 }
@@ -812,7 +812,7 @@ void DynamicObject::setType(TYPE type)
 	objectType=type;
 }
 
-TYPE DynamicObject::getType()
+DynamicObject::TYPE DynamicObject::getType()
 {
 	return objectType;
 }
@@ -921,7 +921,7 @@ void DynamicObject::createTextAnim(core::stringw text, video::SColor color, u32 
 	end.Y+=height+50;
 	smgr=App::getInstance()->getDevice()->getSceneManager();
 
-	IBillboardTextSceneNode * nodetext = smgr->addBillboardTextSceneNode(GUIManager::getInstance()->getFont(FONT_LARGE),ttext,smgr->getRootSceneNode(),size,start,-1,color,color);
+	IBillboardTextSceneNode * nodetext = smgr->addBillboardTextSceneNode(GUIManager::getInstance()->getFont(GUIManager::FONT_LARGE),ttext,smgr->getRootSceneNode(),size,start,-1,color,color);
 	
 	scene::ISceneNodeAnimator * anim = smgr->createDeleteAnimator(duration);
 	scene::ISceneNodeAnimator * anim2 = smgr->createFlyStraightAnimator(start,end,duration);
@@ -945,7 +945,7 @@ void DynamicObject::setAnimationSpeed(f32 speed)
     if(hasAnimation()) ((IAnimatedMeshSceneNode*)node)->setAnimationSpeed(speed);
 }
 
-OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
+DynamicObject::OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 {
 	if (animName==NULL)
 		return OBJECT_ANIMATION_CUSTOM;
@@ -980,7 +980,7 @@ OBJECT_ANIMATION DynamicObject::getAnimationState(stringc animName)
 	return Animation;
 }
 
-OBJECT_ANIMATION DynamicObject::getAnimation(void)
+DynamicObject::OBJECT_ANIMATION DynamicObject::getAnimation(void)
 {
 	return currentAnimation;
 }
@@ -1209,9 +1209,9 @@ bool DynamicObject::setAnimation(stringc animName)
 
 	// If the die animation is not there, the flag become active (will start the die timer anyway)
 	// As always this does not apply to the player (event if it misse it's die animation)
-	if (animName=="die" && this->getType()!=OBJECT_TYPE_PLAYER)
+	if (animName=="die" && this->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
 		diePresent=false;
-	if (animName=="despawn" && this->getType()!=OBJECT_TYPE_PLAYER)
+	if (animName=="despawn" && this->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
 		despawnPresent=false;
 
 	return false;
@@ -1736,7 +1736,7 @@ void DynamicObject::update()
 	// Special timer to init when the character is dead for 5 seconds
 	if (this->enabled)
 	{
-		if((this->currentAnimation==OBJECT_ANIMATION_DIE) && (timerobject-timerDie>5000) && (this->getType()!=OBJECT_TYPE_PLAYER) || (!diePresent))
+		if((this->currentAnimation==OBJECT_ANIMATION_DIE) && (timerobject-timerDie>5000) && (this->getType()!=DynamicObject::OBJECT_TYPE_PLAYER) || (!diePresent))
 		{
 			// Init the despawn timer
 			this->setAnimation("despawn");
@@ -2709,7 +2709,7 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 
 	if(tempObj) // Was the object found?
 	{
-		if (tempObj->getType()==OBJECT_TYPE_LOOT) // Was the object a loot object?
+		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_LOOT) // Was the object a loot object?
 		{
 			Player::getInstance()->getObject()->addLoot(tempObj); //Add this pointer object to the player loot
 			tempObj->getNode()->setVisible(false); //Hide the node

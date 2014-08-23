@@ -18,13 +18,13 @@ class TemplateObject
 		core::stringw getName(); // Get the name of the template
 
 		void setType(core::stringc name); // Set the type of the template
-		void setType(TYPE type); // Set the type of the template
-		TYPE getType(); // Get the type of this template
+		void setType(DynamicObject::TYPE type); // Set the type of the template
+		DynamicObject::TYPE getType(); // Get the type of this template
 
-		cproperty getProperties();
-		void setProperties(cproperty prop);		
-		cproperty getProp_base();
-		void setProp_base(cproperty prop);
+		DynamicObject::cproperty getProperties();
+		void setProperties(DynamicObject::cproperty prop);		
+		DynamicObject::cproperty getProp_base();
+		void setProp_base(DynamicObject::cproperty prop);
 
 		void setMaterialType(E_MATERIAL_TYPE mType);
 		E_MATERIAL_TYPE getMaterialType();
@@ -37,9 +37,9 @@ class TemplateObject
 
 		core::stringc meshFile; // Mesh filename
 
-		DynamicObject_Animation currentAnim;
-		vector<DynamicObject_Animation> animations; // Animations in the template
-		vector<DynamicObject_material> materials; // materials in the template
+		DynamicObject::DynamicObject_Animation currentAnim;
+		vector<DynamicObject::DynamicObject_Animation> animations; // Animations in the template
+		vector<DynamicObject::DynamicObject_material> materials; // materials in the template
 
 		core::stringw script; // Pre-defined script in the template object
 
@@ -52,18 +52,18 @@ class TemplateObject
 		stringc thumbnail;
 
 		irr::u32 id; // contain the unique ID of the template
-		SPECIAL special; // Tell if the model is special (Custom tile, loot object, etc.)
+		DynamicObject::SPECIAL special; // Tell if the model is special (Custom tile, loot object, etc.)
       
     private:
 
 		stringw templateName; // Name of the template
 
-		TYPE objectType; // Type of the template
+		DynamicObject::TYPE objectType; // Type of the template
 		stringc typeText; // Text version of the type 
 
-		cproperty prop_base; // Base properties
-		cproperty prop_level; // Increase per level
-		cproperty properties; // Active properties
+		DynamicObject::cproperty prop_base; // Base properties
+		DynamicObject::cproperty prop_level; // Increase per level
+		DynamicObject::cproperty properties; // Active properties
 
 		f32 templateScale; // Scale of the object
 		E_MATERIAL_TYPE materialType;       

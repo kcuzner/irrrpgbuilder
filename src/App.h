@@ -29,66 +29,68 @@ static const float APP_VERSION = 1.0;
 #include "objects/DynamicObject.h"
 
 //Current Application State
-enum APP_STATE
-{
-    APP_EDIT_LOOK = 1,
-    APP_EDIT_TERRAIN_TRANSFORM = 2,
-    APP_EDIT_TERRAIN_SEGMENTS = 3,
-	APP_EDIT_TERRAIN_EMPTY_SEGMENTS = 4,
-	APP_EDIT_TERRAIN_CUSTOM_SEGMENTS = 5,
-
-    APP_EDIT_TERRAIN_PAINT_VEGETATION = 6,
-
-    APP_EDIT_DYNAMIC_OBJECTS_MODE = 20,
-    APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE = 21,
-    APP_EDIT_CHARACTER = 30,
-
-    APP_EDIT_DYNAMIC_OBJECTS_SCRIPT = 35,
-    APP_EDIT_WAIT_GUI = 40,
-    APP_EDIT_PLAYER_SCRIPT = 36,
-    APP_EDIT_SCRIPT_GLOBAL = 37,
-    APP_EDIT_ABOUT = 41,
-	APP_EDIT_VIEWDRAG = 42,
-
-    APP_STATE_CONTROL = 100,
-
-    APP_GAMEPLAY_NORMAL = 101,
-    APP_GAMEPLAY_VIEW_ITEMS = 102,
-	APP_WAIT_DIALOG = 103,
-	APP_WAIT_DIALOGQUESTION = 104,
-	APP_WAIT_FILEREQUEST = 99,
-	
-};
-
-// States for IRB TOOLS
-enum APP_TOOLSTATE
-{
-	TOOL_NONE = 1024,
-	TOOL_TILEROTATE_LEFT,
-	TOOL_TILEROTATE_RIGHT,
-	TOOL_DO_ADD,
-	TOOL_DO_SEL,
-	TOOL_DO_MOV,
-	TOOL_DO_ROT,
-	TOOL_DO_SCA
-
-};
-
-enum DIALOG_FUNCTION
-{
-	DF_PROJECT = 1,
-	DF_MODEL = 2,
-};
-
-typedef struct
-{
-	vector3df pickedPos;
-	ISceneNode* pickedNode;
-}MousePick;
 
 class App
 {
     public:
+
+		typedef struct
+		{
+			vector3df pickedPos;
+			ISceneNode* pickedNode;
+		}MousePick;
+
+
+		enum APP_STATE
+		{
+			APP_EDIT_LOOK = 1,
+			APP_EDIT_TERRAIN_TRANSFORM = 2,
+			APP_EDIT_TERRAIN_SEGMENTS = 3,
+			APP_EDIT_TERRAIN_EMPTY_SEGMENTS = 4,
+			APP_EDIT_TERRAIN_CUSTOM_SEGMENTS = 5,
+
+			APP_EDIT_TERRAIN_PAINT_VEGETATION = 6,
+
+			APP_EDIT_DYNAMIC_OBJECTS_MODE = 20,
+			APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE = 21,
+			APP_EDIT_CHARACTER = 30,
+
+			APP_EDIT_DYNAMIC_OBJECTS_SCRIPT = 35,
+			APP_EDIT_WAIT_GUI = 40,
+			APP_EDIT_PLAYER_SCRIPT = 36,
+			APP_EDIT_SCRIPT_GLOBAL = 37,
+			APP_EDIT_ABOUT = 41,
+			APP_EDIT_VIEWDRAG = 42,
+
+			APP_STATE_CONTROL = 100,
+
+			APP_GAMEPLAY_NORMAL = 101,
+			APP_GAMEPLAY_VIEW_ITEMS = 102,
+			APP_WAIT_DIALOG = 103,
+			APP_WAIT_DIALOGQUESTION = 104,
+			APP_WAIT_FILEREQUEST = 99,
+	
+		};
+
+		// States for IRB TOOLS
+		enum APP_TOOLSTATE
+		{
+			TOOL_NONE = 1024,
+			TOOL_TILEROTATE_LEFT,
+			TOOL_TILEROTATE_RIGHT,
+			TOOL_DO_ADD,
+			TOOL_DO_SEL,
+			TOOL_DO_MOV,
+			TOOL_DO_ROT,
+			TOOL_DO_SCA
+
+		};
+
+		enum DIALOG_FUNCTION
+		{
+			DF_PROJECT = 1,
+			DF_MODEL = 2,
+		};
 
 		#ifdef EDITOR
 
@@ -240,7 +242,7 @@ class App
 		APP_TOOLSTATE toolstate;
 		APP_TOOLSTATE old_do_state;
 
-		TYPE current_listfilter; //Last filter for the object list
+		DynamicObject::TYPE current_listfilter; //Last filter for the object list
 
 		bool toolactivated; //This determine if the tool is activated.
 

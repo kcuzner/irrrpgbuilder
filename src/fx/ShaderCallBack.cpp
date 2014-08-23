@@ -46,7 +46,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setPixelShaderConstant("editingTerrain",(int*)&editingTerrain,1);
 
 #ifdef EDITOR
-	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
+	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_PLATEAU);
 	services->setPixelShaderConstant("plateau",(float*)&plateau,1);
 #endif
 
@@ -137,7 +137,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setVertexShaderConstant("waterTime",&time,1);
 }
 
-void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject_material> mat)
+void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::DynamicObject_material> mat)
 {
 	scene::ISceneManager * smgr=App::getInstance()->getDevice()->getSceneManager();
 	video::IVideoDriver * driver=App::getInstance()->getDevice()->getVideoDriver();

@@ -18,7 +18,7 @@ CameraSystem::CameraSystem()
 	lightset=false;
 	this->light=NULL;
 	this->sun=NULL;
-	camera=2;
+	camera=CAMERA_EDIT;
 
 	// Create the cutscene camera
 	cutsceneCam = App::getInstance()->getDevice()->getSceneManager()->addCameraSceneNode();
@@ -53,6 +53,10 @@ CameraSystem::CameraSystem()
 	this->gameCamRangeMin=72;
 	this->gameCamRangeMax=2000;
 
+	//Set the default angle limits for the ingame camera (up/down angle)
+	cameraAngleLimit.X=-25.0f;
+	cameraAngleLimit.Y=89.0f;
+
 	
 	
 }
@@ -86,14 +90,14 @@ vector3df CameraSystem::getPosition()
     return currentCam->getPosition();
 }
 
-void CameraSystem::setCamera(int tempCamera)
+void CameraSystem::setCamera(CAMERA_TYPE tempCamera)
 {
 	camera = tempCamera;
 
 	switch (camera)
 	{
 		// Camera 1 - Gameplay
-		case 1: fov=0.85f;
+		case CAMERA_GAME: fov=0.85f;
 				gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				cameraHeight = 600.0f;
@@ -110,7 +114,7 @@ void CameraSystem::setCamera(int tempCamera)
 				break;
 
 		// Camera 2 - Editing
-		case 2: fov=0.45f;
+		case CAMERA_EDIT: fov=0.45f;
 				cameraHeight = 1000.0f;
 				currentCam = editCamMaya;
 				editCamMaya->setUpVector(vector3df(0,1,0));
@@ -127,7 +131,7 @@ void CameraSystem::setCamera(int tempCamera)
 				break;
 
 		// Camera 3 - Cutscene
-		case 3: fov=0.45f;
+		case CAMERA_CUTSCENE: fov=0.45f;
 				cutsceneCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
 				currentCam=cutsceneCam;
@@ -185,23 +189,23 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 		/*case 1: max = 6;
 				min = 2;
 				break;*/
-		case 1: max = gameCamRangeMax;
+		case CAMERA_GAME: max = gameCamRangeMax;
 				min = gameCamRangeMin;
 				gameCam->setFarValue(10000.0f);
 				gameCam->setNearValue(1.0f);
 				break;
-		case 2: max = 30000;
+		case CAMERA_EDIT: max = 30000;
 				min = 30;
 				editCamMaya->setFarValue(55000.0f);
 				editCamMaya->setNearValue(1.0f);
 				break;
 	}
 
-	if (camera==1) // point n click
+	if (camera==CAMERA_GAME) // point n click
 		updatePointClickCam();
 
 	// Get the current camera height
-	if (camera==2) // edit cam
+	if (camera==CAMERA_EDIT) // edit cam
 		cameraHeight=anm->getDistance();
 	else
 		{
@@ -216,7 +220,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	if (cameraHeight<min)
 		cameraHeight=min;
 
-	if (camera==2)
+	if (camera==CAMERA_EDIT)
 	{
 		// Get the distance and set it on the edit camera
 		f32 distance = cameraHeight;
@@ -234,7 +238,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	}
 	else
 	{
-		if (camera==1)
+		if (camera==CAMERA_GAME)
 		{
 			
 			updatePointClickCam();
@@ -252,7 +256,7 @@ f32 CameraSystem::getCameraHeight()
 // This method update the point&click camera
 void CameraSystem::updatePointClickCam()
 {
-	if (camera==1)
+	if (camera==CAMERA_GAME)
 	{
 		// Get the player and find a "reference" position based on it.
 		core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
@@ -375,10 +379,10 @@ void CameraSystem::SetPointNClickAngle(vector2df angle)
 	cameraAngle.Y = angle.Y;
 	
 	// Limit the view
-	if (cameraAngle.Y>89.0f)
-		cameraAngle.Y=89.0f;
-	if (cameraAngle.Y<-25.0f)
-		cameraAngle.Y=-25.0f;
+	if (cameraAngle.Y>cameraAngleLimit.Y) //89 High angle (Y)
+		cameraAngle.Y=cameraAngleLimit.Y;
+	if (cameraAngle.Y<cameraAngleLimit.X) //-25.0 low angle (X)
+		cameraAngle.Y=cameraAngleLimit.X;
 }
 
 // Return the current camera node pointer

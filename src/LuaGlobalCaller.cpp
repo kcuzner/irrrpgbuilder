@@ -244,8 +244,10 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
     lua_register(LS,"setCameraTarget",setCameraTarget);//setCameraTarget(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraTarget",getCameraTarget);//x,y,z = getCameraTarget()
-	lua_register(LS,"getCameraRange",getCameraRange);//near,far = getCamRange()
-	lua_register(LS,"setCameraRange",setCameraRange);//near,far = setCamRange()
+	lua_register(LS,"getCameraRange",getCameraRange);//near,far = getCameraRange()
+	lua_register(LS,"setCameraRange",setCameraRange);//near,far = setCameraRange()
+	lua_register(LS,"getCameraAngleLimit",getCameraAngleLimit);//near,far = getCameraAngleLimit()
+	lua_register(LS,"setCameraAngleLimit",setCameraAngleLimit);//near,far = setCameraAngleLimit()
 	lua_register(LS,"setCameraPosition",setCameraPosition);//setCameraPosition(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraPosition",getCameraPosition);//x,y,z = getCameraPosition()
 	lua_register(LS,"cutsceneMode",cutsceneMode); // Activate cutscene mode
@@ -307,10 +309,10 @@ void LuaGlobalCaller::doScript(stringc script)
 // Only available in the editor
 #ifdef EDITOR
     if(error)
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,result.c_str());
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,result.c_str());
     else
 	{
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,
 			LANGManager::getInstance()->getText("bt_dynamic_objects_script_noerror").c_str());
 	}
 #endif
@@ -793,6 +795,38 @@ int LuaGlobalCaller::getCameraRange(lua_State *LS)
     return 2;
 }
 
+int LuaGlobalCaller::setCameraAngleLimit(lua_State *LS)
+{
+    f32 start;
+    f32 end;
+
+    end = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	start = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	CameraSystem::getInstance()->setGameCameraAngleLimit(vector2df(start,end));
+	printf("LUA Command setCameraAngleLimit() was called!\n minimum:%f, maximum:%f\n",start,end);
+    return 0;
+}
+
+int LuaGlobalCaller::getCameraAngleLimit(lua_State *LS)
+{
+	
+    f32 start;
+    f32 end;
+  
+	end=CameraSystem::getInstance()->getGameCameraAngleLimit().Y;
+	start=CameraSystem::getInstance()->getGameCameraAngleLimit().X;
+
+    lua_pushnumber(LS,start);
+    lua_pushnumber(LS,end);
+	printf("LUA Command getCameraAngleLimit() was called!, minimum: %f, maximum: %f\n",start,end);
+
+    return 2;
+}
+
 int LuaGlobalCaller::setCameraPosition(lua_State *LS)
 {
     vector3df otherPos = vector3df(0,0,0);
@@ -841,17 +875,19 @@ int LuaGlobalCaller::getCameraPosition(lua_State *LS)
 
 int LuaGlobalCaller::cutsceneMode(lua_State *LS)
 {
-    CameraSystem::getInstance()->setCamera(3);
-	GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
-	GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
+	//Hide all the GUI to present the cutscene
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_CUTSCENE);
+	GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
+	GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
     return 0;
 }
 
 int LuaGlobalCaller::gameMode(lua_State *LS)
 {
-    CameraSystem::getInstance()->setCamera(1);
-	GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
-	GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
+	//Display the game gui and select the game camera
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
+	GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,true);
+	GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,true);
 
     return 0;
 }

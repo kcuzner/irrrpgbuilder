@@ -411,7 +411,7 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 	core::stringw sct =L"";
 
 	// Display this when working with segments or when there no node selected.
-	if (!node || App::getInstance()->getAppState()==APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
+	if (!node || App::getInstance()->getAppState()==App::APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		sct += LANGManager::getInstance()->getText("status_campos");
 		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
@@ -432,11 +432,11 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		
 	
 	// When moving or rotating a dynamic object
-	if (App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
+	if (App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 		node=App::getInstance()->lastMousePick.pickedNode;
 
 	// Display this when in object edit mode only.
-	if ((App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE || App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_MODE) && node && node->getID()!=100)
+	if ((App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE || App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_MODE) && node && node->getID()!=100)
 		{
 			core::vector3df pos = node->getPosition();
 			core::vector3df rot = node->getRotation();
@@ -1331,9 +1331,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjects_Category->setMaxSelectionRows(24);
 	
 	// Populate a list of collection that contain only dynamic objects. (SPECIAL_NONE)
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_NONE).size() ; i++)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_NONE).size() ; i++)
 	{
-		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_NONE)[i].c_str();
+		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_NONE)[i].c_str();
 		if (result!=L"") //Collection with no name filtering
 			guiDynamicObjects_Category->addItem(result.c_str());
 	}
@@ -1737,9 +1737,9 @@ void GUIManager::createCustomSegmentChooserGUI()
 	guiCustom_Segment_Category->setMaxSelectionRows(24);
 	
 	// Populate a list of collection that contain only CUSTOM TERRAIN SEGMENTS. (SPECIAL_SEGMENT)
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT).size() ; i++)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT).size() ; i++)
 	{
-		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(SPECIAL_SEGMENT)[i].c_str());
+		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT)[i].c_str());
 	}
 
 	pos_Y += 40; //Categories
@@ -2010,6 +2010,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraAngleLimit",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraAngleLimit",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setObjectRotation",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
@@ -2034,9 +2036,6 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
-	
-
 	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);
@@ -2303,7 +2302,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Create the category list first
 		guiCustom_Segment_OBJCategory->clear();
 
-		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected, SPECIAL_SEGMENT );
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected, DynamicObject::SPECIAL_SEGMENT );
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiCustom_Segment_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2312,7 +2311,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 
 		// Then the list of objects
 		guiCustom_Segment_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"", SPECIAL_SEGMENT);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"", DynamicObject::SPECIAL_SEGMENT);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2365,7 +2364,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 			text="";
 
 		guiCustom_Segment_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text, SPECIAL_SEGMENT);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text, DynamicObject::SPECIAL_SEGMENT);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2381,7 +2380,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 	}
 }
 
-void GUIManager::buildSceneObjectList(TYPE objtype)
+void GUIManager::buildSceneObjectList(DynamicObject::TYPE objtype)
 {
 
 	if (!guiSceneObjectList)
@@ -2466,10 +2465,10 @@ void GUIManager::update()
 	}
 	// Check for Windows that are "closed/hidden" and change the "app state" adequately
 	if (!guiDynamicObjectsWindowEditAction->isVisible() && 
-		(App::getInstance()->getAppState()==APP_EDIT_DYNAMIC_OBJECTS_SCRIPT || 
-		 App::getInstance()->getAppState()==APP_EDIT_PLAYER_SCRIPT ||
-		 App::getInstance()->getAppState()==APP_EDIT_SCRIPT_GLOBAL))
-			App::getInstance()->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		(App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_SCRIPT || 
+		App::getInstance()->getAppState()==App::APP_EDIT_PLAYER_SCRIPT ||
+		App::getInstance()->getAppState()==App::APP_EDIT_SCRIPT_GLOBAL))
+		App::getInstance()->setAppState(App::APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 }
 
@@ -3383,7 +3382,7 @@ void GUIManager::showDialogMessage(stringw text, std::string sound)
 		guiBtDialogCancel->setVisible(false);
 
 	setWindowVisible(GCW_DIALOG,true);
-	App::getInstance()->setAppState(APP_WAIT_DIALOG);
+	App::getInstance()->setAppState(App::APP_WAIT_DIALOG);
 
 	//Play dialog sound (yes you can record voices!)
     dialogSound = NULL;
@@ -3413,7 +3412,7 @@ bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 		guiBtDialogCancel->setVisible(true);
 
 	setWindowVisible(GCW_DIALOG,true);
-	App::getInstance()->setAppState(APP_WAIT_DIALOG);
+	App::getInstance()->setAppState(App::APP_WAIT_DIALOG);
 
 	//Play dialog sound (yes you can record voices!)
     dialogSound = NULL;
@@ -3577,8 +3576,8 @@ void GUIManager::flush()
 // Display the configuration Window GUI
 void GUIManager::showConfigWindow()
 {
-    APP_STATE old_State = App::getInstance()->getAppState();
-    App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+	App::APP_STATE old_State = App::getInstance()->getAppState();
+	App::getInstance()->setAppState(App::APP_EDIT_WAIT_GUI);
     configWindow->showWindow();
     App::getInstance()->setAppState(old_State);
 }

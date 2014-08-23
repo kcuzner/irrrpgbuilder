@@ -45,49 +45,49 @@ core::stringw TemplateObject::getName()
 void TemplateObject::setType(stringc name)
 {
 	if (name=="npc")
-		this->objectType=OBJECT_TYPE_NPC;
+		this->objectType=DynamicObject::OBJECT_TYPE_NPC;
 	if (name=="loot")
-		this->objectType=OBJECT_TYPE_LOOT;
+		this->objectType=DynamicObject::OBJECT_TYPE_LOOT;
 	if (name=="interactive")
-		this->objectType=OBJECT_TYPE_INTERACTIVE;
+		this->objectType=DynamicObject::OBJECT_TYPE_INTERACTIVE;
 	if (name=="non-interactive")
-		this->objectType=OBJECT_TYPE_NON_INTERACTIVE;
+		this->objectType=DynamicObject::OBJECT_TYPE_NON_INTERACTIVE;
 	if (name=="player")
-		this->objectType=OBJECT_TYPE_PLAYER;
+		this->objectType=DynamicObject::OBJECT_TYPE_PLAYER;
 	if (name=="editor")
-		this->objectType=OBJECT_TYPE_EDITOR;
+		this->objectType=DynamicObject::OBJECT_TYPE_EDITOR;
 	if (name=="walkable")
-		this->objectType=OBJECT_TYPE_WALKABLE;
+		this->objectType=DynamicObject::OBJECT_TYPE_WALKABLE;
 	this->typeText = name;
 }
 
-void TemplateObject::setType(TYPE type)
+void TemplateObject::setType(DynamicObject::TYPE type)
 {
 	objectType=type;
 }
 
-TYPE TemplateObject::getType()
+DynamicObject::TYPE TemplateObject::getType()
 {
 	return objectType;
 }
 
-cproperty TemplateObject::getProperties()
+DynamicObject::cproperty TemplateObject::getProperties()
 {
 	return this->properties;
 }
 
-void TemplateObject::setProperties(cproperty prop)
+void TemplateObject::setProperties(DynamicObject::cproperty prop)
 {
 	properties = prop;
 }
 
 
-cproperty TemplateObject::getProp_base()
+DynamicObject::cproperty TemplateObject::getProp_base()
 {
 	return this->prop_base;
 }
 
-void TemplateObject::setProp_base(cproperty prop)
+void TemplateObject::setProp_base(DynamicObject::cproperty prop)
 {
 	prop_base=prop;
 }

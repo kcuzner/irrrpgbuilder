@@ -41,8 +41,8 @@ Combat* Combat::getInstance()
 int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 {
 	
-	cproperty attacker_prop = attacker->getProperties();
-	cproperty defender_prop = defender->getProperties();
+	DynamicObject::cproperty attacker_prop = attacker->getProperties();
+	DynamicObject::cproperty defender_prop = defender->getProperties();
 	
 	// Retrieve the current life meter on the defender
 	u32 life=defender->getLife();
@@ -181,9 +181,9 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 
 void Combat::updateLevel(DynamicObject* object)
 {
-	cproperty object_prop = object->getProperties();
-	cproperty object_base = object->getProp_base();
-	cproperty object_level = object->getProp_level();
+	DynamicObject::cproperty object_prop = object->getProperties();
+	DynamicObject::cproperty object_base = object->getProp_base();
+	DynamicObject::cproperty object_level = object->getProp_level();
 
 	// NPC cannot have attribution points
 	//

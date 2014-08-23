@@ -67,7 +67,7 @@ App::App()
 	initangle=vector2d<f32>(0,0); //Initialize the initial angle of the RTS camera (Calculated from here)
 	raytester=0; // Initialize and the ray tester class
 
-	current_listfilter = OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
+	current_listfilter = DynamicObject::OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 
 	combobox_used=false;
 	currentsnapping=64.0f; //set the current snapping distance;
@@ -90,17 +90,17 @@ void App::draw2DImages()
 #ifdef EDITOR
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
-		GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_TRANSFORM);
+		GUIManager::getInstance()->drawHelpImage(GUIManager::HELP_TERRAIN_TRANSFORM);
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 	{
-		GUIManager::getInstance()->drawHelpImage(HELP_VEGETATION_PAINT);
+		GUIManager::getInstance()->drawHelpImage(GUIManager::HELP_VEGETATION_PAINT);
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 	{
-		GUIManager::getInstance()->drawHelpImage(HELP_TERRAIN_SEGMENTS);
+		GUIManager::getInstance()->drawHelpImage(GUIManager::HELP_TERRAIN_SEGMENTS);
 	}
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
@@ -121,8 +121,8 @@ void App::draw2DImages()
 
 void App::displayGuiConsole()
 {
-	bool result=!guienv->getRootGUIElement()->getElementFromId(GCW_CONSOLE,true)->isVisible();
-	GUIManager::getInstance()->setElementVisible(CONSOLE,result);
+	bool result=!guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_CONSOLE,true)->isVisible();
+	GUIManager::getInstance()->setElementVisible(GUIManager::CONSOLE,result);
 	GUIManager::getInstance()->setConsoleText(L"",true);
 }
 ///TODO: mover isso para GUIManager
@@ -139,7 +139,7 @@ bool App::cursorIsInEditArea()
 	return condition;
 }
 
-APP_STATE App::getAppState()
+App::APP_STATE App::getAppState()
 {
 	return app_state;
 }
@@ -171,15 +171,15 @@ void App::setAppState(APP_STATE newAppState)
 	if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM && app_state != APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		// Change the props to be collidable with the ray test
-		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE,100);
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		// Change the props to be non-collidable with the ray test
-		DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
-		GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_TERRAIN_TOOLBAR,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		timer1 = device->getTimer()->getRealTime();
 	}
@@ -187,16 +187,16 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM)
 		{
-			GUIManager::getInstance()->setWindowVisible(GCW_TERRAIN_TOOLBAR,false);
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_TERRAIN_TOOLBAR,false);
 			ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		if (selectedNode)
 		{
@@ -209,14 +209,14 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 		{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		if (selectedNode)
 		{
@@ -228,30 +228,30 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_SEGMENTS)
 		{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 		{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
 
 	if (app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-		GUIManager::getInstance()->setWindowVisible(GCW_CUSTOM_SEGMENT_CHOOSER,true);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_CUSTOM_SEGMENT_CHOOSER,true);
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(0);
@@ -262,7 +262,7 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if  (old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 		{
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 			
 			if (selectedNode)
@@ -271,22 +271,22 @@ void App::setAppState(APP_STATE newAppState)
 				selectedNode=NULL;
 			}
 			toolstate = TOOL_NONE;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TILE_ROT_LEFT,false);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TILE_ROT_RIGHT,false);
 		}
 	}
 
 	if(old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
-		GUIManager::getInstance()->setWindowVisible(GCW_CUSTOM_SEGMENT_CHOOSER,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_CUSTOM_SEGMENT_CHOOSER,false);
 	
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 	}
 
 	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
@@ -302,8 +302,8 @@ void App::setAppState(APP_STATE newAppState)
 
 		if (old_app_state != APP_EDIT_VIEWDRAG)
 		{
-			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,true);
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 			//If the up/down mode was last used then reset if
 			if (moveupdown)
@@ -316,35 +316,35 @@ void App::setAppState(APP_STATE newAppState)
 		//Reset the tools state if going outside of the dynamic object edit mode
 		if (app_state != APP_EDIT_VIEWDRAG)
 		{
-			GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,true);
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER,false);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
 			toolstate = TOOL_NONE;
 		}
 	}
 
 	if(app_state != APP_EDIT_ABOUT)
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ABOUT,false);
 	}
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
 	}
 	else
 	{
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
 	}
 
 	if(app_state == APP_EDIT_CHARACTER)
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,false);
 		Player::getInstance()->setHighLight(true);
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,true);
 		
 		Player::getInstance()->setHighLight(false);
 	}
@@ -352,82 +352,82 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_EDIT_SCRIPT_GLOBAL)
 	{
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
-			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,true);
 		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
-			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
 	}
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
 	{
 		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
-			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
-		GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_PLAYER_EDIT_SCRIPT,false);
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
+		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_PLAYER_EDIT_SCRIPT,false);
 	}
 	else
 	{
-		GUIManager::getInstance()->setElementEnabled(BT_ID_PLAYER_EDIT_SCRIPT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_PLAYER_EDIT_SCRIPT,true);
 		// Find a way to set the script once the user change the mode
 		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
-			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 	}
 #endif
 
 	if(app_state == APP_GAMEPLAY_NORMAL)
 	{
-		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,false);
-		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,true);
-		//GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_ADD_SEGMENT,false);
-		//GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DYNAMIC_OBJECTS_MODE,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_CHARACTER,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_EDIT_SCRIPT_GLOBAL,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,false);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_NEW_PROJECT,false);
 		//This current button is for the console
 		//GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
-		GUIManager::getInstance()->setElementVisible(IMG_BAR,true);
-		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,true);
 #ifdef EDITOR
-		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
-		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(false);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(false);
 #endif
 	}
 	else if(app_state < APP_STATE_CONTROL)
 	{
-		GUIManager::getInstance()->setElementVisible(BT_ID_PLAY_GAME,true);
-		GUIManager::getInstance()->setElementVisible(BT_ID_STOP_GAME,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_SAVE_PROJECT,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_LOAD_PROJECT,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_ABOUT,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_NEW_PROJECT,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,true);
-		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
-		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_PAINT_VEGETATION,true);
-		GUIManager::getInstance()->setElementEnabled(BT_ID_TERRAIN_TRANSFORM,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_NEW_PROJECT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_HELP,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 #ifdef EDITOR
-		guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
-		guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true)->setVisible(true);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(true);
 #endif
 	} else if(app_state == APP_WAIT_DIALOG)
 	{
-		GUIManager::getInstance()->setElementVisible(BT_ID_VIEW_ITEMS,false);
-		GUIManager::getInstance()->setElementVisible(IMG_BAR,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
 	}
 
 
@@ -456,17 +456,17 @@ void App::eventGuiButton(s32 id)
 	switch (id)
 	{
 
-	case BT_ID_NEW_PROJECT:
+	case GUIManager::BT_ID_NEW_PROJECT:
 		lastScannedPick.pickedNode=NULL;
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(0);
 			selectedNode=NULL;
 		}
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 #ifdef DEBUG
-		if (!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+		if (!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 			printf("Context menu is hidden!\n");
 #endif
 
@@ -477,67 +477,67 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
-	case BT_ID_LOAD_PROJECT:
+	case GUIManager::BT_ID_LOAD_PROJECT:
 		this->loadProject();
 		this->setAppState(APP_EDIT_LOOK);
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
-	case BT_ID_SAVE_PROJECT:
+	case GUIManager::BT_ID_SAVE_PROJECT:
 		this->saveProjectDialog();
 		this->setAppState(APP_EDIT_LOOK);
 		break;
 #ifdef EDITOR
-	case BT_ID_TERRAIN_ADD_SEGMENT:
+	case GUIManager::BT_ID_TERRAIN_ADD_SEGMENT:
 		this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
 		break;
 
-	case BT_ID_TERRAIN_ADD_EMPTY_SEGMENT:
+	case GUIManager::BT_ID_TERRAIN_ADD_EMPTY_SEGMENT:
 		this->setAppState(APP_EDIT_TERRAIN_EMPTY_SEGMENTS);
 		break;
 
-	case BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
-		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
+	case GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		this->setAppState(APP_EDIT_TERRAIN_CUSTOM_SEGMENTS);
 		break;
 
-	case BT_ID_TERRAIN_PAINT_VEGETATION:
+	case GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION:
 		this->setAppState(APP_EDIT_TERRAIN_PAINT_VEGETATION);
 		break;
 
-	case BT_ID_TERRAIN_TRANSFORM:
+	case GUIManager::BT_ID_TERRAIN_TRANSFORM:
 		this->setAppState(APP_EDIT_TERRAIN_TRANSFORM);
 		break;
 
-	case BT_ID_DYNAMIC_OBJECTS_MODE:
+	case GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE:
 		{
-			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 			if (toolstate==TOOL_NONE)
 				toolstate=old_do_state;
 		}
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_CANCEL:
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_SPAWN: // Create a new item from the last selected item in the dynamic object
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_SPAWN: // Create a new item from the last selected item in the dynamic object
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 		DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_REPLACE: // Will replace the model with one from the file selector
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		loadProject(DF_MODEL);
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 
 	break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with the one selected in the item template
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_REPLACE2: // Will replace the model with the one selected in the item template
 
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 
 		//----
@@ -590,9 +590,9 @@ void App::eventGuiButton(s32 id)
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
 		
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		
 		if (lastMousePick.pickedNode)
 		{
@@ -601,8 +601,8 @@ void App::eventGuiButton(s32 id)
 			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
 				selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(nodeName) );
-				GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
-				GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
+				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
 			}
 			else //Wrong node type selected
@@ -618,13 +618,13 @@ void App::eventGuiButton(s32 id)
 
 		break;			
 
-	case BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
 		//if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
 		{
 			stringc newScript = "";
 
 			stringc filename = "../media/scripts/";
-			filename += GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
+			filename += GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
 
 			std::string line;
 			ifstream fileScript (filename.c_str());
@@ -639,12 +639,12 @@ void App::eventGuiButton(s32 id)
 				fileScript.close();
 			}
 
-			GUIManager::getInstance()->setEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
+			GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,newScript);
 		}
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 
 		if (lastMousePick.pickedNode)
@@ -678,8 +678,8 @@ void App::eventGuiButton(s32 id)
 		break;
 
 		//Center the view on the selected object
-	case BT_ID_DYNAMIC_OBJECT_BT_CENTER:
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_CENTER:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		if (selectedNode)
 		{
 			core::vector3df pos = selectedNode->getPosition();
@@ -694,61 +694,61 @@ void App::eventGuiButton(s32 id)
 
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
-		GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT:
-		LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_VALIDATE_SCRIPT:
+		LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
 		{
 			if (selectedNode)
-				DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+				DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 			
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		else if(app_state == APP_EDIT_PLAYER_SCRIPT)
 		{
-			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		else if(app_state == APP_EDIT_SCRIPT_GLOBAL)
 		{
-			scriptGlobal = GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT);
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		//GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,false);
 		break;
 
-	case BT_ID_EDIT_CHARACTER:
+	case GUIManager::BT_ID_EDIT_CHARACTER:
 		this->setAppState(APP_EDIT_CHARACTER);
 		break;
 
-	case BT_ID_PLAYER_EDIT_SCRIPT:
+	case GUIManager::BT_ID_PLAYER_EDIT_SCRIPT:
 		this->setAppState(APP_EDIT_PLAYER_SCRIPT);
 		break;
 
-	case BT_ID_EDIT_SCRIPT_GLOBAL:
+	case GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL:
 		this->setAppState(APP_EDIT_SCRIPT_GLOBAL);
 		break;
 
-	case BT_ID_CONFIG:
+	case GUIManager::BT_ID_CONFIG:
 		GUIManager::getInstance()->showConfigWindow();
 		break;
 #endif
-	case BT_ID_PLAY_GAME:
+	case GUIManager::BT_ID_PLAY_GAME:
 		playGame();
 		break;
 
-	case BT_ID_STOP_GAME:
+	case GUIManager::BT_ID_STOP_GAME:
 		stopGame();
 		break;
 
-	case BT_ID_CLOSE_PROGRAM:
+	case GUIManager::BT_ID_CLOSE_PROGRAM:
 		this->shutdown();
 
 		/*this->cleanWorkspace();
@@ -758,45 +758,45 @@ void App::eventGuiButton(s32 id)
 		//exit(0);*/
 		break;
 
-	case BT_ID_HELP:
+	case GUIManager::BT_ID_HELP:
 		this->displayGuiConsole();
 		break;
 
-	case BT_ID_ABOUT:
-		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,true);
+	case GUIManager::BT_ID_ABOUT:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ABOUT,true);
 		setAppState(APP_EDIT_ABOUT);
 		break;
 
-	case BT_ID_ABOUT_WINDOW_CLOSE:
-		GUIManager::getInstance()->setWindowVisible(GCW_ABOUT,false);
+	case GUIManager::BT_ID_ABOUT_WINDOW_CLOSE:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ABOUT,false);
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		break;
 
-	case BT_ID_VIEW_ITEMS:
+	case GUIManager::BT_ID_VIEW_ITEMS:
 		setAppState(APP_GAMEPLAY_VIEW_ITEMS);
 		DynamicObjectsManager::getInstance()->freezeAll();
-		GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,true);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_GAMEPLAY_ITEMS,true);
 		GUIManager::getInstance()->drawPlayerStats();
 		break;
 
-	case BT_ID_USE_ITEM:
+	case GUIManager::BT_ID_USE_ITEM:
 		LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
 		GUIManager::getInstance()->updateItemsList();
 		break;
 
-	case BT_ID_DROP_ITEM:
+	case GUIManager::BT_ID_DROP_ITEM:
 		Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
 		GUIManager::getInstance()->updateItemsList();
 		break;
 
-	case BT_ID_CLOSE_ITEMS_WINDOW:
+	case GUIManager::BT_ID_CLOSE_ITEMS_WINDOW:
 		setAppState(APP_GAMEPLAY_NORMAL);
-		GUIManager::getInstance()->setWindowVisible(GCW_GAMEPLAY_ITEMS,false);
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_GAMEPLAY_ITEMS,false);
 		DynamicObjectsManager::getInstance()->unFreezeAll();
 		break;
 
-	case BT_ID_DIALOG_YES:
-		GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+	case GUIManager::BT_ID_DIALOG_YES:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DIALOG,false);
 		if (app_state> APP_STATE_CONTROL)
 		{
 			//Player::getInstance()->getObject()->notifyAnswer(true);
@@ -807,8 +807,8 @@ void App::eventGuiButton(s32 id)
 		}
 		break;
 
-	case BT_ID_DIALOG_CANCEL:
-		GUIManager::getInstance()->setWindowVisible(GCW_DIALOG,false);
+	case GUIManager::BT_ID_DIALOG_CANCEL:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DIALOG,false);
 		if (app_state> APP_STATE_CONTROL)
 		{
 			//Player::getInstance()->getObject()->notifyAnswer(false);
@@ -819,32 +819,32 @@ void App::eventGuiButton(s32 id)
 		}
 		break;
 
-	case BT_ID_DYNAMIC_OBJECT_INFO: // Expand/Retract the pane for the info of the dynamic object with the button
-		GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_INFO,false);
+	case GUIManager::BT_ID_DYNAMIC_OBJECT_INFO: // Expand/Retract the pane for the info of the dynamic object with the button
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECT_INFO,false);
 		break;
 
-	case BT_ID_TILE_ROT_LEFT: // User pressed the rotate tile left toggle button
+	case GUIManager::BT_ID_TILE_ROT_LEFT: // User pressed the rotate tile left toggle button
 		if (toolstate != TOOL_TILEROTATE_LEFT)
 		{
 			toolstate = TOOL_TILEROTATE_LEFT;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_RIGHT,false);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TILE_ROT_RIGHT,false);
 		}
 		else
 			toolstate = TOOL_NONE;
 		break;
 
-	case BT_ID_TILE_ROT_RIGHT: // User pressed the rotate tile right toggle button
+	case GUIManager::BT_ID_TILE_ROT_RIGHT: // User pressed the rotate tile right toggle button
 		if (toolstate != TOOL_TILEROTATE_RIGHT)
 		{
 			toolstate = TOOL_TILEROTATE_RIGHT;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_TILE_ROT_LEFT,false);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TILE_ROT_LEFT,false);
 		}
 		else
 			toolstate = TOOL_NONE;
 		break;
 
-	case BT_ID_DO_ADD_MODE:
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
+	case GUIManager::BT_ID_DO_ADD_MODE:
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_ADD_MODE,true);
 		toolstate = TOOL_DO_ADD;
 		old_do_state = toolstate;
 		if (selectedNode)
@@ -856,8 +856,8 @@ void App::eventGuiButton(s32 id)
 		moveupdown=false;
 		break;
 
-	case BT_ID_DO_SEL_MODE:
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
+	case GUIManager::BT_ID_DO_SEL_MODE:
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_SEL_MODE,true);
 		toolstate = TOOL_DO_SEL;
 		old_do_state = toolstate;
 		if (selectedNode)
@@ -866,8 +866,8 @@ void App::eventGuiButton(s32 id)
 		moveupdown=false;
 		break;
 
-	case BT_ID_DO_MOV_MODE:
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
+	case GUIManager::BT_ID_DO_MOV_MODE:
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_MOV_MODE,true);
 		toolstate = TOOL_DO_MOV;
 		old_do_state = toolstate;
 		if (selectedNode)
@@ -876,18 +876,18 @@ void App::eventGuiButton(s32 id)
 		moveupdown=false;
 		break;
 
-	case BT_ID_DO_ROT_MODE:
+	case GUIManager::BT_ID_DO_ROT_MODE:
 		toolstate = TOOL_DO_ROT;
 		old_do_state = toolstate;
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_ROT_MODE,true);
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		toolactivated=false;
 		moveupdown=false;
 		break;
 
-	case BT_ID_DO_SCA_MODE:
-		GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,true);
+	case GUIManager::BT_ID_DO_SCA_MODE:
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_SCA_MODE,true);
 		if (selectedNode)
 			GUIManager::getInstance()->updateNodeInfos(selectedNode);
 		toolstate = TOOL_DO_SCA;
@@ -896,11 +896,11 @@ void App::eventGuiButton(s32 id)
 		moveupdown=false;
 		break;
 
-	case BT_PLAYER_START:
+	case GUIManager::BT_PLAYER_START:
 		this->playGame();
 		break;
 
-	case BT_PLAYER_CONFIG:
+	case GUIManager::BT_PLAYER_CONFIG:
 		GUIManager::getInstance()->showConfigWindow();
 
 		break;
@@ -928,31 +928,31 @@ void App::eventGuiCheckbox(s32 id)
 {
 	switch (id)
 	{
-		case CB_ID_POS_X:
+		case GUIManager::CB_ID_POS_X:
 			break;
 
-		case CB_ID_POS_Y:
+		case GUIManager::CB_ID_POS_Y:
 			break;
 
-		case CB_ID_POS_Z:
+		case GUIManager::CB_ID_POS_Z:
 			break;
 
-		case CB_ID_ROT_X:
+		case GUIManager::CB_ID_ROT_X:
 			break;
 
-		case CB_ID_ROT_Y:
+		case GUIManager::CB_ID_ROT_Y:
 			break;
 
-		case CB_ID_ROT_Z:
+		case GUIManager::CB_ID_ROT_Z:
 			break;
 
-		case CB_ID_SCA_X:
+		case GUIManager::CB_ID_SCA_X:
 			break;
 
-		case CB_ID_SCA_Y:
+		case GUIManager::CB_ID_SCA_Y:
 			break;
 
-		case CB_ID_SCA_Z:
+		case GUIManager::CB_ID_SCA_Z:
 			break;
 
 		default:
@@ -972,46 +972,46 @@ void App::eventGuiCombobox(s32 id)
 	{
 		
 	// Selection in the list from the dynamic object selection
-	case CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
-		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
-	case CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY:
+	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY:
 		GUIManager::getInstance()->updateCurrentCategory();
 		GUIManager::getInstance()->getInfoAboutModel();
 		break;
 
-	case CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
+	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
 		GUIManager::getInstance()->UpdateGUIChooser();
-		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel();
 		GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
 	// Selection in the list from the custom segment selection
-	case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
-		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
-		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+	case GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
-	case CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY:
-		GUIManager::getInstance()->updateCurrentCategory(LIST_SEGMENT);
-		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+	case GUIManager::CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY:
+		GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_SEGMENT);
+		GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		break;
 
-	case CO_ID_CUSTOM_SEGMENT_CATEGORY:
-		GUIManager::getInstance()->UpdateGUIChooser(LIST_SEGMENT);
-		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
-		GUIManager::getInstance()->getInfoAboutModel(LIST_SEGMENT);
+	case GUIManager::CO_ID_CUSTOM_SEGMENT_CATEGORY:
+		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_SEGMENT);
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
+		GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
 		break;
 
-	case CO_ID_ACTIVE_SCENE_LIST:
-		index = GUIManager::getInstance()->getListBox(CO_ID_ACTIVE_SCENE_LIST)->getSelected();
-		item = GUIManager::getInstance()->getListBox(CO_ID_ACTIVE_SCENE_LIST)->getListItem(index);
+	case GUIManager::CO_ID_ACTIVE_SCENE_LIST:
+		index = GUIManager::getInstance()->getListBox(GUIManager::CO_ID_ACTIVE_SCENE_LIST)->getSelected();
+		item = GUIManager::getInstance()->getListBox(GUIManager::CO_ID_ACTIVE_SCENE_LIST)->getListItem(index);
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(0);
@@ -1032,25 +1032,25 @@ void App::eventGuiCombobox(s32 id)
 		}
 		break;
 
-	case CO_ID_ACTIVE_LIST_FILTER: // User activate a item filter to get a new list of objects to select
-		item = GUIManager::getInstance()->getComboBoxItem(CO_ID_ACTIVE_LIST_FILTER);
-		current_listfilter = OBJECT_TYPE_NONE; 
+	case GUIManager::CO_ID_ACTIVE_LIST_FILTER: // User activate a item filter to get a new list of objects to select
+		item = GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_ACTIVE_LIST_FILTER);
+		current_listfilter = DynamicObject::OBJECT_TYPE_NONE; 
 		if (item == core::stringc("NPC"))
-			current_listfilter = OBJECT_TYPE_NPC; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_NPC; 
 		if (item == core::stringc("Props"))
-			current_listfilter = OBJECT_TYPE_NON_INTERACTIVE; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_NON_INTERACTIVE; 
 		if (item == core::stringc("Interactive Props"))
-			current_listfilter = OBJECT_TYPE_INTERACTIVE;
+			current_listfilter = DynamicObject::OBJECT_TYPE_INTERACTIVE;
 		if (item == core::stringc("Walkables"))
-			current_listfilter = OBJECT_TYPE_WALKABLE; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_WALKABLE; 
 		if (item == core::stringc("Loot"))
-			current_listfilter = OBJECT_TYPE_LOOT; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_LOOT; 
 
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
-	case CB_SCREENCOMBO:
-		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SCREENCOMBO,true));
+	case GUIManager::CB_SCREENCOMBO:
+		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true));
 		if (selectedbox)
 		{
 			combobox_used=true;
@@ -1121,9 +1121,9 @@ void App::eventGuiCombobox(s32 id)
 
 		break;
 
-	case CB_SNAPCOMBO: // Get the combo box data to set the snap distance
+	case GUIManager::CB_SNAPCOMBO: // Get the combo box data to set the snap distance
 		
-		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(CB_SNAPCOMBO,true));
+		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
 			combobox_used=true;
@@ -1185,8 +1185,8 @@ void App::eventGuiSpinbox(s32 id)
 
 	switch (id)
 	{
-	case TI_ID_POS_X:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_X,true))->getValue();
+	case GUIManager::TI_ID_POS_X:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_POS_X,true))->getValue();
 		newposition.X=value;
 		if (selectedNode)
 		{
@@ -1194,9 +1194,9 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_POS_Y:
+	case GUIManager::TI_ID_POS_Y:
 
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Y,true))->getValue();
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_POS_Y,true))->getValue();
 		newposition.Y=value;
 		if (selectedNode)
 		{
@@ -1204,8 +1204,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_POS_Z:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_POS_Z,true))->getValue();
+	case GUIManager::TI_ID_POS_Z:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_POS_Z,true))->getValue();
 		newposition.Z=value;
 		if (selectedNode)
 		{
@@ -1213,8 +1213,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_ROT_X:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_X,true))->getValue();
+	case GUIManager::TI_ID_ROT_X:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_ROT_X,true))->getValue();
 		newrotation.X=value;
 		if (selectedNode)
 		{
@@ -1222,8 +1222,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_ROT_Y:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Y,true))->getValue();
+	case GUIManager::TI_ID_ROT_Y:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_ROT_Y,true))->getValue();
 		newrotation.Y=value;
 		if (selectedNode)
 		{
@@ -1231,8 +1231,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_ROT_Z:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_ROT_Z,true))->getValue();
+	case GUIManager::TI_ID_ROT_Z:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_ROT_Z,true))->getValue();
 		newrotation.Z=value;
 		if (selectedNode)
 		{
@@ -1240,8 +1240,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_SCA_X:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_X,true))->getValue();
+	case GUIManager::TI_ID_SCA_X:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_SCA_X,true))->getValue();
 		newscale.X=value;
 		//in case the user enter strange input (should get 0). 0 as a scale is not good.
 		//if (newscale.X==0)
@@ -1253,8 +1253,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_SCA_Y:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Y,true))->getValue();
+	case GUIManager::TI_ID_SCA_Y:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_SCA_Y,true))->getValue();
 		newscale.Y=value;
 		if (selectedNode)
 		{
@@ -1262,8 +1262,8 @@ void App::eventGuiSpinbox(s32 id)
 		}
 		break;
 
-	case TI_ID_SCA_Z:
-		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(TI_ID_SCA_Z,true))->getValue();
+	case GUIManager::TI_ID_SCA_Z:
+		value=((IGUISpinBox *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TI_ID_SCA_Z,true))->getValue();
 		newscale.Z=value;
 		if (selectedNode)
 		{
@@ -1311,7 +1311,7 @@ void App::eventKeyPressed(s32 key)
 				toolactivated=false;
 				moveupdown=false;
 			}
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ADD_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_ADD_MODE,true);
 		}
 		break;
 
@@ -1322,7 +1322,7 @@ void App::eventKeyPressed(s32 key)
 			old_do_state = toolstate;
 			toolactivated=false;
 			moveupdown=false;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SEL_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_SEL_MODE,true);
 		}
 		break;
 
@@ -1333,7 +1333,7 @@ void App::eventKeyPressed(s32 key)
 			old_do_state = toolstate;
 			toolactivated=false;
 			moveupdown=false;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_MOV_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_MOV_MODE,true);
 		}
 		break;
 
@@ -1342,7 +1342,7 @@ void App::eventKeyPressed(s32 key)
 		{
 			toolstate=TOOL_DO_ROT;
 			old_do_state = toolstate;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_ROT_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_ROT_MODE,true);
 			toolactivated=false;
 			moveupdown=false;
 		}
@@ -1353,7 +1353,7 @@ void App::eventKeyPressed(s32 key)
 		{
 			toolstate=TOOL_DO_SCA;
 			old_do_state = toolstate;
-			GUIManager::getInstance()->setElementEnabled(BT_ID_DO_SCA_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DO_SCA_MODE,true);
 			toolactivated=false;
 			moveupdown=false;
 		}
@@ -1361,7 +1361,7 @@ void App::eventKeyPressed(s32 key)
 
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))
-			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 		break;
 
 	case KEY_F10: // Clear the test rays
@@ -1395,8 +1395,8 @@ void App::eventKeyPressed(s32 key)
 #ifndef EDITOR
 		if (EventReceiver::getInstance()->isKeyPressed(KEY_ESCAPE))
 		{
-			visible=guienv->getRootGUIElement()->getElementFromId(WIN_GAMEPLAY,true)->isVisible();
-			guienv->getRootGUIElement()->getElementFromId(WIN_GAMEPLAY,true)->setVisible(!visible);
+			visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->isVisible();
+			guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(!visible);
 		}
 #endif
 
@@ -1513,14 +1513,14 @@ void App::eventMousePressed(s32 mouse)
 							cout << "PROP:" << nodeName.c_str() << endl;
 #endif
 							// Toggle the context menu
-							GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-								!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+							GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+								!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 						}
 						else//create a new copy of active dynamic object at the clicked position
 						{
 							// If the context menu is still open close it since we want to create a object
-							if (GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
-								GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+							if (GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+								GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
 							GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
@@ -1625,8 +1625,8 @@ void App::eventMousePressed(s32 mouse)
 						cout << "PROP:" << nodeName.c_str() << endl;
 
 						// Toggle the context menu
-						GUIManager::getInstance()->setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-							!GUIManager::getInstance()->isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+						GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+							!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 					}
 					return;
 				}
@@ -1752,7 +1752,7 @@ App* App::getInstance()
 	return instance;
 }
 //! Get the 3D mouse coordinate on the ground or object (ray test)
-MousePick App::getMousePosition3D(int id)
+App::MousePick App::getMousePosition3D(int id)
 {
 
 	// Initialize the data
@@ -1771,7 +1771,7 @@ MousePick App::getMousePosition3D(int id)
 	// For the ray test, we should hide the player (And the decors element that we don't want to select)
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 	if (app_state== APP_GAMEPLAY_NORMAL)
-		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, false);	
+		DynamicObjectsManager::getInstance()->setObjectsVisible(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE, false);	
 
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 	tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
@@ -1784,7 +1784,7 @@ MousePick App::getMousePosition3D(int id)
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
 	if (app_state == APP_GAMEPLAY_NORMAL)
-		DynamicObjectsManager::getInstance()->setObjectsVisible(OBJECT_TYPE_NON_INTERACTIVE, true);
+		DynamicObjectsManager::getInstance()->setObjectsVisible(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE, true);
 
 
 	if(tempNode!=NULL)
@@ -2059,8 +2059,8 @@ void App::playGame()
 
 #ifndef EDITOR 
 	bool visible=false;
-	visible=guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->isVisible();
-	guienv->getRootGUIElement()->getElementFromId(WIN_LOADER,true)->setVisible(!visible);
+	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->isVisible();
+	guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->setVisible(!visible);
 #endif
 	
 	if (app_state<APP_STATE_CONTROL)
@@ -2073,7 +2073,7 @@ void App::playGame()
 		LuaGlobalCaller::getInstance()->storeGlobalParams();
 
 		//DynamicObjectsManager::getInstance()->displayShadow(true);
-		CameraSystem::getInstance()->setCamera(1);
+		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,5000);
 		smgr->getActiveCamera()->setFarValue(5000.0f);
@@ -2095,10 +2095,10 @@ void App::playGame()
 
 		// Reset the last "walk target" as the game restart.
 		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getObject()->getPosition());
-		DynamicObjectsManager::getInstance()->resetObjectsWalkTarget(OBJECT_TYPE_NPC);
+		DynamicObjectsManager::getInstance()->resetObjectsWalkTarget(DynamicObject::OBJECT_TYPE_NPC);
 
 
-		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,true);
+		GUIManager::getInstance()->setElementVisible(GUIManager::ST_ID_PLAYER_LIFE,true);
 		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 	}
@@ -2125,13 +2125,13 @@ void App::stopGame()
 
 
 		SoundManager::getInstance()->stopSounds();
-		GUIManager::getInstance()->setElementVisible(ST_ID_PLAYER_LIFE,false);
+		GUIManager::getInstance()->setElementVisible(GUIManager::ST_ID_PLAYER_LIFE,false);
 
 		this->setAppState(old_state); //APP_EDIT_LOOK
 
 
 		CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
-		CameraSystem::getInstance()->setCamera(2);
+		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 		CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
@@ -2253,7 +2253,7 @@ void App::run()
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
-	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
@@ -2264,7 +2264,7 @@ void App::run()
 	//this->setAppState(APP_EDIT_WAIT_GUI);
 	this->loadProjectFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
-	//CameraSystem::getInstance()->setCamera(1);
+	//CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 	//this->setAppState(APP_GAMEPLAY_NORMAL);
 	//Player::getInstance()->getObject()->doScript();
 	//LuaGlobalCaller::getInstance()->storeGlobalParams();
@@ -2507,31 +2507,31 @@ void App::updateEditMode()
 
 					if (object)
 					{
-						TYPE obj = object->getType();
+						DynamicObject::TYPE obj = object->getType();
 						switch (obj)
 						{ 
 
-							case OBJECT_TYPE_PLAYER:
+							case DynamicObject::OBJECT_TYPE_PLAYER:
 								objtype = LANGManager::getInstance()->getText("objtype_player").c_str();
 								break;
 
-							case OBJECT_TYPE_NPC:
+							case DynamicObject::OBJECT_TYPE_NPC:
 								objtype = LANGManager::getInstance()->getText("objtype_NPC").c_str();
 								break;
 
-							case OBJECT_TYPE_LOOT:
+							case DynamicObject::OBJECT_TYPE_LOOT:
 								objtype = LANGManager::getInstance()->getText("objtype_loot").c_str();
 								break;
 
-							case OBJECT_TYPE_INTERACTIVE:
+							case DynamicObject::OBJECT_TYPE_INTERACTIVE:
 								objtype = LANGManager::getInstance()->getText("objtype_int").c_str();
 								break;
 
-							case OBJECT_TYPE_NON_INTERACTIVE:
+							case DynamicObject::OBJECT_TYPE_NON_INTERACTIVE:
 								objtype = LANGManager::getInstance()->getText("objtype_nint").c_str();
 								break;
 
-							case OBJECT_TYPE_WALKABLE:
+							case DynamicObject::OBJECT_TYPE_WALKABLE:
 								objtype = LANGManager::getInstance()->getText("objtype_walkable").c_str();
 								break;
 
@@ -2541,15 +2541,15 @@ void App::updateEditMode()
 						}
 					}
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_SELOBJECT,true));
 					if (text)
 						text->setText(((core::stringw)selectedNode->getName()).c_str());
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT_TYPE,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_SELOBJECT_TYPE,true));
 					if (text)
 						text->setText(objtype.c_str());
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_OBJ_SCRIPT,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_OBJ_SCRIPT,true));
 					if (text && object)
 					{
 						if (object->getScript().size()>0)
@@ -2558,7 +2558,7 @@ void App::updateEditMode()
 							text->setText(LANGManager::getInstance()->getText("bt_dialog_no").c_str());
 					}
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_CUR_TEMPLATE,true));
 					if (text)
 						text->setText(templatename.c_str());
 				} else
@@ -2569,19 +2569,19 @@ void App::updateEditMode()
 
 					templatename = DynamicObjectsManager::getInstance()->getActiveObject()->getName();
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_SELOBJECT,true));
 					if (text)
 						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_SELOBJECT_TYPE,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_SELOBJECT_TYPE,true));
 					if (text)
 						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_OBJ_SCRIPT,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_OBJ_SCRIPT,true));
 					if (text)
 						text->setText(LANGManager::getInstance()->getText("panel_sel_sel1").c_str());
 
-					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(TXT_ID_CUR_TEMPLATE,true));
+					text = ((IGUIStaticText *)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_CUR_TEMPLATE,true));
 					if (text)
 						text->setText(templatename.c_str());
 
@@ -2606,13 +2606,13 @@ void App::updateEditMode()
 						else
 							newposition=getMousePosition3D(100).pickedPos;
 
-						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_X))
+						if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_X))
 							newposition.X = initialposition.X;
 
-						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Y))
+						if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_Y))
 							newposition.Y = initialposition.Y;
 
-						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Z))
+						if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_Z))
 							newposition.Z = initialposition.Z;
 
 						selectedNode->setPosition(newposition);
@@ -2628,7 +2628,7 @@ void App::updateEditMode()
 						//lastMousePick.pickedNode->getPosition();
 						newposition.Y=newposition.Y+((mousepos.Y-mousepos2.Y));
 
-						if (GUIManager::getInstance()->getCheckboxState(CB_ID_POS_Y))
+						if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_Y))
 							return;
 
 						if (snapfunction) // If snapping is activated use the function
@@ -2650,11 +2650,11 @@ void App::updateEditMode()
 						vector3df newrotation = initialrotation;
 						
 						//Checkboxes define if the axis can be modified
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_Y))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_Y))
 							newrotation.Y=initialrotation.Y+(mousepos.X-mousepos2.X);
 						
 
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_X))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_X))
 							newrotation.X=initialrotation.X+(mousepos.Y-mousepos2.Y);
 
 						selectedNode->setRotation(newrotation);
@@ -2665,7 +2665,7 @@ void App::updateEditMode()
 					{
 						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
 						vector3df newrotation = selectedNode->getRotation(); //initialrotation;
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_ROT_Z))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_Z))
 							newrotation.Z=initialrotation.Z+(mousepos.X-mousepos2.X);
 						
 						selectedNode->setRotation(newrotation);
@@ -2691,13 +2691,13 @@ void App::updateEditMode()
 						initialscale.Z=0.001f;
 					} else
 					{
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_X))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_SCA_X))
 							newscale.X=initialscale.X+tscale;
 
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_Y))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_SCA_Y))
 							newscale.Y=initialscale.Y+tscale;
 
-						if (!GUIManager::getInstance()->getCheckboxState(CB_ID_SCA_Z))
+						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_SCA_Z))
 							newscale.Z=initialscale.Z+tscale;
 					}
 					selectedNode->setScale(newscale);
@@ -2799,9 +2799,9 @@ void App::updateGameplay()
 			{
 				// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
 				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_INTERACTIVE,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,0x0010);
 
 				// Filter only object with the ID=100 to get the resulting node
 				MousePick mousePick = getMousePosition3D(100);
@@ -2810,9 +2810,9 @@ void App::updateGameplay()
 
 				// Set back to the defaults
 				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NPC,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_INTERACTIVE,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_WALKABLE,100);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,0x0010);
+				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,100);
 
 				// Failed to pick something, try to select "walkable"
 				if (!mousePick.pickedNode)
@@ -2907,7 +2907,7 @@ void App::createNewProject()
 {
 
 	// Initialize the camera (2) is maya type camera for editing
-	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 
 	APP_STATE old_state = getAppState();
 	setAppState(APP_EDIT_WAIT_GUI);
@@ -3375,8 +3375,8 @@ bool App::loadProjectFromXML(stringc filename)
 		CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 #ifndef EDITOR
 		GUIManager::getInstance()->setTextLoader(L"");
-		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_START,true)->setVisible(true);
-		guienv->getRootGUIElement()->getElementFromId(BT_PLAYER_CONFIG,true)->setVisible(true);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_PLAYER_START,true)->setVisible(true);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_PLAYER_CONFIG,true)->setVisible(true);
 #endif
 #ifdef EDITOR
 		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
@@ -3436,7 +3436,7 @@ void App::initialize()
 
 #ifdef EDITOR
 	// Initialize the camera (2) is maya type camera for editing
-	CameraSystem::getInstance()->setCamera(2);
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 	GUIManager::getInstance()->setupEditorGUI();
 //TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 	TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
@@ -3494,9 +3494,9 @@ irr::f32 App::getBrushRadius(int number)
 #ifdef EDITOR
 	
 	if (number==0) //main radius
-		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+		radius = GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS);
 	if (number==1) // inner radius
-		radius = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2);
+		radius = GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS2);
 #endif
 	return radius;
 }

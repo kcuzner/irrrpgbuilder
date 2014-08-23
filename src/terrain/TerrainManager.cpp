@@ -273,7 +273,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 		//Safety check if the object/model cannot be loaded
 		if (!newTile->getNode())
 		{
-			App::getInstance()->setAppState(APP_EDIT_WAIT_GUI);
+			App::getInstance()->setAppState(App::APP_EDIT_WAIT_GUI);
 			App::getInstance()->getDevice()->getGUIEnvironment()->addMessageBox(L"Loading error!",L"Failed to load the tile model or model is missing!");
 			if(getSegment(pos))
 			{
@@ -555,7 +555,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 	return true;
 }
 
-void TerrainManager::paintVegetation(MousePick mousePick, bool erase)
+void TerrainManager::paintVegetation(App::MousePick mousePick, bool erase)
 {
     if(mousePick.pickedNode != NULL && getSegment(mousePick.pickedNode->getName()))
     {
@@ -576,7 +576,7 @@ void TerrainManager::transformSegmentByVertex(std::string hashCode,s32 id, f32 y
 }
 */
 
-void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radius2, f32 strength,  bool norecalc)
+void TerrainManager::transformSegments(App::MousePick mousePick, f32 radius, f32 radius2, f32 strength,  bool norecalc)
 {
 	if(mousePick.pickedNode != NULL)
     {
@@ -600,7 +600,7 @@ void TerrainManager::transformSegments(MousePick mousePick, f32 radius, f32 radi
     }
 }
 
-void TerrainManager::transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc)
+void TerrainManager::transformSegmentsToValue(App::MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc)
 {
     if(mousePick.pickedNode != NULL)
     {
@@ -999,10 +999,10 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 void TerrainManager::update()
 {
 #ifdef EDITOR
-	APP_STATE app_state;
+	App::APP_STATE app_state;
 	app_state = App::getInstance()->getAppState();
 
-	if (app_state == APP_EDIT_TERRAIN_TRANSFORM)
+	if (app_state == App::APP_EDIT_TERRAIN_TRANSFORM)
 		drawBrush(!needrecalc);
 
 
@@ -1010,14 +1010,14 @@ void TerrainManager::update()
 	if(App::getInstance()->cursorIsInEditArea() )
 	{
 		u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		if (app_state == APP_EDIT_TERRAIN_TRANSFORM)
+		if (app_state == App::APP_EDIT_TERRAIN_TRANSFORM)
 		{
 			if(!EventReceiver::getInstance()->isMousePressed(0) && !EventReceiver::getInstance()->isMousePressed(1) && needrecalc)
 				recalculate();
 
 			//Calculate a time offset for the strenght
 			f32 timeoffset = f32((time-timer)/1000.0f);
-			f32 strength = GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH)*(timeoffset/60.0f);
+			f32 strength = GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_STRENGTH)*(timeoffset/60.0f);
 
 			//printf("Here is the value of the gui: %f, value of time offset: %f, offset: %d\n",strength,timeoffset,s32(time-timer));
 			timer = time;
@@ -1030,10 +1030,10 @@ void TerrainManager::update()
 				{
 					needrecalc=true;
 					transformSegmentsToValue(App::getInstance()->getMousePosition3D(100),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS2),
 						strength,
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU), true);
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_PLATEAU), true);
 				}
 			}
 			else
@@ -1044,23 +1044,23 @@ void TerrainManager::update()
 				{
 					needrecalc=true;
 					transformSegments(App::getInstance()->getMousePosition3D(100),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS2),
 						strength, true);
 				}
 				else if(EventReceiver::getInstance()->isMousePressed(1) )
 				{
 					needrecalc=true;
 					transformSegments(App::getInstance()->getMousePosition3D(100),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS),
-						GUIManager::getInstance()->getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS2),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS),
+						GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS2),
 						-strength, true);
 				}
 			}
 		}
 
 
-		if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
+		if(app_state == App::APP_EDIT_TERRAIN_PAINT_VEGETATION)
 		{
 			//Add vegetation to the terrain
 			if(EventReceiver::getInstance()->isMousePressed(0))

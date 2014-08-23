@@ -29,9 +29,9 @@ Player::Player()
 	playerObject->setName("player");
 	
 	// Specific properties for the player (hardcoded for now)
-	cproperty playerprop = playerObject->initProperties();
-	cproperty player_base = playerObject->initProperties();
-	cproperty player_level = playerObject->initProperties();
+	DynamicObject::cproperty playerprop = playerObject->initProperties();
+	DynamicObject::cproperty player_base = playerObject->initProperties();
+	DynamicObject::cproperty player_level = playerObject->initProperties();
 
 	playerprop.experience = 0;
 	playerprop.mindamage = 3;
@@ -138,7 +138,7 @@ void Player::update()
 			if (playerObject->getCurrentEnemy() && playerObject->getCurrentEnemy()->getDistanceFrom(getObject()->getPosition())<(playerObject->getObjectSize()*1.10f))
 			{
 				//printf("The is an enemy here named: %s\n",playerObject->getCurrentEnemy()->getName());
-				if (playerObject->getAnimation()!=OBJECT_ANIMATION_ATTACK)
+				if (playerObject->getAnimation()!=playerObject->OBJECT_ANIMATION_ATTACK)
 				{
 					playerObject->lookAt(playerObject->getCurrentEnemy()->getPosition());
 					if (playerObject->getLife()!=0)

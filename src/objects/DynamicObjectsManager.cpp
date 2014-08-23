@@ -191,7 +191,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						}
 
 						core::stringc text="";
-						DynamicObject_material currMaterial;
+						DynamicObject::DynamicObject_material currMaterial;
 
 						//get ID of material
 						text = (core::stringc)xml->getAttributeValue("id");
@@ -218,7 +218,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 					{
 
 
-						DynamicObject_Animation currAnim;
+						DynamicObject::DynamicObject_Animation currAnim;
 						// Initialize the data
 						currAnim.name = "";
 						currAnim.startFrame = 0;
@@ -304,11 +304,11 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						
 						// Get the current set name and save it in the object template
 						newObj->type=setname;
-						newObj->special=SPECIAL_NONE;
+						newObj->special=DynamicObject::SPECIAL_NONE;
 
 						objectSpecial = (core::stringc)xml->getAttributeValue("special");
 						if (objectSpecial=="segment")
-							newObj->special=SPECIAL_SEGMENT;
+							newObj->special=DynamicObject::SPECIAL_SEGMENT;
 						
 						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
 						newObj->meshFile=objectMesh;
@@ -489,7 +489,7 @@ bool DynamicObjectsManager::loadSet()
 DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::stringc meshfile)
 {
   	DynamicObject* newObj = new DynamicObject(L"CUSTOM",meshfile,activeObject->animations,true);
-	newObj->setType(OBJECT_TYPE_NON_INTERACTIVE);
+	newObj->setType(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE);
 	newObj->setTemplate(false);
 
 	//setup material
@@ -596,7 +596,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	newObj->setTemplateObjectName(activeObject->getName());
 
 
-	if (newObj->getType()==OBJECT_TYPE_NPC)
+	if (newObj->getType()==DynamicObject::OBJECT_TYPE_NPC)
 	{
 		newObj->setAnimation("walk");
 		newObj->setAnimation("idle");
@@ -716,7 +716,7 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
-vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category, SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category, DynamicObject::SPECIAL special)
 {
     vector<stringw> listObjs;
 
@@ -737,7 +737,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, 
 }
 
 
-vector<stringw> DynamicObjectsManager::getObjectsCollections(SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPECIAL special)
 {
 	vector<stringw> listObjs;
 	
@@ -763,7 +763,7 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(SPECIAL special)
 
 //! Create a list of the categories from the XML data in the templates.
 // Special is to build a list based on the special type of this template (DYNAMIC OBJECT, CUSTOM TILE, LOOT, ETC)
-vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType, SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType, DynamicObject::SPECIAL special)
 {
     vector<stringw> listObjs;
 	listObjs.push_back(LANGManager::getInstance()->getText("panel_selcombo_all").c_str());
@@ -789,16 +789,16 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw ob
     return listObjs;
 }
 
-vector<stringw> DynamicObjectsManager::getObjectsSceneList(TYPE objectType)
+vector<stringw> DynamicObjectsManager::getObjectsSceneList(DynamicObject::TYPE objectType)
 {
 	vector<stringw> listObjs;
 
     for (int i=0 ; i<(int)objects.size() ; i++)
     {
-		if (objects[i]->getType()==objectType || objectType==OBJECT_TYPE_NONE)
+		if (objects[i]->getType()==objectType || objectType==DynamicObject::OBJECT_TYPE_NONE)
 		{ 
 			//Don`t want theses in the list
-			if (objects[i]->getType()!=OBJECT_TYPE_PLAYER && objects[i]->getType()!=OBJECT_TYPE_EDITOR)
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER && objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
 				listObjs.push_back( core::stringw(objects[i]->getName()));
 		}
     }
@@ -807,7 +807,7 @@ vector<stringw> DynamicObjectsManager::getObjectsSceneList(TYPE objectType)
 
 }
 
-void DynamicObjectsManager::setObjectsID(TYPE objectType, s32 ID)
+void DynamicObjectsManager::setObjectsID(DynamicObject::TYPE objectType, s32 ID)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)
     {
@@ -817,7 +817,7 @@ void DynamicObjectsManager::setObjectsID(TYPE objectType, s32 ID)
 
 }
 
-void DynamicObjectsManager::setObjectsVisible(TYPE objectType, bool visible)
+void DynamicObjectsManager::setObjectsVisible(DynamicObject::TYPE objectType, bool visible)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)
     {
@@ -829,7 +829,7 @@ void DynamicObjectsManager::setObjectsVisible(TYPE objectType, bool visible)
 
 // Reset the state of walking of all the object types
 // Normally used to reset the character states when the game start.
-void DynamicObjectsManager::resetObjectsWalkTarget(TYPE objectType)
+void DynamicObjectsManager::resetObjectsWalkTarget(DynamicObject::TYPE objectType)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)
     {
@@ -905,31 +905,31 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 		// Cleaner way to save the type of the dynamic object in the project
 		switch (objects[i]->getType())
 		{
-			case OBJECT_TYPE_NPC:
+			case DynamicObject::OBJECT_TYPE_NPC:
 				dynamicObjectXML->SetAttribute("type","npc");
 				break;
 
-			case OBJECT_TYPE_INTERACTIVE:
+			case DynamicObject::OBJECT_TYPE_INTERACTIVE:
 				dynamicObjectXML->SetAttribute("type","interactive");
 				break;
 
-			case OBJECT_TYPE_NON_INTERACTIVE:
+			case DynamicObject::OBJECT_TYPE_NON_INTERACTIVE:
 				dynamicObjectXML->SetAttribute("type","non-interactive");
 				break;
 
-			case OBJECT_TYPE_WALKABLE:
+			case DynamicObject::OBJECT_TYPE_WALKABLE:
 				dynamicObjectXML->SetAttribute("type","walkable");
 				break;
 
-			case OBJECT_TYPE_PLAYER:
+			case DynamicObject::OBJECT_TYPE_PLAYER:
 				dynamicObjectXML->SetAttribute("type","player");
 				break;
 
-			case OBJECT_TYPE_EDITOR:
+			case DynamicObject::OBJECT_TYPE_EDITOR:
 				dynamicObjectXML->SetAttribute("type","editor");
 				break;
 
-			case OBJECT_TYPE_LOOT:
+			case DynamicObject::OBJECT_TYPE_LOOT:
 				dynamicObjectXML->SetAttribute("type","loot");
 				break;
 
@@ -1021,7 +1021,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 		stringc templateObj = "";
 		stringc fileObj= "";
-		TYPE type=OBJECT_TYPE_NONE;
+		DynamicObject::TYPE type=DynamicObject::OBJECT_TYPE_NONE;
 		DynamicObject* newObj = NULL;
 
 		stringc stype = dynamicObjectXML->ToElement()->Attribute("type");
@@ -1045,25 +1045,25 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		if (stype.size()>0)
 		{
 			if (stype=="1" || stype=="npc")
-				type=OBJECT_TYPE_NPC;
+				type=DynamicObject::OBJECT_TYPE_NPC;
 
 			if (stype=="2" || stype=="interactive")
-				type=OBJECT_TYPE_INTERACTIVE;
+				type=DynamicObject::OBJECT_TYPE_INTERACTIVE;
 
 			if (stype=="3" || stype=="non-interactive")
-				type=OBJECT_TYPE_NON_INTERACTIVE;
+				type=DynamicObject::OBJECT_TYPE_NON_INTERACTIVE;
 
 			if (stype=="4" || stype=="walkable")
-				type=OBJECT_TYPE_WALKABLE;
+				type=DynamicObject::OBJECT_TYPE_WALKABLE;
 
 			if (stype=="5" || stype=="player")
-				type=OBJECT_TYPE_PLAYER;
+				type=DynamicObject::OBJECT_TYPE_PLAYER;
 
 			if (stype=="6" || stype=="editor")
-				type=OBJECT_TYPE_EDITOR;
+				type=DynamicObject::OBJECT_TYPE_EDITOR;
 
 			if (stype=="7" || stype=="loot")
-				type=OBJECT_TYPE_LOOT;
+				type=DynamicObject::OBJECT_TYPE_LOOT;
 		}
 
         stringc script = dynamicObjectXML->ToElement()->Attribute("script");
@@ -1114,7 +1114,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			sclZ = (f32)atof(tempv.c_str());
 
 		// Create an object from the template
-		if (type!=OBJECT_TYPE_PLAYER)
+		if (type!=DynamicObject::OBJECT_TYPE_PLAYER)
 		{ 
 
 			templateObj = dynamicObjectXML->ToElement()->Attribute("template");
@@ -1171,10 +1171,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			//newObj->setScript(script);
 	
         
-			cproperty a=newObj->initProperties();
+			DynamicObject::cproperty a=newObj->initProperties();
 		
 			// Default properties values for the player and the NPCS
-			if (type==OBJECT_TYPE_NPC || type==OBJECT_TYPE_PLAYER)
+			if (type==DynamicObject::OBJECT_TYPE_NPC || type==DynamicObject::OBJECT_TYPE_PLAYER)
 			{
 				// If LUA or a loaded value redefine a properties, it will override thoses values
 				a.experience = 10; // for a NPC this will give 10 XP to the attacker if he win
@@ -1183,7 +1183,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 				a.life = 100;
 				a.maxlife=100;
 				a.hurt_resist=50;
-				if (type==OBJECT_TYPE_PLAYER)
+				if (type==DynamicObject::OBJECT_TYPE_PLAYER)
 				{
 					a.mana = 100;
 					a.maxmana=100;
@@ -1310,7 +1310,7 @@ void DynamicObjectsManager::freezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
+		if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
 		{
 			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
 			nodeanim->setAnimationSpeed(0);
@@ -1323,9 +1323,9 @@ void DynamicObjectsManager::unFreezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==OBJECT_TYPE_NPC || objects[i]->getType()==OBJECT_TYPE_PLAYER)
+		if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
 		{
-			DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
+			DynamicObject::DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
 			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
 			nodeanim->setAnimationSpeed(anim.speed);
 		}
@@ -1354,25 +1354,25 @@ DynamicObject* DynamicObjectsManager::getDialogCaller()
 }
 
 //!the unique name of an dynamic object contains his index at the objects vector
-stringc DynamicObjectsManager::createUniqueName(TYPE objtype)
+stringc DynamicObjectsManager::createUniqueName(DynamicObject::TYPE objtype)
 {
 	stringc uniqueName="";
 
-	if (objtype==OBJECT_TYPE_NPC)
+	if (objtype==DynamicObject::OBJECT_TYPE_NPC)
 	{
 		uniqueName = "dynamic_object_npc_";
 		uniqueName += objsCounter_npc++;
 		return uniqueName;
 	}
 
-	if (objtype==OBJECT_TYPE_INTERACTIVE || objtype==OBJECT_TYPE_NON_INTERACTIVE || objtype==OBJECT_TYPE_LOOT)
+	if (objtype==DynamicObject::OBJECT_TYPE_INTERACTIVE || objtype==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objtype==DynamicObject::OBJECT_TYPE_LOOT)
 	{
 		uniqueName = "dynamic_object_";
 		uniqueName += objsCounter_regular++;
 		return uniqueName;
 	}
 
-	if (objtype==OBJECT_TYPE_WALKABLE)
+	if (objtype==DynamicObject::OBJECT_TYPE_WALKABLE)
 	{
 		uniqueName = "dynamic_walkable_";
 		uniqueName += objsCounter_walkable++;
@@ -1403,7 +1403,7 @@ void DynamicObjectsManager::displayShadow(bool visible)
 		// Should help with performance and allow for more NPC/Interactive objects.
 		if (objects[i])
 		{
-			if (objects[i]->getType()!=OBJECT_TYPE_EDITOR)
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
 			{
 				((DynamicObject*)objects[i])->getShadow()->setVisible(visible);
 			}
@@ -1423,9 +1423,9 @@ void DynamicObjectsManager::updateAll()
 		if (objects[i])
 		{
 
-			if (objects[i]->getType()==OBJECT_TYPE_PLAYER)
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
 				foundplayer=true;
-			if (objects[i]->getType()!=OBJECT_TYPE_NON_INTERACTIVE  || objects[i]->getType()!=OBJECT_TYPE_WALKABLE )
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_NON_INTERACTIVE  || objects[i]->getType()!=DynamicObject::OBJECT_TYPE_WALKABLE )
 			{
 				((DynamicObject*)objects[i])->update();
 			}
@@ -1458,7 +1458,7 @@ void DynamicObjectsManager::showDebugData(bool show)
 		// We don't need to have bounding box and other data over the player
 		if (objects[i])
 		{
-			if (objects[i]->getType()!=OBJECT_TYPE_PLAYER)
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
 			{
 				((DynamicObject*)objects[i])->getNode()->setDebugDataVisible( show ? EDS_BBOX | EDS_SKELETON : EDS_OFF );
 				objects[i]->objectLabelSetVisible(false);
@@ -1476,7 +1476,7 @@ void DynamicObjectsManager::updateAnimationBlend()
 		// We don't need to have bounding box and other data over the player
 		if (objects[i])
 		{
-			if (objects[i]->getType()==OBJECT_TYPE_PLAYER || objects[i]->getType()==OBJECT_TYPE_NPC)
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER || objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
 			{
 				((IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode())->animateJoints();
 			}
@@ -1493,7 +1493,7 @@ void DynamicObjectsManager::objectsToIdle()
 		// We don't need to have bounding box and other data over the player
 		if (objects[i])
 		{
-			if (objects[i]->getType()==OBJECT_TYPE_PLAYER || objects[i]->getType()==OBJECT_TYPE_NPC)
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER || objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
 			{
 				((DynamicObject*)objects[i])->setAnimation("idle");
 				((DynamicObject*)objects[i])->objectLabelSetVisible(false);
@@ -1520,7 +1520,7 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 			if (objects[i]->isEnabled())
 			//if (objects[i]->getLife()>0)
 			{
-				if (objects[i]->getType()!=OBJECT_TYPE_NPC)
+				if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_NPC)
 				//Temporary change, won't allow NPC to get into the meta selector
 				//if ((objects[i]->getType()==OBJECT_TYPE_NPC && objects[i]->getLife()>0) || (objects[i]->getType()!=OBJECT_TYPE_NPC))
 				{
@@ -1569,7 +1569,7 @@ void DynamicObjectsManager::clean(bool full)
         DynamicObject* d = objects[i];
 		if (d)
 		{
-			if (d->getType()!=OBJECT_TYPE_PLAYER)
+			if (d->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
 			{
 				d->clearEnemy();
 				if (!d->isTemplate())

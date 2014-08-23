@@ -31,7 +31,7 @@ public:
 
 	virtual void OnSetConstants(video::IMaterialRendererServices* services, s32 userData);
 
-	void setMaterials(ISceneNode * node, vector<DynamicObject_material> mat);
+	void setMaterials(ISceneNode * node, vector<DynamicObject::DynamicObject_material> mat);
 };
 
 #endif

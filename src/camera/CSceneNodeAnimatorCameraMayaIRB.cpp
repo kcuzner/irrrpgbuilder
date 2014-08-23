@@ -107,17 +107,17 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 		case EET_MOUSE_INPUT_EVENT:
 			for (u32 i=0; i<KeyMap.size(); ++i)
 			{
-				if (KeyMap[i].KeyCode == irr::KEY_LBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				if (KeyMap[i].KeyCode == irr::KEY_LBUTTON && App::getInstance()->getAppState()==App::APP_EDIT_VIEWDRAG)
 				{
 					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isLeftPressed();
 				}
 
-				if (KeyMap[i].KeyCode == irr::KEY_RBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				if (KeyMap[i].KeyCode == irr::KEY_RBUTTON && App::getInstance()->getAppState()==App::APP_EDIT_VIEWDRAG)
 				{
 					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isRightPressed();
 				}
 
-				if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==App::APP_EDIT_VIEWDRAG)
 				{
 					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isMiddlePressed();
 				}	
@@ -126,7 +126,7 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 
 			if (evt.MouseInput.Event == EMIE_MOUSE_MOVED)
 			{
-				if (App::getInstance()->getAppState()==APP_EDIT_VIEWDRAG)
+				if (App::getInstance()->getAppState()==App::APP_EDIT_VIEWDRAG)
 					MousePos = CursorControl->getRelativePosition();
 				return true;
 			}

@@ -23,13 +23,13 @@ class TerrainManager
         f32 getHeightAt(vector3df pos);
 		f32 getVerticeHeight(vector3df pos);
 
-        void paintVegetation(MousePick mousePick, bool erase);
+		void paintVegetation(App::MousePick mousePick, bool erase);
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
-        void transformSegments(MousePick mousePick, f32 radius,f32 radius2, f32 strength,  bool norecalc=false);
-        void transformSegmentsToValue(MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc=false);
+		void transformSegments(App::MousePick mousePick, f32 radius,f32 radius2, f32 strength,  bool norecalc=false);
+		void transformSegmentsToValue(App::MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc=false);
 
 		void recalculate();
 

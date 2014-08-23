@@ -13,31 +13,38 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-
-enum VIEW_TYPE
-{
-	VIEW_RTS = 0,
-	VIEW_RTS_FIXED = 1,
-	VIEW_RPG = 2,
-	VIEW_FPS = 3,
-	VIEW_HYBRID_FPS = 4,
-	VIEW_COUNT = 5
-};
-
-enum CONTROL_TYPE
-{
-	CONTROL_POINTNCLICK = 0,
-	CONTROL_WASD = 1,
-	CONTROL_COUNT = 2
-};
-
 class CameraSystem
 {
     public:
 
+		enum CAMERA_TYPE
+		{
+			CAMERA_GAME = 1,
+			CAMERA_EDIT = 2,
+			CAMERA_CUTSCENE = 3,
+			CAMERA_COUNT = 4
+		};
+
+		enum VIEW_TYPE
+		{
+			VIEW_RTS = 0,
+			VIEW_RTS_FIXED = 1,
+			VIEW_RPG = 2,
+			VIEW_FPS = 3,
+			VIEW_HYBRID_FPS = 4,
+			VIEW_COUNT = 5
+		};
+
+		enum CONTROL_TYPE
+		{
+			CONTROL_POINTNCLICK = 0,
+			CONTROL_WASD = 1,
+			CONTROL_COUNT = 2
+		};
+
         static CameraSystem* getInstance();
 
-		void setCamera(int tempCamera);
+		void setCamera(CAMERA_TYPE tempCamera);
 		int getCamera();
 
 		//! Adds a camera scene node which is able to be controlle with the mouse similar
@@ -79,6 +86,8 @@ class CameraSystem
 		inline void setMAYATarget(vector3df pos){anm->setTarget(pos);}
 		inline void setGameCameraRange(f32 min,f32 max) {gameCamRangeMin=min; gameCamRangeMax=max;}
 		inline core::position2df getGameCameraRange() {position2df ranges; ranges.X=gameCamRangeMin; ranges.Y=gameCamRangeMax; return ranges;}
+		inline vector2df getGameCameraAngleLimit() {return cameraAngleLimit;}
+		inline void setGameCameraAngleLimit( vector2df limits) {cameraAngleLimit=limits;}
 
     protected:
     private:
@@ -94,9 +103,10 @@ class CameraSystem
 		vector3df cameraAngle;
 		irr::f32 cameraRotationSpeed;
 		irr::f32 cameraTargetHeight;
+		vector2df cameraAngleLimit;
 
 
-		int camera;
+		CAMERA_TYPE camera;
 		int minCamera;
 		int maxCamera;
 
