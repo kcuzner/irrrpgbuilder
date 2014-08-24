@@ -72,7 +72,8 @@ class CameraSystem
 		ICameraSceneNode* cutsceneCam;
 		ICameraSceneNode* gameCam;
 
-		void SetPointNClickAngle(vector2df angle);
+		void setPointNClickAngle(vector2df angle);
+		inline vector2df getPointNClickAngle() {return vector2df(cameraAngle.X,cameraAngle.Y);}
 
 		void moveCamera(vector3df pos);
 		vector3df getPosition();
@@ -80,6 +81,7 @@ class CameraSystem
 		core::vector3df getTarget();
 		inline vector3df getAngle() {return cameraAngle;}
 		void setRTSView();
+		inline void setRTSFixedView() {viewtype=VIEW_RTS_FIXED;}
 		void setRPGView();
 
 		inline void setMAYAPos(vector3df pos){anm->setPosition(pos);}
@@ -88,7 +90,9 @@ class CameraSystem
 		inline core::position2df getGameCameraRange() {position2df ranges; ranges.X=gameCamRangeMin; ranges.Y=gameCamRangeMax; return ranges;}
 		inline vector2df getGameCameraAngleLimit() {return cameraAngleLimit;}
 		inline void setGameCameraAngleLimit( vector2df limits) {cameraAngleLimit=limits;}
-
+		inline void setCameraZoom(f32 zoom){cameraHeight=zoom;}
+		inline f32 getCameraZoom(){return cameraHeight;}
+		
     protected:
     private:
         CameraSystem();

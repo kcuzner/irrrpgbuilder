@@ -2754,7 +2754,7 @@ void App::updateGameplay()
 			pom.X=initangle.X-(pom1.X*360);
 			pom.Y=initangle.Y-(pom1.Y*360);
 			
-			CameraSystem::getInstance()->SetPointNClickAngle(pom);
+			CameraSystem::getInstance()->setPointNClickAngle(pom);
 			//Hide the mouse pointer while rotation is done
 			device->getCursorControl()->setVisible(false);
 

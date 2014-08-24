@@ -246,14 +246,19 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"getCameraTarget",getCameraTarget);//x,y,z = getCameraTarget()
 	lua_register(LS,"getCameraRange",getCameraRange);//near,far = getCameraRange()
 	lua_register(LS,"setCameraRange",setCameraRange);//near,far = setCameraRange()
+	lua_register(LS,"getCameraRTSRotation",getCameraRTSRotation);//X,Y = getCameraRTSRotation()
+	lua_register(LS,"setCameraRTSRotation",setCameraRTSRotation);//setCameraRTSRotation(X,Y)
 	lua_register(LS,"getCameraAngleLimit",getCameraAngleLimit);//near,far = getCameraAngleLimit()
-	lua_register(LS,"setCameraAngleLimit",setCameraAngleLimit);//near,far = setCameraAngleLimit()
+	lua_register(LS,"setCameraAngleLimit",setCameraAngleLimit);//setCameraAngleLimit(near, far)
 	lua_register(LS,"setCameraPosition",setCameraPosition);//setCameraPosition(x,y,z)    or    setCameraTarget(objName)
     lua_register(LS,"getCameraPosition",getCameraPosition);//x,y,z = getCameraPosition()
+	lua_register(LS,"getCameraZoom",getCameraZoom);//zoom = getCameraZoom()
+	lua_register(LS,"setCameraZoom",setCameraZoom);// setCameraZoom( zoom )
 	lua_register(LS,"cutsceneMode",cutsceneMode); // Activate cutscene mode
 	lua_register(LS,"gameMode",gameMode); //Activate game mode
 	lua_register(LS,"setRTSView",setRTSView); //Camera view is RTS style
 	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
+	lua_register(LS,"setRTSFixedView",setRTSFixedView); //Camera view in RTS Style with no rotation
 
 	lua_register(LS,"showCutsceneText",showCutsceneText); // Display/Hide the cutscene text
 	lua_register(LS,"setCutsceneText",setCutsceneText); // Set the text to display
@@ -795,6 +800,60 @@ int LuaGlobalCaller::getCameraRange(lua_State *LS)
     return 2;
 }
 
+int LuaGlobalCaller::setCameraRTSRotation(lua_State *LS)
+{
+    f32 X;
+    f32 Y;
+
+    Y = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	X = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	CameraSystem::getInstance()->setPointNClickAngle(vector2df(X,Y));
+	printf("LUA Command setCameraRTSRotation() was called!\n near:%f, far:%f\n",X,Y);
+    return 0;
+}
+
+int LuaGlobalCaller::getCameraRTSRotation(lua_State *LS)
+{
+	
+    f32 X;
+    f32 Y;
+  
+	X=CameraSystem::getInstance()->getPointNClickAngle().X;
+	Y=CameraSystem::getInstance()->getPointNClickAngle().Y;
+
+    lua_pushnumber(LS,X);
+    lua_pushnumber(LS,Y);
+	printf("LUA Command getCameraRange() was called!, near: %f, far: %f\n",X,Y);
+
+    return 2;
+}
+
+
+int LuaGlobalCaller::setCameraZoom(lua_State *LS)
+{
+    f32 zoom;
+
+    zoom = (f32)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	CameraSystem::getInstance()->setCameraZoom(zoom);
+    return 0;
+}
+
+int LuaGlobalCaller::getCameraZoom(lua_State *LS)
+{
+	
+    f32 zoom;
+	zoom=CameraSystem::getInstance()->getCameraZoom();
+    lua_pushnumber(LS,zoom);
+
+    return 1;
+}
+
 int LuaGlobalCaller::setCameraAngleLimit(lua_State *LS)
 {
     f32 start;
@@ -895,6 +954,12 @@ int LuaGlobalCaller::gameMode(lua_State *LS)
 int LuaGlobalCaller::setRTSView(lua_State *LS)
 {
 	CameraSystem::getInstance()->setRTSView();
+	return 0;
+}
+
+int LuaGlobalCaller::setRTSFixedView(lua_State *LS)
+{
+	CameraSystem::getInstance()->setRTSFixedView();
 	return 0;
 }
 

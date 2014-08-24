@@ -365,7 +365,7 @@ void CameraSystem::updatePointClickCam()
 }
 
 //! Will update the angle of the pointNClick camera by mouse offsets
-void CameraSystem::SetPointNClickAngle(vector2df angle)
+void CameraSystem::setPointNClickAngle(vector2df angle)
 {
 	//Old behavior was adding angle to the current angle.
 	//Has some complaints from forum user about imprecision.
@@ -373,6 +373,10 @@ void CameraSystem::SetPointNClickAngle(vector2df angle)
 	//angle*=cameraRotationSpeed;
     //cameraAngle.X+=-(angle.X/2);
 	//cameraAngle.Y+=-(angle.Y/2);
+	if (viewtype==VIEW_RTS_FIXED)
+	{
+		return;
+	}
 
 	//New behavior take the angle directly
 	cameraAngle.X = angle.X;

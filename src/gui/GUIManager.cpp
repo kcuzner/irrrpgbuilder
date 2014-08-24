@@ -2010,6 +2010,10 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getCameraTarget",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraRange",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraRange",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraRTSRotation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraRTSRotation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getCameraZoom",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setCameraZoom",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getCameraAngleLimit",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCameraAngleLimit",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectPosition",SColor(255,128,0,255),true);
@@ -2017,6 +2021,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("cutsceneMode",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("gameMode",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRTSView",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setRTSFixedView",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRPGView",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("showCutsceneText",SColor(255,128,0,255),true);

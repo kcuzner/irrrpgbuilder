@@ -82,6 +82,10 @@ class LuaGlobalCaller
         static int getCameraTarget(lua_State *LS);
 		static int setCameraRange(lua_State *LS);
         static int getCameraRange(lua_State *LS);
+		static int setCameraRTSRotation(lua_State *LS);
+        static int getCameraRTSRotation(lua_State *LS);
+		static int setCameraZoom(lua_State *LS);
+        static int getCameraZoom(lua_State *LS);
 		static int setCameraAngleLimit(lua_State *LS);
         static int getCameraAngleLimit(lua_State *LS);
         static int setCameraPosition(lua_State *LS);
@@ -89,6 +93,7 @@ class LuaGlobalCaller
 		static int cutsceneMode(lua_State *LS);
 		static int gameMode(lua_State *LS);
 		static int setRTSView(lua_State *LS);
+		static int setRTSFixedView(lua_State *LS);
 		static int setRPGView(lua_State *LS);
 
 		static int showCutsceneText(lua_State *LS);
