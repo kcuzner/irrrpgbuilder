@@ -953,19 +953,19 @@ int LuaGlobalCaller::gameMode(lua_State *LS)
 
 int LuaGlobalCaller::setRTSView(lua_State *LS)
 {
-	CameraSystem::getInstance()->setRTSView();
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RTS);
 	return 0;
 }
 
 int LuaGlobalCaller::setRTSFixedView(lua_State *LS)
 {
-	CameraSystem::getInstance()->setRTSFixedView();
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RTS_FIXED);
 	return 0;
 }
 
 int LuaGlobalCaller::setRPGView(lua_State *LS)
 {
-	CameraSystem::getInstance()->setRPGView();
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
 	return 0;
 }
 

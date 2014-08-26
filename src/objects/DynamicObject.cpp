@@ -560,8 +560,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 		// pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
 		this->getNode()->updateAbsolutePosition();
-		if (getType()==OBJECT_TYPE_PLAYER)
-			CameraSystem::getInstance()->updatePointClickCam(); //The camera need to be positionned at the same time the player position is updated.
 	}
 	else
 	{
@@ -571,8 +569,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 		walkTarget = this->getPosition();
 		this->setPosition(oldpos);
 		this->getNode()->updateAbsolutePosition();
-		if (getType()==OBJECT_TYPE_PLAYER)
-			CameraSystem::getInstance()->updatePointClickCam();
 		reached=true;
 
 		if (enemyUnderAttack)
@@ -1668,6 +1664,9 @@ void DynamicObject::update()
 	if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 	{
 		checkAnimationEvent();
+		if (objectType==OBJECT_TYPE_PLAYER)
+			CameraSystem::getInstance()->updateGameCamera(); //Update camera at each update cycle of the player (better sync)
+
 		//walkTo(walkTarget); //Seem that updating the movement "smooth out" the movement.
 		//There must be a better way, the mesh seem to walk back/forth in small motion.
 		//This behavior must be fixed.
@@ -1711,6 +1710,9 @@ void DynamicObject::update()
 		{ // timerLUA=17
 		
 			updateWalk();
+			if (objectType==OBJECT_TYPE_PLAYER)
+				CameraSystem::getInstance()->updateGameCamera(); //Update camera at each update cycle of the player (better sync)
+
 			if (currentSpeed!=0)
 				timerLUA=timerobject;
 		}
