@@ -578,7 +578,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 			{
 				if (objectType==OBJECT_TYPE_PLAYER)
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-				lookAt(enemyUnderAttack->getPosition());
+					lookAt(enemyUnderAttack->getPosition());
 				setAnimation("attack");
 			} else
 			{
@@ -1911,6 +1911,7 @@ void DynamicObject::updateWalk()
 				vector3df pos2 = getPosition()+(pos1*(objectsize*0.75f));
 				setWalkTarget(pos2);
 				setPosition(pos2);
+
 				lookAt(Player::getInstance()->getNode()->getPosition());
 
 				if (runningMode)

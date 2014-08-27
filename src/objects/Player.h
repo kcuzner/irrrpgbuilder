@@ -31,6 +31,7 @@ class Player
 		void update();
 		void updateDisplay();
 		
+		
 		void setTaggedTarget(DynamicObject* object);
 		DynamicObject* getTaggedTarget();
 		
@@ -41,6 +42,7 @@ class Player
         void setHighLight(bool highlight);
 
 		void displayTarget(bool visible);
+		ISceneNode* getTarget(); 
 		
 		ISceneNode* getNode() { return playerObject->getNode(); };
 

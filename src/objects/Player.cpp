@@ -152,6 +152,7 @@ void Player::update()
 				}
 			}
 		}
+		playerObject->getNode()->updateAbsolutePosition();
 		//updateDisplay();
 	}
 }
@@ -187,6 +188,11 @@ void Player::setTaggedTarget(DynamicObject* object)
 DynamicObject* Player::getTaggedTarget()
 {
 	return taggedObject;
+}
+
+ISceneNode* Player::getTarget()
+{
+	return DynamicObjectsManager::getInstance()->getTarget()->getNode();
 }
 
 //! Show/Hide the target object

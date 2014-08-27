@@ -14,7 +14,7 @@ irr::f32 CameraSystem::cameraHeight = 4.0f;
 CameraSystem::CameraSystem()
 {
 
-	refreshdelay = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	
 	lightset=false;
 	this->light=NULL;
 	this->sun=NULL;
@@ -45,9 +45,8 @@ CameraSystem::CameraSystem()
 	editCamMaya->setTarget(vector3df(0,0,0));
 	setCamera(camera);
 
-	oldrot=-90+Player::getInstance()->getObject()->getRotation().Y;
+    oldrot=-90+Player::getInstance()->getObject()->getRotation().Y;
 
-	counter=0;
 	initrotation=false;
 	oldmouse=vector2df(0,0);
 	initangle=vector2d<f32>(0,0); //Initialize the initial angle of the RTS camera (Calculated from here)
@@ -70,6 +69,9 @@ CameraSystem::CameraSystem()
 	keyinteraction=KEY_KEY_E;
 
 	moveforward=false;
+	movebackward=false;
+	moveleftside=false;
+	moverightside=false;
 
 	device=App::getInstance()->getDevice();
 
@@ -105,26 +107,78 @@ void CameraSystem::eventsKeyboard(s32 key)
 {
 	if (key==keyforward) //Use the current game mecanics to move the player (define a walktarget position)
 	{
-		moveforward=true;
+		if (viewtype==VIEW_RPG || viewtype==VIEW_FPS)
+		{
+			moveforward=true;
+			vector3df delta;
 		
-		vector3df delta=vector3df(0,0,350);
-		delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
-		delta.Z=-delta.Z;
+			if (viewtype==VIEW_RPG)
+				delta=vector3df(0,0,150);
+			else
+				delta=vector3df(0,0,150);
 
-		vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
+			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			delta.Z=-delta.Z;
 
-		Player::getInstance()->getObject()->setWalkTarget(endposition);
+			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
+
+			Player::getInstance()->getObject()->setWalkTarget(endposition);
+		}
 		return;
 
 	}
 	else if (key==keybackward)
 	{
+		if (viewtype==VIEW_RPG || viewtype==VIEW_FPS)
+		{
+			movebackward=true;
+		
+			vector3df delta=vector3df(0,0,-150);
+			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			delta.Z=-delta.Z;
+
+			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
+
+			Player::getInstance()->getObject()->setWalkTarget(endposition);
+			Player::getInstance()->displayTarget(true);
+			endposition.Y+=2.0f;
+			Player::getInstance()->getTarget()->setPosition(endposition);
+		}
+		return;
 	}
 	else if (key==keyleftside)
 	{
+		if (viewtype==VIEW_FPS)
+		{
+			moveleftside=true;
+			vector3df delta;
+		
+			delta=vector3df(150,0,0);
+
+			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			delta.Z=-delta.Z;
+
+			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
+
+			Player::getInstance()->getObject()->setWalkTarget(endposition);
+		}
 	}
 	else if (key==keyrightside)
 	{
+		if (viewtype==VIEW_FPS)
+		{
+			moverightside=true;
+			vector3df delta;
+		
+			delta=vector3df(-150,0,0);
+
+			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			delta.Z=-delta.Z;
+
+			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
+
+			Player::getInstance()->getObject()->setWalkTarget(endposition);
+		}
 	}
 	else if (key==keyinteraction)
 	{
@@ -132,6 +186,15 @@ void CameraSystem::eventsKeyboard(s32 key)
 	else if (key==KEY_SPACE)
 	{
 		device->getCursorControl()->setVisible(!device->getCursorControl()->isVisible());
+	}
+	else if (key==KEY_ESCAPE) // Stop the game
+	{
+		App::getInstance()->stopGame();
+	}
+	else if (key==KEY_KEY_I) //Open the inventory
+	{
+		App::getInstance()->openItemsPanel();
+		device->getCursorControl()->setVisible(true);
 	}
 	
 	
@@ -230,8 +293,32 @@ CameraSystem::CAMERA_TYPE CameraSystem::getCamera()
 
 void CameraSystem::updateGameCamera()
 {
-	if (initrotation) 
+
+	vector3df rotation = currentCam->getRotation();
+	printf("Here are the current camera rotation info: %f,%f,%f\n",rotation.X,rotation.Y,rotation.Z);
+	if (initrotation && (viewtype==VIEW_RTS || viewtype==VIEW_RPG)) 
 		findCamAngle();
+
+	if (moveforward && !App::getInstance()->isKeyPressed(keyforward)) // Stop the player if the forward key is released
+	{
+		moveforward=false;
+		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getNode()->getPosition());
+	}
+	if (movebackward && !App::getInstance()->isKeyPressed(keybackward)) // Stop the player if the forward key is released
+	{
+		movebackward=false;
+		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getNode()->getPosition());
+	}
+	if (moveleftside && !App::getInstance()->isKeyPressed(keyleftside)) // Stop the player if the forward key is released
+	{
+		moveleftside=false;
+		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getNode()->getPosition());
+	}
+	if (moverightside && !App::getInstance()->isKeyPressed(keyrightside)) // Stop the player if the forward key is released
+	{
+		moverightside=false;
+		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getNode()->getPosition());
+	}
 
 	switch (viewtype)
 	{
@@ -255,7 +342,11 @@ void CameraSystem::updateGameCamera()
 		}
 	case VIEW_FPS:
 		{
+			if (device->getCursorControl()->isVisible() && App::getInstance()->getAppState()==App::APP_GAMEPLAY_NORMAL)
+				device->getCursorControl()->setVisible(false);
 			updatePlayerRotation();
+			updateFPSCamera();
+			
 			break;
 		}
 	}
@@ -550,14 +641,21 @@ void CameraSystem::updatePlayerRotation()
 	// Offset from the stored value
 	vector2d<f32> pom1 = oldmouse-device->getCursorControl()->getRelativePosition();
 	pom.X=oldangle.X-(pom1.X*360);
+	pom.Y=oldangle.Y-(pom1.Y*360);
 	if (Player::getInstance()->getObject()->isWalking())
+	{
+			Player::getInstance()->getNode()->setRotation(vector3df(0,pom.X,0));
+	}
+	if (viewtype==VIEW_FPS)
 		Player::getInstance()->getNode()->setRotation(vector3df(0,pom.X,0));
+
 
 	vector2d<f32> pombase=device->getCursorControl()->getRelativePosition();
 	if ((pombase.X<0.01f) || (pombase.X>0.99f))  //make the mouse cursor "loop" to prevent locking
 	{
 		initangle.X=getAngle().X;
 		initangle.Y=getAngle().Y;
+
 		if (pombase.X>0.99f)
 		{
 			device->getCursorControl()->setPosition(vector2df(0.01f,pombase.Y));
@@ -575,12 +673,55 @@ void CameraSystem::updatePlayerRotation()
 			
 	}
 
-	if (!App::getInstance()->isKeyPressed(keyforward)) // Stop the player if the forward key is released
-	{
-		moveforward=false;
-		Player::getInstance()->getObject()->setWalkTarget(Player::getInstance()->getNode()->getPosition());
-	}
 
+}
+
+void CameraSystem::updateFPSCamera()
+{
+	if (camera==CAMERA_GAME)
+	{
+
+		vector3df rotation = Player::getInstance()->getNode()->getRotation();
+		rotation.Z=0;
+		vector3df pos = Player::getInstance()->getNode()->getPosition();
+		vector3df offset = vector3df(0,58.0f,-4.0f);
+		//vector3df offset = vector3df(0,59.0f,150.0f);
+
+		offset.rotateXZBy(-rotation.Y);
+		pos+=offset;	
+		// Set the position and angle of the cam
+		currentCam->setPosition(pos);
+		
+		vector2df pom = oldmouse-device->getCursorControl()->getRelativePosition();
+		rotation.X-=(pom.Y*360.0f);
+
+		//Limit the rotation view on the UP/DOWN axis
+		if (rotation.X>60.0f)
+			rotation.X=60.0f;
+		if (rotation.X<-60.0f)
+			rotation.X=-60.0f;
+
+		rotation.Y+=180.0f; //have to flip the angle
+		
+
+		currentCam->setRotation(rotation);
+		currentCam->updateAbsolutePosition();
+		//Player::getInstance()->getNode()->setRotation(vector3df(0,rotation.Y,0));
+		//device->getCursorControl()->setPosition(vector2df(0.5f,0.5f));
+		
+	}
+}
+
+void CameraSystem::updateTypes()
+{
+	switch (viewtype)
+	{
+	case VIEW_FPS:
+		oldmouse=device->getCursorControl()->getRelativePosition();
+		break;
+	case VIEW_RPG:
+		oldmouse=device->getCursorControl()->getRelativePosition();
+	}
 }
 
 //! Will update the angle of the pointNClick camera by mouse offsets

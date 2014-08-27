@@ -100,7 +100,7 @@ class CameraSystem
 		inline vector3df getAngle() {return cameraAngle;}
 		
 		//Define the view types
-		inline void setViewType(VIEW_TYPE view) {viewtype=view;} 
+		inline void setViewType(VIEW_TYPE view) {viewtype=view; updateTypes();} 
 		inline VIEW_TYPE getViewType() {return viewtype;}
 
 		//Control of the Edit Camera
@@ -131,6 +131,8 @@ class CameraSystem
 		void updatePointClickCam(); // For RTS control / views
 		void findCamAngle(); // For RTS / RPG views types
 		void updatePlayerRotation(); //For RPG / FPS camera controls
+		void updateFPSCamera();
+		void updateTypes();
 
 		IrrlichtDevice *device;
 
@@ -143,6 +145,9 @@ class CameraSystem
 		s32 keyinteraction;
 
 		bool moveforward;
+		bool movebackward;
+		bool moveleftside;
+		bool moverightside;
 
 		ICameraSceneNode* editCamFPS;
 		ICameraSceneNode* currentCam;
@@ -156,23 +161,15 @@ class CameraSystem
 		irr::f32 cameraTargetHeight;
 		vector2df cameraAngleLimit;
 
-
-		CAMERA_TYPE camera;
-		int minCamera;
-		int maxCamera;
-
 		bool lightset;
 
 		f32 fov;
 
+		CAMERA_TYPE camera;
 		VIEW_TYPE viewtype;
 		CONTROL_TYPE controltype;
 
 		f32 oldrot;
-
-		u32 counter;
-
-		u32 refreshdelay;
 
 		f32 gameCamRangeMin;
 		f32 gameCamRangeMax;
@@ -180,7 +177,6 @@ class CameraSystem
 		bool initrotation; //for the camera rotation
 		vector2df oldmouse;
 		vector2df initangle; //initial angle of the RTS camera (Calculated from here)
-		u32 timer4; //timer for the camera rotation
 };
 
 #endif // CameraSystem_H

@@ -95,6 +95,7 @@ class LuaGlobalCaller
 		static int setRTSView(lua_State *LS);
 		static int setRTSFixedView(lua_State *LS);
 		static int setRPGView(lua_State *LS);
+		static int setFPSView(lua_State *LS);
 
 		static int showCutsceneText(lua_State *LS);
 		static int setCutsceneText(lua_State *LS);

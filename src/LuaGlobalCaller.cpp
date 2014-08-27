@@ -258,6 +258,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"gameMode",gameMode); //Activate game mode
 	lua_register(LS,"setRTSView",setRTSView); //Camera view is RTS style
 	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
+	lua_register(LS,"setFPSView",setFPSView); //Camera view is RPG style
 	lua_register(LS,"setRTSFixedView",setRTSFixedView); //Camera view in RTS Style with no rotation
 
 	lua_register(LS,"showCutsceneText",showCutsceneText); // Display/Hide the cutscene text
@@ -966,6 +967,12 @@ int LuaGlobalCaller::setRTSFixedView(lua_State *LS)
 int LuaGlobalCaller::setRPGView(lua_State *LS)
 {
 	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
+	return 0;
+}
+
+int LuaGlobalCaller::setFPSView(lua_State *LS)
+{
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_FPS);
 	return 0;
 }
 

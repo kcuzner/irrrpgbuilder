@@ -121,6 +121,7 @@ class App
         void eventMouseWheel(f32 value);
 
 		void eventMessagebox(gui::EGUI_EVENT_TYPE type);
+		void openItemsPanel();
 
         IrrlichtDevice* getDevice();
         MousePick getMousePosition3D(int id = 0);
