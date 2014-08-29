@@ -3,6 +3,7 @@
 #include "../App.h"
 #include "../tinyXML/tinyxml.h"
 #include "DynamicObjectsManager.h"
+#include "../camera/CameraSystem.h"
 
 
 using namespace irr;
@@ -102,7 +103,15 @@ DynamicObject* Player::getObject()
 // Determine also the attack rate(animation) and the distance the player can attack an object that was found.
 void Player::update()
 {
-	
+	if (CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_RTS || CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_RTS_FIXED)
+	{
+		updateRTSTargetting();
+	}
+	else
+	{
+		updateTargetting();
+	}
+
 	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	
 	// Standard checks updated by timer (update the tagged object, the range etc.
@@ -131,7 +140,7 @@ void Player::update()
 
 		
 		// This should trigger the player attack if the enemy is in range.
-		if (timercheck-timer1>300) // 1 attack per 1/4 sec
+		if (timercheck-timer1>300 && controltype==CONTROL_POINTNCLICK) // 1 attack per 1/4 sec			
 		{
 			timer1 = timercheck;
 			
@@ -199,4 +208,116 @@ ISceneNode* Player::getTarget()
 void Player::displayTarget(bool visible)
 {
 	DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(visible);
+}
+
+void Player::updateRTSTargetting()
+{
+	if(App::getInstance()->isMousePressed(0) && 
+		App::getInstance()->getAppState() == App::APP_GAMEPLAY_NORMAL)
+		
+	{
+				
+		// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
+		//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,100);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,100);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,0x0010);
+		// Filter only object with the ID=100 to get the resulting node
+		App::MousePick mousePick = App::getInstance()->getMousePosition3D(100);
+				
+
+		// Set back to the defaults
+		//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,0x0010);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,0x0010);
+		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,100);
+		// Failed to pick something, try to select "walkable"
+		if (!mousePick.pickedNode)
+		{
+			mousePick = App::getInstance()->getMousePosition3D(100);
+			//mousePick.pickedNode = NULL; //Forget about the node since we only need the collision point
+		}
+
+		stringc nodeName = "";
+		// Check for a node(need to get the name of the node)
+		if (mousePick.pickedNode != NULL)
+		{
+			// Get the name of the object that has been clicked on
+			stringc nodeName = mousePick.pickedNode->getName();
+			//if you click on a Dynamic Object...
+			if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
+			{
+				DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
+				// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
+				//Since an object as been clicked the walktarget of the player is changed
+				if (obj)
+				{
+					vector3df pos = obj->getPosition();
+					vector3df pos2 = getObject()->getPosition();
+					f32 desiredDistance=50.0f;
+					f32 distance = getObject()->getDistanceFrom(pos);
+					f32 final = (distance-desiredDistance)/distance;
+					vector3df walkTarget = pos.getInterpolated(pos2,final);
+					getObject()->setWalkTarget(walkTarget);
+					DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+					getObject()->lookAt(obj->getPosition());
+					setTaggedTarget(obj);
+				}
+				// If the distance is ok notify the object lua script that it's being clicked
+				// Currently set at 100 unit
+				if (obj && (obj->getDistanceFrom(getObject()->getPosition()) < 100.0f))
+					obj->notifyClick();
+				
+				if(obj->getObjectType() == stringc("ENEMY"))
+				{
+					getObject()->attackEnemy(obj);
+				}
+				else
+				{
+					getObject()->clearEnemy();
+				}
+				return;
+			}
+			else
+			{ // Did not clicked on a NPC or object but on a walkable area
+				//mousePick = getMousePosition3D(100);
+				if (mousePick.pickedPos!=vector3df(0,0,0))
+				{
+					getObject()->setWalkTarget(mousePick.pickedPos);
+					DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
+					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
+					setTaggedTarget(NULL);
+					getObject()->clearEnemy();
+				}
+				//getObject()->clearEnemy();
+				return;
+			}
+		}
+	}
+}
+
+void Player::updateTargetting()
+{
+	vector3df tar = vector3df (0,0,-80.0f);
+	tar.rotateXZBy(-getNode()->getRotation().Y);
+	vector3df pos = getNode()->getPosition()+ tar;
+	//getTarget()->setVisible(true);
+	//getTarget()->setPosition(pos);
+	vector<DynamicObject*> list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 60.0f, DynamicObject::OBJECT_TYPE_NPC);
+	if (list.size()>0)
+	{
+		if (!getTaggedTarget())
+		{
+			setTaggedTarget(list[0]);
+			getTarget()->setVisible(true);
+			getTarget()->setPosition(list[0]->getPosition());
+		}
+	}
+	else
+	{
+		setTaggedTarget(NULL);
+		getTarget()->setVisible(false);
+	}
+
 }

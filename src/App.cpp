@@ -1365,7 +1365,7 @@ void App::eventKeyPressed(s32 key)
 		break;
 
 	case KEY_F5:
-		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !EventReceiver::getInstance()->isKeyPressed(key))
+		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !isKeyPressed(key))
 			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 		break;
 
@@ -1390,7 +1390,7 @@ void App::eventKeyPressed(s32 key)
 
 	case KEY_LCONTROL:
 
-		if (EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL))
+		if (isKeyPressed(KEY_LCONTROL))
 			snapfunction=true;
 		else
 			snapfunction=false;
@@ -1398,7 +1398,7 @@ void App::eventKeyPressed(s32 key)
 
 	case KEY_ESCAPE:
 #ifndef EDITOR
-		if (EventReceiver::getInstance()->isKeyPressed(KEY_ESCAPE))
+		if (isKeyPressed(KEY_ESCAPE))
 		{
 			visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->isVisible();
 			guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(!visible);
@@ -1416,6 +1416,11 @@ void App::eventKeyPressed(s32 key)
 bool App::isKeyPressed(int key)
 {
 	return EventReceiver::getInstance()->isKeyPressed(key);
+}
+
+bool App::isMousePressed(int mb)
+{
+	return EventReceiver::getInstance()->isMousePressed(mb);
 }
 
 // Behaviors with the detected mouse button
@@ -2422,7 +2427,7 @@ void App::updateEditMode()
 				// Activate "Viewdrag" mode
 				// This state is checked by the MAYA camera
 				// Will allow to move and rotate the view by the mouse when it's in that mode
-				if(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE))
+				if(isKeyPressed(KEY_SPACE))
 				{
 					if (app_state != APP_EDIT_VIEWDRAG)
 					{
@@ -2435,7 +2440,7 @@ void App::updateEditMode()
 				}
 			}
 			// Return the edit mode to normal after the spacebar is pressed (viewdrag)
-			if ((app_state == APP_EDIT_VIEWDRAG) && !(EventReceiver::getInstance()->isKeyPressed(KEY_SPACE)))
+			if ((app_state == APP_EDIT_VIEWDRAG) && !(isKeyPressed(KEY_SPACE)))
 			{
 				setAppState(old_state);
 				guienv->setFocus(guienv->getRootGUIElement()); // reset the focus when we release the spacebar
@@ -2447,7 +2452,7 @@ void App::updateEditMode()
 			//Move the player update code
 			if(app_state == APP_EDIT_CHARACTER)
 			{
-				if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea())
+				if(isMousePressed(0) && cursorIsInEditArea())
 					Player::getInstance()->getObject()->setPosition(getMousePosition3D(100).pickedPos);
 				return;
 			}
@@ -2456,7 +2461,7 @@ void App::updateEditMode()
 			//Check for the pressing of CTRL+C
 			if(app_state < APP_STATE_CONTROL)
 			{
-				if (EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL) && EventReceiver::getInstance()->isKeyPressed(KEY_KEY_C))
+				if (isKeyPressed(KEY_LCONTROL) && isKeyPressed(KEY_KEY_C))
 				{
 					if (!keytoggled)
 					{
@@ -2766,6 +2771,7 @@ void App::updateGameplay()
 	{
 		// Update the NPc refresh
 		timer3 = device->getTimer()->getRealTime();
+
 		// Update all the NPC on the map (including the player)
 		DynamicObjectsManager::getInstance()->updateAll();
 
@@ -2773,101 +2779,6 @@ void App::updateGameplay()
 		Combat::getInstance()->update();
 	}
 
-
-	// This update the player events and controls at specific time intervals
-	if ((timer-timer2)>34)
-	{
-		timer2 = device->getTimer()->getRealTime();
-
-		// Point & Click mecanic: Select object by the mouse
-		if(EventReceiver::getInstance()->isMousePressed(0) && cursorIsInEditArea() && 
-			app_state == APP_GAMEPLAY_NORMAL)
-			
-		{
-			if (CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_RPG &&
-				CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_FPS)
-			{
-				printf("View RPG= %d. Current value:= %d\n",(int)CameraSystem::VIEW_RPG,(int)CameraSystem::getInstance()->getViewType());
-				// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)
-				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,0x0010);
-				// Filter only object with the ID=100 to get the resulting node
-				MousePick mousePick = getMousePosition3D(100);
-				
-
-				// Set back to the defaults
-				//DynamicObjectsManager::getInstance()->setObjectsID(OBJECT_TYPE_NON_INTERACTIVE,100);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NPC,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_INTERACTIVE,0x0010);
-				DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_WALKABLE,100);
-				// Failed to pick something, try to select "walkable"
-				if (!mousePick.pickedNode)
-				{
-					mousePick = getMousePosition3D(100);
-					//mousePick.pickedNode = NULL; //Forget about the node since we only need the collision point
-				}
-
-				stringc nodeName = "";
-				// Check for a node(need to get the name of the node)
-				if (mousePick.pickedNode != NULL)
-				{
-					// Get the name of the object that has been clicked on
-					stringc nodeName = mousePick.pickedNode->getName();
-					//if you click on a Dynamic Object...
-					if( stringc( nodeName.subString(0,14)) == "dynamic_object" )
-					{
-						DynamicObject* obj = DynamicObjectsManager::getInstance()->getObjectByName(nodeName);
-						// TODO: Need to get more accuracy for the distance hardcoded value is not ideal
-						//Since an object as been clicked the walktarget of the player is changed
-						if (obj)
-						{
-							vector3df pos = obj->getPosition();
-							vector3df pos2 = Player::getInstance()->getObject()->getPosition();
-							f32 desiredDistance=50.0f;
-							f32 distance = Player::getInstance()->getObject()->getDistanceFrom(pos);
-							f32 final = (distance-desiredDistance)/distance;
-							vector3df walkTarget = pos.getInterpolated(pos2,final);
-							Player::getInstance()->getObject()->setWalkTarget(walkTarget);
-							DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
-							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-							Player::getInstance()->getObject()->lookAt(obj->getPosition());
-							Player::getInstance()->setTaggedTarget(obj);
-						}
-						// If the distance is ok notify the object lua script that it's being clicked
-						// Currently set at 100 unit
-						if (obj && (obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < 100.0f))
-							obj->notifyClick();
-						
-						if(obj->getObjectType() == stringc("ENEMY"))
-						{
-							Player::getInstance()->getObject()->attackEnemy(obj);
-						}
-						else
-						{
-							Player::getInstance()->getObject()->clearEnemy();
-						}
-						return;
-					}
-					else
-					{ // Did not clicked on a NPC or object but on a walkable area
-						//mousePick = getMousePosition3D(100);
-						if (mousePick.pickedPos!=vector3df(0,0,0))
-						{
-							Player::getInstance()->getObject()->setWalkTarget(mousePick.pickedPos);
-							DynamicObjectsManager::getInstance()->getTarget()->setPosition(mousePick.pickedPos+vector3df(0,0.1f,0));
-							DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
-							Player::getInstance()->setTaggedTarget(NULL);
-							Player::getInstance()->getObject()->clearEnemy();
-						}
-						//Player::getInstance()->getObject()->clearEnemy();
-						return;
-					}
-				}
-			}
-		}
-	}
 }
 
 void App::cleanWorkspace()

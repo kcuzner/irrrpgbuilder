@@ -9,12 +9,12 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-irr::f32 CameraSystem::cameraHeight = 4.0f;
+
+
 
 CameraSystem::CameraSystem()
 {
-
-	
+	//irr::f32 CameraSystem::cameraHeight = 4.0f;
 	lightset=false;
 	this->light=NULL;
 	this->sun=NULL;
@@ -31,7 +31,8 @@ CameraSystem::CameraSystem()
 	gameCam->setFarValue(5000);
 	gameCam->setAspectRatio((f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width/
 				(f32)App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height);
-	viewtype = VIEW_RTS;
+	
+	setViewType(VIEW_RTS);
 	controltype = CONTROL_POINTNCLICK;
 	cameraAngle=vector3df(135.0f,45.0f,0.0f);
 	
@@ -103,6 +104,7 @@ CameraSystem* CameraSystem::getInstance()
     return instance;
 }
 
+//! Get back the events from the keyboard (called in the APP Class -> EventManager)
 void CameraSystem::eventsKeyboard(s32 key)
 {
 	if (key==keyforward) //Use the current game mecanics to move the player (define a walktarget position)
@@ -182,6 +184,10 @@ void CameraSystem::eventsKeyboard(s32 key)
 	}
 	else if (key==keyinteraction)
 	{
+		printf("Interaction key was triggered!\n");
+		if (Player::getInstance()->getTaggedTarget())
+			Player::getInstance()->getTaggedTarget()->notifyClick();
+
 	}
 	else if (key==KEY_SPACE)
 	{
@@ -202,28 +208,48 @@ void CameraSystem::eventsKeyboard(s32 key)
 
 }
 
+//! Get back the events from the mouse (called in the APP Class -> EventManager)
 void CameraSystem::eventsMouseKey(s32 key)
 {
 	if (key==keyaction)
 	{
+		printf("Action key was triggered!\n");
+		//Will attack if there is a "tagged" object
+		if (viewtype!=VIEW_RTS || viewtype!=VIEW_RTS_FIXED)
+		{
+			if (Player::getInstance()->getTaggedTarget())
+			{
+				//if (Player::getInstance()->getTaggedTarget()->getObjectType() == stringc("ENEMY"))
+					Player::getInstance()->getObject()->attackEnemy(Player::getInstance()->getTaggedTarget());
+			}
+			else
+				Player::getInstance()->getObject()->clearEnemy();
+		}
+
 	} else if (key==EMIE_RMOUSE_PRESSED_DOWN)
 	{
-		//Hide the mouse pointer while rotation is done
-		initrotation=true;
-		device->getCursorControl()->setVisible(false);
-		initangle.X=getAngle().X;
-		initangle.Y=getAngle().Y;
-		oldmouse = device->getCursorControl()->getRelativePosition();
-		printf("The right mouse button was pressed!");
+		if (viewtype==VIEW_RTS || viewtype==VIEW_RTS_FIXED || viewtype==VIEW_RPG)
+		{//Hide the mouse pointer while rotation is done
+			initrotation=true;
+			device->getCursorControl()->setVisible(false);
+			initangle.X=getAngle().X;
+			initangle.Y=getAngle().Y;
+			oldmouse = device->getCursorControl()->getRelativePosition();
+			printf("The right mouse button was pressed!");
+		}
 	} else if (key==EMIE_RMOUSE_LEFT_UP)
 	{
-		device->getCursorControl()->setVisible(true);
-		initrotation=false;
+		if (viewtype==VIEW_RTS || viewtype==VIEW_RTS_FIXED || viewtype==VIEW_RPG)
+		{
+			device->getCursorControl()->setVisible(true);
+			initrotation=false;
+		}
 	}
 
 
 }
 
+//! Set the camera (ingame or edit or cutscene)
 void CameraSystem::setCamera(CAMERA_TYPE tempCamera)
 {
 	camera = tempCamera;
@@ -294,8 +320,8 @@ CameraSystem::CAMERA_TYPE CameraSystem::getCamera()
 void CameraSystem::updateGameCamera()
 {
 
-	vector3df rotation = currentCam->getRotation();
-	printf("Here are the current camera rotation info: %f,%f,%f\n",rotation.X,rotation.Y,rotation.Z);
+	//vector3df rotation = currentCam->getRotation();
+	//printf("Here are the current camera rotation info: %f,%f,%f\n",rotation.X,rotation.Y,rotation.Z);
 	if (initrotation && (viewtype==VIEW_RTS || viewtype==VIEW_RPG)) 
 		findCamAngle();
 
@@ -712,15 +738,25 @@ void CameraSystem::updateFPSCamera()
 	}
 }
 
+//! Define the control types in the player class
 void CameraSystem::updateTypes()
 {
 	switch (viewtype)
 	{
+	case VIEW_RTS:
+		Player::getInstance()->controltype=Player::CONTROL_POINTNCLICK;
+		break;
+	case VIEW_RTS_FIXED:
+		Player::getInstance()->controltype=Player::CONTROL_POINTNCLICK;
+		break;
 	case VIEW_FPS:
+		Player::getInstance()->controltype=Player::CONTROL_WASD;
 		oldmouse=device->getCursorControl()->getRelativePosition();
 		break;
 	case VIEW_RPG:
+		Player::getInstance()->controltype=Player::CONTROL_WASD;
 		oldmouse=device->getCursorControl()->getRelativePosition();
+		break;
 	}
 }
 

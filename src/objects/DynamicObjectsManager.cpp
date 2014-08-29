@@ -1604,3 +1604,22 @@ void DynamicObjectsManager::clean(bool full)
    objTemplate.clear();
 
 }
+
+//! Return a list of dynamic objects around the given position
+vector<DynamicObject*> DynamicObjectsManager::getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type)
+{
+	vector<DynamicObject*> list; // perhap will have to make it part of the class (LUA)
+	for(int i=0;i<(int)objects.size();i++)
+    {
+        DynamicObject* d = objects[i];
+		if (d)
+		{
+			if ((d->getType()==type) && (pos.getDistanceFrom(d->getPosition())<radius))
+			{
+				list.push_back(d);
+			}
+		}
+    }
+	
+	return list;
+}

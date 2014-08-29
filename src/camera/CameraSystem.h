@@ -155,7 +155,7 @@ class CameraSystem
 		CSceneNodeAnimatorCameraMayaIRB* anm;
 		
 		// For the point&Click Camera
-		static irr::f32 cameraHeight;
+		irr::f32 cameraHeight;
 		vector3df cameraAngle;
 		irr::f32 cameraRotationSpeed;
 		irr::f32 cameraTargetHeight;

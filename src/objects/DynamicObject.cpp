@@ -574,12 +574,16 @@ void DynamicObject::walkTo(vector3df targetPos)
 		if (enemyUnderAttack)
 		{
 			stringc currentenemy = enemyUnderAttack->getNode()->getName();
-			if (namecollide==currentenemy)
+			if (namecollide==currentenemy && Player::getInstance()->controltype!=Player::CONTROL_POINTNCLICK)
 			{
-				if (objectType==OBJECT_TYPE_PLAYER)
+				if (objectType==OBJECT_TYPE_PLAYER && enemyUnderAttack->getObjectType() == stringc("ENEMY"))
+				{
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 					lookAt(enemyUnderAttack->getPosition());
-				setAnimation("attack");
+					setAnimation("attack");
+				}
+				else
+					setAnimation("idle");
 			} else
 			{
 				this->setAnimation("idle");
@@ -1405,13 +1409,29 @@ ITriangleSelector* DynamicObject::getTriangleSelector()
 // Main attack feature (Player + NPC)
 void DynamicObject::attackEnemy(DynamicObject* obj)
 {
-	if (enemyUnderAttack==obj || !obj)
+	if (!obj)
+		return;
+
+	if (enemyUnderAttack==obj && Player::getInstance()->controltype==Player::CONTROL_POINTNCLICK)
 		return;
 
     enemyUnderAttack = obj;
 
-	if(obj)
-    {
+	if (Player::getInstance()->controltype!=Player::CONTROL_POINTNCLICK)
+	{
+		printf("Attack animation triggered for FPS or RPG\n");
+		setAnimation("attack");
+		attackresult=Combat::getInstance()->attack(this,obj);
+		if (attackresult>0)
+			this->setAnimation("attack");
+		else
+			this->setAnimation("idle");
+
+		return;
+
+	}
+	else
+	{
         this->lookAt(obj->getPosition());
 		// This return the size (back to front of an object.
 		f32 size = ((obj->getNode()->getBoundingBox().getExtent().X*obj->getScale().X) + (this->getNode()->getBoundingBox().getExtent().X*this->getScale().X));
@@ -1844,6 +1864,53 @@ void DynamicObject::updateWalk()
 		// This is needed to stop the character before combat or when it reach the destination
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 		{
+
+
+
+			if (objectType==OBJECT_TYPE_PLAYER && !Player::getInstance()->getTaggedTarget())
+			{
+				vector<DynamicObject*> list=DynamicObjectsManager::getInstance()->getObjectNearPosition(this->getPosition(),objectsize, OBJECT_TYPE_NPC);
+				if (list.size()>0)
+				{
+					if (list[0]->getLife()>0)
+					{ 
+						Player::getInstance()->setTaggedTarget(list[0]);
+						//enemyUnderAttack=list[0];
+						this->setWalkTarget(this->getPosition());
+						this->setAnimation("idle");
+						printf("Stop the PLAYER!\n");
+						return;
+					}
+					
+				} 
+			}
+			//New trick check in radius of the walking for a target. If yes then stop and set the attack
+			if (objectType==OBJECT_TYPE_NPC)
+			{
+				vector<DynamicObject*> list=DynamicObjectsManager::getInstance()->getObjectNearPosition(this->getPosition(),objectsize, OBJECT_TYPE_PLAYER);
+				if (list.size()>0)
+				{
+					//enemyUnderAttack=list[0]; //Got bugs if this is not used by the player. Would need to be used by everyone.
+					this->setWalkTarget(this->getPosition());
+					this->setAnimation("idle");
+					printf("Stop the NPC!\n");
+					return;
+				}
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			//This will stop the player if he reach the target on the ground
 			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 1 && this->objectType==OBJECT_TYPE_PLAYER) 
 			{
@@ -2607,6 +2674,8 @@ int DynamicObject::showDialogMessage(lua_State *LS)
         lua_pop(LS, 1);
     }
 
+	App::getInstance()->getDevice()->getCursorControl()->setVisible(true);
+
     if(param2!="")
 		GUIManager::getInstance()->showDialogMessage((stringw)param2.c_str(), param1);
     else
@@ -2635,6 +2704,8 @@ int DynamicObject::showDialogQuestion(lua_State *LS)
         param2 = lua_tostring(LS, -1);
         lua_pop(LS, 1);
     }
+
+	App::getInstance()->getDevice()->getCursorControl()->setVisible(true);
 
     if(param2!="")
 		GUIManager::getInstance()->showDialogQuestion((stringw)param2.c_str(), param1);

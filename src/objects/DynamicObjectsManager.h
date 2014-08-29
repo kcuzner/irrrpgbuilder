@@ -34,7 +34,7 @@ class DynamicObjectsManager
 
 		DynamicObject* createCustomObjectAt(vector3df pos, core::stringc meshfile);
         DynamicObject* createActiveObjectAt(vector3df pos);
-
+		
 		core::stringc getScript(stringc uniqueName);
 		void setScript(stringc uniqueName);
         void removeObject(stringc uniqueName);
@@ -85,6 +85,8 @@ class DynamicObjectsManager
 		void setPlayer();
 
         void clean(bool full);
+
+		vector<DynamicObject*> getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type);
 
 		// Data object for the current template
 		 TemplateObject* activeObject;

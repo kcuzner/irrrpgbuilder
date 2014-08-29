@@ -111,17 +111,19 @@ class App
 		void displayGuiConsole();
         void draw2DImages();
 	
+		// These are accessed from the EventManager Class when event are triggeded
         void eventGuiButton(s32 id);
         void eventKeyPressed(s32 key);
-		bool isKeyPressed(int key);
-
 		void eventGuiSpinbox(s32 id);
-
         void eventMousePressed(s32 mouse);
         void eventMouseWheel(f32 value);
 
+		// These access the EventManager to query when invoked
+		bool isMousePressed(int mb);
+		bool isKeyPressed(int key);
+
 		void eventMessagebox(gui::EGUI_EVENT_TYPE type);
-		void openItemsPanel();
+		void openItemsPanel(); // Will use the GUI manager to open Item panel(ingame) when this is invoked
 
         IrrlichtDevice* getDevice();
         MousePick getMousePosition3D(int id = 0);

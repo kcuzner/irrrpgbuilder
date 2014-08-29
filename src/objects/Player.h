@@ -21,6 +21,13 @@ using namespace std;
 class Player
 {
     public:
+		enum CONTROL_TYPE
+		{
+			CONTROL_POINTNCLICK = 0,
+			CONTROL_WASD = 1,
+			CONTROL_COUNT = 2
+		};
+
         static Player* getInstance();
         virtual ~Player();
 
@@ -46,9 +53,14 @@ class Player
 		
 		ISceneNode* getNode() { return playerObject->getNode(); };
 
+		//Store the control type
+		CONTROL_TYPE controltype;
+
     protected:
     private:
         Player();
+		void updateRTSTargetting();
+		void updateTargetting();
 		
 		DynamicObject* playerObject;
 		DynamicObject* taggedObject;
