@@ -62,6 +62,10 @@ class CameraSystem
 		// Events received to for the controls of the camera
 		void eventsKeyboard(s32 key);
 		void eventsMouseKey(s32 key);
+		void eventMouseWheel(f32 value);
+
+		// Compare strings and set the key to the appropriate action
+		void defineKeys(core::stringc key, core::stringc action);
 
 		// Define the type of camera (ingame, edit, cutscene)
 		void setCamera(CAMERA_TYPE tempCamera);
@@ -132,6 +136,7 @@ class CameraSystem
 		void findCamAngle(); // For RTS / RPG views types
 		void updatePlayerRotation(); //For RPG / FPS camera controls
 		void updateFPSCamera();
+		void updateRPGCamera();
 		void updateTypes();
 
 		IrrlichtDevice *device;
@@ -143,6 +148,7 @@ class CameraSystem
 		s32 keyrightside;
 		s32 keyaction;
 		s32 keyinteraction;
+		s32 keyinventory;
 
 		bool moveforward;
 		bool movebackward;

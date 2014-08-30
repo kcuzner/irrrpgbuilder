@@ -1718,15 +1718,23 @@ void App::eventMousePressed(s32 mouse)
 void App::eventMouseWheel(f32 value)
 {
 
+	// In a game
+	if (app_state>APP_STATE_CONTROL)
+	{
+		CameraSystem::getInstance()->eventMouseWheel(value);
+		return;
+	}
+
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 	{
 		vector3df oldRot = lastMousePick.pickedNode->getRotation();
 		lastMousePick.pickedNode->setRotation(vector3df(0,value*5,0)+oldRot);
 	}
+
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		vector3df oldRot = Player::getInstance()->getObject()->getRotation();
-		Player::getInstance()->getObject()->setRotation(vector3df(0,value*5,0)+oldRot);
+		Player::getInstance()->getObject()->setRotation(vector3df(0,value*5,0)+oldRot);	
 	}
 	// This will allow zoom in/out in editor mode
 	if	(app_state != APP_EDIT_CHARACTER &&
@@ -1739,7 +1747,7 @@ void App::eventMouseWheel(f32 value)
 		app_state != APP_WAIT_FILEREQUEST &&
 		cursorIsInEditArea())
 	{
-		if (app_state < 100)
+		if (app_state < APP_STATE_CONTROL)
 		{
 			// not in viewdrag mode then enable the cam, then set the camera height then disable it again
 			if (app_state != APP_EDIT_VIEWDRAG)
@@ -1751,9 +1759,7 @@ void App::eventMouseWheel(f32 value)
 				CameraSystem::getInstance()->setCameraHeight(-value);
 
 		}
-		else // ingame camera
-		if (app_state>APP_STATE_CONTROL)
-			CameraSystem::getInstance()->setCameraHeight(value);
+		
 	}
 }
 
@@ -1766,6 +1772,7 @@ void App::eventMessagebox(gui::EGUI_EVENT_TYPE type)
 		TerrainManager::getInstance()->deleteTaggedSegment();
 }
 
+// This will display the "packsack" wiith the inventory of the player during gameplay
 void App::openItemsPanel()
 {
 	setAppState(APP_GAMEPLAY_VIEW_ITEMS);
@@ -1808,7 +1815,6 @@ App::MousePick App::getMousePosition3D(int id)
 		hitTriangle,
 		id);
 	
-	//ray.start = ray.start.getInterpolated(ray.end, 0.5f);
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
@@ -2052,7 +2058,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.3 (aug 2014)");
+		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.3 (sept 2014)");
 	} else
 		device = IRRdevice;
 
@@ -2345,7 +2351,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.3 (aug 2014)";
+			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.3 (sept 2014)";
 			if (app_state>APP_STATE_CONTROL)
 			{
 				str += " FPS:";

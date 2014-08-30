@@ -2024,6 +2024,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setRTSFixedView",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRPGView",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setFPSView",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("defineKeys",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("showCutsceneText",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setCutsceneText",SColor(255,128,0,255),true);

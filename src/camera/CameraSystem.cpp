@@ -68,6 +68,7 @@ CameraSystem::CameraSystem()
 	keyrightside=KEY_KEY_D;
 	keyaction=EMIE_LMOUSE_PRESSED_DOWN;
 	keyinteraction=KEY_KEY_E;
+	keyinventory=KEY_KEY_I;
 
 	moveforward=false;
 	movebackward=false;
@@ -104,6 +105,102 @@ CameraSystem* CameraSystem::getInstance()
     return instance;
 }
 
+void CameraSystem::defineKeys(core::stringc key, core::stringc action)
+{
+	irr::s32 keyfinal=0;
+	 // First define the key value
+	if (key=="A")
+		keyfinal = KEY_KEY_A;
+	else if (key=="B")
+		keyfinal = KEY_KEY_B;
+	else if (key=="C")
+		keyfinal = KEY_KEY_C;
+	else if (key=="D")
+		keyfinal = KEY_KEY_D;
+	else if (key=="E")
+		keyfinal = KEY_KEY_E;
+	else if (key=="F")
+		keyfinal = KEY_KEY_F;
+	else if (key=="G")
+		keyfinal = KEY_KEY_G;
+	else if (key=="H")
+		keyfinal = KEY_KEY_H;
+	else if (key=="I")
+		keyfinal = KEY_KEY_I;
+	else if (key=="J")
+		keyfinal = KEY_KEY_J;
+	else if (key=="K")
+		keyfinal = KEY_KEY_K;
+	else if (key=="L")
+		keyfinal = KEY_KEY_L;
+	else if (key=="M")
+		keyfinal = KEY_KEY_M;
+	else if (key=="N")
+		keyfinal = KEY_KEY_N;
+	else if (key=="O")
+		keyfinal = KEY_KEY_O;
+	else if (key=="P")
+		keyfinal = KEY_KEY_P;
+	else if (key=="Q")
+		keyfinal = KEY_KEY_Q;
+	else if (key=="R")
+		keyfinal = KEY_KEY_R;
+	else if (key=="S")
+		keyfinal = KEY_KEY_S;
+	else if (key=="T")
+		keyfinal = KEY_KEY_T;
+	else if (key=="U")
+		keyfinal = KEY_KEY_U;
+	else if (key=="V")
+		keyfinal = KEY_KEY_V;
+	else if (key=="W")
+		keyfinal = KEY_KEY_W;
+	else if (key=="X")
+		keyfinal = KEY_KEY_X;
+	else if (key=="Y")
+		keyfinal = KEY_KEY_Y;
+	else if (key=="Z")
+		keyfinal = KEY_KEY_Z;
+	else if (key=="1")
+		keyfinal = KEY_KEY_1;
+	else if (key=="2")
+		keyfinal = KEY_KEY_2;
+	else if (key=="3")
+		keyfinal = KEY_KEY_3;
+	else if (key=="4")
+		keyfinal = KEY_KEY_4;
+	else if (key=="5")
+		keyfinal = KEY_KEY_5;
+	else if (key=="6")
+		keyfinal = KEY_KEY_6;
+	else if (key=="7")
+		keyfinal = KEY_KEY_7;
+	else if (key=="8")
+		keyfinal = KEY_KEY_8;
+	else if (key=="9")
+		keyfinal = KEY_KEY_9;
+	else if (key=="0")
+		keyfinal = KEY_KEY_0;
+	
+	// get out if the key is not known
+	if (keyfinal==0)
+		return;
+	
+	if (action=="FORWARD")
+		keyforward=keyfinal;
+	else if(action=="BACK")
+		keybackward=keyfinal;
+	else if(action=="LEFT")
+		keyleftside=keyfinal;
+	else if(action=="RIGHT")
+		keyrightside=keyfinal;
+	else if(action=="INVENTORY")
+		keyinventory=keyfinal;
+	else if(action=="INTERACTION")
+		keyinteraction=keyfinal;
+
+}
+
 //! Get back the events from the keyboard (called in the APP Class -> EventManager)
 void CameraSystem::eventsKeyboard(s32 key)
 {
@@ -113,13 +210,19 @@ void CameraSystem::eventsKeyboard(s32 key)
 		{
 			moveforward=true;
 			vector3df delta;
-		
-			if (viewtype==VIEW_RPG)
-				delta=vector3df(0,0,150);
-			else
-				delta=vector3df(0,0,150);
 
-			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			if (viewtype!=VIEW_RPG)
+			{
+				delta=vector3df(0,0,150);
+				delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			}
+			else
+			{
+				delta=vector3df(0,0,-150);
+				delta.rotateXZBy(currentCam->getRotation().Y);
+			}
+
+
 			delta.Z=-delta.Z;
 
 			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
@@ -134,30 +237,46 @@ void CameraSystem::eventsKeyboard(s32 key)
 		if (viewtype==VIEW_RPG || viewtype==VIEW_FPS)
 		{
 			movebackward=true;
-		
-			vector3df delta=vector3df(0,0,-150);
-			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			vector3df delta;
+			
+			if (viewtype!=VIEW_RPG)
+			{
+				delta=vector3df(0,0,-150);
+				delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);				
+			}
+			else
+			{
+				delta=vector3df(0,0,150);
+				delta.rotateXZBy(currentCam->getRotation().Y);
+			}
+
 			delta.Z=-delta.Z;
 
 			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
 
 			Player::getInstance()->getObject()->setWalkTarget(endposition);
-			Player::getInstance()->displayTarget(true);
-			endposition.Y+=2.0f;
-			Player::getInstance()->getTarget()->setPosition(endposition);
+			
 		}
 		return;
 	}
 	else if (key==keyleftside)
 	{
-		if (viewtype==VIEW_FPS)
+		if (viewtype==VIEW_FPS || viewtype==VIEW_RPG)
 		{
 			moveleftside=true;
 			vector3df delta;
 		
-			delta=vector3df(150,0,0);
+			if (viewtype!=VIEW_RPG)
+			{
+				delta=vector3df(150,0,0);
+				delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			}
+			else
+			{
+				delta=vector3df(-150,0,0);
+				delta.rotateXZBy(currentCam->getRotation().Y);
+			}
 
-			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
 			delta.Z=-delta.Z;
 
 			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
@@ -167,14 +286,22 @@ void CameraSystem::eventsKeyboard(s32 key)
 	}
 	else if (key==keyrightside)
 	{
-		if (viewtype==VIEW_FPS)
+		if (viewtype==VIEW_FPS || viewtype==VIEW_RPG)
 		{
 			moverightside=true;
 			vector3df delta;
-		
-			delta=vector3df(-150,0,0);
 
-			delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			if (viewtype!=VIEW_RPG)
+			{
+				delta=vector3df(-150,0,0);
+				delta.rotateXZBy(Player::getInstance()->getNode()->getRotation().Y);
+			}
+			else
+			{
+				delta=vector3df(150,0,0);
+				delta.rotateXZBy(currentCam->getRotation().Y);
+			}
+
 			delta.Z=-delta.Z;
 
 			vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
@@ -197,7 +324,7 @@ void CameraSystem::eventsKeyboard(s32 key)
 	{
 		App::getInstance()->stopGame();
 	}
-	else if (key==KEY_KEY_I) //Open the inventory
+	else if (key==keyinventory) //Open the inventory
 	{
 		App::getInstance()->openItemsPanel();
 		device->getCursorControl()->setVisible(true);
@@ -247,6 +374,12 @@ void CameraSystem::eventsMouseKey(s32 key)
 	}
 
 
+}
+
+void CameraSystem::eventMouseWheel(f32 value)
+{
+	if (viewtype!=VIEW_FPS)
+		setCameraHeight(value);
 }
 
 //! Set the camera (ingame or edit or cutscene)
@@ -317,6 +450,7 @@ CameraSystem::CAMERA_TYPE CameraSystem::getCamera()
 	return camera;
 }
 
+//Update the camera
 void CameraSystem::updateGameCamera()
 {
 
@@ -325,6 +459,9 @@ void CameraSystem::updateGameCamera()
 	if (initrotation && (viewtype==VIEW_RTS || viewtype==VIEW_RPG)) 
 		findCamAngle();
 
+	// This would stop the player when it's moving and the key is released
+	// This should be improved to check is ANY other keys are pressed
+	// With this currently when we press a key and press another one, it's stop the player.
 	if (moveforward && !App::getInstance()->isKeyPressed(keyforward)) // Stop the player if the forward key is released
 	{
 		moveforward=false;
@@ -362,8 +499,9 @@ void CameraSystem::updateGameCamera()
 		{
 			if (device->getCursorControl()->isVisible() && App::getInstance()->getAppState()==App::APP_GAMEPLAY_NORMAL)
 				device->getCursorControl()->setVisible(false);
-			updatePointClickCam();
-			updatePlayerRotation();
+			//updatePointClickCam();
+			updateRPGCamera();
+			//updatePlayerRotation();
 			break;
 		}
 	case VIEW_FPS:
@@ -496,7 +634,9 @@ void CameraSystem::updatePointClickCam()
 
 		// This update the camera view when it's set as a RPG Camera
 		// Parent is player, and use the player angle as reference
-		if (viewtype==VIEW_RPG)
+		
+		//Disabled for the moment, but there is a good interpolation code in there.
+		/*if (viewtype==VIEW_RPG)
 		{
 			f32 camrefangle=0;
 
@@ -572,6 +712,7 @@ void CameraSystem::updatePointClickCam()
 			oldrot=camrefangle;
 
 		}
+		*/
 
 		// Do the rotation calculation
 		pos.rotateXYBy(cameraAngle.Y, camrefpos);
@@ -649,9 +790,9 @@ void CameraSystem::findCamAngle()
 
 		if (viewtype==VIEW_RPG)
 		{
-			if (Player::getInstance()->getObject()->isWalking())
-				setPointNClickAngle(vector2df(initangle.X,pom.Y));
-			else
+			//if (Player::getInstance()->getObject()->isWalking())
+			//	setPointNClickAngle(vector2df(initangle.X,pom.Y));
+			//else
 				setPointNClickAngle(pom);
 
 		}
@@ -659,6 +800,7 @@ void CameraSystem::findCamAngle()
 	}		
 }
 
+//This will rotate the player depending of the view
 void CameraSystem::updatePlayerRotation()
 {
 	vector2d<f32> pom = vector2d<f32>(0,0);
@@ -736,6 +878,43 @@ void CameraSystem::updateFPSCamera()
 		//device->getCursorControl()->setPosition(vector2df(0.5f,0.5f));
 		
 	}
+}
+
+void CameraSystem::updateRPGCamera()
+{
+	
+	if (!initrotation)
+	{
+		initrotation=true;
+		initangle.X=getAngle().X;
+		initangle.Y=getAngle().Y;
+		oldmouse = device->getCursorControl()->getRelativePosition();
+	}
+
+
+	// Get the player and find a "reference" position based on it.
+	core::vector3df camrefpos = Player::getInstance()->getObject()->getPosition();
+	camrefpos.Y+=cameraTargetHeight;
+
+	// Find the distance between the current camera and the reference position
+	//f32 camdistance = this->getPosition().getDistanceFrom(camrefpos);
+
+	// Initialize the vector and set the distance of the camera toward it
+	vector3df pos=vector3df(0,0,0);
+	pos.X+=cameraHeight;
+
+	// Offset from the reference position (the player)
+	pos+=camrefpos;
+
+	findCamAngle();
+
+	// Do the rotation calculation
+	pos.rotateXYBy(cameraAngle.Y, camrefpos);		
+	pos.rotateXZBy(-cameraAngle.X, camrefpos);
+
+	// Set the position and angle of the cam
+	currentCam->setPosition(pos);
+	currentCam->setTarget(camrefpos);
 }
 
 //! Define the control types in the player class

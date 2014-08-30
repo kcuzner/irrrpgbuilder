@@ -985,6 +985,8 @@ DynamicObject::OBJECT_ANIMATION DynamicObject::getAnimation(void)
 	return currentAnimation;
 }
 
+// This define the animation to take based on an "ACTION" based name
+// Later
 bool DynamicObject::setAnimation(stringc animName)
 {
 	//define if we use a random frame in the idle animation
@@ -1009,6 +1011,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		stunstate=false;
 		attackdelaystate=false;
 
+		//If this is not a player, hide the targetting
 		if (objectType!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 
@@ -1074,6 +1077,7 @@ bool DynamicObject::setAnimation(stringc animName)
 			}
 		}
 
+		// 
 		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
 		{
 
@@ -1083,9 +1087,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				{
 					attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
 					if (attackresult==0)
-						//Player::getInstance()->getObject()->setObjectLabel("Miss!");
 						Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
-						
 					else
 					{
 						stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
@@ -1094,26 +1096,10 @@ bool DynamicObject::setAnimation(stringc animName)
 						Player::getInstance()->getObject()->createTextAnim(textdam);
 					}
 
-				//printf("Going for attack animation: %s, %d\n",this->getName().c_str(),attackresult);
 				}
 		}
-		// Check to see if the attack was successful. if not, then put idle from the previous attack move
-		// or use the old animation
-		/*if (!attackresult)
-		{
-			if (oldAnimName=="attack")
-				animName="idle";
-			else
-				animName=oldAnimName;
-		} else
-		{
-			this->setWalkTarget(this->getPosition());
-			reached=true;
-		}*/
 
 	}
-
-
 
 
 	// This will activate the "hurt" stun state
@@ -1158,19 +1144,9 @@ bool DynamicObject::setAnimation(stringc animName)
 
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
 
-		/*if (Animation==OBJECT_ANIMATION_CUSTOM)
-			printf("It's a custom animation!\n");
-
-		if (animName=="despawn")
-			printf("The despawn animation was called!\n");
-			*/
-
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 		if( tempAnim.name == animName )
         {
-
-
-
 			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_CUSTOM)
 			{
 				// Store the old animations
@@ -1419,13 +1395,13 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 
 	if (Player::getInstance()->controltype!=Player::CONTROL_POINTNCLICK)
 	{
-		printf("Attack animation triggered for FPS or RPG\n");
+		// Attack animation triggered for FPS or RPG
 		setAnimation("attack");
 		attackresult=Combat::getInstance()->attack(this,obj);
 		if (attackresult>0)
-			this->setAnimation("attack");
-		else
-			this->setAnimation("idle");
+			this->setAnimation("attack"); // Have some hit points
+		else 
+			this->setAnimation("idle"); // Missed
 
 		return;
 
@@ -1438,17 +1414,17 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 		
 		if(obj->getDistanceFrom(Player::getInstance()->getObject()->getPosition()) < (size/2)+10)
 		{
+			// Attack triggered for the other types of camera controls
 			attackresult=Combat::getInstance()->attack(this,obj);
 			if (attackresult>0)
-				this->setAnimation("attack");
+				this->setAnimation("attack"); // Have some hit points
 			else
-				this->setAnimation("idle");
+				this->setAnimation("idle"); // Missed
 
 			obj->notifyClick();
 		}
     }
 
-	//printf("Passed here: attackEnnemy()\n");
 }
 
 //-----------------------------------------------------------------------

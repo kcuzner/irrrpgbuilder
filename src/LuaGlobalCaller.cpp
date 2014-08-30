@@ -260,6 +260,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"setRPGView",setRPGView); //Camera view is RPG style
 	lua_register(LS,"setFPSView",setFPSView); //Camera view is RPG style
 	lua_register(LS,"setRTSFixedView",setRTSFixedView); //Camera view in RTS Style with no rotation
+	lua_register(LS,"defineKeys",defineKeys); //Define the keyboard keys for ingame actions
 
 	lua_register(LS,"showCutsceneText",showCutsceneText); // Display/Hide the cutscene text
 	lua_register(LS,"setCutsceneText",setCutsceneText); // Set the text to display
@@ -973,6 +974,24 @@ int LuaGlobalCaller::setRPGView(lua_State *LS)
 int LuaGlobalCaller::setFPSView(lua_State *LS)
 {
 	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_FPS);
+	return 0;
+}
+
+int LuaGlobalCaller::defineKeys(lua_State *LS)
+{
+	core::stringc action="";
+	core::stringc key="";
+
+    if(lua_isstring(LS, -1))
+    {
+		action = (core::stringc)lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+
+        key = (core::stringc)lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+    
+	CameraSystem::getInstance()->defineKeys(key.make_upper(),action.make_upper());
 	return 0;
 }
 
