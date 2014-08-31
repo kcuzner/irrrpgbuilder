@@ -61,6 +61,7 @@ class Player
         Player();
 		void updateRTSTargetting();
 		void updateTargetting();
+		DynamicObject* getNearest(vector3df pos, vector<DynamicObject*> list);
 		
 		DynamicObject* playerObject;
 		DynamicObject* taggedObject;

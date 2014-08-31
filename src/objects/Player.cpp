@@ -299,19 +299,34 @@ void Player::updateRTSTargetting()
 
 void Player::updateTargetting()
 {
-	vector3df tar = vector3df (0,0,-80.0f);
+	//Front of the player 80 unit in front
+	vector3df tar = vector3df (0,0,-40.0f);
 	tar.rotateXZBy(-getNode()->getRotation().Y);
 	vector3df pos = getNode()->getPosition()+ tar;
+
+	//Activated for debugging purpose
 	//getTarget()->setVisible(true);
 	//getTarget()->setPosition(pos);
-	vector<DynamicObject*> list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 60.0f, DynamicObject::OBJECT_TYPE_NPC);
+	
+	vector<DynamicObject*> list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 40.0f, DynamicObject::OBJECT_TYPE_NPC);
 	if (list.size()>0)
 	{
-		if (!getTaggedTarget())
+		//Front of the player 30 units in front
+		vector3df tas = vector3df (0,0,-20.0f);
+		tas.rotateXZBy(-getNode()->getRotation().Y);
+		vector3df pos2 = getNode()->getPosition()+ tas;
+		printf("Something was found in the radius!\n");
+		//if (!getTaggedTarget())
 		{
-			setTaggedTarget(list[0]);
-			getTarget()->setVisible(true);
-			getTarget()->setPosition(list[0]->getPosition());
+
+			DynamicObject* object = getNearest(pos2,list);
+			if (object)
+			{
+				printf("Object was found!:%s\n",object->displayName.c_str());
+				setTaggedTarget(object);
+				getTarget()->setVisible(true);
+				getTarget()->setPosition(object->getPosition());
+			}
 		}
 	}
 	else
@@ -320,4 +335,30 @@ void Player::updateTargetting()
 		getTarget()->setVisible(false);
 	}
 
+}
+
+DynamicObject* Player::getNearest(vector3df pos, vector<DynamicObject*> list)
+{
+
+	DynamicObject* nearobject = NULL;
+	f32 near1 = 50000.0f;
+
+	if (list.size()>0)
+	{
+		for(int i=0;i<(int)list.size();i++)
+		{
+			DynamicObject* d = list[i];
+			if (d)
+			{
+				f32 distance = pos.getDistanceFrom(d->getPosition());
+				if (distance<near1)
+				{
+					nearobject = d;
+				}
+			}
+		}
+		return nearobject;
+	}
+	else
+		return NULL;
 }

@@ -104,7 +104,7 @@ class CameraSystem
 		inline vector3df getAngle() {return cameraAngle;}
 		
 		//Define the view types
-		inline void setViewType(VIEW_TYPE view) {viewtype=view; updateTypes();} 
+		void setViewType(VIEW_TYPE view);  
 		inline VIEW_TYPE getViewType() {return viewtype;}
 
 		//Control of the Edit Camera
@@ -134,10 +134,10 @@ class CameraSystem
         CameraSystem();
 		void updatePointClickCam(); // For RTS control / views
 		void findCamAngle(); // For RTS / RPG views types
-		void updatePlayerRotation(); //For RPG / FPS camera controls
 		void updateFPSCamera();
 		void updateRPGCamera();
-		void updateTypes();
+
+		vector3df getDirections();
 
 		IrrlichtDevice *device;
 
@@ -150,10 +150,8 @@ class CameraSystem
 		s32 keyinteraction;
 		s32 keyinventory;
 
-		bool moveforward;
-		bool movebackward;
-		bool moveleftside;
-		bool moverightside;
+		bool speedtoggle;
+		f32 speed;
 
 		ICameraSceneNode* editCamFPS;
 		ICameraSceneNode* currentCam;
@@ -163,9 +161,13 @@ class CameraSystem
 		// For the point&Click Camera
 		irr::f32 cameraHeight;
 		vector3df cameraAngle;
+		vector3df oldCameraAngle;
 		irr::f32 cameraRotationSpeed;
 		irr::f32 cameraTargetHeight;
 		vector2df cameraAngleLimit;
+
+		//to know if we had an interface appeared while in FPS or RPG view
+		bool interface_toggle;
 
 		bool lightset;
 

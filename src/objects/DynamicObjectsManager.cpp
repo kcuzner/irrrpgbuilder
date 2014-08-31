@@ -1616,7 +1616,8 @@ vector<DynamicObject*> DynamicObjectsManager::getObjectNearPosition(vector3df po
 		{
 			if ((d->getType()==type) && (pos.getDistanceFrom(d->getPosition())<radius))
 			{
-				list.push_back(d);
+				if (d->getLife()>0)
+					list.push_back(d);
 			}
 		}
     }
