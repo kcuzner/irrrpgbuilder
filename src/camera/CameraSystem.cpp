@@ -330,8 +330,12 @@ void CameraSystem::setCamera(CAMERA_TYPE tempCamera)
 				cameraRotationSpeed = 15.0f;
 				cameraTargetHeight = 48.0f;
 				currentCam = gameCam;
-				gameCam->bindTargetAndRotation(true);
-				this->updatePointClickCam();
+
+				gameCam->setFarValue(10000.0f);
+				gameCam->setNearValue(1.0f);
+
+				//gameCam->bindTargetAndRotation(true);
+				//this->updatePointClickCam();
 
 				// Use the RTS view by default
 				viewtype=VIEW_RTS;
@@ -351,6 +355,9 @@ void CameraSystem::setCamera(CAMERA_TYPE tempCamera)
 				editCamMaya->setInputReceiverEnabled(true);
 				//editCamMaya->setInputReceiverEnabled(false);
 				editCamMaya->setFarValue(cameraHeight*3.0f);
+				editCamMaya->setNearValue(1.0f);
+				//editCamMaya->setFarValue(55000.0f);
+				
 	
 				break;
 
@@ -385,12 +392,6 @@ CameraSystem::CAMERA_TYPE CameraSystem::getCamera()
 void CameraSystem::updateGameCamera()
 {
 
-	//vector3df rotation = currentCam->getRotation();
-	//printf("Here are the current camera rotation info: %f,%f,%f\n",rotation.X,rotation.Y,rotation.Z);
-	// Limit the cam angle wit the mouse pointer position... Need updating when interfaces are displayed
-	if (initrotation && (viewtype==VIEW_RTS)) 
-		findCamAngle();
-
 	//REplace the mouse pointer if the interface has been closed
 	if (interface_toggle)
 	{
@@ -402,11 +403,13 @@ void CameraSystem::updateGameCamera()
 	{
 	case VIEW_RTS:
 		{
+			findCamAngle();
 			updatePointClickCam();
 			break;
 		}
 	case VIEW_RTS_FIXED:
 		{
+			findCamAngle();
 			updatePointClickCam();
 			break;
 		}
@@ -458,32 +461,23 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 	
 	switch (camera)
 	{
-		/*case 1: max = 6;
-				min = 2;
-				break;*/
+		
+		
 		case CAMERA_GAME:
 				max = gameCamRangeMax;
 				min = gameCamRangeMin;
-				gameCam->setFarValue(10000.0f);
-				gameCam->setNearValue(1.0f);
 				break;
 		case CAMERA_EDIT: 
 				max = 30000;
 				min = 30;
-				editCamMaya->setFarValue(55000.0f);
-				editCamMaya->setNearValue(1.0f);
 				break;
+			
 	}
-
-	if (camera==CAMERA_GAME) // point n click
-		updatePointClickCam();
-
-	// Get the current camera height
 	if (camera==CAMERA_EDIT) // edit cam
 		cameraHeight=anm->getDistance();
 	else
 		{
-		// Get the distance and set it on the ingame camera (point & click)
+		// Get the distance and set it on the ingame camera 
 			f32 distance=Player::getInstance()->getNode()->getPosition().getDistanceFrom(gameCam->getPosition());
 			cameraHeight-=(increments*(distance/10));
 		}
@@ -506,17 +500,7 @@ void CameraSystem::setCameraHeight(irr::f32 increments)
 			GUIManager::getInstance()->setConsoleText(L"Reached limit of camera zoom!",video::SColor(255,180,0,0));
 		}
 		anm->setDistance(distance);
-		//if (distance>144)
-		//	editCamMaya->setFarValue(distance*4.0f);
 
-	}
-	else
-	{
-		if (camera==CAMERA_GAME)
-		{
-			
-			updatePointClickCam();
-		}
 	}
 }
 
@@ -722,7 +706,7 @@ void CameraSystem::updateFPSCamera()
 
 	// Find the direction vector, then position the walk target
 	vector3df delta = -getDirections();
-	delta.rotateXZBy(currentCam->getRotation().Y);
+	delta.rotateXZBy(cameraAngle.X);
 	delta.Z=-delta.Z;
 	vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
 	Player::getInstance()->getObject()->setWalkTarget(endposition);
@@ -733,7 +717,7 @@ void CameraSystem::updateFPSCamera()
 	vector3df pos = Player::getInstance()->getNode()->getPosition();
 	
 	vector3df offset = vector3df(0,0,0);
-	bool boneoffset = false;
+	bool boneoffset = true;
 
 	if (boneoffset) //Prototype of getting the offset from a bone directly
 	{
@@ -743,44 +727,56 @@ void CameraSystem::updateFPSCamera()
 		IBoneSceneNode* bone = ((IAnimatedMeshSceneNode*)Player::getInstance()->getNode())->getJointNode("Bip01_Head");
 		if (bone)
 		{
-			printf("Bone name is: %s\n",((std::string)bone->getName()).c_str());
+			//printf("Bone name is: %s\n",((std::string)bone->getName()).c_str());
 			offset=bone->getAbsolutePosition();
 			
-			printf("Bone found! Offset at this position: %f,%f,%f\n",offset.X,offset.Y,offset.Z);
+			//printf("Bone found! Offset at this position: %f,%f,%f\n",offset.X,offset.Y,offset.Z);
 
 			//Fixed offset from the bone
-			vector3df offset2=vector3df(0.0f,0.0f,-5.5f);
-			offset2 = vector3df(0.0,0.0f,5.5f);
-			offset2.rotateXZBy(-rotation.Y);
+			vector3df offset2=vector3df(0.0f,0.0f,0.0f);
+			offset2 = vector3df(0.0f,-1.0f,5.0f);
+			offset2.rotateXZBy(-cameraAngle.X);
 			pos=offset+offset2;
 		}
 		else
 		{
 			//Fixed offset, the camera will not move with the body.
 			offset = vector3df(0,58.0f,5.5f);
-			offset.rotateXZBy(-rotation.Y);
+			offset.rotateXZBy(-cameraAngle.X);
 			pos+=offset;
-			printf("Bone was not found in the mesh!\n");
+			//printf("Bone was not found in the mesh!\n");
 		}		
 		
 	}
 	else
 	{	//Fixed offset, the camera will not move with the body.
 		offset = vector3df(0,58.0f,5.5f);
-		offset.rotateXZBy(-rotation.Y);
+		offset.rotateXZBy(-cameraAngle.X);
 		pos+=offset;
 		//vector3df offset = vector3df(0,59.0f,150.0f);
 	}
 	findCamAngle(); //This will update the camera information (cameraAngle) 
 
+	//Find the camera target, the Irrlicht command "camera->rotate()" sometimes flips the viewtransformations matrices
+	vector3df pos2 = vector3df(0,0,10);
+		
+	//
+	pos2.rotateYZBy(cameraAngle.Y);
+	pos2.rotateXZBy(-cameraAngle.X);
+	
+	pos2+=pos;
+
+	currentCam->setTarget(pos2);
+	currentCam->setPosition(pos);
+
 	Player::getInstance()->getNode()->setRotation(vector3df(0,cameraAngle.X+180.0f,0));
 	Player::getInstance()->getNode()->updateAbsolutePosition();
-
-	currentCam->setPosition(pos);
-	currentCam->setRotation(vector3df(cameraAngle.Y,cameraAngle.X,0));
+	
+	
 	oldCameraAngle=vector3df(cameraAngle.Y,cameraAngle.X,0);
 	
 	currentCam->updateAbsolutePosition();	
+
 }
 
 // Will update the angle of the view when using the RPG Camera (Third person view)
@@ -797,7 +793,8 @@ void CameraSystem::updateRPGCamera()
 
 	// Find the direction vector, then position the walk target
 	vector3df delta = -getDirections();
-	delta.rotateXZBy(currentCam->getRotation().Y);
+	//delta.rotateXZBy(currentCam->getRotation().Y);
+	delta.rotateXZBy(cameraAngle.X-90.0f);
 	delta.Z=-delta.Z;
 	vector3df endposition = Player::getInstance()->getNode()->getPosition()+delta;
 	Player::getInstance()->getObject()->setWalkTarget(endposition);
@@ -846,13 +843,14 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 		oldmouse=device->getCursorControl()->getRelativePosition();
 		break;
 	case VIEW_RPG:
+		//currentCam->bindTargetAndRotation(true);
 		Player::getInstance()->controltype=Player::CONTROL_WASD;
 		oldmouse=device->getCursorControl()->getRelativePosition();
 		//Use the preset
-		this->setPointNClickAngle(vector2df(-90,5));
-		this->setCameraZoom(72);
-		this->setGameCameraAngleLimit(vector2df(0,70));
-		this->setGameCameraRange(60,150);
+		setPointNClickAngle(vector2df(-90,5));
+		setCameraZoom(72);
+		setGameCameraAngleLimit(vector2df(0,70));
+		setGameCameraRange(60,150);
 		break;
 	}
 }

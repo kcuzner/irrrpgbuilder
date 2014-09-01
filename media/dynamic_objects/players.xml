@@ -7,7 +7,8 @@
 		<animation name="idle2"  start="49" end="159" speed="30.0" /> <!-- Winner Idle anim -->
 		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="34.0"/>
 		<animation name="run" start="333" end="362" speed="40.0" movespeed="162.0"/>
-		<animation name="attack" start="365" end="396" speed="30.0" loop="false" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>
+		<!-- old end for attack is 396-->
+		<animation name="attack" start="365" end="390" speed="30.0" loop="false" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>
 		<animation name="die" start="396" end="420" speed="30.0" loop="false" soundevent="397" sound="player/44262__Erdie__male_fight02.ogg"/>
 		<animation name="hurt" start="427" end="457" speed="30.0" loop="false" soundevent="428" sound="player/44268__Erdie__male_fight08.ogg"/>
 	</dynamic_object>
