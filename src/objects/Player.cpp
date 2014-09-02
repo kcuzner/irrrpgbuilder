@@ -315,14 +315,14 @@ void Player::updateTargetting()
 		vector3df tas = vector3df (0,0,-20.0f);
 		tas.rotateXZBy(-getNode()->getRotation().Y);
 		vector3df pos2 = getNode()->getPosition()+ tas;
-		printf("Something was found in the radius!\n");
+		//printf("Something was found in the radius!\n");
 		//if (!getTaggedTarget())
 		{
 
 			DynamicObject* object = getNearest(pos2,list);
 			if (object)
 			{
-				printf("Object was found!:%s\n",object->displayName.c_str());
+				//printf("Object was found!:%s\n",object->displayName.c_str());
 				setTaggedTarget(object);
 				getTarget()->setVisible(true);
 				getTarget()->setPosition(object->getPosition());

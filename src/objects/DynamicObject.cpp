@@ -475,9 +475,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 
 	// Samples position where the ground is
-	f32 height = rayTest(vector3df(pos.X,pos.Y+2000,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
+	f32 height = rayTest(vector3df(pos.X,pos.Y+80,pos.Z),vector3df(pos.X,pos.Y-80,pos.Z));
 	//f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
-	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+2000,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
+	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+80,posfront1.Z),vector3df(posfront1.X,posfront1.Y-80,posfront1.Z));
 	//f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
 	//f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
 
@@ -690,11 +690,14 @@ f32 DynamicObject::getObjectSize(bool withenemy)
 		enemy = Player::getInstance()->getObject()->getNode();
 	} else if (enemyUnderAttack)
 	{
-		enemy = this->enemyUnderAttack->getNode();
+		if (enemyUnderAttack)
+			enemy = this->enemyUnderAttack->getNode();
+		else return 0;
 	}
 
 	f32 properdistance = 0.0f;
 
+	
 	if (withenemy && enemy) //Give the distance between the enemy and the object
 	{
 		properdistance = ((enemy->getBoundingBox().getExtent().Z * enemy->getScale().Z)) + ((us->getBoundingBox().getExtent().Z * us->getScale().Z));
@@ -989,6 +992,7 @@ DynamicObject::OBJECT_ANIMATION DynamicObject::getAnimation(void)
 // Later
 bool DynamicObject::setAnimation(stringc animName)
 {
+
 	//define if we use a random frame in the idle animation
 	bool randomize=true;
 
@@ -1014,13 +1018,22 @@ bool DynamicObject::setAnimation(stringc animName)
 		//If this is not a player, hide the targetting
 		if (objectType!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
-
-
+		// Switch to third person view if killed in first person
+		if (CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_FPS)
+		{
+			if (objectType=OBJECT_TYPE_PLAYER)
+			{
+				CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
+				CameraSystem::getInstance()->setCameraZoom(200);
+				CameraSystem::getInstance()->setGameCameraRange(60,300);
+			}
+		}
 	}
 
-	if (attackdelaystate && animName!="hurt" && animName!="die" )
+	if (animName!="hurt" && animName!="die" )
 	{
 		//printf("The attack has been done state is active no animation is permitted!\n");
+		if (attackdelaystate && CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_RTS)
 		return false;
 	}
 
@@ -1038,10 +1051,24 @@ bool DynamicObject::setAnimation(stringc animName)
 
 	if (animName=="idle")
 	{
-		// Stop moving
-		this->setWalkTarget(this->getPosition());
-		reached=true;
-		//node->removeAnimator(animator);
+		if (oldAnimName=="attack" && CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_RTS && objectType==OBJECT_TYPE_PLAYER)
+		{	
+			animName="attack";
+		}
+		else
+		{
+			// Stop moving
+			this->setWalkTarget(this->getPosition());
+			reached=true;
+			//node->removeAnimator(animator);
+		}
+		
+	}
+
+	//Forced idle
+	if (animName=="forceidle")
+	{
+		animName="idle";
 	}
 
 	// Don't call the animation if the result is not positive (result coming from the combat class)
@@ -1050,9 +1077,10 @@ bool DynamicObject::setAnimation(stringc animName)
 
 		//When the attack animation is triggered, the class interrogate the combat class and check
 		//that the attack is successful before starting it
-		attackresult = 0;
-		if (objectType==OBJECT_TYPE_PLAYER && !attackdelaystate)
+		if (objectType==OBJECT_TYPE_PLAYER && 
+			(!attackdelaystate ||  CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_RTS))
 		{
+			/*
 			if (enemyUnderAttack)
 			{
 				// Call the combat class to evaluate the damage that should be done BEFORE the attack anim
@@ -1074,14 +1102,15 @@ bool DynamicObject::setAnimation(stringc animName)
 					if (enemyUnderAttack->getLife()!=0)
 						enemyUnderAttack->createTextAnim(textdam);
 				}
-			}
+				
+			}*/
 		}
 
 		// 
-		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate)
+		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate && oldAnimName!="attack")
 		{
 
-				f32 properdistance = this->getObjectSize();
+			/*	f32 properdistance = this->getObjectSize();
 						
 				if (Player::getInstance()->getNode()->getPosition().getDistanceFrom(getNode()->getPosition())<properdistance)
 				{
@@ -1096,7 +1125,7 @@ bool DynamicObject::setAnimation(stringc animName)
 						Player::getInstance()->getObject()->createTextAnim(textdam);
 					}
 
-				}
+			}*/	
 		}
 
 	}
@@ -1105,16 +1134,27 @@ bool DynamicObject::setAnimation(stringc animName)
 	// This will activate the "hurt" stun state
 	if (oldAnimName == "hurt" && animName=="hurt" && !stunstate)
 	{
-		stunstate=true;
+		if (oldAnimName!="attack")
+		{
+			if (CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_RTS) 
+				stunstate=true;
+			else
+				animName="attack";
+		}
+
 		timerStun = App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	}
 
 	// Activate the "attack delay" after the attack is initialized
 	//if (oldAnimName=="attack" && !attackdelaystate)
-	if (oldAnimName == "attack" && animName == "attack" &&! attackdelaystate)
+	if (oldAnimName == "attack" && animName == "attack" && !attackdelaystate)
 	{
-		attackdelaystate=true;
+		if (CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_RTS || objectType!=OBJECT_TYPE_PLAYER)
+		{
+			attackdelaystate=true;
+		} 
+		
 		timer_attackdelay=App::getInstance()->getDevice()->getTimer()->getRealTime();
 	} else
 	{
@@ -1128,6 +1168,28 @@ bool DynamicObject::setAnimation(stringc animName)
 	}
 
 
+	// This should stop the NPc from attacking the player if they are not the "tagged" enemy.
+	if (App::getInstance()->getAppState()==App::APP_GAMEPLAY_NORMAL && objectType!=OBJECT_TYPE_PLAYER)
+	{
+
+		if (Player::getInstance()->getTaggedTarget() && this->getName()!=Player::getInstance()->getTaggedTarget()->getName())
+		{
+			if (animName=="attack")
+			{
+				printf("This object is not the one that battle the player!\n");
+				this->setWalkTarget(this->getPosition());
+				reached=true;
+				animName="idle";
+				oldAnimName="attack";
+			}
+
+		}
+	
+	}
+
+	//if (objectType==OBJECT_TYPE_PLAYER)
+	//	printf("Here the player is doing this animation: %s \n",animName.c_str());
+	
 	// Search for the proper animation name and set it.
     for(int i=0;i < (int)animations.size();i++)
     {
@@ -1153,7 +1215,7 @@ bool DynamicObject::setAnimation(stringc animName)
 				this->oldAnimation=currentAnimation;
 				this->oldAnimName = animName;
 
-				// Set the state of the current one
+					// Set the state of the current one
 				this->currentAnimation=Animation;
 				this->currentAnim=tempAnim;
 
@@ -1234,7 +1296,7 @@ void DynamicObject::checkAnimationEvent()
 				GUIManager::getInstance()->setConsoleText(core::stringw(L"Error! Attack was not triggered!"),video::SColor(255,0,0,0));
 			}
 			//nodeAnim->setCurrentFrame(currentAnim.startFrame);
-			this->setAnimation("idle");
+			this->setAnimation("forceidle");
 			//printf("Reset animation to idle here\n");
 		}
 
@@ -1246,12 +1308,13 @@ void DynamicObject::checkAnimationEvent()
 		}
 
 		// This only mean that the attack animation is still looking for the event
-		if (nodeAnim->getFrameNr() < currentAnim.attackevent+1)
+		if ((nodeAnim->getFrameNr() > currentAnim.attackevent))
 		{
 			attackActivated=true;
 		}
 
-		if ((nodeAnim->getFrameNr() > currentAnim.attackevent) && attackActivated)
+		if (attackActivated && nodeAnim->getFrameNr() < currentAnim.attackevent)
+			//(nodeAnim->getFrameNr() > currentAnim.attackevent) &&
 		{
 
 			// Attack result is precalculated, if the animation of attack is played, them it was sucessful
@@ -1260,41 +1323,66 @@ void DynamicObject::checkAnimationEvent()
 
 			// The logic might be moved inside the combat manager... Not sure at the moment.
 			attackActivated = false;
-			if (attackresult>0)
+			if (!attackActivated)
 			{
 				if (objectType==OBJECT_TYPE_PLAYER)
 				{
 
-					if (enemyUnderAttack)
+					int resultlife = 0;
+					if (enemyUnderAttack && enemyUnderAttack->getLife()>0)
 					{
-						int resultlife = enemyUnderAttack->getLife()-attackresult;
-						enemyUnderAttack->setLife(resultlife);
+						printf("Attack event!\n");
+						
+						attackresult=Combat::getInstance()->attack(Player::getInstance()->getObject(),enemyUnderAttack);
+						
+						if (attackresult==0)
+						{
+							enemyUnderAttack->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+						}
+						else
+						{
+							stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
+							textdam.append(stringc(attackresult));
+							enemyUnderAttack->createTextAnim(textdam);
+					
+							resultlife = enemyUnderAttack->getLife()-attackresult;
+							enemyUnderAttack->setLife(resultlife);
+							enemyUnderAttack->setAnimation("hurt");
+						}
 
 						core::stringw textresult = core::stringw(L"The player attacked ").append(enemyUnderAttack->getName()).append(L" and caused ")
 							.append(core::stringw(attackresult)).append(L" points of damage!");
 						GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 
-						if (resultlife>0)
+						
+						if (enemyUnderAttack->getLife()<1)
 						{
-							enemyUnderAttack->setAnimation("hurt");
-							//GUIManager::getInstance()->setConsoleText(core::stringw(L"Should do hurt anim"),video::SColor(255,0,0,65));
-						}
-						else
-						{
-							GUIManager::getInstance()->setConsoleText(core::stringw(L"The player killed ").append(core::stringw(enemyUnderAttack->getName())
-								.append(L"!")),video::SColor(255,120,0,0));
 							enemyUnderAttack->setAnimation("die");
 							this->setAnimation("idle2");
-							enemyUnderAttack=NULL;
-						}
 
+							GUIManager::getInstance()->setConsoleText(core::stringw(L"The player killed ").append(core::stringw(enemyUnderAttack->getName())
+							.append(L"!")),video::SColor(255,120,0,0));
+							enemyUnderAttack=NULL;
+							Player::getInstance()->setTaggedTarget(NULL);
+						}
 					}
 				}
 
 				if (objectType!=OBJECT_TYPE_PLAYER)
 				{
+					attackresult=Combat::getInstance()->attack(this, Player::getInstance()->getObject());
 					int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
 					Player::getInstance()->getObject()->setLife(resultlife);
+
+					if (attackresult==0)
+						Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+					else
+					{
+						stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
+						textdam.append(stringc(attackresult));
+						//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
+						Player::getInstance()->getObject()->createTextAnim(textdam);
+					}
 
 					// When damage is done, the defender will look (turn to look at) at his opponent
 					Player::getInstance()->getObject()->lookAt(this->getPosition());
@@ -1304,9 +1392,10 @@ void DynamicObject::checkAnimationEvent()
 
 					if (resultlife>0)
 					{
-						Player::getInstance()->getObject()->setAnimation("hurt");
+						if (attackresult>0)
+							Player::getInstance()->getObject()->setAnimation("hurt");
 					}
-					else
+					else 
 						Player::getInstance()->getObject()->setAnimation("die");
 
 				}
@@ -1768,8 +1857,8 @@ void DynamicObject::update()
 	// Stun state of the character, evaluation and refresh
 	if (stunstate)
 	{
-		// 400 ms default delay for hurt
-		if (timerobject-timerStun>400)
+		// 400 ms default delay for hurt (old value was 400)
+		if (timerobject-timerStun>150)
 		{
 			// Disable the stun state and restore the previous animation
 			stunstate=false;

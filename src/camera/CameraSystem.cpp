@@ -1,4 +1,5 @@
 #include "CameraSystem.h"
+#include "../terrain/TerrainManager.h"
 
 #include "../sound/SoundManager.h"
 
@@ -631,6 +632,8 @@ void CameraSystem::findCamAngle()
 {
 	vector2d<f32> pom = vector2d<f32>(0,0);
 	
+
+	//Old values were 0.01 and 0.9
 	if (initrotation) // && timer-timer4>17)
 	{
 		// Offset from the stored value
@@ -640,19 +643,19 @@ void CameraSystem::findCamAngle()
 		pom.Y=initangle.Y-(pom1.Y*360);
 
 		
-		if ((pombase.X<0.01f) || (pombase.X>0.99f))  //make the mouse cursor "loop" to prevent locking
+		if ((pombase.X<0.4f) || (pombase.X>0.6f))  //make the mouse cursor "loop" to prevent locking
 		{
 			initangle.X=getAngle().X;
 			initangle.Y=getAngle().Y;
-			if (pombase.X>0.99f)
+			if (pombase.X>0.6f)
 			{
-				device->getCursorControl()->setPosition(vector2df(0.01f,pombase.Y));
-				oldmouse=vector2df(0.01f,pombase.Y);
+				device->getCursorControl()->setPosition(vector2df(0.4f,pombase.Y));
+				oldmouse=vector2df(0.4f,pombase.Y);
 				device->sleep(2);
-			} else if (pombase.X<0.01f)
+			} else if (pombase.X<0.4f)
 			{
-				device->getCursorControl()->setPosition(vector2df(0.99f,pombase.Y));
-				oldmouse=vector2df(0.99f,pombase.Y);
+				device->getCursorControl()->setPosition(vector2df(0.6f,pombase.Y));
+				oldmouse=vector2df(0.6f,pombase.Y);
 				device->sleep(2);
 			} 
 
@@ -662,20 +665,20 @@ void CameraSystem::findCamAngle()
 			
 		}
 
-		if((pombase.Y<0.01f) || (pombase.Y>0.95f))
+		if((pombase.Y<0.4f) || (pombase.Y>0.6f))
 		{
 			initangle.X=getAngle().X;
 			initangle.Y=getAngle().Y;
-			if (pombase.Y<0.01f)
+			if (pombase.Y<0.4f)
 			{
-				device->getCursorControl()->setPosition(vector2df(pombase.X,0.95f));
-				oldmouse=vector2df(pombase.X,0.95f);
+				device->getCursorControl()->setPosition(vector2df(pombase.X,0.6f));
+				oldmouse=vector2df(pombase.X,0.6f);
 				device->sleep(2);
 				
-			} else if (pombase.Y>0.95f)
+			} else if (pombase.Y>0.6f)
 			{
-				device->getCursorControl()->setPosition(vector2df(pombase.X,0.01f));
-				oldmouse=vector2df(pombase.X,0.01f);
+				device->getCursorControl()->setPosition(vector2df(pombase.X,0.4f));
+				oldmouse=vector2df(pombase.X,0.4f);
 				device->sleep(2);
 			}
 			pom1 = oldmouse-device->getCursorControl()->getRelativePosition();
@@ -820,6 +823,11 @@ void CameraSystem::updateRPGCamera()
 	pos.rotateXYBy(cameraAngle.Y, camrefpos);		
 	pos.rotateXZBy(-cameraAngle.X, camrefpos);
 
+	// Tries to move the camera so it doesnt go inside the terrain
+	f32 ground = TerrainManager::getInstance()->getHeightAt(pos);
+	if (pos.Y+10.0f<ground)
+		pos.Y=ground;
+
 	// Set the position and angle of the cam
 	currentCam->setPosition(pos);
 	currentCam->setTarget(camrefpos);
@@ -834,13 +842,23 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 	{
 	case VIEW_RTS:
 		Player::getInstance()->controltype=Player::CONTROL_POINTNCLICK;
+		// Preset for the view
+		setGameCameraAngleLimit(vector2df(-25,89));
+		setGameCameraRange(60,350);
+		setCameraZoom(150);
+		initrotation=false;
 		break;
 	case VIEW_RTS_FIXED:
 		Player::getInstance()->controltype=Player::CONTROL_POINTNCLICK;
+		setCameraZoom(150);
+		initrotation=false;
 		break;
 	case VIEW_FPS:
 		Player::getInstance()->controltype=Player::CONTROL_WASD;
 		oldmouse=device->getCursorControl()->getRelativePosition();
+		//Preset for the view
+		setGameCameraAngleLimit(vector2df(-65,85));
+		initrotation=false;
 		break;
 	case VIEW_RPG:
 		//currentCam->bindTargetAndRotation(true);
@@ -849,8 +867,9 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 		//Use the preset
 		setPointNClickAngle(vector2df(-90,5));
 		setCameraZoom(72);
-		setGameCameraAngleLimit(vector2df(0,70));
+		setGameCameraAngleLimit(vector2df(-30,70));
 		setGameCameraRange(60,150);
+		initrotation=false;
 		break;
 	}
 }

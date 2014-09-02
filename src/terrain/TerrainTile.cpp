@@ -646,7 +646,8 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radiu
 f32 TerrainTile::getHeightAt(vector3df pos)
 {
 	// Check from the top of the character
-	irr::f32 maxRayHeight = 4000.0f;
+	// old value is 4000.0f
+	irr::f32 maxRayHeight = 80.0f;
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
 
