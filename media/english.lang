@@ -170,8 +170,8 @@
 	<text id="panel_sel_scale" str="Scale" />
 	<text id="panel_sel_lock" str="Lock" />
 	<text id="panel_tile_rmode" str="Rotation modes" />
-	<text id="panel_tile_rleft" str="Rotate\ntile\nleft" />
-	<text id="panel_tile_rright" str="Rotate\ntile\nright" />
+	<text id="panel_tile_rleft" str="Left" />
+	<text id="panel_tile_rright" str="Right" />
 	<text id="panel_sellist" str="Selection lists" />
 	<text id="panel_sellist_filter" str="Object type filter:" />
 	<text id="panel_selcombo_all" str="All" />
@@ -184,6 +184,7 @@
 	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Replace with current template" />
 	<text id="bt_dynamic_objects_centerview" str="Center view on object" />
+	<text id="bt_centerview" str="Center view at this position" />
 	<text id="txt_context_spawn" str="Create item here" />
 	<text id="txt_context_replace_file" str="Replace with a model file" />
 	<text id="script_window_title" str="Script editor" />

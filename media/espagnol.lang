@@ -183,6 +183,7 @@
 	<text id="txt_context_title" str="Acción" />
 	<text id="bt_dynamic_objects_replace" str="Reemplace con la plantilla actual" />
 	<text id="bt_dynamic_objects_centerview" str="Vista del centro de objeto" />
+	<text id="bt_centerview" str="Center view at this position" />
 	<text id="txt_context_spawn" str="Crear artículo aquí" />
 	<text id="txt_context_replace_file" str="Reemplace con un archivo de modelo" />
 	<text id="script_window_title" str="Editor de secuencias de comandos" />

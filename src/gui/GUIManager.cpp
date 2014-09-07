@@ -1914,7 +1914,7 @@ void GUIManager::createContextMenuGUI()
 	contexttitle1->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
 	pby = 30;
 
-	IGUIButton * buttoncenter = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window1, BT_ID_DYNAMIC_VIEW_BT_CENTER, LANGManager::getInstance()->getText("bt_dynamic_objects_centerview").c_str());
+	IGUIButton * buttoncenter = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window1, BT_ID_DYNAMIC_VIEW_BT_CENTER, LANGManager::getInstance()->getText("bt_centerview").c_str());
 	button->setOverrideFont(guiFontC12);
 	
 	pby+=25;
@@ -2867,6 +2867,12 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			
 			if (visible && mouseX<50) // Reposition the menu if it will be cropped by the screen clipping
 				mouseX+=100;
+
+			if (visible && (screen.Height-200<App::getInstance()->getDevice()->getCursorControl()->getPosition().Y || (App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100)<50))
+			{
+				device->getCursorControl()->setPosition(mouseX+100,mouseY+20);
+			}
+
 			//myRect(mouseX,mouseY,200,220)
 			printf("Here are the current position of the window: %i, %i\n",mouseX,mouseY);
 			guiDynamicObjects_Context_Menu_Window->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+220));

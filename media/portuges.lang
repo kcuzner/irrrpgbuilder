@@ -183,6 +183,7 @@
 	<text id="txt_context_title" str="Ação" />
 	<text id="bt_dynamic_objects_replace" str="Substituir com modelo atual" />
 	<text id="bt_dynamic_objects_centerview" str="Vista Center em objeto" />
+	<text id="bt_centerview" str="Center view at this position" />
 	<text id="txt_context_spawn" str="Criar artigo aqui" />
 	<text id="txt_context_replace_file" str="Substitua-o por um arquivo de modelo" />
 	<text id="script_window_title" str="Script editor" />

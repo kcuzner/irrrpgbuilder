@@ -183,6 +183,7 @@
 	<text id="txt_context_title" str="Action" />
 	<text id="bt_dynamic_objects_replace" str="Replace with current template" />
 	<text id="bt_dynamic_objects_centerview" str="Center view on object" />
+	<text id="bt_centerview" str="Center view at this position" />
 	<text id="txt_context_spawn" str="Create item here" />
 	<text id="txt_context_replace_file" str="Replace with a model file" />
 	<text id="script_window_title" str="Script editor" />
