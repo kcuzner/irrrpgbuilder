@@ -1021,7 +1021,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		// Switch to third person view if killed in first person
 		if (CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_FPS)
 		{
-			if (objectType=OBJECT_TYPE_PLAYER)
+			if (objectType==OBJECT_TYPE_PLAYER)
 			{
 				CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
 				CameraSystem::getInstance()->setCameraZoom(200);

@@ -1902,6 +1902,24 @@ void GUIManager::createContextMenuGUI()
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 	pby+=25;*/
 
+	// Second context menu 
+	guiDynamicObjects_Context_Menu_Window1 = guienv->addWindow(myRect(0,100,200,60),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1);
+    guiDynamicObjects_Context_Menu_Window1->getCloseButton()->setVisible(false);
+    guiDynamicObjects_Context_Menu_Window1->setDraggable(false);
+    guiDynamicObjects_Context_Menu_Window1->setDrawTitlebar(false);
+    guiDynamicObjects_Context_Menu_Window1->setVisible(false);
+	
+	IGUIStaticText* contexttitle1 = guienv->addStaticText(LANGManager::getInstance()->getText("txt_context_title").c_str(),core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window1,-1);
+	contexttitle1->setOverrideFont(guiFont14);
+	contexttitle1->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+	pby = 30;
+
+	IGUIButton * buttoncenter = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window1, BT_ID_DYNAMIC_VIEW_BT_CENTER, LANGManager::getInstance()->getText("bt_dynamic_objects_centerview").c_str());
+	button->setOverrideFont(guiFontC12);
+	
+	pby+=25;
+
+
 }
 
 void GUIManager::createCodeEditorGUI()
@@ -2255,6 +2273,9 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	if (guiDynamicObjects_Context_Menu_Window->isVisible() && guiDynamicObjects_Context_Menu_Window->isPointInside(mousepos))
 		return true;
 
+	if (guiDynamicObjects_Context_Menu_Window1->isVisible() && guiDynamicObjects_Context_Menu_Window1->isPointInside(mousepos))
+		return true;
+
 	// old stuff (IRRlicht only editor)
 	if (guiMainWindow->isVisible() && guiMainWindow->isPointInside(mousepos))
 		return true;
@@ -2470,6 +2491,21 @@ void GUIManager::update()
 		timer3 = device->getTimer()->getRealTime();
 		
 	}
+	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
+	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1))
+	{
+		if (!isGuiPresent(device->getCursorControl()->getPosition()))
+		{
+			if (device->getTimer()->getRealTime()-timer3>900) // 900 ms delay before closing
+			{
+				//The cursor is outside the window, close it then.
+				setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,false);
+			}
+		} else
+		timer3 = device->getTimer()->getRealTime();
+		
+	}
+
 	// Check for Windows that are "closed/hidden" and change the "app state" adequately
 	if (!guiDynamicObjectsWindowEditAction->isVisible() && 
 		(App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_SCRIPT || 
@@ -2795,6 +2831,7 @@ void GUIManager::setupGameplayGUI()
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
 	bool retracted = false; //default status for panes
+	core::dimension2d<u32> screen = App::getInstance()->getDevice()->getVideoDriver()->getScreenSize();
     switch(window)
     {
 #ifdef EDITOR
@@ -2810,24 +2847,47 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
         case GCW_DYNAMIC_OBJECT_CHOOSER:
 			// Display the chooser and set the focus on it
             guiDynamicObjectsWindowChooser->setVisible(visible);
-			guienv->setFocus(guiDynamicObjectsWindowChooser);
+			if (visible)
+				guienv->setFocus(guiDynamicObjectsWindowChooser);
             break;
 
 		case GCW_CUSTOM_SEGMENT_CHOOSER:
 			guiCustomSegmentWindowChooser->setVisible(visible);
-			guienv->setFocus(guiCustomSegmentWindowChooser);
+			if (visible)
+				guienv->setFocus(guiCustomSegmentWindowChooser);
 			break;
 
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
 			
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
+
+			if (visible && screen.Height-200<mouseY+20) // Reposition the menu if it will be cropped by the screen clipping
+				mouseY-=160;
 			
-            guiDynamicObjects_Context_Menu_Window->setRelativePosition(myRect(mouseX,mouseY,200,220));
+			if (visible && mouseX<50) // Reposition the menu if it will be cropped by the screen clipping
+				mouseX+=100;
+			//myRect(mouseX,mouseY,200,220)
+			printf("Here are the current position of the window: %i, %i\n",mouseX,mouseY);
+			guiDynamicObjects_Context_Menu_Window->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+220));
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
-			guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
+			if (visible)
+				guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
 			
             break;
+		case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1:
+			mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
+            mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-40;
+			guiDynamicObjects_Context_Menu_Window1->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+60));
+            guiDynamicObjects_Context_Menu_Window1->setVisible(visible);
+			App::getInstance()->setComboBoxUsed(true);
+
+			if (visible)
+				guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
+			
+			break;
+
+
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
 			guienv->setFocus(guiDynamicObjects_Script);
@@ -2835,7 +2895,8 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
         case GCW_TERRAIN_TOOLBAR:
             guiTerrainToolbar->setVisible(visible);
-			guienv->setFocus(guiTerrainToolbar);
+			if (visible)
+				guienv->setFocus(guiTerrainToolbar);
             break;
 #endif
         case GCW_GAMEPLAY_ITEMS:
@@ -2876,6 +2937,9 @@ bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
             break;
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
 			result = guiDynamicObjects_Context_Menu_Window->isVisible();
+            break;
+		 case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1:
+			result = guiDynamicObjects_Context_Menu_Window1->isVisible();
             break;
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             result = guiDynamicObjectsWindowEditAction->isVisible();

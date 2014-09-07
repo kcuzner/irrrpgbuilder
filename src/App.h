@@ -188,10 +188,10 @@ class App
 		scene::ISceneNode* scriptNode;
 		MousePick lastMousePick;
 
-		//Multiple selections
+		//Multiple selections (not yet implemented, only data is here but not used yet)
 		std::vector<DynamicObject*> selectedSet;
 
-		inline void setComboBoxUsed(bool set) { combobox_used = set;}
+		inline void setComboBoxUsed(bool set) { combobox_used = set; toolactivated=set;}
 		
     private:
 

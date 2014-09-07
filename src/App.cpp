@@ -66,7 +66,7 @@ App::App()
 
 	current_listfilter = DynamicObject::OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 
-	combobox_used=false;
+	combobox_used=false; //Should change the name, it should lock the adding of items when we press the mouse button
 	currentsnapping=64.0f; //set the current snapping distance;
 	
 }
@@ -102,7 +102,9 @@ void App::draw2DImages()
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
-
+		
+		//Reset the state of this flag (On true will not check for something clicked)
+		//combobox_used=false;
 	}
 
 	if (app_state > APP_STATE_CONTROL)
@@ -448,6 +450,12 @@ void App::eventGuiButton(s32 id)
 	vector3df oldrotation = vector3df(0,0,0);
 	core::stringw oldscript = L"";
 
+	//Block action on the mouse when a button is pressed
+	combobox_used=true;
+	
+
+	MousePick the=getMousePosition3D(); //Will store the last mousepick when the gui button was pressed
+
 	IGUIListBox* box = NULL; // Combo box pointer
 
 
@@ -471,7 +479,8 @@ void App::eventGuiButton(s32 id)
 		this->createNewProject();
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
-		this->setAppState(APP_EDIT_LOOK);
+		//this->setAppState(APP_EDIT_LOOK);
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
@@ -692,6 +701,22 @@ void App::eventGuiButton(s32 id)
 
 		break;
 
+	case GUIManager::BT_ID_DYNAMIC_VIEW_BT_CENTER:
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,false);
+		
+		if (the.pickedNode)
+		{
+			core::vector3df pos = the.pickedPos;
+			core::vector3df offset = CameraSystem::getInstance()->getNode()->getPosition();
+			core::vector3df calc = pos + (pos - offset);
+
+			CameraSystem::getInstance()->setPosition(calc);
+			CameraSystem::getInstance()->getNode()->setTarget(pos);
+			// re-center the cursor also
+			device->getCursorControl()->setPosition(vector2df(0.5f,0.5f));
+		}
+		break;
+
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE:
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 		setAppState(APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE);
@@ -906,6 +931,8 @@ void App::eventGuiButton(s32 id)
 	default:
 		break;
 	}
+	// Since there was a tool used, the tool should be put to off after use. 
+	toolactivated=false;
 }
 
 // Stuff in editor only
@@ -1139,6 +1166,10 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	}
+
+	//If a tool was active, put it down once the list was used.
+	toolactivated=false;
+
 }
 
 //Check the ENTER events coming from edit boxes
@@ -1299,6 +1330,8 @@ void App::eventKeyPressed(s32 key)
 		return;
 	}
 
+	MousePick the = this->getMousePosition3D();
+
 	bool visible=false; //Used to display hide the gameplay toolbar
 	switch (key)
 	{
@@ -1363,6 +1396,21 @@ void App::eventKeyPressed(s32 key)
 			moveupdown=false;
 		}
 		break;
+
+	case KEY_KEY_C:
+		{
+			if (the.pickedNode && !isKeyPressed(key))
+			{
+				core::vector3df pos = the.pickedPos;
+				core::vector3df offset = CameraSystem::getInstance()->getNode()->getPosition();
+				core::vector3df calc = pos + (pos - offset);
+
+				CameraSystem::getInstance()->setPosition(calc);
+				CameraSystem::getInstance()->getNode()->setTarget(pos);
+				// re-center the cursor also
+				device->getCursorControl()->setPosition(vector2df(0.5f,0.5f));
+			}
+		}
 
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !isKeyPressed(key))
@@ -1439,7 +1487,9 @@ void App::eventMousePressed(s32 mouse)
 
 	case EMIE_LMOUSE_LEFT_UP:
 		{
-			if (toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
+			//combobox_used=false;
+			printf("mouse button released in APP\n");
+			if (toolstate ==TOOL_DO_ADD || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
 				//Deactivate the tool if the mouse buttons are released
 				if (toolactivated)
@@ -1461,6 +1511,7 @@ void App::eventMousePressed(s32 mouse)
 		break;
 
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
+		printf("mouse button pressed in APP\n");
 		if( cursorIsInEditArea())
 		{
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
@@ -1499,27 +1550,29 @@ void App::eventMousePressed(s32 mouse)
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
+
 				MousePick mousePick = getMousePosition3D();
 
 				lastMousePick = mousePick;
 				stringc nodeName = "";
 
-				if (combobox_used)
+				if ( toolactivated && toolstate==TOOL_DO_ADD) //combobox_used ||
 				{
-					combobox_used=false;
+					printf("A combo box was open\n");
 					return;
 				}
-				
+
 				// Mouse operation in ADD mode
 				if (toolstate==TOOL_DO_ADD)
 				{
-
 					if (selectedNode) //Unselect and remove the selected node in mode changes
 					{
 						selectedNode->setDebugDataVisible(0); //Remove selection
 					}
 
 					selectedNode=NULL;
+
+					toolactivated=true;
 
 					// To add an object, the picked node need to return at least a tile. 
 					// If pickednode is empty then the user clicked outside the area
@@ -1545,6 +1598,7 @@ void App::eventMousePressed(s32 mouse)
 
 							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
 							GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+							toolactivated=false;
 #ifdef DEBUG
 							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif
@@ -1557,6 +1611,7 @@ void App::eventMousePressed(s32 mouse)
 				// Mouse operation in SEL,MOV,ROT and SCA modes
 				if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
 				{
+					
 					// Since we don't have multi section implemented as of now, the previous node should be NULL
 					if (selectedNode) // There was a node selected before
 					{
@@ -1580,11 +1635,17 @@ void App::eventMousePressed(s32 mouse)
 						{
 							selectedNode=NULL;
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+							// Toggle the context menu (alternate)
+							//GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
+						
 						}
 					} else //Clicked outside on nothing
 					{
 						selectedNode=NULL;
 						GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+						// Toggle the context menu (alternate)
+						// GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
+						
 					}
 
 					if (selectedNode)
@@ -1636,7 +1697,7 @@ void App::eventMousePressed(s32 mouse)
 				// Check for a node to prevent a crash (need to get the name of the node)
 				
 				
-				if (mousePick.pickedNode != NULL && toolstate==TOOL_DO_ADD) // Add mode right button functionnality
+				if (mousePick.pickedNode != NULL && (toolstate==TOOL_DO_ADD || toolstate==TOOL_DO_SEL)) // Add mode right button functionnality
 				{
 					nodeName = mousePick.pickedNode->getName();
 
@@ -1645,9 +1706,13 @@ void App::eventMousePressed(s32 mouse)
 					{
 						cout << "PROP:" << nodeName.c_str() << endl;
 
-						// Toggle the context menu
+						// Toggle the context menu (main)
 						GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 							!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+					} else
+					{
+						// Toggle the context menu (alternate)
+						GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1, true);
 					}
 					return;
 				}
@@ -1678,6 +1743,8 @@ void App::eventMousePressed(s32 mouse)
 						{
 							selectedNode=NULL;
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+							// Toggle the context menu (alternate)
+							GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
 						}
 					} else //Clicked outside on nothing
 					{
@@ -2286,7 +2353,8 @@ void App::run()
 
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
-	this->setAppState(APP_EDIT_LOOK);
+	//this->setAppState(APP_EDIT_LOOK); // old default state
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 	// Update the info panel with the current "active object"
 	GUIManager::getInstance()->getInfoAboutModel();	
@@ -2634,7 +2702,7 @@ void App::updateEditMode()
 			{				
 				if (toolstate==TOOL_DO_MOV && toolactivated) // Will move the object
 				{
-					if (!moveupdown)
+					if (!moveupdown && selectedNode)
 					{
 						// Change the ID of the moved mesh so it's won't collision with the ray.
 						irr::s32 oldID=selectedNode->getID();
@@ -2664,26 +2732,29 @@ void App::updateEditMode()
 					}
 					else
 					{
-						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
-						core::vector3df newposition = initialposition;
-						//lastMousePick.pickedNode->getPosition();
-						newposition.Y=newposition.Y+((mousepos.Y-mousepos2.Y));
+						if (selectedNode)
+						{
+							position2d<s32> mousepos2=device->getCursorControl()->getPosition();
+							core::vector3df newposition = initialposition;
+							//lastMousePick.pickedNode->getPosition();
+							newposition.Y=newposition.Y+((mousepos.Y-mousepos2.Y));
 
-						if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_Y))
-							return;
+							if (GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_POS_Y))
+								return;
 
-						if (snapfunction) // If snapping is activated use the function
-							selectedNode->setPosition(calculateSnap(newposition,currentsnapping));
-						else
-							selectedNode->setPosition(newposition);
+							if (snapfunction) // If snapping is activated use the function
+								selectedNode->setPosition(calculateSnap(newposition,currentsnapping));
+							else
+								selectedNode->setPosition(newposition);
 
-						GUIManager::getInstance()->updateNodeInfos(selectedNode);
+							GUIManager::getInstance()->updateNodeInfos(selectedNode);
+						}
 
 					}
 					return;
 				}
 				
-				if (toolstate==TOOL_DO_ROT && toolactivated) // Will rotate the object
+				if (toolstate==TOOL_DO_ROT && toolactivated && selectedNode) // Will rotate the object
 				{
 					if (!moveupdown)
 					{
@@ -2718,7 +2789,7 @@ void App::updateEditMode()
 				}
 				
 
-				if (toolstate==TOOL_DO_SCA && toolactivated) // Will rotate the object
+				if (toolstate==TOOL_DO_SCA && toolactivated && selectedNode) // Will rotate the object
 				{
 					position2d<s32> mousepos2=device->getCursorControl()->getPosition();
 					vector3df newscale = initialscale;
@@ -3089,6 +3160,7 @@ void App::loadProjectFile(bool value)
 
 	// Set back the camera after loading the map (could be perhaps improved later, to select the proper camera after loading (ingame loading))
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE); // Put back in "default edit state"
 	//setAppState(old_state);
 }
 
@@ -3299,6 +3371,8 @@ bool App::loadProjectFromXML(stringc filename)
 	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_load_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
 		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_loaded_ok")))).c_str()
 		,true);
+
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE); // Put back in default state
 #endif
 
 	return true;

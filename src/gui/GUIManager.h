@@ -52,6 +52,7 @@ class GUIManager
 		BT_ID_DYNAMIC_OBJECT_BT_MOVEROTATE,
 		BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
 		BT_ID_DYNAMIC_OBJECT_BT_CENTER,
+		BT_ID_DYNAMIC_VIEW_BT_CENTER,
 		BT_ID_DYNAMIC_OBJECT_BT_CANCEL,
 		CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
 		BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE,
@@ -139,6 +140,7 @@ class GUIManager
 	{
 		GCW_DYNAMIC_OBJECT_CHOOSER = 1,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
 		GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,
 		GCW_TERRAIN_TOOLBAR,
 		GCW_GAMEPLAY_ITEMS,
@@ -431,6 +433,7 @@ class GUIManager
         IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;
 
         IGUIWindow* guiDynamicObjects_Context_Menu_Window;
+		IGUIWindow* guiDynamicObjects_Context_Menu_Window1;
         IGUIButton* guiDynamicObjects_Context_btEditScript;
         IGUIButton* guiDynamicObjects_Context_btMoveRotate;
         IGUIButton* guiDynamicObjects_Context_btRemove;
