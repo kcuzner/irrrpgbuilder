@@ -2283,14 +2283,37 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
 		return true;
 	
+	//Check if the mouse is inside the combo boxes (inside the main screen)
 	if (screencombo->isPointInside(mousepos) || snappingcombo->isPointInside(mousepos))
-	{
-		App::getInstance()->setComboBoxUsed(true); //Lock the left button because the combo box was selected.
+	{				
+		//App::getInstance()->setComboBoxUsed(true); //Lock the left button because the combo box was selected.
 		return true;
 	}
+	if (this->isGuiChildPresent(screencombo, mousepos))
+		return true;
+	
+	if (this->isGuiChildPresent(snappingcombo, mousepos))
+		return true;
+	
 
 #endif
 
+	return false;
+}
+
+bool GUIManager::isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos)
+{
+	//Check the children of this gui and return if the pointer is inside the childen
+	const core::list<IGUIElement*>& children = elem->getChildren();
+	for ( core::list<IGUIElement*>::ConstIterator it = children.begin(); it != children.end(); ++it )
+	{
+		IGUIElement* current = *it;
+		if (current->isPointInside(mousepos))
+		{
+			printf("The mouse is inside the GUI\n");
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -2480,21 +2503,22 @@ void GUIManager::update()
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
 	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 	{
-		if (!isGuiPresent(device->getCursorControl()->getPosition()))
+		if (!guiDynamicObjects_Context_Menu_Window->isPointInside(device->getCursorControl()->getPosition()))
 		{
 			if (device->getTimer()->getRealTime()-timer3>900) // 900 ms delay before closing
 			{
-				//The cursor is outside the window, close it then.
-				setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+			//The cursor is outside the window, close it then.
+			setWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 			}
-		} else
-		timer3 = device->getTimer()->getRealTime();
+		}
+		 else
+			timer3 = device->getTimer()->getRealTime();
 		
 	}
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
 	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1))
 	{
-		if (!isGuiPresent(device->getCursorControl()->getPosition()))
+		if (!guiDynamicObjects_Context_Menu_Window1->isPointInside(device->getCursorControl()->getPosition()))
 		{
 			if (device->getTimer()->getRealTime()-timer3>900) // 900 ms delay before closing
 			{
@@ -2886,7 +2910,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-40;
 			guiDynamicObjects_Context_Menu_Window1->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+60));
             guiDynamicObjects_Context_Menu_Window1->setVisible(visible);
-			App::getInstance()->setComboBoxUsed(true);
+			//App::getInstance()->setComboBoxUsed(true);
 
 			if (visible)
 				guienv->setFocus(guiDynamicObjects_Context_Menu_Window);

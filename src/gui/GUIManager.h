@@ -190,6 +190,7 @@ class GUIManager
 
     	void drawPlayerStats();
 		bool isGuiPresent(vector2d<s32> mousepos);
+		bool isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos);
 		void createConsole();
 
 		void update();

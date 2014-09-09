@@ -190,8 +190,6 @@ class App
 
 		//Multiple selections (not yet implemented, only data is here but not used yet)
 		std::vector<DynamicObject*> selectedSet;
-
-		inline void setComboBoxUsed(bool set) { combobox_used = set; toolactivated=set;}
 		
     private:
 
@@ -204,6 +202,8 @@ class App
 
         
 		void setPreviewSelection();
+		void addItemToScene();
+		void selectItem();
 
 		vector3df oldcampos;
 		vector3df oldcamtar;
@@ -282,7 +282,6 @@ class App
 
 		DIALOG_FUNCTION df;
 
-		bool combobox_used;
 		f32 currentsnapping;
 
 };

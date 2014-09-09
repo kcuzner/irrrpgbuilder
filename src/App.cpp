@@ -66,7 +66,6 @@ App::App()
 
 	current_listfilter = DynamicObject::OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 
-	combobox_used=false; //Should change the name, it should lock the adding of items when we press the mouse button
 	currentsnapping=64.0f; //set the current snapping distance;
 	
 }
@@ -101,10 +100,7 @@ void App::draw2DImages()
 	}
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-	{
-		
-		//Reset the state of this flag (On true will not check for something clicked)
-		//combobox_used=false;
+	{		
 	}
 
 	if (app_state > APP_STATE_CONTROL)
@@ -441,6 +437,7 @@ void App::setAppState(APP_STATE newAppState)
 void App::eventGuiButton(s32 id)
 {
 
+	printf("GUI Event! A gui button has been opened!\n");
 	DynamicObject* object=NULL;
 #ifdef EDITOR
 	DynamicObject* selectedObject=NULL;
@@ -450,14 +447,9 @@ void App::eventGuiButton(s32 id)
 	vector3df oldrotation = vector3df(0,0,0);
 	core::stringw oldscript = L"";
 
-	//Block action on the mouse when a button is pressed
-	combobox_used=true;
-	
-
 	MousePick the=getMousePosition3D(); //Will store the last mousepick when the gui button was pressed
 
 	IGUIListBox* box = NULL; // Combo box pointer
-
 
 	switch (id)
 	{
@@ -991,6 +983,7 @@ void App::eventGuiCombobox(s32 id)
 	s32 index = 0;
 	core::stringw item = L"";
 	DynamicObject * object = NULL;
+	printf("GUI Event! A gui combobox has been opened!\n");
 
 	IGUIComboBox* selectedbox = NULL;
 	switch (id)
@@ -1078,7 +1071,7 @@ void App::eventGuiCombobox(s32 id)
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true));
 		if (selectedbox)
 		{
-			combobox_used=true;
+			toolactivated=true; //Tell the system that the button has been activated 
 			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
 			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
 			f32 initdist = initpos.getDistanceFrom(inittar);
@@ -1151,7 +1144,7 @@ void App::eventGuiCombobox(s32 id)
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
-			combobox_used=true;
+			toolactivated=true; // Tell the system that the tool as been activated
 			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
 			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
 				currentsnapping=64;
@@ -1487,13 +1480,14 @@ void App::eventMousePressed(s32 mouse)
 
 	case EMIE_LMOUSE_LEFT_UP:
 		{
-			//combobox_used=false;
 			printf("mouse button released in APP\n");
 			if (toolstate ==TOOL_DO_ADD || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
 				//Deactivate the tool if the mouse buttons are released
 				if (toolactivated)
 					toolactivated=false;
+
+				//gui_triggered=false; //reset the button state since the button is up
 			}
 		}
 		break;
@@ -1505,6 +1499,8 @@ void App::eventMousePressed(s32 mouse)
 				//Deactivate the tool if the mouse buttons are released
 				toolactivated=false;
 				moveupdown=false;
+
+				
 				
 			}
 		}
@@ -1551,114 +1547,17 @@ void App::eventMousePressed(s32 mouse)
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 			{
 
-				MousePick mousePick = getMousePosition3D();
-
-				lastMousePick = mousePick;
-				stringc nodeName = "";
-
-				if ( toolactivated && toolstate==TOOL_DO_ADD) //combobox_used ||
+				if (toolactivated && toolstate==TOOL_DO_ADD) //Return if the tool is already activated
 				{
-					printf("A combo box was open\n");
 					return;
 				}
-
-				// Mouse operation in ADD mode
+			
 				if (toolstate==TOOL_DO_ADD)
-				{
-					if (selectedNode) //Unselect and remove the selected node in mode changes
-					{
-						selectedNode->setDebugDataVisible(0); //Remove selection
-					}
+					addItemToScene();
 
-					selectedNode=NULL;
-
-					toolactivated=true;
-
-					// To add an object, the picked node need to return at least a tile. 
-					// If pickednode is empty then the user clicked outside the area
-					if (mousePick.pickedNode)
-					{
-						nodeName = mousePick.pickedNode->getName();
-						//if you click on a Dynamic Object then open the context menu
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
-						{
-							selectedNode=mousePick.pickedNode;
-#ifdef DEBUG
-							cout << "PROP:" << nodeName.c_str() << endl;
-#endif
-							// Toggle the context menu
-							GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-								!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
-						}
-						else//create a new copy of active dynamic object at the clicked position
-						{
-							// If the context menu is still open close it since we want to create a object
-							if (GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
-								GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
-							DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-							GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
-							toolactivated=false;
-#ifdef DEBUG
-							cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
-#endif
-							
-						}
-					}
-					return;
-				} 
-				
-				// Mouse operation in SEL,MOV,ROT and SCA modes
 				if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
-				{
-					
-					// Since we don't have multi section implemented as of now, the previous node should be NULL
-					if (selectedNode) // There was a node selected before
-					{
-						selectedNode->setDebugDataVisible(0); // Unselect it
-					}
-					selectedNode=NULL;
-					
-					// Create the selected node if there was a node picked
-					if (mousePick.pickedNode)
-					{
-						nodeName = mousePick.pickedNode->getName();
-					
-						// Need to filter some nodes names as "terrain" or other objects might be selected.
-						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
-						{
-							selectedNode=mousePick.pickedNode;	
-							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
-							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
-						}
-						else //Invalid node for selection
-						{
-							selectedNode=NULL;
-							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
-							// Toggle the context menu (alternate)
-							//GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
-						
-						}
-					} else //Clicked outside on nothing
-					{
-						selectedNode=NULL;
-						GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
-						// Toggle the context menu (alternate)
-						// GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
-						
-					}
-
-					if (selectedNode)
-					{
-						initialposition=selectedNode->getPosition();
-						initialrotation=selectedNode->getRotation();
-						initialscale=selectedNode->getScale();
-						mousepos=device->getCursorControl()->getPosition();
-						toolactivated=!toolactivated; //Toggle the state of the tool
-						return;
-					}
-
-				}
+					selectItem();
+				
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
@@ -1914,6 +1813,106 @@ App::MousePick App::getMousePosition3D(int id)
 		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
 		return result;
 	}
+}
+
+void App::addItemToScene()
+{
+	MousePick mousePick = getMousePosition3D();
+
+	lastMousePick = mousePick;
+	core::stringc nodeName = "";
+
+	if (selectedNode) //Unselect and remove the selected node in mode changes
+	{
+		selectedNode->setDebugDataVisible(0); //Remove selection
+	}
+	selectedNode=NULL;
+
+	// To add an object, the picked node need to return at least a tile. 
+	// If pickednode is empty then the user clicked outside the area
+	if (mousePick.pickedNode)
+	{
+		nodeName = mousePick.pickedNode->getName();
+		//if you click on a Dynamic Object then open the context menu, and select the object
+		if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
+		{
+			selectedNode=mousePick.pickedNode;
+#ifdef DEBUG
+				cout << "PROP:" << nodeName.c_str() << endl;
+#endif
+			// Toggle the context menu
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
+				!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+
+			toolactivated=true;
+		}
+		else//create a new copy of active dynamic object at the clicked position
+		{
+			// If the context menu is still open close it since we want to create a object
+			if (GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+				GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+				
+			DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
+			
+			GUIManager::getInstance()->buildSceneObjectList(current_listfilter); //Update the scene list
+			toolactivated=false;
+#ifdef DEBUG
+			cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
+#endif
+							
+		}
+	}
+}
+
+void App::selectItem()
+{
+	MousePick mousePick = getMousePosition3D();
+
+	lastMousePick = mousePick;
+	core::stringc nodeName = "";
+	
+	// Since we don't have multi section implemented as of now, the previous node should be NULL
+	if (selectedNode) // There was a node selected before
+	{
+		selectedNode->setDebugDataVisible(0); // Unselect it
+	}
+	selectedNode=NULL;
+					
+	// Create the selected node if there was a node picked
+	if (mousePick.pickedNode)
+	{
+		nodeName = mousePick.pickedNode->getName();
+	
+		// Need to filter some nodes names as "terrain" or other objects might be selected.
+		if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
+		{
+			selectedNode=mousePick.pickedNode;	
+			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+			GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
+		}
+		else //Invalid node for selection
+		{
+			selectedNode=NULL;
+			GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+			// Toggle the context menu (alternate)
+		}
+	} else //Clicked outside on nothing
+	{
+		selectedNode=NULL;
+		GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
+		// Toggle the context menu (alternate)
+		// GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
+		
+	}
+	if (selectedNode)
+	{
+		initialposition=selectedNode->getPosition();
+		initialrotation=selectedNode->getRotation();
+		initialscale=selectedNode->getScale();
+		mousepos=device->getCursorControl()->getPosition();
+		toolactivated=!toolactivated; //Toggle the state of the tool
+	}
+
 }
 
 
@@ -2444,8 +2443,8 @@ void App::updateEditMode()
 	{
 		if (app_state == APP_EDIT_VIEWDRAG) // Viewdrag mode will reset the focus to the root (pressing spacebar)
 		{
-			if (cursorIsInEditArea())
-				guienv->setFocus(guienv->getRootGUIElement());
+			//if (cursorIsInEditArea())
+			//	guienv->setFocus(guienv->getRootGUIElement());
 #ifdef DEBUG				
 			printf("In viewdrag mode\n");
 #endif
@@ -2474,7 +2473,7 @@ void App::updateEditMode()
 		GUIManager::getInstance()->updateEditCameraString(Player::getInstance()->getNode());
 		
 	// Trie to display the node as we go with the mouse cursor in edit mode
-	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) && cursorIsInEditArea() )
+	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE))
 	{
 		
 		if (toolstate==TOOL_DO_ADD) //Will "preselect" an item only in ADD mode
