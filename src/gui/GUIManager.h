@@ -257,10 +257,14 @@ class GUIManager
         //returns the active item on Player Items Window
         stringc getActivePlayerItem();
 
+		//Return the id of the selected item in the inventory
+		DynamicObject* getActiveLootItem();
+
         //Shows a input message, input the text and hit RETURN
         stringc showInputQuestion(stringw text);
 
-        void updateItemsList();
+        //Update the list of items (player inventory)
+		void updateItemsList();
 
 		// Update the infos of the node when the user move the mouse (call coming from APP class)
 		void updateNodeInfos(ISceneNode * node);

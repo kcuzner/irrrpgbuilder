@@ -249,6 +249,8 @@ class DynamicObject
 		cproperty prop_level;
 		cproperty properties;
 
+		bool isInBag; // Define if the object is stored in the inventory and not in the scene anymore
+
 
     protected:
 
@@ -336,7 +338,6 @@ class DynamicObject
 		bool despawnPresent;
 		bool runningMode;
 		bool reached; // check if reached the walktarget or not
-
 
 		vector3df walkTarget;
 		vector3df originalPosition;

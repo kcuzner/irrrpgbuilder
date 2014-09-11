@@ -85,6 +85,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	reached=false;
 	rotationupdater=false;
 
+	isInBag=false;
+
 	attackresult=0;
 	originalscale=vector3df(1.0f,1.0f,1.0f);
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -171,7 +173,7 @@ DynamicObject::cproperty DynamicObject::initProperties()
 	prop.hurt_resist=0;
 	prop.hit_prob=0;
 	prop.level=0;
-	prop.life=0;
+	prop.life=100;
 	prop.magic_armor=0;
 	prop.mana=0;
 	prop.maxdamage=0;
@@ -2859,6 +2861,7 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 			tempObj->getNode()->setVisible(false); //Hide the node
 			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
 			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
+			tempObj->isInBag=true;
 			//Player::getInstance()->getObject()->addItem(tempObj->getName()); //Will add the name of the dynamic object (temporary)
 		}
 	}

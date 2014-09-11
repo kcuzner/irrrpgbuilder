@@ -3633,16 +3633,33 @@ stringc GUIManager::getActivePlayerItem()
     return stringc(guiPlayerItems->getListItem(guiPlayerItems->getSelected()));
 }
 
+DynamicObject* GUIManager::getActiveLootItem()
+{
+	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
+	
+	s32 item=guiPlayerItems->getSelected();
+	if (item>-1)
+		return lootitems[item];
+	else
+		return NULL;
+}
+
 void GUIManager::updateItemsList()
 {
     guiPlayerItems->clear();
-    vector<stringc> items = Player::getInstance()->getObject()->getItems();
+    //vector<stringc> items = Player::getInstance()->getObject()->getItems();
 	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
 
     //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
 	for(int i = 0; i<(int)lootitems.size(); i++) 
 	{
 		guiPlayerItems->addItem(stringw(lootitems[i]->displayName).c_str());
+	}
+
+	if (guiPlayerItems->getSelected()<0)
+	{
+		ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
+		guiPlayerLootImage->setImage(info_none);
 	}
 }
 

@@ -307,10 +307,6 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 	}
 
-	//if the previous state was DYNAMIC OBJECTS then we need to hide his custom windows
-	//if(old_app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-	//	GUIManager::getInstance()->setWindowVisible(GCW_DYNAMIC_OBJECT_CHOOSER,false);
-
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
 	{
@@ -389,7 +385,6 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_PLAYER_EDIT_SCRIPT,true);
-		// Find a way to set the script once the user change the mode
 	}
 #endif
 
@@ -450,8 +445,6 @@ void App::setAppState(APP_STATE newAppState)
 
 void App::eventGuiButton(s32 id)
 {
-
-	printf("GUI Event! A gui button has been opened!\n");
 	DynamicObject* object=NULL;
 #ifdef EDITOR
 	DynamicObject* selectedObject=NULL;
@@ -465,6 +458,8 @@ void App::eventGuiButton(s32 id)
 
 	IGUIListBox* box = NULL; // Combo box pointer
 
+	DynamicObject* loot=GUIManager::getInstance()->getActiveLootItem(); //Get the currently selected loot object
+
 	switch (id)
 	{
 
@@ -476,11 +471,6 @@ void App::eventGuiButton(s32 id)
 			selectedNode=NULL;
 		}
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
-#ifdef DEBUG
-		if (!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
-			printf("Context menu is hidden!\n");
-#endif
 
 		this->createNewProject();
 		// Put back the player object in the list of the dynamic objects
@@ -634,7 +624,6 @@ void App::eventGuiButton(s32 id)
 		break;			
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
-		//if(GUIManager::getInstance()->showDialogQuestion(stringc(LANGManager::getInstance()->getText("msg_override_script")).c_str()))
 		{
 			stringc newScript = "";
 
@@ -660,8 +649,6 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_REMOVE:
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-
-
 		if (lastMousePick.pickedNode)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
@@ -773,6 +760,7 @@ void App::eventGuiButton(s32 id)
 		break;
 #endif
 	case GUIManager::BT_ID_PLAY_GAME:
+		DynamicObjectsManager::getInstance()->buildInteractiveList();
 		playGame();
 		break;
 
@@ -782,12 +770,6 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_ID_CLOSE_PROGRAM:
 		this->shutdown();
-
-		/*this->cleanWorkspace();
-		SoundManager::getInstance()->stopEngine();
-		device->closeDevice();
-		//device->drop();
-		//exit(0);*/
 		break;
 
 	case GUIManager::BT_ID_HELP:
@@ -817,7 +799,14 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_DROP_ITEM:
-		Player::getInstance()->getObject()->removeItem(GUIManager::getInstance()->getActivePlayerItem());
+		if (loot)
+		{
+			loot->getNode()->setParent(smgr->getRootSceneNode());
+			loot->getNode()->setPosition(Player::getInstance()->getNode()->getPosition());
+			loot->getNode()->setVisible(true);
+			Player::getInstance()->getObject()->removeLoot(loot);
+			loot->isInBag=false;
+		}
 		GUIManager::getInstance()->updateItemsList();
 		break;
 
@@ -1527,7 +1516,6 @@ void App::eventMousePressed(s32 mouse)
 
 	case EMIE_LMOUSE_LEFT_UP:
 		{
-			printf("mouse button released in APP\n");
 			if (toolstate ==TOOL_DO_ADD || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA)
 			{
 				//Deactivate the tool if the mouse buttons are released
@@ -1554,7 +1542,6 @@ void App::eventMousePressed(s32 mouse)
 		break;
 
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
-		printf("mouse button pressed in APP\n");
 		if( cursorIsInEditArea())
 		{
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)

@@ -216,12 +216,12 @@ void CameraSystem::eventsKeyboard(s32 key)
 	else if (key==keyinteraction)
 	{
 		printf("Interaction key was triggered!\n");
-		if (Player::getInstance()->getTaggedTarget())
+		if (Player::getInstance()->getTaggedTarget() && !Player::getInstance()->getTaggedTarget()->isInBag)
 			Player::getInstance()->getTaggedTarget()->notifyClick();
 		
 		//Tell the system that an interface might appear
 		interface_toggle=true;
-		oldmouse=device->getCursorControl()->getRelativePosition();
+		//oldmouse=device->getCursorControl()->getRelativePosition();
 
 	}
 	else if (key==KEY_SPACE)
@@ -294,7 +294,6 @@ void CameraSystem::eventsMouseKey(s32 key)
 			initangle.X=getAngle().X;
 			initangle.Y=getAngle().Y;
 			oldmouse = device->getCursorControl()->getRelativePosition();
-			printf("The right mouse button was pressed!");
 		}
 	} else if (key==EMIE_RMOUSE_LEFT_UP)
 	{

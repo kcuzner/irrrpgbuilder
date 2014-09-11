@@ -1603,18 +1603,38 @@ void DynamicObjectsManager::clean(bool full)
 vector<DynamicObject*> DynamicObjectsManager::getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type)
 {
 	vector<DynamicObject*> list; // perhap will have to make it part of the class (LUA)
-	for(int i=0;i<(int)objects.size();i++)
+	for(int i=0;i<(int)interactiveobjects.size();i++)
     {
-        DynamicObject* d = objects[i];
+		DynamicObject* d = this->interactiveobjects[i];
 		if (d)
 		{
-			if ((d->getType()==type) && (pos.getDistanceFrom(d->getPosition())<radius))
+			if (((d->getType()==type) && pos.getDistanceFrom(d->getPosition())<radius)) // 
 			{
-				if (d->getLife()>0)
+				if (d->getLife()>0 && !d->isInBag)
 					list.push_back(d);
 			}
 		}
     }
 	
 	return list;
+}
+
+vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
+{
+	vector<DynamicObject*> list; // perhap will have to make it part of the class (LUA)
+	for(int i=0;i<(int)objects.size();i++)
+    {
+        DynamicObject* d = objects[i];
+		if (d)
+		{
+			if (d->getType()==DynamicObject::OBJECT_TYPE_NPC || d->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || d->getType()==DynamicObject::OBJECT_TYPE_LOOT )  
+			{
+				if (d->getLife()>0 && !d->isInBag)
+					list.push_back(d);
+			}
+		}
+    }
+	interactiveobjects=list; //Default list
+	return list; //Return values in case it's needed 
+
 }

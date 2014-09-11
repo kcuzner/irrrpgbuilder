@@ -297,39 +297,65 @@ void Player::updateRTSTargetting()
 	}
 }
 
+// Update the RPG and FPS targeting. Check for NPC, Interactive and loot objects
 void Player::updateTargetting()
-{
-	//Front of the player 80 unit in front
-	vector3df tar = vector3df (0,0,-40.0f);
-	tar.rotateXZBy(-getNode()->getRotation().Y);
-	vector3df pos = getNode()->getPosition()+ tar;
+{	
+	//Front of the player 30 units in front
+		vector3df tas = vector3df (0,0,-40.0f);
+		tas.rotateXZBy(-getNode()->getRotation().Y);
+		vector3df pos = getNode()->getPosition()+ tas;
+
+	bool found=false;
 
 	//Activated for debugging purpose
 	//getTarget()->setVisible(true);
 	//getTarget()->setPosition(pos);
-	
-	vector<DynamicObject*> list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 40.0f, DynamicObject::OBJECT_TYPE_NPC);
+	vector<DynamicObject*> list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 40.0f, DynamicObject::OBJECT_TYPE_INTERACTIVE);
 	if (list.size()>0)
-	{
-		//Front of the player 30 units in front
-		vector3df tas = vector3df (0,0,-20.0f);
-		tas.rotateXZBy(-getNode()->getRotation().Y);
-		vector3df pos2 = getNode()->getPosition()+ tas;
-		//printf("Something was found in the radius!\n");
-		//if (!getTaggedTarget())
-		{
-
-			DynamicObject* object = getNearest(pos2,list);
+	{		
+			DynamicObject* object = getNearest(pos,list);
 			if (object)
 			{
 				//printf("Object was found!:%s\n",object->displayName.c_str());
 				setTaggedTarget(object);
 				getTarget()->setVisible(true);
 				getTarget()->setPosition(object->getPosition());
+				found=true;
+				printf("Interactive object found %s\n",object->getName().c_str());
 			}
+		
+	}
+	list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 40.0f, DynamicObject::OBJECT_TYPE_LOOT); //DynamicObject::OBJECT_TYPE_NPC
+	if (list.size()>0)
+	{
+		DynamicObject* object = getNearest(pos,list);
+		if (object)
+		{
+			//printf("Object was found!:%s\n",object->displayName.c_str());
+			setTaggedTarget(object);
+			getTarget()->setVisible(true);
+			getTarget()->setPosition(object->getPosition());
+			found=true;	
+			printf("Loot object found %s\n",object->getName().c_str());
+		}
+	} 
+	
+	list = DynamicObjectsManager::getInstance()->getObjectNearPosition(pos, 40.0f, DynamicObject::OBJECT_TYPE_NPC);
+	if (list.size()>0)
+	{
+		DynamicObject* object = getNearest(pos,list);
+		if (object)
+		{
+			//printf("Object was found!:%s\n",object->displayName.c_str());
+			setTaggedTarget(object);
+			getTarget()->setVisible(true);
+			getTarget()->setPosition(object->getPosition());
+			printf("NPC object found %s\n",object->getName().c_str());
+			found=true;
 		}
 	}
-	else
+	
+	if (!found)
 	{
 		setTaggedTarget(NULL);
 		getTarget()->setVisible(false);
@@ -341,7 +367,7 @@ DynamicObject* Player::getNearest(vector3df pos, vector<DynamicObject*> list)
 {
 
 	DynamicObject* nearobject = NULL;
-	f32 near1 = 50000.0f;
+	f32 near1 = 256.0f;
 
 	if (list.size()>0)
 	{
@@ -351,7 +377,7 @@ DynamicObject* Player::getNearest(vector3df pos, vector<DynamicObject*> list)
 			if (d)
 			{
 				f32 distance = pos.getDistanceFrom(d->getPosition());
-				if (distance<near1)
+				if (distance<near1 && distance>10.0f)
 				{
 					nearobject = d;
 				}

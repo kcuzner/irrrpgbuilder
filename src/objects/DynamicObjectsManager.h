@@ -83,6 +83,7 @@ class DynamicObjectsManager
         void clearAllScripts();
 
 		void setPlayer();
+		vector<DynamicObject*> buildInteractiveList();
 
         void clean(bool full);
 
@@ -109,6 +110,7 @@ class DynamicObjectsManager
         vector<DynamicObject*> objectsTemplate; // Temporary -> Contain all the templates as dynamic objects
 
         vector<DynamicObject*> objects; // List of all the dynamic objects
+		vector<DynamicObject*> interactiveobjects; //List of interactive objects from the objects list.
 
 		TemplateObject* newObj;
 		vector<TemplateObject*> objTemplate; // List of all the dynamic object template data 
