@@ -2301,20 +2301,25 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 	return false;
 }
 
+//Check the children of this gui and return if the pointer is inside the childen
 bool GUIManager::isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos)
 {
-	//Check the children of this gui and return if the pointer is inside the childen
 	const core::list<IGUIElement*>& children = elem->getChildren();
+
 	for ( core::list<IGUIElement*>::ConstIterator it = children.begin(); it != children.end(); ++it )
 	{
 		IGUIElement* current = *it;
-		if (current->isPointInside(mousepos))
+		if (current->isPointInside(mousepos) && current!=guienv->getRootGUIElement())
 		{
-			printf("The mouse is inside the GUI\n");
-			return true;
+			if (current->isVisible()==true)
+			{
+				return true;
+			} 
 		}
+	
 	}
 	return false;
+	
 }
 
 // Reshesh the GUI informations inside a window
@@ -2761,7 +2766,15 @@ void GUIManager::setupGameplayGUI()
 	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
-
+	
+	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
+	
+	if (info_none)
+		guiPlayerLootImage = guienv->addImage(info_none,vector2d<s32>(220,30),true,tab2,IMG_LOOT);
+	
+	//guienv->addImage(info_none,vector2d<s32>(5,5),true,tab2);
+	core::stringc filename = "../media/dynamic_objects/";
+	
     guiBtUseItem = guienv->addButton(myRect(10,displayheight-300,32,32),
                                          tab2,
                                          BT_ID_USE_ITEM,
@@ -3065,13 +3078,21 @@ void GUIManager::updateGuiPositions(dimension2d<u32> screensize)
 
 void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
+	//Clear the text before
+	//guiDynamicObjects_Script_Console->setText(L"");
+	//guiDynamicObjects_Script->setText(L"");
 
-	// Temp fix to get the extended characters not being removed inside.
-	core::stringc source = text.c_str(); // Irrlicht widestrings
-	char *mtext = (char *)source.c_str(); // char buffer
-    wchar_t buffer[65536];  //widestring buffer (64k limit)
+	//fix to get the extended characters not being removed inside.
+	//Put the extended string to char, then encode it back
+	core::stringc temptxt= text.c_str();
+	char *mtext = (char *)temptxt.c_str(); // char buffer
+    wchar_t buffer[131072]=L"";  //widestring buffer of 128k	
     mbstowcs(buffer, mtext, strlen(mtext));
+	core::stringw buf = (core::stringw)buffer;
+
 	// ----------------------------------------------------
+	// Shoulb be ok but a script should not be longer than 128k 
+	
 
 	switch(id)
     {
@@ -3079,7 +3100,7 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
             guiDynamicObjects_Script_Console->setText(text.c_str());
             break;
         case EB_ID_DYNAMIC_OBJECT_SCRIPT:
-			guiDynamicObjects_Script->setText(buffer);
+			guiDynamicObjects_Script->setText(buf.c_str());
             break;
         default:
             break;

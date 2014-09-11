@@ -125,10 +125,12 @@ void App::displayGuiConsole()
 bool App::cursorIsInEditArea()
 {
 	bool condition = true;
-	if (GUIManager::getInstance()->isGuiPresent(device->getCursorControl()->getPosition()))
+
+	//Changed for this, will check ALL the guis and be sure there NO ONE under the mouse
+	//Good for determining if we can "pick" a 3D object in the scene
+	if (GUIManager::getInstance()->isGuiChildPresent(device->getGUIEnvironment()->getRootGUIElement(),device->getCursorControl()->getPosition()))
 		condition = false;
 
-	// New code (nov 2011)
 	if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 
 	return condition;
@@ -145,7 +147,28 @@ void App::setAppState(APP_STATE newAppState)
 	//just record the state before changing..
 	APP_STATE old_app_state = app_state;
 	app_state = newAppState;
+	//Store the content of the editor inside the object is the app_state changes
+	if (app_state!=old_app_state)
+	{
+		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
+		{
+			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			scriptNode=NULL;
+		}
 
+		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
+		{
+			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
+			scriptNode=NULL;
+		}
+
+		//If the user was doing other things than editing objects, then the scriptNode will be cleared
+		if (old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE && old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && old_app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
+			scriptNode=NULL;
+
+		if (old_app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && scriptNode)
+			DynamicObjectsManager::getInstance()->getObjectByName(scriptNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
+	}
 #ifdef EDITOR
 
 	if (old_app_state != app_state && app_state != APP_EDIT_VIEWDRAG && app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE)
@@ -346,9 +369,6 @@ void App::setAppState(APP_STATE newAppState)
 
 	if(app_state == APP_EDIT_SCRIPT_GLOBAL)
 	{
-		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
-			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
-
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,scriptGlobal);
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
@@ -357,14 +377,10 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,true);
-		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
-			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
 	}
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
 	{
-		if (old_app_state == APP_EDIT_SCRIPT_GLOBAL)
-			scriptGlobal = GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT);
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
@@ -374,8 +390,6 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_PLAYER_EDIT_SCRIPT,true);
 		// Find a way to set the script once the user change the mode
-		if (old_app_state == APP_EDIT_PLAYER_SCRIPT)
-			Player::getInstance()->getObject()->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 	}
 #endif
 
@@ -600,6 +614,8 @@ void App::eventGuiButton(s32 id)
 			if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 			{
 				selectedObject = DynamicObjectsManager::getInstance()->getObjectByName( stringc(nodeName) );
+				scriptNode = selectedObject->getNode();
+				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,"");
 				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
 				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
@@ -719,10 +735,11 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_SCRIPT_CLOSE:
+		//Will save the script if the window is closed
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
 		{
-			if (selectedNode)
-				DynamicObjectsManager::getInstance()->getObjectByName(selectedNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
+			if (scriptNode)
+				DynamicObjectsManager::getInstance()->getObjectByName(scriptNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 			
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
@@ -826,7 +843,6 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DIALOG,false);
 		if (app_state> APP_STATE_CONTROL)
 		{
-			//Player::getInstance()->getObject()->notifyAnswer(false);
 			if (DynamicObjectsManager::getInstance()->getDialogCaller())
 				DynamicObjectsManager::getInstance()->getDialogCaller()->notifyAnswer(false);
 			setAppState(APP_GAMEPLAY_NORMAL);
@@ -983,8 +999,8 @@ void App::eventGuiCombobox(s32 id)
 	s32 index = 0;
 	core::stringw item = L"";
 	DynamicObject * object = NULL;
-	printf("GUI Event! A gui combobox has been opened!\n");
 
+	IGUIListBox* selected=NULL; //Used to get the item in a listbox
 	IGUIComboBox* selectedbox = NULL;
 	switch (id)
 	{
@@ -1077,23 +1093,16 @@ void App::eventGuiCombobox(s32 id)
 			f32 initdist = initpos.getDistanceFrom(inittar);
 			u32 value=selectedbox->getItemData(selectedbox->getSelected());
 			vector3df newpos = inittar;
-#ifdef DEBUG
-			printf("Here is the result value of the box: %i\n",value);
-#endif
-			matrix4 projMat; //MAtrix projection 
+
+			core::matrix4 projMat; //MAtrix projection if changing the perspective
+
 			switch (value)
 			{
 			case 1: //TOP
-				//CameraSystem::getInstance()->getNode()->setPosition(vector3df(0,-1000,0));
-				//CameraSystem::getInstance()->getNode()->setTarget(vector3df(0,0,0));
 				newpos.Y+=initdist;
 				newpos.Z-=0.05f;
 				CameraSystem::getInstance()->setMAYAPos(newpos);
 				CameraSystem::getInstance()->setMAYATarget(inittar);
-#ifdef DEBUG
-				printf("View selected is TOP\n");
-#endif
-
 				break;
 			case 2: //Bottom
 				newpos.Y-=initdist;
@@ -1152,6 +1161,39 @@ void App::eventGuiCombobox(s32 id)
 			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping);
 		}
 		
+		break;
+
+	case GUIManager::LB_ID_PLAYER_ITEMS:
+
+		
+		selected = ((IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::LB_ID_PLAYER_ITEMS,true));
+		if (selected)
+		{
+			index = selected->getSelected();
+			
+			if (index<0)
+				break;
+
+			item = selected->getListItem(index);
+
+			vector <DynamicObject*> result=Player::getInstance()->getObject()->getLootItems();
+			core::stringc result2=result[index]->getName();
+
+			core::stringc name = result[index]->getThumbnail();
+			
+
+			core::stringc name1="../media/dynamic_objects/";
+			name1.append(name);
+
+			printf("Here is the name of the thumbnail! %s: %s\n",result2.c_str(),name1.c_str());
+
+			ITexture* imgresult = driver->getTexture(name1.c_str());
+			
+			if(imgresult)
+				((IGUIImage*)guienv->getRootGUIElement()->getElementFromId(GUIManager::IMG_LOOT,true))->setImage(imgresult);
+
+		
+		}
 		break;
 
 
@@ -1317,6 +1359,11 @@ dimension2d<u32> App::getScreenSize()
 void App::eventKeyPressed(s32 key)
 {
 
+
+	//Don't check the keyboard while editing scripts (done in the editor gui not here)
+	if (app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT || app_state == APP_EDIT_PLAYER_SCRIPT || app_state == APP_EDIT_SCRIPT_GLOBAL)
+		return;
+
 	if (app_state == APP_GAMEPLAY_NORMAL)
 	{
 		CameraSystem::getInstance()->eventsKeyboard(key); //forward the event when playing
@@ -1406,7 +1453,7 @@ void App::eventKeyPressed(s32 key)
 		}
 
 	case KEY_F5:
-		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT && !isKeyPressed(key))
+		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT) //&& !isKeyPressed(key)
 			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
 		break;
 
@@ -1637,6 +1684,7 @@ void App::eventMousePressed(s32 mouse)
 							selectedNode=mousePick.pickedNode;	
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
+			
 						}
 						else //Invalid node for selection
 						{
@@ -2215,7 +2263,7 @@ void App::stopGame()
 
 		TerrainManager::getInstance()->setEmptyTileVisible(true);
 
-		DynamicObjectsManager::getInstance()->clearAllScripts();
+		DynamicObjectsManager::getInstance()->clearAllScripts(); //Clear all the scripts but also reposition the Objects at the proper position (pre-game)
 		//DynamicObjectsManager::getInstance()->displayShadow(false);
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		// DynamicObjectsManager::getInstance()->showDebugData(true);

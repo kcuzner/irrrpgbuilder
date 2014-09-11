@@ -505,8 +505,6 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
 	newObj->setTemplateObjectName(L"CUSTOM");
 
 	objects.push_back(newObj);
-	activeObject2=newObj;
-
     return newObj;
 }
 
@@ -519,6 +517,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	newObj->setTemplateScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setType(activeObject->getType());
 	newObj->setTemplate(false);
+	newObj->setThumbnail(activeObject->thumbnail);
 	
 	
 
@@ -533,7 +532,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 		newObj->setMaterials(activeObject->materials); //Save the template info inside the dynamic object
 	}
 
-	// Load the script if it was defined in the XML
+	// Load the the external script if a filename was defined in the XML
 	if (activeObject->script.size()>1)
 	{
 		stringc newScript = "";
@@ -547,32 +546,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 			//printf("Opening script file: %s\n",filename.c_str());
 			while (! fileScript.eof() )
 			{
-				std::string line2="";
 				getline (fileScript,line);
-				// --- tried to display the loading of the script to the console:: DEBUG
-				//printf ("Line size is: %d, characters\n",line.size());
-				/*int b=line.size();
-				for (int a=0; a<b; a++)
-				{
-					std::string line1 = line.substr(a,1);
-					char* charac = (char*)line1.c_str();
-			
-					unsigned char numeric =unsigned char (*charac);
-					
-					//printf("%s",charac);<
-					
-					if ((int)numeric>128)
-					{
-						line2+=numeric;
-						printf ("Extended character!:%d \n",(int)numeric);
-					} else
-						line2+=numeric;
-
-				}
-				//printf("%s \n",line2.c_str());
-				// ---
-				//
-				newScript += line2.c_str();*/
 				newScript += line.c_str();
 				newScript += '\n';
 			}
@@ -604,8 +578,6 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	}
 	// Add to the dynamic object list.
 	objects.push_back(newObj);
-	activeObject2=newObj;
-
     return newObj;
 }
 
@@ -659,22 +631,30 @@ TemplateObject* DynamicObjectsManager::getActiveObject()
 
 //Find the filename in the template and use the object as the active object
 //Used mostly when the object template name was not found, using the "filename" as reference instead
-bool DynamicObjectsManager::findTemplate(stringc filename)
+bool DynamicObjectsManager::findTemplate(stringc filename, DynamicObject::TYPE type)
 {
 	bool found=false;
+	TemplateObject* object=NULL;
 	for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		core::stringc templateFilename=objTemplate[i]->meshFile;
-		if(templateFilename == filename )
+		if(templateFilename == filename)
     	{
-    	    activeObject = ((TemplateObject*)objTemplate[i]);
-			found=true;
-    	    break;
+			printf("Found the same filename in this template!\n");
+    	    object=((TemplateObject*)objTemplate[i]);
+			if (object->getType()==type)
+			{
+				found=true;
+				break;
+			}
     	} 
     }
 
 	if (found)
+	{
+		activeObject=object;
 		return true;
+	}
 	else
 		return false;
 }
@@ -1124,11 +1104,12 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			// If the "filename" was stored in the XML, then use this for retrieving the proper template
 			// if not, then trie to load based on the template name.
 			if (fileObj!="")
-				result = findTemplate(fileObj);
+				result = findTemplate(fileObj,type);
 			else
 				result = setActiveObject(templateObj);
 			
-			
+			if (type==DynamicObject::OBJECT_TYPE_LOOT)
+				printf("Loot! Here is the current script assigned to it:\n%s\n",script.c_str());
 			// If those fail then will use the error mesh
 			if (!result)
 			{
@@ -1137,6 +1118,11 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			}
 			if (activeObject->getName()!="") //If the object has no name should not be created.
 				newObj = createActiveObjectAt(vector3df(posX,posY,posZ));
+
+			if (!newObj)
+				return false;
+
+	
 		} 
 		else
 		{
@@ -1150,6 +1136,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		
 		if (activeObject->getName()!="") //	Failsafe if for some reason there is no object found at all in the system
 		{
+
 			// if the "r" is not 0 then use this information to set the rotation of the model (compatibility mode)
 			if (rot!=0 )
 				newObj->setRotation(vector3df(0,rot,0));
@@ -1167,8 +1154,11 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			// If a script is assigned to the mesh then load it.
 			core::stringw ss = convert(script) ;
 
+			if (newObj->getType()==DynamicObject::OBJECT_TYPE_LOOT)
+				printf("Here is the loot object now with it script:\n%s\n",core::stringc(ss.c_str()).c_str());
+
 			newObj->setScript(ss);
-			//newObj->setScript(script);
+			//newObj->setScript(script.c_str());
 	
         
 			DynamicObject::cproperty a=newObj->initProperties();
@@ -1201,79 +1191,83 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			
 			}
 
-		// Loading values
-		stringc life = "";
-		life = dynamicObjectXML->ToElement()->Attribute("life");
-		if (life.size()>0)
-			a.life = (int)atoi(life.c_str());
+			// Loading values
+			stringc life = "";
+			life = dynamicObjectXML->ToElement()->Attribute("life");
+			if (life.size()>0)
+				a.life = (int)atoi(life.c_str());
 
-		stringc maxlife = "";
-		maxlife = dynamicObjectXML->ToElement()->Attribute("maxlife");
-		if (maxlife.size()>0)
-			a.maxlife = (int)atoi(maxlife.c_str());
+			stringc maxlife = "";
+			maxlife = dynamicObjectXML->ToElement()->Attribute("maxlife");
+			if (maxlife.size()>0)
+				a.maxlife = (int)atoi(maxlife.c_str());
 
-		stringc mana = "";
-		mana = dynamicObjectXML->ToElement()->Attribute("mana");
-		if (mana.size()>0)
-			a.mana = (int)atoi(mana.c_str());
+			stringc mana = "";
+			mana = dynamicObjectXML->ToElement()->Attribute("mana");
+			if (mana.size()>0)
+				a.mana = (int)atoi(mana.c_str());
 
-		stringc maxmana = "";
-		maxmana = dynamicObjectXML->ToElement()->Attribute("maxmana");
-		if (maxmana.size()>0)
-			a.maxmana = (int)atoi(maxmana.c_str());
+			stringc maxmana = "";
+			maxmana = dynamicObjectXML->ToElement()->Attribute("maxmana");
+			if (maxmana.size()>0)
+				a.maxmana = (int)atoi(maxmana.c_str());
 
-		stringc experience = "";
-		experience = dynamicObjectXML->ToElement()->Attribute("xp");
-		if (experience.size()>0)
-			a.experience = (int)atoi(experience.c_str());
+			stringc experience = "";
+			experience = dynamicObjectXML->ToElement()->Attribute("xp");
+			if (experience.size()>0)
+				a.experience = (int)atoi(experience.c_str());
 
-		stringc level = "";
-		level = dynamicObjectXML->ToElement()->Attribute("level");
-		if (level.size()>0)
-			a.level = (int)atoi(level.c_str());
+			stringc level = "";
+			level = dynamicObjectXML->ToElement()->Attribute("level");
+			if (level.size()>0)
+				a.level = (int)atoi(level.c_str());
 
-		stringc mindamage = "";
-		mindamage = dynamicObjectXML->ToElement()->Attribute("mindamage");
-		if (mindamage.size()>0)
-			a.mindamage = (int)atoi(mindamage.c_str());
+			stringc mindamage = "";
+			mindamage = dynamicObjectXML->ToElement()->Attribute("mindamage");
+			if (mindamage.size()>0)
+				a.mindamage = (int)atoi(mindamage.c_str());
 
-		stringc maxdamage = "";
-		maxdamage = dynamicObjectXML->ToElement()->Attribute("maxdamage");
-		if (maxdamage.size()>0)
-			a.maxdamage = (int)atoi(maxdamage.c_str());
+			stringc maxdamage = "";
+			maxdamage = dynamicObjectXML->ToElement()->Attribute("maxdamage");
+			if (maxdamage.size()>0)
+				a.maxdamage = (int)atoi(maxdamage.c_str());
 
-		stringc hurtresist = "";
-		hurtresist = dynamicObjectXML->ToElement()->Attribute("hurtresist");
-		if (hurtresist.size()>0)
-			a.hurt_resist = (int)atoi(hurtresist.c_str());
+			stringc hurtresist = "";
+			hurtresist = dynamicObjectXML->ToElement()->Attribute("hurtresist");
+			if (hurtresist.size()>0)
+				a.hurt_resist = (int)atoi(hurtresist.c_str());
 
-		stringc dodgechance = "";
-		dodgechance = dynamicObjectXML->ToElement()->Attribute("dodgechance");
-		if (dodgechance.size()>0)
-			a.dodge_prop = (f32)atof(dodgechance.c_str());
+			stringc dodgechance = "";
+			dodgechance = dynamicObjectXML->ToElement()->Attribute("dodgechance");
+			if (dodgechance.size()>0)
+				a.dodge_prop = (f32)atof(dodgechance.c_str());
 
-		stringc hitchance = "";
-		hitchance = dynamicObjectXML->ToElement()->Attribute("hitchance");
-		if (hitchance.size()>0)
-			a.hit_prob = (f32)atof(hitchance.c_str());
+			stringc hitchance = "";
+			hitchance = dynamicObjectXML->ToElement()->Attribute("hitchance");
+			if (hitchance.size()>0)
+				a.hit_prob = (f32)atof(hitchance.c_str());
 
-		stringc regenlife = "";
-		regenlife = dynamicObjectXML->ToElement()->Attribute("regenlife");
-		if (regenlife.size()>0)
-			a.regenlife = (int)atoi(regenlife.c_str());
+			stringc regenlife = "";
+			regenlife = dynamicObjectXML->ToElement()->Attribute("regenlife");
+			if (regenlife.size()>0)
+				a.regenlife = (int)atoi(regenlife.c_str());
 
-		stringc regenmana = "";
-		regenmana = dynamicObjectXML->ToElement()->Attribute("regenmana");
-		if (regenmana.size()>0)
-			a.regenmana = (int)atoi(regenmana.c_str());
+			stringc regenmana = "";
+			regenmana = dynamicObjectXML->ToElement()->Attribute("regenmana");
+			if (regenmana.size()>0)
+				a.regenmana = (int)atoi(regenmana.c_str());
 
-		newObj->setProperties(a);
+			newObj->setProperties(a);
 
-		// Update the GUI with a description of the current loading task
+			// Update the GUI with a description of the current loading task
 			stringw nametext="Loading Dynamic object: ";
 			nametext.append(newObj->getName().c_str());
 			GUIManager::getInstance()->setTextLoader(nametext);
-	}
+		}
+		else
+		{
+			printf("No name found for the object, perhaps was not found in templates!\n");
+		}
 
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }

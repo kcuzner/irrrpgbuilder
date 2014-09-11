@@ -39,7 +39,7 @@ class DynamicObjectsManager
 		void setScript(stringc uniqueName);
         void removeObject(stringc uniqueName);
 
-		bool findTemplate(stringc filename);
+		bool findTemplate(stringc filename, DynamicObject::TYPE type);
         TemplateObject* getActiveObject();
         bool setActiveObject(stringc name);
 
@@ -100,9 +100,6 @@ class DynamicObjectsManager
         DynamicObjectsManager();
 		
 		IrrlichtDevice *device;
-
-       
-		DynamicObject* activeObject2;
 		DynamicObject* playerObject;
 		DynamicObject* targetObject;
 

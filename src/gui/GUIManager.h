@@ -86,6 +86,7 @@ class GUIManager
 		BT_ID_DIALOG_CANCEL,
 		BT_ID_DIALOG_NO,
 		IMG_BAR,
+		IMG_LOOT,
 		CONSOLE,
 
 		TXT_ID_SELOBJECT,
@@ -514,6 +515,7 @@ class GUIManager
         IGUIWindow* guiWindowItems;
 
         IGUIListBox* guiPlayerItems;
+		IGUIImage*  guiPlayerLootImage;
 
         IGUIButton* guiBtUseItem;
         IGUIButton* guiBtDropItem;

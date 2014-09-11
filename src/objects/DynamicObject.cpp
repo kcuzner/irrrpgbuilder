@@ -34,6 +34,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	realFile += meshFile;   
 
 	fileName=meshFile; // Store the original filename of the dynamic object for verification
+	thumbnail=""; //Store the filename for the thumbnail. Used in the GUI Manager. Thumbnail filename come from the template definition
 
 	error=false;
 	//printf("Here is the object: %s \n",realFile.c_str());
@@ -117,6 +118,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
     setupObj(name, mesh);
 
 	enemyUnderAttack=NULL;
+	oldparent = smgr->getRootSceneNode(); //Initial "old parent" (Normally for loot object that are parented to the player)
 
 	// initialize the timers
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -138,6 +140,7 @@ DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Ani
 	oldAnimation=OBJECT_ANIMATION_CUSTOM;
 	this->setAnimation("prespawn");
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+
 }
 
 DynamicObject::~DynamicObject()
@@ -192,6 +195,8 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
     this->mesh = mesh;
     this->name = name;
+
+	this->displayName=(core::stringw)name;
 
 	//initialise stuff
 	selector=NULL;
@@ -804,8 +809,6 @@ void DynamicObject::setType(stringc name)
 		this->objectType=OBJECT_TYPE_EDITOR;
 	if (name=="walkable")
 		this->objectType=OBJECT_TYPE_WALKABLE;
-	if (name=="loot")
-		this->objectType=OBJECT_TYPE_LOOT;
 
 	this->typeText = name;
 }
@@ -1715,11 +1718,13 @@ void DynamicObject::storeParams()
 	this->originalRotation=this->getRotation();
 	this->original_life=this->getLife();
 	this->original_maxlife=this->getProperties().maxlife;
+	this->oldparent=this->getNode()->getParent();
 }
 
 void DynamicObject::restoreParams()
 {
     // Restore the initial parameters of the dynamic object.
+	this->getNode()->setParent(oldparent);
 	this->setPosition(this->originalPosition);
 	this->setRotation(this->originalRotation);
 	this->setEnabled(true);

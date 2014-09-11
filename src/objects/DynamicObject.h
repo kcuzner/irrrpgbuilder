@@ -205,6 +205,7 @@ class DynamicObject
 
 		// loot management
 		void addLoot(DynamicObject* loot);
+		void addLoot(core::stringc templatename); //To implement (add the loot directly in the dynamic object, create from template, parent and hide in this object)
 		void removeLoot(DynamicObject* loot);
 		void removeAllLoot();
 		vector<DynamicObject*> getLootItems();
@@ -221,7 +222,8 @@ class DynamicObject
 		void notifyAttackRange();
 		void notifyCollision();
 		void notifyAnswer(bool answer);
-
+		void notifyUse(); //To implement for loot
+		void notifyWear(); //To implement for loot
 
         stringc getObjectType();
 
@@ -229,6 +231,10 @@ class DynamicObject
 		bool isTemplate();
 		void setTemplate(bool value);
 		inline void setTemplateScale(core::vector3df scale) { originalscale=scale; }
+		inline void setThumbnail(core::stringc thumb){thumbnail=thumb; }
+		inline core::stringc getThumbnail(){return thumbnail; }
+
+
 		// Needed in other classes
 		DynamicObject_Animation currentAnim;
 		AI_INFO AI_State;
@@ -336,6 +342,7 @@ class DynamicObject
 		vector3df originalPosition;
 		vector3df originalRotation;
 		vector3df oldpos;
+		ISceneNode* oldparent;
 
 		// Used for timed rotation (fully implemented?) should be used to rotate things over time (doors, bridges, etc)
 		// Could be used for the player to make it rotate at a speed limit (degrees per seconds)
@@ -383,6 +390,9 @@ class DynamicObject
 
 		//Used to calculate a ratio when the node is scaled.
 		core::vector3df originalscale;
+
+		//Store the filename for the item thumbnail (retrieved from the template)
+		core::stringc thumbnail;
 
 
 		lua_State *LS;
