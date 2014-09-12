@@ -3373,6 +3373,9 @@ bool App::loadProjectFromXML(stringc filename)
 			// Player is a dynamic object now.
 			// There is no need for now to load from this
 		}
+		//Rebuild the object list when loading a new scene
+		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+
 		CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 #ifndef EDITOR
 		GUIManager::getInstance()->setTextLoader(L"");
@@ -3429,10 +3432,10 @@ void App::initialize()
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
 
 	//Create a sun light
-	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,5000,-5000));
+	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,5000,-50));
 	light->setLightType(ELT_DIRECTIONAL);
 	light->setRadius(50000);
-	light->setRotation(vector3df(45,45,0));
+	light->setRotation(vector3df(70.0f,30.0f,0.0f));
 	
 
 	screensize=driver->getScreenSize();

@@ -58,7 +58,7 @@ void main()
 		
 	// Directional light no attenuation (Sun)
 	vec3 norm = normalize(normal);
-	vec3 sunVector = normalize(vec3(0,50000,-50000) - worldCoord.xyz);
+	vec3 sunVector = normalize(vec3(2500.0,50000.0,2500.0) - worldCoord.xyz);
 	float sunDir = max(0.0, dot(norm, sunVector));
 	
 	vec4 diffuse;

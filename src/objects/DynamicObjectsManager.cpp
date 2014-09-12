@@ -995,7 +995,8 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 {
     TiXmlNode* dynamicObjectXML = parentElement->FirstChild( "obj" );
-
+	//Store the current active object
+	TemplateObject* oldTemplate = activeObject;
     while( dynamicObjectXML != NULL )
     {
 
@@ -1271,6 +1272,8 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
         dynamicObjectXML = parentElement->IterateChildren( "obj", dynamicObjectXML );
     }
+	// Put back the old template as it was selected before.
+	activeObject = oldTemplate;
 	return true;
 }
 
