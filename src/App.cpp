@@ -794,11 +794,28 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_USE_ITEM:
-		LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
-		GUIManager::getInstance()->updateItemsList();
+		//Will not check for a function in LUA anymore.
+		//LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
+		
+		//Will remove the item from the bag after use and destry it if the flag is set
+		if (loot)
+		{
+			loot->notifyUse(); //Call the lua callback onUse() in the object
+		
+			if (loot->isDestroyedAfterUse)
+			{
+				Player::getInstance()->getObject()->removeLoot(loot);
+				loot->setLife(0); //kill it
+				loot->getNode()->setParent(smgr->getRootSceneNode());
+				loot->setPosition(Player::getInstance()->getNode()->getPosition());
+				loot->isInBag=false;
+			}
+			GUIManager::getInstance()->updateItemsList();
+		}
 		break;
 
 	case GUIManager::BT_ID_DROP_ITEM:
+		//"loot" dynamic object will be taken from the selection list and put here
 		if (loot)
 		{
 			loot->getNode()->setParent(smgr->getRootSceneNode());
@@ -1177,12 +1194,14 @@ void App::eventGuiCombobox(s32 id)
 			printf("Here is the name of the thumbnail! %s: %s\n",result2.c_str(),name1.c_str());
 
 			ITexture* imgresult = driver->getTexture(name1.c_str());
-			
 			if(imgresult)
 				((IGUIImage*)guienv->getRootGUIElement()->getElementFromId(GUIManager::IMG_LOOT,true))->setImage(imgresult);
 
-		
+			//Put the description in the field
+			((IGUIStaticText*)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_LOOT_DESCRIPTION,true))->setText(result[index]->getDescription().c_str());
 		}
+		else
+			((IGUIStaticText*)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_LOOT_DESCRIPTION,true))->setText(L"");
 		break;
 
 
@@ -1507,7 +1526,8 @@ void App::eventMousePressed(s32 mouse)
 {
 	if (app_state == APP_GAMEPLAY_NORMAL)
 	{
-		CameraSystem::getInstance()->eventsMouseKey(mouse); //forward the event when playing
+		if (cursorIsInEditArea())
+			CameraSystem::getInstance()->eventsMouseKey(mouse); //forward the event when playing
 		return;
 	}
 

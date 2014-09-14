@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-    <dynamic_object name="horse_food" 		
+    <dynamic_object name="Small health potion" 		
 					mesh="props/horse_food.b3d"
 					type="loot"	
 					scale="18" 	
 					materialType="solid"
 					category="stable"
-					thumbnail="props/info_horse_food.jpg" />
-	<dynamic_object name="horse_food_empty" 	
+					description="This small health potion will give back 10HP"
+					thumbnail="loot/health_potion_image.jpg" />
+	<dynamic_object name="Big health potion" 	
 					mesh="props/horse_food_empty.b3d" 	
 					type="loot" 
 					scale="18" 	
 					materialType="solid"
 					category="stable"
-					thumbnail="props/info_horse_food_empty.jpg" />
+					description="This big health potion will give back 100HP"
+					thumbnail="loot/health_potion_image.jpg" />
 </IrrRPG_Builder_DynamicObjects>

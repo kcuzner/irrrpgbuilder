@@ -234,6 +234,9 @@ class DynamicObject
 		inline void setThumbnail(core::stringc thumb){thumbnail=thumb; }
 		inline core::stringc getThumbnail(){return thumbnail; }
 
+		inline void setDescription(core::stringw desc){description=desc; }
+		inline stringw getDescription(){return description; }
+
 
 		// Needed in other classes
 		DynamicObject_Animation currentAnim;
@@ -250,6 +253,7 @@ class DynamicObject
 		cproperty properties;
 
 		bool isInBag; // Define if the object is stored in the inventory and not in the scene anymore
+		bool isDestroyedAfterUse; //Tell if we remove the loot from the bag and "kill" it after use
 
 
     protected:
@@ -394,6 +398,7 @@ class DynamicObject
 
 		//Store the filename for the item thumbnail (retrieved from the template)
 		core::stringc thumbnail;
+		core::stringw description; //description of the object (Mostly used for loot items), could be used to describe characters.
 
 
 		lua_State *LS;

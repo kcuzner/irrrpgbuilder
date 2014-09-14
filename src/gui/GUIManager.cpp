@@ -2099,6 +2099,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("attack",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onLoad",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onUpdate",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onUse",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onWear",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("step",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onClicked",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onAnswer",SColor(255,128,0,255),true);
@@ -2304,6 +2306,16 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 //Check the children of this gui and return if the pointer is inside the childen
 bool GUIManager::isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos)
 {
+#ifdef EDITOR
+	//Update the content of the terrain tools
+	if (guiTerrainToolbar->isVisible() && guiTerrainToolbar->isPointInside(mousepos))
+	{
+		getScrollBarValue(SC_ID_TERRAIN_BRUSH_RADIUS);
+        getScrollBarValue(SC_ID_TERRAIN_BRUSH_STRENGTH);
+		getScrollBarValue(SC_ID_TERRAIN_BRUSH_PLATEAU);
+	}
+#endif
+
 	const core::list<IGUIElement*>& children = elem->getChildren();
 
 	for ( core::list<IGUIElement*>::ConstIterator it = children.begin(); it != children.end(); ++it )
@@ -2771,6 +2783,8 @@ void GUIManager::setupGameplayGUI()
 	
 	if (info_none)
 		guiPlayerLootImage = guienv->addImage(info_none,vector2d<s32>(220,30),true,tab2,IMG_LOOT);
+
+	guienv->addStaticText(L"",core::rect<s32>(220,250,520,410),true,true,tab2,TXT_ID_LOOT_DESCRIPTION,true);
 	
 	//guienv->addImage(info_none,vector2d<s32>(5,5),true,tab2);
 	core::stringc filename = "../media/dynamic_objects/";
@@ -3660,6 +3674,7 @@ void GUIManager::updateItemsList()
 	{
 		ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
 		guiPlayerLootImage->setImage(info_none);
+		((IGUIStaticText*)guienv->getRootGUIElement()->getElementFromId(TXT_ID_LOOT_DESCRIPTION,true))->setText(L"");
 	}
 }
 

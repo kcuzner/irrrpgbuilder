@@ -508,7 +508,7 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
     return newObj;
 }
 
-
+//Create a dynamic object at the specified position using the active template
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
 
@@ -518,6 +518,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	newObj->setType(activeObject->getType());
 	newObj->setTemplate(false);
 	newObj->setThumbnail(activeObject->thumbnail);
+	newObj->setDescription(activeObject->description);
 	
 	
 

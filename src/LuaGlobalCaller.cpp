@@ -340,6 +340,10 @@ void LuaGlobalCaller::restoreGlobalParams()
     lua_pop( L, -1 );
 }
 
+//Not used anymore in 0.3+
+//Still keep the code, might be useful for something else
+//Like calling a custom function in a global script
+//From a dynamic object script.
 void LuaGlobalCaller::usePlayerItem(stringc item)
 {
     lua_getglobal(L,item.c_str());

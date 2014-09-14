@@ -35,6 +35,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	fileName=meshFile; // Store the original filename of the dynamic object for verification
 	thumbnail=""; //Store the filename for the thumbnail. Used in the GUI Manager. Thumbnail filename come from the template definition
+	description=L""; //Store the description of the object.
 
 	error=false;
 	//printf("Here is the object: %s \n",realFile.c_str());
@@ -86,6 +87,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	rotationupdater=false;
 
 	isInBag=false;
+	isDestroyedAfterUse=true;	//Default value, mostly used for consumable. For scrolls, key, and other "resellable", will need to be set to false;
 
 	attackresult=0;
 	originalscale=vector3df(1.0f,1.0f,1.0f);
@@ -2814,6 +2816,20 @@ void DynamicObject::notifyAnswer(bool answer)
 	lua_getglobal(LS,"onAnswer");
     if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
     lua_pop(LS, -1 );
+}
+
+void DynamicObject::notifyUse()
+{
+	lua_getglobal(LS,"onUse");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
+}
+
+void DynamicObject::notifyWear()
+{
+	lua_getglobal(LS,"onWear");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 }
 
 
