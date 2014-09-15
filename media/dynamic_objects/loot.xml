@@ -5,15 +5,17 @@
 					type="loot"	
 					scale="18" 	
 					materialType="solid"
-					category="stable"
+					category="potions"
 					description="This small health potion will give back 10HP"
-					thumbnail="loot/health_potion_image.jpg" />
+					thumbnail="loot/health_potion_image.jpg" 
+					script = "loot_small_potion.lua"/>
 	<dynamic_object name="Big health potion" 	
 					mesh="props/horse_food_empty.b3d" 	
 					type="loot" 
 					scale="18" 	
 					materialType="solid"
-					category="stable"
+					category="potions"
 					description="This big health potion will give back 100HP"
-					thumbnail="loot/health_potion_image.jpg" />
+					thumbnail="loot/health_potion_image.jpg"
+					script = "loot_big_potion.lua" />
 </IrrRPG_Builder_DynamicObjects>

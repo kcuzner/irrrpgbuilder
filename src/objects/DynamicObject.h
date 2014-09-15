@@ -254,6 +254,7 @@ class DynamicObject
 
 		bool isInBag; // Define if the object is stored in the inventory and not in the scene anymore
 		bool isDestroyedAfterUse; //Tell if we remove the loot from the bag and "kill" it after use
+		bool isGenerated; //Will tell if the object has been spawned directly ingame and not in the editor. 
 
 
     protected:
@@ -270,6 +271,9 @@ class DynamicObject
 		void updateRotation(); // Update the rotation of the object based on refreshes
 		void updateWalk(); // Update the walk movement based on refrehes
 		void luaRefresh(); //Update the scripts
+
+		//!Will splill the loot on the terrain. Called when the character dies
+		void splillLoot();
 
         //lua funcs
         static int setPosition(lua_State *LS);//setPosition(x,y,z)
@@ -304,6 +308,7 @@ class DynamicObject
 		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
 		static int setObjectType(lua_State *LS); // change the object type
 		static int addPlayerLoot(lua_State *LS); // add an object to the player loot
+		static int addLoot(lua_State *LS);
 
         stringc name;
 

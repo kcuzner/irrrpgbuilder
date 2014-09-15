@@ -695,6 +695,16 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
 
 }
 
+//! Create a dynamic object at a specified position, will return the pointer of the dynamic object
+DynamicObject* DynamicObjectsManager::createTemplateAt(core::stringc name,core::vector3df position)
+{
+	TemplateObject* oldObject=activeObject; //store the current object
+	this->setActiveObject(name);
+	DynamicObject* object=this->createActiveObjectAt(position);
+	activeObject=oldObject; //put back the same as it was before being invoked.
+	return object;
+}
+
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
 vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category, DynamicObject::SPECIAL special)
@@ -1308,10 +1318,13 @@ void DynamicObjectsManager::freezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
+		if (objects[i])
 		{
-			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
-			nodeanim->setAnimationSpeed(0);
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
+			{
+				scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
+				nodeanim->setAnimationSpeed(0);
+			}
 		}
     }
 }
@@ -1321,11 +1334,14 @@ void DynamicObjectsManager::unFreezeAll()
 {
 	for(int i=0;i<(int)objects.size();i++)
     {
-		if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
+		if (objects[i])
 		{
-			DynamicObject::DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
-			scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
-			nodeanim->setAnimationSpeed(anim.speed);
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || objects[i]->getType()==DynamicObject::OBJECT_TYPE_PLAYER)
+			{
+				DynamicObject::DynamicObject_Animation anim=((DynamicObject*)objects[i])->currentAnim;
+				scene::IAnimatedMeshSceneNode * nodeanim =(IAnimatedMeshSceneNode*)((DynamicObject*)objects[i])->getNode();
+				nodeanim->setAnimationSpeed(anim.speed);
+			}
 		}
 
     }
@@ -1445,6 +1461,25 @@ void DynamicObjectsManager::clearAllScripts()
 		{
 			((DynamicObject*)objects[i])->restoreParams();
 			((DynamicObject*)objects[i])->clearScripts();
+		}
+    }
+}
+
+//Check all the dynamic object and remove the ones that were generated ingame via LUA
+void DynamicObjectsManager::removeGenerated()
+{
+	 for(int i=0;i<(int)objects.size();i++)
+    {
+		if (objects[i])
+		{
+			if (objects[i]->isGenerated)
+			{
+				printf("Deleting this object:%s\n",objects[i]->getName().c_str());
+				delete ((DynamicObject*)objects[i]);
+				objects.erase(objects.begin() + i);
+				i--;
+			}
+
 		}
     }
 }

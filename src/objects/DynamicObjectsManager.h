@@ -42,7 +42,8 @@ class DynamicObjectsManager
 		bool findTemplate(stringc filename, DynamicObject::TYPE type);
         TemplateObject* getActiveObject();
         bool setActiveObject(stringc name);
-
+		
+		DynamicObject* createTemplateAt(core::stringc name, vector3df position);
         DynamicObject* getObjectByName(stringc name);
 		DynamicObject* getPlayer();
 		DynamicObject* getTarget();
@@ -81,6 +82,7 @@ class DynamicObjectsManager
 		void displayShadow(bool visible);
         void updateAll();
         void clearAllScripts();
+		void removeGenerated();
 
 		void setPlayer();
 		vector<DynamicObject*> buildInteractiveList();

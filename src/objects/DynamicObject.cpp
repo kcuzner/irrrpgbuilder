@@ -88,6 +88,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	isInBag=false;
 	isDestroyedAfterUse=true;	//Default value, mostly used for consumable. For scrolls, key, and other "resellable", will need to be set to false;
+	isGenerated=false; //Default state, was generated inside the editor and not by LUA. LUA object must be removed after the game is complete. (STOPGAME)
 
 	attackresult=0;
 	originalscale=vector3df(1.0f,1.0f,1.0f);
@@ -1014,6 +1015,7 @@ bool DynamicObject::setAnimation(stringc animName)
 
 		//
 		createTextAnim(LANGManager::getInstance()->getText("float_text_die").c_str(),video::SColor(255,240,240,240),5000,dimension2d<f32>(25,12));
+		splillLoot();
 
 		// init the DieState timer. (the update() loop will wait 5 sec to initiate the despawn animation)
 		timerDie = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -1025,6 +1027,7 @@ bool DynamicObject::setAnimation(stringc animName)
 		//If this is not a player, hide the targetting
 		if (objectType!=OBJECT_TYPE_PLAYER)
 			DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
+		
 		// Switch to third person view if killed in first person
 		if (CameraSystem::getInstance()->getViewType()==CameraSystem::VIEW_FPS)
 		{
@@ -1249,7 +1252,8 @@ bool DynamicObject::setAnimation(stringc animName)
     }
 
 	#ifdef DEBUG
-    cout << "ERROR : DYNAMIC_OBJECT : ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
+	if (objectType==OBJECT_TYPE_NPC || objectType==OBJECT_TYPE_PLAYER)
+		cout << "ERROR : DYNAMIC_OBJECT" << name.c_str() <<  ": ANIMATION " << animName.c_str() <<  " NOT FOUND!" << endl;
     #endif
 
 	// If the die animation is not there, the flag become active (will start the die timer anyway)
@@ -1678,6 +1682,7 @@ void DynamicObject::doScript()
     lua_register(LS,"setObjectLabel",setObjectLabel);
 	lua_register(LS,"setObjectType",setObjectType);
 	lua_register(LS,"addPlayerLoot",addPlayerLoot);
+	lua_register(LS,"addLoot",addLoot);
 
 	//Dialog Functions
     lua_register(LS,"showDialogMessage",showDialogMessage);
@@ -1728,7 +1733,8 @@ void DynamicObject::storeParams()
 void DynamicObject::restoreParams()
 {
     // Restore the initial parameters of the dynamic object.
-	this->getNode()->setParent(oldparent);
+	this->lootitems.clear(); //Clear the loot
+	this->getNode()->setParent(oldparent); // Clear parent
 	this->setPosition(this->originalPosition);
 	this->setRotation(this->originalRotation);
 	this->setEnabled(true);
@@ -2858,11 +2864,10 @@ int DynamicObject::setObjectType(lua_State *LS)
     return 0;
 }
 
+//Add the currently selected object into the player loot.
+//This will add an already placed object on the map
 int DynamicObject::addPlayerLoot(lua_State *LS)
 {
-	//core::stringc type = (core::stringc)lua_tostring(LS, -1);
-    //lua_pop(LS, 1);
-
     lua_getglobal(LS,"objName");
 	stringc objName = lua_tostring(LS, -1);
 	lua_pop(LS, 1);
@@ -2878,9 +2883,84 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
 			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
 			tempObj->isInBag=true;
-			//Player::getInstance()->getObject()->addItem(tempObj->getName()); //Will add the name of the dynamic object (temporary)
 		}
 	}
 
     return 0;
+}
+
+//!Add the specified template object directly into the loot of the dynamic object
+int DynamicObject::addLoot(lua_State *LS)
+{
+
+	core::stringc tempname = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	if(tempObj) // Was the object found?
+	{
+		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_NPC || tempObj->getType()==DynamicObject::OBJECT_TYPE_PLAYER) // Was the object a loot object?
+		{
+			DynamicObject* daloot = DynamicObjectsManager::getInstance()->createTemplateAt(tempname,vector3df(0.0f,-2000.0f,0.0f));
+			
+			if (daloot) //If the user had entered the wrong name in the template, the object will be removed (will generate the current template)
+			{
+				if (daloot->getType()!=OBJECT_TYPE_LOOT)
+				{
+					DynamicObjectsManager::getInstance()->removeObject(daloot->getName());
+					daloot=NULL;
+				}
+				
+			}
+			
+			if (daloot) //Name is ok and will generate the object directly in this object loot
+			{
+				tempObj->addLoot(daloot); //Add this pointer object to the player loot
+				daloot->getNode()->setVisible(false); //Hide the node
+				daloot->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
+				daloot->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
+				daloot->isInBag=true;
+				daloot->isGenerated=true; //Tell IRB that this object was generated ingame.
+			}
+		}
+	}
+
+    return 0;
+}
+
+//!Will splill the loot on the terrain. Called when the character dies
+void DynamicObject::splillLoot()
+{
+	if (lootitems.size()>0)
+	{
+		for(int i=0;i<(int)lootitems.size();i++)
+		{
+			if (lootitems[i])
+			{
+				vector3df prepos = getNode()->getPosition(); // Get the parent position
+				int randomx = rand() % 50; int randomz = rand() %50; randomx-=25; randomz-=25;
+				printf("Random gerenrated number is: %i, %i\n",randomx,randomz);
+
+				prepos += vector3df(f32(randomx),0.0f,f32(randomz)) ;  //50 in random position offset X and Z
+				lootitems[i]->getNode()->setParent(smgr->getRootSceneNode()); //put back on the floor		
+			
+				f32 height = TerrainManager::getInstance()->getHeightAt(prepos); //Set the new position (but should touch the floor)
+				prepos.Y=height;
+				lootitems[i]->getNode()->setPosition(prepos);
+				lootitems[i]->getNode()->setRotation(vector3df(0,f32(rand() % 360),0)); //Random y angle
+				lootitems[i]->getNode()->setVisible(true);
+				lootitems[i]->isInBag=false;
+				printf("This object: %s is dropping this object: %s \n",this->getName().c_str(),lootitems[i]->getName().c_str());
+
+			}
+		}
+		//Clear the list
+		lootitems.clear();
+	}
+
 }

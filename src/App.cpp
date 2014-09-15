@@ -2298,6 +2298,9 @@ void App::stopGame()
 		if(!device->getCursorControl()->isVisible())
 			device->getCursorControl()->setVisible(true);
 
+		//REmove the objects that were generated ingame.
+		DynamicObjectsManager::getInstance()->removeGenerated();
+
 
 	}
 }
@@ -2897,17 +2900,19 @@ void App::updateGameplay()
 		levelchange=false;
 	}
 
-	// Refresh the NPC loop
-	if ((timer-timer3)>17) // (17 )1/60 second (0 value seem ok for now)
+		
+	// The timer delay should be directly in the NPC, as the check for animation event should not be delayed.
+	if ((timer-timer3)>34) // (17 )1/60 second 
 	{
 		// Update the NPc refresh
 		timer3 = device->getTimer()->getRealTime();
 
-		// Update all the NPC on the map (including the player)
-		DynamicObjectsManager::getInstance()->updateAll();
-
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();
+
+		// Refresh the NPC loop
+		// Update all the NPC on the map (including the player)
+		DynamicObjectsManager::getInstance()->updateAll();
 	}
 
 }
