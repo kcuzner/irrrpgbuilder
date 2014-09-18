@@ -68,7 +68,9 @@ bool DynamicObjectsManager::loadTemplates()
 		// Load the script if it was defined in the XML
 		if (pObject->script.size()>1)
 		{
-			stringc newScript = "";
+			wchar_t out[1024];
+
+			stringw newScript = "";
 			stringc filename = "../media/scripts/";
 			filename += pObject->script;
 
@@ -79,8 +81,9 @@ bool DynamicObjectsManager::loadTemplates()
 				while (! fileScript.eof() )
 				{
 					getline (fileScript,line);
-					newScript += line.c_str();
-					newScript += '\n';
+					line+='\n';
+					utf8ToWchar(line.c_str(), out, 1024);
+					newScript += stringw(out);
 				}
 				fileScript.close();
 			}
@@ -1164,7 +1167,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 
 			// If a script is assigned to the mesh then load it.
-			core::stringw ss = convert(script) ;
+			wchar_t out[131072];
+			core::utf8ToWchar(script.c_str(),out,131072);
+			//if the XML file is saved in UTF8 take "out" instead of "script".
+			core::stringw ss = stringw(script);
 
 			if (newObj->getType()==DynamicObject::OBJECT_TYPE_LOOT)
 				printf("Here is the loot object now with it script:\n%s\n",core::stringc(ss.c_str()).c_str());

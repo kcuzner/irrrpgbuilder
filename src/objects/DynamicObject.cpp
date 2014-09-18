@@ -434,7 +434,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 	this->lookAt(targetPos);
 
 	//Attemp to calculate the proper time/distance interval
-	u32 delay=App::getInstance()->getDevice()->getTimer()->getRealTime()-lastTime;
+	u32 delay=App::getInstance()->getTimer()-lastTime; //The delay reference MUST come from the main REFRESH loop in APP.
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
 	f32 newspeed = 1.0f;

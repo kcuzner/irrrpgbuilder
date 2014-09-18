@@ -182,7 +182,9 @@ void GUIConfigWindow::populateLanguageList()
 
         while( languageXML != NULL )
         {
-            languageList->addItem(convert(languageXML->ToElement()->Attribute("description")).c_str());
+			wchar_t out[255];
+			core::utf8ToWchar(languageXML->ToElement()->Attribute("description"),out,255);
+			languageList->addItem(out);
             languageListVector.push_back(stringw(languageXML->ToElement()->Attribute("name")));
 
             languageXML = root->ToElement()->IterateChildren( "language", languageXML );

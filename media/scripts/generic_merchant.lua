@@ -43,11 +43,11 @@ function setStrings()
   
  -- Support for French 
   if (getLanguage()=='fr-ca') then
-   tx_resell = "Il en coutera 10 crédits, est-ce que vous acceptez?"
-   tx_offer = "J'ai des potions à vendre, aimeriez-vous en avoir?"
+   tx_resell = "Il en coutera 10 crÃ©dits, est-ce que vous acceptez?"
+   tx_offer = "J'ai des potions Ã  vendre, aimeriez-vous en avoir?"
    tx_thanks = "Merci!"
-   tx_refuse = "Désolé, à une autre fois peut-être?"
-   tx_nomoney = "Désolé, vous n'avez pas assez d'argent..."
+   tx_refuse = "DÃ©solÃ©, Ã  une autre fois peut-Ãªtre?"
+   tx_nomoney = "DÃ©solÃ©, vous n'avez pas assez d'argent..."
    tx_merchant="Mik, le marchant"
   end
 

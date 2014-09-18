@@ -625,8 +625,9 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
 		{
-			stringc newScript = "";
+			stringw newScript = "";
 
+			wchar_t out[1024];
 			stringc filename = "../media/scripts/";
 			filename += GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
 
@@ -637,8 +638,9 @@ void App::eventGuiButton(s32 id)
 				while (! fileScript.eof() )
 				{
 					getline (fileScript,line);
-					newScript += line.c_str();
-					newScript += '\n';
+					line+='\n';
+					utf8ToWchar(line.c_str(), out, 1024);
+					newScript += stringw(out);
 				}
 				fileScript.close();
 			}
@@ -2900,6 +2902,10 @@ void App::updateGameplay()
 		levelchange=false;
 	}
 
+
+	// Refresh the NPC loop
+	// Update all the NPC on the map (including the player)
+	DynamicObjectsManager::getInstance()->updateAll();
 		
 	// The timer delay should be directly in the NPC, as the check for animation event should not be delayed.
 	if ((timer-timer3)>34) // (17 )1/60 second 
@@ -2909,10 +2915,7 @@ void App::updateGameplay()
 
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();
-
-		// Refresh the NPC loop
-		// Update all the NPC on the map (including the player)
-		DynamicObjectsManager::getInstance()->updateAll();
+	
 	}
 
 }

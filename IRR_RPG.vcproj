@@ -633,14 +633,6 @@
 				Name="tinyxml"
 				>
 				<File
-					RelativePath=".\src\tinyXML\convert.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tinyXML\convert.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\tinyXML\tinystr.cpp"
 					>
 				</File>

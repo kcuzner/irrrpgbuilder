@@ -24,53 +24,6 @@ xmldata* xmldata::getInstance()
 	return instance;
 }
 
-core::stringw xmldata::winconvert(core::stringw str)
-// Convert accents from loaded XML files (irrXML)
-// WARNING: Does not work on Linux (no accents) (Return 2bytes on windows and expected to return 4 on special characters)
-
-{
-	bool debug = false;
-	core::stringw textline = L"";
-	core::stringw text = L"";
-	u32 base = 0;
-	
-	//textline = str;
-	
-	char test2 = ' ';
-
-	for (u32 a=0; a<str.size(); a++)
-	{
-		// Get the character first
-		text = str.subString(a,1);
-		
-		// Then check this character directly (convert to unsigned 32bit)
-		base=(u32)text[0];
-
-		if (base<256) // Standard characters
-		{
-			textline+=text;
-		}
-		
-		// All characters after 256 are ignored except thoses
-		// Character higher are re-aligned from the offset to match LATIN1
-
-		// Reference to the table is here:
-		// http://www.utf8-chartable.de/unicode-utf8-table.pl
-		
-		const u32 offset=65216;
-
-		core::stringw replace = L" ";
-		if ((base>255) && ((base-offset)<255))
-		{
-				replace[0]=(base-offset);
-				textline+=replace;
-		}
-		
-	}
-	
-	return textline;
-}
-
 // Not yet used.. Need to be completed, will replace code that is used in TinyXml
 void xmldata::loadBlock(IrrlichtDevice * device, core::stringc file )
 {
@@ -396,26 +349,35 @@ void xmldata::loadLang(IrrlichtDevice * device)
 								inside=true;							
 							}
 
-                            language = winconvert(xml->getAttributeValue("name"));
-							description = winconvert(xml->getAttributeValue("description"));								
+                            language = stringc(xml->getAttributeValue("name"));
+							description = stringc(xml->getAttributeValue("description"));								
 							if (LANGManager::getInstance()->defaultLanguage==language)
 							{
 								found=true; //Get the filename of the xml file for the lang if it's the current one and if it's exist
-								filename = winconvert(xml->getAttributeValue("filename"));
+								filename = stringc(xml->getAttributeValue("filename"));
 							}
 						}
 
 						if ((core::stringw("text") == xml->getNodeName()) && filename=="" && (language==LANGManager::getInstance()->defaultLanguage))
 						{
-								CurrentLang.name = winconvert(xml->getAttributeValue("id"));
-								CurrentLang.text = winconvert(xml->getAttributeValue("str"));
+
+								wchar_t out[255];
+
+								utf8ToWchar(xml->getAttributeValue("id"), out, 255);
+								CurrentLang.name = stringw(out);
+								
+								utf8ToWchar(xml->getAttributeValue("str"), out, 255);
+								CurrentLang.text=stringw(out);
+
 								LANGManager::getInstance()->language.push_back(CurrentLang);
 								linecount++;
 						}
 						if (core::stringw("about") == xml->getNodeName() && filename=="" && (language==LANGManager::getInstance()->defaultLanguage))
 						{
+								wchar_t out[255];
 								CurrentLang.name=L"txt_about";
-								CurrentLang.text=winconvert(xml->getAttributeValue("str"));
+								utf8ToWchar(xml->getAttributeValue("str"), out, 255);
+								CurrentLang.text=stringw(out);
 								LANGManager::getInstance()->aboutext.push_back(CurrentLang);
 						}
 				}
@@ -491,15 +453,25 @@ void xmldata::loadLangFile(core::stringc  filename )
 					
 						if ((core::stringw("text") == xml->getNodeName()))
 						{
-								CurrentLang.name = winconvert(xml->getAttributeValue("id"));
-								CurrentLang.text = winconvert(xml->getAttributeValue("str"));
+
+								// utf8toWchar was introducted in Irrlicht 1.9
+								// This will allow IRB to save/load strings encoded in UTF8 to it's platform native WCHAR format.
+								wchar_t out[255];
+								utf8ToWchar(xml->getAttributeValue("id"), out, 255);
+								CurrentLang.name = stringw(out);
+								
+								utf8ToWchar(xml->getAttributeValue("str"), out, 255);
+								CurrentLang.text = stringw(out);
+	
 								LANGManager::getInstance()->language.push_back(CurrentLang);
 								linecount++;
 						}
 						if (core::stringw("about") == xml->getNodeName())
 						{
+								wchar_t out[255];
 								CurrentLang.name=L"txt_about";
-								CurrentLang.text=winconvert(xml->getAttributeValue("str"));
+								utf8ToWchar(xml->getAttributeValue("str"), out, 255);
+								CurrentLang.text=stringw(out);
 								LANGManager::getInstance()->aboutext.push_back(CurrentLang);
 						}
 				}

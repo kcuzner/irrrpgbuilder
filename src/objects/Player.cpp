@@ -112,7 +112,8 @@ void Player::update()
 		updateTargetting();
 	}
 
-	u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	//u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
+	u32 timercheck = App::getInstance()->getTimer();
 	
 	// Standard checks updated by timer (update the tagged object, the range etc.
 	if (timercheck-timer3>17)

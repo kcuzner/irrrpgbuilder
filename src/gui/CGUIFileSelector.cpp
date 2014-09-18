@@ -732,7 +732,6 @@ void CGUIFileSelector::fillListBox()
 
 	for (u32 i=0; i<FileList->getFileCount(); ++i)
 	{
-		s = FileList->getFileName(i);
 		core::stringw test2=translateDOS(FileList->getFileName(i));
 		s = test2;
 		// We just want a list of directories and those matching the file filter
@@ -1034,6 +1033,15 @@ void CGUIFileSelector::setStartingPath(core::stringw path)
 // from the way it was received. (Testing to be done Linux Side)
 core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 {
+
+#ifndef WIN32
+	//Ubutu should store the filenames in UTF8, Windows in UTF16
+	wchar_t out[255];
+	stringc in = stringc(input);
+	core::utf8ToWchar(in.c_str(),out,255);
+	return stringw(out);
+#endif
+
 	core::stringw result=L"";
 
 	for (u32 a=0; a <= input.size(); a++)
@@ -1047,7 +1055,6 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 			result.append(test);
 		//if (code<0)
 			//printf("============================\nThe code is: %d\n==============================\n",code);
-#ifdef WIN32
 		// if the result give < 0 then it look like an accented letter, then convert
 
 		if (code==-56)
@@ -1091,13 +1098,6 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 
 		if (code==-7)
 			result.append(L"ù");
-#else
-		// if the result give < 0 then it look like an accented letter, then convert
-		// Have to find a way on Linux for converting the accented characters to a irrlicht displayable character
-		// Not implemented on Linux.
-
-#endif
-
 
 	}
 	return result;

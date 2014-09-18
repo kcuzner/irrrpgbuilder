@@ -15,7 +15,6 @@ class xmldata
 	public:
 
 		static xmldata * getInstance();
-		core::stringw winconvert(core::stringw str);
 		void loadBlock(IrrlichtDevice * device, core::stringc file );
 		void loadSet(IrrlichtDevice * device);
 		void loadLang(IrrlichtDevice * device);
