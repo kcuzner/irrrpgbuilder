@@ -1983,9 +1983,10 @@ void GUIManager::createCodeEditorGUI()
 
 	// Set the IRB commands Highlights
 
+	
 	// Allow the code editor to use syntax highlighting based on LUA keywords
 	guiDynamicObjects_Script->addLUAKeywords();
-
+	guiDynamicObjects_Script->addKeyword("then",SColor(255,0,0,200),true);
 
 	// Define custom "Group" keywords, here are "dictionnary" for IRB specific keywords
 	guiDynamicObjects_Script->addKeyword("setObjectName",SColor(255,128,0,255),true);
@@ -2111,6 +2112,9 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("onAnswer",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getLanguage",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onCollision",SColor(255,128,0,255),true);
+
+
+	
 
 	// Bottom tabcontrol
 	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(6,driver->getScreenSize().Height-290,driver->getScreenSize().Width-16,144),guiDynamicObjectsWindowEditAction,true,false);
