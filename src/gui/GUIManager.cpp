@@ -2063,6 +2063,10 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addLoot",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("spawn",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setEnemy",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getEnemyCount",SColor(255,128,0,255),true);
+
 
 	guiDynamicObjects_Script->addKeyword("showBlackScreen",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);

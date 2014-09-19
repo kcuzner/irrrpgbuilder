@@ -86,6 +86,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	reached=false;
 	rotationupdater=false;
 
+	isEnemy=false;
 	isInBag=false;
 	isDestroyedAfterUse=true;	//Default value, mostly used for consumable. For scrolls, key, and other "resellable", will need to be set to false;
 	isGenerated=false; //Default state, was generated inside the editor and not by LUA. LUA object must be removed after the game is complete. (STOPGAME)
@@ -1658,6 +1659,9 @@ void DynamicObject::doScript()
     luaL_openlibs(LS);
 
     // register dynamic object functions
+
+	lua_register(LS,"getEnemyCount",getEnemyCount);
+
     lua_register(LS,"setPosition",setPosition);
     lua_register(LS,"getPosition",getPosition);
     lua_register(LS,"setRotation",setRotation);
@@ -1683,7 +1687,8 @@ void DynamicObject::doScript()
 	lua_register(LS,"setObjectType",setObjectType);
 	lua_register(LS,"addPlayerLoot",addPlayerLoot);
 	lua_register(LS,"addLoot",addLoot);
-
+	lua_register(LS,"setEnemy1",setEnemy);
+	
 	//Dialog Functions
     lua_register(LS,"showDialogMessage",showDialogMessage);
 	lua_register(LS,"showDialogQuestion",showDialogQuestion);
@@ -1707,9 +1712,9 @@ void DynamicObject::doScript()
     //set default object type
     luaL_dostring(LS,"objType = 'OBJECT'");
     //set enemy (when you click an enemy you attack it)
-    luaL_dostring(LS,"function setEnemy() objType = 'ENEMY' end");
+    luaL_dostring(LS,"function setEnemy() objType = 'ENEMY' setEnemy1(true) end");
     //set object (when you click an object you interact with it)
-    luaL_dostring(LS,"function setObject() objType = 'OBJECT' end");
+    luaL_dostring(LS,"function setObject() objType = 'OBJECT' setEnemy1(false) end");
 
 
 	//run onLoad() function if it exists
@@ -2137,6 +2142,14 @@ void DynamicObject::luaRefresh()
 
 
 //LUA FUNCTIONS
+
+int DynamicObject::getEnemyCount(lua_State *LS)
+{
+	int number=DynamicObjectsManager::getInstance()->getEnemyCount();
+	lua_pushnumber(LS,number);
+	return 1;
+
+}
 
 int DynamicObject::setEnabled(lua_State *LS)
 {
@@ -2963,4 +2976,23 @@ void DynamicObject::splillLoot()
 		lootitems.clear();
 	}
 
+}
+
+int DynamicObject::setEnemy(lua_State *LS)
+{
+	bool isenemy = bool(lua_toboolean(LS, -1));
+    lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	if(tempObj) 
+	{
+		tempObj->isEnemy=isenemy;
+	}
+
+	return 0;
 }

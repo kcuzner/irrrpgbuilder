@@ -88,6 +88,7 @@ class DynamicObjectsManager
 		vector<DynamicObject*> buildInteractiveList();
 
         void clean(bool full);
+		int getEnemyCount();
 
 		vector<DynamicObject*> getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type);
 

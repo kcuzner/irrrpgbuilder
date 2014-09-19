@@ -296,6 +296,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"getLanguage",getLanguage);
 	lua_register(LS,"loadMap",loadMap);
 
+	lua_register(LS,"spawn",spawn);
+
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
 
@@ -1405,3 +1407,84 @@ int LuaGlobalCaller::getLanguage(lua_State *LS)
 	lua_pushstring(LS,(char *)LANGManager::getInstance()->getLanguage().c_str());
 	return 1;
 }
+
+int LuaGlobalCaller::spawn(lua_State *LS)
+{
+
+	core::vector3df pos = vector3df(0,0,0);
+	core::vector3df angle = vector3df(0,0,0);
+
+	if(lua_isnumber(LS, -1))//read (x,y,z)
+    {
+        float ry = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+       	angle.Y=ry; 
+   
+        float z = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        float y = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+        float x = (float)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+
+		pos.X=x; pos.Y=y; pos.Z=z;
+    }
+
+	core::stringc tempname = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	irr::f32 maxRayHeight = 5000.0f;
+	scene::ISceneCollisionManager* collMan = App::getInstance()->getDevice()->getSceneManager()->getSceneCollisionManager();
+	core::line3d<f32> ray;
+
+	// Start the ray 500 unit from the character, ray lenght is 1000 unit.
+	ray.start = pos+vector3df(0,+(maxRayHeight/2.0f),0);
+	ray.end = pos+vector3df(0,-(maxRayHeight/2),0);
+
+	// Tracks the current intersection point with the level or a mesh
+	core::vector3df intersection;
+	// Used to show with triangle has been hit
+	core::triangle3df hitTriangle;
+	scene::ISceneNode * selectedSceneNode =
+	collMan->getSceneNodeAndCollisionPointFromRay(
+		ray,
+		intersection,
+		hitTriangle,
+		100, //100 is the default ID for walkable (ground obj + props)
+		0); // Check the entire scene (this is actually the implicit default)
+
+	if (selectedSceneNode)
+	{
+		// return the height found.
+		pos.Y=intersection.Y;
+	}
+	else
+			// if not return -1000 (Impossible value, so it failed)
+		pos.Y=0;
+
+		
+	DynamicObject* daloot = DynamicObjectsManager::getInstance()->createTemplateAt(tempname,pos);
+			
+	if (daloot) //Name is ok and will generate the object directly in this object loot
+	{
+		daloot->getNode()->setRotation(angle); // Reset the position				
+		daloot->isGenerated=true; //Tell IRB that this object was generated ingame.
+	}
+    
+	if(daloot) //return a name if the object is created
+    {
+		core::stringc name = daloot->getName();
+
+		lua_pushstring(LS,name.c_str());
+    }
+
+    return 1;
+}
+

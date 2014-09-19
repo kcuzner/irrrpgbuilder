@@ -1683,3 +1683,21 @@ vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
 	return list; //Return values in case it's needed 
 
 }
+
+int DynamicObjectsManager::getEnemyCount()
+{
+	int finalcount = 0;
+    for(int i=0;i<(int)objects.size();i++)
+	{
+		// We don't need to have bounding box and other data over the player
+		if (objects[i])
+		{
+			if (objects[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
+			{
+				if ((DynamicObject*)objects[i]->isEnemy && (DynamicObject*)objects[i]->getLife()>0)
+					finalcount++;
+			}
+		}
+	}
+	return finalcount;
+}

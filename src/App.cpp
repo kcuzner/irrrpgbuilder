@@ -2243,7 +2243,7 @@ void App::playGame()
 		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 
-		//LuaGlobalCaller::getInstance()->usePlayerItem("onLoad");
+		LuaGlobalCaller::getInstance()->usePlayerItem("onLoad");
 
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		//DynamicObjectsManager::getInstance()->showDebugData(false);

@@ -205,7 +205,7 @@ class DynamicObject
 
 		// loot management
 		void addLoot(DynamicObject* loot);
-		void addLoot(core::stringc templatename); //To implement (add the loot directly in the dynamic object, create from template, parent and hide in this object)
+		void addLoot(core::stringc templatename); //(add the loot directly in the dynamic object, create from template, parent and hide in this object)
 		void removeLoot(DynamicObject* loot);
 		void removeAllLoot();
 		vector<DynamicObject*> getLootItems();
@@ -252,6 +252,7 @@ class DynamicObject
 		cproperty prop_level;
 		cproperty properties;
 
+		bool isEnemy; //Is the object an enemy of the player?
 		bool isInBag; // Define if the object is stored in the inventory and not in the scene anymore
 		bool isDestroyedAfterUse; //Tell if we remove the loot from the bag and "kill" it after use
 		bool isGenerated; //Will tell if the object has been spawned directly ingame and not in the editor. 
@@ -276,6 +277,7 @@ class DynamicObject
 		void splillLoot();
 
         //lua funcs
+		static int getEnemyCount(lua_State *LS);//Return the number of enemies
         static int setPosition(lua_State *LS);//setPosition(x,y,z)
         static int getPosition(lua_State *LS);//x,y,z = getPosition()
         static int setRotation(lua_State *LS);//setRotation(x,y,z)
@@ -298,6 +300,7 @@ class DynamicObject
         static int showObjectLabel(lua_State *LS);//showObjectLabel()
         static int hideObjectLabel(lua_State *LS);//hideObjectLabel()
         static int setObjectLabel(lua_State *LS);//setObjectLabel(newLabelText)
+		static int setEnemy(lua_State *LS);//Have C++ know this object is an enemy
 
 		//Dialog Functions
         static int showDialogMessage(lua_State *LS);//showDialogMessage(text, optional_sound_file)
@@ -308,8 +311,8 @@ class DynamicObject
 		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
 		static int setObjectType(lua_State *LS); // change the object type
 		static int addPlayerLoot(lua_State *LS); // add an object to the player loot
-		static int addLoot(lua_State *LS);
-
+		static int addLoot(lua_State *LS); // Create an object from a template and add it to the object loot.
+		
         stringc name;
 
         IMesh* mesh;

@@ -134,6 +134,11 @@ class LuaGlobalCaller
 		static int getAnswer(lua_State *LS);
 		static int getLanguage(lua_State *LS);
 
+		// Spawn a template on the ground
+		// Parameters are Name, X,Y,Z, Rotation (Y)
+		static int spawn(lua_State *LS); // Spawn a template somewhere
+
+
     protected:
     private:
         LuaGlobalCaller();
