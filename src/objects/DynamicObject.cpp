@@ -49,8 +49,11 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		IAnimatedMesh* oldmesh = smgr->getMeshCache()->getMeshByName(realFile);
 		
 		if (oldmesh->getFrameCount()>1) //Will only rename animated models
-			smgr->getMeshCache()->renameMesh(oldmesh,realFile+"1");
+		{
+			stringc newname = DynamicObjectsManager::getInstance()->createUniqueName(this->getType());
+			smgr->getMeshCache()->renameMesh(oldmesh,newname);
 			printf("This mesh %s is already loaded and in the mesh cache\n",realFile.c_str());
+		}
 	}
 
 	if (!directpath)

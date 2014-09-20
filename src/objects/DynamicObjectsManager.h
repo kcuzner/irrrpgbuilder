@@ -87,6 +87,8 @@ class DynamicObjectsManager
 		void setPlayer();
 		vector<DynamicObject*> buildInteractiveList();
 
+		stringc createUniqueName(DynamicObject::TYPE objtype);
+
         void clean(bool full);
 		int getEnemyCount();
 
@@ -127,7 +129,6 @@ class DynamicObjectsManager
 		IMetaTriangleSelector* meta;
 		ISceneNodeAnimatorCollisionResponse* anim;
 
-        stringc createUniqueName(DynamicObject::TYPE objtype);
 		int objectCounter;
 		core::stringw setname;
 
