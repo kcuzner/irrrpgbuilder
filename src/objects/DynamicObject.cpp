@@ -42,6 +42,16 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	mesh = NULL;
 	Tmesh = NULL;
+	//Attempt to create different meshbuffer when getting instances from the meshbuffer.
+	bool result=smgr->getMeshCache()->isMeshLoaded(realFile);
+	if (result)
+	{
+		IAnimatedMesh* oldmesh = smgr->getMeshCache()->getMeshByName(realFile);
+		
+		if (oldmesh->getFrameCount()>1) //Will only rename animated models
+			smgr->getMeshCache()->renameMesh(oldmesh,realFile+"1");
+			printf("This mesh %s is already loaded and in the mesh cache\n",realFile.c_str());
+	}
 
 	if (!directpath)
 		mesh = smgr->getMesh(realFile); //Loading from the Dynamic objects template library
@@ -52,8 +62,6 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 										// Object can be stored anywhere
 										// Used mostly for testing models
 
-	//Try to create a version of the mesh with the tangents for the normal mapping
-	Tmesh = smgr->getMeshManipulator()->createMeshWithTangents(mesh);
 	
 	//meshName = meshFile;
     this->animations = animations;
@@ -66,6 +74,9 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		error=true;
 	}
 
+	//Try to create a version of the mesh with the tangents for the normal mapping
+	Tmesh = smgr->getMeshManipulator()->createMeshWithTangents(mesh);
+	
 	setupObj(name, mesh);
 
 	// When enabled, the LUA will update even if the node is culled.
@@ -108,7 +119,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 }
 
-DynamicObject::DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations)
+DynamicObject::DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicObject_Animation> animations)
 {
 
 	smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -195,7 +206,7 @@ DynamicObject::cproperty DynamicObject::initProperties()
 
 }
 
-void DynamicObject::setupObj(stringc name, IMesh* mesh)
+void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
@@ -208,15 +219,15 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 	selector=NULL;
 	node=NULL;
 
-	if(hasAnimation() && mesh)
+	if(hasAnimation() && mesh && mesh->getFrameCount()>1)
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
 
-        nodeAnim = smgr->addAnimatedMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);
+        nodeAnim = smgr->addAnimatedMeshSceneNode(mesh,0,0x0010);
 		this->node = nodeAnim;
 		if (node)
 		{
-			this->selector = smgr->createTriangleSelector((IAnimatedMesh*)mesh, node);
+			this->selector = smgr->createTriangleSelector(mesh, node);
 			this->node->setTriangleSelector(selector);
 		}
 
@@ -229,9 +240,9 @@ void DynamicObject::setupObj(stringc name, IMesh* mesh)
 
 		// Check the size of the mesh and create it as an octree if it's big. (200 unit min)
 		if (mesh->getBoundingBox().getExtent().X>200 && mesh->getBoundingBox().getExtent().Y>200 && mesh->getBoundingBox().getExtent().Z>200)
-			this->node = smgr->addOctreeSceneNode ((IMesh*)Tmesh,0,100);
+			this->node = smgr->addOctreeSceneNode (Tmesh,0,100);
 		else
-			this->node = smgr->addMeshSceneNode((IMesh*)Tmesh,0,100);
+			this->node = smgr->addMeshSceneNode(Tmesh,0,100);
 		if (node)
 		{
 			// Select the triangle selector for more precision

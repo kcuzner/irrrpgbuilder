@@ -264,10 +264,10 @@ class DynamicObject
 
 
 
-        DynamicObject(stringc name, IMesh* mesh, vector<DynamicObject_Animation> animations = vector<DynamicObject_Animation>());
+        DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicObject_Animation> animations = vector<DynamicObject_Animation>());
 
     private:
-        void setupObj(stringc name, IMesh* mesh);
+        void setupObj(stringc name, IAnimatedMesh* mesh);
 
 		void updateRotation(); // Update the rotation of the object based on refreshes
 		void updateWalk(); // Update the walk movement based on refrehes
@@ -315,7 +315,7 @@ class DynamicObject
 		
         stringc name;
 
-        IMesh* mesh;
+        IAnimatedMesh* mesh;
 		IMesh* Tmesh; //Tangent mesh
         ISceneNode* node;
 		IAnimatedMeshSceneNode * nodeAnim;
