@@ -270,7 +270,13 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent");
 						currAnim.soundevent = (irr::s32)atoi(animSoundEvent.c_str());
 
-						
+						currAnim.meshname = (core::stringc)xml->getAttributeValue("file");
+						stringc realfile = "../media/dynamic_objects/";
+						realfile += currAnim.meshname;
+						if (currAnim.meshname!="" && App::getInstance()->getDevice()->getFileSystem()->existFile(realfile.c_str()))
+							currAnim.mesh = App::getInstance()->getDevice()->getSceneManager()->getMesh(realfile);
+						else if (currAnim.meshname!="")
+							printf("The mesh file doesnt exist in the path specified!\n");
 						
 						newObj->animations.push_back(currAnim); //add the new animation to the template data
 					}

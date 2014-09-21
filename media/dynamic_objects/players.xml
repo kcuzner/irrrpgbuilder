@@ -5,7 +5,7 @@
 		<animation name="idle"  start="146" end="165" speed="3.0" /> <!-- Stardard Idle anim -->
 		<animation name="idle1"  start="1" end="48" speed="30.0" /> <!-- Move back the neck idle anim -->
 		<animation name="idle2"  start="49" end="159" speed="30.0" /> <!-- Winner Idle anim -->
-		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="34.0"/>
+		<animation name="walk"  start="301" end="330" speed="30.0" movespeed="34.0"> 
 		<animation name="run" start="333" end="362" speed="40.0" movespeed="162.0"/>
 		<!-- old end for attack is 396-->
 		<animation name="attack" start="365" end="390" speed="30.0" loop="false" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>

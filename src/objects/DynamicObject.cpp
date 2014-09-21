@@ -1212,6 +1212,9 @@ bool DynamicObject::setAnimation(stringc animName)
 	
 	}
 
+	if (!getNode())
+		return false;
+
 	//if (objectType==OBJECT_TYPE_PLAYER)
 	//	printf("Here the player is doing this animation: %s \n",animName.c_str());
 	
@@ -1232,10 +1235,19 @@ bool DynamicObject::setAnimation(stringc animName)
 		OBJECT_ANIMATION Animation = this->getAnimationState(animName);
 
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
+
 		if( tempAnim.name == animName )
         {
 			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_CUSTOM)
 			{
+				
+				if (tempAnim.meshname!="" && nodeAnim->getMesh()->getFrameCount()>1)
+				{
+					{
+						ISkinnedMesh* tempanim = (ISkinnedMesh*)tempAnim.mesh;
+						((ISkinnedMesh*)nodeAnim->getMesh())->useAnimationFrom(tempanim);
+					}
+				}
 				// Store the old animations
 				this->oldAnimation=currentAnimation;
 				this->oldAnimName = animName;
