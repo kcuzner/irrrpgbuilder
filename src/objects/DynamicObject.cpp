@@ -301,6 +301,7 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
 		Healthbar = new scene::HealthSceneNode(this->node,smgr,-1,coll,50,5,vector3df(0,meshSize*meshScale*1.05f,0),video::SColor(255,192,0,0),video::SColor(255,0,0,0),video::SColor(255,128,128,128));
 		Healthbar->setVisible(false);
+
 		// Set the object animation as prespawn for the NPC`s			setAnimation("prespawn");
 		//node->setDebugDataVisible(EDS_BBOX_ALL);
 
@@ -1243,8 +1244,16 @@ bool DynamicObject::setAnimation(stringc animName)
 				
 				if (tempAnim.meshname!="" && nodeAnim->getMesh()->getFrameCount()>1)
 				{
+					if (tempAnim.mesh)
 					{
 						ISkinnedMesh* tempanim = (ISkinnedMesh*)tempAnim.mesh;
+						((ISkinnedMesh*)nodeAnim->getMesh())->useAnimationFrom(tempanim);
+					}
+				} else
+				{
+					if (this->mesh)
+					{
+						ISkinnedMesh* tempanim = (ISkinnedMesh*)this->mesh;
 						((ISkinnedMesh*)nodeAnim->getMesh())->useAnimationFrom(tempanim);
 					}
 				}

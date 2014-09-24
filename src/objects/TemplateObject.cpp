@@ -13,6 +13,7 @@ using namespace gui;
 
 TemplateObject::TemplateObject(irr::core::stringw name)
 {
+	solid=true;
 	// This is done when an dynamic object is initialised (template && player)
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 

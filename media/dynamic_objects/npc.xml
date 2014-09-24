@@ -22,16 +22,6 @@
 		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>
 		<animation name="despawn" start="346" end="370" speed="5.0" loop="false" />
 	</dynamic_object>
-	<dynamic_object name="Knight" mesh="npc/knight/knight.b3d" type="npc" script="ai_goblin.lua" scale="1" materialType="solid"
-					description="Test" author="Mixamo.com" licence="Copyrighted" category="test"
-					thumbnail="npc/info_goblin.jpg" >
-		<animation name="idle" start="1" end="800" speed="30.0"/>
-		<animation name="attack" start="281" end="295" speed="18.0" attackevent="282" loop="false" soundevent="282" sound="goblin/goblin_attack.ogg"/>
-		<animation name="walk" start="251" end="280" speed="30.0" movespeed="80.0"/>
-		<animation name="hurt"  start="306" end="317" speed="30.0" loop="false" soundevent="307" sound="goblin/goblin_hurt.ogg"/>
-		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>
-		<animation name="despawn" start="346" end="370" speed="5.0" loop="false" />
-	</dynamic_object>
 <!-- Goblin Giant -->
 	<dynamic_object name="goblin giant version" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid"
 					description="A goblin based on the small one" author="Christian Clavet" licence="Creative Commons" category="Monster - Big"
@@ -77,4 +67,6 @@
 		<animation name="walk" start="100" end="120" speed="35" movespeed="72.2"/>
 		<animation name="attack" start="70" end="100" speed="60" attackevent="85" loop="false"/>
 	</dynamic_object>
+	
+	
 </IrrRPG_Builder_DynamicObjects>

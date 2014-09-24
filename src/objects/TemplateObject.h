@@ -31,6 +31,8 @@ class TemplateObject
 
 		void setScale(f32 scale);
 		f32 getScale();
+		inline void setSolid(bool solidstatus){solid=solidstatus;}
+		inline bool getSolid(){return solid;}
 
 		// Public Variables - Data
 		core::stringc templateObjectName;//The original object name
@@ -66,7 +68,8 @@ class TemplateObject
 		DynamicObject::cproperty properties; // Active properties
 
 		f32 templateScale; // Scale of the object
-		E_MATERIAL_TYPE materialType;       
+		E_MATERIAL_TYPE materialType;  
+		bool solid;
 		
 };
 

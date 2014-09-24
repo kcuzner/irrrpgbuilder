@@ -273,10 +273,13 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.meshname = (core::stringc)xml->getAttributeValue("file");
 						stringc realfile = "../media/dynamic_objects/";
 						realfile += currAnim.meshname;
-						if (currAnim.meshname!="" && App::getInstance()->getDevice()->getFileSystem()->existFile(realfile.c_str()))
-							currAnim.mesh = App::getInstance()->getDevice()->getSceneManager()->getMesh(realfile);
-						else if (currAnim.meshname!="")
-							printf("The mesh file doesnt exist in the path specified!\n");
+						//Will do a check if a mesh exist, if not then will remove the name 					
+						if (currAnim.meshname!="" && !App::getInstance()->getDevice()->getFileSystem()->existFile(realfile.c_str()))
+						{
+							printf("This file doesnt exist: %s for this animation!: %s\n",currAnim.meshname.c_str(),currAnim.name.c_str());
+							currAnim.meshname="";
+						}
+					
 						
 						newObj->animations.push_back(currAnim); //add the new animation to the template data
 					}
@@ -336,6 +339,13 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							editorcount++;
 						if (objectType==(core::stringc)"player")
 							playercount++;
+
+						// Attribute to define if the mesh is solid or not.
+						core::stringc value = "";
+						value =	xml->getAttributeValue("solid");
+						if (value.make_lower()=="false")
+							newObj->setSolid(false);
+
 
 						linecount++;
 
@@ -521,6 +531,19 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
 DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
 
+	//Load animation data when the mesh is instanced on the ground
+	for (int a=0; a<activeObject->animations.size(); a++)
+	{
+		printf ("Animation is: %s, and filename is: %s\n",activeObject->animations[a].name.c_str(),activeObject->animations[a].meshname.c_str());
+		if (activeObject->animations[a].meshname!="")
+		{	
+			stringc realfile = "../media/dynamic_objects/";
+			realfile += activeObject->animations[a].meshname;
+			IAnimatedMesh * animesh = App::getInstance()->getDevice()->getSceneManager()->getMesh(realfile);
+			activeObject->animations[a].mesh = animesh;
+		}
+	}
+
   	DynamicObject* newObj = new DynamicObject(activeObject->getName(),activeObject->meshFile,activeObject->animations);
 	newObj->setScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
 	newObj->setTemplateScale(vector3df(activeObject->getScale(),activeObject->getScale(),activeObject->getScale()));
@@ -528,8 +551,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	newObj->setTemplate(false);
 	newObj->setThumbnail(activeObject->thumbnail);
 	newObj->setDescription(activeObject->description);
-	
-	
+	newObj->setSolid(activeObject->getSolid());
 
 	//setup material
 	newObj->getNode()->setMaterialType(activeObject->getMaterialType());

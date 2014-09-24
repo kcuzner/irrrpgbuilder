@@ -236,6 +236,7 @@ class DynamicObject
 
 		inline void setDescription(core::stringw desc){description=desc; }
 		inline stringw getDescription(){return description; }
+		inline void setSolid(bool solid){if (solid) getNode()->setID(100); else getNode()->setID(0);}
 
 
 		// Needed in other classes
