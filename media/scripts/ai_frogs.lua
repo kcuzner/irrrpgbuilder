@@ -3,14 +3,14 @@ local a = 0
 function setProperties()
 -- Using the new properties attributes, can set the NPC combat attributes. 
 	setEnemy() -- this is an ennemy
-	setPropertie("life",10) -- current life of the NPC
-	setPropertie("maxlife",10) -- current Maximum life of this NPC
-	setPropertie("experience",5) -- given experience to attacker if killed
-	setPropertie("mindamage",2) -- minimum damage inflicted
-	setPropertie("maxdamage",4) -- maximum damage inflicted
-	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
-	setPropertie("hit_prob",60)
-	setPropertie("dodge_prob",12)
+	setProperty("life",10) -- current life of the NPC
+	setProperty("maxlife",10) -- current Maximum life of this NPC
+	setProperty("experience",5) -- given experience to attacker if killed
+	setProperty("mindamage",2) -- minimum damage inflicted
+	setProperty("maxdamage",4) -- maximum damage inflicted
+	setProperty("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
+	setProperty("hit_prob",60)
+	setProperty("dodge_prob",12)
 end
 
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user
@@ -25,7 +25,7 @@ end
 
 -- "step" will trigger at each time interval (around 1/4 second)
 function onUpdate()
-  name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
+  name = getName()..": "..getProperty("life").."/"..getProperty("maxlife")
   if (getPropertie("life") == 0) then 
 	hideObjectLabel()
 	return

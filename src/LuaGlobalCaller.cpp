@@ -202,19 +202,17 @@ bool GlobalMap::loadGlobalsFromXML(stringc filename)
 LuaGlobalCaller::LuaGlobalCaller()
 {
     // create an Lua pointer instance
-    L = lua_open();
+    LS = lua_open();
 
     // load the libs
-    luaL_openlibs(L);
+    luaL_openlibs(LS);
 
-    this->registerBasicFunctions(L);
-
-    //globalMap = new GlobalMap();
+    this->registerBasicFunctions(LS);
 }
 
 LuaGlobalCaller::~LuaGlobalCaller()
 {
-    //dtor
+	//dtor
 }
 
 void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
@@ -285,6 +283,12 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
     lua_register(LS,"addPlayerItem",addPlayerItem);
     lua_register(LS,"removePlayerItem",removePlayerItem);
     lua_register(LS,"getItemCount",getItemCount);
+	lua_register(LS,"addObjectLoot",addObjectLoot);
+	lua_register(LS,"useGlobalFunction",useGlobalFunctionLUA);
+	lua_register(LS,"setObjectProperty",setObjectProperty);
+	lua_register(LS,"getObjectProperty",getObjectProperty);
+	lua_register(LS,"checkObjectItem",checkObjectItem);
+
 
 	// NPC functions
 	lua_register(LS,"setObjectLife",setObjectLife);
@@ -314,8 +318,8 @@ LuaGlobalCaller* LuaGlobalCaller::getInstance()
 
 void LuaGlobalCaller::doScript(stringc script)
 {
-    int error = luaL_dostring(L,script.c_str());
-	core::stringc result = (core::stringc)lua_tostring(L, -1);
+    int error = luaL_dostring(LS,script.c_str());
+	core::stringc result = (core::stringc)lua_tostring(LS, -1);
 	printf("Global script called: result %s\n",result.c_str());
 // Only available in the editor
 #ifdef EDITOR
@@ -332,38 +336,51 @@ void LuaGlobalCaller::doScript(stringc script)
 
 void LuaGlobalCaller::storeGlobalParams()
 {
-    lua_getglobal(L,"IRBStoreGlobalParams");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    lua_getglobal(LS,"IRBStoreGlobalParams");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 }
 
 void LuaGlobalCaller::restoreGlobalParams()
 {
-    lua_getglobal(L,"IRBRestoreGlobalParams");
-    if(lua_isfunction(L, -1)) lua_pcall(L,0,0,0);
-    lua_pop( L, -1 );
+    lua_getglobal(LS,"IRBRestoreGlobalParams");
+    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
+    lua_pop( LS, -1 );
 }
 
 //Not used anymore in 0.3+
 //Still keep the code, might be useful for something else
 //Like calling a custom function in a global script
 //From a dynamic object script.
-void LuaGlobalCaller::usePlayerItem(stringc item)
+void LuaGlobalCaller::useGlobalFunction(stringc function)
 {
-    lua_getglobal(L,item.c_str());
-    if(lua_isfunction(L,-1))
+    lua_getglobal(LS,function.c_str());
+    if(lua_isfunction(LS,-1))
     {
-        lua_pcall(L,0,0,0);
+        lua_pcall(LS,0,0,0);
     }
     else
     {
-        lua_pop(L,-1);
+        lua_pop(LS,-1);
     }
 }
 
 void LuaGlobalCaller::setAnswer(bool answer)
 {
 	this->answer=answer;
+}
+
+int LuaGlobalCaller::useGlobalFunctionLUA(lua_State *LS)
+{
+	stringc function = "";
+
+    if(lua_isstring(LS,-1))
+    {
+        function = lua_tostring(LS,-1);
+        lua_pop(LS,1);
+    }
+	LuaGlobalCaller::getInstance()->useGlobalFunction(function);
+	return 0;
 }
 
 int LuaGlobalCaller::getItemCount(lua_State *LS)
@@ -379,6 +396,199 @@ int LuaGlobalCaller::getItemCount(lua_State *LS)
     lua_pushnumber(LS,Player::getInstance()->getObject()->getItemCount(itemName));
 
     return 1;
+}
+
+//Object will give loot to another object
+//Ex: addObjectLoot("DynamicObject","loot template")
+int LuaGlobalCaller::addObjectLoot(lua_State *LS)
+{
+	core::stringc tempname = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+	core::stringc objName = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+	DynamicObject* tempObj=NULL;
+
+	if (objName=="player")
+		tempObj = Player::getInstance()->getObject();
+	else
+		tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	printf("was called inside the lua add object loot\n");
+
+	if(tempObj) // Was the object found?
+	{
+		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_NPC || tempObj->getType()==DynamicObject::OBJECT_TYPE_PLAYER) // Was the object a loot object?
+		{
+			DynamicObject* daloot = DynamicObjectsManager::getInstance()->createTemplateAt(tempname,vector3df(0.0f,-2000.0f,0.0f));
+			
+			if (daloot) //If the user had entered the wrong name in the template, the object will be removed (will generate the current template)
+			{
+				if (daloot->getType()!=DynamicObject::OBJECT_TYPE_LOOT)
+				{
+					DynamicObjectsManager::getInstance()->removeObject(daloot->getName());
+					daloot=NULL;
+				}
+				
+			}
+			
+			if (daloot) //Name is ok and will generate the object directly in this object loot
+			{
+				tempObj->addLootItem(daloot); //Add this pointer object to the player loot
+				daloot->getNode()->setVisible(false); //Hide the node
+				daloot->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
+				daloot->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
+				daloot->isInBag=true;
+				daloot->isGenerated=true; //Tell IRB that this object was generated ingame.
+			}
+		}
+	}
+
+    return 0;
+}
+
+int LuaGlobalCaller::setObjectProperty(lua_State *LS)
+{
+	float value = (float)lua_tonumber(LS, -1);
+	lua_pop(LS, 1);
+
+	stringc propertieName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* Obj = NULL;
+	if (objName!="" || objName!="player")
+		Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
+	else
+		Obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	if (propertieName=="life")
+		Obj->properties.life = (int)value;
+	if (propertieName=="maxlife")
+		Obj->properties.maxlife = (int)value;
+	if (propertieName=="mindamage")
+		Obj->properties.mindamage = (int)value;
+	if (propertieName=="maxdamage")
+		Obj->properties.maxdamage = (int)value;
+	if (propertieName=="hurt_resist")
+		Obj->properties.hurt_resist = (int)value;
+	if (propertieName=="experience")
+		Obj->properties.experience = (int)value;
+	if (propertieName=="dodge_prob")
+		Obj->properties.dodge_prop = (f32)value;
+	if (propertieName=="hit_prob")
+		Obj->properties.hit_prob = (f32)value;
+	if (propertieName=="mana")
+		Obj->properties.mana = (int)value;
+	if (propertieName=="maxmana")
+		Obj->properties.maxmana = (int)value;
+	if (propertieName=="money")
+		Obj->properties.money = (int)value;
+	if (propertieName=="dotduration")
+		Obj->properties.dotduration = (int)value;
+	if (propertieName=="armor")
+		Obj->properties.armor = (int)value;
+	if (propertieName=="magic_armor")
+		Obj->properties.magic_armor = (int)value;
+	if (propertieName=="regenlife")
+		Obj->properties.regenlife = (int)value;
+	if (propertieName=="regenmana")
+		Obj->properties.regenmana = (int)value;
+	if (propertieName=="level")
+		Obj->properties.level = (int)value;
+
+	if (objName=="player")
+		Player::getInstance()->updateDisplay();
+
+	return 0;
+}
+
+int LuaGlobalCaller::getObjectProperty(lua_State *LS)
+{
+	stringc propertieName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* Obj = NULL;
+	if (objName!="" || objName!="player")
+		Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
+	else
+		Obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	float value = 0.0f;
+	if (propertieName=="life")
+		value = (float) Obj->properties.life;
+	if (propertieName=="maxlife")
+		value = (float) Obj->properties.maxlife;
+	if (propertieName=="mindamage")
+		value = (float) Obj->properties.mindamage;
+	if (propertieName=="maxdamage")
+		value = (float) Obj->properties.maxdamage;
+	if (propertieName=="hurt_resist")
+		value = (float) Obj->properties.hurt_resist;
+	if (propertieName=="experience")
+		value = (float) Obj->properties.experience;
+	if (propertieName=="dodge_prob")
+		value = (float) Obj->properties.dodge_prop;
+	if (propertieName=="hit_prob")
+		value = (float) Obj->properties.hit_prob;
+	if (propertieName=="mana")
+		value = (float) Obj->properties.mana;
+	if (propertieName=="maxmana")
+		value = (float) Obj->properties.maxmana;
+	if (propertieName=="money")
+		value = (float) Obj->properties.money;
+	if (propertieName=="dotduration")
+		value = (float) Obj->properties.dotduration;
+	if (propertieName=="armor")
+		value = (float) Obj->properties.armor;
+	if (propertieName=="magic_armor")
+		value = (float) Obj->properties.magic_armor;
+	if (propertieName=="regenlife")
+		value = (float) Obj->properties.regenlife;
+	if (propertieName=="regenmana")
+		value = (float) Obj->properties.regenmana;
+	if (propertieName=="level")
+		value = (float) Obj->properties.level;
+
+	lua_pushnumber(LS,value);
+
+	return 1;
+}
+
+int LuaGlobalCaller::checkObjectItem(lua_State *LS)
+{
+	bool result = false;
+
+	stringc itemname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	stringc objname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* obj = NULL;
+	if (objname!="" || objname!="player")
+		obj = DynamicObjectsManager::getInstance()->getObjectByName(objname.c_str());
+	else
+		obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	if (obj)
+	{
+		
+		std::vector<DynamicObject*> list = obj->getLootItems();
+		printf("Checking if the item is the same. Checking %i items.\n",list.size());
+		for (int a=0; a<list.size(); a++)
+		{
+			if (list[a]->getTemplateObjectName()==itemname)
+				result=true;
+		}
+	}
+	lua_pushboolean(LS,result);
+	return 1;
 }
 
 

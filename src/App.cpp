@@ -796,9 +796,6 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_USE_ITEM:
-		//Will not check for a function in LUA anymore.
-		//LuaGlobalCaller::getInstance()->usePlayerItem(GUIManager::getInstance()->getActivePlayerItem());
-		
 		//Will remove the item from the bag after use and destry it if the flag is set
 		if (loot)
 		{
@@ -2243,7 +2240,7 @@ void App::playGame()
 		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 
-		LuaGlobalCaller::getInstance()->usePlayerItem("onLoad");
+		LuaGlobalCaller::getInstance()->useGlobalFunction("onLoad");
 
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		//DynamicObjectsManager::getInstance()->showDebugData(false);

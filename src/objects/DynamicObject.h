@@ -204,8 +204,8 @@ class DynamicObject
         void removeAllItems();
 
 		// loot management
-		void addLoot(DynamicObject* loot);
-		void addLoot(core::stringc templatename); //(add the loot directly in the dynamic object, create from template, parent and hide in this object)
+		void addLootItem(DynamicObject* loot);
+		//void addLoot(core::stringc templatename); //(add the loot directly in the dynamic object, create from template, parent and hide in this object)
 		void removeLoot(DynamicObject* loot);
 		void removeAllLoot();
 		vector<DynamicObject*> getLootItems();
@@ -278,41 +278,41 @@ class DynamicObject
 		void splillLoot();
 
         //lua funcs
-		static int getEnemyCount(lua_State *LS);//Return the number of enemies
-        static int setPosition(lua_State *LS);//setPosition(x,y,z)
-        static int getPosition(lua_State *LS);//x,y,z = getPosition()
-        static int setRotation(lua_State *LS);//setRotation(x,y,z)
-        static int getRotation(lua_State *LS);//x,y,z = getPosition()
-        static int turn(lua_State *LS);//turn(degrees)
-        static int move(lua_State *LS);//move(x,y,z)
-		static int walkToLUA(lua_State *LS); // walkToLua("objectName")
-        static int lookAt(lua_State *LS);//lookAt(x,y,z)
-        static int lookToObject(lua_State *LS);//lookToObject(otherObjectName)
-		static int attackObj(lua_State *LS);//attackObj(otherObjectName)
-		static int setPropertie(lua_State *LS); // setPropertie("objectName","propertie",value)
-		static int getPropertie(lua_State *LS); // value getPropertie("objectName","propertie")
-        static int distanceFrom(lua_State *LS);
-		static int getNameLUA(lua_State *LS); // value getNameLUA()
+		static int getEnemyCount(lua_State *ls);//Return the number of enemies
+        static int setPosition(lua_State *ls);//setPosition(x,y,z)
+        static int getPosition(lua_State *ls);//x,y,z = getPosition()
+        static int setRotation(lua_State *ls);//setRotation(x,y,z)
+        static int getRotation(lua_State *ls);//x,y,z = getPosition()
+        static int turn(lua_State *ls);//turn(degrees)
+        static int move(lua_State *ls);//move(x,y,z)
+		static int walkToLUA(lua_State *ls); // walkToLua("objectName")
+        static int lookAt(lua_State *ls);//lookAt(x,y,z)
+        static int lookToObject(lua_State *ls);//lookToObject(otherObjectName)
+		static int attackObj(lua_State *ls);//attackObj(otherObjectName)
+		static int setProperty(lua_State *ls); // setPropertie("objectName","propertie",value)
+		static int getProperty(lua_State *ls); // value getPropertie("objectName","propertie")
+        static int distanceFrom(lua_State *ls);
+		static int getNameLUA(lua_State *ls); // value getNameLUA()
 
-        static int setFrameLoop(lua_State *LS);//setFrameLoop(start,end);
-        static int setAnimation(lua_State *LS);//setAnimation(anim_name);
-        static int setAnimationSpeed(lua_State *LS);//setAnimationSpeed(speed);
+        static int setFrameLoop(lua_State *ls);//setFrameLoop(start,end);
+        static int setAnimation(lua_State *ls);//setAnimation(anim_name);
+        static int setAnimationSpeed(lua_State *ls);//setAnimationSpeed(speed);
 
-        static int showObjectLabel(lua_State *LS);//showObjectLabel()
-        static int hideObjectLabel(lua_State *LS);//hideObjectLabel()
-        static int setObjectLabel(lua_State *LS);//setObjectLabel(newLabelText)
-		static int setEnemy(lua_State *LS);//Have C++ know this object is an enemy
+        static int showObjectLabel(lua_State *ls);//showObjectLabel()
+        static int hideObjectLabel(lua_State *ls);//hideObjectLabel()
+        static int setObjectLabel(lua_State *ls);//setObjectLabel(newLabelText)
+		static int setEnemy(lua_State *ls);//Have C++ know this object is an enemy
 
 		//Dialog Functions
-        static int showDialogMessage(lua_State *LS);//showDialogMessage(text, optional_sound_file)
-		static int showDialogQuestion(lua_State *LS);//showDialogQuestion(text, optional_sound_file)
+        static int showDialogMessage(lua_State *ls);//showDialogMessage(text, optional_sound_file)
+		static int showDialogQuestion(lua_State *ls);//showDialogQuestion(text, optional_sound_file)
 
-        static int setEnabled(lua_State *LS);//setEnabled(enabled?)
+        static int setEnabled(lua_State *ls);//setEnabled(enabled?)
 
-		static int hasReached(lua_State *LS);// Check the status of the walk if reached the destination
-		static int setObjectType(lua_State *LS); // change the object type
-		static int addPlayerLoot(lua_State *LS); // add an object to the player loot
-		static int addLoot(lua_State *LS); // Create an object from a template and add it to the object loot.
+		static int hasReached(lua_State *ls);// Check the status of the walk if reached the destination
+		static int setObjectType(lua_State *ls); // change the object type
+		static int addPlayerLoot(lua_State *ls); // add an object to the player loot
+		static int addLootLUA(lua_State *ls); // Create an object from a template and add it to the object loot.
 		
         stringc name;
 
@@ -410,7 +410,7 @@ class DynamicObject
 		core::stringw description; //description of the object (Mostly used for loot items), could be used to describe characters.
 
 
-		lua_State *LS;
+		lua_State *ls;
 
 };
 

@@ -13,12 +13,12 @@ local tx_money=""
 
 function setProperties()
 -- Using the new properties attributes, can set the NPC combat attributes
-	setPropertie("life",50) -- current life of the NPC
-	setPropertie("maxlife",50) -- current Maximum life of this NPC
-	setPropertie("experience",10) -- given experience to attacker if killed
-	setPropertie("mindamage",2) -- minimum damage inflicted
-	setPropertie("maxdamage",5) -- maximum damage inflicted
-	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
+	setProperty("life",50) -- current life of the NPC
+	setProperty("maxlife",50) -- current Maximum life of this NPC
+	setProperty("experience",10) -- given experience to attacker if killed
+	setProperty("mindamage",2) -- minimum damage inflicted
+	setProperty("maxdamage",5) -- maximum damage inflicted
+	setProperty("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 end
 
 function setStrings()

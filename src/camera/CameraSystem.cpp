@@ -198,6 +198,31 @@ void CameraSystem::defineKeys(core::stringc key, core::stringc action)
 		keyrightside=KEY_RIGHT;
 		keyfinal=1;
 	}
+	else if (key=="WASD" || key=="QWERTY")
+	{
+		keyforward=KEY_KEY_W;
+		keybackward=KEY_KEY_S;
+		keyleftside=KEY_KEY_A;
+		keyrightside=KEY_KEY_D;
+		keyfinal=1;
+	} 
+	else if (key=="ZQSD" || key=="AZERTY")
+	{
+		keyforward=KEY_KEY_Z;
+		keybackward=KEY_KEY_S;
+		keyleftside=KEY_KEY_Q;
+		keyrightside=KEY_KEY_D;
+		keyfinal=1;
+	}
+	else if (key=="QZERTY")
+	{
+		keyforward=KEY_KEY_Z;
+		keybackward=KEY_KEY_S;
+		keyleftside=KEY_KEY_A;
+		keyrightside=KEY_KEY_D;
+		keyfinal=1;
+	}
+
 	
 	// get out if the key is not known
 	if (keyfinal==0)

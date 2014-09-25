@@ -2063,10 +2063,11 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("stopSounds",SColor(255,128,0,255),true);
 
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("usePlayerItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("useGlobalFunction",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addLoot",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("addObjectLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("spawn",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setEnemy",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getEnemyCount",SColor(255,128,0,255),true);
@@ -2101,10 +2102,13 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setAnimation",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setEnemy",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setObject",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("setPropertie",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setProperty",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setObjectType",SColor(255,128,0,255),true);
 
-	guiDynamicObjects_Script->addKeyword("getPropertie",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getProperty",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectProperty",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getObjectProperty",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("checkObjectItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("attack",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onLoad",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onUpdate",SColor(255,128,0,255),true);

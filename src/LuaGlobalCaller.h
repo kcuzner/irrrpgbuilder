@@ -53,7 +53,7 @@ class LuaGlobalCaller
         void storeGlobalParams();
         void restoreGlobalParams();
 
-        void usePlayerItem(stringc item);
+        void useGlobalFunction(stringc function);
 
 		void setAnswer(bool answer);
 
@@ -124,9 +124,16 @@ class LuaGlobalCaller
         static int setPlayerMoney(lua_State *LS);
         static int getPlayerMoney(lua_State *LS);
 
-        static int addPlayerItem(lua_State *LS);
+        static int addPlayerItem(lua_State *LS); //Will need to be removed. Old commands
         static int removePlayerItem(lua_State *LS);
         static int getItemCount(lua_State *LS);
+		static int useGlobalFunctionLUA(lua_State *LS);
+
+		static int addObjectLoot(lua_State *LS);
+		static int setObjectProperty(lua_State *LS);
+		static int getObjectProperty(lua_State *LS);
+
+		static int checkObjectItem(lua_State *LS);
 
         //Save/Load inGame
         static int inGameSave(lua_State *LS);
@@ -144,8 +151,10 @@ class LuaGlobalCaller
     protected:
     private:
         LuaGlobalCaller();
-        lua_State *L;
+        lua_State *LS;
 		bool answer;
+
+		
 };
 
 #endif // LUAGLOBALCALLER_H

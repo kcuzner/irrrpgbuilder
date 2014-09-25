@@ -3,14 +3,14 @@ local a = 0
 function setProperties()
 -- Using the new properties attributes, can set the NPC combat attributes. 
 	setEnemy() -- this is an ennemy
-	setPropertie("life",25) -- current life of the NPC
-	setPropertie("maxlife",25) -- current Maximum life of this NPC
-	setPropertie("experience",10) -- given experience to attacker if killed
-	setPropertie("mindamage",3) -- minimum damage inflicted when hit
-	setPropertie("maxdamage",5) -- maximum damage inflicted when hit
-	setPropertie("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
-	setPropertie("hit_prob",75) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
-	setPropertie("dodge_prob",15) -- Dodge probability, will lower the hit probability of the attacker
+	setProperty("life",25) -- current life of the NPC
+	setProperty("maxlife",25) -- current Maximum life of this NPC
+	setProperty("experience",10) -- given experience to attacker if killed
+	setProperty("mindamage",3) -- minimum damage inflicted when hit
+	setProperty("maxdamage",5) -- maximum damage inflicted when hit
+	setProperty("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
+	setProperty("hit_prob",75) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
+	setProperty("dodge_prob",15) -- Dodge probability, will lower the hit probability of the attacker
 end
 
 -- "onClicked" will trigger is the dynamic object is being clicked on by the user
@@ -26,9 +26,9 @@ end
 -- "step" will trigger at each time interval (around 1/4 second)
 function onUpdate()
   local x,y,z = getObjectPosition("player")
-  name = getName()..": "..getPropertie("life").."/"..getPropertie("maxlife")
+  name = getName()..": "..getProperty("life").."/"..getProperty("maxlife")
   -- The NPC has been killed. Hide the label and do nothing.
-  if (getPropertie("life")==0) then
+  if (getProperty("life")==0) then
     hideObjectLabel()
 	return
   end

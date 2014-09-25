@@ -1635,7 +1635,7 @@ void DynamicObject::removeAllItems()
 //-----------------------------------------------------------------------
 //Loot Management (work with dynamic object pointers)
 //-----------------------------------------------------------------------
-void DynamicObject::addLoot(DynamicObject* loot)
+void DynamicObject::addLootItem(DynamicObject* loot)
 {
 	lootitems.push_back(loot);
 }
@@ -1693,82 +1693,86 @@ void DynamicObject::clearScripts()
 	}*/
 	if (objectType != OBJECT_TYPE_PLAYER)
 	{
-		lua_close(LS);
+		lua_close(ls);
 	}
 }
 
 void DynamicObject::doScript()
 {
     // create an Lua pointer instance
-    LS = lua_open();
+    ls = lua_open();
 
     // load the libs
-    luaL_openlibs(LS);
+    luaL_openlibs(ls);
 
     // register dynamic object functions
 
-	lua_register(LS,"getEnemyCount",getEnemyCount);
+	lua_register(ls,"getEnemyCount",getEnemyCount);
 
-    lua_register(LS,"setPosition",setPosition);
-    lua_register(LS,"getPosition",getPosition);
-    lua_register(LS,"setRotation",setRotation);
-    lua_register(LS,"getRotation",getRotation);
-    lua_register(LS,"lookAt",lookAt);
-    lua_register(LS,"lookToObject",lookToObject);
+    lua_register(ls,"setPosition",setPosition);
+    lua_register(ls,"getPosition",getPosition);
+    lua_register(ls,"setRotation",setRotation);
+    lua_register(ls,"getRotation",getRotation);
+    lua_register(ls,"lookAt",lookAt);
+    lua_register(ls,"lookToObject",lookToObject);
 
-	lua_register(LS,"attack",attackObj);
-	lua_register(LS,"setPropertie",setPropertie);
-	lua_register(LS,"getPropertie",getPropertie);
-    lua_register(LS,"move",move);
-	lua_register(LS,"walkTo",walkToLUA);
-    lua_register(LS,"distanceFrom",distanceFrom);
-	lua_register(LS,"getName",getNameLUA);
+	lua_register(ls,"attack",attackObj);
+	lua_register(ls,"setProperty",setProperty);
+	lua_register(ls,"getProperty",getProperty);
 
-    lua_register(LS,"setFrameLoop",setFrameLoop);
-    lua_register(LS,"setAnimationSpeed",setAnimationSpeed);
-    lua_register(LS,"setAnimation",setAnimation);
+	lua_register(ls,"setPropertie",setProperty); //Old commands, should be removed in 0.4. New name is setProperty
+	lua_register(ls,"getPropertie",getProperty); //Old commands, should be removed in 0.4. New name is getProperty
+    
+	lua_register(ls,"move",move);
+	lua_register(ls,"walkTo",walkToLUA);
+    lua_register(ls,"distanceFrom",distanceFrom);
+	lua_register(ls,"getName",getNameLUA);
 
-    lua_register(LS,"showObjectLabel",showObjectLabel);
-    lua_register(LS,"hideObjectLabel",hideObjectLabel);
-    lua_register(LS,"setObjectLabel",setObjectLabel);
-	lua_register(LS,"setObjectType",setObjectType);
-	lua_register(LS,"addPlayerLoot",addPlayerLoot);
-	lua_register(LS,"addLoot",addLoot);
-	lua_register(LS,"setEnemy1",setEnemy);
+    lua_register(ls,"setFrameLoop",setFrameLoop);
+    lua_register(ls,"setAnimationSpeed",setAnimationSpeed);
+    lua_register(ls,"setAnimation",setAnimation);
+
+    lua_register(ls,"showObjectLabel",showObjectLabel);
+    lua_register(ls,"hideObjectLabel",hideObjectLabel);
+    lua_register(ls,"setObjectLabel",setObjectLabel);
+	lua_register(ls,"setObjectType",setObjectType);
+	lua_register(ls,"addPlayerLoot",addPlayerLoot);
+	lua_register(ls,"addLoot",addLootLUA);
+	lua_register(ls,"setEnemy1",setEnemy);
 	
 	//Dialog Functions
-    lua_register(LS,"showDialogMessage",showDialogMessage);
-	lua_register(LS,"showDialogQuestion",showDialogQuestion);
+    lua_register(ls,"showDialogMessage",showDialogMessage);
+	lua_register(ls,"showDialogQuestion",showDialogQuestion);
 
-    lua_register(LS,"setEnabled",setEnabled);
+    lua_register(ls,"setEnabled",setEnabled);
 
-	lua_register(LS,"hasReached",hasReached);
+	lua_register(ls,"hasReached",hasReached);
 
     //register basic functions
-    LuaGlobalCaller::getInstance()->registerBasicFunctions(LS);
+    LuaGlobalCaller::getInstance()->registerBasicFunctions(ls);
 
     //associate the "objName" keyword to the dynamic object name
     stringc scriptTemp = "objName = '";
     scriptTemp += this->getNode()->getName();
     scriptTemp += "'";
-    luaL_dostring(LS,scriptTemp.c_str());
+    luaL_dostring(ls,scriptTemp.c_str());
 
 
-    luaL_dostring(LS,stringc(script).c_str());
+    luaL_dostring(ls,stringc(script).c_str());
 
     //set default object type
-    luaL_dostring(LS,"objType = 'OBJECT'");
+    luaL_dostring(ls,"objType = 'OBJECT'");
     //set enemy (when you click an enemy you attack it)
-    luaL_dostring(LS,"function setEnemy() objType = 'ENEMY' setEnemy1(true) end");
+    luaL_dostring(ls,"function setEnemy() objType = 'ENEMY' setEnemy1(true) end");
     //set object (when you click an object you interact with it)
-    luaL_dostring(LS,"function setObject() objType = 'OBJECT' setEnemy1(false) end");
+    luaL_dostring(ls,"function setObject() objType = 'OBJECT' setEnemy1(false) end");
 
 
 	//run onLoad() function if it exists
-    lua_getglobal(LS,"onLoad");
+    lua_getglobal(ls,"onLoad");
     //if top of stack is not a function then onLoad does not exist
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop( LS, -1 );
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
 	storeParams();
 }
 
@@ -2144,74 +2148,80 @@ void DynamicObject::updateWalk()
 
 void DynamicObject::luaRefresh()
 {
-	if (App::getInstance()->getAppState() > 100)
+
+	if (!ls)
+	{
+		GUIManager::getInstance()->setConsoleText("LUA error, lost pointer",SColor(255,255,0,0));
+		return;
+	}
+
+	if (App::getInstance()->getAppState() > 100 && ls)
 	{//app_state < APP_STATE_CONTROL
-		lua_getglobal(LS,"onUpdate");
-		if(lua_isfunction(LS, -1))
+		lua_getglobal(ls,"onUpdate");
+		if(lua_isfunction(ls, -1))
 		{
-			if (lua_pcall(LS,0,0,0)!=0)
+			if (lua_pcall(ls,0,0,0)!=0)
 			{
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<onUpdate>>",SColor(255,255,0,0));
-			}
-
+			}	
 		}
-		lua_pop( LS, -1 );
+		lua_pop( ls, -1 );
 
-		lua_getglobal(LS,"step");
-
-		if(lua_isfunction(LS, -1))
+		
+		lua_getglobal(ls,"step");
+		if(lua_isfunction(ls, -1))
 		{
-			if (lua_pcall(LS,0,0,0)!=0)
+			if (lua_pcall(ls,0,0,0)!=0)
 			{
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<step>>",SColor(255,255,0,0));
 			}
-
 		}
-		lua_pop( LS, -1 );
+		lua_pop( ls, -1 );
+		
 
 		//custom update function (updates walkTo for example..)
-		lua_getglobal(LS,"CustomDynamicObjectUpdate");
-
-		if(lua_isfunction(LS, -1))
+		lua_getglobal(ls,"CustomDynamicObjectUpdate");
+		if(lua_isfunction(ls, -1))
 		{
-			if (lua_pcall(LS,0,0,0)!=0)
+			if (lua_pcall(ls,0,0,0)!=0)
 			{
 				GUIManager::getInstance()->setConsoleText("LUA error running funtion <<CustomDynamicObjectUpdate>>",SColor(255,255,0,0));
 			}
 		}
-		lua_pop( LS, -1 );
+		lua_pop( ls, -1 );
+		
 	}
-	lua_getglobal(LS,"CustomDynamicObjectUpdateProgrammedAction");
-	if(lua_isfunction(LS, -1))
-		lua_pcall(LS,0,0,0);
-	lua_pop( LS, -1 );
+	lua_getglobal(ls,"CustomDynamicObjectUpdateProgrammedAction");
+	if(lua_isfunction(ls, -1))
+		lua_pcall(ls,0,0,0);
+	lua_pop( ls, -1 );
 }
 
 
 //LUA FUNCTIONS
 
-int DynamicObject::getEnemyCount(lua_State *LS)
+int DynamicObject::getEnemyCount(lua_State *ls)
 {
 	int number=DynamicObjectsManager::getInstance()->getEnemyCount();
-	lua_pushnumber(LS,number);
+	lua_pushnumber(ls,number);
 	return 1;
 
 }
 
-int DynamicObject::setEnabled(lua_State *LS)
+int DynamicObject::setEnabled(lua_State *ls)
 {
-    int LUAenabled = lua_toboolean(LS, -1);
+    int LUAenabled = lua_toboolean(ls, -1);
 
 	bool enabled = false;
 	if (LUAenabled==1)
 		enabled=true;
 
-	lua_pop(LS, 1);
+	lua_pop(ls, 1);
 
 	///TODO: create getObjectByName() as static to avoid code duplication!
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 	///================================
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
@@ -2221,57 +2231,57 @@ int DynamicObject::setEnabled(lua_State *LS)
 	return 0;
 }
 
-int DynamicObject::hasReached(lua_State *LS)
+int DynamicObject::hasReached(lua_State *ls)
 {
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
     if(tempObj)
     {
-		lua_pushboolean(LS, tempObj->reached);
+		lua_pushboolean(ls, tempObj->reached);
     }
 
     return 1;
 }
 
-int DynamicObject::setPosition(lua_State *LS)
+int DynamicObject::setPosition(lua_State *ls)
 {
-    float z = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    float z = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	float y = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float y = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	float x = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float x = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 	DynamicObjectsManager::getInstance()->getObjectByName(objName)->getNode()->updateAbsolutePosition();
     DynamicObjectsManager::getInstance()->getObjectByName(objName)->setPosition(vector3df(x,y,z));
 
     return 0;
 }
 
-int DynamicObject::setRotation(lua_State *LS)
+int DynamicObject::setRotation(lua_State *ls)
 {
-	float z = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float z = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	float y = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float y = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-    float x = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    float x = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
     if(tempObj) tempObj->setRotation(vector3df(x,y,z));
@@ -2279,17 +2289,17 @@ int DynamicObject::setRotation(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::getPosition(lua_State* LS)
+int DynamicObject::getPosition(lua_State* ls)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 	if(objName.c_str() == "player")
         {
             vector3df pos = Player::getInstance()->getObject()->getPosition();
-			lua_pushnumber(LS,pos.X);
-			lua_pushnumber(LS,pos.Y);
-			lua_pushnumber(LS,pos.Z);
+			lua_pushnumber(ls,pos.X);
+			lua_pushnumber(ls,pos.Y);
+			lua_pushnumber(ls,pos.Z);
         }
 	else
 		{
@@ -2298,20 +2308,20 @@ int DynamicObject::getPosition(lua_State* LS)
 			{
 				 vector3df pos = tempObj->getPosition();
 
-				lua_pushnumber(LS,pos.X);
-				lua_pushnumber(LS,pos.Y);
-				lua_pushnumber(LS,pos.Z);
+				lua_pushnumber(ls,pos.X);
+				lua_pushnumber(ls,pos.Y);
+				lua_pushnumber(ls,pos.Z);
 			}
 		}
 
     return 3;
 }
 
-int DynamicObject::getRotation(lua_State* LS)
+int DynamicObject::getRotation(lua_State* ls)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2319,22 +2329,22 @@ int DynamicObject::getRotation(lua_State* LS)
     {
         vector3df rot = tempObj->getRotation();
 
-        lua_pushnumber(LS,rot.X);
-        lua_pushnumber(LS,rot.Y);
-        lua_pushnumber(LS,rot.Z);
+        lua_pushnumber(ls,rot.X);
+        lua_pushnumber(ls,rot.Y);
+        lua_pushnumber(ls,rot.Z);
     }
 
     return 3;
 }
 
-int DynamicObject::turn(lua_State *LS)//turn(degrees)
+int DynamicObject::turn(lua_State *ls)//turn(degrees)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
-	float angle = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float angle = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2346,14 +2356,14 @@ int DynamicObject::turn(lua_State *LS)//turn(degrees)
     return 0;
 }
 
-int DynamicObject::move(lua_State *LS)//move(speed)
+int DynamicObject::move(lua_State *ls)//move(speed)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
-	float speed = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float speed = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2379,20 +2389,20 @@ int DynamicObject::move(lua_State *LS)//move(speed)
     return 0;
 }
 
-int DynamicObject::walkToLUA(lua_State *LS)
+int DynamicObject::walkToLUA(lua_State *ls)
 {
-	float z = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float z = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	float y = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float y = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-    float x = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    float x = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2420,20 +2430,20 @@ int DynamicObject::walkToLUA(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::lookAt(lua_State *LS)
+int DynamicObject::lookAt(lua_State *ls)
 {
-	float z = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float z = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	float y = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float y = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-    float x = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    float x = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2445,14 +2455,14 @@ int DynamicObject::lookAt(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::lookToObject(lua_State *LS)
+int DynamicObject::lookToObject(lua_State *ls)
 {
-    stringc otherObjName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    stringc otherObjName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2480,14 +2490,14 @@ int DynamicObject::lookToObject(lua_State *LS)
 
 // LUA command "attack("object name")
 // Will use the combat manager
-int DynamicObject::attackObj(lua_State *LS)
+int DynamicObject::attackObj(lua_State *ls)
 {
-	stringc otherObjName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	stringc otherObjName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* tempObj = NULL;
 	if(otherObjName != "player")
@@ -2513,23 +2523,23 @@ int DynamicObject::attackObj(lua_State *LS)
 	return 0;
 }
 
-int DynamicObject::setPropertie(lua_State *LS)
+int DynamicObject::setProperty(lua_State *ls)
 {
-	float value = (float)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	float value = (float)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
 
 
-	stringc propertieName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	stringc propertieName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	// I would like to specify the object name so lua could set the properies of another object (another command?)
-	//stringc otherObjName = lua_tostring(LS, -1);
-	//lua_pop(LS, 1);
+	//stringc otherObjName = lua_tostring(ls, -1);
+	//lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	//printf("Set propertie %s to %f from object named: %s\n",propertieName,value,objName.c_str());
 
@@ -2582,19 +2592,19 @@ int DynamicObject::setPropertie(lua_State *LS)
 	return 0;
 }
 
-int DynamicObject::getPropertie(lua_State *LS)
+int DynamicObject::getProperty(lua_State *ls)
 {
-	stringc propertieName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	stringc propertieName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 
-	//stringc otherObjName = lua_tostring(LS, -1);
-	//lua_pop(LS, 1);
+	//stringc otherObjName = lua_tostring(ls, -1);
+	//lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
 
-	lua_pop(LS, 1);
+	lua_pop(ls, 1);
 	int value = 0;
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
 	if (propertieName=="life")
@@ -2625,96 +2635,96 @@ int DynamicObject::getPropertie(lua_State *LS)
 	if (propertieName=="dodge_prob")
 	{
 		float value2 = Obj->properties.dodge_prop;
-		lua_pushnumber(LS,value2);
+		lua_pushnumber(ls,value2);
 		return 1;
 	}
 	if (propertieName=="hit_prob")
 	{
 		float value2 = Obj->properties.hit_prob;
-		lua_pushnumber(LS,value2);
+		lua_pushnumber(ls,value2);
 		return 1;
 	}
 
-	lua_pushnumber(LS,value);
+	lua_pushnumber(ls,value);
 
 	return 1;
 }
-int DynamicObject::getNameLUA(lua_State *LS)
+int DynamicObject::getNameLUA(lua_State *ls)
 {
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 	stringc value = Obj->getTemplateObjectName();
-	lua_pushstring(LS,value.c_str());
+	lua_pushstring(ls,value.c_str());
 
 	return 1;
 }
-int DynamicObject::setFrameLoop(lua_State *LS)
+int DynamicObject::setFrameLoop(lua_State *ls)
 {
-    int start = (int)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    int start = (int)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	int end = (int)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+	int end = (int)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObjectsManager::getInstance()->getObjectByName(objName)->setFrameLoop(start,end);
 
     return 0;
 }
 
-int DynamicObject::setAnimation(lua_State *LS)
+int DynamicObject::setAnimation(lua_State *ls)
 {
-    stringc animName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    stringc animName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimation(animName);
 	return true;
 }
 
-int DynamicObject::setAnimationSpeed(lua_State *LS)
+int DynamicObject::setAnimationSpeed(lua_State *ls)
 {
-    f32 speed = (f32)lua_tonumber(LS, -1);
-	lua_pop(LS, 1);
+    f32 speed = (f32)lua_tonumber(ls, -1);
+	lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObjectsManager::getInstance()->getObjectByName(objName)->setAnimationSpeed(speed);
 	return 0;
 }
 
-int DynamicObject::distanceFrom(lua_State *LS)
+int DynamicObject::distanceFrom(lua_State *ls)
 {
     vector3df otherPos = vector3df(-1000,-1000,-1000);
 
-    if(lua_isnumber(LS, -1))//read (x,y,z)
+    if(lua_isnumber(ls, -1))//read (x,y,z)
     {
-        float z = (float)lua_tonumber(LS, -1);
-        lua_pop(LS, 1);
+        float z = (float)lua_tonumber(ls, -1);
+        lua_pop(ls, 1);
 
-        float y = (float)lua_tonumber(LS, -1);
-        lua_pop(LS, 1);
+        float y = (float)lua_tonumber(ls, -1);
+        lua_pop(ls, 1);
 
-        float x = (float)lua_tonumber(LS, -1);
-        lua_pop(LS, 1);
+        float x = (float)lua_tonumber(ls, -1);
+        lua_pop(ls, 1);
 
         otherPos = vector3df(x,y,z);
     }
-    else if(lua_isstring(LS,-1))//get distance from an object
+    else if(lua_isstring(ls,-1))//get distance from an object
     {
-        std::string otherName = lua_tostring(LS, -1);
-        lua_pop(LS, 1);
+        std::string otherName = lua_tostring(ls, -1);
+        lua_pop(ls, 1);
 
 		if(otherName.c_str() == "player")
         {
@@ -2731,26 +2741,26 @@ int DynamicObject::distanceFrom(lua_State *LS)
         }
     }
 
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
     if(tempObj)
     {
-        lua_pushnumber(LS,otherPos.getDistanceFrom(tempObj->getPosition()));
+        lua_pushnumber(ls,otherPos.getDistanceFrom(tempObj->getPosition()));
         return 1;
     }
 
     return 0;
 }
 
-int DynamicObject::showObjectLabel(lua_State *LS)
+int DynamicObject::showObjectLabel(lua_State *ls)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2759,11 +2769,11 @@ int DynamicObject::showObjectLabel(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::hideObjectLabel(lua_State *LS)
+int DynamicObject::hideObjectLabel(lua_State *ls)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2772,14 +2782,14 @@ int DynamicObject::hideObjectLabel(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::setObjectLabel(lua_State *LS)
+int DynamicObject::setObjectLabel(lua_State *ls)
 {
-    std::string newLabel = lua_tostring(LS, -1);
-    lua_pop(LS, 1);
+    std::string newLabel = lua_tostring(ls, -1);
+    lua_pop(ls, 1);
 
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2793,25 +2803,25 @@ int DynamicObject::setObjectLabel(lua_State *LS)
     return 0;
 }
 
-int DynamicObject::showDialogMessage(lua_State *LS)
+int DynamicObject::showDialogMessage(lua_State *ls)
 {
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
 	DynamicObjectsManager::getInstance()->setDialogCaller(tempObj);
 
-	std::string param1 = lua_tostring(LS, -1);
-    lua_pop(LS, 1);
+	std::string param1 = lua_tostring(ls, -1);
+    lua_pop(ls, 1);
 
     std::string param2 = "";
 
-    if(lua_isstring(LS, -1))
+    if(lua_isstring(ls, -1))
     {
-        param2 = lua_tostring(LS, -1);
-        lua_pop(LS, 1);
+        param2 = lua_tostring(ls, -1);
+        lua_pop(ls, 1);
     }
 
 	App::getInstance()->getDevice()->getCursorControl()->setVisible(true);
@@ -2824,25 +2834,25 @@ int DynamicObject::showDialogMessage(lua_State *LS)
     return 1;
 }
 
-int DynamicObject::showDialogQuestion(lua_State *LS)
+int DynamicObject::showDialogQuestion(lua_State *ls)
 {
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
 	DynamicObjectsManager::getInstance()->setDialogCaller(tempObj);
 
-	std::string param1 = lua_tostring(LS, -1);
-    lua_pop(LS, 1);
+	std::string param1 = lua_tostring(ls, -1);
+    lua_pop(ls, 1);
 
     std::string param2 = "";
 
-    if(lua_isstring(LS, -1))
+    if(lua_isstring(ls, -1))
     {
-        param2 = lua_tostring(LS, -1);
-        lua_pop(LS, 1);
+        param2 = lua_tostring(ls, -1);
+        lua_pop(ls, 1);
     }
 
 	App::getInstance()->getDevice()->getCursorControl()->setVisible(true);
@@ -2857,65 +2867,65 @@ int DynamicObject::showDialogQuestion(lua_State *LS)
 
 void DynamicObject::notifyClick()
 {
-    lua_getglobal(LS,"onClicked");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop( LS, -1 );
+    lua_getglobal(ls,"onClicked");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
 }
 
 void DynamicObject::notifyAttackRange()
 {
-    lua_getglobal(LS,"onAttackRange");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop( LS, -1 );
+    lua_getglobal(ls,"onAttackRange");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
 }
 
 void DynamicObject::notifyCollision()
 {
-    lua_getglobal(LS,"onCollision");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop(LS, -1 );
+    lua_getglobal(ls,"onCollision");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop(ls, -1 );
 }
 
 void DynamicObject::notifyAnswer(bool answer)
 {
 	LuaGlobalCaller::getInstance()->setAnswer(answer);
-	lua_getglobal(LS,"onAnswer");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop(LS, -1 );
+	lua_getglobal(ls,"onAnswer");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop(ls, -1 );
 }
 
 void DynamicObject::notifyUse()
 {
-	lua_getglobal(LS,"onUse");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop( LS, -1 );
+	lua_getglobal(ls,"onUse");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
 }
 
 void DynamicObject::notifyWear()
 {
-	lua_getglobal(LS,"onWear");
-    if(lua_isfunction(LS, -1)) lua_pcall(LS,0,0,0);
-    lua_pop( LS, -1 );
+	lua_getglobal(ls,"onWear");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
 }
 
 
 stringc DynamicObject::getObjectType()
 {
-    lua_getglobal(LS,"objType");
-    stringc objType = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objType");
+    stringc objType = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	return objType;
 }
 
-int DynamicObject::setObjectType(lua_State *LS)
+int DynamicObject::setObjectType(lua_State *ls)
 {
-	core::stringc type = (core::stringc)lua_tostring(LS, -1);
-    lua_pop(LS, 1);
+	core::stringc type = (core::stringc)lua_tostring(ls, -1);
+    lua_pop(ls, 1);
 
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2926,11 +2936,11 @@ int DynamicObject::setObjectType(lua_State *LS)
 
 //Add the currently selected object into the player loot.
 //This will add an already placed object on the map
-int DynamicObject::addPlayerLoot(lua_State *LS)
+int DynamicObject::addPlayerLoot(lua_State *ls)
 {
-    lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+    lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2938,7 +2948,7 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 	{
 		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_LOOT) // Was the object a loot object?
 		{
-			Player::getInstance()->getObject()->addLoot(tempObj); //Add this pointer object to the player loot
+			Player::getInstance()->getObject()->addLootItem(tempObj); //Add this pointer object to the player loot
 			tempObj->getNode()->setVisible(false); //Hide the node
 			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
 			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
@@ -2950,15 +2960,15 @@ int DynamicObject::addPlayerLoot(lua_State *LS)
 }
 
 //!Add the specified template object directly into the loot of the dynamic object
-int DynamicObject::addLoot(lua_State *LS)
+int DynamicObject::addLootLUA(lua_State *ls)
 {
 
-	core::stringc tempname = (core::stringc)lua_tostring(LS, -1);
-    lua_pop(LS, 1);
+	core::stringc tempname = (core::stringc)lua_tostring(ls, -1);
+    lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2980,7 +2990,7 @@ int DynamicObject::addLoot(lua_State *LS)
 			
 			if (daloot) //Name is ok and will generate the object directly in this object loot
 			{
-				tempObj->addLoot(daloot); //Add this pointer object to the player loot
+				tempObj->addLootItem(daloot); //Add this pointer object to the player loot
 				daloot->getNode()->setVisible(false); //Hide the node
 				daloot->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
 				daloot->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
@@ -3025,14 +3035,14 @@ void DynamicObject::splillLoot()
 
 }
 
-int DynamicObject::setEnemy(lua_State *LS)
+int DynamicObject::setEnemy(lua_State *ls)
 {
-	bool isenemy = bool(lua_toboolean(LS, -1));
-    lua_pop(LS, 1);
+	bool isenemy = bool(lua_toboolean(ls, -1));
+    lua_pop(ls, 1);
 
-	lua_getglobal(LS,"objName");
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
 
 	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 

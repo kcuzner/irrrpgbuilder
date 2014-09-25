@@ -38,7 +38,7 @@ function setStrings()
 end
 
 function regen()
-  increasePlayerLife(getPropertie("regenlife"))
+  increasePlayerLife(getProperty("regenlife"))
   regentoggle=false
 end
 
@@ -62,7 +62,7 @@ function onLoad()
 end
 
 function onUpdate()
-  if ( getPlayerLife() < getPropertie("maxlife") and regentoggle==false) then
+  if ( getPlayerLife() < getProperty("maxlife") and regentoggle==false) then
       programAction(5,regen)
       regentoggle=true
   end
