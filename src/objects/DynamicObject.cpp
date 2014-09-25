@@ -56,6 +56,18 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		}
 	}
 
+	//Report if the file is not found
+	if (!App::getInstance()->getDevice()->getFileSystem()->existFile(realFile.c_str()))
+	{
+		//Put the information in the logger (debugging purpose)
+		core::stringc log = "Model was not found: ";
+		log.append(realFile.c_str());
+		log.append("!!!");
+		App::getInstance()->getDevice()->getLogger()->log(log.c_str());
+		GUIManager::getInstance()->setConsoleText((core::stringw)log,video::SColor(255,200,0,0));
+	}
+
+
 	if (!directpath)
 		mesh = smgr->getMesh(realFile); //Loading from the Dynamic objects template library
 										//Objects in the library should be stored in the

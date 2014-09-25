@@ -261,6 +261,8 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"setFPSView",setFPSView); //Camera view is RPG style
 	lua_register(LS,"setRTSFixedView",setRTSFixedView); //Camera view in RTS Style with no rotation
 	lua_register(LS,"defineKeys",defineKeys); //Define the keyboard keys for ingame actions
+	lua_register(LS,"setCameraAttachment",setCameraAttachment); //Define the keyboard keys for ingame actions
+	lua_register(LS,"setCameraOffset",setCameraOffset); //Define the keyboard keys for ingame actions
 
 	lua_register(LS,"showCutsceneText",showCutsceneText); // Display/Hide the cutscene text
 	lua_register(LS,"setCutsceneText",setCutsceneText); // Set the text to display
@@ -998,6 +1000,35 @@ int LuaGlobalCaller::defineKeys(lua_State *LS)
     }
     
 	CameraSystem::getInstance()->defineKeys(key.make_upper(),action.make_upper());
+	return 0;
+}
+
+int LuaGlobalCaller::setCameraAttachment(lua_State *LS)
+{
+	core::stringc bone="";
+	 if(lua_isstring(LS, -1))
+    {
+		bone = (core::stringc)lua_tostring(LS, -1);
+        lua_pop(LS, 1);
+    }
+
+	CameraSystem::getInstance()->setBoneName(bone);
+	return 0;
+}
+
+int LuaGlobalCaller::setCameraOffset(lua_State *LS)
+{
+	vector3df position=vector3df(0,0,0);
+	 if(lua_isnumber(LS, -1))
+    {
+		position.Z=(f32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+		position.Y=(f32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+		position.X=(f32)lua_tonumber(LS, -1);
+        lua_pop(LS, 1);
+    }
+	 CameraSystem::getInstance()->setBoneOffset(position);
 	return 0;
 }
 

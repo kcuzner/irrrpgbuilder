@@ -126,6 +126,10 @@ class CameraSystem
 		// Define the angle of the RTS/RPG Camera (around the player)
 		void setPointNClickAngle(vector2df angle); //Also changed from LUAGlobalCaller
 		inline vector2df getPointNClickAngle() {return vector2df(cameraAngle.X,cameraAngle.Y);}
+		inline void setBoneName(core::stringc name) {bonename=name;}
+		inline stringc getBoneName() {return bonename;}
+		inline void setBoneOffset(core::vector3df offset) {boneoffsetpos = offset;}
+		inline vector3df getBoneOffset() {return boneoffsetpos;}
 		
 		
 		
@@ -185,6 +189,9 @@ class CameraSystem
 		bool initrotation; //for the camera rotation
 		vector2df oldmouse;
 		vector2df initangle; //initial angle of the RTS camera (Calculated from here)
+
+		stringc bonename;
+		vector3df boneoffsetpos;
 };
 
 #endif // CameraSystem_H

@@ -276,7 +276,13 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						//Will do a check if a mesh exist, if not then will remove the name 					
 						if (currAnim.meshname!="" && !App::getInstance()->getDevice()->getFileSystem()->existFile(realfile.c_str()))
 						{
-							printf("This file doesnt exist: %s for this animation!: %s\n",currAnim.meshname.c_str(),currAnim.name.c_str());
+							core::stringc log="This file doesnt exist! ->";
+							log.append(currAnim.meshname.c_str());
+							log.append(" for this animation:");
+							log.append(currAnim.name.c_str());
+							log.append("!!!");
+							App::getInstance()->getDevice()->getLogger()->log(log.c_str());
+							GUIManager::getInstance()->setConsoleText((core::stringw)log,video::SColor(255,200,0,0));
 							currAnim.meshname="";
 						}
 					
@@ -534,13 +540,21 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	//Load animation data when the mesh is instanced on the ground
 	for (int a=0; a<activeObject->animations.size(); a++)
 	{
-		printf ("Animation is: %s, and filename is: %s\n",activeObject->animations[a].name.c_str(),activeObject->animations[a].meshname.c_str());
 		if (activeObject->animations[a].meshname!="")
 		{	
 			stringc realfile = "../media/dynamic_objects/";
 			realfile += activeObject->animations[a].meshname;
 			IAnimatedMesh * animesh = App::getInstance()->getDevice()->getSceneManager()->getMesh(realfile);
 			activeObject->animations[a].mesh = animesh;
+
+			//Put the information in the logger (debugging purpose)
+			core::stringc log = "Model is:";
+			log.append(activeObject->getName().c_str());
+			log.append(" Animation is:");
+			log.append(activeObject->animations[a].name.c_str());
+			log.append(", and filename is:");
+			log.append(activeObject->animations[a].meshname.c_str());
+			App::getInstance()->getDevice()->getLogger()->log(log.c_str());
 		}
 	}
 

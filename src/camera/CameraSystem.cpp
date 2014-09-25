@@ -78,6 +78,10 @@ CameraSystem::CameraSystem()
 	speedtoggle=false;
 	speed = 150;
 
+	//Default name of the bone attachment for the FPS camera
+	bonename="Bip01_Head";
+	boneoffsetpos = vector3df(0.0f,-1.0f,5.0f);
+
 	interface_toggle=false;
 	device=App::getInstance()->getDevice();
 
@@ -112,6 +116,7 @@ CameraSystem* CameraSystem::getInstance()
 void CameraSystem::defineKeys(core::stringc key, core::stringc action)
 {
 	irr::s32 keyfinal=0;
+	key.make_upper();
 	 // First define the key value
 	if (key=="A")
 		keyfinal = KEY_KEY_A;
@@ -185,6 +190,14 @@ void CameraSystem::defineKeys(core::stringc key, core::stringc action)
 		keyfinal = KEY_KEY_9;
 	else if (key=="0")
 		keyfinal = KEY_KEY_0;
+	else if (key=="ARROWS")
+	{
+		keyforward=KEY_UP;
+		keybackward=KEY_DOWN;
+		keyleftside=KEY_LEFT;
+		keyrightside=KEY_RIGHT;
+		keyfinal=1;
+	}
 	
 	// get out if the key is not known
 	if (keyfinal==0)
@@ -726,8 +739,8 @@ void CameraSystem::updateFPSCamera()
 		
 		//This portion of code could be used to create attachment (weapons)
 		//The current code is working, but the rendering is glitchy
-		IBoneSceneNode* bone = ((IAnimatedMeshSceneNode*)Player::getInstance()->getNode())->getJointNode("Bip01_Head");
-		if (bone)
+		IBoneSceneNode* bone = ((IAnimatedMeshSceneNode*)Player::getInstance()->getNode())->getJointNode(bonename.c_str());
+		if (bone && bonename!="")
 		{
 			//printf("Bone name is: %s\n",((std::string)bone->getName()).c_str());
 			offset=bone->getAbsolutePosition();
@@ -736,14 +749,14 @@ void CameraSystem::updateFPSCamera()
 
 			//Fixed offset from the bone
 			vector3df offset2=vector3df(0.0f,0.0f,0.0f);
-			offset2 = vector3df(0.0f,-1.0f,5.0f);
+			offset2 = vector3df(boneoffsetpos);
 			offset2.rotateXZBy(-cameraAngle.X);
 			pos=offset+offset2;
 		}
 		else
 		{
 			//Fixed offset, the camera will not move with the body.
-			offset = vector3df(0,58.0f,5.5f);
+			offset = boneoffsetpos;//vector3df(0,58.0f,5.5f);
 			offset.rotateXZBy(-cameraAngle.X);
 			pos+=offset;
 			//printf("Bone was not found in the mesh!\n");

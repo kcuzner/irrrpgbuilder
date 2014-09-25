@@ -97,6 +97,8 @@ class LuaGlobalCaller
 		static int setRPGView(lua_State *LS);
 		static int setFPSView(lua_State *LS);
 		static int defineKeys(lua_State *LS);
+		static int setCameraAttachment(lua_State *LS);
+		static int setCameraOffset(lua_State *LS);
 
 		static int showCutsceneText(lua_State *LS);
 		static int setCutsceneText(lua_State *LS);
