@@ -293,6 +293,9 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	// NPC functions
 	lua_register(LS,"setObjectLife",setObjectLife);
     lua_register(LS,"getObjectLife",getObjectLife);
+	lua_register(LS,"isObjectVisible",isObjectVisible);
+	lua_register(LS,"setObjectVisible",setObjectVisible);
+	lua_register(LS,"destroyObjectItem",destroyObjectItem);
 
     //inGame Save/Load
     lua_register(LS,"saveGame",inGameSave);
@@ -348,9 +351,7 @@ void LuaGlobalCaller::restoreGlobalParams()
     lua_pop( LS, -1 );
 }
 
-//Not used anymore in 0.3+
-//Still keep the code, might be useful for something else
-//Like calling a custom function in a global script
+//Calling a custom function in a global script
 //From a dynamic object script.
 void LuaGlobalCaller::useGlobalFunction(stringc function)
 {
@@ -588,6 +589,97 @@ int LuaGlobalCaller::checkObjectItem(lua_State *LS)
 		}
 	}
 	lua_pushboolean(LS,result);
+	return 1;
+}
+
+// Will check and remove for the first occurence of the time.
+// This will not remove all the items of the same name!
+int LuaGlobalCaller::destroyObjectItem(lua_State *LS)
+{
+
+	stringc itemname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	stringc objname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* obj = NULL;
+	if (objname!="" || objname!="player")
+		obj = DynamicObjectsManager::getInstance()->getObjectByName(objname.c_str());
+	else
+		obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	if (obj)
+	{
+		std::vector<DynamicObject*> list = obj->getLootItems();
+		for (int a=0; a<list.size(); a++)
+		{
+			if (list[a]->getTemplateObjectName()==itemname)
+			{
+				//Unparent the object
+				list[a]->getNode()->setParent(App::getInstance()->getDevice()->getSceneManager()->getRootSceneNode());
+				list[a]->setLife(0); //kill the object
+				
+				if (!list[a]->getNode()->isVisible()) //If for some reason the object is still visible, make it invisible.
+					list[a]->getNode()->setVisible(false);
+
+				list.erase(list.begin()+a); //Remove from the list
+				if (obj->getType()==DynamicObject::OBJECT_TYPE_PLAYER) //If the object is the player then update the list display in the GUI
+					GUIManager::getInstance()->updateItemsList();
+
+			}
+		}
+	}
+	return 0;
+}
+
+int LuaGlobalCaller::setObjectVisible(lua_State *LS)
+{
+	bool result = false;
+
+	int visible = lua_toboolean(LS, -1);
+	lua_pop(LS, 1);
+
+	if (visible>0)
+		result=true;
+
+	stringc objname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* obj = NULL;
+	if (objname!="" || objname!="player")
+		obj = DynamicObjectsManager::getInstance()->getObjectByName(objname.c_str());
+	else
+		obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	if (obj)
+	{
+		obj->getNode()->setVisible(result);
+	}
+
+	return 0;
+}
+
+int LuaGlobalCaller::isObjectVisible(lua_State *LS)
+{
+	bool result = false;
+
+	stringc objname = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* obj = NULL;
+	if (objname!="" || objname!="player")
+		obj = DynamicObjectsManager::getInstance()->getObjectByName(objname.c_str());
+	else
+		obj = DynamicObjectsManager::getInstance()->getPlayer();
+
+	if (obj)
+	{
+		result=obj->getNode()->isVisible();
+	}
+
+	lua_pushboolean(LS,result);
+
 	return 1;
 }
 
@@ -1342,7 +1434,7 @@ int LuaGlobalCaller::setObjectRotation(lua_State *LS)
 
     stringc dynamicObjName = "";
 
-    if( stringc( objName.subString(0,14)) == "dynamic_object" )
+    if( stringc( objName.subString(0,14)) == "dynamic_object" || "player")
         dynamicObjName = objName.c_str();
     else
         dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
@@ -1458,26 +1550,44 @@ int LuaGlobalCaller::getPlayerLife(lua_State *LS)
 
 int LuaGlobalCaller::setObjectLife(lua_State *LS)
 {
+	//NEW This updated code can work with 1 or 2 parameter, not giving the object take the object it was called.
+	//So would not need setLife() or setPlayerLife() anymore with this new way.
+	//Will have to see why codeblock doesnt like this.
     // For an unknown reason, codeblock produce a illegal instruction here.
     #if defined(_MSC_VER)
 	stringc objName = "";
+	stringc dynamicObjName = "";
+
 	int life = 100;
 	int top = lua_gettop(LS);
-    if (top==2)
+    if (top>1)
 	{
 		life = (int)lua_tonumber(LS, -1);
 		lua_pop(LS,1);
 		objName = lua_tostring(LS, -1);
 		lua_pop(LS,1);
+	} else
+	{
+		life = (int)lua_tonumber(LS, -1);
+		lua_pop(LS,1);
+		lua_getglobal(LS,"objName");
+		objName = lua_tostring(LS, -1);
 	}
-    stringc dynamicObjName = "";
-    if( stringc( objName.subString(0,14)) == "dynamic_object" )
+
+	
+    if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
 		dynamicObjName = objName.c_str();
     else
 		dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
-    tempObj->setLife(life);
+
+	core::stringc error="Object not found:";
+	error.append(dynamicObjName);
+	if (tempObj)
+		tempObj->setLife(life);
+	else
+		App::getInstance()->getDevice()->getLogger()->log(error.c_str());
 
     #endif
 	return 0;
@@ -1485,17 +1595,40 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
 
 int LuaGlobalCaller::getObjectLife(lua_State *LS)
 {
-	stringc objName = lua_tostring(LS, -1);
-	lua_pop(LS, 1);
+
+	stringc objName="";
 	stringc dynamicObjName = "";
-	if( stringc( objName.subString(0,14)) == "dynamic_object" )
+
+	int top = lua_gettop(LS);
+    if (top>0)
+	{
+		objName = lua_tostring(LS, -1);
+		lua_pop(LS,1);
+	} else
+	{
+		lua_getglobal(LS,"objName");
+		objName = lua_tostring(LS, -1);
+
+	}
+
+	
+	if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     else
         dynamicObjName = GlobalMap::getInstance()->getGlobal(objName.c_str()).c_str();
 
     DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(dynamicObjName.c_str());
 
-    int life = tempObj->getLife();
+    int life = 0;
+
+	core::stringc error="Object not found:";
+	error.append(dynamicObjName);
+
+	if (tempObj)
+		life = tempObj->getLife();
+	else
+		App::getInstance()->getDevice()->getLogger()->log(error.c_str());
+
 
     lua_pushnumber(LS,life);
 

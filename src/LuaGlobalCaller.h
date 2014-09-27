@@ -134,6 +134,9 @@ class LuaGlobalCaller
 		static int getObjectProperty(lua_State *LS);
 
 		static int checkObjectItem(lua_State *LS);
+		static int destroyObjectItem(lua_State *LS);
+		static int setObjectVisible(lua_State *LS);
+		static int isObjectVisible(lua_State *LS);
 
         //Save/Load inGame
         static int inGameSave(lua_State *LS);

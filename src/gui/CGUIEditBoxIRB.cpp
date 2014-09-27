@@ -2457,6 +2457,7 @@ void CGUIEditBoxIRB::addLUAKeywords(irr::video::SColor keywordColor, irr::video:
 	addKeyword("then",keywordColor,true);
 	addKeyword("until",keywordColor,true);
 	addKeyword("while",keywordColor,true);
+	addKeyword("print",keywordColor,true);
 	addGroupKeyword("\"","\"",stringColor,true);
 	addGroupKeyword("\'","\'",stringColor,true);
 	addGroupKeyword("[[","]]",stringColor,true);

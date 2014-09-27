@@ -1025,11 +1025,28 @@ void GUIManager::createObjectTab()
 
     x += 60;
 
+	//For 0.3 this will be removed. Will take until 0.4 until this is fully removed.
+	//All scripting derives from object (dynamic_object). And this increase complexity for almost nothing.
+	//Will only have to check for "globals" and theses can be useful to have objects "talks" to each others.
+	//But could find something in C++ to do that. Since ALL is based on dynamic objects.
+
+	//All the functionnality of the "global script" can be achieved by using another dynamic object.
+	//I'm thinking of a special dynamic object that could be called "scene controller". in witch
+	//You could monitor the scene, and use it for example to spawn characters and create waves,
+	//Monitor the quests, etc. (This could be done with a simple hidden frog! :) 
+
+	//This special object, could be made from an empty node (so no rendering overhead)
+	//Use the onUpdate() callback to start monitoring.
+	//Then I could put back the button again to access it directly. An in essence would be a "editor" type object.
+
     //Edit Items Script
     guiEditScriptGlobal = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabObject,
                                      BT_ID_EDIT_SCRIPT_GLOBAL,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str());
+
+	guiEditScriptGlobal->setVisible(false);
+	/* 
 
     guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
 	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
@@ -1039,7 +1056,7 @@ void GUIManager::createObjectTab()
 	//editGlobSText->setOverrideColor(video::SColor(255,65,66,174));
 	editGlobSText->setOverrideColor(video::SColor(255,64,64,64));
 	editGlobSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	editGlobSText->setOverrideFont(guiFont9);
+	editGlobSText->setOverrideFont(guiFont9); */
 
 }
 
@@ -2109,6 +2126,10 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("setObjectProperty",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectProperty",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("checkObjectItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("destroyObjectItem",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectVisible",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("isObjectVisible",SColor(255,128,0,255),true);
+
 	guiDynamicObjects_Script->addKeyword("attack",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onLoad",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onUpdate",SColor(255,128,0,255),true);
