@@ -1233,6 +1233,20 @@ bool DynamicObject::setAnimation(stringc animName)
 	//	printf("Here the player is doing this animation: %s \n",animName.c_str());
 	
 	// Search for the proper animation name and set it.
+	core::stringc oldanim=""; //Used for checking for duplicate names, so it won't be playing the animation all the time.
+	
+	u32 variationcounter=1; //Starting at with because of the "default".
+
+	//Count the possible variations
+	for(int i=0;i < (int)animations.size();i++)
+    {
+		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
+		if( tempAnim.name == animName && tempAnim.variation>0)
+			variationcounter++;
+	}
+
+
+
     for(int i=0;i < (int)animations.size();i++)
     {
 
@@ -1250,8 +1264,17 @@ bool DynamicObject::setAnimation(stringc animName)
 
 		DynamicObject_Animation tempAnim = (DynamicObject_Animation)animations[i];
 
-		if( tempAnim.name == animName )
+		int random = rand() % variationcounter + 1;
+
+		//stance with "" is the default state
+		//wear with "" is the default
+		//Later could put a string to check here when theses are changing 
+		// Ex: implement wear, could create a "currentwear" with what is in there. (Will need a fallback to default if not found, so a search first)
+			
+		if( tempAnim.name == animName && tempAnim.stance=="" && tempAnim.wear=="" && tempAnim.variation==random-1)
         {
+			oldanim=tempAnim.name;
+
 			if ((Animation!=this->currentAnimation) || Animation==OBJECT_ANIMATION_CUSTOM)
 			{
 				

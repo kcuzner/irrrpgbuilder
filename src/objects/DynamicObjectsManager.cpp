@@ -232,6 +232,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.walkspeed = 0.0f;
 						currAnim.meshname="";
 						currAnim.mesh=NULL;
+						currAnim.variation=0;
+						currAnim.stance="";
+						currAnim.wear="";
 
 						if (!inside2) 
 						{
@@ -239,6 +242,11 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							inside2=true;
 						}
 						currAnim.name = (core::stringc)xml->getAttributeValue("name");
+						currAnim.stance = (core::stringc)xml->getAttributeValue("stance");
+						currAnim.wear = (core::stringc)xml->getAttributeValue("wear");
+
+						core::stringc var = (core::stringc)xml->getAttributeValue("variation");
+						currAnim.variation = (irr::u32) atoi(var.c_str());
 
 						animStart = (core::stringc)xml->getAttributeValue("start");
 						currAnim.startFrame = (irr::s32) atoi(animStart.c_str());

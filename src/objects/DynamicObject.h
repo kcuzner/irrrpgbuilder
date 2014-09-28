@@ -26,6 +26,9 @@ class DynamicObject
 
 		typedef struct data_anim{
 			stringc name;
+			stringc stance;
+			stringc wear;
+			u32 variation;
 			stringc meshname;
 			IAnimatedMesh* mesh;
 			stringc sound;
