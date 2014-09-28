@@ -2006,13 +2006,13 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("then",SColor(255,0,0,200),true);
 
 	// Define custom "Group" keywords, here are "dictionnary" for IRB specific keywords
-	guiDynamicObjects_Script->addKeyword("setObjectName",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectName",SColor(255,128,0,0),true); //REd as internal, non recommended
 	guiDynamicObjects_Script->addKeyword("chaseObject",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("walkRandomly",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("walkToObject",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdate",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdate",SColor(255,128,0,0),true);
 	guiDynamicObjects_Script->addKeyword("programAction",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdateProgrammedAction",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("CustomDynamicObjectUpdateProgrammedAction",SColor(255,128,0,0),true);
 	guiDynamicObjects_Script->addKeyword("hasActionProgrammed",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("enableObject",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("disableObject",SColor(255,128,0,255),true);
@@ -2071,9 +2071,11 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("playSound2D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("playSound3D",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setSoundListenerPosition",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("setPlayerLife",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setSoundVolume",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setPlayerLife",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getPlayerLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getObjectLife",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setObjectLife",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setPlayerMoney",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getPlayerMoney",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addPlayerItem",SColor(255,128,0,255),true);
@@ -2081,8 +2083,8 @@ void GUIManager::createCodeEditorGUI()
 
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("useGlobalFunction",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("getItemCount",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("addPlayerLoot",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getObjectItemCount",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("movePlayerLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addObjectLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("spawn",SColor(255,128,0,255),true);
@@ -2112,6 +2114,7 @@ void GUIManager::createCodeEditorGUI()
 
 	guiDynamicObjects_Script->addKeyword("lookToObject",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getName",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("setName",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("distanceFrom",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setEnabled",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setFrameLoop",SColor(255,128,0,255),true);

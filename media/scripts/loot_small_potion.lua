@@ -4,7 +4,7 @@
 -- Called when the user click on the object or use the interaction button in proximity
 function onClicked()
 	-- When this object is clicked it will go inside the player backpack
-	addPlayerLoot()
+	moveObjectLoot()
 end
 
 -- Called when the USE button is pressed for this item in the inventory GUI
@@ -13,9 +13,9 @@ function onUse()
 	increasePlayerLife(10)
 	
 	-- Ajust the life if the given potion is over the current maxlife
-	--if (getPlayerLife() > getPropertie("maxlife")) then
-	--	setPlayerLife(getPropertie("maxlife"))
-	--	end
+	if (getPlayerLife() > getObjectProperty("player","maxlife")) then
+		setPlayerLife(getObjectProperty("player","maxlife"))
+	end
 	
 end
 

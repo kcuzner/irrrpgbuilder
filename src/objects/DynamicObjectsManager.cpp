@@ -885,8 +885,7 @@ DynamicObject* DynamicObjectsManager::getObjectByName(stringc name)
     {
 		if (objects[i])
 		{
-			//printf("this object is number %d and it's name is: %s\n",i,objects[i]->getName());
-			if( objects[i]->getName() == name )
+			if( objects[i]->getName() == name || ((core::stringc)objects[i]->internalname) == name)
 				return objects[i];
 		}
     }

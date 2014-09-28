@@ -228,7 +228,8 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
     this->mesh = mesh;
     this->name = name;
 
-	this->displayName=(core::stringw)name;
+	displayName=(core::stringw)name;
+	internalname=displayName;
 
 	//initialise stuff
 	selector=NULL;
@@ -1727,6 +1728,8 @@ void DynamicObject::doScript()
 	lua_register(ls,"walkTo",walkToLUA);
     lua_register(ls,"distanceFrom",distanceFrom);
 	lua_register(ls,"getName",getNameLUA);
+	lua_register(ls,"setName",setNameLUA);
+
 
     lua_register(ls,"setFrameLoop",setFrameLoop);
     lua_register(ls,"setAnimationSpeed",setAnimationSpeed);
@@ -1736,7 +1739,7 @@ void DynamicObject::doScript()
     lua_register(ls,"hideObjectLabel",hideObjectLabel);
     lua_register(ls,"setObjectLabel",setObjectLabel);
 	lua_register(ls,"setObjectType",setObjectType);
-	lua_register(ls,"addPlayerLoot",addPlayerLoot);
+	lua_register(ls,"moveObjectLoot",addPlayerLoot);
 	lua_register(ls,"addLoot",addLootLUA);
 	lua_register(ls,"setEnemy1",setEnemy);
 	
@@ -2656,10 +2659,32 @@ int DynamicObject::getNameLUA(lua_State *ls)
 	lua_pop(ls, 1);
 
 	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
-	stringc value = Obj->getTemplateObjectName();
+	//stringc value = Obj->getTemplateObjectName();
+	stringc value = (stringc)Obj->internalname;
 	lua_pushstring(ls,value.c_str());
+	//lua_pushstring(ls,objName.c_str());
 
 	return 1;
+}
+
+int DynamicObject::setNameLUA(lua_State *ls)
+{
+	
+	stringc name = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
+
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
+
+	DynamicObject* Obj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	//stringc value = Obj->getTemplateObjectName();
+	if (Obj)
+	{
+		Obj->internalname=name;
+	}
+
+	return 0;
 }
 int DynamicObject::setFrameLoop(lua_State *ls)
 {
@@ -2936,11 +2961,26 @@ int DynamicObject::setObjectType(lua_State *ls)
 
 //Add the currently selected object into the player loot.
 //This will add an already placed object on the map
+//NOTE: Name should be changed to moveObjectLoot
 int DynamicObject::addPlayerLoot(lua_State *ls)
 {
-    lua_getglobal(ls,"objName");
-	stringc objName = lua_tostring(ls, -1);
-	lua_pop(ls, 1);
+    stringc target="";
+	stringc objName="";
+	int top = lua_gettop(ls);
+	if (top>0)
+	{
+		target = lua_tostring(ls, -1);
+		lua_pop(ls, 1);
+		lua_getglobal(ls,"objName");
+		objName = lua_tostring(ls, -1);
+		lua_pop(ls, 1);
+	} else
+	{
+		target = "player"; //Default to the player
+		lua_getglobal(ls,"objName");
+		objName = lua_tostring(ls, -1);
+		lua_pop(ls, 1);
+	}
 
 	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
 
@@ -2948,11 +2988,15 @@ int DynamicObject::addPlayerLoot(lua_State *ls)
 	{
 		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_LOOT) // Was the object a loot object?
 		{
-			Player::getInstance()->getObject()->addLootItem(tempObj); //Add this pointer object to the player loot
-			tempObj->getNode()->setVisible(false); //Hide the node
-			tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
-			tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
-			tempObj->isInBag=true;
+			DynamicObject* targetobj = DynamicObjectsManager::getInstance()->getObjectByName(target);
+			if (targetobj)
+			{
+				targetobj->addLootItem(tempObj); //Add this pointer object to the object loot
+				tempObj->getNode()->setVisible(false); //Hide the node
+				tempObj->getNode()->setPosition(core::vector3df(0,0,0)); // Reset the position
+				tempObj->getNode()->setParent(Player::getInstance()->getObject()->getNode()); // Parent it to the player
+				tempObj->isInBag=true;
+			}
 		}
 	}
 

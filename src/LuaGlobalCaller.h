@@ -126,7 +126,7 @@ class LuaGlobalCaller
 
         static int addPlayerItem(lua_State *LS); //Will need to be removed. Old commands
         static int removePlayerItem(lua_State *LS);
-        static int getItemCount(lua_State *LS);
+        static int getObjectItemCount(lua_State *LS);
 		static int useGlobalFunctionLUA(lua_State *LS);
 
 		static int addObjectLoot(lua_State *LS);

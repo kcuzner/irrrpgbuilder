@@ -248,6 +248,7 @@ class DynamicObject
 		stringc fileName; // Information about the given filename 
 		stringw script;  // The script of this object
 		stringw displayName; // The display name
+		stringw internalname; //Internal name
 
 		cproperty prop_base;
 		cproperty prop_level;
@@ -293,6 +294,7 @@ class DynamicObject
 		static int getProperty(lua_State *ls); // value getPropertie("objectName","propertie")
         static int distanceFrom(lua_State *ls);
 		static int getNameLUA(lua_State *ls); // value getNameLUA()
+		static int setNameLUA(lua_State *ls); // value getNameLUA()
 
         static int setFrameLoop(lua_State *ls);//setFrameLoop(start,end);
         static int setAnimation(lua_State *ls);//setAnimation(anim_name);

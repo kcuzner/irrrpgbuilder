@@ -2240,7 +2240,7 @@ void App::playGame()
 		// Execute the scripts in the dynamic objects
 		DynamicObjectsManager::getInstance()->initializeAllScripts();
 
-		LuaGlobalCaller::getInstance()->useGlobalFunction("onLoad");
+		//LuaGlobalCaller::getInstance()->useGlobalFunction("onLoad");
 
 		// Need to evaluate if it's needed to have displaying debug data for objects (could be done with selection instead)
 		//DynamicObjectsManager::getInstance()->showDebugData(false);
@@ -2252,7 +2252,7 @@ void App::playGame()
 
 
 		GUIManager::getInstance()->setElementVisible(GUIManager::ST_ID_PLAYER_LIFE,true);
-		LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
+		//LuaGlobalCaller::getInstance()->doScript(scriptGlobal);
 
 	}
 }
