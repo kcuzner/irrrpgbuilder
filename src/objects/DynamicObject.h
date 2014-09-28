@@ -4,6 +4,7 @@
 #include <vector>
 #include <irrlicht.h>
 #include "HealthSceneNode.h"
+#include "../sound/SoundManager.h"
 
 using namespace std; // for the vector class
 using namespace irr;
@@ -30,8 +31,8 @@ class DynamicObject
 			stringc sound;
 			s32 startFrame;
 			s32 endFrame;
-			s32 attackevent;
-			s32 soundevent;
+			vector<s32> attackevent;
+			vector<s32> soundevent;
 			f32 speed;
 			f32 walkspeed;
 			bool loop;
@@ -400,8 +401,8 @@ class DynamicObject
 		// Timer to delay the attack
 		u32 timer_attackdelay;
 
-		bool soundActivated;
-		bool attackActivated;
+		vector<bool> soundActivated;
+		vector<bool> attackActivated;
 		bool error;
 
 		//Used to calculate a ratio when the node is scaled.
@@ -410,6 +411,8 @@ class DynamicObject
 		//Store the filename for the item thumbnail (retrieved from the template)
 		core::stringc thumbnail;
 		core::stringw description; //description of the object (Mostly used for loot items), could be used to describe characters.
+
+		ISound * soundfx;
 
 
 		lua_State *ls;

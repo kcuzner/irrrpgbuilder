@@ -16,7 +16,9 @@
 					description="A goblin" author="Christian Clavet" licence="Creative Commons" category="Monster - medium"
 					thumbnail="npc/info_goblin.jpg" >
 		<animation name="idle" start="1" end="240" speed="30.0"/>
-		<animation name="attack" start="281" end="295" speed="18.0" attackevent="282" loop="false" soundevent="282" sound="goblin/goblin_attack.ogg"/>
+		<animation name="attack" start="281" end="295" speed="18.0" attackevent="288" attackevent1="293" 
+			loop="false" soundevent="288" sound="goblin/goblin_attack.ogg"/>
+			
 		<animation name="walk" start="241" end="270" speed="30.0" movespeed="145.0"/>
 		<animation name="hurt"  start="306" end="317" speed="30.0" loop="false" soundevent="307" sound="goblin/goblin_hurt.ogg"/>
 		<animation name="die" start="321" end="345" speed="30.0" loop="false" soundevent="322" sound="goblin/goblin_die.ogg"/>

@@ -105,8 +105,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
-	soundActivated = false;
-	attackActivated = false;
+	soundActivated.push_back(false);
+	attackActivated.push_back(false);
 	stunstate=false;
 	attackdelaystate=false;
 	reached=false;
@@ -130,6 +130,8 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	this->AI_State=AI_STATE_IDLE;
 	// Init the timedelay taken for a loop
 	lastTime=0;
+	soundfx = NULL;
+
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 }
@@ -161,8 +163,6 @@ DynamicObject::DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicOb
 	diePresent=true;
 	despawnPresent = true;
 	runningMode = false;
-	soundActivated = false;
-	attackActivated = false;
 	stunstate=false;
 	attackdelaystate=false;
 
@@ -1320,6 +1320,9 @@ bool DynamicObject::setAnimation(stringc animName)
 // Called at each refresh (1/60 th sec)
 void DynamicObject::checkAnimationEvent()
 {
+	//Reset the flags
+	attackActivated.clear();
+	soundActivated.clear();
 
     //TODO: Return when the object has no animation
 	if (!nodeAnim)
@@ -1350,9 +1353,9 @@ void DynamicObject::checkAnimationEvent()
 		//This set the animation back to idle when it's played
 		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-1)
 		{
-			if (attackActivated)
+			if (attackActivated[0])
 			{
-				attackActivated=false;
+				attackActivated[0]=false;
 				GUIManager::getInstance()->setConsoleText(core::stringw(L"Error! Attack was not triggered!"),video::SColor(255,0,0,0));
 			}
 			//nodeAnim->setCurrentFrame(currentAnim.startFrame);
@@ -1361,151 +1364,175 @@ void DynamicObject::checkAnimationEvent()
 		}
 
 		// Set a default attack event if there is none defined.
-		if (currentAnim.attackevent==-1)
+		if (currentAnim.attackevent[0]==-1)
 		{
 			GUIManager::getInstance()->setConsoleText(core::stringw(L"No attack defined!"),video::SColor(255,0,0,0));
-			currentAnim.attackevent = currentAnim.startFrame+1;
+			currentAnim.attackevent[0] = currentAnim.startFrame+1;
 		}
 
-		// This only mean that the attack animation is still looking for the event
-		if ((nodeAnim->getFrameNr() > currentAnim.attackevent))
+		for (u32 b=0; b<currentAnim.attackevent.size(); b++)
 		{
-			attackActivated=true;
+			attackActivated.push_back(false);
 		}
-
-		if (attackActivated && nodeAnim->getFrameNr() < currentAnim.attackevent)
-			//(nodeAnim->getFrameNr() > currentAnim.attackevent) &&
+		for(u32 a=0; a<currentAnim.attackevent.size(); a++)
 		{
+			// This only mean that the attack animation is still looking for the event
+			if ((nodeAnim->getFrameNr() > currentAnim.attackevent[a]-1) && nodeAnim->getFrameNr() <= currentAnim.attackevent[a])
+			{
+				attackActivated[a]=true;
+				if (getType()!=OBJECT_TYPE_PLAYER)
+					printf("Attack activated for %s\n",name.c_str());
+			}
+			
+
+			if (attackActivated[a]) // && nodeAnim->getFrameNr() <= currentAnim.attackevent[a])
+			{
 
 			// Attack result is precalculated, if the animation of attack is played, them it was sucessful
 			// the damage will then be done at the "impact" frame from the animation
 			// If the character health rise 0, then call the die animation.
 
 			// The logic might be moved inside the combat manager... Not sure at the moment.
-			attackActivated = false;
-			if (!attackActivated)
-			{
-				if (objectType==OBJECT_TYPE_PLAYER)
+				attackActivated[a] = false;
+				if (!attackActivated[a])
 				{
-
-					int resultlife = 0;
-					if (enemyUnderAttack && enemyUnderAttack->getLife()>0)
+					if (objectType==OBJECT_TYPE_PLAYER)
 					{
-						printf("Attack event!\n");
-						
-						attackresult=Combat::getInstance()->attack(Player::getInstance()->getObject(),enemyUnderAttack);
-						
-						if (attackresult==0)
+
+						int resultlife = 0;
+						if (enemyUnderAttack && enemyUnderAttack->getLife()>0)
 						{
-							enemyUnderAttack->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+							printf("Attack event!\n");
+							
+						
+							attackresult=Combat::getInstance()->attack(Player::getInstance()->getObject(),enemyUnderAttack);
+						
+							if (attackresult==0)
+							{
+								enemyUnderAttack->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),
+									video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
+							}
+							else
+							{
+								stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
+								textdam.append(stringc(attackresult));
+								enemyUnderAttack->createTextAnim(textdam);
+					
+								resultlife = enemyUnderAttack->getLife()-attackresult;
+								enemyUnderAttack->setLife(resultlife);
+								enemyUnderAttack->setAnimation("hurt");
+							}
+
+							core::stringw textresult = core::stringw(L"The player attacked ").append(enemyUnderAttack->getName()).append(L" and caused ")
+								.append(core::stringw(attackresult)).append(L" points of damage!");
+						
+							GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
+						
+							if (enemyUnderAttack->getLife()<1)
+							{
+								enemyUnderAttack->setAnimation("die");
+								this->setAnimation("idle2");
+
+								GUIManager::getInstance()->setConsoleText(core::stringw(L"The player killed ")
+									.append(core::stringw(enemyUnderAttack->getName())
+									.append(L"!")),video::SColor(255,120,0,0));
+							
+								enemyUnderAttack=NULL;
+								Player::getInstance()->setTaggedTarget(NULL);
+							}
 						}
+					}
+
+					if (objectType!=OBJECT_TYPE_PLAYER)
+					{
+						attackresult=Combat::getInstance()->attack(this, Player::getInstance()->getObject());
+						int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
+						Player::getInstance()->getObject()->setLife(resultlife);
+
+						if (attackresult==0)
+							Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),
+							video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
 						else
 						{
 							stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
 							textdam.append(stringc(attackresult));
-							enemyUnderAttack->createTextAnim(textdam);
-					
-							resultlife = enemyUnderAttack->getLife()-attackresult;
-							enemyUnderAttack->setLife(resultlife);
-							enemyUnderAttack->setAnimation("hurt");
+							//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
+							Player::getInstance()->getObject()->createTextAnim(textdam);
 						}
 
-						core::stringw textresult = core::stringw(L"The player attacked ").append(enemyUnderAttack->getName()).append(L" and caused ")
-							.append(core::stringw(attackresult)).append(L" points of damage!");
+						// When damage is done, the defender will look (turn to look at) at his opponent
+						Player::getInstance()->getObject()->lookAt(this->getPosition());
+
+						core::stringw textresult = core::stringw(getName()).append(L" attacked the player and caused ").append(core::stringw(attackresult)).append(L" points damage!");
 						GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
 
-						
-						if (enemyUnderAttack->getLife()<1)
+						if (resultlife>0)
 						{
-							enemyUnderAttack->setAnimation("die");
-							this->setAnimation("idle2");
-
-							GUIManager::getInstance()->setConsoleText(core::stringw(L"The player killed ").append(core::stringw(enemyUnderAttack->getName())
-							.append(L"!")),video::SColor(255,120,0,0));
-							enemyUnderAttack=NULL;
-							Player::getInstance()->setTaggedTarget(NULL);
+							if (attackresult>0)
+								Player::getInstance()->getObject()->setAnimation("hurt");
 						}
+						else 
+							Player::getInstance()->getObject()->setAnimation("die");
+
 					}
-				}
-
-				if (objectType!=OBJECT_TYPE_PLAYER)
-				{
-					attackresult=Combat::getInstance()->attack(this, Player::getInstance()->getObject());
-					int resultlife = Player::getInstance()->getObject()->getLife()-attackresult;
-					Player::getInstance()->getObject()->setLife(resultlife);
-
-					if (attackresult==0)
-						Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
-					else
-					{
-						stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
-						textdam.append(stringc(attackresult));
-						//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
-						Player::getInstance()->getObject()->createTextAnim(textdam);
-					}
-
-					// When damage is done, the defender will look (turn to look at) at his opponent
-					Player::getInstance()->getObject()->lookAt(this->getPosition());
-
-					core::stringw textresult = core::stringw(getName()).append(L" attacked the player and caused ").append(core::stringw(attackresult)).append(L" points damage!");
-					GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
-
-					if (resultlife>0)
-					{
-						if (attackresult>0)
-							Player::getInstance()->getObject()->setAnimation("hurt");
-					}
-					else 
-						Player::getInstance()->getObject()->setAnimation("die");
-
-				}
-			}
-			else
-			{
-				core::stringw textresult = L"";
-				if (enemyUnderAttack)
-				{
-					textresult = core::stringw(getName()).append(L" attacked ").append(core::stringw(enemyUnderAttack->getName()))
-						.append(L" and missed! ");
 				}
 				else
-					textresult = core::stringw(getName()).append(L" attacked the player and missed!");
+				{
+					core::stringw textresult = L"";
+					if (enemyUnderAttack)
+					{
+						textresult = core::stringw(getName()).append(L" attacked ").append(core::stringw(enemyUnderAttack->getName()))
+							.append(L" and missed! ");
+					}
+					else
+						textresult = core::stringw(getName()).append(L" attacked the player and missed!");
 
-				GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
+					GUIManager::getInstance()->setConsoleText(textresult,video::SColor(255,0,0,65));
+				}
 			}
 		}
 	}
 
-	// Check if the current animation have an sound event
-	if (nodeAnim->getFrameNr()<currentAnim.soundevent)
-			soundActivated=true;
 
-	if ((currentAnim.sound.size() > 0) &&
-		(nodeAnim->getFrameNr() > currentAnim.soundevent) && soundActivated)
+	for (u32 b=0; b<currentAnim.soundevent.size(); b++)
 	{
-		stringc sound = currentAnim.sound;
-		//Play dialog sound (yes you can record voices!)
-		ISound * soundfx = NULL;
-		//u32 timerobject = App::getInstance()->getDevice()->getTimer()->getRealTime();
-		// After the sound as been called for this duration, permit to trigger other sounds
+		soundActivated.push_back(false);
+	}
+	for (u32 b=0; b<currentAnim.soundevent.size(); b++)
+	{
+		// Check if the current animation have an sound event
+		if (nodeAnim->getFrameNr()>currentAnim.soundevent[b]-1 && nodeAnim->getFrameNr() <= currentAnim.soundevent[b])
+			soundActivated[b]=true;
 
-		if (sound.size()>0)
-		//if((sound.c_str() != "") | (sound.c_str() != NULL))
+		if ((currentAnim.sound.size() > 0) && soundActivated[b])
 		{
-			soundActivated=false;
+			soundActivated[b]=false;
+			stringc sound = currentAnim.sound;			
 			stringc soundName = "../media/sound/";
 			soundName += sound.c_str();
-			irrklang::vec3df pos = this->getNode()->getPosition();
-			//if (currentAnim.name=="walk" || currentAnim.name=="run")
-			//	soundfx = SoundManager::getInstance()->playSound3D(soundName.c_str(),pos,false);
-			//else
+			//irrklang::vec3df pos = this->getNode()->getPosition();
+
+			//SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
+			
+			if (soundfx)
+			{
+				if (!soundfx->isFinished()) //If the sound is not finished stop it so we don't have weird mix.
+				{
+					soundfx->stop();
+				}
+
+				if (soundfx && soundfx->isFinished())
+					soundfx=SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
+
+			}
+
+			if (!soundfx)
 				soundfx = SoundManager::getInstance()->playSound2D(soundName.c_str(),false);
 		}
+		lastframe=(s32)nodeAnim->getFrameNr();
+
 	}
-	lastframe=(s32)nodeAnim->getFrameNr();
-
 }
-
 void DynamicObject::setRunningMode(bool run)
 {
 	runningMode=run;

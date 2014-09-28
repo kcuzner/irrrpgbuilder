@@ -6,8 +6,8 @@ function setProperties()
 	setProperty("life",25) -- current life of the NPC
 	setProperty("maxlife",25) -- current Maximum life of this NPC
 	setProperty("experience",10) -- given experience to attacker if killed
-	setProperty("mindamage",3) -- minimum damage inflicted when hit
-	setProperty("maxdamage",5) -- maximum damage inflicted when hit
+	setProperty("mindamage",1) -- minimum damage inflicted when hit
+	setProperty("maxdamage",3) -- maximum damage inflicted when hit
 	setProperty("hurtresist",50) -- resistance to attacks in %. If obtained, trigger the "hurt" animation then return to idle, breaking the current attack
 	setProperty("hit_prob",75) -- Hit probability, if too low it will miss it's target, too high, hit him almost each time
 	setProperty("dodge_prob",15) -- Dodge probability, will lower the hit probability of the attacker

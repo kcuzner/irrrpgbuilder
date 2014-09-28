@@ -170,7 +170,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		u32 playercount = 0;
 		u32 propscount = 0;
 		u32 editorcount = 0;
-		
+
 		core::stringc oldName = "";
 
 		core::stringw currentNodeName = L"";
@@ -230,8 +230,6 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.loop = true;
 						currAnim.sound = "";
 						currAnim.walkspeed = 0.0f;
-						currAnim.attackevent = 0;
-						currAnim.soundevent = 0;
 						currAnim.meshname="";
 						currAnim.mesh=NULL;
 
@@ -265,10 +263,36 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.walkspeed = (irr::f32) atof(animMoveSpeed.c_str());
 						
 						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent");
-						currAnim.attackevent = (irr::s32)atoi(animAttackEvent.c_str());
+						currAnim.attackevent.push_back((irr::s32)atoi(animAttackEvent.c_str()));
+
+						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent1");
+						if (animAttackEvent!="")
+							currAnim.attackevent.push_back((irr::s32)atoi(animAttackEvent.c_str()));
+
+						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent2");
+						if (animAttackEvent!="")
+							currAnim.attackevent.push_back((irr::s32)atoi(animAttackEvent.c_str()));
+
+						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent3");
+						if (animAttackEvent!="")
+							currAnim.attackevent.push_back((irr::s32)atoi(animAttackEvent.c_str()));
 
 						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent");
-						currAnim.soundevent = (irr::s32)atoi(animSoundEvent.c_str());
+						currAnim.soundevent.push_back((irr::s32)atoi(animSoundEvent.c_str()));
+
+						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent1");
+						if (animSoundEvent!="")
+							currAnim.soundevent.push_back((irr::s32)atoi(animSoundEvent.c_str()));
+
+						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent2");
+						if (animSoundEvent!="")
+							currAnim.soundevent.push_back((irr::s32)atoi(animSoundEvent.c_str()));
+
+						animSoundEvent = (core::stringc)xml->getAttributeValue("soundevent3");
+						if (animSoundEvent!="")
+							currAnim.soundevent.push_back((irr::s32)atoi(animSoundEvent.c_str()));
+
+
 
 						currAnim.meshname = (core::stringc)xml->getAttributeValue("file");
 						stringc realfile = "../media/dynamic_objects/";
