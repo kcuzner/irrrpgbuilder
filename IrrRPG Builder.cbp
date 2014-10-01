@@ -15,6 +15,7 @@
 				<Option object_output="obj/PlayDeb/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option projectLibDirsRelation="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-lX11 -ldl -lXext" />
@@ -26,6 +27,7 @@
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
 					<Add directory="lib" />
+					<Add directory="../IRR RPG BUILDER" />
 				</Linker>
 			</Target>
 			<Target title="Player Release">
@@ -52,7 +54,6 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++98" />
 					<Add option="-w" />
 					<Add option="-g" />
 					<Add option="-DEDITOR" />
@@ -63,7 +64,7 @@
 				<Linker>
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
-					<Add directory="lib" />
+					<Add directory="../IRR RPG BUILDER" />
 				</Linker>
 			</Target>
 			<Target title="Standard Release">
@@ -96,14 +97,16 @@
 		</Compiler>
 		<Linker>
 			<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
-			<Add library="src/lua/liblua.a" />
+			<Add library="Xxf86vm" />
 			<Add library="GL" />
+			<Add library="X11" />
+			<Add library="src/lua/lib/liblualib.a" />
 			<Add library="./libIrrKlang.so" />
 			<Add library="./ikpFlac.so" />
 			<Add library="./ikpMP3.so" />
-			<Add library="/usr/lib/i386-linux-gnu/libX11.so.6" />
-			<Add library="/usr/lib/i386-linux-gnu/libXxf86vm.so.1" />
-			<Add library="/lib/i386-linux-gnu/libdl.so.2" />
+			<Add directory="/usr/lib" />
+			<Add directory="/usr/lib/x86_64-linux-gnu" />
+			<Add directory="bin" />
 		</Linker>
 		<Unit filename="src/App.cpp">
 			<Option virtualFolder="App/" />
