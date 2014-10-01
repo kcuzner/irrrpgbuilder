@@ -406,7 +406,7 @@ int LuaGlobalCaller::getObjectItemCount(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -452,7 +452,7 @@ int LuaGlobalCaller::addObjectLoot(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -465,7 +465,7 @@ int LuaGlobalCaller::addObjectLoot(lua_State *LS)
 		if (tempObj->getType()==DynamicObject::OBJECT_TYPE_NPC || tempObj->getType()==DynamicObject::OBJECT_TYPE_PLAYER) // Was the object a loot object?
 		{
 			DynamicObject* daloot = DynamicObjectsManager::getInstance()->createTemplateAt(tempname,vector3df(0.0f,-2000.0f,0.0f));
-			
+
 			if (daloot) //If the user had entered the wrong name in the template, the object will be removed (will generate the current template)
 			{
 				if (daloot->getType()!=DynamicObject::OBJECT_TYPE_LOOT)
@@ -473,9 +473,9 @@ int LuaGlobalCaller::addObjectLoot(lua_State *LS)
 					DynamicObjectsManager::getInstance()->removeObject(daloot->getName());
 					daloot=NULL;
 				}
-				
+
 			}
-			
+
 			if (daloot) //Name is ok and will generate the object directly in this object loot
 			{
 				tempObj->addLootItem(daloot); //Add this pointer object to the player loot
@@ -522,7 +522,7 @@ int LuaGlobalCaller::setObjectProperty(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -601,7 +601,7 @@ int LuaGlobalCaller::getObjectProperty(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -677,7 +677,7 @@ int LuaGlobalCaller::checkObjectItem(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -687,9 +687,9 @@ int LuaGlobalCaller::checkObjectItem(lua_State *LS)
 
 	if (tempObj)
 	{
-		
+
 		std::vector<DynamicObject*> list = tempObj->getLootItems();
-		printf("Checking if the item is the same. Checking %i items.\n",list.size());
+		//printf("Checking if the item is the same. Checking %i items.\n",list.size());
 		for (int a=0; a<list.size(); a++)
 		{
 			if (list[a]->getTemplateObjectName()==itemname)
@@ -725,7 +725,7 @@ int LuaGlobalCaller::destroyObjectItem(lua_State *LS)
 
 	}
 
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -743,7 +743,7 @@ int LuaGlobalCaller::destroyObjectItem(lua_State *LS)
 				//Unparent the object
 				list[a]->getNode()->setParent(App::getInstance()->getDevice()->getSceneManager()->getRootSceneNode());
 				list[a]->setLife(0); //kill the object
-				
+
 				if (!list[a]->getNode()->isVisible()) //If for some reason the object is still visible, make it invisible.
 					list[a]->getNode()->setVisible(false);
 
@@ -787,7 +787,7 @@ int LuaGlobalCaller::setObjectVisible(lua_State *LS)
 
 	}
 
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -821,7 +821,7 @@ int LuaGlobalCaller::isObjectVisible(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 
 	}
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -1105,7 +1105,7 @@ int LuaGlobalCaller::hideBlackScreen(lua_State *LS)
 
 int LuaGlobalCaller::setSkydomeTexture(lua_State *LS)
 {
-    
+
 	core::stringc textureFile = "";
 
     if(lua_isstring(LS, -1))
@@ -1135,7 +1135,7 @@ int LuaGlobalCaller::setSkydomeVisible(lua_State *LS)
 
 	EffectsManager::getInstance()->skydomeVisible(bresult);
 	//EffectsManager::getInstance()->turnOffSkydome();
-	
+
 	return 0;
 
 }
@@ -1257,10 +1257,10 @@ int LuaGlobalCaller::setCameraRange(lua_State *LS)
 
 int LuaGlobalCaller::getCameraRange(lua_State *LS)
 {
-	
+
     f32 start;
     f32 end;
-  
+
 	end=CameraSystem::getInstance()->getGameCameraRange().Y;
 	start=CameraSystem::getInstance()->getGameCameraRange().X;
 
@@ -1289,10 +1289,10 @@ int LuaGlobalCaller::setCameraRTSRotation(lua_State *LS)
 
 int LuaGlobalCaller::getCameraRTSRotation(lua_State *LS)
 {
-	
+
     f32 X;
     f32 Y;
-  
+
 	X=CameraSystem::getInstance()->getPointNClickAngle().X;
 	Y=CameraSystem::getInstance()->getPointNClickAngle().Y;
 
@@ -1317,7 +1317,7 @@ int LuaGlobalCaller::setCameraZoom(lua_State *LS)
 
 int LuaGlobalCaller::getCameraZoom(lua_State *LS)
 {
-	
+
     f32 zoom;
 	zoom=CameraSystem::getInstance()->getCameraZoom();
     lua_pushnumber(LS,zoom);
@@ -1343,10 +1343,10 @@ int LuaGlobalCaller::setCameraAngleLimit(lua_State *LS)
 
 int LuaGlobalCaller::getCameraAngleLimit(lua_State *LS)
 {
-	
+
     f32 start;
     f32 end;
-  
+
 	end=CameraSystem::getInstance()->getGameCameraAngleLimit().Y;
 	start=CameraSystem::getInstance()->getGameCameraAngleLimit().X;
 
@@ -1459,7 +1459,7 @@ int LuaGlobalCaller::defineKeys(lua_State *LS)
         key = (core::stringc)lua_tostring(LS, -1);
         lua_pop(LS, 1);
     }
-    
+
 	CameraSystem::getInstance()->defineKeys(key.make_upper(),action.make_upper());
 	return 0;
 }
@@ -1732,7 +1732,7 @@ int LuaGlobalCaller::setObjectLife(lua_State *LS)
 		objName = lua_tostring(LS, -1);
 	}
 
-	
+
   //  if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
 		dynamicObjName = objName.c_str();
 //    else
@@ -1769,7 +1769,7 @@ int LuaGlobalCaller::getObjectLife(lua_State *LS)
 
 	}
 
-	
+
 	//if( stringc( objName.subString(0,14)) == "dynamic_object" || objName=="player" )
         dynamicObjName = objName.c_str();
     //else
@@ -1951,8 +1951,8 @@ int LuaGlobalCaller::spawn(lua_State *LS)
         float ry = (float)lua_tonumber(LS, -1);
         lua_pop(LS, 1);
 
-       	angle.Y=ry; 
-   
+       	angle.Y=ry;
+
         float z = (float)lua_tonumber(LS, -1);
         lua_pop(LS, 1);
 
@@ -2001,15 +2001,15 @@ int LuaGlobalCaller::spawn(lua_State *LS)
 			// if not return -1000 (Impossible value, so it failed)
 		pos.Y=0;
 
-		
+
 	DynamicObject* daloot = DynamicObjectsManager::getInstance()->createTemplateAt(tempname,pos);
-			
+
 	if (daloot) //Name is ok and will generate the object directly in this object loot
 	{
-		daloot->getNode()->setRotation(angle); // Reset the position				
+		daloot->getNode()->setRotation(angle); // Reset the position
 		daloot->isGenerated=true; //Tell IRB that this object was generated ingame.
 	}
-    
+
 	if(daloot) //return a name if the object is created
     {
 		core::stringc name = daloot->getName();

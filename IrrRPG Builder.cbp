@@ -17,6 +17,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-lX11 -ldl -lXext" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="lib" />
@@ -48,9 +49,10 @@
 				<Option output="bin/IrrRPG_Builder_Linux_standard_debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/" />
 				<Option object_output="obj/Debug/" />
-				<Option type="1" />
+				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++98" />
 					<Add option="-w" />
 					<Add option="-g" />
 					<Add option="-DEDITOR" />
@@ -178,12 +180,6 @@
 		<Unit filename="src/fx/postprocess/ShaderPostProcess.h">
 			<Option virtualFolder="App/fx/" />
 		</Unit>
-		<Unit filename="src/gui/CGUIButton2.cpp">
-			<Option virtualFolder="App/gui/" />
-		</Unit>
-		<Unit filename="src/gui/CGUIButton2.h">
-			<Option virtualFolder="App/gui/" />
-		</Unit>
 		<Unit filename="src/gui/CGUIEditBoxIRB.cpp">
 			<Option virtualFolder="App/gui/" />
 		</Unit>
@@ -300,12 +296,6 @@
 		</Unit>
 		<Unit filename="src/terrain/Vegetation.h">
 			<Option virtualFolder="App/terrain/" />
-		</Unit>
-		<Unit filename="src/tinyXML/convert.cpp">
-			<Option virtualFolder="App/tinyxml/" />
-		</Unit>
-		<Unit filename="src/tinyXML/convert.h">
-			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
 		<Unit filename="src/tinyXML/tinystr.cpp">
 			<Option virtualFolder="App/tinyxml/" />

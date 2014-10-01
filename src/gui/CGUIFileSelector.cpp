@@ -1058,46 +1058,46 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		// if the result give < 0 then it look like an accented letter, then convert
 
 		if (code==-56)
-			result.append(L"È");
+			result.append(stringw("È"));
 
 		if (code==-55)
-			result.append(L"É");
+			result.append(stringw("É"));
 
 		if (code==-53)
-			result.append(L"Ë");
+			result.append(stringw("Ë"));
 
 		if (code==-24)
-			result.append(L"è");
+			result.append(stringw("è"));
 
 		if (code==-23)
-			result.append(L"é");
+			result.append(stringw("é"));
 
 		if (code==-21)
-			result.append(L"ë");
+			result.append(stringw("ë"));
 
 		if (code==-64)
-			result.append(L"À");
+			result.append(stringw("À"));
 
 		if (code==-32)
-			result.append(L"à");
+			result.append(stringw("à"));
 
 		if (code==-57)
-			result.append(L"Ç");
+			result.append(stringw("Ç"));
 
 		if (code==-25)
-			result.append(L"ç");
+			result.append(stringw("ç"));
 
 		if (code==-42)
-			result.append(L"Ö");
+			result.append(stringw("Ö"));
 
 		if (code==-10)
-			result.append(L"ö");
+			result.append(stringw("ö"));
 
 		if (code==-39)
-			result.append(L"Ù");
+			result.append(stringw("Ù"));
 
 		if (code==-7)
-			result.append(L"ù");
+			result.append(stringw("ù"));
 
 	}
 	return result;
