@@ -197,6 +197,8 @@ class App
         App();
         ~App();
 
+		core::stringw appname;
+
 		raytest* raytester;
 
 		//ConsoleDialog * console_dialog;

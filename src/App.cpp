@@ -29,6 +29,7 @@ const float DEG2RAD = 3.14159f/180;
 App::App()
 {
 
+	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (oct 2014)";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -2178,7 +2179,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
-		device->setWindowCaption(L"IrrRPG Builder - Alpha SVN release 0.3 (sept 2014)");
+		device->setWindowCaption(appname.c_str());
 	} else
 		device = IRRdevice;
 
@@ -2475,7 +2476,7 @@ void App::run()
 		int fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
-			core::stringw str = L"IrrRPG Builder - Alpha SVN release 0.3 (sept 2014)";
+			core::stringw str = appname;
 			if (app_state>APP_STATE_CONTROL)
 			{
 				str += " FPS:";
