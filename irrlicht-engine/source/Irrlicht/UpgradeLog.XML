@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Irrlicht8.0">
+</Property><Property Name="Fichier solution" Value="C:\Users\Public\Projets\Irrlicht-Trunk\trunk\source\Irrlicht\Irrlicht8.0.sln">
+</Property><Property Name="Date" Value="16 septembre 2014">
+</Property><Property Name="Time" Value="17:53">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="Irrlicht8.0.sln" Description="Fichier correctement sauvegardé en tant que C:\Users\Public\Projets\Irrlicht-Trunk\trunk\source\Irrlicht\Irrlicht8.0.sln.old">
+</Event><Event ErrorLevel="0" Project="Irrlicht8.0" Source="Irrlicht8.0.vcproj" Description="Le déploiement Web sur le serveur IIS local IIS n'est plus pris en charge. L'outil de génération Déploiement Web a été supprimé des paramètres de votre projet.">
+</Event><Event ErrorLevel="1" Project="Irrlicht8.0" Source="Irrlicht8.0.vcproj" Description="Cette application a été mise à jour pour inclure les paramètres liés à la fonctionnalité Contrôle de compte d'utilisateur de Windows Vista. Par défaut, lorsqu'elle est exécutée sur Windows Vista avec le Contrôle de compte d'utilisateur activé, cette application est marquée pour s'exécuter avec les mêmes privilèges que le processus qui l'a lancée. Ce marquage empêche l'application de s'exécuter avec la virtualisation. Vous pouvez changer les paramètres du Contrôle de compte d'utilisateur dans les pages de propriétés du projet.">
+</Event><Event ErrorLevel="0" Project="Irrlicht8.0" Source="Irrlicht8.0.vcproj" Description="Fichier projet correctement sauvegardé en tant que 'C:\Users\Public\Projets\Irrlicht-Trunk\trunk\source\Irrlicht\Irrlicht8.0.vcproj.8.00.old'.">
+</Event><Event ErrorLevel="0" Project="Irrlicht8.0" Source="Irrlicht8.0.vcproj" Description="Mise à niveau du projet terminée.">
+</Event><Event ErrorLevel="3" Project="Irrlicht8.0" Source="Irrlicht8.0.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="Irrlicht8.0.sln" Description="Solution correctement convertie">
+</Event><Event ErrorLevel="3" Project="" Source="Irrlicht8.0.sln" Description="Converted">
+</Event></UpgradeLog>
