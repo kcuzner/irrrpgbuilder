@@ -45,26 +45,26 @@ bool DynamicObjectsManager::loadTemplates()
 
 	// Create the 2 needed objects at startup
 	TemplateObject* pObject = searchTemplate("player_normal");
-	
+
 	//Create the player avatar needed in the game
-	if (pObject->getName()=="player_normal" && playerObject==NULL)	
+	if (pObject->getName()=="player_normal" && playerObject==NULL)
 	{
 		playerObject = new DynamicObject(pObject->getName(), pObject->meshFile, pObject->animations);
 		playerObject->setScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
 		playerObject->setTemplateScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
 		playerObject->setType(pObject->getType());
-			
+
 		playerObject->setTemplate(true);
 		objects.push_back(playerObject);
 		//setup material
 		playerObject->setMaterialType(pObject->getMaterialType());
 		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
-		
-		
+
+
 		// Fix a little problem by reseting the animation state back to idle.
 		playerObject->setAnimation("walk");
 		playerObject->setAnimation("idle");
-		
+
 		// Load the script if it was defined in the XML
 		if (pObject->script.size()>1)
 		{
@@ -92,7 +92,7 @@ bool DynamicObjectsManager::loadTemplates()
 	}
 
 	// Create the target object needed for the point&click gameplay
-	TemplateObject* tObject = searchTemplate("target");	
+	TemplateObject* tObject = searchTemplate("target");
 	if (tObject->getName()=="target")
 	{
 		targetObject = new DynamicObject(tObject->getName(), tObject->meshFile, tObject->animations);
@@ -116,7 +116,7 @@ TemplateObject* DynamicObjectsManager::searchTemplate(stringc name)
 		if (objTemplate[i])
 		{
 			if( (stringc)objTemplate[i]->getName() == name )
-			{	
+			{
 				return objTemplate[i];
 			}
 		}
@@ -179,7 +179,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
         {
                 switch(xml->getNodeType())
                 {
-                case io::EXN_TEXT:		
+                case io::EXN_TEXT:
                         break;
 
                 case io::EXN_ELEMENT:
@@ -187,7 +187,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 					if (core::stringw("material") == (core::stringw)xml->getNodeName())
 					{
 
-						if (!inside3) 
+						if (!inside3)
 						{
 							App::getInstance()->getDevice()->getLogger()->log(L"Inside the requested XML block (material)!");
 							inside3=true;
@@ -202,7 +202,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							currMaterial.id = (irr::u32)atoi(text.c_str());
 						else
 							currMaterial.id = 0;
-							
+
 
 						//get The shader of the material
 						currMaterial.shader = (core::stringc)xml->getAttributeValue("shader");
@@ -212,7 +212,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currMaterial.texture3 = (core::stringc)xml->getAttributeValue("texture3");
 
 						newObj->materials.push_back(currMaterial);
-						
+
 						//printf("Inside the node for the material!\n");
 					}
 
@@ -236,7 +236,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.stance="";
 						currAnim.wear="";
 
-						if (!inside2) 
+						if (!inside2)
 						{
 							//printf ("Inside the requested block (animation)!\n");
 							inside2=true;
@@ -250,7 +250,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						animStart = (core::stringc)xml->getAttributeValue("start");
 						currAnim.startFrame = (irr::s32) atoi(animStart.c_str());
-						
+
 						animEnd = (core::stringc)xml->getAttributeValue("end");
 						currAnim.endFrame = (irr::s32) atoi(animEnd.c_str());
 
@@ -269,7 +269,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						animMoveSpeed = (core::stringc)xml->getAttributeValue("movespeed");
 						currAnim.walkspeed = (irr::f32) atof(animMoveSpeed.c_str());
-						
+
 						animAttackEvent = (core::stringc)xml->getAttributeValue("attackevent");
 						currAnim.attackevent.push_back((irr::s32)atoi(animAttackEvent.c_str()));
 
@@ -305,7 +305,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						currAnim.meshname = (core::stringc)xml->getAttributeValue("file");
 						stringc realfile = "../media/dynamic_objects/";
 						realfile += currAnim.meshname;
-						//Will do a check if a mesh exist, if not then will remove the name 					
+						//Will do a check if a mesh exist, if not then will remove the name
 						if (currAnim.meshname!="" && !App::getInstance()->getDevice()->getFileSystem()->existFile(realfile.c_str()))
 						{
 							core::stringc log="This file doesnt exist! ->";
@@ -317,20 +317,20 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							GUIManager::getInstance()->setConsoleText((core::stringw)log,video::SColor(255,200,0,0));
 							currAnim.meshname="";
 						}
-					
-						
+
+
 						newObj->animations.push_back(currAnim); //add the new animation to the template data
 					}
 
 					// Add the main mesh informations
 					if (core::stringw("dynamic_object") == xml->getNodeName())
 					{
-						if (!inside) 
+						if (!inside)
 						{
 							inside=true;
 						}
 
-						
+
 						objectName = (core::stringw)xml->getAttributeValue("name");
 						core::stringw uptext = L"Loading template object: ";
 						uptext += objectName;
@@ -344,14 +344,14 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 							// Add the old object to the list,only the pointer is stored
 							this->objTemplate.push_back(newObj);
 
-							// Create the new object 
+							// Create the new object
 							newObj = new TemplateObject(objectName);
 							objectcounter++;
 							newObj->id=objectcounter;
 						}
-						
+
 						newObj->setName((core::stringw)objectName);
-						
+
 						// Get the current set name and save it in the object template
 						newObj->type=setname;
 						newObj->special=DynamicObject::SPECIAL_NONE;
@@ -359,7 +359,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						objectSpecial = (core::stringc)xml->getAttributeValue("special");
 						if (objectSpecial=="segment")
 							newObj->special=DynamicObject::SPECIAL_SEGMENT;
-						
+
 						objectMesh = (core::stringc)xml->getAttributeValue("mesh");
 						newObj->meshFile=objectMesh;
 
@@ -393,11 +393,11 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
 						objectScale = (core::stringc)xml->getAttributeValue("scale");
 						newObj->setScale((irr::f32)atof(objectScale.c_str()));
-						
+
 						objectMaterial = (core::stringc)xml->getAttributeValue("materialType");
-			
+
 						E_MATERIAL_TYPE mat = EMT_SOLID;
-				
+
             			if(objectMaterial == stringc("transparent_1bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
 						if(objectMaterial == stringc("transparent_8bit")) mat = EMT_TRANSPARENT_ALPHA_CHANNEL;
 						newObj->setMaterialType(mat);
@@ -408,9 +408,9 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 						newObj->category = xml->getAttributeValue("category");
 						newObj->thumbnail = xml->getAttributeValue("thumbnail");
 
-						
+
 					}
-			
+
 				}
                 break;
 
@@ -423,7 +423,7 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 					inside2 = false;
 					inside3 = false;
 					break;
-                
+
 				default:
                         break;
                 }
@@ -493,7 +493,7 @@ bool DynamicObjectsManager::loadSet()
         {
 			switch(xmlmain->getNodeType())
             {
-				case io::EXN_TEXT:		
+				case io::EXN_TEXT:
 					break;
 
                 case io::EXN_ELEMENT:
@@ -501,11 +501,11 @@ bool DynamicObjectsManager::loadSet()
 					// Look for a specified node
 					if (core::stringw("dynamic_object") == xmlmain->getNodeName())
 					{
-						if (!inside) 
+						if (!inside)
 						{
 							inside=true;
 						}
-							
+
 						set = xmlmain->getAttributeValue("set");
 						setname = (core::stringw)xmlmain->getAttributeValue("name");
 						if (setname!="")
@@ -532,7 +532,7 @@ bool DynamicObjectsManager::loadSet()
         }
 
 		// Add the last object to the template list
-		if (newObj)		
+		if (newObj)
 			this->objTemplate.push_back(newObj);
 
 		core::stringw countstr = ((core::stringw)L"Object set count: ")+(core::stringw)(linecount);
@@ -553,7 +553,7 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
 	//newObj->getNode()->setMaterialType(activeObject->getMaterialType());
 	newObj->getNode()->setMaterialFlag(EMF_LIGHTING,true);
 	// Load the script if it was defined in the XML
-	
+
     newObj->setPosition(pos);
 
     //the unique name of an dynamic object contains his index at the objects vector
@@ -573,7 +573,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	for (int a=0; a<activeObject->animations.size(); a++)
 	{
 		if (activeObject->animations[a].meshname!="")
-		{	
+		{
 			stringc realfile = "../media/dynamic_objects/";
 			realfile += activeObject->animations[a].meshname;
 			IAnimatedMesh * animesh = App::getInstance()->getDevice()->getSceneManager()->getMesh(realfile);
@@ -685,7 +685,7 @@ void DynamicObjectsManager::removeObject(stringc uniqueName)
 			printf("Deleting %s\n",uniqueName.c_str());
 #endif
             delete ((DynamicObject*)objects[i]);
-			
+
             objects.erase(objects.begin() + i);
             return;
         }
@@ -725,7 +725,7 @@ bool DynamicObjectsManager::findTemplate(stringc filename, DynamicObject::TYPE t
 				found=true;
 				break;
 			}
-    	} 
+    	}
     }
 
 	if (found)
@@ -754,13 +754,13 @@ bool DynamicObjectsManager::setActiveObject(stringc name)
     	    activeObject = ((TemplateObject*)objTemplate[i]);
 			found=true;
     	    break;
-    	} 
+    	}
     }
 
 #ifdef DEBUG
 	if (found)
 		printf ("This item is the active object now: %s \n\n",name.c_str());
-#endif 
+#endif
 
 	if (!found)
 	{
@@ -796,7 +796,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, 
 
 		if (objTemplate[i]->type==objectType && objTemplate[i]->category==category && objTemplate[i]->special==special)
 		{
-			listObjs.push_back( objTemplate[i]->getName() ); 
+			listObjs.push_back( objTemplate[i]->getName() );
 		}
 
     }
@@ -808,7 +808,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, 
 vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPECIAL special)
 {
 	vector<stringw> listObjs;
-	
+
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		if (objTemplate[i]->special==special)
@@ -820,7 +820,7 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPEC
 					add=false;
 			}
 			if (add)
-				listObjs.push_back( objTemplate[i]->type ); 
+				listObjs.push_back( objTemplate[i]->type );
 		}
 
     }
@@ -840,7 +840,7 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw ob
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
 		if (objTemplate[i]->type==objectType)
-		{ 
+		{
 			for (int a=0 ; a<(int)listObjs.size(); a++)
 			{
 				if (objTemplate[i]->category == listObjs[a])
@@ -864,7 +864,7 @@ vector<stringw> DynamicObjectsManager::getObjectsSceneList(DynamicObject::TYPE o
     for (int i=0 ; i<(int)objects.size() ; i++)
     {
 		if (objects[i]->getType()==objectType || objectType==DynamicObject::OBJECT_TYPE_NONE)
-		{ 
+		{
 			//Don`t want theses in the list
 			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER && objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
 				listObjs.push_back( core::stringw(objects[i]->getName()));
@@ -937,7 +937,7 @@ DynamicObject* DynamicObjectsManager::getTarget()
 	return targetObject;
 }
 
-// Will try to find the matching name in the dynamic objects 
+// Will try to find the matching name in the dynamic objects
 // and return the first dynamic object pointer that has that template name
 // Used by the node preview GUI
 scene::ISceneNode* DynamicObjectsManager::findActiveObject(void)
@@ -1009,7 +1009,7 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 		dynamicObjectXML->SetAttribute("x",stringc(this->objects[i]->getPosition().X).c_str());
 		dynamicObjectXML->SetAttribute("y",stringc(this->objects[i]->getPosition().Y).c_str());
 		dynamicObjectXML->SetAttribute("z",stringc(this->objects[i]->getPosition().Z).c_str());
-	
+
 		// Values stored for the rotation of the object
 		dynamicObjectXML->SetAttribute("rx",stringc(this->objects[i]->getRotation().X).c_str());
 		dynamicObjectXML->SetAttribute("ry",stringc(this->objects[i]->getRotation().Y).c_str());
@@ -1027,37 +1027,37 @@ void DynamicObjectsManager::saveToXML(TiXmlElement* parentElement)
 
 		if (objects[i]->script.size()>0)
 			dynamicObjectXML->SetAttribute("script",objects[i]->getScript().c_str());
-		
+
 		if (objects[i]->properties.life>0)
 			dynamicObjectXML->SetAttribute("life",objects[i]->properties.life);
-		
+
 		if (objects[i]->properties.maxlife>0)
 			dynamicObjectXML->SetAttribute("maxlife",objects[i]->properties.maxlife);
-		
+
 		if (objects[i]->properties.mana>0 && objects[i]->properties.mana<101)
 			dynamicObjectXML->SetAttribute("mana",objects[i]->properties.mana);
-		
+
 		if (objects[i]->properties.maxmana>0 && objects[i]->properties.maxmana<101)
 			dynamicObjectXML->SetAttribute("maxmana",objects[i]->properties.maxmana);
-		
+
 		if (objects[i]->properties.level>0 && objects[i]->properties.level<101)
 			dynamicObjectXML->SetAttribute("level",objects[i]->properties.level);
-		
+
 		if (objects[i]->properties.experience>0)
 			dynamicObjectXML->SetAttribute("XP",objects[i]->properties.experience);
-		
+
 		if (objects[i]->properties.mindamage>0)
 			dynamicObjectXML->SetAttribute("mindamage",objects[i]->properties.mindamage);
-		
+
 		if (objects[i]->properties.maxdamage>0)
 			dynamicObjectXML->SetAttribute("maxdamage",objects[i]->properties.maxdamage);
-		
+
 		if (objects[i]->properties.hurt_resist>0 && objects[i]->properties.hurt_resist<101)
 			dynamicObjectXML->SetAttribute("hurtresist",objects[i]->properties.hurt_resist);
-		
+
 		if (objects[i]->properties.dodge_prop>0 && objects[i]->properties.dodge_prop<101)
 			dynamicObjectXML->SetAttribute("dodgechance",stringc(objects[i]->properties.dodge_prop).c_str());
-		
+
 		if (objects[i]->properties.hit_prob>0 && objects[i]->properties.hit_prob<101)
 			dynamicObjectXML->SetAttribute("hitchance",stringc(objects[i]->properties.hit_prob).c_str());
 
@@ -1094,8 +1094,8 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 		stringc stype = dynamicObjectXML->ToElement()->Attribute("type");
 		// Get the type of the object that was saved (if there is one)
-		
-		
+
+
 		// New way of getting type. A number is not clear enough
 		//OBJECT_TYPE_NONE = 0,
 		//OBJECT_TYPE_NPC = 1,
@@ -1176,18 +1176,18 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 		tempv = dynamicObjectXML->ToElement()->Attribute("sy");
         if (tempv!="")
 			sclY = (f32)atof(tempv.c_str());
-        
+
 		tempv = dynamicObjectXML->ToElement()->Attribute("sz");
 		if (tempv!="")
 			sclZ = (f32)atof(tempv.c_str());
 
 		// Create an object from the template
 		if (type!=DynamicObject::OBJECT_TYPE_PLAYER)
-		{ 
+		{
 
 			templateObj = dynamicObjectXML->ToElement()->Attribute("template");
 			fileObj = dynamicObjectXML->ToElement()->Attribute("filename");
-			
+
 			bool result=false;
 			// If the "filename" was stored in the XML, then use this for retrieving the proper template
 			// if not, then trie to load based on the template name.
@@ -1195,7 +1195,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 				result = findTemplate(fileObj,type);
 			else
 				result = setActiveObject(templateObj);
-			
+
 			if (type==DynamicObject::OBJECT_TYPE_LOOT)
 				printf("Loot! Here is the current script assigned to it:\n%s\n",script.c_str());
 			// If those fail then will use the error mesh
@@ -1210,8 +1210,8 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			if (!newObj)
 				return false;
 
-	
-		} 
+
+		}
 		else
 		{
 			// If this is the player, retrieve only it's position (permanent dynamic object)
@@ -1219,9 +1219,9 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 			newObj = this->playerObject;
 			newObj->setPosition(vector3df(posX,posY,posZ));
 			newObj->setTemplateScale(newObj->getScale());
-			
+
 		}
-		
+
 		if (activeObject->getName()!="") //	Failsafe if for some reason there is no object found at all in the system
 		{
 
@@ -1250,10 +1250,10 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 
 			newObj->setScript(ss);
 			//newObj->setScript(script.c_str());
-	
-        
+
+
 			DynamicObject::cproperty a=newObj->initProperties();
-		
+
 			// Default properties values for the player and the NPCS
 			if (type==DynamicObject::OBJECT_TYPE_NPC || type==DynamicObject::OBJECT_TYPE_PLAYER)
 			{
@@ -1279,7 +1279,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 					a.dodge_prop=12;
 					a.hit_prob=50;
 				}
-			
+
 			}
 
 			// Loading values
@@ -1371,7 +1371,7 @@ bool DynamicObjectsManager::loadFromXML(TiXmlElement* parentElement)
 // check if there is duplicate names and then rename
 void DynamicObjectsManager::checkTemplateNames()
 {
-	for (int j=0 ; j<(int)objTemplate.size() ; j++) 
+	for (int j=0 ; j<(int)objTemplate.size() ; j++)
 	{
 		//printf ("here checking for duplicate names: %i\n",j);
 		irr::u32 duplicatecounter=1;
@@ -1379,7 +1379,7 @@ void DynamicObjectsManager::checkTemplateNames()
 		{
 			//printf ("Name %s = %s? \n",((core::stringc)objTemplate[i]->getName()).c_str(),((core::stringc)objTemplate[j]->getName()).c_str());
 			if (objTemplate[i]->getName()==objTemplate[j]->getName() && i!=j)
-			{ 
+			{
 				core::stringw newname = objTemplate[i]->getName();
 				newname+=L"(";
 				newname+=(core::stringw)duplicatecounter;
@@ -1483,7 +1483,7 @@ void DynamicObjectsManager::initializeAllScripts()
     {
 		if (objects[i])
 			((DynamicObject*)objects[i])->doScript();
-			
+
     }
 }
 
@@ -1529,7 +1529,7 @@ void DynamicObjectsManager::updateAll()
 
 	//Update player code
 	Player::getInstance()->update(); // This one is timed now.
-	
+
 }
 
 void DynamicObjectsManager::clearAllScripts()
@@ -1641,7 +1641,7 @@ IMetaTriangleSelector* DynamicObjectsManager::createMeta()
 					meta->addTriangleSelector(triangle);
 					s32 number2  = meta->getTriangleCount();
 					triangle->drop();
-				} 
+				}
 			}
 		}
 	}
@@ -1671,9 +1671,9 @@ void DynamicObjectsManager::clean(bool full)
 {
 
 	// Remove all non-templates (old name)
-	// "template object" in this term mean, an object that should be kept until 
+	// "template object" in this term mean, an object that should be kept until
 	// we close the game (player, target object, etc)
-	// Will have to change the naming convention as it's now using another approach 
+	// Will have to change the naming convention as it's now using another approach
 	// (templates are loaded on demand now)
 
 	for(int i=0;i<(int)objects.size();i++)
@@ -1699,13 +1699,13 @@ void DynamicObjectsManager::clean(bool full)
 	objsCounter_regular=0;
 	objsCounter_walkable=0;
 	objsCounter_others=0;
-	
+
 	if (!full)
 		return;
-    
+
     activeObject = NULL;
-	
-	
+
+
    // Clearing all template data, need to update
    for(int i=0;i<(int)objTemplate.size();i++)
     {
@@ -1726,14 +1726,14 @@ vector<DynamicObject*> DynamicObjectsManager::getObjectNearPosition(vector3df po
 		DynamicObject* d = this->interactiveobjects[i];
 		if (d)
 		{
-			if (((d->getType()==type) && pos.getDistanceFrom(d->getPosition())<radius)) // 
+			if (((d->getType()==type) && pos.getDistanceFrom(d->getPosition())<radius)) //
 			{
 				if (d->getLife()>0 && !d->isInBag)
 					list.push_back(d);
 			}
 		}
     }
-	
+
 	return list;
 }
 
@@ -1745,7 +1745,7 @@ vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
         DynamicObject* d = objects[i];
 		if (d)
 		{
-			if (d->getType()==DynamicObject::OBJECT_TYPE_NPC || d->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || d->getType()==DynamicObject::OBJECT_TYPE_LOOT )  
+			if (d->getType()==DynamicObject::OBJECT_TYPE_NPC || d->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || d->getType()==DynamicObject::OBJECT_TYPE_LOOT )
 			{
 				if (d->getLife()>0 && !d->isInBag)
 					list.push_back(d);
@@ -1753,7 +1753,7 @@ vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
 		}
     }
 	interactiveobjects=list; //Default list
-	return list; //Return values in case it's needed 
+	return list; //Return values in case it's needed
 
 }
 

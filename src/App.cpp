@@ -68,7 +68,7 @@ App::App()
 	current_listfilter = DynamicObject::OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 
 	currentsnapping=64.0f; //set the current snapping distance;
-	
+
 }
 
 App::~App()
@@ -101,7 +101,7 @@ void App::draw2DImages()
 	}
 
 	if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE)
-	{		
+	{
 	}
 
 	if (app_state > APP_STATE_CONTROL)
@@ -179,10 +179,10 @@ void App::setAppState(APP_STATE newAppState)
 			//GUIManager::getInstance()->setElementVisible(BT_ID_DO_SEL_MODE,false);
 			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT)
 			{
-				selectedNode->setDebugDataVisible(0); 
+				selectedNode->setDebugDataVisible(0);
 				selectedNode=NULL;
 			}
-			
+
 
 		}
 	}
@@ -240,7 +240,7 @@ void App::setAppState(APP_STATE newAppState)
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(0);
-			selectedNode=NULL;	
+			selectedNode=NULL;
 		}
 	}
 	else
@@ -283,7 +283,7 @@ void App::setAppState(APP_STATE newAppState)
 		{
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
-			
+
 			if (selectedNode)
 			{
 				selectedNode->setDebugDataVisible(0);
@@ -297,7 +297,7 @@ void App::setAppState(APP_STATE newAppState)
 
 	if(old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_CUSTOM_SEGMENT_CHOOSER,false);
-	
+
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
@@ -327,7 +327,7 @@ void App::setAppState(APP_STATE newAppState)
 
 	}
 	else
-	{	
+	{
 		//Reset the tools state if going outside of the dynamic object edit mode
 		if (app_state != APP_EDIT_VIEWDRAG)
 		{
@@ -360,7 +360,7 @@ void App::setAppState(APP_STATE newAppState)
 	else
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,true);
-		
+
 		Player::getInstance()->setHighLight(false);
 	}
 
@@ -391,7 +391,7 @@ void App::setAppState(APP_STATE newAppState)
 
 	if(app_state == APP_GAMEPLAY_NORMAL)
 	{
-		
+
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,false);
@@ -564,13 +564,13 @@ void App::eventGuiButton(s32 id)
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
-				lastMousePick.pickedNode=NULL;		
+				lastMousePick.pickedNode=NULL;
 
 				// Create the new object from the template and put the old values back in.
 				object = DynamicObjectsManager::getInstance()->createActiveObjectAt(lastMousePick.pickedPos);
 				object->setScript(oldscript);
 				object->setRotation(oldrotation);
-				
+
 				//Reselect the replaced object (in the other modes, in ADD mode selection is done automatically)
 				if (toolstate!=TOOL_DO_ADD)
 				{
@@ -595,9 +595,9 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
-		
+
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		
+
 		if (lastMousePick.pickedNode)
 		{
 			core::stringc nodeName = lastMousePick.pickedNode->getName();
@@ -622,13 +622,13 @@ void App::eventGuiButton(s32 id)
 		}
 
 
-		break;			
+		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE:
 		{
 			stringw newScript = "";
 
-			wchar_t out[1024];
+			wchar_t out[4096];
 			stringc filename = "../media/scripts/";
 			filename += GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_LOAD_SCRIPT_TEMPLATE);
 
@@ -640,8 +640,9 @@ void App::eventGuiButton(s32 id)
 				{
 					getline (fileScript,line);
 					line+='\n';
-					utf8ToWchar(line.c_str(), out, 1024);
+					utf8ToWchar(line.c_str(), out, 4096);
 					newScript += stringw(out);
+
 				}
 				fileScript.close();
 			}
@@ -666,7 +667,7 @@ void App::eventGuiButton(s32 id)
 				DynamicObjectsManager::getInstance()->removeObject(lastMousePick.pickedNode->getName());
 				// remove the object for the selection
 				lastScannedPick.pickedNode=NULL;
-				lastMousePick.pickedNode=NULL;		
+				lastMousePick.pickedNode=NULL;
 				GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 			}
 			else //Wrong node type selected
@@ -701,7 +702,7 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_ID_DYNAMIC_VIEW_BT_CENTER:
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,false);
-		
+
 		if (the.pickedNode)
 		{
 			core::vector3df pos = the.pickedPos;
@@ -730,7 +731,7 @@ void App::eventGuiButton(s32 id)
 		{
 			if (scriptNode)
 				DynamicObjectsManager::getInstance()->getObjectByName(scriptNode->getName())->setScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
-			
+
 			setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		}
 		else if(app_state == APP_EDIT_PLAYER_SCRIPT)
@@ -801,7 +802,7 @@ void App::eventGuiButton(s32 id)
 		if (loot)
 		{
 			loot->notifyUse(); //Call the lua callback onUse() in the object
-		
+
 			if (loot->isDestroyedAfterUse)
 			{
 				Player::getInstance()->getObject()->removeLoot(loot);
@@ -945,7 +946,7 @@ void App::eventGuiButton(s32 id)
 	default:
 		break;
 	}
-	// Since there was a tool used, the tool should be put to off after use. 
+	// Since there was a tool used, the tool should be put to off after use.
 	toolactivated=false;
 }
 
@@ -1010,7 +1011,7 @@ void App::eventGuiCombobox(s32 id)
 	IGUIComboBox* selectedbox = NULL;
 	switch (id)
 	{
-		
+
 	// Selection in the list from the dynamic object selection
 	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
@@ -1058,14 +1059,14 @@ void App::eventGuiCombobox(s32 id)
 			selectedNode=NULL;
 		}
 
-		object = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item)); 
+		object = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item));
 		if (object)
 		{
 			selectedNode = object->getNode();
 			lastMousePick.pickedNode = object->getNode();
 		} else
 			GUIManager::getInstance()->setConsoleText(core::stringw(L"Failed to retrieve this object: ").append(core::stringw(item)));
-		
+
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
@@ -1074,17 +1075,17 @@ void App::eventGuiCombobox(s32 id)
 
 	case GUIManager::CO_ID_ACTIVE_LIST_FILTER: // User activate a item filter to get a new list of objects to select
 		item = GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_ACTIVE_LIST_FILTER);
-		current_listfilter = DynamicObject::OBJECT_TYPE_NONE; 
+		current_listfilter = DynamicObject::OBJECT_TYPE_NONE;
 		if (item == core::stringc("NPC"))
-			current_listfilter = DynamicObject::OBJECT_TYPE_NPC; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_NPC;
 		if (item == core::stringc("Props"))
-			current_listfilter = DynamicObject::OBJECT_TYPE_NON_INTERACTIVE; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_NON_INTERACTIVE;
 		if (item == core::stringc("Interactive Props"))
 			current_listfilter = DynamicObject::OBJECT_TYPE_INTERACTIVE;
 		if (item == core::stringc("Walkables"))
-			current_listfilter = DynamicObject::OBJECT_TYPE_WALKABLE; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_WALKABLE;
 		if (item == core::stringc("Loot"))
-			current_listfilter = DynamicObject::OBJECT_TYPE_LOOT; 
+			current_listfilter = DynamicObject::OBJECT_TYPE_LOOT;
 
 		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
@@ -1093,7 +1094,7 @@ void App::eventGuiCombobox(s32 id)
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true));
 		if (selectedbox)
 		{
-			toolactivated=true; //Tell the system that the button has been activated 
+			toolactivated=true; //Tell the system that the button has been activated
 			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
 			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
 			f32 initdist = initpos.getDistanceFrom(inittar);
@@ -1147,7 +1148,7 @@ void App::eventGuiCombobox(s32 id)
 				CameraSystem::getInstance()->getNode()->setFOV(0.45f);
 				break;
 
-			default: 
+			default:
 				break;
 			}
 		}
@@ -1155,7 +1156,7 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case GUIManager::CB_SNAPCOMBO: // Get the combo box data to set the snap distance
-		
+
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
@@ -1163,20 +1164,20 @@ void App::eventGuiCombobox(s32 id)
 			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
 			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
 				currentsnapping=64;
-		
+
 			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping);
 		}
-		
+
 		break;
 
 	case GUIManager::LB_ID_PLAYER_ITEMS:
 
-		
+
 		selected = ((IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::LB_ID_PLAYER_ITEMS,true));
 		if (selected)
 		{
 			index = selected->getSelected();
-			
+
 			if (index<0)
 				break;
 
@@ -1186,7 +1187,7 @@ void App::eventGuiCombobox(s32 id)
 			core::stringc result2=result[index]->getName();
 
 			core::stringc name = result[index]->getThumbnail();
-			
+
 
 			core::stringc name1="../media/dynamic_objects/";
 			name1.append(name);
@@ -1482,7 +1483,7 @@ void App::eventKeyPressed(s32 key)
 	case KEY_RETURN:
 		if (app_state == APP_WAIT_DIALOG)
 			break;
-	
+
 
 	case KEY_LCONTROL:
 
@@ -1555,8 +1556,8 @@ void App::eventMousePressed(s32 mouse)
 				toolactivated=false;
 				moveupdown=false;
 
-				
-				
+
+
 			}
 		}
 		break;
@@ -1580,7 +1581,7 @@ void App::eventMousePressed(s32 mouse)
 				{
 					core::stringc meshfile=DynamicObjectsManager::getInstance()->getActiveObject()->meshFile;
 					ISceneNode * nod = TerrainManager::getInstance()->createCustomSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale(),meshfile);
-					
+
 					if (DynamicObjectsManager::getInstance()->getActiveObject()->materials.size()>0 && nod)
 					{
 						ShaderCallBack::getInstance()->setMaterials(nod,DynamicObjectsManager::getInstance()->getActiveObject()->materials);
@@ -1605,13 +1606,13 @@ void App::eventMousePressed(s32 mouse)
 				{
 					return;
 				}
-			
+
 				if (toolstate==TOOL_DO_ADD)
 					addItemToScene();
 
 				if (toolstate==TOOL_DO_SEL || toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA) // Enable selection for theses modes
 					selectItem();
-				
+
 			}
 			else if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 			{
@@ -1648,8 +1649,8 @@ void App::eventMousePressed(s32 mouse)
 				lastMousePick = mousePick;
 				stringc nodeName = "";
 				// Check for a node to prevent a crash (need to get the name of the node)
-				
-				
+
+
 				if (mousePick.pickedNode != NULL && (toolstate==TOOL_DO_ADD || toolstate==TOOL_DO_SEL)) // Add mode right button functionnality
 				{
 					nodeName = mousePick.pickedNode->getName();
@@ -1669,7 +1670,7 @@ void App::eventMousePressed(s32 mouse)
 					}
 					return;
 				}
-				
+
 				if ((toolstate==TOOL_DO_MOV || toolstate==TOOL_DO_ROT || toolstate==TOOL_DO_SCA))
 				{
 
@@ -1679,19 +1680,19 @@ void App::eventMousePressed(s32 mouse)
 						selectedNode->setDebugDataVisible(0); // Unselect it
 					}
 					selectedNode=NULL;
-					
+
 					// Create the selected node if there was a node picked
 					if (mousePick.pickedNode)
 					{
 						nodeName = mousePick.pickedNode->getName();
-					
+
 						// Need to filter some nodes names as "terrain" or other objects might be selected.
 						if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 						{
-							selectedNode=mousePick.pickedNode;	
+							selectedNode=mousePick.pickedNode;
 							selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 							GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
-			
+
 						}
 						else //Invalid node for selection
 						{
@@ -1755,7 +1756,7 @@ void App::eventMouseWheel(f32 value)
 	if(app_state == APP_EDIT_CHARACTER)
 	{
 		vector3df oldRot = Player::getInstance()->getObject()->getRotation();
-		Player::getInstance()->getObject()->setRotation(vector3df(0,value*5,0)+oldRot);	
+		Player::getInstance()->getObject()->setRotation(vector3df(0,value*5,0)+oldRot);
 	}
 	// This will allow zoom in/out in editor mode
 	if	(app_state != APP_EDIT_CHARACTER &&
@@ -1780,14 +1781,14 @@ void App::eventMouseWheel(f32 value)
 				CameraSystem::getInstance()->setCameraHeight(-value);
 
 		}
-		
+
 	}
 }
 
 void App::eventMessagebox(gui::EGUI_EVENT_TYPE type)
 {
 
-	// When editing terrain segment, on "yes" on the message box will 
+	// When editing terrain segment, on "yes" on the message box will
 	// Delete the "tagged" terrain segment
 	if (type==EGET_MESSAGEBOX_YES && app_state==APP_EDIT_TERRAIN_SEGMENTS)
 		TerrainManager::getInstance()->deleteTaggedSegment();
@@ -1828,14 +1829,14 @@ App::MousePick App::getMousePosition3D(int id)
 	// For the ray test, we should hide the player (And the decors element that we don't want to select)
 	Player::getInstance()->getObject()->getNode()->setVisible(false);
 	if (app_state== APP_GAMEPLAY_NORMAL)
-		DynamicObjectsManager::getInstance()->setObjectsVisible(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE, false);	
+		DynamicObjectsManager::getInstance()->setObjectsVisible(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE, false);
 
 	line3df ray = smgr->getSceneCollisionManager()->getRayFromScreenCoordinates(pos, smgr->getActiveCamera());
 	tempNode = smgr->getSceneCollisionManager()->getSceneNodeAndCollisionPointFromRay(ray,
 		intersection,
 		hitTriangle,
 		id);
-	
+
 	// Show back the player once the ray test is done
 	Player::getInstance()->getObject()->getNode()->setVisible(true);
 
@@ -1850,7 +1851,7 @@ App::MousePick App::getMousePosition3D(int id)
 		result.pickedNode = tempNode;
 		raytester->addRay(ray,true);
 		return result;
-	
+
 	}
 	else
 	{
@@ -1859,12 +1860,12 @@ App::MousePick App::getMousePosition3D(int id)
 			result.pickedPos = intersection;
 		else
 			result.pickedPos = lastMousePick.pickedPos;
-		
+
 		result.pickedNode = NULL;
 
 		// Send the ray to the raytester (drawing lines to see the failed ray)
 		raytester->addRay(ray,false);
-	
+
 		//printf ("Failed the screen ray test! Picking old values., ray len is: %f \n",len);
 		return result;
 	}
@@ -1883,7 +1884,7 @@ void App::addItemToScene()
 	}
 	selectedNode=NULL;
 
-	// To add an object, the picked node need to return at least a tile. 
+	// To add an object, the picked node need to return at least a tile.
 	// If pickednode is empty then the user clicked outside the area
 	if (mousePick.pickedNode)
 	{
@@ -1906,15 +1907,15 @@ void App::addItemToScene()
 			// If the context menu is still open close it since we want to create a object
 			if (GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 				GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-				
+
 			DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
-			
+
 			GUIManager::getInstance()->buildSceneObjectList(current_listfilter); //Update the scene list
 			toolactivated=false;
 #ifdef DEBUG
 			cout << "DEBUG : DYNAMIC_OBJECTS : NEW " << tmpDObj->getName().c_str() << " CREATED!"  << endl;
 #endif
-							
+
 		}
 	}
 }
@@ -1925,23 +1926,23 @@ void App::selectItem()
 
 	lastMousePick = mousePick;
 	core::stringc nodeName = "";
-	
+
 	// Since we don't have multi section implemented as of now, the previous node should be NULL
 	if (selectedNode) // There was a node selected before
 	{
 		selectedNode->setDebugDataVisible(0); // Unselect it
 	}
 	selectedNode=NULL;
-					
+
 	// Create the selected node if there was a node picked
 	if (mousePick.pickedNode)
 	{
 		nodeName = mousePick.pickedNode->getName();
-	
+
 		// Need to filter some nodes names as "terrain" or other objects might be selected.
 		if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
 		{
-			selectedNode=mousePick.pickedNode;	
+			selectedNode=mousePick.pickedNode;
 			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
 			GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put infos
 		}
@@ -1957,7 +1958,7 @@ void App::selectItem()
 		GUIManager::getInstance()->updateNodeInfos(selectedNode); //Put 0 in the node infos
 		// Toggle the context menu (alternate)
 		// GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,true);
-		
+
 	}
 	if (selectedNode)
 	{
@@ -1977,7 +1978,7 @@ void App::setPreviewSelection()
 	// Will get a toggle selection
 	MousePick mousePick = getMousePosition3D();
 	stringc nodeName = "";
-	
+
 	// Check for a node to prevent a crash (need to get the name of the node)
 	if (mousePick.pickedNode != NULL)
 	{
@@ -2168,7 +2169,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	{
 		if (antialias) // Set 4x antialias mode if supported
 			deviceConfig.AntiAlias = 4;
-		else 
+		else
 			deviceConfig.AntiAlias = 0;
 
 		deviceConfig.Bits = 32;
@@ -2186,6 +2187,10 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	driver = device->getVideoDriver();
 	smgr = device->getSceneManager();
 	guienv = device->getGUIEnvironment();
+
+	#ifndef win32
+	//device->maximizeWindow();
+	#endif
 
 	device->setEventReceiver(EventReceiver::getInstance());
 	timer = device->getTimer()->getRealTime();
@@ -2213,12 +2218,12 @@ IrrlichtDevice* App::getDevice()
 void App::playGame()
 {
 
-#ifndef EDITOR 
+#ifndef EDITOR
 	bool visible=false;
 	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->isVisible();
 	guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->setVisible(!visible);
 #endif
-	
+
 	if (app_state<APP_STATE_CONTROL)
 	{
 		EffectsManager::getInstance()->updateSkydome();
@@ -2338,7 +2343,7 @@ void App::update()
 		if(app_state < APP_GAMEPLAY_VIEW_ITEMS)
 		{
 			updateGameplay();
-			
+
 			// This will calculate the animation blending for the nodes
 			DynamicObjectsManager::getInstance()->updateAnimationBlend();
 		}
@@ -2377,7 +2382,7 @@ void App::update()
 			Player::getInstance()->getNode()->setMaterialFlag(EMF_ZBUFFER,true);
 			Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING,true);
 		}
-		else 
+		else
 		{
 			Player::getInstance()->getNode()->setMaterialTexture(0, tex_normal);
 		}
@@ -2414,7 +2419,7 @@ void App::run()
 	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 
 	// Update the info panel with the current "active object"
-	GUIManager::getInstance()->getInfoAboutModel();	
+	GUIManager::getInstance()->getInfoAboutModel();
 	// Loading is complete
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
@@ -2442,8 +2447,8 @@ void App::run()
 
 #endif
 
-	
-	
+
+
 	// Hide the fog in the editor
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
 
@@ -2503,7 +2508,7 @@ void App::updateEditMode()
 		{
 			//if (cursorIsInEditArea())
 			//	guienv->setFocus(guienv->getRootGUIElement());
-#ifdef DEBUG				
+#ifdef DEBUG
 			printf("In viewdrag mode\n");
 #endif
 		}
@@ -2529,11 +2534,11 @@ void App::updateEditMode()
 
 	if (app_state==APP_EDIT_CHARACTER)
 		GUIManager::getInstance()->updateEditCameraString(Player::getInstance()->getNode());
-		
+
 	// Trie to display the node as we go with the mouse cursor in edit mode
 	if((app_state == APP_EDIT_DYNAMIC_OBJECTS_MODE || app_state==APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE))
 	{
-		
+
 		if (toolstate==TOOL_DO_ADD) //Will "preselect" an item only in ADD mode
 			setPreviewSelection();
 	}
@@ -2545,10 +2550,10 @@ void App::updateEditMode()
 		timer2 = device->getTimer()->getRealTime();
 		if(app_state < APP_STATE_CONTROL)
 		{
-			
+
 			// --- Drag the view when the spacebar is pressed
-			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT 
-				&& app_state != APP_EDIT_WAIT_GUI 
+			if (app_state != APP_EDIT_DYNAMIC_OBJECTS_SCRIPT
+				&& app_state != APP_EDIT_WAIT_GUI
 				&& app_state != APP_EDIT_PLAYER_SCRIPT
 				&& app_state != APP_EDIT_SCRIPT_GLOBAL
 				// && app_state != APP_EDIT_CHARACTER
@@ -2614,8 +2619,8 @@ void App::updateEditMode()
 			}
 
 
-			
-			
+
+
 			// Move the selected object in ADD mode
 			if(app_state == APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE && cursorIsInEditArea())
 			{
@@ -2626,14 +2631,14 @@ void App::updateEditMode()
 					lastMousePick.pickedNode->setID(0x0010);
 
 					vector3df newposition = vector3df(0,0,0);
-					
+
 					if (snapfunction) // If snapping is activated use the function
 						newposition=calculateSnap(getMousePosition3D(100).pickedPos,currentsnapping);
 					else
 						newposition=getMousePosition3D(100).pickedPos;
 
 					//newposition=lastMousePick.pickedNode->getPosition()+(newposition-lastMousePick.pickedNode->getPosition());
-					
+
 					lastMousePick.pickedNode->setPosition(newposition);
 					lastMousePick.pickedNode->setID(oldID);
 					initialposition=lastMousePick.pickedNode->getPosition();
@@ -2675,7 +2680,7 @@ void App::updateEditMode()
 					{
 						DynamicObject::TYPE obj = object->getType();
 						switch (obj)
-						{ 
+						{
 
 							case DynamicObject::OBJECT_TYPE_PLAYER:
 								objtype = LANGManager::getInstance()->getText("objtype_player").c_str();
@@ -2701,7 +2706,7 @@ void App::updateEditMode()
 								objtype = LANGManager::getInstance()->getText("objtype_walkable").c_str();
 								break;
 
-						
+
 							default:
 							break;
 						}
@@ -2729,7 +2734,7 @@ void App::updateEditMode()
 						text->setText(templatename.c_str());
 				} else
 				{
-				
+
 					core::stringw templatename = "";
 					IGUIStaticText * text = NULL;
 
@@ -2756,7 +2761,7 @@ void App::updateEditMode()
 
 			// Tools mode refresh
 			if (app_state==APP_EDIT_DYNAMIC_OBJECTS_MODE && toolstate!=TOOL_NONE && toolactivated)
-			{				
+			{
 				if (toolstate==TOOL_DO_MOV && toolactivated) // Will move the object
 				{
 					if (!moveupdown && selectedNode)
@@ -2764,7 +2769,7 @@ void App::updateEditMode()
 						// Change the ID of the moved mesh so it's won't collision with the ray.
 						irr::s32 oldID=selectedNode->getID();
 						selectedNode->setID(0x0010);
-					
+
 						vector3df newposition = vector3df(0,0,0);
 
 						if (snapfunction) // If snapping is activated use the function
@@ -2810,18 +2815,18 @@ void App::updateEditMode()
 					}
 					return;
 				}
-				
+
 				if (toolstate==TOOL_DO_ROT && toolactivated && selectedNode) // Will rotate the object
 				{
 					if (!moveupdown)
 					{
 						position2d<s32> mousepos2=device->getCursorControl()->getPosition();
 						vector3df newrotation = initialrotation;
-						
+
 						//Checkboxes define if the axis can be modified
 						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_Y))
 							newrotation.Y=initialrotation.Y+(mousepos.X-mousepos2.X);
-						
+
 
 						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_X))
 							newrotation.X=initialrotation.X+(mousepos.Y-mousepos2.Y);
@@ -2836,7 +2841,7 @@ void App::updateEditMode()
 						vector3df newrotation = selectedNode->getRotation(); //initialrotation;
 						if (!GUIManager::getInstance()->getCheckboxState(GUIManager::CB_ID_ROT_Z))
 							newrotation.Z=initialrotation.Z+(mousepos.X-mousepos2.X);
-						
+
 						selectedNode->setRotation(newrotation);
 						GUIManager::getInstance()->updateNodeInfos(selectedNode);
 
@@ -2844,7 +2849,7 @@ void App::updateEditMode()
 
 					return;
 				}
-				
+
 
 				if (toolstate==TOOL_DO_SCA && toolactivated && selectedNode) // Will rotate the object
 				{
@@ -2852,7 +2857,7 @@ void App::updateEditMode()
 					vector3df newscale = initialscale;
 
 					f32 tscale=-f32(mousepos.X-mousepos2.X)/10.0f;
-					
+
 					if ((initialscale.X+tscale)<0.001f)
 					{
 						initialscale.X=0.001f;
@@ -2874,7 +2879,7 @@ void App::updateEditMode()
 
 
 					return;
-				}	
+				}
 			}
 		}
 	}
@@ -2894,7 +2899,7 @@ void App::updateGameplay()
 	{
 		Player::getInstance()->setTaggedTarget(NULL);
 		stopGame();
-		cleanWorkspace(); 
+		cleanWorkspace();
 		this->loadProjectFromXML(levelfilename);
 		playGame();
 		levelchange=false;
@@ -2904,16 +2909,16 @@ void App::updateGameplay()
 	// Refresh the NPC loop
 	// Update all the NPC on the map (including the player)
 	DynamicObjectsManager::getInstance()->updateAll();
-		
+
 	// The timer delay should be directly in the NPC, as the check for animation event should not be delayed.
-	if ((timer-timer3)>34) // (17 )1/60 second 
+	if ((timer-timer3)>34) // (17 )1/60 second
 	{
 		// Update the NPc refresh
 		timer3 = device->getTimer()->getRealTime();
 
 		// Update the combat system (mostly for damage over time management (dot))
 		Combat::getInstance()->update();
-	
+
 	}
 
 }
@@ -3036,7 +3041,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 	setAppState(APP_WAIT_FILEREQUEST);
 	if (!selector)
 	{
-		
+
 		// Create a load file selector
 		selector = new CGUIFileSelector(getLangText("msg_prj_lp0").c_str(), guienv, guienv->getRootGUIElement(), 1, CGUIFileSelector::EFST_OPEN_DIALOG);
 		// Create a base icon for the files
@@ -3051,7 +3056,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 			// Create a "favorite places"
 			selector->addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_IRB_path").c_str(),L"../projects",driver->getTexture("../media/art/places_folder.png"));
 			// Define in what path the request will open (it accept full or relative paths)
-			
+
 		}
 		else
 		{
@@ -3066,7 +3071,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 		// This is required for the window stretching feature
 		selector->setDevice(device);
 
-		
+
 #ifdef WIN32
 
 		// Populate with standard windows favorites paths
@@ -3115,7 +3120,7 @@ void App::loadProjectFile(bool value)
 			// This is a file loader
 			if (selector->isSaver()==false)
 			{
-	
+
 				selector->setVisible(false); // Hide the file selector
 				// Keep the "good stuff"
 				oldrotation = lastMousePick.pickedNode->getRotation();
@@ -3136,7 +3141,7 @@ void App::loadProjectFile(bool value)
 			}
 		}
 	}
-	
+
 	// Project loading
 	if (df==DF_PROJECT && value)
 	{
@@ -3155,7 +3160,7 @@ void App::loadProjectFile(bool value)
 			{
 				//printf("Loading project now!\n");
 				cleanWorkspace();
-				
+
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
 
@@ -3328,7 +3333,7 @@ void App::saveProjectToXML(stringc filename)
 #endif
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
-	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera	
+	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 
 	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_save_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
 		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()))).c_str()
@@ -3462,7 +3467,7 @@ void App::initialize()
 	light->setLightType(ELT_DIRECTIONAL);
 	light->setRadius(50000);
 	light->setRotation(vector3df(70.0f,30.0f,0.0f));
-	
+
 
 	screensize=driver->getScreenSize();
 
@@ -3524,7 +3529,7 @@ irr::f32 App::getBrushRadius(int number)
 {
 	f32 radius=0.0f;
 #ifdef EDITOR
-	
+
 	if (number==0) //main radius
 		radius = GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS);
 	if (number==1) // inner radius
