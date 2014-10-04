@@ -18,4 +18,7 @@
 					description="This big health potion will give back 100HP"
 					thumbnail="loot/health_potion_image.jpg"
 					script = "loot_big_potion.lua" />
+	<dynamic_object name="Sword" mesh="loot/sword.obj" type="loot" scale="1" materialType="solid" category="weapons"
+					description="Test weapon" thumbnail="loot/health_potion_image.jpg" script = "" 					
+					/>
 </IrrRPG_Builder_DynamicObjects>

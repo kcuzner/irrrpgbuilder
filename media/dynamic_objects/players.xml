@@ -11,5 +11,6 @@
 		<animation name="attack" start="365" end="390" speed="30.0" loop="false" attackevent="383" soundevent="370" sound="player/98341__punch1.ogg"/>
 		<animation name="die" start="396" end="420" speed="30.0" loop="false" soundevent="397" sound="player/44262__Erdie__male_fight02.ogg"/>
 		<animation name="hurt" start="427" end="457" speed="30.0" loop="false" soundevent="428" sound="player/44268__Erdie__male_fight08.ogg"/>
+		 <attachment name="head" bonename="Bip01_HeadNub" posx="0" posy="0" posZ="0" rotx="0" roty="0" rotz="-90" />
 	</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>

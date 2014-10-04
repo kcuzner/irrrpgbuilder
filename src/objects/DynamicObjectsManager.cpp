@@ -38,6 +38,7 @@ DynamicObjectsManager::~DynamicObjectsManager()
     //dtor
 }
 
+//This load the template and create the player
 bool DynamicObjectsManager::loadTemplates()
 {
 	// Test loading of templates data only
@@ -53,6 +54,9 @@ bool DynamicObjectsManager::loadTemplates()
 		playerObject->setScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
 		playerObject->setTemplateScale(vector3df(pObject->getScale(),pObject->getScale(),pObject->getScale()));
 		playerObject->setType(pObject->getType());
+		//Put the materials and attachment inside the player object
+		playerObject->setMaterials(pObject->materials);
+		playerObject->setAttachment(pObject->attachments);
 
 		playerObject->setTemplate(true);
 		objects.push_back(playerObject);
@@ -158,9 +162,14 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 		core::stringc  animSound = "";
 		core::stringw  result = L"";
 
+		core::stringw attachname = "";
+		core::vector3df attachpos = vector3df(0,0,0);
+		core::vector3df attachrot = vector3df(0,0,0);
+
 		bool inside = false;
 		bool inside2 = false;
 		bool inside3 = false;
+		bool inside4 = false;
 
 		// Language counter (using the XML hierachy)
 		u32 count = 0;
@@ -184,6 +193,61 @@ bool DynamicObjectsManager::loadBlock(IrrlichtDevice * device, core::stringc fil
 
                 case io::EXN_ELEMENT:
                 {
+					if (core::stringw("attachment") == (core::stringw)xml->getNodeName())
+					{
+						if (!inside4)
+						{
+							inside4=true;
+						}
+						DynamicObject::DynamicObject_attachment currAttach;
+
+						core::stringc result = "";
+						currAttach.currentlyAttached = NULL; //Used to store a pointer to a object that is already attached.						
+		
+						currAttach.name=(core::stringw)xml->getAttributeValue("name");
+						currAttach.bonename=(core::stringw)xml->getAttributeValue("bonename");
+
+						result = (core::stringc)xml->getAttributeValue("posx");
+						if (result.size()>0)
+							currAttach.attachpos.X = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachpos.X = 0.0f;
+
+						result = (core::stringc)xml->getAttributeValue("posy");
+						if (result.size()>0)
+							currAttach.attachpos.Y = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachpos.Y = 0.0f;
+
+						result = (core::stringc)xml->getAttributeValue("posz");
+						if (result.size()>0)
+							currAttach.attachpos.Z = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachpos.Z = 0.0f;
+
+						result = (core::stringc)xml->getAttributeValue("rotx");
+						if (result.size()>0)
+							currAttach.attachrot.X = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachrot.X = 0.0f;
+
+						result = (core::stringc)xml->getAttributeValue("roty");
+						if (result.size()>0)
+							currAttach.attachrot.Y = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachrot.Y = 0.0f;
+
+						result = (core::stringc)xml->getAttributeValue("rotz");
+						if (result.size()>0)
+							currAttach.attachrot.Z = (irr::f32)atof(result.c_str());
+						else
+							currAttach.attachrot.Z = 0.0f;
+
+						//Will create an attachment only if the name is defined.
+						if (currAttach.name.size()>0)
+							newObj->attachments.push_back(currAttach);
+			
+					}
 					if (core::stringw("material") == (core::stringw)xml->getNodeName())
 					{
 
@@ -608,6 +672,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 	{
 		ShaderCallBack::getInstance()->setMaterials(newObj->getNode(),activeObject->materials); //Apply the shader from the template
 		newObj->setMaterials(activeObject->materials); //Save the template info inside the dynamic object
+		newObj->setAttachment(activeObject->attachments);
 	}
 
 	// Load the the external script if a filename was defined in the XML

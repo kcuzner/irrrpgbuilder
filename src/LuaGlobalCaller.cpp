@@ -296,6 +296,7 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 	lua_register(LS,"isObjectVisible",isObjectVisible);
 	lua_register(LS,"setObjectVisible",setObjectVisible);
 	lua_register(LS,"destroyObjectItem",destroyObjectItem);
+	lua_register(LS,"attachObject",attachObject);
 
     //inGame Save/Load
     lua_register(LS,"saveGame",inGameSave);
@@ -568,6 +569,12 @@ int LuaGlobalCaller::setObjectProperty(lua_State *LS)
 			tempObj->properties.regenmana = (int)value;
 		if (propertieName=="level")
 			tempObj->properties.level = (int)value;
+		if (propertieName=="weight")
+			tempObj->properties.weight = (int)value;
+		if (propertieName=="maxweight")
+			tempObj->properties.maxweight = (int)value;
+		if (propertieName=="currentweight")
+			tempObj->properties.currentweight = (int)value;
 	} else
 	{
 		App::getInstance()->getDevice()->getLogger()->log("Set Property: Object is not found!");
@@ -647,6 +654,12 @@ int LuaGlobalCaller::getObjectProperty(lua_State *LS)
 			value = (float) tempObj->properties.regenmana;
 		if (propertieName=="level")
 			value = (float) tempObj->properties.level;
+		if (propertieName=="weight")
+			value = (float) tempObj->properties.weight;
+		if (propertieName=="maxweight")
+			value = (float) tempObj->properties.maxweight;
+		if (propertieName=="currentweight")
+			value = (float) tempObj->properties.currentweight;
 	}
 
 	lua_pushnumber(LS,value);
@@ -839,6 +852,103 @@ int LuaGlobalCaller::isObjectVisible(lua_State *LS)
 	lua_pushboolean(LS,result);
 
 	return 1;
+
+}
+
+// Attach the current object to another object (reparent)
+// attachObject(object name, bone name)
+int LuaGlobalCaller::attachObject(lua_State *LS)
+{
+	bool result = false;
+	stringc objName="";
+	stringc calledObject="";
+	stringc attachName="";
+	stringc dynamicObjName = "";
+
+	printf("Attach object was called");
+
+	int top = lua_gettop(LS);
+    if (top>1)
+	{
+
+		attachName = lua_tostring(LS, -1);
+		lua_pop(LS,1);
+
+		objName = lua_tostring(LS, -1);
+		lua_pop(LS,1);
+
+		lua_getglobal(LS,"objName");
+		calledObject = lua_tostring(LS, -1);
+	} else
+	{
+		GUIManager::getInstance()->setConsoleText(L"Attaching object: Wrong parameters!",SColor(255,220,0,0));
+		return 0;
+	}
+
+	printf(" with 2 names: %s, %s\n",objName.c_str(),calledObject.c_str());
+
+	DynamicObject* tempObj = NULL;
+	//Check for the presence of the named object (player,etc)
+	if (objName=="player")
+		tempObj=Player::getInstance()->getObject();
+	else
+		tempObj=DynamicObjectsManager::getInstance()->getObjectByName(objName.c_str());
+
+    
+	
+	DynamicObject* currObj = DynamicObjectsManager::getInstance()->getObjectByName(calledObject.c_str());
+
+	if (tempObj && currObj) //Need to find both object so that attachment work.
+	{
+		//Will get the attachments from this object
+		vector<DynamicObject::DynamicObject_attachment> attachments=tempObj->getAttachments(); 
+		int value = attachments.size();
+
+		if (attachments.size()==0)
+			printf("There is no attachment defined in the model!\n");
+		else 
+			printf("There are %i attachments points in the model!\n",value);
+
+		for (int a=0; a<attachments.size(); a++)
+		{
+			printf("Attachment name is: %s = %s\n",core::stringc(attachments[a].name).c_str(),attachName.c_str());
+			if (attachments[a].name==(core::stringw)attachName)
+			{
+				//There already something attached to this attachment point!
+				if (attachments[a].currentlyAttached)
+				{
+					attachments[a].currentlyAttached->getNode()->setVisible(false); //Hide it
+					attachments[a].currentlyAttached->getNode()->setParent(tempObj->getNode());
+					attachments[a].currentlyAttached->getNode()->setRotation(vector3df(0,0,0));
+					attachments[a].currentlyAttached->getNode()->setPosition(vector3df(0,0,0));
+					currObj->getNode()->setID(100); //Be clickable again 
+					attachments[a].currentlyAttached=NULL; //is no longer attached
+				}
+				IBoneSceneNode* bone = ((IAnimatedMeshSceneNode*)tempObj->getNode())->getJointNode(core::stringc(attachments[a].bonename).c_str());
+				if (bone)
+				{
+					currObj->getNode()->setParent(bone);
+					currObj->getNode()->setPosition(attachments[a].attachpos);
+					currObj->getNode()->setRotation(attachments[a].attachrot);
+					currObj->getNode()->setVisible(true);
+					currObj->getNode()->setID(0x0010); //Disable the ray cast so it's not selectable from the mouse pointer or collision
+					attachments[a].currentlyAttached = currObj;
+				} else
+				{
+					GUIManager::getInstance()->setConsoleText(L"No attachment bone found!",SColor(255,220,0,0));
+				}
+			} else
+			{
+				GUIManager::getInstance()->setConsoleText(L"No attachment name found!",SColor(255,220,0,0));
+			}
+		}
+	} 
+	else
+	{
+		GUIManager::getInstance()->setConsoleText(L"Attaching object: One of the object was not found!",SColor(255,220,0,0));
+	}
+	return 0;
+
 
 }
 

@@ -42,6 +42,14 @@ class DynamicObject
 
 		}DynamicObject_Animation;
 
+		typedef struct data_attachment{
+			core::stringw name;
+			core::stringw bonename;
+			core::vector3df attachpos;
+			core::vector3df attachrot;
+			DynamicObject* currentlyAttached;
+		}DynamicObject_attachment;
+
 		typedef struct data_material{
 			u32 id;
 			stringc shader;
@@ -73,6 +81,9 @@ class DynamicObject
 			u32 attackdelay;
 			u32 mindefense;
 			u32 maxdefense;
+			u32 weight;
+			u32 maxweight;
+			u32 currentweight;
 		}cproperty;
 
 		enum TYPE
@@ -174,6 +185,7 @@ class DynamicObject
 		void setProp_level(cproperty prop);
 
 		void setMaterials(vector<DynamicObject_material> mat);
+		inline void setAttachment(vector<DynamicObject_attachment> attach) {attachments = attach;} 
 
 		void setLife(int life);
         int getLife();
@@ -214,6 +226,8 @@ class DynamicObject
 		void removeAllLoot();
 		vector<DynamicObject*> getLootItems();
 
+		inline vector<DynamicObject_attachment> getAttachments() {return attachments;}
+
 		stringc getScript();
         void setScript(stringw script);
 		void clearScripts();//delete lua_State
@@ -226,7 +240,7 @@ class DynamicObject
 		void notifyAttackRange();
 		void notifyCollision();
 		void notifyAnswer(bool answer);
-		void notifyUse(); //To implement for loot
+		void notifyUse(); //Implemented for the loot (potion etc.)
 		void notifyWear(); //To implement for loot
 
         stringc getObjectType();
@@ -378,10 +392,9 @@ class DynamicObject
 		vector<DynamicObject*> lootitems; // used to store loot items pointers.
         ITextSceneNode* objLabel;
 
-		vector<DynamicObject_Animation> animations;
-		vector<DynamicObject_material> materials;
-
-
+		vector<DynamicObject_Animation> animations; // Animation data
+		vector<DynamicObject_material> materials; //Material information data
+		vector<DynamicObject_attachment> attachments; //Attachment points data
 
 		bool templateobject;
 		bool stunstate; // State to stop moving because the character is hurt

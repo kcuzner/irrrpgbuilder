@@ -42,6 +42,7 @@ class TemplateObject
 		DynamicObject::DynamicObject_Animation currentAnim;
 		vector<DynamicObject::DynamicObject_Animation> animations; // Animations in the template
 		vector<DynamicObject::DynamicObject_material> materials; // materials in the template
+		vector<DynamicObject::DynamicObject_attachment> attachments; //A single set is only needed, attachments
 
 		core::stringw script; // Pre-defined script in the template object
 
