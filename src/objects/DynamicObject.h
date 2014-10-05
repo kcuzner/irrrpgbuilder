@@ -333,6 +333,8 @@ class DynamicObject
 		static int setObjectType(lua_State *ls); // change the object type
 		static int addPlayerLoot(lua_State *ls); // add an object to the player loot
 		static int addLootLUA(lua_State *ls); // Create an object from a template and add it to the object loot.
+
+		static int destroyAfterUse(lua_State *LS); //Set the flag on the object if it must be removed after use (potions)
 		
         stringc name;
 

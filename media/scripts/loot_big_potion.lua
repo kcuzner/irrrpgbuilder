@@ -24,4 +24,5 @@ function onLoad()
 	-- Set the display name and show it
 	setObjectLabel("Big health potion")
 	showObjectLabel()
+	destroyAfterUse(true)
 end

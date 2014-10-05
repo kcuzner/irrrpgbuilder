@@ -904,14 +904,9 @@ int LuaGlobalCaller::attachObject(lua_State *LS)
 		vector<DynamicObject::DynamicObject_attachment> attachments=tempObj->getAttachments(); 
 		int value = attachments.size();
 
-		if (attachments.size()==0)
-			printf("There is no attachment defined in the model!\n");
-		else 
-			printf("There are %i attachments points in the model!\n",value);
-
 		for (int a=0; a<attachments.size(); a++)
 		{
-			printf("Attachment name is: %s = %s\n",core::stringc(attachments[a].name).c_str(),attachName.c_str());
+
 			if (attachments[a].name==(core::stringw)attachName)
 			{
 				//There already something attached to this attachment point!
@@ -922,6 +917,7 @@ int LuaGlobalCaller::attachObject(lua_State *LS)
 					attachments[a].currentlyAttached->getNode()->setRotation(vector3df(0,0,0));
 					attachments[a].currentlyAttached->getNode()->setPosition(vector3df(0,0,0));
 					currObj->getNode()->setID(100); //Be clickable again 
+					DynamicObjectsManager::getInstance()->removeProperties(attachments[a].currentlyAttached,tempObj); //Remove the added properties when not in use
 					attachments[a].currentlyAttached=NULL; //is no longer attached
 				}
 				IBoneSceneNode* bone = ((IAnimatedMeshSceneNode*)tempObj->getNode())->getJointNode(core::stringc(attachments[a].bonename).c_str());
@@ -932,6 +928,7 @@ int LuaGlobalCaller::attachObject(lua_State *LS)
 					currObj->getNode()->setRotation(attachments[a].attachrot);
 					currObj->getNode()->setVisible(true);
 					currObj->getNode()->setID(0x0010); //Disable the ray cast so it's not selectable from the mouse pointer or collision
+					DynamicObjectsManager::getInstance()->addProperties(currObj,tempObj); //Add the added properties when in use
 					attachments[a].currentlyAttached = currObj;
 				} else
 				{

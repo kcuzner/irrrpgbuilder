@@ -114,7 +114,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	isEnemy=false;
 	isInBag=false;
-	isDestroyedAfterUse=true;	//Default value, mostly used for consumable. For scrolls, key, and other "resellable", will need to be set to false;
+	isDestroyedAfterUse=false;	//Default value, mostly used for consumable. For scrolls, key, and other "resellable", will need to be set to false;
 	isGenerated=false; //Default state, was generated inside the editor and not by LUA. LUA object must be removed after the game is complete. (STOPGAME)
 
 	attackresult=0;
@@ -1801,6 +1801,8 @@ void DynamicObject::doScript()
 
 	lua_register(ls,"hasReached",hasReached);
 
+	lua_register(ls,"destroyAfterUse",destroyAfterUse);
+
     //register basic functions
     LuaGlobalCaller::getInstance()->registerBasicFunctions(ls);
 
@@ -3095,6 +3097,26 @@ int DynamicObject::addLootLUA(lua_State *ls)
 	}
 
     return 0;
+}
+
+int DynamicObject::destroyAfterUse(lua_State *LS)
+{
+	
+	int valueinput = lua_toboolean(LS, -1);
+	bool value = false;
+	if (valueinput>0)
+		value = true;
+
+    lua_pop(LS, 1);
+
+	lua_getglobal(LS,"objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+	tempObj->isDestroyedAfterUse=value;
+	
+	return 0;
 }
 
 //!Will splill the loot on the terrain. Called when the character dies

@@ -84,6 +84,10 @@ class DynamicObjectsManager
         void clearAllScripts();
 		void removeGenerated();
 
+		//Character operation, cumulation of experience when objects add over another
+		void addProperties(DynamicObject* source, DynamicObject* destination);
+		void removeProperties(DynamicObject* source, DynamicObject* destination);
+
 		void setPlayer();
 		vector<DynamicObject*> buildInteractiveList();
 

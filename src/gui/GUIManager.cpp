@@ -2084,7 +2084,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("removePlayerItem",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("useGlobalFunction",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getObjectItemCount",SColor(255,128,0,255),true);
-	guiDynamicObjects_Script->addKeyword("movePlayerLoot",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("moveObjectLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("addObjectLoot",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("spawn",SColor(255,128,0,255),true);

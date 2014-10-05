@@ -1628,6 +1628,46 @@ void DynamicObjectsManager::removeGenerated()
     }
 }
 
+//! Will add the source object properties values inside the destination object
+void DynamicObjectsManager::addProperties(DynamicObject* source, DynamicObject* destination)
+{
+	DynamicObject::cproperty prop = source->getProperties();
+	DynamicObject::cproperty dest = destination->getProperties();
+
+	dest.armor=dest.armor+prop.armor;
+	dest.dodge_prop=dest.dodge_prop+prop.dodge_prop;
+	dest.dotduration=dest.dotduration+prop.dotduration;
+	dest.hit_prob=dest.hit_prob+prop.hit_prob;
+	dest.hurt_resist=dest.hurt_resist+prop.hurt_resist;
+	dest.magic_armor=dest.magic_armor+prop.magic_armor;
+	dest.maxdamage=dest.maxdamage+prop.maxdamage;
+	dest.maxdefense=dest.maxdefense+prop.maxdefense;
+	dest.mindamage=dest.mindamage+prop.mindamage;
+	dest.mindefense=dest.mindefense+prop.mindefense;
+
+	destination->setProperties(dest);
+}
+
+//! Will remove the source object properties values from the destination object
+void DynamicObjectsManager::removeProperties(DynamicObject* source, DynamicObject* destination)
+{
+	DynamicObject::cproperty prop = source->getProperties();
+	DynamicObject::cproperty dest = destination->getProperties();
+
+	dest.armor=dest.armor-prop.armor;
+	dest.dodge_prop=dest.dodge_prop-prop.dodge_prop;
+	dest.dotduration=dest.dotduration-prop.dotduration;
+	dest.hit_prob=dest.hit_prob-prop.hit_prob;
+	dest.hurt_resist=dest.hurt_resist-prop.hurt_resist;
+	dest.magic_armor=dest.magic_armor-prop.magic_armor;
+	dest.maxdamage=dest.maxdamage-prop.maxdamage;
+	dest.maxdefense=dest.maxdefense-prop.maxdefense;
+	dest.mindamage=dest.mindamage-prop.mindamage;
+	dest.mindefense=dest.mindefense-prop.mindefense;
+
+	destination->setProperties(dest);
+}
+
 void DynamicObjectsManager::showDebugData(bool show)
 {
     for(int i=0;i<(int)objects.size();i++)
