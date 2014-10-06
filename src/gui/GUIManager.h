@@ -109,6 +109,10 @@ class GUIManager
 		BT_ID_DO_ROT_MODE,
 		BT_ID_DO_SCA_MODE,
 
+		BT_CAMERA_RTS,
+		BT_CAMERA_RPG,
+		BT_CAMERA_FPS,
+
 		CB_ID_POS_X,
 		CB_ID_POS_Y,
 		CB_ID_POS_Z,
@@ -141,6 +145,7 @@ class GUIManager
 	enum GUI_CUSTOM_WINDOW
 	{
 		GCW_DYNAMIC_OBJECT_CHOOSER = 1,
+		GCW_DYNAMIC_PLAYER_EDIT,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
 		GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,
@@ -402,6 +407,7 @@ class GUIManager
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicObjectsWindowChooser;
+		CGUIExtWindow* guiDynamicPlayerWindowChooser;
 		gui::IGUIWindow* InnerChooser; // For the inner part of the chooser (add)
 		gui::IGUIWindow* InnerChooser1; // For the inner part of the chooser (select)
 		gui::IGUIWindow* InnerChooser2; // For the inner part of the chooser (move/rotate/scale)

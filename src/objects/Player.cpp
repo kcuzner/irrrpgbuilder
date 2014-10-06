@@ -214,8 +214,8 @@ void Player::displayTarget(bool visible)
 void Player::updateRTSTargetting()
 {
 	if(App::getInstance()->isMousePressed(0) && 
-		App::getInstance()->getAppState() == App::APP_GAMEPLAY_NORMAL)
-		
+		App::getInstance()->getAppState() == App::APP_GAMEPLAY_NORMAL &&
+		App::getInstance()->cursorIsInEditArea())
 	{
 				
 		// Try a new trick to pick up only the NPC and the ground (AS object can walk on other objects)

@@ -375,8 +375,9 @@ void CameraSystem::setCamera(CAMERA_TYPE tempCamera)
 				//gameCam->bindTargetAndRotation(true);
 				//this->updatePointClickCam();
 
-				// Use the RTS view by default
-				viewtype=VIEW_RTS;
+				// Use the view by default and set it up
+				setViewType(viewtype);
+				
 				break;
 
 		// Camera 2 - Editing
@@ -875,6 +876,8 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 {
 	viewtype=view;
 
+	printf("Camera view set to: %i\n",(int)view);
+
 	switch (viewtype)
 	{
 	case VIEW_RTS:
@@ -896,6 +899,7 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 		//Preset for the view
 		setGameCameraAngleLimit(vector2df(-65,85));
 		initrotation=false;
+		printf("FPS Camera selected!\n");
 		break;
 	case VIEW_RPG:
 		//currentCam->bindTargetAndRotation(true);

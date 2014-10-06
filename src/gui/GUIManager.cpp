@@ -100,6 +100,9 @@ GUIManager::~GUIManager()
 	if (guiDynamicObjectsWindowEditAction)
 		delete guiDynamicObjectsWindowEditAction;
 
+	if (guiDynamicPlayerWindowChooser)
+		delete guiDynamicPlayerWindowChooser;
+
     //dtor
 }
 
@@ -1252,6 +1255,85 @@ void GUIManager::createDynamicObjectChooserGUI()
 	220,
 	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
 
+
+	guiDynamicPlayerWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_player_info")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_PLAYER_EDIT,windowRect);
+    guiDynamicPlayerWindowChooser->setDraggable(false);
+    guiDynamicPlayerWindowChooser->getCloseButton()->setVisible(false);
+   //guiDynamicObjectsWindowChooser->setDrawTitlebar(false);
+	guiDynamicPlayerWindowChooser->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	guiDynamicPlayerWindowChooser->setVisible(false);
+
+	guiDynamicPlayerWindowChooser->setDevice(App::getInstance()->getDevice());
+	guiDynamicPlayerWindowChooser->enableleft=true;
+	guiDynamicPlayerWindowChooser->setMaxSize(core::dimension2du(545,2000));
+	guiDynamicPlayerWindowChooser->setMinSize(core::dimension2du(220,10));
+
+
+	//-- inner window
+	rect<s32> winRect;
+	winRect.UpperLeftCorner.X=15;
+	winRect.UpperLeftCorner.Y=40;
+	winRect.LowerRightCorner.X=windowRect.getWidth()-10;
+	winRect.LowerRightCorner.Y=windowRect.getHeight()-10;
+
+	//---------------------------------------------- ADD MODE content.
+	IGUIWindow* in = guienv->addWindow(winRect,false,L"",guiDynamicPlayerWindowChooser,0);
+	in->setDraggable(false);
+	in->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+	in->getCloseButton()->setVisible(false);
+    in->setDrawTitlebar(false);
+	in->setDrawBackground(false);
+
+	//-- Buttons
+	u32 x = 5; u32 y = 0;
+	IGUIButton* cam1 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
+                                     in,
+                                     BT_CAMERA_RTS,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
+
+   cam1->setImage(driver->getTexture("../media/art/bt_camera_rts.png"));
+   cam1->setPressedImage(driver->getTexture("../media/art/bt_camera_rts_pressed.png"));
+
+	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str(),
+		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
+	
+	cam1->setIsPushButton(true);
+	cam1->setPressed();
+
+	x+=70;
+	IGUIButton* cam2 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
+                                     in,
+                                     BT_CAMERA_RPG,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rpg")).c_str());
+
+   cam2->setImage(driver->getTexture("../media/art/bt_camera_rpg.png"));
+   cam2->setPressedImage(driver->getTexture("../media/art/bt_camera_rpg_pressed.png"));
+
+	IGUIStaticText * playGText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_rpg")).c_str(),
+		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
+	cam2->setIsPushButton(true);
+	
+
+	x+=70; 
+	IGUIButton* cam3 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
+                                     in,
+                                     -1,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_fps")).c_str());
+
+   cam3->setImage(driver->getTexture("../media/art/bt_camera_fps.png"));
+    cam3->setPressedImage(driver->getTexture("../media/art/bt_camera_fps_pressed.png"));
+
+	IGUIStaticText * playGText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_fps")).c_str(),
+		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
+	cam3->setIsPushButton(true);
+	
+
+
+
+
+
+	//-------------------- DYNAMIC OBJECT CHOOSER
+	
     //guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
 	guiDynamicObjectsWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -2942,6 +3024,17 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			if (visible)
 				guienv->setFocus(guiDynamicObjectsWindowChooser);
             break;
+
+		case GCW_DYNAMIC_PLAYER_EDIT:
+			guiDynamicPlayerWindowChooser->setVisible(visible);
+			/*retracted = guiDynamicPlayerWindowChooser->Status(CGUIExtWindow::PANE_LEFT);
+			if (retracted)
+				guiDynamicPlayerWindowChooser->Expand(guiDynamicObjectsWindowChooser->PANE_LEFT);
+			else
+				guiDynamicPlayerWindowChooser->Retract(guiDynamicObjectsWindowChooser->PANE_LEFT);
+//			//guiDynamicObjectsWindowInfo->setVisible(visible);*/
+			break;
+
 
 		case GCW_CUSTOM_SEGMENT_CHOOSER:
 			guiCustomSegmentWindowChooser->setVisible(visible);

@@ -242,6 +242,11 @@
 	<text id="text_file_load_report" str="Résulat du chargement:">
 	<text id="text_file_scene" str="Scene ">
 	
+	<text id="txt_player_info" str="Player informations">
+	<text id="bt_camera_rts" str="RTS type controls">
+	<text id="bt_camera_rpg" str="RPG type controls">
+	<text id="bt_camera_fps" str="FPS type controls">
+	
 	
 		<about str="IrrRPG Builder v0.3 Alpha"/>
 		<about str="    par Andres Jesse Porfirio"/>

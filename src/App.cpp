@@ -353,12 +353,14 @@ void App::setAppState(APP_STATE newAppState)
 
 	if(app_state == APP_EDIT_CHARACTER)
 	{
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_PLAYER_EDIT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,false);
 		Player::getInstance()->setHighLight(true);
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 	}
 	else
 	{
+		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_PLAYER_EDIT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,true);
 
 		Player::getInstance()->setHighLight(false);
@@ -454,6 +456,11 @@ void App::eventGuiButton(s32 id)
 	oldcampos = vector3df(0,0,0);
 	vector3df oldrotation = vector3df(0,0,0);
 	core::stringw oldscript = L"";
+
+	//Used to have the camera modes toggle
+	IGUIButton* button1 = NULL;
+	IGUIButton* button2 = NULL;
+	IGUIButton* button3 = NULL;
 
 	MousePick the=getMousePosition3D(); //Will store the last mousepick when the gui button was pressed
 
@@ -941,6 +948,48 @@ void App::eventGuiButton(s32 id)
 	case GUIManager::BT_PLAYER_CONFIG:
 		GUIManager::getInstance()->showConfigWindow();
 
+		break;
+
+	case GUIManager::BT_CAMERA_RTS:
+		button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+		button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+		button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+		if (button1)
+			button1->setPressed(true);
+		if (button2)
+			button2->setPressed(false);
+		if (button3)
+			button3->setPressed(false);	
+
+		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RTS);
+		break;
+
+	case GUIManager::BT_CAMERA_RPG:
+		button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+		button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+		button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+		if (button1)
+			button1->setPressed(false);
+		if (button2)
+			button2->setPressed(true);
+		if (button3)
+			button3->setPressed(false);	
+
+		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
+		break;
+
+	case GUIManager::BT_CAMERA_FPS:
+		button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+		button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+		button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+		if (button1)
+			button1->setPressed(false);
+		if (button2)
+			button2->setPressed(false);
+		if (button3)
+			button3->setPressed(true);	
+
+		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_FPS);
 		break;
 
 	default:

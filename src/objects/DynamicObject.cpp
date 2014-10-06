@@ -682,6 +682,7 @@ void DynamicObject::setWalkTarget(vector3df newTarget)
 	// This is temporary fix that redefine a target. The new target will be 50 unit nearer from the old destination.
 	// (This allow the NPC not to go directly a the player position)
 	// This need to be improved further as this should apply only when a NPC destination is selected.
+	
 	if (objectType!=OBJECT_TYPE_PLAYER && App::getInstance()->getAppState()==App::APP_GAMEPLAY_NORMAL)
 	{
 		f32 desiredDistance=0.0f;
@@ -3099,6 +3100,7 @@ int DynamicObject::addLootLUA(lua_State *ls)
     return 0;
 }
 
+//Will hide, set the life a 0, and drop an object when it's been used. This set the flag.
 int DynamicObject::destroyAfterUse(lua_State *LS)
 {
 	
