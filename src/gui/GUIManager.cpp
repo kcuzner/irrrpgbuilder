@@ -1317,7 +1317,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	x+=70; 
 	IGUIButton* cam3 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
                                      in,
-                                     -1,L"",
+                                     BT_CAMERA_FPS,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_camera_fps")).c_str());
 
    cam3->setImage(driver->getTexture("../media/art/bt_camera_fps.png"));

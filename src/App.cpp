@@ -380,6 +380,11 @@ void App::setAppState(APP_STATE newAppState)
 
 	if (app_state == APP_EDIT_PLAYER_SCRIPT)
 	{
+		IGUIWindow* win = ((IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true));
+		if (win)
+		{
+			win->setText(L"EDITING PLAYER SCRIPT");
+		}
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,Player::getInstance()->getObject()->getScript());
 		GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true);
@@ -616,6 +621,13 @@ void App::eventGuiButton(s32 id)
 				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,"");
 				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT,selectedObject->getScript());
 				GUIManager::getInstance()->setEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT_CONSOLE,"");
+				IGUIWindow* win = ((IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,true));
+				if (win)
+				{
+					core::stringw title = core::stringw("EDITING OBJECT SCRIPT: ");
+					title.append(nodeName);
+					win->setText(title.c_str());
+				}
 				this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_SCRIPT);
 			}
 			else //Wrong node type selected
