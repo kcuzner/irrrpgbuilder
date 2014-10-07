@@ -954,16 +954,6 @@ void GUIManager::createObjectTab()
 	objectTabText->setOverrideFont(guiFont10);
 	objectTabText->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 
-	// Tab description box text
-	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
-		core::rect<s32>(130,64,250,76),false,true,tabObject,-1);
-	//objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
-	//objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
-	objectTabText2->setBackgroundColor(video::SColor(255,238,240,242));
-	objectTabText2->setOverrideColor(video::SColor(255,86,95,109));
-	objectTabText2->setOverrideFont(guiFont10);
-	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-
 	// Buttons
 	//Dynamic Objects
 	s32 x = 12;
@@ -1002,30 +992,8 @@ void GUIManager::createObjectTab()
 	editCharText->setOverrideFont(guiFont9);
 
 
-	 x+=70;
-	///EDIT CHARACTER
-    guiPlayerEditScript = guienv->addButton(myRect(mainToolbarPos.X+x,mainToolbarPos.Y,32,32),
-                                                           tabObject,
-                                                           BT_ID_PLAYER_EDIT_SCRIPT,
-                                                           L"",
-                                                           stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str() );
-
-	guiPlayerEditScript->setOverrideFont(guiFontC12);
-    guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
-	guiPlayerEditScript->setPressedImage(driver->getTexture("../media/art/bt_player_edit_script_ghost.png"));
-
-	IGUIStaticText * editCharSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str(),
-		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	//editCharSText->setOverrideColor(video::SColor(255,65,66,174));
-	editCharSText->setOverrideColor(video::SColor(255,64,64,64));
-	editCharSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	editCharSText->setOverrideFont(guiFont9);
-
-	//guiPlayerEditScript->setNotClipped(true);
-
-    //guiPlayerEditScript->setVisible(false);
-
-
+	x += 70;
+	
     x += 60;
 
 	//For 0.3 this will be removed. Will take until 0.4 until this is fully removed.
@@ -1264,19 +1232,19 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicPlayerWindowChooser->setVisible(false);
 
 	guiDynamicPlayerWindowChooser->setDevice(App::getInstance()->getDevice());
-	guiDynamicPlayerWindowChooser->enableleft=true;
+	guiDynamicPlayerWindowChooser->enableleft=false;
 	guiDynamicPlayerWindowChooser->setMaxSize(core::dimension2du(545,2000));
 	guiDynamicPlayerWindowChooser->setMinSize(core::dimension2du(220,10));
 
 
 	//-- inner window
 	rect<s32> winRect;
-	winRect.UpperLeftCorner.X=15;
+	winRect.UpperLeftCorner.X=10;
 	winRect.UpperLeftCorner.Y=40;
 	winRect.LowerRightCorner.X=windowRect.getWidth()-10;
 	winRect.LowerRightCorner.Y=windowRect.getHeight()-10;
 
-	//---------------------------------------------- ADD MODE content.
+	//----------------------------------------------
 	IGUIWindow* in = guienv->addWindow(winRect,false,L"",guiDynamicPlayerWindowChooser,0);
 	in->setDraggable(false);
 	in->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
@@ -1284,8 +1252,18 @@ void GUIManager::createDynamicObjectChooserGUI()
     in->setDrawTitlebar(false);
 	in->setDrawBackground(false);
 
+	//Backdrop
+	IGUIStaticText * back1 = guienv->addStaticText(stringw("").c_str(),
+		core::rect<s32>(5,0,195,105),false,true,in,-1);
+	back1->setDrawBackground(true);
+	back1->setDrawBorder(false);
+
+	IGUIStaticText * back2 = guienv->addStaticText(stringw("").c_str(),
+		core::rect<s32>(5,120,195,120+76),false,true,in,-1);
+	back2->setDrawBackground(true);
+	back2->setDrawBorder(false);
 	//-- Buttons
-	u32 x = 5; u32 y = 0;
+	u32 x = 20; u32 y = 10;
 	IGUIButton* cam1 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
                                      in,
                                      BT_CAMERA_RTS,L"",
@@ -1298,9 +1276,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
 	
 	cam1->setIsPushButton(true);
-	cam1->setPressed();
+	cam1->setPressed(true);
 
-	x+=70;
+	x+=60;
 	IGUIButton* cam2 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
                                      in,
                                      BT_CAMERA_RPG,L"",
@@ -1314,7 +1292,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	cam2->setIsPushButton(true);
 	
 
-	x+=70; 
+	x+=60; 
 	IGUIButton* cam3 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
                                      in,
                                      BT_CAMERA_FPS,L"",
@@ -1326,9 +1304,50 @@ void GUIManager::createDynamicObjectChooserGUI()
 	IGUIStaticText * playGText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_fps")).c_str(),
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
 	cam3->setIsPushButton(true);
+	// Tab description box text
+	x = 20;
+	IGUIStaticText * objectTabText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des7")).c_str(),
+		core::rect<s32>(x-15,y+20+64,x+175,y+20+76),false,true,in,-1);
+	//objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
+	//objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText1->setBackgroundColor(video::SColor(255,238,240,242));
+	objectTabText1->setOverrideColor(video::SColor(255,86,95,109));
+	objectTabText1->setOverrideFont(guiFont10);
+	objectTabText1->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 	
 
+	y+=120;
+	///EDIT CHARACTER
+	guiPlayerEditScript = guienv->addButton(core::rect<s32>(x,y,x+32,y+32),
+		in ,
+        BT_ID_PLAYER_EDIT_SCRIPT,
+        L"",
+        stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str() );
 
+	guiPlayerEditScript->setOverrideFont(guiFontC12);
+    guiPlayerEditScript->setImage(driver->getTexture("../media/art/bt_player_edit_script.png"));
+	guiPlayerEditScript->setPressedImage(driver->getTexture("../media/art/bt_player_edit_script_ghost.png"));
+
+	IGUIStaticText * editCharSText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_player_edit_script")).c_str(),
+		core::rect<s32>(x-10,y+36,x+45,y+65),false,true,in,-1);
+	//editCharSText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharSText->setOverrideColor(video::SColor(255,64,64,64));
+	editCharSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editCharSText->setOverrideFont(guiFont9);
+
+	// Tab description box text
+	IGUIStaticText * objectTabText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des2")).c_str(),
+		core::rect<s32>(x-15,y+64,x+175,y+76),false,true,in,-1);
+	//objectTabText2->setBackgroundColor(video::SColor(128,237,242,248));
+	//objectTabText2->setOverrideColor(video::SColor(255,65,66,174));
+	objectTabText2->setBackgroundColor(video::SColor(255,238,240,242));
+	objectTabText2->setOverrideColor(video::SColor(255,86,95,109));
+	objectTabText2->setOverrideFont(guiFont10);
+	objectTabText2->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
+
+	//guiPlayerEditScript->setNotClipped(true);
+
+    //guiPlayerEditScript->setVisible(false);
 
 
 

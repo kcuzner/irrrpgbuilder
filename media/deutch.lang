@@ -94,6 +94,7 @@
 	<text id="txt_tool_des5" str="Gelände" />
 	<text id="txt_tool_des_tile" str="Fliesen" />
 	<text id="txt_tool_des6" str="Vegetation" />
+	<text id="txt_tool_des7" str="Player controls" />
 	<text id="txt_tool_edit" str="Edit-Modus" />
 	<text id="txt_tool_edpl" str="Spieler" />
 	<text id="txt_tool_scrp" str="Skript Spieler" />

@@ -94,6 +94,7 @@
 		<text id="txt_tool_des_tile" str="Tuiles" />
 		<text id="txt_tool_des5" str="Terrain" />
 		<text id="txt_tool_des6" str="Végétation" />
+		<text id="txt_tool_des7" str="Contrôles du joueur" />
 		<text id="txt_tool_edit" str="Mode édition" />
 		<text id="txt_tool_edpl" str="Mode jeu" />
 		<text id="txt_tool_scrp" str="Script joueur" />

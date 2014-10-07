@@ -94,6 +94,7 @@
 	<text id="txt_tool_des5" str="Terreno" />
 	<text id="txt_tool_des_tile" str="Telhas" />
 	<text id="txt_tool_des6" str="Vegetação" />
+	<text id="txt_tool_des7" str="Player controls" />
 	<text id="txt_tool_edit" str="Modo edição" />
 	<text id="txt_tool_edpl" str="Modo de jogos" />
 	<text id="txt_tool_scrp" str="Roteiro do jogador" />

@@ -94,6 +94,7 @@
 	<text id="txt_tool_des_tile" str="Laatat" />
 	<text id="txt_tool_des5" str="Maasto työkalut" />
 	<text id="txt_tool_des6" str="Kasvillisuus" />
+	<text id="txt_tool_des7" str="Player controls" />
 	<text id="txt_tool_edit" str="editori-tilassa" />
 	<text id="txt_tool_edpl" str="Toistotilassa" />
 	<text id="txt_tool_scrp" str="Soitin kirjoitus" />

@@ -95,6 +95,7 @@
 	<text id="txt_tool_des_tile" str="Tiles" />
 	<text id="txt_tool_des5" str="Terrain tools" />
 	<text id="txt_tool_des6" str="Vegetation tools" />
+	<text id="txt_tool_des7" str="Player controls" />
 	<text id="txt_tool_edit" str="Editor mode" />
 	<text id="txt_tool_edpl" str="Play mode" />
 	<text id="txt_tool_scrp" str="Player script" />
