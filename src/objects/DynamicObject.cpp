@@ -1034,10 +1034,6 @@ bool DynamicObject::setAnimation(stringc animName)
 	//define if we use a random frame in the idle animation
 	bool randomize=true;
 
-	// Setup the animation skinning of the meshes (Allow external animation to be used)
-	//ISkinnedMesh* skin = NULL;
-	//ISkinnedMesh* defaultskin = NULL;
-
 	if (animName=="die")
 	{
 		// REmove the collision animator
@@ -1110,66 +1106,6 @@ bool DynamicObject::setAnimation(stringc animName)
 	{
 		animName="idle";
 	}
-
-	// Don't call the animation if the result is not positive (result coming from the combat class)
-	if (animName=="attack" && oldAnimName!="attack")
-	{
-
-		//When the attack animation is triggered, the class interrogate the combat class and check
-		//that the attack is successful before starting it
-		if (objectType==OBJECT_TYPE_PLAYER && 
-			(!attackdelaystate ||  CameraSystem::getInstance()->getViewType()!=CameraSystem::VIEW_RTS))
-		{
-			/*
-			if (enemyUnderAttack)
-			{
-				// Call the combat class to evaluate the damage that should be done BEFORE the attack anim
-				// is done.
-				// If the attack is missed, we could play a specific animation for this (to do)
-				// Damage is done in the "animation" at the "attack event"
-				attackresult=Combat::getInstance()->attack(this,enemyUnderAttack);
-				if (attackresult==0)
-					//enemyUnderAttack->setObjectLabel("Miss!");
-				{	
-					if (enemyUnderAttack->getLife()!=0)
-						enemyUnderAttack->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
-				}
-				else
-				{
-					core::stringw textdam = LANGManager::getInstance()->getText("float_text_hit");
-					textdam.append(stringc(attackresult));
-					//enemyUnderAttack->setObjectLabel(textdam.c_str());
-					if (enemyUnderAttack->getLife()!=0)
-						enemyUnderAttack->createTextAnim(textdam);
-				}
-				
-			}*/
-		}
-
-		// 
-		if (objectType!=OBJECT_TYPE_PLAYER && !attackdelaystate && oldAnimName!="attack")
-		{
-
-			/*	f32 properdistance = this->getObjectSize();
-						
-				if (Player::getInstance()->getNode()->getPosition().getDistanceFrom(getNode()->getPosition())<properdistance)
-				{
-					attackresult=Combat::getInstance()->attack(this,Player::getInstance()->getObject());
-					if (attackresult==0)
-						Player::getInstance()->getObject()->createTextAnim(LANGManager::getInstance()->getText("float_text_miss").c_str(),video::SColor(255,240,120,0),3000,dimension2d<f32>(12,8));
-					else
-					{
-						stringc textdam = LANGManager::getInstance()->getText("float_text_hit").c_str();
-						textdam.append(stringc(attackresult));
-						//Player::getInstance()->getObject()->setObjectLabel(textdam.c_str());
-						Player::getInstance()->getObject()->createTextAnim(textdam);
-					}
-
-			}*/	
-		}
-
-	}
-
 
 	// This will activate the "hurt" stun state
 	if (oldAnimName == "hurt" && animName=="hurt" && !stunstate)
@@ -1373,11 +1309,12 @@ void DynamicObject::checkAnimationEvent()
 	// Check if the current animation have an attack event
 	if ((s32)nodeAnim->getFrameNr()!=lastframe && this->currentAnimation==OBJECT_ANIMATION_ATTACK)
 	{
-
+	
+		
 		//This set the animation back to idle when it's played
 		if ((s32)nodeAnim->getFrameNr()>currentAnim.endFrame-1)
 		{
-			if (attackActivated[0])
+			if (attackActivated.size()>0)
 			{
 				attackActivated[0]=false;
 				GUIManager::getInstance()->setConsoleText(core::stringw(L"Error! Attack was not triggered!"),video::SColor(255,0,0,0));
@@ -1388,12 +1325,12 @@ void DynamicObject::checkAnimationEvent()
 		}
 
 		// Set a default attack event if there is none defined.
-		if (currentAnim.attackevent[0]==-1)
+		if (currentAnim.attackevent.size()==0)
 		{
 			GUIManager::getInstance()->setConsoleText(core::stringw(L"No attack defined!"),video::SColor(255,0,0,0));
-			currentAnim.attackevent[0] = currentAnim.startFrame+1;
+			currentAnim.attackevent.push_back(currentAnim.startFrame+1);
 		}
-
+	
 		for (u32 b=0; b<currentAnim.attackevent.size(); b++)
 		{
 			attackActivated.push_back(false);
@@ -1403,7 +1340,7 @@ void DynamicObject::checkAnimationEvent()
 			// This only mean that the attack animation is still looking for the event
 			if ((nodeAnim->getFrameNr() > currentAnim.attackevent[a]-1) && nodeAnim->getFrameNr() <= currentAnim.attackevent[a])
 			{
-				attackActivated[a]=true;
+				//attackActivated[a]=true;
 				if (getType()!=OBJECT_TYPE_PLAYER)
 					printf("Attack activated for %s\n",name.c_str());
 			}

@@ -305,15 +305,14 @@ void CameraSystem::eventsMouseKey(s32 key)
 {
 	if (key==keyaction)
 	{
-		printf("Action key was triggered!\n");
 		//Will attack if there is a "tagged" object
-		if (viewtype!=VIEW_RTS || viewtype!=VIEW_RTS_FIXED)
+		if (viewtype!=VIEW_RTS && viewtype!=VIEW_RTS_FIXED)
 		{
-			if (Player::getInstance()->getTaggedTarget())
+			if (Player::getInstance()->getObject()->getCurrentEnemy())
 			{
-				Player::getInstance()->getObject()->lookAt(Player::getInstance()->getTaggedTarget()->getPosition());
-				if (Player::getInstance()->getTaggedTarget()->getObjectType() == stringc("ENEMY"))
-					Player::getInstance()->getObject()->attackEnemy(Player::getInstance()->getTaggedTarget());
+				Player::getInstance()->getObject()->lookAt(Player::getInstance()->getObject()->getCurrentEnemy()->getPosition());
+				if (Player::getInstance()->getObject()->getCurrentEnemy()->getObjectType() == stringc("ENEMY"))
+					Player::getInstance()->getObject()->attackEnemy(Player::getInstance()->getObject()->getCurrentEnemy());
 			}
 			else
 			{
@@ -321,6 +320,7 @@ void CameraSystem::eventsMouseKey(s32 key)
 				Player::getInstance()->getObject()->setAnimation("attack");
 				Player::getInstance()->getObject()->clearEnemy();
 			}
+			
 		}
 
 	} else if (key==EMIE_RMOUSE_PRESSED_DOWN)
