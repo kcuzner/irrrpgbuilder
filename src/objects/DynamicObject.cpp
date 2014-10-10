@@ -1340,15 +1340,15 @@ void DynamicObject::checkAnimationEvent()
 			// This only mean that the attack animation is still looking for the event
 			if ((nodeAnim->getFrameNr() > currentAnim.attackevent[a]-1) && nodeAnim->getFrameNr() <= currentAnim.attackevent[a])
 			{
-				//attackActivated[a]=true;
+				attackActivated[a]=true;
 				if (getType()!=OBJECT_TYPE_PLAYER)
 					printf("Attack activated for %s\n",name.c_str());
 			}
 			
-
+		
 			if (attackActivated[a]) // && nodeAnim->getFrameNr() <= currentAnim.attackevent[a])
 			{
-
+			
 			// Attack result is precalculated, if the animation of attack is played, them it was sucessful
 			// the damage will then be done at the "impact" frame from the animation
 			// If the character health rise 0, then call the die animation.
