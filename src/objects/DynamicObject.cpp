@@ -2671,7 +2671,10 @@ int DynamicObject::setNameLUA(lua_State *ls)
 	//stringc value = Obj->getTemplateObjectName();
 	if (Obj)
 	{
-		Obj->internalname=name;
+		Obj->internalname=stringw(name);
+		//Update the list that could contain this item
+		GUIManager::getInstance()->updateItemsList();
+		GUIManager::getInstance()->buildSceneObjectList(App::getInstance()->getSceneFilter());
 	}
 
 	return 0;

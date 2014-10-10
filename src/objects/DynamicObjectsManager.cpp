@@ -922,6 +922,7 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw ob
     return listObjs;
 }
 
+// Return a list of the object in the scene with their internal name
 vector<stringw> DynamicObjectsManager::getObjectsSceneList(DynamicObject::TYPE objectType)
 {
 	vector<stringw> listObjs;
@@ -940,6 +941,26 @@ vector<stringw> DynamicObjectsManager::getObjectsSceneList(DynamicObject::TYPE o
 
 }
 
+// Return a list of the object in the scene with their internal name
+vector<stringw> DynamicObjectsManager::getObjectsSceneListAlias(DynamicObject::TYPE objectType)
+{
+	vector<stringw> listObjs;
+
+    for (int i=0 ; i<(int)objects.size() ; i++)
+    {
+		if (objects[i]->getType()==objectType || objectType==DynamicObject::OBJECT_TYPE_NONE)
+		{
+			//Don`t want theses in the list
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER && objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
+				listObjs.push_back(objects[i]->internalname);
+		}
+    }
+
+    return listObjs;
+
+}
+
+// set ID of objects based on their type, really useful for picking and basic collision
 void DynamicObjectsManager::setObjectsID(DynamicObject::TYPE objectType, s32 ID)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)
@@ -950,6 +971,7 @@ void DynamicObjectsManager::setObjectsID(DynamicObject::TYPE objectType, s32 ID)
 
 }
 
+//Hide / Display objects based on their type
 void DynamicObjectsManager::setObjectsVisible(DynamicObject::TYPE objectType, bool visible)
 {
     for (int i=0 ; i<(int)objects.size() ; i++)

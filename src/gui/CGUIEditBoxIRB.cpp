@@ -815,12 +815,13 @@ bool CGUIEditBoxIRB::processKey(const SEvent& event)
 			break;
 
 		case KEY_TAB:
-			//Environment->setFocus(this);
+			/*inputChar(wchar_t(static_cast<char>( 9 )));
+			//if (Text.size() > (u32)CursorPos)
+			//	CursorPos+=3;*/
 			inputChar(L' ');
 			inputChar(L' ');
 			inputChar(L' ');
 			inputChar(L' ');
-			//inputChar(L' ');
 			break;
 		case KEY_INSERT:
 			Inserting = !Inserting;
@@ -1031,20 +1032,23 @@ void CGUIEditBoxIRB::draw()
 					startPos = ml ? BrokenTextPositions[i] : 0;
 				}
 
-
-				// Parse the TAB character
-				std::string txt_main = core::stringc(txtLine->c_str()).c_str();
-
-				for(int chart = 0; chart < (int)txt_main.size(); chart++)
+				// Parse the TAB Character on Widestrings
+				core::stringw txt_main = *txtLine;
+				core::stringw temp=L"";
+				for (int chart=0; chart < (int)txt_main.size(); chart++)
 				{
-
-					if(txt_main[chart] == static_cast<char>( 9 ))
-					{
-						txt_main.erase(chart,1);
-						txt_main.insert(chart," ");
-					}
+					if (txt_main[chart] == static_cast<char>( 9 ))
+					{	
+						core::stringw temp1=txt_main.subString(0,chart-1);
+						core::stringw temp2=txt_main.subString(chart+1,txt_main.size());
+						temp=temp1.append(" ");
+						temp.append(temp2);
+					} 
 				}
-
+				if (temp.size()>0)
+					txtLine = &temp;
+				else
+					txtLine = &txt_main;
 
 				bool endFound = false;
 				bool startFound = false;

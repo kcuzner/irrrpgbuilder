@@ -173,6 +173,9 @@ class App
 		//For the background color ingame
 		inline void setIngameBackgroundColor(const video::SColor color){ingamebackground=color;}
 
+		//Get the active scene filter object
+		inline DynamicObject::TYPE getSceneFilter() {return current_listfilter;}
+
 		// used for the logger
 		std::vector<core::stringw> textevent;
 		std::vector<core::stringw> console_event;

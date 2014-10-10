@@ -80,6 +80,7 @@ class Vegetation
         void setPosition(vector3df pos);
         void setRotation(vector3df rot);
         void setScale(vector3df scale);
+		inline ISceneNode* getNode() {return trunk;}
 
 
         void showDebugData(bool show);

@@ -54,6 +54,7 @@ class DynamicObjectsManager
 		vector<stringw> getObjectsListCategories(stringw objectType, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
 		vector<stringw> getObjectsCollections(DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
 		vector<stringw> getObjectsSceneList(DynamicObject::TYPE objectType);
+		vector<stringw> getObjectsSceneListAlias(DynamicObject::TYPE objectType);
 
 
 		void setObjectsID(DynamicObject::TYPE objectType, s32 ID);

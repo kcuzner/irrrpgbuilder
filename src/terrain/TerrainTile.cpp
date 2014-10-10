@@ -230,36 +230,33 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 {
 	// Save the terrain land
     
-	int x = 0;
-	int z = 0;
+	f32 x = 0;
+	f32 z = 0;
 
-	int scalex = (int)node->getScale().X;
-	int scalez = (int)node->getScale().Z;
+	f32 scalex = node->getScale().X;
+	f32 scalez = node->getScale().Z;
 	if (scalex!=0)
 	{
-		x = (int)node->getPosition().X/scalex;
-		z = (int)node->getPosition().Z/scalez;
+		x = node->getPosition().X/scalex;
+		z = node->getPosition().Z/scalez;
 	} else
 	{
-		x = (int)node->getPosition().X;
-		z = (int)node->getPosition().Z;
+		x = node->getPosition().X;
+		z = node->getPosition().Z;
 	}
 
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
-    segmentXML->SetAttribute("x",x);
-    segmentXML->SetAttribute("z",z);
+    segmentXML->SetDoubleAttribute("x",x);
+    segmentXML->SetDoubleAttribute("z",z);
 
 	if (custom)
 	{
 		segmentXML->SetAttribute("custom",customname.c_str());
 		if (node->getRotation().Y!=0)
-			segmentXML->SetAttribute("custom_R",(int)node->getRotation().Y);
+			segmentXML->SetDoubleAttribute("custom_R", node->getRotation().Y);
 
 		if (vegetationVector.size()>0)
 		{
-#ifdef DEBUG
-			printf ("saving %d trees\n",vegetationVector.size());
-#endif
 			
 			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
 			{
@@ -270,9 +267,10 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				{
 					vector3df treepos=tree->getPosition();
 					vertexXML->SetAttribute("v",tree->getType());
-					vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
-					vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
-					vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+					vertexXML->SetDoubleAttribute("tx",tree->getPosition().X);
+					vertexXML->SetDoubleAttribute("ty",tree->getPosition().Y);
+					vertexXML->SetDoubleAttribute("tz",tree->getPosition().Z);
+					vertexXML->SetDoubleAttribute("sc",tree->getNode()->getScale().X);
 				}
 				segmentXML->LinkEndChild(vertexXML);
 			}
@@ -315,9 +313,10 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				{
 					vector3df treepos=tree->getPosition();
 					vertexXML->SetAttribute("v",tree->getType());
-					vertexXML->SetAttribute("tx",round32(tree->getPosition().X));
-					vertexXML->SetAttribute("ty",round32(tree->getPosition().Y));
-					vertexXML->SetAttribute("tz",round32(tree->getPosition().Z));
+					vertexXML->SetDoubleAttribute("tx",tree->getPosition().X);
+					vertexXML->SetDoubleAttribute("ty",tree->getPosition().Y);
+					vertexXML->SetDoubleAttribute("tz",tree->getPosition().Z);
+					vertexXML->SetDoubleAttribute("sc",tree->getNode()->getScale().X);
 				}
 				// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
 				segmentXML->LinkEndChild(vertexXML);
@@ -354,13 +353,24 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 				f32 tposx = (f32)atof(stposx.c_str());
 				f32 tposy = (f32)atof(vertex->ToElement()->Attribute("ty"));
 				f32 tposz = (f32)atof(vertex->ToElement()->Attribute("tz"));
+				stringc tsizes = vertex->ToElement()->Attribute("sc");
+				f32 tsize = 0;
+				if (tsizes.size()>0)
+					tsize=(f32)atof(vertex->ToElement()->Attribute("sc"));
 
 				// Now create a new tree with the informations
 				Vegetation* v = new Vegetation(ttype);
 				v->setPosition(vector3df(tposx,tposy,tposz));
-				f32 treesize = (f32)(rand() % 20 + 50)/100;
-				treesize*= 0.3f;
-				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+				if (tsize==0.0f)
+				{
+					f32 treesize = (f32)(rand() % 100 + 50)/100;
+					treesize*= 0.3f;
+					v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+				}
+				else
+				{
+					v->setScale(vector3df(tsize,tsize,tsize));
+				}
 				// Update the infos
 				vegetationVector.push_back(v);
 			}
@@ -434,7 +444,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
                 //v->setPosition(vector3df(realPos.X + (rand()%5)*0.1f - 0.25f,realPos.Y/(scale/nodescale),realPos.Z + (rand()%5)*0.1f - 0.25f));
 				//v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
 				v->setPosition(vector3df(realPos.X,realPos.Y,realPos.Z));
-                f32 treesize = (f32)(rand() % 20 + 50)/100;
+                f32 treesize = (f32)(rand() % 100 + 50)/100;
                 treesize*= 0.3f;
 				v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
 

@@ -195,9 +195,12 @@ void App::setAppState(APP_STATE newAppState)
 
 	if(app_state == APP_EDIT_TERRAIN_TRANSFORM)
 	{
+		IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 		// Change the props to be non-collidable with the ray test
 		DynamicObjectsManager::getInstance()->setObjectsID(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE,0x0010);
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_TERRAIN_TOOLBAR,true);
+		button->setPressed(true);
+		button->setEnabled(false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		timer1 = device->getTimer()->getRealTime();
@@ -206,16 +209,24 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_TRANSFORM)
 		{
+			IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_TERRAIN_TOOLBAR,false);
 			ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
-			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
+			button->setEnabled(true);
+			button->setPressed(false);
+			
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
 
 	if(app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 	{
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,false);
+		IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		if (button)
+		{
+			button->setEnabled(false);
+			button->setPressed(true);
+		}
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		if (selectedNode)
 		{
@@ -228,7 +239,9 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		if (old_app_state == APP_EDIT_TERRAIN_PAINT_VEGETATION)
 		{
-			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
+			IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
+			button->setEnabled(true);
+			button->setPressed(false);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
@@ -431,8 +444,8 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_HELP,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 #ifdef EDITOR
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(true);
@@ -1070,6 +1083,10 @@ void App::eventGuiCombobox(s32 id)
 
 	IGUIListBox* selected=NULL; //Used to get the item in a listbox
 	IGUIComboBox* selectedbox = NULL;
+
+	std::vector<stringw> list;
+	list.clear();
+
 	switch (id)
 	{
 
@@ -1113,24 +1130,27 @@ void App::eventGuiCombobox(s32 id)
 
 	case GUIManager::CO_ID_ACTIVE_SCENE_LIST:
 		index = GUIManager::getInstance()->getListBox(GUIManager::CO_ID_ACTIVE_SCENE_LIST)->getSelected();
-		item = GUIManager::getInstance()->getListBox(GUIManager::CO_ID_ACTIVE_SCENE_LIST)->getListItem(index);
 		if (selectedNode)
 		{
 			selectedNode->setDebugDataVisible(0);
 			selectedNode=NULL;
 		}
 
-		object = DynamicObjectsManager::getInstance()->getObjectByName(core::stringc(item));
-		if (object)
+		list = DynamicObjectsManager::getInstance()->getObjectsSceneList(current_listfilter);
+		if (list.size()>0)
 		{
-			selectedNode = object->getNode();
-			lastMousePick.pickedNode = object->getNode();
-		} else
-			GUIManager::getInstance()->setConsoleText(core::stringw(L"Failed to retrieve this object: ").append(core::stringw(item)));
+			object = DynamicObjectsManager::getInstance()->getObjectByName(list[index]);
+			if (object)
+			{
+				selectedNode = object->getNode();
+				lastMousePick.pickedNode = object->getNode();
+			} else
+				GUIManager::getInstance()->setConsoleText(core::stringw(L"Failed to retrieve this object: ").append(core::stringw(item)));
 
-		if (selectedNode)
-		{
-			selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+			if (selectedNode)
+			{
+				selectedNode->setDebugDataVisible(true ? EDS_BBOX | EDS_SKELETON : EDS_OFF);
+			}
 		}
 		break;
 

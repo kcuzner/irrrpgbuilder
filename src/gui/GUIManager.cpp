@@ -899,11 +899,6 @@ void GUIManager::createEnvironmentTab()
 	terrainSText->setOverrideColor(video::SColor(255,64,64,64));
 	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText->setOverrideFont(guiFont9);
-	
-
-	
-
-	//--
 
 	 x+= 60;
 
@@ -2598,7 +2593,7 @@ void GUIManager::buildSceneObjectList(DynamicObject::TYPE objtype)
 
 	guiSceneObjectList->clear();
 
-	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneList(objtype);
+	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneListAlias(objtype);
 	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 	{
 		guiSceneObjectList->addItem(listDynamicObjsCat[i].c_str());
@@ -3020,7 +3015,8 @@ void GUIManager::setupGameplayGUI()
 
 }
 
-// Hides/Display a IRB window/Pane
+//! Hides/Display a IRB window/Pane
+// Could be simplified
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
 	bool retracted = false; //default status for panes
@@ -3034,24 +3030,23 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 				guiDynamicObjectsWindowChooser->Expand(guiDynamicObjectsWindowChooser->PANE_LEFT);
 			else
 				guiDynamicObjectsWindowChooser->Retract(guiDynamicObjectsWindowChooser->PANE_LEFT);
-//			//guiDynamicObjectsWindowInfo->setVisible(visible);
+			if (visible)
+			{
+				guienv->setFocus(guiDynamicObjectsWindowChooser);
+			}
+
 			break;
 
         case GCW_DYNAMIC_OBJECT_CHOOSER:
-			// Display the chooser and set the focus on it
             guiDynamicObjectsWindowChooser->setVisible(visible);
 			if (visible)
-				guienv->setFocus(guiDynamicObjectsWindowChooser);
+				guienv->setFocus(guiDynamicPlayerWindowChooser);
             break;
 
 		case GCW_DYNAMIC_PLAYER_EDIT:
-			guiDynamicPlayerWindowChooser->setVisible(visible);
-			/*retracted = guiDynamicPlayerWindowChooser->Status(CGUIExtWindow::PANE_LEFT);
-			if (retracted)
-				guiDynamicPlayerWindowChooser->Expand(guiDynamicObjectsWindowChooser->PANE_LEFT);
-			else
-				guiDynamicPlayerWindowChooser->Retract(guiDynamicObjectsWindowChooser->PANE_LEFT);
-//			//guiDynamicObjectsWindowInfo->setVisible(visible);*/
+			guiDynamicPlayerWindowChooser->setVisible(visible);	
+			if (visible)
+				guienv->setFocus(guiDynamicPlayerWindowChooser);
 			break;
 
 
@@ -3077,36 +3072,43 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 				device->getCursorControl()->setPosition(mouseX+100,mouseY+20);
 			}
 
-			//myRect(mouseX,mouseY,200,220)
-			printf("Here are the current position of the window: %i, %i\n",mouseX,mouseY);
 			guiDynamicObjects_Context_Menu_Window->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+220));
-            guiDynamicObjects_Context_Menu_Window->setVisible(visible);
 			if (visible)
+			{
+				guiDynamicObjects_Context_Menu_Window->setEnabled(true);
 				guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
+			} else
+			{
+				guiDynamicObjects_Context_Menu_Window->setEnabled(false);
+			}
+            guiDynamicObjects_Context_Menu_Window->setVisible(visible);
+			
 			
             break;
 		case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1:
+			if (visible)
+				guienv->setFocus(guiDynamicObjects_Context_Menu_Window1);
 			mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-40;
 			guiDynamicObjects_Context_Menu_Window1->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+60));
             guiDynamicObjects_Context_Menu_Window1->setVisible(visible);
-			//App::getInstance()->setComboBoxUsed(true);
-
-			if (visible)
-				guienv->setFocus(guiDynamicObjects_Context_Menu_Window);
-			
+		
 			break;
 
 
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
-			guienv->setFocus(guiDynamicObjects_Script);
-			guienv->getRootGUIElement()->bringToFront(guiDynamicObjects_Script);
+			if (visible)
+			{	
+				guienv->setFocus(guiDynamicObjects_Script);
+				guienv->getRootGUIElement()->bringToFront(guiDynamicObjects_Script);
+			}
             break;
         case GCW_TERRAIN_TOOLBAR:
-            guiTerrainToolbar->setVisible(visible);
 			if (visible)
 				guienv->setFocus(guiTerrainToolbar);
+            guiTerrainToolbar->setVisible(visible);
+			
             break;
 #endif
         case GCW_GAMEPLAY_ITEMS:
@@ -3115,7 +3117,11 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 				guiWindowItems->setVisible(visible);
             break;
         case GCW_ABOUT:
-            guiAboutWindow->setVisible(visible);
+			if (visible)
+				guienv->setFocus(guiAboutWindow);
+			guiAboutWindow->setVisible(visible);
+			
+				
             break;
         case GCW_TERRAIN_PAINT_VEGETATION:
             guiVegetationToolbar->setVisible(visible);
@@ -3130,53 +3136,16 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
     }
 }
 
-// Check the visibility status of a IRB window
+//! Check the visibility status of a IRB window
 bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
 {
-	bool result = false;
-    switch(window)
-    {
-#ifdef EDITOR
-//		case GCW_DYNAMIC_OBJECT_INFO:
-//			result = guiDynamicObjectsWindowChooser->Status(guiDynamicObjectsWindowChooser->PANE_LEFT);
-//			//result = guiDynamicObjectsWindowInfo->isVisible();
-//			break;
+	IGUIElement * elem = guienv->getRootGUIElement()->getElementFromId(window, true);
+	if (elem)
+	{ 
+		return elem->isVisible();
+	}
 
-        case GCW_DYNAMIC_OBJECT_CHOOSER:
-			result = guiDynamicObjectsWindowChooser->isVisible();
-            break;
-        case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
-			result = guiDynamicObjects_Context_Menu_Window->isVisible();
-            break;
-		 case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1:
-			result = guiDynamicObjects_Context_Menu_Window1->isVisible();
-            break;
-        case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
-            result = guiDynamicObjectsWindowEditAction->isVisible();
-            break;
-        case GCW_TERRAIN_TOOLBAR:
-			result = guiTerrainToolbar->isVisible();
-            break;
-#endif
-        case GCW_GAMEPLAY_ITEMS:
-			result = guiWindowItems->isVisible();
-            break;
-        case GCW_ABOUT:
-			result = guiAboutWindow->isVisible();
-            break;
-        case GCW_TERRAIN_PAINT_VEGETATION:
-			result = guiVegetationToolbar->isVisible();
-            break;
-		case GCW_DIALOG:
-			result = guidialog->isVisible();
-			break;
-
-        default:
-			result = false;
-            break;
-
-    }
-	return result;
+	else return false; 
 }
 
 // Load a script template list for the script editor GUI
@@ -3211,8 +3180,9 @@ void GUIManager::loadScriptTemplates()
     }
 }
 
+//! Update a object preview GUI
 // Currently disabled
-// Update a object preview GUI
+// Needed in the inventory GUI
 void GUIManager::updateDynamicObjectPreview()
 {
 	// Temporary disabled until the new template system is in place.
@@ -3221,6 +3191,9 @@ void GUIManager::updateDynamicObjectPreview()
 	//	guiDynamicObjects_NodePreview->setNode(node);
 }
 
+//! Return the text of the editboxes (currently only the script)
+// Might be removed later, since we have a ID search that can
+// give the same results
 stringc GUIManager::getEditBoxText(GUI_ID id)
 {
     switch(id)
@@ -3235,14 +3208,15 @@ stringc GUIManager::getEditBoxText(GUI_ID id)
 	return "";
 }
 
+//! This update for the new screen size... Needed by the images GUI
 void GUIManager::updateGuiPositions(dimension2d<u32> screensize)
 {
-	// This update for the new screen size... Needed by the images GUI
 	this->screensize=screensize;
 }
 // Only in the editor
 #ifdef EDITOR
 
+//! Set the edit box text, can be the console or the script editor
 void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 {
 	//Clear the text before
@@ -3275,7 +3249,9 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 }
 #endif
 
-// Enable/Disable specific GUI buttons (Mostly IRB menu buttons)
+//! Enable/Disable specific GUI buttons (Mostly IRB menu buttons)
+// To be removed in the future and use this instead to get to the element:
+// Ex: IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
 	///TODO: fazer metodo getElement by ID!!!
@@ -3302,15 +3278,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
             guiTerrainAddSegment->setEnabled(enable);
 			guiTerrainAddSegment->setPressed(!enable);
             break;
-        case BT_ID_TERRAIN_PAINT_VEGETATION:
-            guiTerrainPaintVegetation->setEnabled(enable);
-			guiTerrainPaintVegetation->setPressed(!enable);
-            break;
-        case BT_ID_TERRAIN_TRANSFORM:
-            guiTerrainTransform->setEnabled(enable);
-			guiTerrainTransform->setPressed(!enable);
-            break;
-		case BT_ID_NEW_PROJECT:
+       	case BT_ID_NEW_PROJECT:
             guiMainNewProject->setEnabled(enable);
             guiMainNewProject->setPressed(!enable);
             break;
@@ -3805,7 +3773,7 @@ DynamicObject* GUIManager::getActiveLootItem()
 	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
 	
 	s32 item=guiPlayerItems->getSelected();
-	if (item>-1)
+	if (item>-1 && lootitems.size()>0)
 		return lootitems[item];
 	else
 		return NULL;
@@ -3820,7 +3788,8 @@ void GUIManager::updateItemsList()
     //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
 	for(int i = 0; i<(int)lootitems.size(); i++) 
 	{
-		guiPlayerItems->addItem(stringw(lootitems[i]->displayName).c_str());
+		//internalname is the Alias name of the object. If undefined it use the internal name
+		guiPlayerItems->addItem(stringw(lootitems[i]->internalname).c_str());
 	}
 
 	if (guiPlayerItems->getSelected()<0)
@@ -3844,18 +3813,8 @@ void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 		sca = node->getScale();
 	}
 
-	// Set the textbox gui with the information
-	//pos_x_text->setText(core::stringw(pos.X).c_str());
-	//pos_y_text->setText(core::stringw(pos.Y).c_str());
-	//pos_z_text->setText(core::stringw(pos.Z).c_str());
-
-	//rot_x_text->setText(core::stringw(rot.X).c_str());
-	//rot_y_text->setText(core::stringw(rot.Y).c_str());
-	//rot_z_text->setText(core::stringw(rot.Z).c_str());
-
-	//sca_x_text->setText(core::stringw(sca.X).c_str());
-	//sca_y_text->setText(core::stringw(sca.Y).c_str());
-	//sca_z_text->setText(core::stringw(sca.Z).c_str());
+	// Set the spinbox gui with the information
+	
 	pos_x_text->setValue(pos.X);
 	pos_y_text->setValue(pos.Y);
 	pos_z_text->setValue(pos.Z);

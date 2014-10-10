@@ -9,6 +9,8 @@ using namespace gui;
 
 using namespace std;
 
+
+
 Vegetation::Vegetation(int type)
 {
     ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
@@ -31,6 +33,7 @@ Vegetation::Vegetation(int type)
         trunkMesh->setHardwareMappingHint(EHM_STATIC);
 		// load the mesh as an occtree, should be a faster to draw
 		trunk = smgr->addOctreeSceneNode(trunkMesh,0,-1);
+		trunk->setMaterialFlag(EMF_LIGHTING,true);
         //trunk = smgr->addMeshSceneNode(trunkMesh);
     }
     else
@@ -40,6 +43,7 @@ Vegetation::Vegetation(int type)
 
 	trunk->setAutomaticCulling(EAC_FRUSTUM_BOX);
 	trunk->setMaterialFlag(EMF_LIGHTING,true);
+	trunk->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 	//two options to set vegetation scale: load from XML or export in the right size
 	//trunk->setScale(vector3df(25,25,25));//PS: remove this line after decide this...
@@ -60,9 +64,6 @@ Vegetation::Vegetation(int type)
 	fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
     fakeShadow->setPosition(vector3df(0,(f32)0.03 + (rand()%10)*(f32)0.01 ,0));
 	fakeShadow->setAutomaticCulling(EAC_FRUSTUM_BOX);
-
-
-    trunk->setMaterialFlag(EMF_FOG_ENABLE,true);
     fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
 
 	// Temporary down, evaluating the need to display debug data for this
