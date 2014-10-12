@@ -2587,18 +2587,23 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 void GUIManager::buildSceneObjectList(DynamicObject::TYPE objtype)
 {
+	//Function is disabled because of a bug in release mode.
 
-	if (!guiSceneObjectList)
-		return;
-
-	guiSceneObjectList->clear();
-
-	std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneListAlias(objtype);
-	for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+	IGUIListBox* listbox=(IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(CO_ID_ACTIVE_SCENE_LIST,true);
+	if (listbox)
 	{
-		guiSceneObjectList->addItem(listDynamicObjsCat[i].c_str());
+		if (listbox->getItemCount()>0)
+		{
+			listbox->clear();
+		}
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneListAlias(objtype);
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			listbox->addItem(listDynamicObjsCat[i].c_str());
+		}
+		listbox->setSelected(0);
 	}
-	guiSceneObjectList->setSelected(0);
+
 }
 
 

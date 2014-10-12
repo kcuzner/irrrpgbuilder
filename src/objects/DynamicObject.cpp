@@ -585,7 +585,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 
 	// The player and NPC should not get into the ocean
-	if (height<-80.0f)
+	f32 terrainsize = TerrainManager::getInstance()->getScale()/1536;
+	if (height<(-80.0f*terrainsize))
 		collided=true;
 
 	// The "cliff" is the number of unit of difference from one point to another
@@ -1946,8 +1947,8 @@ void DynamicObject::update()
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
-	if (this->objectType==OBJECT_TYPE_PLAYER) // || this->objectType==OBJECT_TYPE_NPC)
-		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
+	//if (this->objectType==OBJECT_TYPE_PLAYER) // || this->objectType==OBJECT_TYPE_NPC)
+	//	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
 }
 
 void DynamicObject::updateRotation()
@@ -2041,7 +2042,7 @@ void DynamicObject::updateWalk()
 
 
 			//This will stop the player if he reach the target on the ground
-			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 1 && this->objectType==OBJECT_TYPE_PLAYER) 
+			if (!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < 5.0f && this->objectType==OBJECT_TYPE_PLAYER) 
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");

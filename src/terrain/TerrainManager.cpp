@@ -18,6 +18,7 @@ const float DEG2RAD = 3.14159f/180;
 
 TerrainManager::TerrainManager()
 {
+	scale=1024.0f;
     terrainEmptySegmentsMap.clear();
     terrainMap.clear();
 	tileTagged=NULL;
@@ -26,10 +27,13 @@ TerrainManager::TerrainManager()
 	lastbrushtime=0;
 	brushstep = 10; //10 degree increment maximum for the brush circle
 	empty_texture_scale = 1.0f;
+	parametric=true;
 }
 
 TerrainManager::~TerrainManager()
 {
+	clean();
+
     //dtor
 }
 
@@ -129,6 +133,10 @@ void TerrainManager::setEmptyTileGridScale(f32 scale)
 		 if (scale==1024)
 			 gridsize=0.0635f;
 
+	//Scaleratio take into account the scale of the tile, the tile is ajusted for a 1024 size tile.
+	 f32 scaleratio = this->scale/1024.0f;
+	 gridsize = gridsize*scaleratio;
+
 	for ( it=terrainEmptySegmentsMap.begin() ; it != terrainEmptySegmentsMap.end(); it++ )
     {
 		((ISceneNode*)((*it).second))->getMaterial(0).getTextureMatrix(0).setTextureScale(gridsize,gridsize);
@@ -158,7 +166,7 @@ void TerrainManager::createEmptySegmentMatrix(u32 x, u32 y)
 
 }
 
-void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
+void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra, bool param)
 {
 	if (pos.Y==-1000)
 		return;
@@ -188,7 +196,7 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 		TerrainTile* newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
 											0,
 											pos,
-											getHashCode(pos).c_str());
+											getHashCode(pos).c_str(),false,param );
 		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 
 		removeEmptySegment(pos, true);
@@ -208,10 +216,13 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 		// If there is noextra (loading from) there should not be sewing
 		if (!noextra)
 		{
-			newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
-			newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
-			newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
-			newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
+			//Have to do a faster way to do this.
+			//perhaps get all the tiles around and set the position (4 corners in 1 pass)
+			//And add a GUI to "sew" the tiles again. Need too much processing
+			//newTile->mergeToTile(getSegment(vector3df(pos.X-1,0,pos.Z)));
+			//newTile->mergeToTile(getSegment(vector3df(pos.X+1,0,pos.Z)));
+			//newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z-1)));
+			//newTile->mergeToTile(getSegment(vector3df(pos.X,0,pos.Z+1)));
 		}
 	}
 	if (!noextra && empty) // Don't create extra borders when the tile is loaded from XML
@@ -226,6 +237,30 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra)
 		createEmptySegment(vector3df(pos.X-1,0,pos.Z-1));
 		createEmptySegment(vector3df(pos.X+1,0,pos.Z-1));
 	}
+}
+
+ISceneNode * TerrainManager::createCustomTile(vector3df pos, core::stringc model)
+{
+	if (pos.Y==-1000)
+		return NULL;
+
+    //Must be rounded positions (to keep it in the grid)
+    pos.X = (f32)round32(pos.X);
+    pos.Y = (f32)round32(pos.Y);
+    pos.Z = (f32)round32(pos.Z);
+
+
+	TerrainTile* newTile = NULL;
+
+	newTile=new TerrainTile(App::getInstance()->getDevice()->getSceneManager(),
+											0,
+											pos,
+											getHashCode(pos).c_str(),true);
+
+		//terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
+		newTile->customname = model;
+		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
+	return NULL;
 }
 
 ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc model)
@@ -440,6 +475,9 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	terrainXML->SetAttribute("texture3",terraintexture3.c_str());
 	terrainXML->SetAttribute("texture4",terraintexture4.c_str());
 
+	terrainXML->SetAttribute("Type","Parametric"); //New force a new type of object to be parametric. So we can see the difference with old projects
+	terrainXML->SetDoubleAttribute("Scale",(float)scale);
+
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
 
     std::map<std::string, TerrainTile*>::iterator it;
@@ -494,6 +532,22 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 	if (tempstr.size()>0)
 		terraintexture4 = tempstr;
 
+	//New check if the tile is defined as parametric (0.3)
+	stringc param = parentElement->ToElement()->Attribute("Type");
+	bool isparam = true;
+	if (param!="Parametric")
+	{
+		isparam=false;
+		parametric=false;
+		scale=1024; //Force to 1024 unit as old default, and was not saved before 0.3
+	}
+	stringc tscale = parentElement->ToElement()->Attribute("Scale");
+	if (tscale.size()>0)
+	{
+		if (atof(tscale.c_str())!=scale) //Change the scale only if it's not set the same as the default
+			setScale(atof(tscale.c_str()));
+	}
+
 
 	TiXmlNode* tSegment = parentElement->FirstChild( "terrainSegment" );
 
@@ -502,8 +556,8 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 #ifdef EDITOR //only update the display in editor
 		App::getInstance()->quickUpdate();
 #endif
-        f32 x = (f32)atoi(tSegment->ToElement()->Attribute("x"));
-        f32 z = (f32)atoi(tSegment->ToElement()->Attribute("z"));
+        f32 x = (f32)atof(tSegment->ToElement()->Attribute("x"));
+        f32 z = (f32)atof(tSegment->ToElement()->Attribute("z"));
 
 		core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
 		core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
@@ -513,7 +567,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 			noderot=(f32)atoi(customr.c_str()); // Custom mesh rotation
 
 		if (customtile=="")
-			createSegment(vector3df( x/scale ,0, z/scale ),false,true);
+			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam);
 		else
 		{
 			createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
@@ -738,6 +792,7 @@ void TerrainManager::clean()
     for(;it != terrainMap.end();++it)
     {
         TerrainTile* t = it->second;
+		t->clean();
 
 		if (t->getNode())
 			t->getNode()->remove();

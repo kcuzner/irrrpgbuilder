@@ -9,11 +9,12 @@ class TerrainManager
 {
     public:
 
-        static TerrainManager* getInstance();
+	    static TerrainManager* getInstance();
         virtual ~TerrainManager();
 
-        void createSegment(vector3df pos, bool empty=false, bool noextra=false);
+        void createSegment(vector3df pos, bool empty=false, bool noextra=false, bool param=true);
 		ISceneNode * createCustomSegment(vector3df pos, core::stringc model);
+		ISceneNode * createCustomTile(vector3df pos, core::stringc model);
 
 		void setEmptyTileVisible(bool visible);
 		void setEmptyTileGridScale(f32 scale); //used for the scale of the texture for the grid
@@ -67,6 +68,8 @@ class TerrainManager
 		void rotateLeft(core::vector3df pos);
 		void rotateRight(core::vector3df pos);
 
+		inline bool isParametric(){return parametric;}
+
 		typedef std::map<std::string, TerrainTile*> TerrainMap;
 		typedef std::pair<std::string, TerrainTile*> TerrainMapPair;
 
@@ -78,6 +81,7 @@ class TerrainManager
 
     private:
         f32 scale;
+		bool parametric;
 
 		// Tile tagged for deletion
 		TerrainTile* tileTagged;
@@ -85,6 +89,8 @@ class TerrainManager
 
         TerrainMap terrainMap;
         TerrainEmptySegmentsMap terrainEmptySegmentsMap;
+
+		vector<TerrainTile*> customTiles;
 
         f32 transformSegmentsRadius;
         f32 transformSegmentsStrength;
@@ -103,7 +109,6 @@ class TerrainManager
 		u32 lastbrushtime; //time taken to redraw the brush the last time
 		u16 brushstep; 
 		f32 empty_texture_scale;
-
         
 };
 

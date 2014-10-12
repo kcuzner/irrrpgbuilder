@@ -490,6 +490,7 @@ void App::eventGuiButton(s32 id)
 	{
 
 	case GUIManager::BT_ID_NEW_PROJECT:
+		
 		lastScannedPick.pickedNode=NULL;
 		if (selectedNode)
 		{
@@ -499,17 +500,19 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 		this->createNewProject();
+		
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
-		//this->setAppState(APP_EDIT_LOOK);
+
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+		
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
 		this->loadProject();
 		this->setAppState(APP_EDIT_LOOK);
-		GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
 		break;
 
 	case GUIManager::BT_ID_SAVE_PROJECT:
@@ -2199,6 +2202,7 @@ bool App::loadConfig()
 			TerrainManager::getInstance()->setTerrainTexture(3,layer3);
 			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
 			TerrainManager::getInstance()->setScale(scale);
+			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping); 
 
 		}
 		TiXmlElement* waterXML = root->FirstChildElement( "ocean" );
@@ -2317,8 +2321,8 @@ void App::playGame()
 		//DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 		// setback the fog as before (will need to check with LUA)
-		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,5000);
-		smgr->getActiveCamera()->setFarValue(5000.0f);
+		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,10000);
+		smgr->getActiveCamera()->setFarValue(25000.0f);
 
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
@@ -2374,7 +2378,7 @@ void App::stopGame()
 		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 		CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
 		CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
-		CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
+		CameraSystem::getInstance()->editCamMaya->setFarValue(90000.0f);
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
 
 		driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
@@ -3006,11 +3010,18 @@ void App::updateGameplay()
 
 void App::cleanWorkspace()
 {
-	CameraSystem::getInstance()->setPosition(vector3df(0,0,0));
-
 	TerrainManager::getInstance()->clean();
 
 	DynamicObjectsManager::getInstance()->clean(false);
+
+	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
+	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
+	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0.0f,1000.0f,-1000.0f));
+	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
+	CameraSystem::getInstance()->editCamMaya->setFarValue(90000.0f);
+	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+
+	
 
 	scriptGlobal="";
 }
@@ -3541,12 +3552,12 @@ void App::initialize()
 	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,1.0f));
 
 	// Set the fog to be very far when not in gameplay
-	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,20000);
+	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,50000);
 
 	//Create a sun light
 	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,5000,-50));
 	light->setLightType(ELT_DIRECTIONAL);
-	light->setRadius(50000);
+	light->setRadius(90000);
 	light->setRotation(vector3df(70.0f,30.0f,0.0f));
 
 

@@ -23,14 +23,28 @@ using namespace std;
 class TerrainTile
 {
     public:
-        TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name, bool custom=false);
 
-		void createTerrain(ISceneNode* parent, vector3df pos, stringc name);
+		typedef struct
+		{
+			s32 id;
+			f32 value;
+			bool tree;
+			int type;
+			vector3df pos;
+			vector3df rot;
+			vector3df sca;
+		}TerrainData;
+
+        TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name, bool custom=false, bool param=true);
+		virtual ~TerrainTile();
+
+		void createTerrain(ISceneNode* parent, vector3df pos, stringc name, bool param=true);
 		void createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model);
 
         void paintVegetation(vector3df clickPos, bool erase);
 
         void transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength, bool norecalc=false);
+		void transformMeshByVertices(vector<TerrainData> list, bool norecalc);
 		void transformMeshToValue(vector3df clickPos, f32 radius, f32 radius2, f32 strength, f32 value, bool norecalc=false);
 		bool checkModified();
 
@@ -57,7 +71,9 @@ class TerrainTile
 		
 		void recalculate(bool simple=false); //Recalculate all the mesh (collision + normals), simple is without the collision
 
-        virtual ~TerrainTile();
+		void clean();
+
+        
 
 		// variables
 		core::stringc customname;
@@ -85,6 +101,11 @@ class TerrainTile
         void transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool norecalc=false);
 
 		bool needrecalc;
+
+		IMeshBuffer* meshBuffer;
+		S3DVertex* mb_vertices;
+		u16* mb_indices;
+		IVideoDriver * driver;
 };
 
 #endif // TERRAINTILE_H

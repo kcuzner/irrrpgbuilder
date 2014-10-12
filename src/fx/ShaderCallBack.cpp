@@ -51,7 +51,10 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 #endif
 
     layer=10;
-    services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
+	float terrainscale = TerrainManager::getInstance()->getScale()/1024;
+	int ter=(int)(10.0f*terrainscale);
+    services->setPixelShaderConstant("terrainTextureScale",(int*)&ter,1);
+	//services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
 	// Retrieve the scale of the terrain
 	
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
@@ -316,7 +319,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 
 			//REDO the UV map so it's planar and the size appropriate
 			IMesh * mesh = ((IMeshSceneNode *)node)->getMesh();
-			smgr->getMeshManipulator()->makePlanarTextureMapping(mesh, 0.0009f, 0.0009f, 1, vector3df(0,0,0));
+			f32 currentscale = 0.0009f;
+			f32 ratio = TerrainManager::getInstance()->getScale()/1024;
+			currentscale = currentscale / ratio;
+			smgr->getMeshManipulator()->makePlanarTextureMapping(mesh, currentscale, currentscale, 1, vector3df(0,0,0));
 			smgr->getMeshManipulator()->recalculateNormals(mesh);
 
 			//Assign GLSL Shader
