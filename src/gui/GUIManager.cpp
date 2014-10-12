@@ -865,23 +865,6 @@ void GUIManager::createEnvironmentTab()
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText2->setOverrideFont(guiFont9);
 
-
-	//-- Add custom segment (Custom Tiles button)
-	x+= 60;
-	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-									 tabEnv,
-                                     BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str());
-
-	guiTerrainAddCustomSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
-	guiTerrainAddCustomSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
-
-	IGUIStaticText * terrainSText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str(),
-		core::rect<s32>(x-10,36,x+45,65),false,true,tabEnv,-1);
-	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
-	terrainSText3->setOverrideColor(video::SColor(255,64,64,64));
-	terrainSText3->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	terrainSText3->setOverrideFont(guiFont9);
  
 	//Terrain Add Segment
 	 x+= 60;
@@ -900,7 +883,7 @@ void GUIManager::createEnvironmentTab()
 	terrainSText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText->setOverrideFont(guiFont9);
 
-	 x+= 60;
+	 x+= 100;
 
 	guiTerrainTransform = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
@@ -918,6 +901,7 @@ void GUIManager::createEnvironmentTab()
 	terrainTText->setOverrideFont(guiFont9);
 
      x+= 70;
+	  x+= 40;
 
     //Terrain Add Segment
     guiTerrainPaintVegetation = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -952,6 +936,24 @@ void GUIManager::createObjectTab()
 	// Buttons
 	//Dynamic Objects
 	s32 x = 12;
+
+	//Edit Character
+    guiEditCharacter = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_EDIT_CHARACTER,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str());
+
+    guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
+	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
+
+	IGUIStaticText * editCharText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	//editCharText->setOverrideColor(video::SColor(255,65,66,174));
+	editCharText->setOverrideColor(video::SColor(255,64,64,64));
+	editCharText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	editCharText->setOverrideFont(guiFont9);
+
+	 x += 60;
     guiDynamicObjectsMode= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabObject,
                                      BT_ID_DYNAMIC_OBJECTS_MODE,L"",
@@ -968,28 +970,26 @@ void GUIManager::createObjectTab()
 	dynObjText->setOverrideFont(guiFont9);
 
 
-    x += 60;
+   
 
-    //Edit Character
-    guiEditCharacter = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
-                                     tabObject,
-                                     BT_ID_EDIT_CHARACTER,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str());
-
-    guiEditCharacter->setImage(driver->getTexture("../media/art/bt_edit_character.png"));
-	guiEditCharacter->setPressedImage(driver->getTexture("../media/art/bt_edit_character_ghost.png"));
-
-	IGUIStaticText * editCharText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_edit_character")).c_str(),
-		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
-	//editCharText->setOverrideColor(video::SColor(255,65,66,174));
-	editCharText->setOverrideColor(video::SColor(255,64,64,64));
-	editCharText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	editCharText->setOverrideFont(guiFont9);
-
-
-	x += 70;
+  	//x += 70;
 	
-    x += 60;
+   //-- Add custom segment (Custom Tiles button)
+	x+= 60;
+	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+									 tabObject,
+                                     BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str());
+
+	guiTerrainAddCustomSegment->setImage(driver->getTexture("../media/art/bt_terrain_add_segment.png"));
+	guiTerrainAddCustomSegment->setPressedImage(driver->getTexture("../media/art/bt_terrain_add_segment_ghost.png"));
+
+	IGUIStaticText * terrainSText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_custom_segments")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	//terrainSText2->setOverrideColor(video::SColor(255,65,66,174));
+	terrainSText3->setOverrideColor(video::SColor(255,64,64,64));
+	terrainSText3->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	terrainSText3->setOverrideFont(guiFont9);
 
 	//For 0.3 this will be removed. Will take until 0.4 until this is fully removed.
 	//All scripting derives from object (dynamic_object). And this increase complexity for almost nothing.
@@ -1850,10 +1850,10 @@ void GUIManager::createCustomSegmentChooserGUI()
 	guiCustom_Segment_Category->setMaxSelectionRows(24);
 	
 	// Populate a list of collection that contain only CUSTOM TERRAIN SEGMENTS. (SPECIAL_SEGMENT)
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT).size() ; i++)
-	{
-		guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT)[i].c_str());
-	}
+	//for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT).size() ; i++)
+	//{
+	//	guiCustom_Segment_Category->addItem(DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT)[i].c_str());
+	//}
 
 	pos_Y += 40; //Categories
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
@@ -1936,7 +1936,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	mdl_lic1->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 	// -- end info portions
 
-	UpdateGUIChooser(LIST_SEGMENT);
+	//UpdateGUIChooser(LIST_SEGMENT);
 
 }
 
@@ -2474,6 +2474,8 @@ bool GUIManager::isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepo
 // Reshesh the GUI informations inside a window
 void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 {
+	//LIST_TYPE type=LIST_OBJ;
+	//DynamicObject::TYPE objtype
 	if (type==LIST_OBJ) // Dynamic object panel
 	{
 
@@ -2502,7 +2504,8 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 	}
 	if (type==LIST_SEGMENT) // Get a list for the special CUSTOM SEGMENT meshes
 	{
-		core::stringw selected = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
+		//We unified the segment list with the object list.
+		/*core::stringw selected = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
 	
 		// Create the category list first
 		guiCustom_Segment_OBJCategory->clear();
@@ -2522,8 +2525,55 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		{
 			guiCustom_Segment_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
-		guiCustom_Segment_OBJChooser->setSelected(0);
+		guiCustom_Segment_OBJChooser->setSelected(0);*/
+		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+	
+		// Create the category list first
+		guiDynamicObjects_OBJCategory->clear();
+
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+		}
+		guiDynamicObjects_OBJCategory->setSelected(0);
+
+		// Then the list of objects
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"", DynamicObject::SPECIAL_SEGMENT);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
 		return;
+	}
+	if (type==LIST_LOOT) // Get a list for the special CUSTOM SEGMENT meshes
+	{
+		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+	
+		// Create the category list first
+		guiDynamicObjects_OBJCategory->clear();
+
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+		}
+		guiDynamicObjects_OBJCategory->setSelected(0);
+
+		// Then the list of objects
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"",DynamicObject::SPECIAL_LOOT);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		return;
+		
 	}
 }
 
@@ -2559,7 +2609,28 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 	}
 	if (type==LIST_SEGMENT) // Get a list for the special CUSTOM SEGMENT meshes
 	{
-		u32 selected = guiCustom_Segment_OBJCategory->getSelected();
+		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+		text=guiDynamicObjects_OBJCategory->getListItem(selected);
+
+		// check if "all" is selected, as it's the first choice
+		// and empty string mean, that will check for all
+		if (selected==0)
+			text="";
+
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text,DynamicObject::SPECIAL_SEGMENT);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		// Set the "active" object to the selection
+#ifdef EDITOR
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+#endif
+		/*u32 selected = guiCustom_Segment_OBJCategory->getSelected();
 		core::stringw selectedcat = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
 		text=guiCustom_Segment_OBJCategory->getListItem(selected);
 
@@ -2580,6 +2651,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 #ifdef EDITOR
 		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 #endif
+		*/
 		return;
 
 	}

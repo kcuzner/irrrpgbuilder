@@ -182,6 +182,7 @@ class GUIManager
 	{
 		LIST_OBJ = 1,
 		LIST_SEGMENT,
+		LIST_LOOT,
 	};
 
         static GUIManager* getInstance();

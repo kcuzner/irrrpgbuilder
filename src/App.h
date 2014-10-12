@@ -92,6 +92,16 @@ class App
 			DF_MODEL = 2,
 		};
 
+		//Store the current type of object we need in the panel
+		//Will be able to choose between standard objects
+		//SEGMENTS and LOOT (perhaps add later editor objects)
+		enum OBJECT_LIST
+		{
+			LIST_OBJ,
+			LIST_SEGMENT,
+			LIST_LOOT,
+		};
+
 		#ifdef EDITOR
 
 		void eventGuiCheckbox(s32 id);
@@ -287,6 +297,7 @@ class App
 		video::ITexture * tex_normal;
 
 		DIALOG_FUNCTION df;
+		OBJECT_LIST currentObject;
 
 		f32 currentsnapping;
 

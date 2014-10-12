@@ -876,7 +876,7 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPEC
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->special==special)
+		//if (objTemplate[i]->special==special) //Dont hide anymore, all object will be on the panel now.
 		{
 			bool add=true;
 			for (int j=0; j<(int)listObjs.size(); j++)

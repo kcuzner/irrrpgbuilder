@@ -78,12 +78,9 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
-	//Try to get a 4096 height for parametric terrains
-	if (TerrainManager::getInstance()->isParametric())
-		node->setScale(vector3df(scale/nodescale,4096/nodescale,scale/nodescale));
-	else
-		node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
-  
+	
+	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+	 
 	node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);

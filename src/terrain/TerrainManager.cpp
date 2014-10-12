@@ -475,7 +475,10 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	terrainXML->SetAttribute("texture3",terraintexture3.c_str());
 	terrainXML->SetAttribute("texture4",terraintexture4.c_str());
 
-	terrainXML->SetAttribute("Type","Parametric"); //New force a new type of object to be parametric. So we can see the difference with old projects
+	if (parametric)
+	{   //New force a new type of object to be parametric. So we can see the difference with old projects
+		terrainXML->SetAttribute("Type","Parametric"); 
+	}
 	terrainXML->SetDoubleAttribute("Scale",(float)scale);
 
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
@@ -491,23 +494,6 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
     }
-
-
-	/// Since the empty segments are generated, we don't save them anymore
-	//Save all empty segments to XML
-	/*
-	std::map<std::string, ISceneNode*>::iterator it2;
-
-	for ( it2=terrainEmptySegmentsMap.begin() ; it2 != terrainEmptySegmentsMap.end(); it2++ )
-	{
-		vector3df pos = ((ISceneNode*)((*it2).second))->getPosition();
-		TiXmlElement* segmentXML = new TiXmlElement("emptySegment");
-			segmentXML->SetAttribute("x",((core::stringc)pos.X).c_str());
-			segmentXML->SetAttribute("z",((core::stringc)pos.Z).c_str());
-		terrainXML->LinkEndChild(segmentXML);
-		App::getInstance()->quickUpdate();
-
-	}*/
     parentElement->LinkEndChild(terrainXML);
 }
 
