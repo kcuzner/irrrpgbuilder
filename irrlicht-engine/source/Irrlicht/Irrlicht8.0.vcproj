@@ -868,11 +868,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\..\..\include\IAnimatedMeshMD3.h"
+					RelativePath="..\..\include\IAnimatedMeshMD3.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\include\IAnimatedMeshMD3.h"
+					RelativePath=".\..\..\include\IAnimatedMeshMD3.h"
 					>
 				</File>
 				<File
@@ -2760,6 +2760,14 @@
 				Name="writers"
 				>
 				<File
+					RelativePath=".\CB3DMeshWriter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CB3DMeshWriter.h"
+					>
+				</File>
+				<File
 					RelativePath="CColladaMeshWriter.cpp"
 					>
 				</File>
@@ -2797,6 +2805,10 @@
 				</File>
 				<File
 					RelativePath="CSTLMeshWriter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SB3DStructs.h"
 					>
 				</File>
 			</Filter>
