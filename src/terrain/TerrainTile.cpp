@@ -115,9 +115,16 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 
 	// Remove terrain if it was there
 	if (ocean)
+	{
 		ocean->remove();
+		ocean=NULL;
+	}
+	
 	if (node)
+	{
 		node->remove();
+		node=NULL;
+	}
 
 
 	core::stringc path="../media/dynamic_objects/";
@@ -154,23 +161,21 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 
 TerrainTile::~TerrainTile()
 {
-    clean();
-
+	for (int i=0 ; i<(int)vegetationVector.size() ; i++)
+    {
+    	Vegetation* temp = (Vegetation*)vegetationVector[i];
+		delete temp;
+    }
     vegetationVector.clear();
 
 	if (selector)
 		selector->drop();
 
-/*	if (ocean)
-		ocean->remove();
-
 	if (node)
+	{
 		node->remove();
-
-	
-*/
-    //ocean->remove();///TODO: rever destrutor TerrainTile!
-
+		node=NULL;
+	}
 
 }
 
@@ -929,11 +934,5 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 
 void TerrainTile::clean()
 {
-	
-	for(int i=0;i<(int)vegetationVector.size();i++)
-    {
-		vegetationVector[i]->getNode()->remove();
-		//delete vegetationVector[i];
-    }
-	vegetationVector.clear();
+	vegetationVector.clear();	
 }

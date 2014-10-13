@@ -33,7 +33,7 @@ TerrainManager::TerrainManager()
 TerrainManager::~TerrainManager()
 {
 	clean();
-
+	
     //dtor
 }
 
@@ -495,6 +495,11 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
     }
     parentElement->LinkEndChild(terrainXML);
+	if (terrainXML)
+	{ 
+		delete terrainXML;
+		terrainXML=NULL;
+	}
 }
 
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
@@ -778,12 +783,7 @@ void TerrainManager::clean()
     for(;it != terrainMap.end();++it)
     {
         TerrainTile* t = it->second;
-		t->clean();
-
-		if (t->getNode())
-			t->getNode()->remove();
-
-        delete t;
+		delete t;
     }
 
     terrainMap.clear();
@@ -794,8 +794,11 @@ void TerrainManager::clean()
     for(;it2 != terrainEmptySegmentsMap.end();++it2)
     {
         ISceneNode* s = it2->second;
-
-        s->remove();
+		if (s)
+		{
+			s->remove();
+			s=NULL;
+		}
     }
 
     terrainEmptySegmentsMap.clear();

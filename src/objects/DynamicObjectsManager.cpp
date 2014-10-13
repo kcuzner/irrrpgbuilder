@@ -1710,7 +1710,6 @@ void DynamicObjectsManager::showDebugData(bool show)
 //! Since Irrlicht 1.8 this seem to cause problems with certain models
 void DynamicObjectsManager::updateAnimationBlend()
 {
-	return;
 	 for(int i=0;i<(int)objects.size();i++)
 	{
 		// We don't need to have bounding box and other data over the player
@@ -1815,7 +1814,7 @@ void DynamicObjectsManager::clean(bool full)
 				if (!d->isTemplate())
 				{
 					delete d;
-          			objects[i]=NULL;
+          			d=NULL;
 				}
 			}
 		}
@@ -1838,8 +1837,9 @@ void DynamicObjectsManager::clean(bool full)
    for(int i=0;i<(int)objTemplate.size();i++)
     {
         TemplateObject* d = objTemplate[i];
-		delete d;
-        objTemplate.erase(objTemplate.begin() + i);
+		if (d)
+			delete d;
+        //objTemplate.erase(objTemplate.begin() + i);
     }
    objTemplate.clear();
 

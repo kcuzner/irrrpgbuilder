@@ -129,6 +129,11 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
 GUIConfigWindow::~GUIConfigWindow()
 {
+	if (cfgWindow)
+	{
+		cfgWindow->remove();
+		cfgWindow=NULL;
+	}
     //dtor
 }
 

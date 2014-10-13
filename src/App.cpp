@@ -47,6 +47,8 @@ App::App()
 	timer=0;
 	timer2=0;
 	timer3=0;
+	timer4=0;
+	timer_lua=0;
 
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
 	moveupdown = false; // Mouse item move up/down in dynamic object ADD mode
@@ -3051,8 +3053,6 @@ void App::cleanWorkspace()
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	CameraSystem::getInstance()->editCamMaya->setFarValue(90000.0f);
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
-
-	
 
 	scriptGlobal="";
 }

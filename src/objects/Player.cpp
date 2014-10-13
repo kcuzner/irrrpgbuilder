@@ -21,6 +21,8 @@ Player::Player()
 	timer1=App::getInstance()->getDevice()->getTimer()->getRealTime();;
 	timer2=timer1;
 	timer3=timer1;
+	currentime=timer1;
+	oldtime=timer1;
 	playerObject = DynamicObjectsManager::getInstance()->getPlayer();
 	playerObject->getNode()->setVisible(true);
 

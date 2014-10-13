@@ -72,9 +72,17 @@ Vegetation::Vegetation(int type)
 
 Vegetation::~Vegetation()
 {
-    fakeShadow->remove();
+	if (fakeShadow)
+	{
+		fakeShadow->remove();
+		fakeShadow=NULL;
+	}
 
-    trunk->remove();
+    if (trunk)
+	{
+		trunk->remove();
+		trunk=NULL;
+	}
 }
 
 

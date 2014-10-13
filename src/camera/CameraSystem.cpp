@@ -17,8 +17,8 @@ CameraSystem::CameraSystem()
 {
 	//irr::f32 CameraSystem::cameraHeight = 4.0f;
 	lightset=false;
-	this->light=NULL;
-	this->sun=NULL;
+	light=NULL;
+	sun=NULL;
 	camera=CAMERA_EDIT;
 
 	// Create the cutscene camera
@@ -92,16 +92,39 @@ CameraSystem::CameraSystem()
 CameraSystem::~CameraSystem()
 {
 	if (anm)
+	{
 		anm->drop();
+		anm=NULL;
+	}
 
 	if (cutsceneCam)
-		cutsceneCam->drop();
+	{
+		cutsceneCam->remove();
+		cutsceneCam=NULL;
+	}
 
 	if (gameCam)
-		gameCam->drop();
+	{
+		gameCam->remove();
+		gameCam=NULL;
+	}
 
 	if (editCamMaya)
-		editCamMaya->drop();
+	{
+		editCamMaya->remove();
+		editCamMaya=NULL;
+	}
+
+	if (light)
+	{
+		light->remove();
+		light=NULL;
+	}
+	if (sun)
+	{
+		sun->remove();
+		sun=NULL;
+	}
 
     //dtor
 }

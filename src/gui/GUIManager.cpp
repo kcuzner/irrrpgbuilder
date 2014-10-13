@@ -26,8 +26,14 @@ GUIManager::GUIManager()
 	// init those because they will move on the display.
 	guiDynamicObjectsWindowEditAction=NULL;
 	guiDynamicObjectsWindowChooser=NULL;
+	guiDynamicPlayerWindowChooser=NULL;
 	guiCustomSegmentWindowChooser=NULL;
 	guiSceneObjectList=NULL;
+
+	InnerChooser=NULL; 
+	InnerChooser1=NULL; 
+	InnerChooser2=NULL; 
+	InnerChooser3=NULL;
 
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
@@ -62,6 +68,18 @@ GUIManager::GUIManager()
     }
 
 	configWindow = NULL;
+	console=NULL;
+	consolelog=NULL;
+	consolewin=NULL;
+	guiStatus=NULL;
+	guiBackImage=NULL;
+	guiBackImage2=NULL;
+	dialogSound=NULL;
+	guiLoaderWindow=NULL;
+
+
+	textevent.clear();
+	texteventcolor.clear();
 
 	// Bigger Windows titlebar width
 	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
@@ -77,31 +95,58 @@ GUIManager::~GUIManager()
 {
 
 	if (managauge)
-		delete managauge;
+	{
+		managauge->remove();
+		managauge=NULL;
+	}
+		
 
 	if (lifegauge)
-		delete lifegauge;
+	{
+		lifegauge->remove();
+		lifegauge=NULL;
+	}
 
 	if (guiDynamicObjects_NodePreview)
-		delete guiDynamicObjects_NodePreview;
+	{
+		guiDynamicObjects_NodePreview->remove();
+		guiDynamicObjects_NodePreview=NULL;
+	}
+
 
 	if (guiPlayerNodePreview)
-		delete guiPlayerNodePreview;
+	{
+		guiPlayerNodePreview->remove();
+		guiPlayerNodePreview=NULL;
+	}
 
 	if (guiDynamicObjects_Script)
-		delete guiDynamicObjects_Script;
+	{
+		guiDynamicObjects_Script->remove();
+		guiDynamicObjects_Script=NULL;
+	}
 
 	if (configWindow)
 		delete configWindow;
 
 	if (consolewin)
-		delete consolewin;
+	{
+		consolewin->remove();
+		consolewin=NULL;
+	}
 
 	if (guiDynamicObjectsWindowEditAction)
-		delete guiDynamicObjectsWindowEditAction;
+	{
+		guiDynamicObjectsWindowEditAction->remove();
+		guiDynamicObjectsWindowEditAction=NULL;
+	}
+
 
 	if (guiDynamicPlayerWindowChooser)
-		delete guiDynamicPlayerWindowChooser;
+	{
+		guiDynamicPlayerWindowChooser->remove();
+		guiDynamicPlayerWindowChooser=NULL;
+	}
 
     //dtor
 }

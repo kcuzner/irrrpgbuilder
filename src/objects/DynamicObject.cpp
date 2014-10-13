@@ -119,7 +119,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	attackresult=0;
 	originalscale=vector3df(1.0f,1.0f,1.0f);
-	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
+	lastTime=0;
 
 	timerAnimation = App::getInstance()->getDevice()->getTimer()->getRealTime();
 	timerLUA = App::getInstance()->getDevice()->getTimer()->getRealTime();
@@ -131,6 +131,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	// Init the timedelay taken for a loop
 	lastTime=0;
 	soundfx = NULL;
+	
 
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
@@ -168,6 +169,21 @@ DynamicObject::DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicOb
 
 	oldpos=vector3df(0,0,0);
 
+	//Initialize currentAnim as it's checked each time.
+	currentAnim.attackevent.clear();
+	currentAnim.endFrame=0;
+	currentAnim.loop=true;
+	currentAnim.mesh=NULL;
+	currentAnim.meshname="";
+	currentAnim.name="";
+	currentAnim.sound="";
+	currentAnim.soundevent.clear();
+	currentAnim.speed=0.0f;
+	currentAnim.stance="";
+	currentAnim.startFrame=0;
+	currentAnim.variation=0;
+	currentAnim.walkspeed=0.0f;
+	currentAnim.wear="";
 	currentAnimation=OBJECT_ANIMATION_CUSTOM;
 	oldAnimation=OBJECT_ANIMATION_CUSTOM;
 	this->setAnimation("prespawn");
@@ -179,16 +195,15 @@ DynamicObject::~DynamicObject()
 {
 	if (selector)
 		selector->drop();
+	selector=NULL;
 
 	if (Healthbar)
 		Healthbar->remove();
+	Healthbar=NULL;
 
 	if (node)
 		node->remove();
-
-//	if (fakeShadow)
-//		fakeShadow->drop();
-
+	node=NULL;
 
 }
 
@@ -466,6 +481,10 @@ void DynamicObject::walkTo(vector3df targetPos)
 	u32 delay=App::getInstance()->getTimer()-lastTime; //The delay reference MUST come from the main REFRESH loop in APP.
 	lastTime=App::getInstance()->getDevice()->getTimer()->getRealTime();
 
+	//This is a failsafe. Release version were having a delay sometimes of 0 or a big number like 39405830445
+	if (delay==0 || delay>1000)
+		delay=1;
+
 	f32 newspeed = 1.0f;
 	// Calculate the distance based on time (delay)
 	f32 speed = (currentAnim.walkspeed*(f32)delay)/1000; //(based on seconds (1000 for 1000ms)
@@ -486,6 +505,14 @@ void DynamicObject::walkTo(vector3df targetPos)
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
 
+	/*core::stringc text="Current speed set at:";
+		text.append(core::stringc(speed));
+		text.append(" walkspeed is:");
+		text.append(core::stringc(currentAnim.walkspeed));
+		text.append(" delay is:");
+		text.append(core::stringc(delay));
+		App::getInstance()->getDevice()->getLogger()->log(text.c_str());
+		//GUIManager::getInstance()->setConsoleText(stringw(text)); */
 
 	// Sampling points on the ground
 	// TODO: The sampling point should be spaced based on the character size and not fixed values
@@ -1947,8 +1974,8 @@ void DynamicObject::update()
 	// Call the animation blending ending loop Doesnt work in 1.8.0, need to have a patch for it in 1.8.1
 	//if (this->objectType==OBJECT_TYPE_NPC || this->objectType==OBJECT_TYPE_PLAYER)
 
-	//if (this->objectType==OBJECT_TYPE_PLAYER) // || this->objectType==OBJECT_TYPE_NPC)
-	//	((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
+	if (this->objectType==OBJECT_TYPE_PLAYER) // || this->objectType==OBJECT_TYPE_NPC)
+		((IAnimatedMeshSceneNode*)this->getNode())->setTransitionTime(0.35f);
 }
 
 void DynamicObject::updateRotation()
