@@ -76,7 +76,7 @@ class TerrainManager
 		typedef std::map<std::string, ISceneNode*> TerrainEmptySegmentsMap;
 		typedef std::pair<std::string, ISceneNode*> TerrainEmptySegmentsMapPair;
 
-		stringc filename;
+		core::stringc filename;
 
     protected:
 		

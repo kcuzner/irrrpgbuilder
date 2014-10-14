@@ -501,7 +501,6 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		filename="";
     }
     parentElement->LinkEndChild(terrainXML);
-<<<<<<< .mine
 	
 	//Save tiles separately
 	if (parametric)
@@ -530,13 +529,6 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			filename="";
 		}
 	}
-=======
-	if (terrainXML)
-	{ 
-		delete terrainXML;
-		terrainXML=NULL;
-	}
->>>>>>> .r592
 }
 
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
