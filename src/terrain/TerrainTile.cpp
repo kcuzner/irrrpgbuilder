@@ -23,6 +23,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	ocean=NULL;
 	node=NULL;
 	selector=NULL;
+	baseMesh = NULL;
 
 	needrecalc=false; //Define if the tile need to be calculated
 
@@ -102,6 +103,9 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	   mb_vertices[j].Pos.Y = 0.0f;
 	}
 
+	//Get the current mesh to save (B3D or other format)
+	this->baseMesh=((IMeshSceneNode*)node)->getMesh();
+
 	driver = smgr->getGUIEnvironment()->getVideoDriver();
 
 	recalculate();
@@ -127,8 +131,9 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	}
 
 
-	core::stringc path="../media/dynamic_objects/";
-	core::stringc file=path.append(model);
+	//core::stringc path="../media/dynamic_objects/";
+	//core::stringc file=path.append(model);
+	core::stringc file=model;
 	IMesh* baseMesh = smgr->getMesh(file.c_str());
 	if (!baseMesh)
 	{
@@ -147,15 +152,30 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
-	//Disable node scaling for the moment.
-	//node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+	
     node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(baseMesh,node);
 	meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 	mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 	mb_indices  = meshBuffer->getIndices();
     node->setTriangleSelector(selector);
-	custom = true;
+	//custom = true;
+
+	assignTerrainShader(node);
+	nodescale = node->getBoundingBox().getExtent().X;
+	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
+
+	// Work for the water mesh.
+	SMesh* newMesh = NULL;
+
+	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
+	newMesh->setHardwareMappingHint(EHM_STATIC);
+	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
+	ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
+	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
+	assignWaterShader(ocean);
+
+
 }
 
 
@@ -263,21 +283,37 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 	f32 x = 0;
 	f32 z = 0;
 
-	/*f32 scalex = node->getScale().X;
-	f32 scalez = node->getScale().Z;
-	if (scalex!=0)
-	{
-		x = node->getPosition().X/scalex;
-		z = node->getPosition().Z/scalez;
-	} else*/
-	{
-		x = node->getPosition().X;
-		z = node->getPosition().Z;
-	}
-
+	x = node->getPosition().X;
+	z = node->getPosition().Z;
+	
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
     segmentXML->SetDoubleAttribute("x",x);
     segmentXML->SetDoubleAttribute("z",z);
+	segmentXML->SetAttribute("mesh",TerrainManager::getInstance()->filename.c_str());
+
+	//Saving the vegetation information with the tile
+	if (vegetationVector.size()>0)
+	{
+		for (int i=0 ; i<(int)vegetationVector.size() ; i++)
+		{
+			TiXmlElement* vertexXML = new TiXmlElement("tree");
+			Vegetation * tree = (Vegetation*)vegetationVector[i];
+    		
+			if (tree!=NULL)
+			{
+				vector3df treepos=tree->getPosition();
+				vertexXML->SetAttribute("v",tree->getType());
+				vertexXML->SetDoubleAttribute("tx",tree->getPosition().X);
+				vertexXML->SetDoubleAttribute("ty",tree->getPosition().Y);
+				vertexXML->SetDoubleAttribute("tz",tree->getPosition().Z);
+				vertexXML->SetDoubleAttribute("tr",tree->getNode()->getRotation().Y);
+				vertexXML->SetDoubleAttribute("ts",tree->getNode()->getScale().X);
+			}
+			segmentXML->LinkEndChild(vertexXML);
+		}
+			
+	}
+	/*
 
 	if (custom)
 	{
@@ -352,17 +388,18 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 					vertexXML->SetDoubleAttribute("ts",tree->getNode()->getScale().X);
 				}
 				// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
-				segmentXML->LinkEndChild(vertexXML);
+				segmentXML->LinkEndChild(vertexXML); 
 			}
 		} //End meshbuffer save
 	} // End custom condition
+	*/
 
 	parentElement->LinkEndChild(segmentXML);
 }
 
 bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 {
-    TiXmlNode* vertex = parentElement->FirstChild( "vertex" );
+    TiXmlNode* vertex = parentElement->FirstChild( "tree" );
 
 	s32 id = 0;
 	f32 y = 0.0f;
@@ -381,8 +418,8 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
     {
 		if (!custom)
 		{
-			id = atoi(vertex->ToElement()->Attribute("id"));
-			y = (f32)atof(vertex->ToElement()->Attribute("y"));
+			//id = atoi(vertex->ToElement()->Attribute("id"));
+			//y = (f32)atof(vertex->ToElement()->Attribute("y"));
 		}
 		core::stringw title=L"Getting terrain vertices:";
 		title.append(stringw(counter));
@@ -456,7 +493,7 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 				this->transformMeshByVertex(id,y,false,true);
 		}
 
-        vertex = parentElement->IterateChildren( "vertex", vertex );
+        vertex = parentElement->IterateChildren( "tree", vertex );
     }
 	if (TerrainManager::getInstance()->isParametric())
 	{

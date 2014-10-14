@@ -29,6 +29,7 @@ const float DEG2RAD = 3.14159f/180;
 App::App()
 {
 
+	filename="";
 	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (oct 2014)";
 	// Initialize some values
 	selector=NULL;
@@ -3423,6 +3424,7 @@ stringc App::getProjectName()
 void App::saveProjectToXML(stringc filename)
 {
 
+	this->filename=filename;
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
@@ -3454,6 +3456,7 @@ void App::saveProjectToXML(stringc filename)
 #ifdef DEBUG
 	if (result) printf("Saved %s OK!\n",filename.c_str());
 #endif
+
 	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
@@ -3621,8 +3624,10 @@ void App::shutdown()
 	DynamicObjectsManager::getInstance()->clean(true);
 	device->closeDevice();
 	device->run();
-	device->drop();
-	//exit(0);
+	if (device)
+		device->drop();
+	exit(0);
+
 }
 
 std::vector<stringw> App::getConsoleText()

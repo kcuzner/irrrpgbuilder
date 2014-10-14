@@ -204,6 +204,8 @@ class App
 		//Multiple selections (not yet implemented, only data is here but not used yet)
 		std::vector<DynamicObject*> selectedSet;
 		inline u32 getTimer(){return timer;}
+
+		core::stringc filename;
 		
     private:
 

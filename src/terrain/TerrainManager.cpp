@@ -28,6 +28,7 @@ TerrainManager::TerrainManager()
 	brushstep = 10; //10 degree increment maximum for the brush circle
 	empty_texture_scale = 1.0f;
 	parametric=true;
+	filename="";
 }
 
 TerrainManager::~TerrainManager()
@@ -491,15 +492,51 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 #ifdef EDITOR //Update the display only in editor
 		App::getInstance()->quickUpdate();
 #endif
-        ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
+		filename = App::getInstance()->filename;
+		filename=filename.subString(0,(filename.size()-4));
+		filename.append((*it).second->getName());
+		filename.append(".b3d");
+        ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
+		filename="";
     }
     parentElement->LinkEndChild(terrainXML);
+<<<<<<< .mine
+	
+	//Save tiles separately
+	if (parametric)
+	{
+		std::map<std::string, TerrainTile*>::iterator it;
+		for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
+		{
+			filename = App::getInstance()->filename;
+			filename=filename.subString(0,(filename.size()-4));
+			filename.append((*it).second->getName());
+			filename.append(".b3d");
+			
+
+			IMeshWriter* mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
+			IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
+			IMesh* mesh = (((*it).second))->baseMesh;
+			if (mesh)
+				mw->writeMesh(file,  mesh);
+	
+			if (file)
+				file->drop();
+			
+			if (mw)
+				mw->drop();
+
+			filename="";
+		}
+	}
+=======
 	if (terrainXML)
 	{ 
 		delete terrainXML;
 		terrainXML=NULL;
 	}
+>>>>>>> .r592
 }
 
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
@@ -550,19 +587,21 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 x = (f32)atof(tSegment->ToElement()->Attribute("x"));
         f32 z = (f32)atof(tSegment->ToElement()->Attribute("z"));
 
-		core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
-		core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
+		core::stringc mesh=tSegment->ToElement()->Attribute("mesh");
+		//core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
+		//core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
 
-		f32 noderot = 0.0f;
+		/*f32 noderot = 0.0f;
 		if (customr!="")
 			noderot=(f32)atoi(customr.c_str()); // Custom mesh rotation
 
 		if (customtile=="")
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam);
-		else
+		else*/
 		{
-			createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
-			getSegment(vector3df( x/scale ,0, z/scale ))->getNode()->setRotation(core::vector3df(0,noderot,0));
+			createCustomSegment(vector3df( x/scale ,0, z/scale ), mesh);
+			//createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
+			//getSegment(vector3df( x/scale ,0, z/scale ))->getNode()->setRotation(core::vector3df(0,noderot,0));
 		}
 
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
@@ -579,19 +618,6 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 	App::getInstance()->quickUpdate();
 #endif
 
-	/*// Save empty segments to XML
-	TiXmlNode* tSegment2 = parentElement->FirstChild( "emptySegment" );
-	while( tSegment2 != NULL )
-    {
-        f32 x = (f32)atoi(tSegment2->ToElement()->Attribute("x"));
-        f32 z = (f32)atoi(tSegment2->ToElement()->Attribute("z"));
-
-        TerrainManager::getInstance()->createSegment(vector3df( x/scale ,0, z/scale ),true,true);
-
-			App::getInstance()->quickUpdate();
-
-        tSegment2 = parentElement->IterateChildren( "emptySegment", tSegment2 );
-    }*/
 	GUIManager::getInstance()->setTextLoader(L"Creating the collision meshes");
 #ifdef EDITOR
 	App::getInstance()->quickUpdate();
