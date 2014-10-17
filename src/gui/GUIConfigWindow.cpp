@@ -227,14 +227,15 @@ void GUIConfigWindow::populateResolutionList()
 			//Limit the list to the "approved" resolutions
 			//A 800x600 display is the minimum for IRB
             if (w>=800 && h>=600)
+			{
 				resolutionList->addItem(modeName.c_str());
+				vector2di v;
+				v.X = w;
+				v.Y = h;
 
-            vector2di v;
-            v.X = w;
-            v.Y = h;
-
-            vModes.push_back(v);
-        }
+				vModes.push_back(v);
+			}
+		}
     }
 }
 

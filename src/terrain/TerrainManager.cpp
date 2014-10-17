@@ -215,6 +215,11 @@ void TerrainManager::createSegment(vector3df pos, bool empty, bool noextra, bool
 		*/
 
 		// If there is noextra (loading from) there should not be sewing
+		// Perhaps edges vertices could be put in a buffer for each tile
+		// Then the sewing would be much faster
+		// Could create 4 buffers (north south east west)
+		// Then determine the new tile position and only check the proper buffer
+		// Perhaps then use the buffers later to create a "skirt"
 		if (!noextra)
 		{
 			//Have to do a faster way to do this.
@@ -258,9 +263,9 @@ ISceneNode * TerrainManager::createCustomTile(vector3df pos, core::stringc model
 											pos,
 											getHashCode(pos).c_str(),true);
 
-		//terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 		newTile->customname = model;
 		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
+		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 	return NULL;
 }
 
@@ -302,9 +307,11 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 											pos,
 											getHashCode(pos).c_str(),true);
 
-		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
+		
 		newTile->customname = model;
 		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
+
+		terrainMap.insert(TerrainMapPair(newTile->getName().c_str(),newTile));
 
 		//Safety check if the object/model cannot be loaded
 		if (!newTile->getNode())
@@ -436,11 +443,6 @@ void TerrainManager::deleteTaggedSegment()
 {
 
 	 terrainMap.erase(getHashCode(posTagged));
-
-	 if (tileTagged->getNode()!=NULL)
-		 tileTagged->getNode()->remove();
-
-
 	 delete tileTagged;
 
 	 // Put back the empty segment
@@ -480,6 +482,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	{   //New force a new type of object to be parametric. So we can see the difference with old projects
 		terrainXML->SetAttribute("Type","Parametric"); 
 	}
+	terrainXML->SetAttribute("Type","Parametric"); 
 	terrainXML->SetDoubleAttribute("Scale",(float)scale);
 
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
@@ -503,20 +506,38 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
     parentElement->LinkEndChild(terrainXML);
 	
 	//Save tiles separately
-	if (parametric)
+	//if (parametric)
 	{
 		std::map<std::string, TerrainTile*>::iterator it;
 		for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
 		{
+			/*filename = App::getInstance()->filename;
+			filename=filename.subString(0,(filename.size()-4));
+			filename.append((*it).second->getName());
+			filename.append(".b3d");*/
+
 			filename = App::getInstance()->filename;
 			filename=filename.subString(0,(filename.size()-4));
 			filename.append((*it).second->getName());
 			filename.append(".b3d");
-			
+
+			core::stringc file1=filename;
+			core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file1);
+			core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(path,
+				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
+
+			core::stringc filename=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file1,
+					App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
+
+			path2.append("/");
+			path2.append(filename);
+
+			filename=path2;
 
 			IMeshWriter* mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
 			IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
-			IMesh* mesh = (((*it).second))->baseMesh;
+			IMesh* mesh = (((*it).second))->getMesh();
+
 			if (mesh)
 				mw->writeMesh(file,  mesh);
 	
@@ -580,6 +601,12 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
         f32 z = (f32)atof(tSegment->ToElement()->Attribute("z"));
 
 		core::stringc mesh=tSegment->ToElement()->Attribute("mesh");
+
+		if (mesh.size()>0)
+			createCustomSegment(vector3df( x/scale ,0, z/scale ), mesh); //Create a terrain tile from a mesh
+		else
+			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam); //Create a segment
+
 		//core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
 		//core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
 
@@ -589,12 +616,12 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 		if (customtile=="")
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam);
-		else*/
+		else
 		{
 			createCustomSegment(vector3df( x/scale ,0, z/scale ), mesh);
 			//createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
 			//getSegment(vector3df( x/scale ,0, z/scale ))->getNode()->setRotation(core::vector3df(0,noderot,0));
-		}
+		}*/
 
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 

@@ -62,6 +62,7 @@ class TerrainTile
 
         f32 getHeightAt(vector3df pos);
 		f32 getVerticeHeight(vector3df pos);
+		IMesh* getMesh();
 
         void showDebugData(bool show);
 
@@ -73,13 +74,10 @@ class TerrainTile
 
 		void clean();
 
-        
-
-		// variables
+ 		// variables
 		core::stringc customname;
 		bool custom;
-		IMesh* baseMesh;
-
+	
     protected:
         IMeshBuffer* getMeshBuffer();
 

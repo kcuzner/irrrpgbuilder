@@ -23,12 +23,11 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	ocean=NULL;
 	node=NULL;
 	selector=NULL;
-	baseMesh = NULL;
 
 	needrecalc=false; //Define if the tile need to be calculated
 
     scale = TerrainManager::getInstance()->getScale();
-	//if (!custom)
+	if (!custom)
 		createTerrain(parent,pos,name,param);
 
 	srand(App::getInstance()->getDevice()->getTimer()->getRealTime());
@@ -97,14 +96,12 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 	mb_indices  = meshBuffer->getIndices();
 
+	/*
 	// Reset the vertices height of the mesh to 0.0f (Y axis)	
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
 	   mb_vertices[j].Pos.Y = 0.0f;
-	}
-
-	//Get the current mesh to save (B3D or other format)
-	this->baseMesh=((IMeshSceneNode*)node)->getMesh();
+	} */
 
 	driver = smgr->getGUIEnvironment()->getVideoDriver();
 
@@ -133,13 +130,26 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 
 	//core::stringc path="../media/dynamic_objects/";
 	//core::stringc file=path.append(model);
+	
+	
 	core::stringc file=model;
+	
 	IMesh* baseMesh = smgr->getMesh(file.c_str());
+
+
 	if (!baseMesh)
 	{
 		GUIManager::getInstance()->setConsoleText(L"ERROR! Failed to load custom tile",video::SColor(255,255,0,0));
-		node=NULL;
-		return;
+		//Tries to create a mesh that is 1024 in size (mesh size), scaled then by IRB.
+		//"tilesegment" is used to determine the density of the mesh, smaller=less dense
+		vector2df tiles = vector2df(100,100);
+		f32 size = TerrainManager::getInstance()->getScale();
+		u32 tilesegment = (u32)(0.024414f*size);
+		baseMesh = smgr->addHillPlaneMesh( "myHill",
+		core::dimension2d<f32>(f32(1024/tilesegment),f32(1024/tilesegment)),
+		core::dimension2d<u32>(tilesegment,tilesegment), 0, 0,
+			core::dimension2d<f32>(0,0),
+			core::dimension2d<f32>(1,1));
 	}
 
 	baseMesh->setHardwareMappingHint(EHM_STATIC);
@@ -175,7 +185,6 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	assignWaterShader(ocean);
 
-
 }
 
 
@@ -194,7 +203,6 @@ TerrainTile::~TerrainTile()
 	if (node)
 	{
 		node->remove();
-		node=NULL;
 	}
 
 }
@@ -231,6 +239,11 @@ ITriangleSelector* TerrainTile::getTriangleSelector()
 IMeshBuffer* TerrainTile::getMeshBuffer()
 {
     return ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+}
+
+IMesh* TerrainTile::getMesh()
+{
+    return ((IMeshSceneNode*)node)->getMesh();
 }
 
 void TerrainTile::mergeToTile(TerrainTile* tile)
@@ -289,7 +302,18 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
     segmentXML->SetDoubleAttribute("x",x);
     segmentXML->SetDoubleAttribute("z",z);
-	segmentXML->SetAttribute("mesh",TerrainManager::getInstance()->filename.c_str());
+
+	core::stringc file=TerrainManager::getInstance()->filename;
+	core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
+	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(path,
+				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
+
+	core::stringc filename=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file,
+				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
+
+	path2.append("/");
+	path2.append(filename);
+	segmentXML->SetAttribute("mesh",path2.c_str());
 
 	//Saving the vegetation information with the tile
 	if (vegetationVector.size()>0)
@@ -399,7 +423,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
 bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 {
-    TiXmlNode* vertex = parentElement->FirstChild( "tree" );
+    
 
 	s32 id = 0;
 	f32 y = 0.0f;
@@ -410,95 +434,172 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 	f32 scal = 0;
 	f32 tsize = 0;
 	int ttype = -1;
-	bool tree=false;
+	bool atree=false;
 	u32 counter=0;
+	u32 counter1=0;
 	u32 treecounter=0;
 
-    while( vertex != NULL )
-    {
-		if (!custom)
+	if (!TerrainManager::getInstance()->isParametric()) //Old format for tiles
+	{
+		TiXmlNode* vertex = parentElement->FirstChild( "vertex" );
+		printf("A non-parametric project is loaded, loading tile vertices...\n");
+		while( vertex != NULL )
 		{
-			//id = atoi(vertex->ToElement()->Attribute("id"));
-			//y = (f32)atof(vertex->ToElement()->Attribute("y"));
-		}
-		core::stringw title=L"Getting terrain vertices:";
-		title.append(stringw(counter));
-		title.append(L" loaded trees:");
-		title.append(stringw(treecounter));
-		GUIManager::getInstance()->setTextLoader(title);
-		App::getInstance()->getDevice()->getGUIEnvironment()->drawAll();
-		counter++;
-		//Put back default values
-		tree=false;
-		ttype=-1;
-		stringc sttype = vertex->ToElement()->Attribute("v");
-		if (sttype.size()>0)
-		{
-			tree=true;
-			ttype=atoi(sttype.c_str());
-			stringc stposx = vertex->ToElement()->Attribute("tx");
-			if (stposx.size()>0)
+			if (!custom)
 			{
-				treecounter++;
-				pos.X = (f32)atof(stposx.c_str());
-				pos.Y = (f32)atof(vertex->ToElement()->Attribute("ty"));
-				pos.Z = (f32)atof(vertex->ToElement()->Attribute("tz"));
-				stringc tsizes = vertex->ToElement()->Attribute("ts");
-				stringc ttr = vertex->ToElement()->Attribute("ts");
-			
-				if (tsizes.size()>0)
-					tsize=(f32)atof(vertex->ToElement()->Attribute("ts"));
-
-				if (ttr.size()>0)
-					rota=(f32)atof(vertex->ToElement()->Attribute("tr"));
-				
-				if (!TerrainManager::getInstance()->isParametric())
-				{
-					printf("Terrain is NOT parametric\n");
-					// Now create a new tree with the informations
-					Vegetation* v = new Vegetation(ttype);
-					v->setPosition(pos);
-					if (tsize==0.0f) //Old format, try to compensate with "default values"
-					{
-						f32 treesize = (f32)(rand() % 100 + 50)/100;
-						treesize*= 0.3f;
-						v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
-						v->setRotation(vector3df(0,0,0));
-					}
-					else
-					{
-						v->setScale(vector3df(tsize,tsize,tsize));
-						v->setRotation(vector3df(0,rota,0));
-					}
-					// Update the infos
-					vegetationVector.push_back(v);
-				}
+				id = atoi(vertex->ToElement()->Attribute("id"));
+				y = (f32)atof(vertex->ToElement()->Attribute("y"));
+				this->transformMeshByVertex(id,y,false,true);
+				core::stringw title=L"Getting terrain vertices:";
+				title.append(stringw(counter));
+				title.append(L" loaded trees:");
+				title.append(stringw(treecounter));
+				GUIManager::getInstance()->setTextLoader(title);
+				App::getInstance()->getDevice()->getGUIEnvironment()->drawAll();
+				counter1++;
 			}
 
-		}
-		if (!custom)// This slow down when loading and should be optimized.
-		{
-			if (TerrainManager::getInstance()->isParametric())
+			stringc sttype = vertex->ToElement()->Attribute("v");
+			if (sttype.size()>0)
 			{
-				TerrainData data;
-				data.id=id;
-				data.value=y;
-				data.pos=pos;
-				data.type=ttype;
-				data.tree=tree;
-				data.rot=vector3df(0,rota,0);
-				data.sca=vector3df(tsize,tsize,tsize);
-				vertices.push_back(data);
-			} else
-				this->transformMeshByVertex(id,y,false,true);
-		}
+				atree=true;
+				ttype=atoi(sttype.c_str());
+				stringc stposx = vertex->ToElement()->Attribute("tx");
+				if (stposx.size()>0)
+				{
+					treecounter++;
+					pos.X = (f32)atof(stposx.c_str());
+					pos.Y = (f32)atof(vertex->ToElement()->Attribute("ty"));
+					pos.Z = (f32)atof(vertex->ToElement()->Attribute("tz"));
+					stringc tsizes = vertex->ToElement()->Attribute("ts");
+					stringc ttr = vertex->ToElement()->Attribute("ts");
+			
+					if (tsizes.size()>0)
+						tsize=(f32)atof(vertex->ToElement()->Attribute("ts"));
 
-        vertex = parentElement->IterateChildren( "tree", vertex );
-    }
+					if (ttr.size()>0)
+						rota=(f32)atof(vertex->ToElement()->Attribute("tr"));
+				
+					if (!TerrainManager::getInstance()->isParametric())
+					{
+						printf("Terrain is NOT parametric\n");
+						// Now create a new tree with the informations
+						Vegetation* v = new Vegetation(ttype);
+						v->setPosition(pos);
+						if (tsize==0.0f) //Old format, try to compensate with "default values"
+						{
+							f32 treesize = (f32)(rand() % 100 + 50)/100;
+							treesize*= 0.3f;
+							v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+							v->setRotation(vector3df(0,0,0));
+						}
+						else
+						{
+							v->setScale(vector3df(tsize,tsize,tsize));
+							v->setRotation(vector3df(0,rota,0));
+						}
+						// Update the infos
+						vegetationVector.push_back(v);
+					}
+				}
+
+			}
+			vertex = parentElement->IterateChildren( "vertex", vertex );
+	 
+		}
+		
+	}
+	else
+	{
+		printf("A parametric project is loaded, loading tree informations...\n");
+		TiXmlNode* tree = parentElement->FirstChild( "tree" );
+
+		while( tree != NULL )
+		{
+		
+			core::stringw title=L"Getting terrain vertices:";
+			title.append(stringw(counter));
+			title.append(L" loaded trees:");
+			title.append(stringw(treecounter));
+			GUIManager::getInstance()->setTextLoader(title);
+			App::getInstance()->getDevice()->getGUIEnvironment()->drawAll();
+			counter++;
+
+			//Put back default values
+			atree=false;
+			ttype=-1;
+
+			stringc sttype = tree->ToElement()->Attribute("v");
+			if (sttype.size()>0)
+			{
+				atree=true;
+				ttype=atoi(sttype.c_str());
+				stringc stposx = tree->ToElement()->Attribute("tx");
+				if (stposx.size()>0)
+				{
+					treecounter++;
+					pos.X = (f32)atof(stposx.c_str());
+					pos.Y = (f32)atof(tree->ToElement()->Attribute("ty"));
+					pos.Z = (f32)atof(tree->ToElement()->Attribute("tz"));
+					stringc tsizes = tree->ToElement()->Attribute("ts");
+					stringc ttr = tree->ToElement()->Attribute("ts");
+			
+					if (tsizes.size()>0)
+						tsize=(f32)atof(tree->ToElement()->Attribute("ts"));
+
+					if (ttr.size()>0)
+						rota=(f32)atof(tree->ToElement()->Attribute("tr"));
+				
+					if (TerrainManager::getInstance()->isParametric())
+					{
+						printf("Terrain is NOT parametric\n");
+						// Now create a new tree with the informations
+						Vegetation* v = new Vegetation(ttype);
+						v->setPosition(pos);
+						if (tsize==0.0f) //Old format, try to compensate with "default values"
+						{
+							f32 treesize = (f32)(rand() % 100 + 50)/100;
+							treesize*= 0.3f;
+							v->setScale(vector3df(treesize*(scale/7.5f),treesize*(scale/7.5f),treesize*(scale/7.5f)));
+							v->setRotation(vector3df(0,0,0));
+						}
+						else
+						{
+							v->setScale(vector3df(tsize,tsize,tsize));
+							v->setRotation(vector3df(0,rota,0));
+						}
+						// Update the infos
+						vegetationVector.push_back(v);
+					}
+				}
+
+			}
+			if (!custom)// This slow down when loading and should be optimized.
+			{
+				if (TerrainManager::getInstance()->isParametric())
+				{
+					TerrainData data;
+					data.id=id;
+					data.value=y;
+					data.pos=pos;
+					data.type=ttype;
+					data.tree=atree;
+					data.rot=vector3df(0,rota,0);
+					data.sca=vector3df(tsize,tsize,tsize);
+					vertices.push_back(data);
+				} else
+					this->transformMeshByVertex(id,y,false,true);
+			}
+
+			tree = parentElement->IterateChildren( "tree", tree );
+		}
+	}
 	if (TerrainManager::getInstance()->isParametric())
 	{
 		this->transformMeshByVertices(vertices, true);
 	}
+	//Temporary solution so we can edit the tiles (editing was only permitted on non-custom tiles)
+	custom=false;
 	needrecalc=true;
 	//this->recalculate();
 	return true;
