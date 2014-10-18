@@ -56,11 +56,11 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setPixelShaderConstant("terrainTextureScale",(int*)&ter,1);
 	//services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
 	// Retrieve the scale of the terrain
-	
+
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
-	
+
 	services->setPixelShaderConstant("terrainScale",(int*)&layer,1);
-	
+
     //layer=100;
     //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);
 
@@ -113,19 +113,19 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 		//pos = cam->getPosition();
 		//services->setPixelShaderConstant("mCamPos", reinterpret_cast<float*>(&pos),3);
 	//}
-	
+
 	//device->getSceneManager()->getActiveCamera()->getPosition();
 
-   
+
 /*
 
     // set camera position
     pos = device->getSceneManager()->getActiveCamera()->getPosition();
     services->setVertexShaderConstant("camPos", reinterpret_cast<f32*>(&pos), 3);
 
-    
 
-   
+
+
 	// set transposed world matrix
 
     core::matrix4 world = device->getVideoDriver()->getTransform(video::ETS_WORLD);
@@ -163,17 +163,17 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			printf("Material is a solid..\n");
 #endif
 			ITexture * tex0 = NULL;
-		
+
 			if (mat[i].texture0.size()>0) //Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
-			
+
 			if (tex0)
 			{
 				node->getMaterial(i).MaterialType=EMT_SOLID;
 				node->getMaterial(i).setTexture(0,tex0);
 			}
-		
-		} 
+
+		}
 		// Assign a custom lightmap to the model
 		if (mat[i].shader == "LIGHTMAP")
 		{
@@ -186,11 +186,11 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 
 			if (mat[i].texture0.size()>0) //Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
-			
+
 			if (mat[i].texture1.size()>0) // Lightmap slot
 				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
-		
-			
+
+
 			if (tex1)
 			{
 				node->getMaterial(i).MaterialType=EMT_LIGHTMAP;
@@ -198,9 +198,9 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 				if (tex0)
 					node->getMaterial(i).setTexture(0,tex0);
 			}
-		
-		} 
-		
+
+		}
+
 		if (mat[i].shader == "LIGHTMAP_LIGHTING")
 		{
 
@@ -212,10 +212,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 
 			if (mat[i].texture0.size()>0) // Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
-			
+
 			if (mat[i].texture1.size()>0) // Lightmap slot
 				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
-				
+
 			if (tex1)
 			{
 				node->getMaterial(i).MaterialType=EMT_LIGHTMAP_LIGHTING;
@@ -224,8 +224,8 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 					node->getMaterial(i).setTexture(0,tex0);
 			}
 
-		} 
-		
+		}
+
 		if (mat[i].shader == "NORMAL_MAP")
 		{
 			//This is the standard Irrlicht pipeline shader
@@ -237,10 +237,10 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			ITexture * tex1 = NULL;
 #ifdef DEBUG
 			printf("Material is a normal map..\n");
-#endif 
+#endif
 			if (mat[i].texture0.size()>0) // Diffuse slot
 				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
-			
+
 			if (mat[i].texture1.size()>0) // Normal map slot
 				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
 			if (tex0)
@@ -251,7 +251,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			}
 
 		}
-		
+
 		if (mat[i].shader == "TERRAIN")
 		{
 
@@ -270,7 +270,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
 			static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
 			static ITexture* layer4 = smgr->getVideoDriver()->getTexture(texture4.c_str());
-			
+
 			static s32 materialTerrain2 = 0;
 			// Disable 8 textures for the moment, will be enabled by the user directly.
 			bool heighttextures = false;
@@ -300,7 +300,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 				this, video::EMT_SOLID);
 
 				//Assign Textures
-#ifdef WIN32	// Strange 
+#ifdef WIN32	// Strange
 				// On Windows
 				node->setMaterialTexture(0,layer1);
 				node->setMaterialTexture(1,layer2);
@@ -345,15 +345,15 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			// Water shader
 
 			node->getMaterial(i).MaterialType=(E_MATERIAL_TYPE)materialOcean1;
-	
+
 			node->getMaterial(i).setTexture(0,oceanLayer0);
 			node->getMaterial(i).setTexture(1,oceanLayer1);
 
-			node->setMaterialFlag(EMF_FOG_ENABLE,true);    
+			node->setMaterialFlag(EMF_FOG_ENABLE,true);
 			node->setMaterialFlag(EMF_BLEND_OPERATION,true); //This must be used for transparent material now.
 		}
 
-	
+
 	}
-	
+
 }

@@ -41,7 +41,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 		tilename="../media/land.obj";
 
 	IMesh* baseMesh = NULL;
-	
+
 	if (!param)
 	{
 		baseMesh = smgr->getMesh(tilename.c_str());
@@ -78,26 +78,26 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
-	
+
 	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
-	 
+
 	node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);
 	assignTerrainShader(node);
-    
+
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
 	ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	assignWaterShader(ocean);
- 
-	
+
+
 	meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 	mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 	mb_indices  = meshBuffer->getIndices();
 
 	/*
-	// Reset the vertices height of the mesh to 0.0f (Y axis)	
+	// Reset the vertices height of the mesh to 0.0f (Y axis)
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
 	   mb_vertices[j].Pos.Y = 0.0f;
@@ -108,7 +108,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	recalculate();
 
 	custom = false;
-    
+
 }
 
 void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model)
@@ -120,7 +120,7 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 		ocean->remove();
 		ocean=NULL;
 	}
-	
+
 	if (node)
 	{
 		node->remove();
@@ -130,10 +130,10 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 
 	//core::stringc path="../media/dynamic_objects/";
 	//core::stringc file=path.append(model);
-	
-	
+
+
 	core::stringc file=model;
-	
+
 	IMesh* baseMesh = smgr->getMesh(file.c_str());
 
 
@@ -162,7 +162,7 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
-	
+
     node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(baseMesh,node);
 	meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
@@ -292,13 +292,13 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 void TerrainTile::saveToXML(TiXmlElement* parentElement)
 {
 	// Save the terrain land
-    
+
 	f32 x = 0;
 	f32 z = 0;
 
 	x = node->getPosition().X;
 	z = node->getPosition().Z;
-	
+
     TiXmlElement* segmentXML = new TiXmlElement("terrainSegment");
     segmentXML->SetDoubleAttribute("x",x);
     segmentXML->SetDoubleAttribute("z",z);
@@ -322,7 +322,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 		{
 			TiXmlElement* vertexXML = new TiXmlElement("tree");
 			Vegetation * tree = (Vegetation*)vegetationVector[i];
-    		
+
 			if (tree!=NULL)
 			{
 				vector3df treepos=tree->getPosition();
@@ -335,7 +335,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 			}
 			segmentXML->LinkEndChild(vertexXML);
 		}
-			
+
 	}
 	/*
 
@@ -347,12 +347,12 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
 		if (vegetationVector.size()>0)
 		{
-			
+
 			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
 			{
 				TiXmlElement* vertexXML = new TiXmlElement("vertex");
 				Vegetation * tree = (Vegetation*)vegetationVector[i];
-    		
+
 				if (tree!=NULL)
 				{
 					vector3df treepos=tree->getPosition();
@@ -365,10 +365,10 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				}
 				segmentXML->LinkEndChild(vertexXML);
 			}
-			
+
 		}
 	}
-	
+
 
 	if (!custom)
 	{
@@ -383,7 +383,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 			//if(realPos.Y != 0.0f ) //We should save everything!!!
 			{
 				TiXmlElement* vertexXML = new TiXmlElement("vertex");
-            
+
 				vertexXML->SetAttribute("id",j);
 				//vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
 				vertexXML->SetAttribute("y",stringc(mb_vertices[j].Pos.Y).c_str());
@@ -412,7 +412,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 					vertexXML->SetDoubleAttribute("ts",tree->getNode()->getScale().X);
 				}
 				// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
-				segmentXML->LinkEndChild(vertexXML); 
+				segmentXML->LinkEndChild(vertexXML);
 			}
 		} //End meshbuffer save
 	} // End custom condition
@@ -423,7 +423,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
 bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 {
-    
+
 
 	s32 id = 0;
 	f32 y = 0.0f;
@@ -473,13 +473,13 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 					pos.Z = (f32)atof(vertex->ToElement()->Attribute("tz"));
 					stringc tsizes = vertex->ToElement()->Attribute("ts");
 					stringc ttr = vertex->ToElement()->Attribute("ts");
-			
+
 					if (tsizes.size()>0)
 						tsize=(f32)atof(vertex->ToElement()->Attribute("ts"));
 
 					if (ttr.size()>0)
 						rota=(f32)atof(vertex->ToElement()->Attribute("tr"));
-				
+
 					if (!TerrainManager::getInstance()->isParametric())
 					{
 						printf("Terrain is NOT parametric\n");
@@ -505,9 +505,9 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 
 			}
 			vertex = parentElement->IterateChildren( "vertex", vertex );
-	 
+
 		}
-		
+
 	}
 	else
 	{
@@ -516,7 +516,7 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 
 		while( tree != NULL )
 		{
-		
+
 			core::stringw title=L"Getting terrain vertices:";
 			title.append(stringw(counter));
 			title.append(L" loaded trees:");
@@ -543,13 +543,13 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 					pos.Z = (f32)atof(tree->ToElement()->Attribute("tz"));
 					stringc tsizes = tree->ToElement()->Attribute("ts");
 					stringc ttr = tree->ToElement()->Attribute("ts");
-			
+
 					if (tsizes.size()>0)
 						tsize=(f32)atof(tree->ToElement()->Attribute("ts"));
 
 					if (ttr.size()>0)
 						rota=(f32)atof(tree->ToElement()->Attribute("tr"));
-				
+
 					if (TerrainManager::getInstance()->isParametric())
 					{
 						printf("Terrain is NOT parametric\n");
@@ -663,7 +663,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 				//v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
 				v->setPosition(vector3df(realPos.X,realPos.Y,realPos.Z));
                 f32 treesize = (f32)(rand() % 50 + 25);
-                
+
 				v->setScale(vector3df(treesize,treesize,treesize));
 
 #ifdef DEBUG
@@ -704,7 +704,7 @@ bool TerrainTile::checkModified()
 
 void TerrainTile::transformMeshByVertices(vector<TerrainData> list, bool norecalc)
 {
-	
+
 	core::stringw title=L"Generating terrain";
 	GUIManager::getInstance()->setTextLoader(title);
 	App::getInstance()->getDevice()->getGUIEnvironment()->drawAll();
@@ -716,7 +716,7 @@ void TerrainTile::transformMeshByVertices(vector<TerrainData> list, bool norecal
 	}
 
 	App::getInstance()->quickUpdate();
-	
+
 	int counter=0;
 	//Then plant the trees
 	title=L"Generating trees";
@@ -733,18 +733,18 @@ void TerrainTile::transformMeshByVertices(vector<TerrainData> list, bool norecal
 				v->setPosition(list[a].pos);
 				v->setScale(list[a].sca);
 				v->setRotation(list[a].rot);
-			
+
 				// Update the infos
 				vegetationVector.push_back(v);
 			}
 		}
 	}
-	
+
 
 	if (!norecalc)
 		recalculate();
 	else
-	{	
+	{
 		needrecalc=true;
 		recalculate(true);
 	}
@@ -769,11 +769,11 @@ void TerrainTile::transformMeshByVertex(s32 id, f32 y, bool addVegetation, bool 
 
 	App::getInstance()->quickUpdate();
 
-	
+
 	if (!norecalc)
 		recalculate();
 	else
-	{	
+	{
 		needrecalc=true;
 		recalculate(true);
 	}
@@ -792,7 +792,7 @@ void TerrainTile::recalculate(bool simple)
 		((IMeshSceneNode*)node)->getMesh()->setDirty();
 	}
 
-	// Simple is used by the brush when carving, once the carve is done, if needrecalc is activated will redo the collision shape 
+	// Simple is used by the brush when carving, once the carve is done, if needrecalc is activated will redo the collision shape
 	// also used by terrainManager::recalculate()
 	if (!simple && needrecalc)
 	{
@@ -848,8 +848,8 @@ void TerrainTile::transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32
 	    if(mb_vertices[j].Pos.Y < -(nodescale*0.25f)) mb_vertices[j].Pos.Y = -(nodescale*0.25f);
 	}
 
-	if (norecalc) 
-	{	
+	if (norecalc)
+	{
 		recalculate(true);
 	}
 	else
@@ -900,8 +900,8 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radiu
 	    }
 	}
 
-	if (norecalc) 
-	{	
+	if (norecalc)
+	{
 		recalculate(true);
 	}
 	else
@@ -966,7 +966,7 @@ f32 TerrainTile::getVerticeHeight(vector3df pos)
 	    if((realPos.getDistanceFrom(pos) < smallest))
 	    {
 			smallest = realPos.getDistanceFrom(pos);
-			returnvalue = realPos.Y;            
+			returnvalue = realPos.Y;
 	    }
 
 	}
@@ -1025,7 +1025,7 @@ void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
         ShaderCallBack::getInstance(), video::EMT_SOLID);
 
 		//Assign Textures
-#ifdef WIN32 // Strange 
+#ifdef WIN32 // Strange
 		// On Windows
 		node->setMaterialTexture(0,layer1);
 		node->setMaterialTexture(1,layer2);
@@ -1033,10 +1033,10 @@ void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
 		node->setMaterialTexture(3,layer4);
 #else
 		// On Linux
-		node->setMaterialTexture(0,layer0);
-		node->setMaterialTexture(1,layer1);
-		node->setMaterialTexture(2,layer2);
-		node->setMaterialTexture(3,layer3);
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(1,layer2);
+		node->setMaterialTexture(2,layer3);
+		node->setMaterialTexture(3,layer4);
 #endif
 	}
 
@@ -1066,11 +1066,11 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 	node->setMaterialTexture(1,oceanLayer1);
 	node->setMaterialTexture(2,oceanLayer2);
 
-	//node->setMaterialFlag(EMF_FOG_ENABLE,true);    
+	//node->setMaterialFlag(EMF_FOG_ENABLE,true);
 	//node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 }
 
 void TerrainTile::clean()
 {
-	vegetationVector.clear();	
+	vegetationVector.clear();
 }
