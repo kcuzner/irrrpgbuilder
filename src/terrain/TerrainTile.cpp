@@ -594,10 +594,7 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 			tree = parentElement->IterateChildren( "tree", tree );
 		}
 	}
-	if (TerrainManager::getInstance()->isParametric())
-	{
-		this->transformMeshByVertices(vertices, true);
-	}
+
 	//Temporary solution so we can edit the tiles (editing was only permitted on non-custom tiles)
 	custom=false;
 	needrecalc=true;
