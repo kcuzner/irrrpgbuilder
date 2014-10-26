@@ -18,7 +18,9 @@
 	<text id="bt_dynamic_objects_remove" str="Remove Object"/>
 	<text id="bt_dynamic_objects_edit_script" str="Edit Lua Script"/>
 	<text id="bt_dynamic_objects_cancel" str="Cancel"/>
-	<text id="bt_dynamic_objects_mode" str="Edit Object"/>
+	<text id="bt_dynamic_objects_mode" str="Edit NPC"/>
+	<text id="bt_dynamic_objects_prop" str="Edit object"/>
+	<text id="bt_dynamic_objects_loot" str="Edit loot"/>
 	<text id="info_dynamic_objects_mode" str="Press and hold the spacebar to enter navigation mode"/>
 	<text id="info_drag" str="Entered navigation mode. Left mouse: rotate, Right mouse: drag, Mousewheel: zoom"/>
 	<text id="bt_paint_vegetation" str="Paint Vegetation"/>
@@ -27,7 +29,7 @@
 	<text id="bt_load_project" str="Load Project"/>
 	<text id="bt_show_playable_area" str="Display plateau"/>
 	<text id="bt_terrain_segments" str="Terrain tiles"/>
-	<text id="bt_terrain_custom_segments" str="Custom tiles"/>
+	<text id="bt_terrain_custom_segments" str="Edit object tile"/>
 	<text id="bt_terrain_empty_segments" str="Empty tiles"/>
 	<text id="bt_terrain_transform" str="Edit Elevation"/>
 	<text id="bt_terrain_brush" str="Brush tool"/>

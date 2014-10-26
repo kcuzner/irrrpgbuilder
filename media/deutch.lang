@@ -19,6 +19,8 @@
 	<text id="bt_dynamic_objects_edit_script" str="Lua Script bearbeiten"/>
 	<text id="bt_dynamic_objects_cancel" str="Abbrechen"/>
 	<text id="bt_dynamic_objects_mode" str="Objekt Modus"/>
+	<text id="bt_dynamic_objects_prop" str="Edit object"/>
+	<text id="bt_dynamic_objects_loot" str="Edit loot"/>
 	<text id="info_dynamic_objects_mode" str="Drücken und halten Sie die Leertaste, um navigationsmodus"/>
 	<text id="info_drag" str="Navigationsmodus eingegeben. Linke Maus: drehen, rechts Maus: Drag, Mausrad: Zoom"/>
 	<text id="bt_paint_vegetation" str="Vegetation einfuegen"/>

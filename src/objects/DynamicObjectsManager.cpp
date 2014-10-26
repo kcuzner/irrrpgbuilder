@@ -849,19 +849,100 @@ DynamicObject* DynamicObjectsManager::createTemplateAt(core::stringc name,core::
 
 //! Provide a list of template objects names for the GUI (Templates) based on the object type/category
 //! Used the GUI system to provide a list from the objects in the templates
-vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, core::stringw category, DynamicObject::SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsList(GUIManager::LIST_TYPE type, core::stringw collection, core::stringw category, DynamicObject::SPECIAL special)
 {
     vector<stringw> listObjs;
 
+	bool all=false;
+
+	if (collection==LANGManager::getInstance()->getText("panel_selcombo_all"))
+		all=true;
+
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->type==objectType && category=="" && objTemplate[i]->special==special)
-				listObjs.push_back( objTemplate[i]->getName() );
-		else
-
-		if (objTemplate[i]->type==objectType && objTemplate[i]->category==category && objTemplate[i]->special==special)
+		if (type == GUIManager::LIST_NPC)
 		{
-			listObjs.push_back( objTemplate[i]->getName() );
+			if ((objTemplate[i]->type==collection || all) && category=="" && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+			else
+
+			if ((objTemplate[i]->type==collection || all) && objTemplate[i]->category==category && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+		}
+		if (type == GUIManager::LIST_PROP)
+		{
+			if ((objTemplate[i]->type==collection || all) && category=="" && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+			else
+
+			if ((objTemplate[i]->type==collection || all) && objTemplate[i]->category==category && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+		}
+		if (type == GUIManager::LIST_LOOT)
+		{
+			if ((objTemplate[i]->type==collection || all) && category=="")
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_LOOT || objTemplate[i]->special==DynamicObject::SPECIAL_LOOT)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+			else
+
+			if ((objTemplate[i]->type==collection || all) && objTemplate[i]->category==category)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_LOOT || objTemplate[i]->special==DynamicObject::SPECIAL_LOOT)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+		}
+		if (type == GUIManager::LIST_SEGMENT)
+		{
+			if ((objTemplate[i]->type==collection || all) && category=="" && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->special==DynamicObject::SPECIAL_SEGMENT)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
+			else
+
+			if ((objTemplate[i]->type==collection || all) && objTemplate[i]->category==category && objTemplate[i]->special==special)
+			{
+				if (objTemplate[i]->type!=stringw(""))
+				{
+					if (objTemplate[i]->special==DynamicObject::SPECIAL_SEGMENT)
+						listObjs.push_back( objTemplate[i]->getName() );
+				}
+			}
 		}
 
     }
@@ -870,13 +951,17 @@ vector<stringw> DynamicObjectsManager::getObjectsList(core::stringw objectType, 
 }
 
 
-vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsCollections(GUIManager::LIST_TYPE type)
 {
 	vector<stringw> listObjs;
+	listObjs.push_back(stringw(LANGManager::getInstance()->getText("panel_selcombo_all")));
 
+	bool all=false;
+	//if (type==GUIManager::LIST_ALL)
+	//	all=true;
+	
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		//if (objTemplate[i]->special==special) //Dont hide anymore, all object will be on the panel now.
 		{
 			bool add=true;
 			for (int j=0; j<(int)listObjs.size(); j++)
@@ -885,7 +970,21 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPEC
 					add=false;
 			}
 			if (add)
-				listObjs.push_back( objTemplate[i]->type );
+			{
+				if (type==GUIManager::LIST_NPC && (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NPC || all))
+					listObjs.push_back( objTemplate[i]->type );
+
+				if (type==GUIManager::LIST_PROP && (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || 
+					objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || all))
+					listObjs.push_back( objTemplate[i]->type );
+
+				if (type==GUIManager::LIST_SEGMENT && (objTemplate[i]->special==DynamicObject::SPECIAL_SEGMENT || all))
+					listObjs.push_back( objTemplate[i]->type );
+
+				if (type==GUIManager::LIST_LOOT && (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_LOOT || all))
+					listObjs.push_back( objTemplate[i]->type );
+				
+			}
 		}
 
     }
@@ -896,26 +995,86 @@ vector<stringw> DynamicObjectsManager::getObjectsCollections(DynamicObject::SPEC
 
 //! Create a list of the categories from the XML data in the templates.
 // Special is to build a list based on the special type of this template (DYNAMIC OBJECT, CUSTOM TILE, LOOT, ETC)
-vector<stringw> DynamicObjectsManager::getObjectsListCategories(core::stringw objectType, DynamicObject::SPECIAL special)
+vector<stringw> DynamicObjectsManager::getObjectsListCategories(GUIManager::LIST_TYPE type, stringw collection, DynamicObject::SPECIAL special)
 {
     vector<stringw> listObjs;
-	listObjs.push_back(LANGManager::getInstance()->getText("panel_selcombo_all").c_str());
+	listObjs.push_back(LANGManager::getInstance()->getText("panel_selcombo_all"));
 	bool found = false;
+	bool all = false;
+
+	if (type==GUIManager::LIST_ALL || collection==LANGManager::getInstance()->getText("panel_selcombo_all"))
+		all=true;
 
     for (int i=0 ; i<(int)objTemplate.size() ; i++)
     {
-		if (objTemplate[i]->type==objectType)
+		if (type==GUIManager::LIST_NPC)
 		{
-			for (int a=0 ; a<(int)listObjs.size(); a++)
+			if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NPC && objTemplate[i]->type==collection || all)
 			{
-				if (objTemplate[i]->category == listObjs[a])
+				for (int a=0 ; a<(int)listObjs.size(); a++)
 				{
+					if (objTemplate[i]->category == listObjs[a])
+					{
 						found=true;
+					}
 				}
+				if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NPC)
+						listObjs.push_back( objTemplate[i]->category );
+				found=false;
 			}
-			if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
-					listObjs.push_back( objTemplate[i]->category );
-			found=false;
+		}
+		if (type==GUIManager::LIST_PROP)
+		{
+			if ((objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE)
+				&& objTemplate[i]->type==collection || all)
+			{
+				for (int a=0 ; a<(int)listObjs.size(); a++)
+				{
+					if (objTemplate[i]->category == listObjs[a])
+					{
+						found=true;
+					}
+				}
+				if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE)
+						listObjs.push_back( objTemplate[i]->category );
+				found=false;
+			}
+		}
+		if (type==GUIManager::LIST_LOOT)
+		{
+			if ((objTemplate[i]->special==DynamicObject::SPECIAL_LOOT ||  objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_LOOT) && objTemplate[i]->type==collection || all)
+			{
+				for (int a=0 ; a<(int)listObjs.size(); a++)
+				{
+					if (objTemplate[i]->category == listObjs[a])
+					{
+						found=true;
+					}
+				}
+				if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
+					if (objTemplate[i]->special==DynamicObject::SPECIAL_LOOT ||  objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_LOOT)
+						listObjs.push_back( objTemplate[i]->category );
+				found=false;
+			}
+		}
+		if (type==GUIManager::LIST_SEGMENT)
+		{
+			if (objTemplate[i]->special==DynamicObject::SPECIAL_SEGMENT && objTemplate[i]->type==collection || all)
+			{
+				for (int a=0 ; a<(int)listObjs.size(); a++)
+				{
+					if (objTemplate[i]->category == listObjs[a])
+					{
+						found=true;
+					}
+				}
+				if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
+					if (objTemplate[i]->special==DynamicObject::SPECIAL_SEGMENT)
+						listObjs.push_back( objTemplate[i]->category );
+				found=false;
+			}
 		}
     }
 
@@ -941,7 +1100,7 @@ vector<stringw> DynamicObjectsManager::getObjectsSceneList(DynamicObject::TYPE o
 
 }
 
-// Return a list of the object in the scene with their internal name
+// Return a list of the object in the scene with their alias name
 vector<stringw> DynamicObjectsManager::getObjectsSceneListAlias(DynamicObject::TYPE objectType)
 {
 	vector<stringw> listObjs;
@@ -1651,6 +1810,7 @@ void DynamicObjectsManager::removeGenerated()
 }
 
 //! Will add the source object properties values inside the destination object
+// Should be used with object that we wear and increase capacity (weapons,etc) 
 void DynamicObjectsManager::addProperties(DynamicObject* source, DynamicObject* destination)
 {
 	DynamicObject::cproperty prop = source->getProperties();
@@ -1671,6 +1831,7 @@ void DynamicObjectsManager::addProperties(DynamicObject* source, DynamicObject* 
 }
 
 //! Will remove the source object properties values from the destination object
+// Should be used with object that we wear and increase capacity (weapons,etc)
 void DynamicObjectsManager::removeProperties(DynamicObject* source, DynamicObject* destination)
 {
 	DynamicObject::cproperty prop = source->getProperties();
@@ -1865,6 +2026,7 @@ vector<DynamicObject*> DynamicObjectsManager::getObjectNearPosition(vector3df po
 	return list;
 }
 
+//Return a list of dynamic object that we can interact
 vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
 {
 	vector<DynamicObject*> list; // perhap will have to make it part of the class (LUA)
@@ -1885,6 +2047,7 @@ vector<DynamicObject*> DynamicObjectsManager::buildInteractiveList()
 
 }
 
+// Return the current enemy count in the current map
 int DynamicObjectsManager::getEnemyCount()
 {
 	int finalcount = 0;

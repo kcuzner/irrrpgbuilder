@@ -96,6 +96,7 @@ class DynamicObject
 			OBJECT_TYPE_PLAYER	= 5,
 			OBJECT_TYPE_EDITOR	= 6,
 			OBJECT_TYPE_LOOT = 7,	
+			OBJECT_TYPE_ALL
 		};
 
 		enum OBJECT_ANIMATION

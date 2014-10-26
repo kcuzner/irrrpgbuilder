@@ -1004,8 +1004,8 @@ void GUIManager::createObjectTab()
                                      BT_ID_DYNAMIC_OBJECTS_MODE,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str());
 
-    guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_dynamic_objects_mode.png"));
-	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_dynamic_objects_mode_ghost.png"));
+    guiDynamicObjectsMode->setImage(driver->getTexture("../media/art/bt_edit_npc.png"));
+	guiDynamicObjectsMode->setPressedImage(driver->getTexture("../media/art/bt_edit_npc_ghost.png"));
 
 	IGUIStaticText * dynObjText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_mode")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
@@ -1013,6 +1013,41 @@ void GUIManager::createObjectTab()
 	dynObjText->setOverrideColor(video::SColor(255,64,64,64));
 	dynObjText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	dynObjText->setOverrideFont(guiFont9);
+
+	 x += 60;
+
+	 guiDynamicObjectsProps= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_DYNAMIC_OBJECTS_PROPS,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_prop")).c_str());
+
+    guiDynamicObjectsProps->setImage(driver->getTexture("../media/art/bt_edit_prop.png"));
+	guiDynamicObjectsProps->setPressedImage(driver->getTexture("../media/art/bt_edit_prop_ghost.png"));
+
+	IGUIStaticText * dynObjText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_prop")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	//dynObjText->setOverrideColor(video::SColor(255,65,66,174));
+	dynObjText1->setOverrideColor(video::SColor(255,64,64,64));
+	dynObjText1->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	dynObjText1->setOverrideFont(guiFont9);
+
+	 x += 60;
+
+	 guiDynamicObjectsLoot= guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
+                                     tabObject,
+                                     BT_ID_DYNAMIC_OBJECTS_LOOT,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_loot")).c_str());
+
+   guiDynamicObjectsLoot->setImage(driver->getTexture("../media/art/bt_edit_loot.png"));
+	guiDynamicObjectsLoot->setPressedImage(driver->getTexture("../media/art/bt_edit_loot_ghost.png"));
+
+	IGUIStaticText * dynObjText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_loot")).c_str(),
+		core::rect<s32>(x-10,36,x+45,65),false,true,tabObject,-1);
+	//dynObjText->setOverrideColor(video::SColor(255,65,66,174));
+	dynObjText2->setOverrideColor(video::SColor(255,64,64,64));
+	dynObjText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
+	dynObjText2->setOverrideFont(guiFont9);
+
 
 
    
@@ -1488,10 +1523,10 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->setMaxSelectionRows(24);
 	
-	// Populate a list of collection that contain only dynamic objects. (SPECIAL_NONE)
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_NONE).size() ; i++)
+	// Populate a list of collection that contain only dynamic objects. (Default to all)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(GUIManager::LIST_NPC).size() ; i++)
 	{
-		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_NONE)[i].c_str();
+		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(GUIManager::LIST_NPC)[i].c_str();
 		if (result!=L"") //Collection with no name filtering
 			guiDynamicObjects_Category->addItem(result.c_str());
 	}
@@ -2366,8 +2401,6 @@ bool GUIManager::getVisibleStatus(s32 ID)
 void GUIManager::getInfoAboutModel(LIST_TYPE type)
 {
 
-	if (type==LIST_OBJ) // Dynamic objects panel
-	{
 		// Text will return the current item basec on the Dynamic Objects manager "active" object.
 		mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
 		mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
@@ -2383,28 +2416,7 @@ void GUIManager::getInfoAboutModel(LIST_TYPE type)
 			info_current = driver->getTexture("../media/editor/info_none.jpg");
 	
 		this->thumbnail->setImage(info_current);
-		return;
-	}
-	if (type==LIST_SEGMENT) // Custom tiles panel
-	{
-		// Text will return the current item basec on the Dynamic Objects manager "active" object.
-		mdl_name1->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
-		mdl_desc1->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
-		mdl_auth1->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
-		mdl_lic1->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
-
-
-		core::stringc filename = "../media/dynamic_objects/";
-		filename+=DynamicObjectsManager::getInstance()->activeObject->thumbnail;
-
-		this->info_current1=driver->getTexture(filename.c_str());
-		if (!info_current1)
-			info_current1 = driver->getTexture("../media/editor/info_none.jpg");
-	
-		this->thumbnail1->setImage(info_current1);
-		return;
-	}
-	
+		return;	
 }
 
 #endif
@@ -2521,7 +2533,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 {
 	//LIST_TYPE type=LIST_OBJ;
 	//DynamicObject::TYPE objtype
-	if (type==LIST_OBJ) // Dynamic object panel
+	if (type==LIST_NPC) // Dynamic object panel
 	{
 
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
@@ -2529,7 +2541,8 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
-		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_NPC, selected );
+
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2538,13 +2551,16 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"");
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC,selected,"");
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
 			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
 		guiDynamicObjects_OBJChooser->setSelected(0);
+		
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		getInfoAboutModel(GUIManager::LIST_NPC);
 		return;
 	}
 	if (type==LIST_SEGMENT) // Get a list for the special CUSTOM SEGMENT meshes
@@ -2571,12 +2587,13 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 			guiCustom_Segment_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
 		guiCustom_Segment_OBJChooser->setSelected(0);*/
+
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
 	
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
-		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_SEGMENT, selected );
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2585,14 +2602,44 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"", DynamicObject::SPECIAL_SEGMENT);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selected,"", DynamicObject::SPECIAL_SEGMENT);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
 			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
 		guiDynamicObjects_OBJChooser->setSelected(0);
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		return;
+	}
+	if (type==LIST_PROP) // Get a list for the special CUSTOM SEGMENT meshes
+	{
+		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+	
+		// Create the category list first
+		guiDynamicObjects_OBJCategory->clear();
+
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_PROP, selected );
+		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
+		{
+			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
+		}
+		guiDynamicObjects_OBJCategory->setSelected(0);
+
+		// Then the list of objects
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selected,"");
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		getInfoAboutModel(GUIManager::LIST_PROP);
+		return;
+		
 	}
 	if (type==LIST_LOOT) // Get a list for the special CUSTOM SEGMENT meshes
 	{
@@ -2601,7 +2648,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
-		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories( selected );
+		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_LOOT, selected );
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2610,13 +2657,15 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selected,"",DynamicObject::SPECIAL_LOOT);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selected,"",DynamicObject::SPECIAL_LOOT);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
 			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
 		guiDynamicObjects_OBJChooser->setSelected(0);
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		getInfoAboutModel(GUIManager::LIST_LOOT);
 		return;
 		
 	}
@@ -2627,7 +2676,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 {
 
 	core::stringw text="";
-	if (type == LIST_OBJ) // Dynamic objects
+	if (type == LIST_NPC) // Dynamic objects
 	{
 		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
 		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
@@ -2639,7 +2688,57 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 			text="";
 
 		guiDynamicObjects_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC, selectedcat,text);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		// Set the "active" object to the selection
+#ifdef EDITOR
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+#endif
+		return;
+	}
+	if (type == LIST_PROP) // Dynamic objects
+	{
+		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+		text=guiDynamicObjects_OBJCategory->getListItem(selected);
+
+		// check if "all" is selected, as it's the first choice
+		// and empty string mean, that will check for all
+		if (selected==0)
+			text="";
+
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selectedcat,text);
+
+		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
+		{
+			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
+		}
+		guiDynamicObjects_OBJChooser->setSelected(0);
+		// Set the "active" object to the selection
+#ifdef EDITOR
+		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+#endif
+		return;
+	}
+	if (type == LIST_LOOT) // Dynamic objects
+	{
+		u32 selected = guiDynamicObjects_OBJCategory->getSelected();
+		core::stringw selectedcat = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
+		text=guiDynamicObjects_OBJCategory->getListItem(selected);
+
+		// check if "all" is selected, as it's the first choice
+		// and empty string mean, that will check for all
+		if (selected==0)
+			text="";
+
+		guiDynamicObjects_OBJChooser->clear();
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selectedcat,text);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2664,7 +2763,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 			text="";
 
 		guiDynamicObjects_OBJChooser->clear();
-		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(selectedcat,text,DynamicObject::SPECIAL_SEGMENT);
+		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selectedcat,text,DynamicObject::SPECIAL_SEGMENT);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2699,6 +2798,19 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 		*/
 		return;
 
+	}
+}
+
+void GUIManager::UpdateCollections(LIST_TYPE type)
+{
+	guiDynamicObjects_Category->clear();
+
+	// Populate a list of collection that contain only dynamic objects. (Default to all)
+	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(type).size() ; i++)
+	{
+		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(type)[i].c_str();
+		if (result!=L"") //Collection with no name filtering
+			guiDynamicObjects_Category->addItem(result.c_str());
 	}
 }
 
@@ -3388,6 +3500,17 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			guiTerrainAddCustomSegment->setEnabled(enable);
 			guiTerrainAddCustomSegment->setPressed(!enable);
 			break;
+
+		case BT_ID_DYNAMIC_OBJECTS_PROPS:
+			guiDynamicObjectsProps->setEnabled(enable);
+			guiDynamicObjectsProps->setPressed(!enable);
+			break;
+
+		case BT_ID_DYNAMIC_OBJECTS_LOOT:
+			guiDynamicObjectsLoot->setEnabled(enable);
+			guiDynamicObjectsLoot->setPressed(!enable);
+			break;
+
         case BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS:
             guiDynamicObjects_Context_btEditScript->setEnabled(enable);
 			guiDynamicObjects_Context_btEditScript->setPressed(!enable);

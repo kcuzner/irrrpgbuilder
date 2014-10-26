@@ -50,9 +50,9 @@ class DynamicObjectsManager
 
 		scene::ISceneNode* findActiveObject(void);
 
-		vector<stringw> getObjectsList(core::stringw objectType, core::stringw category, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
-		vector<stringw> getObjectsListCategories(stringw objectType, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
-		vector<stringw> getObjectsCollections(DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsList(GUIManager::LIST_TYPE type, core::stringw collection, core::stringw category, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsListCategories(GUIManager::LIST_TYPE type,stringw collection, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
+		vector<stringw> getObjectsCollections(GUIManager::LIST_TYPE type);
 		vector<stringw> getObjectsSceneList(DynamicObject::TYPE objectType);
 		vector<stringw> getObjectsSceneListAlias(DynamicObject::TYPE objectType);
 

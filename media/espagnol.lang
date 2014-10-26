@@ -38,6 +38,8 @@
 	<text id="bt_play_game" str="Jugar al juego"/>
 	<text id="bt_stop_game" str="Deje de Juego"/>
 	<text id="bt_edit_character" str="Editar jugador"/>
+	<text id="bt_dynamic_objects_prop" str="Edit object"/>
+	<text id="bt_dynamic_objects_loot" str="Edit loot"/>
 	<text id="bt_player_edit_script" str="Jugador"/>
 	<text id="bt_close_program" str="Cerrar programa"/>
 	<text id="bt_about" str="Acerca de"/>

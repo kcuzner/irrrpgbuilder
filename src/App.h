@@ -99,6 +99,7 @@ class App
 		{
 			LIST_OBJ,
 			LIST_SEGMENT,
+			LIST_PROPS,
 			LIST_LOOT,
 		};
 

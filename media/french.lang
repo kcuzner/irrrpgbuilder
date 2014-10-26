@@ -27,7 +27,7 @@
 		<text id="bt_load_project" str="Charger le projet"/>
 		<text id="bt_show_playable_area" str="Zone plateau"/>
 		<text id="bt_terrain_segments" str="Tuile terrain"/>
-		<text id="bt_terrain_custom_segments" str="Tuile spéciale"/>
+		<text id="bt_terrain_custom_segments" str="Éditer tuile objet"/>
 		<text id="bt_terrain_empty_segments" str="Tuile vide"/>
 		<text id="bt_terrain_transform" str="Éditer l'élevation"/>
 		<text id="bt_terrain_brush" str="Outils brosse"/>
@@ -38,6 +38,8 @@
 		<text id="bt_play_game" str="Jouer"/>
 		<text id="bt_stop_game" str="Arrêter le jeu"/>
 		<text id="bt_edit_character" str="Éditer le joueur"/>
+		<text id="bt_dynamic_objects_prop" str="Éditer les objets"/>
+		<text id="bt_dynamic_objects_loot" str="Éditer butin"/>
 		<text id="bt_player_edit_script" str="Scripter le joueur"/>
 		<text id="bt_close_program" str="Quitter"/>
 		<text id="bt_about" str="À Propos"/>

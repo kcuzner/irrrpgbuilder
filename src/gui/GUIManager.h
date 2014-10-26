@@ -41,6 +41,8 @@ class GUIManager
 		BT_ID_TERRAIN_PAINT_VEGETATION,
 		BT_ID_SAVE_PROJECT,
 		BT_ID_DYNAMIC_OBJECTS_MODE,
+		BT_ID_DYNAMIC_OBJECTS_PROPS,
+		BT_ID_DYNAMIC_OBJECTS_LOOT,
 		CB_ID_DYNAMIC_OBJECT_HAS_ACTION,
 		CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,
 		CO_ID_CUSTOM_SEGMENT_CATEGORY,
@@ -180,17 +182,20 @@ class GUIManager
 
 	enum LIST_TYPE
 	{
-		LIST_OBJ = 1,
+		LIST_NPC = 1,
+		LIST_PROP,
 		LIST_SEGMENT,
 		LIST_LOOT,
+		LIST_ALL,
 	};
 
         static GUIManager* getInstance();
 
 
         void setupGameplayGUI();
-		void UpdateGUIChooser(LIST_TYPE type = LIST_OBJ);
-		void updateCurrentCategory(LIST_TYPE type = LIST_OBJ);
+		void UpdateCollections(LIST_TYPE type = LIST_NPC);
+		void UpdateGUIChooser(LIST_TYPE type = LIST_NPC);
+		void updateCurrentCategory(LIST_TYPE type = LIST_NPC);
 		void buildSceneObjectList(DynamicObject::TYPE objtype = DynamicObject::OBJECT_TYPE_NONE);
 
 		void setTextLoader(stringw text);
@@ -227,7 +232,7 @@ class GUIManager
 		IGUIListBox* getListBox(GUI_ID id);
 		void setEditBoxText(GUI_ID id, stringw text);
 		bool getVisibleStatus(s32 ID);
-		void getInfoAboutModel(LIST_TYPE type = LIST_OBJ);
+		void getInfoAboutModel(LIST_TYPE type = LIST_NPC);
 
 #endif
 
@@ -405,6 +410,8 @@ class GUIManager
 
         ///Dynamic Objects
         IGUIButton* guiDynamicObjectsMode;
+		IGUIButton* guiDynamicObjectsProps;
+		IGUIButton* guiDynamicObjectsLoot;
 		
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicObjectsWindowChooser;

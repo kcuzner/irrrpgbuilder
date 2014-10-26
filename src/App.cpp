@@ -542,11 +542,44 @@ void App::eventGuiButton(s32 id)
 	case GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
 		//DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		//this->setAppState(APP_EDIT_TERRAIN_CUSTOM_SEGMENTS);
+		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_SEGMENT);
 		currentObject=LIST_SEGMENT;
 		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_SEGMENT);
 		GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_SEGMENT);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		if (toolstate==TOOL_NONE)
+			toolstate=old_do_state;
+		break;
+
+	case GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS:
+		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_PROP);
+		currentObject=LIST_PROPS;
+		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_PROP);
+		GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_PROP);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,false);
+		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		if (toolstate==TOOL_NONE)
+			toolstate=old_do_state;
+		break;
+
+	case GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT:
+		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_LOOT);
+		currentObject=LIST_LOOT;
+		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_LOOT);
+		GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_LOOT);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		if (toolstate==TOOL_NONE)
@@ -564,12 +597,15 @@ void App::eventGuiButton(s32 id)
 	case GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE:
 		{
 			currentObject=LIST_OBJ;
+			GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_NPC);
 			GUIManager::getInstance()->UpdateGUIChooser();
 			GUIManager::getInstance()->updateCurrentCategory();
 			DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 			this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 			if (toolstate==TOOL_NONE)
 				toolstate=old_do_state;
 		}
@@ -1126,8 +1162,25 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY:
-		GUIManager::getInstance()->updateCurrentCategory();
-		GUIManager::getInstance()->getInfoAboutModel();
+		if (currentObject==LIST_OBJ)
+		{
+			GUIManager::getInstance()->updateCurrentCategory();
+			GUIManager::getInstance()->getInfoAboutModel();
+		} else if (currentObject==LIST_SEGMENT)
+		{
+			GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_SEGMENT);
+			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
+		} else if (currentObject==LIST_PROPS)
+		{
+			GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_PROP);
+			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_PROP);
+		}
+		else if (currentObject==LIST_LOOT)
+		{
+
+			GUIManager::getInstance()->updateCurrentCategory(GUIManager::LIST_LOOT);
+			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_LOOT);
+		}
 		break;
 
 	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY:
@@ -1139,6 +1192,14 @@ void App::eventGuiCombobox(s32 id)
 		{
 			GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_SEGMENT);
 			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
+		} else if (currentObject==LIST_PROPS)
+		{
+			GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_PROP);
+			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_PROP);
+		} else if (currentObject==LIST_LOOT)
+		{
+			GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_LOOT);
+			GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_LOOT);
 		}
 
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
@@ -1146,7 +1207,7 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	// Selection in the list from the custom segment selection
-	case GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
+	/*case GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
@@ -1162,7 +1223,7 @@ void App::eventGuiCombobox(s32 id)
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
 		GUIManager::getInstance()->getInfoAboutModel(GUIManager::LIST_SEGMENT);
 		//GUIManager::getInstance()->updateDynamicObjectPreview();
-		break;
+		break;*/
 
 	case GUIManager::CO_ID_ACTIVE_SCENE_LIST:
 		index = GUIManager::getInstance()->getListBox(GUIManager::CO_ID_ACTIVE_SCENE_LIST)->getSelected();

@@ -19,6 +19,8 @@
 	<text id="bt_dynamic_objects_edit_script" str="Muokkaa Lua Script"/>
 	<text id="bt_dynamic_objects_cancel" str="Peruuta"/>
 	<text id="bt_dynamic_objects_mode" str="Muokkaa objektia"/>
+	<text id="bt_dynamic_objects_prop" str="Edit object"/>
+	<text id="bt_dynamic_objects_loot" str="Edit loot"/>
 	<text id="info_dynamic_objects_mode" str="Paina ja pidä välilyöntiä tulla navigointitilan"/>
 	<text id="info_drag" str="Tuli navigoinnin aikana. Hiiren vasen: käännä, Hiiren: vedä, kiekkopainikkeella: zoom"/>
 	<text id="bt_paint_vegetation" str="Maali Kasvillisuus"/>

@@ -19,6 +19,8 @@
 	<text id="bt_dynamic_objects_edit_script" str="Editar Script Lua"/>
 	<text id="bt_dynamic_objects_cancel" str="Cancelar"/>
 	<text id="bt_dynamic_objects_mode" str="Editar objeto"/>
+	<text id="bt_dynamic_objects_prop" str="Edit object"/>
+	<text id="bt_dynamic_objects_loot" str="Edit loot"/>
 	<text id="info_dynamic_objects_mode" str="Pressione e segure a barra de espaço para entrar no modo de navegação"/>
 	<text id="info_drag" str="Modo de navegação entrou. Esquerdo do mouse: girar, botão direito do mouse: arrastar, Mousewheel: Zoom"/>
 	<text id="bt_paint_vegetation" str="Pintar vegetação"/>
