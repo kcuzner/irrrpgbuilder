@@ -45,6 +45,15 @@ bool EventReceiver::OnEvent(const SEvent& event)
 {
 	s32 id = 0;
 	stringw text = "";
+	/*IGUIElement* child = App::getInstance()->getDevice()->getGUIEnvironment()->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO);
+	
+	core::list<IGUIElement*> child0;
+	
+	if (child)
+	{
+		if (child->isMyChild(event.GUIEvent.Caller) || child==event.GUIEvent.Caller)
+			printf("Called the screencomboXXXXXXXXX \n");
+	}*/
 
 	switch (event.EventType)
 	{
@@ -63,13 +72,14 @@ bool EventReceiver::OnEvent(const SEvent& event)
 
 	// Mouse events
 	case irr::EET_MOUSE_INPUT_EVENT:
+		
         App::getInstance()->eventMousePressed(event.MouseInput.Event);
 
 		mouse[event.MouseInput.Event] = 1;
 
 		if (event.MouseInput.Event == EMIE_LMOUSE_PRESSED_DOWN)
 		{
-				mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;
+			mouse[EMIE_LMOUSE_PRESSED_DOWN] = 1;
 			//mouse[EMIE_RMOUSE_PRESSED_DOWN] = 1;
 		}
 		else if(event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)

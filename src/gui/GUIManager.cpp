@@ -83,6 +83,19 @@ GUIManager::GUIManager()
 
 	// Bigger Windows titlebar width
 	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
+	guienv->getSkin()->setColor(EGDC_ACTIVE_BORDER ,video::SColor(200,36,36,36));
+
+	//New attemps as skinning into a darker theme
+	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,36,36,36));
+	//guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,164,164,164));
+	//guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,96,96,96));
+	//guienv->getSkin()->setColor(EGDC_EDITABLE,video::SColor(255,96,96,96));
+	//guienv->getSkin()->setColor(EGDC_3D_HIGH_LIGHT,video::SColor(255,96,96,96));
+	//guienv->getSkin()->setColor(EGDC_HIGH_LIGHT,video::SColor(255,135,135,135));
+	//guienv->getSkin()->setColor(EGUI_LBC_TEXT,video::SColor(255,240,240,240));
+	
+	
+
 	// Fake office style skin colors
 	// We should allow creation of skins colors by the users or at least a choice of skins to use
 	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
@@ -631,7 +644,20 @@ void GUIManager::setupEditorGUI()
 
 void GUIManager::createDisplayOptionsGUI()
 {
-	snappingcombo = guienv->addComboBox(myRect(240,120,140,20),0,CB_SNAPCOMBO);
+
+	IGUIWindow* win = guienv->addWindow(rect<s32>(0,120,displaywidth,142),false,0,0,GCW_VIEW_MENU);
+	win->getCloseButton()->setVisible(false);
+	win->setDrawTitlebar(false);
+	win->setDrawBackground(false);
+	win->setDraggable(false);
+	win->setEnabled(false);
+	win->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+	IGUIStaticText* text=guienv->addStaticText(L"",rect<s32>(0,0,displaywidth,30),false,false,win,-1,true);
+	text->setBackgroundColor(video::SColor(255,42,42,42));
+	text->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
+
+	snappingcombo = guienv->addComboBox(myRect(240,0,140,20),win ,CB_SNAPCOMBO);
+	snappingcombo->setText(LANGManager::getInstance()->getText("sgrid_default").c_str());
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid_default").c_str(),0);
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid2").c_str(),2);
 	snappingcombo->addItem(LANGManager::getInstance()->getText("sgrid4").c_str(),4);
@@ -646,7 +672,10 @@ void GUIManager::createDisplayOptionsGUI()
 	snappingcombo->setMaxSelectionRows(12);
 	guienv->getRootGUIElement()->sendToBack(snappingcombo);
 
-	screencombo = guienv->addComboBox(myRect(30,120,200,20),0,CB_SCREENCOMBO);
+
+	screencombo = guienv->addComboBox(myRect(30,0,200,20),win,CB_SCREENCOMBO);
+	screencombo->setText(LANGManager::getInstance()->getText("view_gen").c_str());
+	screencombo->setToolTipText(LANGManager::getInstance()->getText("view_gen").c_str());
 	screencombo->addItem(LANGManager::getInstance()->getText("view_gen").c_str(),0);
 	screencombo->addItem(LANGManager::getInstance()->getText("view_top").c_str(),1);
 	screencombo->addItem(LANGManager::getInstance()->getText("view_bottom").c_str(),2);
@@ -658,7 +687,8 @@ void GUIManager::createDisplayOptionsGUI()
 	screencombo->addItem(LANGManager::getInstance()->getText("view_pers").c_str(),8);
 	screencombo->setMaxSelectionRows(9);
 	screencombo->setEnabled(true);
-	guienv->getRootGUIElement()->sendToBack(screencombo);
+	guienv->getRootGUIElement()->sendToBack(win);
+	
 }
 
 void GUIManager::createMainToolbar()
@@ -970,7 +1000,7 @@ void GUIManager::createObjectTab()
 	tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
 	// Tab description box text
 	IGUIStaticText * objectTabText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des1")).c_str(),
-		core::rect<s32>(0,64,120,76),false,true,tabObject,-1);
+		core::rect<s32>(0,64,300,76),false,true,tabObject,-1);
 	//objectTabText->setBackgroundColor(video::SColor(128,237,242,248));
 	//objectTabText->setOverrideColor(video::SColor(255,65,66,174));
 	objectTabText->setBackgroundColor(video::SColor(255,238,240,242));
@@ -1549,6 +1579,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 		boxend=10;
 
 	guiDynamicObjects_OBJChooser = guienv->addListBox(myRect(5,pos_Y,190,boxend),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER,true);
+	//guiDynamicObjects_OBJChooser->setDrawBackground(false);
 	guiDynamicObjects_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 
 	guiDynamicObjectsInfo= guienv->addButton(myRect(5,pos_Y+boxend+10,190,20),

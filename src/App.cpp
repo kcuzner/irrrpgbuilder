@@ -30,7 +30,7 @@ App::App()
 {
 
 	filename="";
-	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (oct 2014)";
+	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (nov 2014)";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -135,6 +135,7 @@ bool App::cursorIsInEditArea()
 	//Good for determining if we can "pick" a 3D object in the scene
 	if (GUIManager::getInstance()->isGuiChildPresent(device->getGUIEnvironment()->getRootGUIElement(),device->getCursorControl()->getPosition()))
 		condition = false;
+
 
 	if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 
@@ -283,7 +284,7 @@ void App::setAppState(APP_STATE newAppState)
 		}
 	}
 
-	if (app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+	if (app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS) //Old code should not be used.
 	{
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,false);
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
@@ -296,7 +297,7 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else
 	{
-		if  (old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)
+		if  (old_app_state == APP_EDIT_TERRAIN_CUSTOM_SEGMENTS)//Old code should not be used.
 		{
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
@@ -356,6 +357,8 @@ void App::setAppState(APP_STATE newAppState)
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,true);
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 			toolstate = TOOL_NONE;
 		}
 	}
@@ -434,13 +437,16 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_NEW_PROJECT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,false);
 		//This current button is for the console
 		//GUIManager::getInstance()->setElementEnabled(BT_ID_HELP,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,true);
 #ifdef EDITOR
-		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
-		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(false);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_VIEW_MENU,true)->setVisible(false);
+		//guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(false); //Hide the snap box when playing
+		//guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(false);
 #endif
 	}
 	else if(app_state < APP_STATE_CONTROL)
@@ -454,11 +460,14 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_HELP,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 #ifdef EDITOR
-		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
-		guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(true);
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_VIEW_MENU,true)->setVisible(true); ///Show the snap box when editingGCW_VIEW_MENU
+		//guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true)->setVisible(true); ///Show the snap box when editing
+		//guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(true);
 #endif
 	} else if(app_state == APP_WAIT_DIALOG)
 	{
@@ -1269,10 +1278,15 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case GUIManager::CB_SCREENCOMBO:
+		
+		toolactivated=true;
+		guienv->setFocus(guienv->getRootGUIElement());
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true));
 		if (selectedbox)
 		{
-			toolactivated=true; //Tell the system that the button has been activated
+			
+			
+			//toolactivated=true; //Tell the system that the button has been activated
 			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
 			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
 			f32 initdist = initpos.getDistanceFrom(inittar);
@@ -1334,11 +1348,14 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case GUIManager::CB_SNAPCOMBO: // Get the combo box data to set the snap distance
-
+		guienv->setFocus(guienv->getRootGUIElement());
+		toolactivated=true;
+		printf("The combo for grid was used\n");
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
-			toolactivated=true; // Tell the system that the tool as been activated
+			
+			//toolactivated=true; // Tell the system that the tool as been activated
 			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
 			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
 				currentsnapping=64;
@@ -1703,12 +1720,17 @@ bool App::isMousePressed(int mb)
 // (08/02/13) This will need to be split in methods as the code is getting too big here.
 void App::eventMousePressed(s32 mouse)
 {
+	IGUIElement* elem = NULL;
 	if (app_state == APP_GAMEPLAY_NORMAL)
 	{
 		if (cursorIsInEditArea())
 			CameraSystem::getInstance()->eventsMouseKey(mouse); //forward the event when playing
 		return;
 	}
+
+	s32 id = 0;
+	bool item1 = false;
+	bool item2 = false;
 
 	switch(mouse)
 	{///TODO: colocar acoes mais comuns acima e menos comuns nos elses
@@ -1721,7 +1743,6 @@ void App::eventMousePressed(s32 mouse)
 				if (toolactivated)
 					toolactivated=false;
 
-				//gui_triggered=false; //reset the button state since the button is up
 			}
 		}
 		break;
@@ -1741,8 +1762,26 @@ void App::eventMousePressed(s32 mouse)
 		break;
 
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
-		if( cursorIsInEditArea())
+	
+		//Check if the combo box are in focus and prevent the mouse click to add anything
+		//The GUI that send the problem is the LISTBOX when it is clicked. It send an event.
+		elem = device->getGUIEnvironment()->getFocus();
+		if (elem)
 		{
+			id = elem->getID();
+		
+
+			if (elem->getParent()->getID()==GUIManager::CB_SCREENCOMBO)
+				item1=true;
+
+			if (elem->getParent()->getID()==GUIManager::CB_SNAPCOMBO)
+				item2=true;
+		}
+
+		
+		if( cursorIsInEditArea() && !item1 && !item2)
+		{
+			
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
@@ -2497,7 +2536,7 @@ void App::update()
 		this->setScreenSize(driver->getScreenSize());
 
 	if (app_state<APP_STATE_CONTROL)
-		background=SColor(0,200,200,200); // Background color in editor
+		background=SColor(0,160,160,160); // Background color in editor
 	else
 		background=ingamebackground; // Background color ingame
 

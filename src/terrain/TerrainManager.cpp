@@ -80,12 +80,14 @@ void TerrainManager::createEmptySegment(vector3df pos)
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
     newEmptySegment->setTriangleSelector(sel);
 
+	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true); 
     newEmptySegment->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
-    //newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
-	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(empty_texture_scale,empty_texture_scale);
+    newEmptySegment->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
+	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(empty_texture_scale*3.0f,empty_texture_scale*3.0f);
 	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
     newEmptySegment->setName(getHashCode(pos).c_str());
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
+	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true); 
 
 
    // #ifdef DEBUG
