@@ -30,9 +30,9 @@ GUIManager::GUIManager()
 	guiCustomSegmentWindowChooser=NULL;
 	guiSceneObjectList=NULL;
 
-	InnerChooser=NULL; 
-	InnerChooser1=NULL; 
-	InnerChooser2=NULL; 
+	InnerChooser=NULL;
+	InnerChooser1=NULL;
+	InnerChooser2=NULL;
 	InnerChooser3=NULL;
 
 	guiDynamicObjects_NodePreview=NULL;
@@ -93,8 +93,8 @@ GUIManager::GUIManager()
 	//guienv->getSkin()->setColor(EGDC_3D_HIGH_LIGHT,video::SColor(255,96,96,96));
 	//guienv->getSkin()->setColor(EGDC_HIGH_LIGHT,video::SColor(255,135,135,135));
 	//guienv->getSkin()->setColor(EGUI_LBC_TEXT,video::SColor(255,240,240,240));
-	
-	
+
+
 
 	// Fake office style skin colors
 	// We should allow creation of skins colors by the users or at least a choice of skins to use
@@ -112,7 +112,7 @@ GUIManager::~GUIManager()
 		managauge->remove();
 		managauge=NULL;
 	}
-		
+
 
 	if (lifegauge)
 	{
@@ -221,9 +221,6 @@ rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
 {
     return rect<s32>(x,y,x+w,y+h);
 }
-
-#ifdef EDITOR
-// Specific stuff related to the editor
 
 void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 {
@@ -339,7 +336,7 @@ void GUIManager::setCheckboxState(GUI_ID id,bool value)
 		case CB_ID_SCA_Z:
 			sca_z_lock->setChecked(value);
 			break;
-		
+
 		default:
 			break;
 	}
@@ -408,7 +405,7 @@ stringc GUIManager::getComboBoxItem(GUI_ID id)
 	}
     switch(id)
     {
-	
+
 		case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
 			return stringc(guiCustom_Segment_OBJChooser->getListItem(guiCustom_Segment_OBJChooser->getSelected()));
 			break;
@@ -440,7 +437,7 @@ IGUIListBox* GUIManager::getListBox(GUI_ID id)
 
     switch(id)
     {
-	
+
 		case CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER:
 			return guiCustom_Segment_OBJChooser;
 			break;
@@ -490,8 +487,8 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 		sct+=(core::stringw)pos.Z;
 		return sct;
 	}
-		
-	
+
+
 	// When moving or rotating a dynamic object
 	if (App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 		node=App::getInstance()->lastMousePick.pickedNode;
@@ -520,17 +517,20 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 	return sct;
 }
 
+
+#ifdef EDITOR
+// Specific stuff related to the editor
 void GUIManager::setupEditorGUI()
 {
 
-	
+
 	// Load textures
 	//ITexture* imgLogo = driver->getTexture("../media/art/logo1.png");
 	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
 	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
 	// Default textures for the info window
 	if (info_none)
-	{	
+	{
 		info_current=info_none;
 		info_current1=info_none;
 	}
@@ -599,7 +599,7 @@ void GUIManager::setupEditorGUI()
 
 	//Create the main toolbar GUI;
 	createMainToolbar();
-		
+
 	// Update and refresh the display
 	App::getInstance()->quickUpdate();
 
@@ -614,7 +614,7 @@ void GUIManager::setupEditorGUI()
 
 	// Create the Custom Segments Chooser GUI
 	createCustomSegmentChooserGUI();
-	
+
 	// Create the Editor context menu GUI
 	createContextMenuGUI();
 
@@ -625,7 +625,7 @@ void GUIManager::setupEditorGUI()
     helpTerrainTransform = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_transform.png");
     helpVegetationPaint = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_vegetation_paint.png");
     helpTerrainSegments = App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/art/help_terrain_segments.png");
-    
+
 	// Get the logo
 	if (imgLogo)
 		logo1 = imgLogo;
@@ -688,7 +688,7 @@ void GUIManager::createDisplayOptionsGUI()
 	screencombo->setMaxSelectionRows(9);
 	screencombo->setEnabled(true);
 	guienv->getRootGUIElement()->sendToBack(win);
-	
+
 }
 
 void GUIManager::createMainToolbar()
@@ -720,10 +720,10 @@ void GUIManager::createMainToolbar()
 	guiBackImage->setMaxSize(dimension2du(2048,120));
 	guiBackImage->setMinSize(dimension2du(2048,120));
 	guiBackImage->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
+
 	// Create the tabs of the main toolbar
 	createMainTabs();
-	
+
 }
 
 void GUIManager::createProjectTab()
@@ -775,7 +775,7 @@ void GUIManager::createProjectTab()
 	IGUIStaticText * newPText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_new_project")).c_str(),
 		core::rect<s32>(x-10,36,x+45,65),false,true,tabProject,-1);
 	//newPText->setOverrideColor(video::SColor(255,65,66,174));
-	newPText->setOverrideColor(video::SColor(255,64,64,64));	
+	newPText->setOverrideColor(video::SColor(255,64,64,64));
 	newPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	newPText->setOverrideFont(guiFont9);
 
@@ -940,7 +940,7 @@ void GUIManager::createEnvironmentTab()
 	terrainSText2->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	terrainSText2->setOverrideFont(guiFont9);
 
- 
+
 	//Terrain Add Segment
 	 x+= 60;
 	  guiTerrainAddSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -1080,10 +1080,10 @@ void GUIManager::createObjectTab()
 
 
 
-   
+
 
   	//x += 70;
-	
+
    //-- Add custom segment (Custom Tiles button)
 	x+= 60;
 	guiTerrainAddCustomSegment = guienv->addButton(myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -1109,7 +1109,7 @@ void GUIManager::createObjectTab()
 	//All the functionnality of the "global script" can be achieved by using another dynamic object.
 	//I'm thinking of a special dynamic object that could be called "scene controller". in witch
 	//You could monitor the scene, and use it for example to spawn characters and create waves,
-	//Monitor the quests, etc. (This could be done with a simple hidden frog! :) 
+	//Monitor the quests, etc. (This could be done with a simple hidden frog! :)
 
 	//This special object, could be made from an empty node (so no rendering overhead)
 	//Use the onUpdate() callback to start monitoring.
@@ -1122,7 +1122,7 @@ void GUIManager::createObjectTab()
                                      stringw(LANGManager::getInstance()->getText("bt_edit_script_global")).c_str());
 
 	guiEditScriptGlobal->setVisible(false);
-	/* 
+	/*
 
     guiEditScriptGlobal->setImage(driver->getTexture("../media/art/bt_edit_script_global.png"));
 	guiEditScriptGlobal->setPressedImage(driver->getTexture("../media/art/bt_edit_script_global_ghost.png"));
@@ -1153,8 +1153,8 @@ void GUIManager::createMainTabs()
 
 	// No tools at the moment, don't create the panel
 	//tabTools = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_tools").c_str());
-	
-	
+
+
 	tabConfig = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_setup").c_str());
 	//mainTabCtrl->setTabExtraWidth(25);
 	mainTabCtrl->setActiveTab(1);
@@ -1175,7 +1175,7 @@ void GUIManager::createMainTabs()
 
     guiConfigButton->setImage(imgConfig);
 	guiConfigButton->setPressedImage(imgConfig1);
-	
+
 }
 
 void GUIManager::createAboutWindowGUI()
@@ -1379,7 +1379,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	IGUIStaticText * playGText = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str(),
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
-	
+
 	cam1->setIsPushButton(true);
 	cam1->setPressed(true);
 
@@ -1395,9 +1395,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 	IGUIStaticText * playGText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_rpg")).c_str(),
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
 	cam2->setIsPushButton(true);
-	
 
-	x+=60; 
+
+	x+=60;
 	IGUIButton* cam3 = guienv->addButton(rect<s32>(x,y,x+32,y+32),
                                      in,
                                      BT_CAMERA_FPS,L"",
@@ -1419,7 +1419,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	objectTabText1->setOverrideColor(video::SColor(255,86,95,109));
 	objectTabText1->setOverrideFont(guiFont10);
 	objectTabText1->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
-	
+
 
 	y+=120;
 	///EDIT CHARACTER
@@ -1457,7 +1457,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 
 	//-------------------- DYNAMIC OBJECT CHOOSER
-	
+
     //guiDynamicObjectsWindowChooser = guienv->addWindow(windowRect,false,L"",0,GCW_DYNAMIC_OBJECT_CHOOSER);
 	guiDynamicObjectsWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_dynobjsel")).c_str(),guienv,guienv->getRootGUIElement(),GCW_DYNAMIC_OBJECT_CHOOSER,windowRect);
     guiDynamicObjectsWindowChooser->setDraggable(false);
@@ -1472,7 +1472,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiDynamicObjectsWindowChooser->setMinSize(core::dimension2du(220,10));
 
 	// Enable manual dragging of the left portion of the pane
-	
+
 	/*guiDynamicObjectsWindowChooser->enablebottom=true;
 	guiDynamicObjectsWindowChooser->enableright=true;
 	guiDynamicObjectsWindowChooser->enabletop=true;*/
@@ -1481,12 +1481,12 @@ void GUIManager::createDynamicObjectChooserGUI()
 	// Mode select for dynamic object editing
 	 s32 pos_Y = 40;
 	 s32 pos_X = 10;
-	
+
 	//guiDynamicObjectEditModesPanel->setRelativePosition(core::position2di(45,35));
 	//guiDynamicObjectEditModesPanel->setMaxSize(core::dimension2du(110,40));
 	// Buttons
 
-	 device=App::getInstance()->getDevice(); //Get a fresh copy of the device 
+	 device=App::getInstance()->getDevice(); //Get a fresh copy of the device
 	 guiDOAddMode = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),guiDynamicObjectsWindowChooser, BT_ID_DO_ADD_MODE, L"", LANGManager::getInstance()->getText("btn_obj_add_mode").c_str());
 	 guiDOAddMode->setImage(driver->getTexture("../media/art/DO_ADD.jpg"));
 	 guiDOAddMode->setPressedImage(driver->getTexture("../media/art/DO_ADD1.jpg"));
@@ -1548,11 +1548,11 @@ void GUIManager::createDynamicObjectChooserGUI()
     //guiDynamicObjectsWindowChooser_Y += 10;
 	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text1->setOverrideFont(guiFont12);
-	
+
 	pos_Y += 20;
 	guiDynamicObjects_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_DYNAMIC_OBJECT_OBJ_CATEGORY);
 	guiDynamicObjects_Category->setMaxSelectionRows(24);
-	
+
 	// Populate a list of collection that contain only dynamic objects. (Default to all)
 	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(GUIManager::LIST_NPC).size() ; i++)
 	{
@@ -1560,11 +1560,11 @@ void GUIManager::createDynamicObjectChooserGUI()
 		if (result!=L"") //Collection with no name filtering
 			guiDynamicObjects_Category->addItem(result.c_str());
 	}
-	
+
 	pos_Y += 80;
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
-	
+
 	pos_Y += 20;
 	guiDynamicObjects_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,80),InnerChooser, CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,true);
 	//guiDynamicObjects_OBJCategory->setDrawBackground(false);
@@ -1649,7 +1649,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	mdl_lic->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_CENTER);
 	// -- end info portions
 	UpdateGUIChooser();
-	
+
 	//---------------------------------------------- SELECT MODE PORTION
 	/// Define the portion when in select mode
 	InnerChooser1 = guienv->addWindow(windowRect2,false,L"",guiDynamicObjectsWindowChooser);
@@ -1701,11 +1701,11 @@ void GUIManager::createDynamicObjectChooserGUI()
 
 	pos_X-=5;
 	pos_Y+=30;
-	button = guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS, 
+	button = guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 
 	pos_Y+=30;
-	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE, 
+	button=guienv->addButton(myRect(pos_X,pos_Y,190,20), InnerChooser1, BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_remove")).c_str() );
 
 	pos_Y+=30;
@@ -1729,7 +1729,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//Line 1 Position
 	guienv->addStaticText(L"",myRect(5,5,190,90),true,true,InnerChooser2);
 	guienv->addStaticText(LANGManager::getInstance()->getText("panel_sel_position").c_str(),myRect(10,10,160,20),false,false,InnerChooser2);
-	
+
 	//position X axis
 	guienv->addStaticText(L"X",myRect(10,28,15,20),false,false,InnerChooser2);
 	pos_x_text = guienv->addSpinBox(L"X:",myRect(25,25,100,20),true, InnerChooser2, TI_ID_POS_X);
@@ -1757,7 +1757,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//pos_z_text->setText(L"0.000000");
 	pos_z_text->setValue(0.0f);
 	pos_z_lock = guienv->addCheckBox(false,myRect(160,65,20,20),InnerChooser2, CB_ID_POS_Z);
-	
+
 
 
 	//Rotation
@@ -1790,9 +1790,9 @@ void GUIManager::createDynamicObjectChooserGUI()
 	//rot_z_text->setText(L"0.000000");
 	rot_z_text->setValue(0.0f);
 	rot_z_lock = guienv->addCheckBox(false,myRect(160,165,20,20),InnerChooser2, CB_ID_ROT_Z);
-	
 
-	
+
+
 
 
 	guienv->addStaticText(L"",myRect(5,200,190,90),true,true,InnerChooser2);
@@ -1827,7 +1827,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	InnerChooser2->setVisible(false);
 
 	//---------------------------------------------- SELECT MODE RIGHT portion
-	// Right portion of the GUI in SELECT MODE will contain a way to select object by list of object types 
+	// Right portion of the GUI in SELECT MODE will contain a way to select object by list of object types
 	windowRect2.UpperLeftCorner.X=220;
 	windowRect2.UpperLeftCorner.Y=35;
 	windowRect2.LowerRightCorner.X=540;
@@ -1841,7 +1841,7 @@ void GUIManager::createDynamicObjectChooserGUI()
 	InnerChooser3->setSubElement(true);
 	//InnerChooser3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
-	pos_X=0; 
+	pos_X=0;
 	pos_Y=5;
 	//Elements of this windows
 	IGUIStaticText * it_1 = guienv->addStaticText(LANGManager::getInstance()->getText("panel_sellist").c_str(),core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+39),false,true,InnerChooser3,-1);
@@ -1863,10 +1863,10 @@ void GUIManager::createDynamicObjectChooserGUI()
 	guiSceneObjectList->addItem(LANGManager::getInstance()->getText("panel_sel_noscene").c_str());
 	guiSceneObjectList->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	InnerChooser3->setVisible(false);
-	
+
 }
 
-// GUI Interface for choosing CUSTOM SEGMENTS 
+// GUI Interface for choosing CUSTOM SEGMENTS
 void GUIManager::createCustomSegmentChooserGUI()
 {
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
@@ -1928,7 +1928,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	guiSegmentRotateRight = guienv->addButton(core::rect<s32>(pos_X,pos_Y,pos_X+40,pos_Y+40),InnerChooser, BT_ID_TILE_ROT_RIGHT,L"",stringw("Rotate the tile right").c_str());
 	guiSegmentRotateRight->setIsPushButton(true);
 	video::ITexture * imgTurnRight = driver->getTexture("../media/art/right_turn.png");
-	
+
 	guiSegmentRotateRight->setImage(imgTurnRight);
 	guiSegmentRotateRight->setPressedImage(driver->getTexture("../media/art/right_turn_pr.png"));
 	guiSegmentRotateRight->setUseAlphaChannel(true);
@@ -1951,7 +1951,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	tilerotationTextR->setTextAlignment(EGUIA_CENTER,EGUIA_CENTER);
 	pos_X=5;
 
-	
+
 
 	pos_Y += 60; // Collections
 	gui::IGUIStaticText* text1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_objectcol")).c_str(),core::rect<s32>(pos_X-5,pos_Y,200,boxend),true,true,InnerChooser,-1);
@@ -1959,7 +1959,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	pos_Y += 20;
 	guiCustom_Segment_Category = guienv->addComboBox(myRect(5,pos_Y,190,20),InnerChooser,CO_ID_CUSTOM_SEGMENT_CATEGORY);
 	guiCustom_Segment_Category->setMaxSelectionRows(24);
-	
+
 	// Populate a list of collection that contain only CUSTOM TERRAIN SEGMENTS. (SPECIAL_SEGMENT)
 	//for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(DynamicObject::SPECIAL_SEGMENT).size() ; i++)
 	//{
@@ -1969,7 +1969,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	pos_Y += 40; //Categories
 	gui::IGUIStaticText* text2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_dynobjcat")).c_str(),core::rect<s32>(5,pos_Y,210,pos_Y+20),false,true,InnerChooser,-1);
 	text2->setOverrideFont(guiFont12);
-	
+
 	pos_Y += 20;
 	guiCustom_Segment_OBJCategory = guienv->addListBox(myRect(5,pos_Y,190,80),InnerChooser, CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,true);
 
@@ -1978,7 +1978,7 @@ void GUIManager::createCustomSegmentChooserGUI()
 	text3->setOverrideFont(guiFont12);
 
 	pos_Y += 20;
-	
+
 
 	guiCustom_Segment_OBJChooser = guienv->addListBox(core::rect<s32>(pos_X,pos_Y,pos_X+190,boxend-10),InnerChooser, CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER,true);
 	guiCustom_Segment_OBJChooser->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
@@ -2061,7 +2061,7 @@ void GUIManager::createContextMenuGUI()
     guiDynamicObjects_Context_Menu_Window->setDraggable(false);
     guiDynamicObjects_Context_Menu_Window->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window->setVisible(false);
-	
+
 	IGUIStaticText* contexttitle = guienv->addStaticText(LANGManager::getInstance()->getText("txt_context_title").c_str(),core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window,-1);
 	contexttitle->setOverrideFont(guiFont14);
 	contexttitle->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
@@ -2104,7 +2104,7 @@ void GUIManager::createContextMenuGUI()
                                                            LANGManager::getInstance()->getText("bt_dynamic_objects_replace").c_str());
 	guiDynamicObjects_Context_btReplace2->setOverrideFont(guiFontC12);
 	pby+=30;
-	
+
 	guiDynamicObjects_Context_btRemove= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_REMOVE,
@@ -2115,10 +2115,10 @@ void GUIManager::createContextMenuGUI()
 
 	IGUIButton * button = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window, BT_ID_DYNAMIC_OBJECT_BT_CENTER, LANGManager::getInstance()->getText("bt_dynamic_objects_centerview").c_str());
 	button->setOverrideFont(guiFontC12);
-	
+
 	pby+=25;
 
-	// The windows now close dynamicaly. 
+	// The windows now close dynamicaly.
     /*guiDynamicObjects_Context_btCancel= guienv->addButton(myRect(5,pby,190,20),
                                                            guiDynamicObjects_Context_Menu_Window,
                                                            BT_ID_DYNAMIC_OBJECT_BT_CANCEL,
@@ -2126,13 +2126,13 @@ void GUIManager::createContextMenuGUI()
 	guiDynamicObjects_Context_btCancel->setOverrideFont(guiFontC12);
 	pby+=25;*/
 
-	// Second context menu 
+	// Second context menu
 	guiDynamicObjects_Context_Menu_Window1 = guienv->addWindow(myRect(0,100,200,60),false,L"",0,GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1);
     guiDynamicObjects_Context_Menu_Window1->getCloseButton()->setVisible(false);
     guiDynamicObjects_Context_Menu_Window1->setDraggable(false);
     guiDynamicObjects_Context_Menu_Window1->setDrawTitlebar(false);
     guiDynamicObjects_Context_Menu_Window1->setVisible(false);
-	
+
 	IGUIStaticText* contexttitle1 = guienv->addStaticText(LANGManager::getInstance()->getText("txt_context_title").c_str(),core::rect<s32>(0,5,200,30),false,true,guiDynamicObjects_Context_Menu_Window1,-1);
 	contexttitle1->setOverrideFont(guiFont14);
 	contexttitle1->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
@@ -2140,7 +2140,7 @@ void GUIManager::createContextMenuGUI()
 
 	IGUIButton * buttoncenter = guienv->addButton(myRect(5,pby,190,20), guiDynamicObjects_Context_Menu_Window1, BT_ID_DYNAMIC_VIEW_BT_CENTER, LANGManager::getInstance()->getText("bt_centerview").c_str());
 	button->setOverrideFont(guiFontC12);
-	
+
 	pby+=25;
 
 
@@ -2164,7 +2164,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjectsWindowEditAction->setDevice(device);
 	guiDynamicObjectsWindowEditAction->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
 	//guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
-	guiDynamicObjectsWindowEditAction->setCloseHide(true); // Not now as it need to check for buttons states and other things 
+	guiDynamicObjectsWindowEditAction->setCloseHide(true); // Not now as it need to check for buttons states and other things
 	guiDynamicObjectsWindowEditAction->setStretchable(true); // Use this window as a streachable windows (all directions)
 	guiDynamicObjectsWindowEditAction->setMinSize(core::dimension2du(640,256));
 	guiDynamicObjectsWindowEditAction->getCloseButton()->setVisible(false);
@@ -2175,7 +2175,7 @@ void GUIManager::createCodeEditorGUI()
                       stringw(L"X").c_str() );
 
 	close->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-	
+
 
 
 	//scripts editor box
@@ -2207,7 +2207,7 @@ void GUIManager::createCodeEditorGUI()
 
 	// Set the IRB commands Highlights
 
-	
+
 	// Allow the code editor to use syntax highlighting based on LUA keywords
 	guiDynamicObjects_Script->addLUAKeywords();
 	guiDynamicObjects_Script->addKeyword("then",SColor(255,0,0,200),true);
@@ -2353,7 +2353,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("onCollision",SColor(255,128,0,255),true);
 
 
-	
+
 
 	// Bottom tabcontrol
 	IGUITabControl * tabctrl1 = guienv->addTabControl(myRect(6,driver->getScreenSize().Height-290,driver->getScreenSize().Width-16,144),guiDynamicObjectsWindowEditAction,true,false);
@@ -2417,6 +2417,8 @@ void GUIManager::createCodeEditorGUI()
 
 }
 
+#endif
+
 bool GUIManager::getVisibleStatus(s32 ID)
 {
 	if (ID==GCW_CONSOLE)
@@ -2445,12 +2447,10 @@ void GUIManager::getInfoAboutModel(LIST_TYPE type)
 		this->info_current=driver->getTexture(filename.c_str());
 		if (!info_current)
 			info_current = driver->getTexture("../media/editor/info_none.jpg");
-	
-		this->thumbnail->setImage(info_current);
-		return;	
-}
 
-#endif
+		this->thumbnail->setImage(info_current);
+		return;
+}
 
 // will tell the caller if he's clicked inside a IRB window
 bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
@@ -2509,19 +2509,19 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 
 	if (guiMainToolWindow->isVisible() && guiMainToolWindow->isPointInside(mousepos))
 		return true;
-	
+
 	//Check if the mouse is inside the combo boxes (inside the main screen)
 	if (screencombo->isPointInside(mousepos) || snappingcombo->isPointInside(mousepos))
-	{				
+	{
 		//App::getInstance()->setComboBoxUsed(true); //Lock the left button because the combo box was selected.
 		return true;
 	}
 	if (this->isGuiChildPresent(screencombo, mousepos))
 		return true;
-	
+
 	if (this->isGuiChildPresent(snappingcombo, mousepos))
 		return true;
-	
+
 
 #endif
 
@@ -2551,12 +2551,12 @@ bool GUIManager::isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepo
 			if (current->isVisible()==true)
 			{
 				return true;
-			} 
+			}
 		}
-	
+
 	}
 	return false;
-	
+
 }
 
 // Reshesh the GUI informations inside a window
@@ -2568,7 +2568,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 	{
 
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
-	
+
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
@@ -2589,7 +2589,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 			guiDynamicObjects_OBJChooser->addItem(listDynamicObjs[i].c_str());
 		}
 		guiDynamicObjects_OBJChooser->setSelected(0);
-		
+
 		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		getInfoAboutModel(GUIManager::LIST_NPC);
 		return;
@@ -2598,7 +2598,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 	{
 		//We unified the segment list with the object list.
 		/*core::stringw selected = guiCustom_Segment_Category->getItem(guiCustom_Segment_Category->getSelected());
-	
+
 		// Create the category list first
 		guiCustom_Segment_OBJCategory->clear();
 
@@ -2620,7 +2620,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiCustom_Segment_OBJChooser->setSelected(0);*/
 
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
-	
+
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
@@ -2647,7 +2647,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 	if (type==LIST_PROP) // Get a list for the special CUSTOM SEGMENT meshes
 	{
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
-	
+
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
@@ -2670,12 +2670,12 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		getInfoAboutModel(GUIManager::LIST_PROP);
 		return;
-		
+
 	}
 	if (type==LIST_LOOT) // Get a list for the special CUSTOM SEGMENT meshes
 	{
 		core::stringw selected = guiDynamicObjects_Category->getItem(guiDynamicObjects_Category->getSelected());
-	
+
 		// Create the category list first
 		guiDynamicObjects_OBJCategory->clear();
 
@@ -2698,7 +2698,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		DynamicObjectsManager::getInstance()->setActiveObject(getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 		getInfoAboutModel(GUIManager::LIST_LOOT);
 		return;
-		
+
 	}
 }
 
@@ -2900,7 +2900,7 @@ void GUIManager::createConsole()
 	tab->setDrawBackground(true);
 
 	control->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-	
+
 	//Message console
 	console = guienv->addListBox(myRect(10,15,755,290),tab,0,true);
 	console->setAutoScrollEnabled(false);
@@ -2912,7 +2912,7 @@ void GUIManager::createConsole()
 	consolelog->setAutoScrollEnabled(false);
 	consolelog->setItemHeight(20);
 	consolelog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-	
+
 	consolewin->setVisible(false);
 }
 
@@ -2932,7 +2932,7 @@ void GUIManager::update()
 		}
 		 else
 			timer3 = device->getTimer()->getRealTime();
-		
+
 	}
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
 	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1))
@@ -2946,12 +2946,12 @@ void GUIManager::update()
 			}
 		} else
 		timer3 = device->getTimer()->getRealTime();
-		
+
 	}
 
 	// Check for Windows that are "closed/hidden" and change the "app state" adequately
-	if (!guiDynamicObjectsWindowEditAction->isVisible() && 
-		(App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_SCRIPT || 
+	if (!guiDynamicObjectsWindowEditAction->isVisible() &&
+		(App::getInstance()->getAppState()==App::APP_EDIT_DYNAMIC_OBJECTS_SCRIPT ||
 		App::getInstance()->getAppState()==App::APP_EDIT_PLAYER_SCRIPT ||
 		App::getInstance()->getAppState()==App::APP_EDIT_SCRIPT_GLOBAL))
 		App::getInstance()->setAppState(App::APP_EDIT_DYNAMIC_OBJECTS_MODE);
@@ -2969,11 +2969,11 @@ void GUIManager::setupGameplayGUI()
     fader->setVisible(false);
 
 	// NEW Create display size since IRRlicht return wrong values
-	// Check the current screen size 
+	// Check the current screen size
 	displayheight=screensize.Height;
 	displaywidth=screensize.Width;
 
-	// Create a cutscene text 
+	// Create a cutscene text
 	guiCutsceneText = guienv->addStaticText(L"This is a standard cutscene text",core::rect<s32>(100,displayheight/2+(displayheight/4),displaywidth-10,displayheight-100),false,true,0,-1,false);
 	guiCutsceneText->setOverrideFont(guiFontLarge28);
 	guiCutsceneText->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
@@ -3129,9 +3129,9 @@ void GUIManager::setupGameplayGUI()
 		gameplay_bar_image->setVisible(false);
 	}
 
-	
 
-	
+
+
 
     ///DIALOG
     guiDialogImgYes = driver->getTexture("../media/art/img_yes.png");
@@ -3180,17 +3180,17 @@ void GUIManager::setupGameplayGUI()
 	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 
     guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
-	
+
 	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
-	
+
 	if (info_none)
 		guiPlayerLootImage = guienv->addImage(info_none,vector2d<s32>(220,30),true,tab2,IMG_LOOT);
 
 	guienv->addStaticText(L"",core::rect<s32>(220,250,520,410),true,true,tab2,TXT_ID_LOOT_DESCRIPTION,true);
-	
+
 	//guienv->addImage(info_none,vector2d<s32>(5,5),true,tab2);
 	core::stringc filename = "../media/dynamic_objects/";
-	
+
     guiBtUseItem = guienv->addButton(myRect(10,displayheight-300,32,32),
                                          tab2,
                                          BT_ID_USE_ITEM,
@@ -3309,7 +3309,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             break;
 
 		case GCW_DYNAMIC_PLAYER_EDIT:
-			guiDynamicPlayerWindowChooser->setVisible(visible);	
+			guiDynamicPlayerWindowChooser->setVisible(visible);
 			if (visible)
 				guienv->setFocus(guiDynamicPlayerWindowChooser);
 			break;
@@ -3322,13 +3322,13 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			break;
 
         case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU:
-			
+
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
 
 			if (visible && screen.Height-200<mouseY+20) // Reposition the menu if it will be cropped by the screen clipping
 				mouseY-=160;
-			
+
 			if (visible && mouseX<50) // Reposition the menu if it will be cropped by the screen clipping
 				mouseX+=100;
 
@@ -3347,8 +3347,8 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 				guiDynamicObjects_Context_Menu_Window->setEnabled(false);
 			}
             guiDynamicObjects_Context_Menu_Window->setVisible(visible);
-			
-			
+
+
             break;
 		case GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1:
 			if (visible)
@@ -3357,14 +3357,14 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-40;
 			guiDynamicObjects_Context_Menu_Window1->setRelativePosition(rect<s32>(mouseX,mouseY,mouseX+200,mouseY+60));
             guiDynamicObjects_Context_Menu_Window1->setVisible(visible);
-		
+
 			break;
 
 
         case GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT:
             guiDynamicObjectsWindowEditAction->setVisible(visible);
 			if (visible)
-			{	
+			{
 				guienv->setFocus(guiDynamicObjects_Script);
 				guienv->getRootGUIElement()->bringToFront(guiDynamicObjects_Script);
 			}
@@ -3373,7 +3373,7 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			if (visible)
 				guienv->setFocus(guiTerrainToolbar);
             guiTerrainToolbar->setVisible(visible);
-			
+
             break;
 #endif
         case GCW_GAMEPLAY_ITEMS:
@@ -3385,8 +3385,8 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			if (visible)
 				guienv->setFocus(guiAboutWindow);
 			guiAboutWindow->setVisible(visible);
-			
-				
+
+
             break;
         case GCW_TERRAIN_PAINT_VEGETATION:
             guiVegetationToolbar->setVisible(visible);
@@ -3406,11 +3406,11 @@ bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
 {
 	IGUIElement * elem = guienv->getRootGUIElement()->getElementFromId(window, true);
 	if (elem)
-	{ 
+	{
 		return elem->isVisible();
 	}
 
-	else return false; 
+	else return false;
 }
 
 // Load a script template list for the script editor GUI
@@ -3492,13 +3492,13 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
 	//Put the extended string to char, then encode it back
 	core::stringc temptxt= text.c_str();
 	char *mtext = (char *)temptxt.c_str(); // char buffer
-    wchar_t buffer[131072]=L"";  //widestring buffer of 128k	
+    wchar_t buffer[131072]=L"";  //widestring buffer of 128k
     mbstowcs(buffer, mtext, strlen(mtext));
 	core::stringw buf = (core::stringw)buffer;
 
 	// ----------------------------------------------------
-	// Shoulb be ok but a script should not be longer than 128k 
-	
+	// Shoulb be ok but a script should not be longer than 128k
+
 
 	switch(id)
     {
@@ -3693,7 +3693,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 		case CONSOLE:
 			// Show hide the console. If it`s visible, focus on it
 			consolewin->setVisible(visible);
-			if (visible) 
+			if (visible)
 				guienv->setFocus(consolewin);
 			break;
 
@@ -3844,8 +3844,8 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 	{
 		textevent.push_back(text);
 		texteventcolor.push_back(color);
-	} 
-	
+	}
+
 	// This part will update the IRRlicht type console
 	if (console)
 	{
@@ -3863,7 +3863,7 @@ void GUIManager::setConsoleText(stringw text, video::SColor color)
 
 }
 
-void GUIManager::clearConsole() 
+void GUIManager::clearConsole()
 {
 	textevent.clear();
 	texteventcolor.clear();
@@ -4047,7 +4047,7 @@ stringc GUIManager::getActivePlayerItem()
 DynamicObject* GUIManager::getActiveLootItem()
 {
 	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
-	
+
 	s32 item=guiPlayerItems->getSelected();
 	if (item>-1 && lootitems.size()>0)
 		return lootitems[item];
@@ -4062,7 +4062,7 @@ void GUIManager::updateItemsList()
 	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
 
     //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
-	for(int i = 0; i<(int)lootitems.size(); i++) 
+	for(int i = 0; i<(int)lootitems.size(); i++)
 	{
 		//internalname is the Alias name of the object. If undefined it use the internal name
 		guiPlayerItems->addItem(stringw(lootitems[i]->internalname).c_str());
@@ -4090,7 +4090,7 @@ void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 	}
 
 	// Set the spinbox gui with the information
-	
+
 	pos_x_text->setValue(pos.X);
 	pos_y_text->setValue(pos.Y);
 	pos_z_text->setValue(pos.Z);
@@ -4100,7 +4100,7 @@ void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 	sca_x_text->setValue(sca.X);
 	sca_x_text->setValue(sca.Y);
 	sca_z_text->setValue(sca.Z);
-	
+
 }
 
 // Flush all gui elements

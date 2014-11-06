@@ -33,7 +33,7 @@ class GUIManager
 		BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,
 
 		BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,
-  
+
 		SC_ID_TERRAIN_BRUSH_STRENGTH,
 		SC_ID_TERRAIN_BRUSH_RADIUS,
 		SC_ID_TERRAIN_BRUSH_RADIUS2,
@@ -225,18 +225,17 @@ class GUIManager
 		void createCustomSegmentChooserGUI();
 		void createContextMenuGUI();
 		void createCodeEditorGUI();
+		void setEditBoxText(GUI_ID id, stringw text);
+#endif
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
 		void setCheckboxState(GUI_ID id, bool value);
         f32 getScrollBarValue(GUI_ID id);
         stringc getComboBoxItem(GUI_ID id);
 		IGUIListBox* getListBox(GUI_ID id);
-		void setEditBoxText(GUI_ID id, stringw text);
+
 		bool getVisibleStatus(s32 ID);
 		void getInfoAboutModel(LIST_TYPE type = LIST_NPC);
-
-#endif
-
 
 		void updateGuiPositions(dimension2d<u32> screensize);
 
@@ -308,7 +307,7 @@ class GUIManager
 		u32 timer;
 		u32 timer2;
 		u32 timer3; //Timer for the Context menu disabling
-		
+
 		// Used to store text events in a buffer while the GUI is not displayed
 		std::vector<core::stringw> textevent;
 		std::vector<video::SColor> texteventcolor;
@@ -413,7 +412,7 @@ class GUIManager
         IGUIButton* guiDynamicObjectsMode;
 		IGUIButton* guiDynamicObjectsProps;
 		IGUIButton* guiDynamicObjectsLoot;
-		
+
         //IGUIWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicObjectsWindowChooser;
 		CGUIExtWindow* guiDynamicPlayerWindowChooser;
@@ -422,7 +421,7 @@ class GUIManager
 		gui::IGUIWindow* InnerChooser2; // For the inner part of the chooser (move/rotate/scale)
 		gui::IGUIWindow* InnerChooser3; // For the inner part of the chooser (select->Object lists)
 
-		
+
 		IGUIWindow* guiDynamicObjectsWindowInfo;
         CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
 
@@ -503,7 +502,7 @@ class GUIManager
 		IGUICheckBox * sca_y_lock;
 		IGUICheckBox * sca_z_lock;
 
-		// Items list 
+		// Items list
 		IGUIComboBox* guiDynamicObjects_listfilter;
 
         ///IrrRPG Builder LOGO
@@ -553,16 +552,16 @@ class GUIManager
 		ITexture* backtexture;
 		ITexture* imgNewProject;
 		ITexture* imgNewProject1;
-		ITexture* imgLoadProject; 
-		ITexture* imgLoadProject1; 
-		ITexture* imgSaveProject; 
-		ITexture* imgSaveProject1; 
-		ITexture* imgCloseProgram; 
-		ITexture* imgAbout; 
+		ITexture* imgLoadProject;
+		ITexture* imgLoadProject1;
+		ITexture* imgSaveProject;
+		ITexture* imgSaveProject1;
+		ITexture* imgCloseProgram;
+		ITexture* imgAbout;
 		ITexture* imgAbout1;
-		ITexture* imgHelp; 
-		ITexture* imgHelp1; 
-		ITexture* imgConfig; 
+		ITexture* imgHelp;
+		ITexture* imgHelp1;
+		ITexture* imgConfig;
 		ITexture* imgConfig1;
 
 		// Default textures for the info panel
@@ -587,7 +586,7 @@ class GUIManager
 
 
 
-		
+
 };
 
 #endif // GUIMANAGER_H
