@@ -609,6 +609,9 @@ void GUIManager::setupEditorGUI()
 	// Create the terrain toolbar GUI
 	createTerrainToolbar();
 
+	// Create the tree toolbar GUI
+	createVegetationToolbar();
+
 	// Create the Dynamic Object Chooser GUI
 	createDynamicObjectChooserGUI();
 
@@ -1205,92 +1208,11 @@ void GUIManager::createAboutWindowGUI()
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 }
 
-void GUIManager::createTerrainToolbar()
+
+void GUIManager::createVegetationToolbar()
 {
-	///TERRAIN TOOLBAR
-    guiTerrainToolbar = guienv->addWindow(
-		//myRect(driver->getScreenSize().Width - 170,
-		myRect(displaywidth - 170,
-		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight()+3,
-		170,
-		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
-		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
-		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str());
 
-
-    guiTerrainToolbar->getCloseButton()->setVisible(false);
-
-    guiTerrainToolbar->setDraggable(false);
-    guiTerrainToolbar->setVisible(false);
-	guiTerrainToolbar->setNotClipped(true);
-	guiTerrainToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-
-	//Show Playable Area (areas with no Y == 0 will be red)
-	mainToolbarPos.Y=20;
-
-	// Display the brush strength
-	guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
-                                                         myRect(10,mainToolbarPos.Y+30,150,20),
-                                                         false,true, guiTerrainToolbar);
-	guiTerrainBrushStrengthValue = guienv->addStaticText(L"100",
-                                                         myRect(10,mainToolbarPos.Y+70,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
-    guiTerrainBrushStrength->setMin(0);
-    guiTerrainBrushStrength->setMax(400);
-    guiTerrainBrushStrength->setPos(100);
-	guiTerrainBrushStrength->setSmallStep(1);
-	guiTerrainBrushStrength->setLargeStep(5);
-
-
-	// Display the brush radius
-	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
-                                                         myRect(10,mainToolbarPos.Y+90,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-	guienv->addStaticText(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_inner").c_str(),myRect(10,mainToolbarPos.Y+150,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-	guiTerrainBrushRadiusValue = guienv->addStaticText(L"100",
-                                                         myRect(10,mainToolbarPos.Y+130,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-	guiTerrainBrushRadiusValue2 = guienv->addStaticText(L"100",
-                                                         myRect(10,mainToolbarPos.Y+190,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_plateau")).c_str(),
-                                                         myRect(10,mainToolbarPos.Y+210,150,20),
-                                                         false,true, guiTerrainToolbar);
-
-
-    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS );
-    guiTerrainBrushRadius->setMin(0);
-    guiTerrainBrushRadius->setMax(800);
-    guiTerrainBrushRadius->setPos(100);
-	guiTerrainBrushRadius->setSmallStep(1);
-	guiTerrainBrushRadius->setLargeStep(5);
-
-	guiTerrainBrushRadius2 = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+170,150,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS2 );
-    guiTerrainBrushRadius2->setMin(5);
-    guiTerrainBrushRadius2->setMax(100);
-    guiTerrainBrushRadius2->setPos(5);
-	guiTerrainBrushRadius2->setSmallStep(1);
-	guiTerrainBrushRadius2->setLargeStep(5);
-
-	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+230,160,mainToolbarPos.Y+250),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
-	guiTerrainBrushPlateau->setMin(-120);
-	guiTerrainBrushPlateau->setMax(768);
-	guiTerrainBrushPlateau->setPos(-10);
-	guiTerrainBrushPlateau->setSmallStep(1);
-	guiTerrainBrushPlateau->setLargeStep(5);
-
-	guiTerrainBrushPlateauValue = guienv->addStaticText(L"0",
-                                                         myRect(10,mainToolbarPos.Y+250,150,20),
-                                                         false,true, guiTerrainToolbar);
-
+	/*
 	///Vegetation toolbar (Not yet implemented, will have a choice of vegetation and brush)
     guiVegetationToolbar = guienv->addWindow(
 		//myRect(driver->getScreenSize().Width - 170,
@@ -1317,7 +1239,152 @@ void GUIManager::createTerrainToolbar()
     guiVegetationBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+30,150,20),guiVegetationToolbar,SC_ID_VEGETATION_BRUSH_STRENGTH );
     guiVegetationBrushStrength->setMin(0);
     guiVegetationBrushStrength->setMax(200);
-    guiVegetationBrushStrength->setPos(100);
+    guiVegetationBrushStrength->setPos(100);*/
+
+	guiVegetationToolbar = guienv->addWindow(
+		//myRect(driver->getScreenSize().Width - 170,
+		myRect(displaywidth - 220,
+		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()+3,
+		220,
+		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
+		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str(),0,GCW_VEGE_TOOLBAR);
+
+
+    guiVegetationToolbar->getCloseButton()->setVisible(false);
+
+	guiVegetationToolbar->setDraggable(false);
+    guiVegetationToolbar->setVisible(false);
+	guiVegetationToolbar->setNotClipped(true);
+	guiVegetationToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	u32 x=10;
+	u32 y=40;
+	IGUIButton* button = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
+                                     BT_VEGE_BASE,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
+	button->setIsPushButton(true);
+	button->setPressed(true);
+	button->setImage(driver->getTexture("../media/vegetation/vege0.jpg"));
+	button->setPressedImage(driver->getTexture("../media/vegetation/vege0dn.jpg"));
+	
+	y+=74;
+	IGUIButton* button1 = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
+                                     BT_VEGE_BASE+1,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
+	button1->setIsPushButton(true);
+	button1->setPressed(true);
+	button1->setImage(driver->getTexture("../media/vegetation/vege1.jpg"));
+	button1->setPressedImage(driver->getTexture("../media/vegetation/vege1dn.jpg"));
+
+	y+=74;
+	IGUIButton* button2 = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
+                                     BT_VEGE_BASE+2,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
+	button2->setIsPushButton(true);
+	button2->setPressed(true);
+	button2->setImage(driver->getTexture("../media/vegetation/vege2.jpg"));
+	button2->setPressedImage(driver->getTexture("../media/vegetation/vege2dn.jpg"));
+
+	y+=74;
+	IGUIButton* button3 = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
+                                     BT_VEGE_BASE+3,L"",
+                                     stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
+	button3->setIsPushButton(true);
+	button3->setPressed(true);
+	button3->setImage(driver->getTexture("../media/vegetation/vege3.jpg"));
+	button3->setPressedImage(driver->getTexture("../media/vegetation/vege3dn.jpg"));
+
+	y+=74;
+}
+
+void GUIManager::createTerrainToolbar()
+{
+	///TERRAIN TOOLBAR
+    guiTerrainToolbar = guienv->addWindow(
+		//myRect(driver->getScreenSize().Width - 170,
+		myRect(displaywidth - 220,
+		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
+		guiMainToolWindow->getClientRect().getHeight()+3,
+		220,
+		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
+		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str());
+
+
+    guiTerrainToolbar->getCloseButton()->setVisible(false);
+
+    guiTerrainToolbar->setDraggable(false);
+    guiTerrainToolbar->setVisible(false);
+	guiTerrainToolbar->setNotClipped(true);
+	guiTerrainToolbar->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	//Show Playable Area (areas with no Y == 0 will be red)
+	mainToolbarPos.Y=20;
+
+	// Display the brush strength
+	guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+30,200,20),
+                                                         false,true, guiTerrainToolbar);
+	guiTerrainBrushStrengthValue = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+70,200,20),
+                                                         false,true, guiTerrainToolbar);
+
+    guiTerrainBrushStrength = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+50,200,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_STRENGTH );
+    guiTerrainBrushStrength->setMin(0);
+    guiTerrainBrushStrength->setMax(400);
+    guiTerrainBrushStrength->setPos(100);
+	guiTerrainBrushStrength->setSmallStep(1);
+	guiTerrainBrushStrength->setLargeStep(5);
+
+
+	// Display the brush radius
+	guiTerrainBrushRadiusLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_label")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+90,200,20),
+                                                         false,true, guiTerrainToolbar);
+
+	guienv->addStaticText(LANGManager::getInstance()->getText("bt_terrain_transform_brush_radius_inner").c_str(),myRect(10,mainToolbarPos.Y+150,150,20),
+                                                         false,true, guiTerrainToolbar);
+
+	guiTerrainBrushRadiusValue = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+130,200,20),
+                                                         false,true, guiTerrainToolbar);
+
+	guiTerrainBrushRadiusValue2 = guienv->addStaticText(L"100",
+                                                         myRect(10,mainToolbarPos.Y+190,200,20),
+                                                         false,true, guiTerrainToolbar);
+
+	guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_plateau")).c_str(),
+                                                         myRect(10,mainToolbarPos.Y+210,200,20),
+                                                         false,true, guiTerrainToolbar);
+
+
+    guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,200,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS );
+    guiTerrainBrushRadius->setMin(0);
+    guiTerrainBrushRadius->setMax(800);
+    guiTerrainBrushRadius->setPos(100);
+	guiTerrainBrushRadius->setSmallStep(1);
+	guiTerrainBrushRadius->setLargeStep(5);
+
+	guiTerrainBrushRadius2 = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+170,200,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS2 );
+    guiTerrainBrushRadius2->setMin(5);
+    guiTerrainBrushRadius2->setMax(100);
+    guiTerrainBrushRadius2->setPos(5);
+	guiTerrainBrushRadius2->setSmallStep(1);
+	guiTerrainBrushRadius2->setLargeStep(5);
+
+	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+230,210,mainToolbarPos.Y+250),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
+	guiTerrainBrushPlateau->setMin(-120);
+	guiTerrainBrushPlateau->setMax(768);
+	guiTerrainBrushPlateau->setPos(-10);
+	guiTerrainBrushPlateau->setSmallStep(1);
+	guiTerrainBrushPlateau->setLargeStep(5);
+
+	guiTerrainBrushPlateauValue = guienv->addStaticText(L"0",
+                                                         myRect(10,mainToolbarPos.Y+250,200,20),
+                                                         false,true, guiTerrainToolbar);
+
 }
 
 void GUIManager::createDynamicObjectChooserGUI()
@@ -3373,8 +3440,12 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			if (visible)
 				guienv->setFocus(guiTerrainToolbar);
             guiTerrainToolbar->setVisible(visible);
-
             break;
+		case GCW_VEGE_TOOLBAR:
+			if (visible)
+				guienv->setFocus(guiVegetationToolbar);
+			guiVegetationToolbar->setVisible(visible);
+			break;
 #endif
         case GCW_GAMEPLAY_ITEMS:
             this->updateItemsList();

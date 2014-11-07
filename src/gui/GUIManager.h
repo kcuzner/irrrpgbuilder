@@ -140,7 +140,9 @@ class GUIManager
 		BT_PLAYER_CONFIG,
 		BT_PLAYER_START,
 		WIN_GAMEPLAY,
-		WIN_LOADER
+		WIN_LOADER,
+
+		BT_VEGE_BASE //There are other ID that will accumulate after this do NOT put other id after this one
 	};
 
 	//here are all windows of the editor (except mainWindow - toolbar)
@@ -152,6 +154,7 @@ class GUIManager
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
 		GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,
 		GCW_TERRAIN_TOOLBAR,
+		GCW_VEGE_TOOLBAR,
 		GCW_GAMEPLAY_ITEMS,
 		GCW_ABOUT,
 		GCW_TERRAIN_PAINT_VEGETATION,
@@ -220,6 +223,7 @@ class GUIManager
 
 		void createDisplayOptionsGUI();
 		void createAboutWindowGUI();
+		void createVegetationToolbar();
 		void createTerrainToolbar();
 		void createDynamicObjectChooserGUI();
 		void createCustomSegmentChooserGUI();

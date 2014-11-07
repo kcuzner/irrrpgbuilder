@@ -229,6 +229,7 @@ void App::setAppState(APP_STATE newAppState)
 		IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
 		if (button)
 		{
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_VEGE_TOOLBAR,true);
 			button->setEnabled(false);
 			button->setPressed(true);
 		}
@@ -247,6 +248,7 @@ void App::setAppState(APP_STATE newAppState)
 			IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
 			button->setEnabled(true);
 			button->setPressed(false);
+			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_VEGE_TOOLBAR,false);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
