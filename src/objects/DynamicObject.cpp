@@ -505,15 +505,6 @@ void DynamicObject::walkTo(vector3df targetPos)
 	pos.Z -= cos((this->getRotation().Y)*PI/180)*speed;
     pos.X -= sin((this->getRotation().Y)*PI/180)*speed;
 
-	/*core::stringc text="Current speed set at:";
-		text.append(core::stringc(speed));
-		text.append(" walkspeed is:");
-		text.append(core::stringc(currentAnim.walkspeed));
-		text.append(" delay is:");
-		text.append(core::stringc(delay));
-		App::getInstance()->getDevice()->getLogger()->log(text.c_str());
-		//GUIManager::getInstance()->setConsoleText(stringw(text)); */
-
 	// Sampling points on the ground
 	// TODO: The sampling point should be spaced based on the character size and not fixed values
 	vector3df posfront1 = pos+(targetPos.normalize()*20);
@@ -551,6 +542,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront.X,posfront.Y+36,posfront.Z));
 	if (frontcol>-1000)
 	{
+		if (objectType==OBJECT_TYPE_PLAYER)
+			printf("Collision detected in the front!\n");
+
 		collided=true;
 	}
 	else
@@ -630,6 +624,8 @@ void DynamicObject::walkTo(vector3df targetPos)
 	}
 	else
 	{
+		if (objectType==OBJECT_TYPE_PLAYER)
+			printf("Player has collision condition...\n");
 		// This will be activated if there is a collision (collided=true)
 		// Since we're not using IRRlicht collision response animators now for this,
 		// Collision detection between NPC will have to be is not implemented (simple radius detection)
@@ -1556,6 +1552,9 @@ void DynamicObject::attackEnemy(DynamicObject* obj)
 	if (enemyUnderAttack==obj && Player::getInstance()->controltype==Player::CONTROL_POINTNCLICK)
 		return;
 
+	if(obj->getObjectType() != stringc("ENEMY"))
+		return;
+
     enemyUnderAttack = obj;
 
 	if (Player::getInstance()->controltype!=Player::CONTROL_POINTNCLICK)
@@ -2022,20 +2021,18 @@ void DynamicObject::updateWalk()
 		if (this->getAnimation()==OBJECT_ANIMATION_WALK || this->getAnimation()==OBJECT_ANIMATION_RUN)
 		{
 
-
-
 			if (objectType==OBJECT_TYPE_PLAYER && !Player::getInstance()->getTaggedTarget())
 			{
 				vector<DynamicObject*> list=DynamicObjectsManager::getInstance()->getObjectNearPosition(this->getPosition(),objectsize, OBJECT_TYPE_NPC);
 				if (list.size()>0)
 				{
-					if (list[0]->getLife()>0)
+					if (list[0]->getLife()>0 && getDistanceFrom(list[0]->getPosition())>30.0f)
 					{ 
 						Player::getInstance()->setTaggedTarget(list[0]);
-						//enemyUnderAttack=list[0];
+						enemyUnderAttack=list[0];
 						this->setWalkTarget(this->getPosition());
 						this->setAnimation("idle");
-						printf("Stop the PLAYER!\n");
+						printf("Stop the PLAYER!, Near position\n");
 						return;
 					}
 					
@@ -2044,28 +2041,33 @@ void DynamicObject::updateWalk()
 			//New trick check in radius of the walking for a target. If yes then stop and set the attack
 			if (objectType==OBJECT_TYPE_NPC)
 			{
-				vector<DynamicObject*> list=DynamicObjectsManager::getInstance()->getObjectNearPosition(this->getPosition(),objectsize, OBJECT_TYPE_PLAYER);
-				if (list.size()>0)
+				f32 distance = getDistanceFrom(Player::getInstance()->getObject()->getPosition());
+				//vector<DynamicObject*> list=DynamicObjectsManager::getInstance()->getObjectNearPosition(this->getPosition(),objectsize*10, OBJECT_TYPE_PLAYER);
+				//if (list.size()>0)
+				if (distance < objectsize)
 				{
+					//printf("Detected of the player, checking what to do: ");
+					if (distance < objectsize*0.5f)
+					{
+						//printf("too near of the player, moving back\n");
+						vector3df pos=this->getPosition();
+
+						pos.Z -= cos((this->getRotation().Y)*PI/180)*currentSpeed;
+						pos.X -= sin((this->getRotation().Y)*PI/180)*currentSpeed;
+
+						// Sampling points on the ground
+						// TODO: The sampling point should be spaced based on the character size and not fixed values
+						vector3df posfront1 = pos-(Player::getInstance()->getObject()->getPosition().normalize()*40.0f);
+						setWalkTarget(posfront1);
+						return;
+					}
+					//printf(" ok distance, stopping there, distance: %f \n",distance);
 					//enemyUnderAttack=list[0]; //Got bugs if this is not used by the player. Would need to be used by everyone.
 					this->setWalkTarget(this->getPosition());
 					this->setAnimation("idle");
-					printf("Stop the NPC!\n");
 					return;
 				}
 			}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 			//This will stop the player if he reach the target on the ground
@@ -2073,10 +2075,11 @@ void DynamicObject::updateWalk()
 			{
 				this->setWalkTarget(this->getPosition());
 				this->setAnimation("idle");
-
+				printf("Stop the PLAYER, reached target!\n");
 				DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(false);
 				return;
 			}
+
 			// This will stop the NPC if it get in a "correct" range of the player
 			else if ((!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize && this->objectType==OBJECT_TYPE_NPC) &&  // NPC
 				(!enemyUnderAttack && this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.75f && this->objectType==OBJECT_TYPE_NPC))
@@ -2136,7 +2139,11 @@ void DynamicObject::updateWalk()
 				setWalkTarget(pos2);
 				setPosition(pos2);
 
-				lookAt(Player::getInstance()->getNode()->getPosition());
+				printf("Position of the object: %f,%f,%f\n",getPosition().X,getPosition().Y,getPosition().Z);
+				printf("Position of the target: %f,%f,%f\n",pos2.X,pos2.Y,pos2.Z);
+
+				if (objectType==OBJECT_TYPE_NPC)
+					lookAt(Player::getInstance()->getNode()->getPosition());
 
 				if (runningMode)
 				{

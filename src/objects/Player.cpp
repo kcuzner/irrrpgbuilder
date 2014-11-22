@@ -255,13 +255,18 @@ void Player::updateRTSTargetting()
 				//Since an object as been clicked the walktarget of the player is changed
 				if (obj)
 				{
-					vector3df pos = obj->getPosition();
+					//Strange with this code commented out, the gameplay is the same.
+					//Will have to check the code for the dynamic object itself
+					//This could be duplicate code for the same conditions
+					/*vector3df pos = obj->getPosition();
 					vector3df pos2 = getObject()->getPosition();
 					f32 desiredDistance=50.0f;
 					f32 distance = getObject()->getDistanceFrom(pos);
 					f32 final = (distance-desiredDistance)/distance;
 					vector3df walkTarget = pos.getInterpolated(pos2,final);
-					getObject()->setWalkTarget(walkTarget);
+					getObject()->setWalkTarget(walkTarget);*/
+
+					//This part is good, when a character is clicked on, the target object position on it, and the object become the "tagged target"
 					DynamicObjectsManager::getInstance()->getTarget()->setPosition(obj->getPosition()+vector3df(0,0.1f,0));
 					DynamicObjectsManager::getInstance()->getTarget()->getNode()->setVisible(true);
 					getObject()->lookAt(obj->getPosition());
