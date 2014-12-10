@@ -304,7 +304,13 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
     segmentXML->SetDoubleAttribute("z",z);
 
 	core::stringc file=TerrainManager::getInstance()->filename;
+
 	core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
+	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file,
+				App::getInstance()->path);
+	
+
+	/*core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
 	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(path,
 				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
 
@@ -312,7 +318,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
 
 	path2.append("/");
-	path2.append(filename);
+	path2.append(filename);*/
 	segmentXML->SetAttribute("mesh",path2.c_str());
 
 	//Saving the vegetation information with the tile

@@ -265,6 +265,9 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 	}
     else
 	{
+		if (!mesh)
+			return; 
+
 		this->mesh->setHardwareMappingHint(EHM_STATIC);
 		//Keep this for reference.
         //this->node = smgr->addMeshSceneNode((IAnimatedMesh*)mesh,0,0x0010);

@@ -207,6 +207,7 @@ class App
 		inline u32 getTimer(){return timer;}
 
 		core::stringc filename;
+		core::stringc path; //Default application path.
 		
     private:
 

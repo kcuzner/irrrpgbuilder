@@ -734,7 +734,7 @@ void CGUIFileSelector::fillListBox()
 	{
 		//core::stringw test2=FileList->getFileName(i);
 		core::stringw test2=translateDOS(FileList->getFileName(i));
-		printf("Filename is: %s\n",((stringc)test2).c_str());
+		//printf("Filename is: %s\n",((stringc)test2).c_str());
 		s = test2;
 		// We just want a list of directories and those matching the file filter
 		if (FileList->isDirectory(i))

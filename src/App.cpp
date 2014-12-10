@@ -72,6 +72,7 @@ App::App()
 	current_listfilter = DynamicObject::OBJECT_TYPE_NONE;//Show all the objects in the object list set as initial value
 
 	currentsnapping=64.0f; //set the current snapping distance;
+	path = "";
 
 }
 
@@ -2417,6 +2418,8 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	timer2 = device->getTimer()->getRealTime();
 	timer3 = device->getTimer()->getRealTime();
 	LANGManager::getInstance()->setDefaultLanguage(language);
+
+	path = device->getFileSystem()->getWorkingDirectory();
 	quickUpdate();
 
 
