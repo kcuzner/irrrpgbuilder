@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
-	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="80.0"
+	<dynamic_object name="player_normal" mesh="../player/warrior_anims.b3d" script="generic_player.lua" type="player" scale="1.0"
 					description="Warrior with sword and buckle" author="Christian Clavet" licence="Creative Commons">
 		<animation name="idle"  start="146" end="165" speed="3.0" /> <!-- Stardard Idle anim -->
 		<animation name="idle1"  start="1" end="48" speed="30.0" /> <!-- Move back the neck idle anim -->

@@ -12,7 +12,7 @@
 		<animation name="despawn" start="0" end="0" speed="1.0"/>
 	</dynamic_object>
 <!-- Goblin -->
-	<dynamic_object name="goblin" mesh="npc/goblin_anims.b3d" type="npc" script="ai_goblin.lua" scale="46" materialType="solid"
+	<dynamic_object name="goblin" mesh="npc/goblin_anims.b3d" type="npc" script="ai_goblin.lua" scale="1" materialType="solid"
 					description="A goblin" author="Christian Clavet" licence="Creative Commons" category="Monster - medium"
 					thumbnail="npc/info_goblin.jpg" >
 		<animation name="idle" start="1" end="240" speed="30.0"/>
@@ -25,7 +25,7 @@
 		<animation name="despawn" start="346" end="370" speed="5.0" loop="false" />
 	</dynamic_object>
 <!-- Goblin Giant -->
-	<dynamic_object name="goblin giant version" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="160" materialType="solid"
+	<dynamic_object name="goblin giant version" mesh="npc/goblin_walk.b3d" type="npc" script="generic_enemy.lua" scale="1" materialType="solid"
 					description="A goblin based on the small one" author="Christian Clavet" licence="Creative Commons" category="Monster - Big"
 					thumbnail="npc/info_goblin_giant.jpg">
 		<animation name="idle" start="1" end="1" speed="10"/>
