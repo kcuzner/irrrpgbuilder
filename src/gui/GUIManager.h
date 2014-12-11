@@ -230,6 +230,8 @@ class GUIManager
 		void createContextMenuGUI();
 		void createCodeEditorGUI();
 		void setEditBoxText(GUI_ID id, stringw text);
+		void expandPanel(GUI_CUSTOM_WINDOW id);
+		void contractPanel(GUI_ID id);
 #endif
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);

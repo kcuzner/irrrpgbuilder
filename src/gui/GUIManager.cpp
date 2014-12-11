@@ -3583,6 +3583,22 @@ void GUIManager::setEditBoxText(GUI_ID id, stringw text)
             break;
     }
 }
+
+void GUIManager::expandPanel(GUIManager::GUI_CUSTOM_WINDOW id)
+{
+	switch (id)
+	{
+		case GCW_DYNAMIC_OBJECT_CHOOSER:
+			guiDynamicObjectsWindowChooser->Expand(CGUIExtWindow::PANE_LEFT);
+
+		break;
+
+	}
+}
+
+void GUIManager::contractPanel(GUIManager::GUI_ID id)
+{
+}
 #endif
 
 //! Enable/Disable specific GUI buttons (Mostly IRB menu buttons)
@@ -4169,7 +4185,7 @@ void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 	rot_y_text->setValue(rot.Y);
 	rot_z_text->setValue(rot.Z);
 	sca_x_text->setValue(sca.X);
-	sca_x_text->setValue(sca.Y);
+	sca_y_text->setValue(sca.Y);
 	sca_z_text->setValue(sca.Z);
 
 }

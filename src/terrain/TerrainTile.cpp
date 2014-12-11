@@ -310,15 +310,6 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 				App::getInstance()->path);
 	
 
-	/*core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
-	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(path,
-				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
-
-	core::stringc filename=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file,
-				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
-
-	path2.append("/");
-	path2.append(filename);*/
 	segmentXML->SetAttribute("mesh",path2.c_str());
 
 	//Saving the vegetation information with the tile
@@ -448,7 +439,7 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 	if (!TerrainManager::getInstance()->isParametric()) //Old format for tiles
 	{
 		TiXmlNode* vertex = parentElement->FirstChild( "vertex" );
-		printf("A non-parametric project is loaded, loading tile vertices...\n");
+		//printf("A non-parametric project is loaded, loading tile vertices...\n");
 		while( vertex != NULL )
 		{
 			if (!custom)

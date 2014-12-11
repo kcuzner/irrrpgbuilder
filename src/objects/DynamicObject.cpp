@@ -309,7 +309,8 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
-			fakeShadow->setScale(vector3df(0.75f,0.75f,0.75f));
+			
+			fakeShadow->setScale(vector3df(meshSize*0.45f,meshSize*0.45f,meshSize*0.45f));
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));

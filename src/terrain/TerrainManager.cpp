@@ -513,8 +513,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	//status = mkdir(filename.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	//Create only a folder if there are terrain tiles in the map
-
-//	if ()
+	if (terrainMap.size()>0)
 	{
 		int status;
 		status = _mkdir(filename.c_str());
@@ -534,34 +533,24 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		pathxml.append("/tile");
 		pathxml.append((*it).second->getName());
 		pathxml.append(".b3d");
-
-		//filename=filename.subString(0,(filename.size()-4));
-		//filename.append("/tile");
-		//filename.append((*it).second->getName());
-		//filename.append(".b3d");
 		filename=pathxml;
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
 		core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(filename);
 		core::stringc path_2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(filename,
 				App::getInstance()->path);
-		printf("This is the Full XML filename: %s\n",filename.c_str());
-		printf("This is the relative XML filename: %s\n",path_2.c_str());
+		//printf("This is the Full XML filename: %s\n",filename.c_str());
+		//printf("This is the relative XML filename: %s\n",path_2.c_str());
 		filename="";
     }
     parentElement->LinkEndChild(terrainXML);
 	
 	//Save tiles separately
-	//if (parametric)
+	// Always save the tiles as object from now on.
 	{
 		std::map<std::string, TerrainTile*>::iterator it;
 		for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
 		{
-			/*filename = App::getInstance()->filename;
-			filename=filename.subString(0,(filename.size()-4));
-			filename.append((*it).second->getName());
-			filename.append(".b3d");*/
-
 			filename = App::getInstance()->filename;
 			filename=filename.subString(0,(filename.size()-4));
 			filename.append("/tile");
@@ -633,7 +622,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 	{
 		isparam=false;
 		parametric=false;
-		scale=1024; //Force to 1024 unit as old default, and was not saved before 0.3
+		scale=1024; //Force to 1024 unit as old default, as it was not saved before 0.3
 	}
 	stringc tscale = parentElement->ToElement()->Attribute("Scale");
 	if (tscale.size()>0)
@@ -660,22 +649,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 		else
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam); //Create a segment
 
-		//core::stringc customtile=tSegment->ToElement()->Attribute("custom"); // Custom mesh
-		//core::stringc customr=tSegment->ToElement()->Attribute("custom_R"); // Custom model rotation
-
-		/*f32 noderot = 0.0f;
-		if (customr!="")
-			noderot=(f32)atoi(customr.c_str()); // Custom mesh rotation
-
-		if (customtile=="")
-			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam);
-		else
-		{
-			createCustomSegment(vector3df( x/scale ,0, z/scale ), mesh);
-			//createCustomSegment(vector3df( x/scale ,0, z/scale ), customtile);
-			//getSegment(vector3df( x/scale ,0, z/scale ))->getNode()->setRotation(core::vector3df(0,noderot,0));
-		}*/
-
+		
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 
 

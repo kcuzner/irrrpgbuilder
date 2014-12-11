@@ -347,6 +347,9 @@ void App::setAppState(APP_STATE newAppState)
 		
 		//GUIManager::getInstance()->UpdateGUIChooser();
 		//GUIManager::getInstance()->updateCurrentCategory(currentObject);
+		if (old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE || old_app_state == APP_EDIT_CHARACTER)
+			GUIManager::getInstance()->expandPanel(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER);
+
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,currentObject!=LIST_SEGMENT);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,currentObject!=LIST_OBJ);
 
@@ -569,6 +572,10 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS:
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		if (toolstate==TOOL_NONE)
+			toolstate=old_do_state;
+
 		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_PROP);
 		currentObject=LIST_PROPS;
 		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_PROP);
@@ -578,12 +585,14 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,false);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		if (toolstate==TOOL_NONE)
-			toolstate=old_do_state;
+		
 		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT:
+		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+		if (toolstate==TOOL_NONE)
+			toolstate=old_do_state;
+
 		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_LOOT);
 		currentObject=LIST_LOOT;
 		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_LOOT);
@@ -593,9 +602,7 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		if (toolstate==TOOL_NONE)
-			toolstate=old_do_state;
+		
 		break;
 
 	case GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION:
@@ -3694,9 +3701,13 @@ void App::initialize()
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,0,50000);
 
 	//Create a sun light
-	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,5000,-50));
+	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,25000,-50));
 	light->setLightType(ELT_DIRECTIONAL);
-	light->setRadius(90000);
+	//light->setLightType(ELT_POINT);
+	light->setRadius(45000);
+	light->getLightData().SpecularColor=SColorf(0.4f,0.4f,0.5f,1.0f); //Some characters have too much specular on them. Limit the specular of the sun a little.
+	
+	//light->setRadius(45000);
 	light->setRotation(vector3df(70.0f,30.0f,0.0f));
 
 
