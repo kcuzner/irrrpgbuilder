@@ -5,9 +5,11 @@
 					thumbnail="buildings/info_house.jpg" />
 	<dynamic_object name="Medieval House 1" 			mesh="buildings/Houses/House01.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Houses"
+					thumbnail="buildings/Houses/info_house1.jpg"
 					/>
 	<dynamic_object name="Medieval House 2" 			mesh="buildings/Houses/House02.obj" 				type="non-interactive"	scale="1.0" 	materialType="transparent_1bit"
 					author="Unknown" category="Houses"
+					thumbnail="buildings/Houses/info_house2.jpg"
 					/>
 					
 	<dynamic_object name="Alchemy lab" 			mesh="buildings/Houses/AlchmyLab.obj" 				type="non-interactive"	scale="1.0" 	materialType="transparent_1bit"
@@ -20,23 +22,27 @@
 					
 	<dynamic_object name="Obelisk 1" 			mesh="buildings/decors/obelisk1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
+					thumbnail="buildings/decors/info_obelisk1.jpg"					
 					/>
 	<dynamic_object name="Obelisk 2" 			mesh="buildings/decors/obelisk2.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
+					thumbnail="buildings/decors/info_obelisk2.jpg"
 					/>
 					
 	<dynamic_object name="Windmill" 			mesh="buildings/decors/windmill.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Houses"
+					thumbnail="buildings/decors/info_windmill.jpg"
 					/>
 	<dynamic_object name="Mine camp" 			mesh="buildings/decors/MineCamp.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
-					thumbnail="buildings/Houses/info_minecamp.jpg" />
+					thumbnail="buildings/decors/info_minecamp.jpg" />
 	<dynamic_object name="Forge" 			mesh="buildings/Forge/Forge.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Houses"
 					thumbnail="buildings/Forge/info_forge.jpg" />
 					
 	<dynamic_object name="Blacksmith house" 			mesh="buildings/Forge/Blacksmith_house.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Houses"
+					thumbnail="buildings/forge/info_blacksmith_house.jpg"
 					/>
 					
 	<dynamic_object name="Bridge_1" 			mesh="buildings/bridges/bridge.obj" 				type="walkable"	scale="1.0" 	materialType="solid"
@@ -47,45 +53,55 @@
 					author="Unknown" category="Props"
 					thumbnail="buildings/props/info_cart.jpg" />
 					
-	<dynamic_object name="Lightpole" 			mesh="buildings/props/lightpole.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+	<dynamic_object name="Lightpole" 			mesh="buildings/props/lightpole.obj" 				type="non-interactive"	scale="1.0" 	materialType="transparent_1bit"
 					author="Unknown" category="Props"
+					thumbnail="buildings/props/info_lightpole.jpg"
 					/>
 	<dynamic_object name="Rockwall1" 			mesh="buildings/props/RockWall1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
 					/>
 	<dynamic_object name="Tomb 1" 			mesh="buildings/props/Tomb1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Cemetary"
+					thumbnail="buildings/props/info_tomb1.jpg"
 					/>
 	<dynamic_object name="Tomb 2" 			mesh="buildings/props/Tomb2.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Cemetary"
+					thumbnail="buildings/props/info_tomb2.jpg"
 					/>
 					
 	<dynamic_object name="Tomb 3" 			mesh="buildings/props/Tomb3.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Cemetary"
+					thumbnail="buildings/props/info_tomb3.jpg"
 					/>
 					
 	<dynamic_object name="Bench" 			mesh="buildings/props/Bench.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
+					thumbnail="buildings/props/info_bench.jpg"
 					/>
 	
 	<dynamic_object name="Rock 1" 			mesh="buildings/props/Rock1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Nature"
+					thumbnail="buildings/props/info_rock1.jpg"
 					/>
 					
 	<dynamic_object name="Rock 2" 			mesh="buildings/props/Rock2.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Nature"
+					thumbnail="buildings/props/info_rock2.jpg"
 					/>
 					
 	<dynamic_object name="Rock 3" 			mesh="buildings/props/Rock3.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Nature"
+					thumbnail="buildings/props/info_rock3.jpg"
 					/>
 					
 	<dynamic_object name="Rock 4" 			mesh="buildings/props/Rock4.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Nature"
+					thumbnail="buildings/props/info_rock4.jpg"
 					/>
 					
 	<dynamic_object name="Statue1" 			mesh="buildings/props/Statue1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Cemetary"
+					thumbnail="buildings/props/info_statue.jpg"
 					/>
 					
 </IrrRPG_Builder_DynamicObjects>
