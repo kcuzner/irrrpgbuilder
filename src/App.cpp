@@ -343,21 +343,23 @@ void App::setAppState(APP_STATE newAppState)
 			//If the up/down mode was last used then reset if
 			if (moveupdown)
 				moveupdown=false;
+
+			//GUIManager::getInstance()->UpdateGUIChooser();
+			//GUIManager::getInstance()->updateCurrentCategory(currentObject);
+			if ((old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE && old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE) || old_app_state == APP_EDIT_CHARACTER)
+				GUIManager::getInstance()->expandPanel(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER);
+
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,currentObject!=LIST_SEGMENT);
+			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,currentObject!=LIST_OBJ);
+
 		}
 		
-		//GUIManager::getInstance()->UpdateGUIChooser();
-		//GUIManager::getInstance()->updateCurrentCategory(currentObject);
-		if (old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE || old_app_state == APP_EDIT_CHARACTER)
-			GUIManager::getInstance()->expandPanel(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER);
-
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,currentObject!=LIST_SEGMENT);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,currentObject!=LIST_OBJ);
-
+		
 	}
 	else
 	{
 		//Reset the tools state if going outside of the dynamic object edit mode
-		if (app_state != APP_EDIT_VIEWDRAG)
+		if (app_state != APP_EDIT_VIEWDRAG && app_state!=APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE)
 		{
 			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER,false);
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,true);
@@ -455,7 +457,7 @@ void App::setAppState(APP_STATE newAppState)
 		//guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true)->setVisible(false);
 #endif
 	}
-	else if(app_state < APP_STATE_CONTROL)
+	else if(app_state < APP_STATE_CONTROL && app_state!=APP_EDIT_VIEWDRAG)
 	{
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,false);
@@ -466,8 +468,8 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_HELP,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::IMG_BAR,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_VIEW_ITEMS,false);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 #ifdef EDITOR
@@ -486,6 +488,9 @@ void App::setAppState(APP_STATE newAppState)
 	if (app_state == APP_EDIT_VIEWDRAG)
 	{
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_drag").c_str());
+	} else
+	{
+		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
 }
 
@@ -1709,6 +1714,26 @@ void App::eventKeyPressed(s32 key)
 
 		break;
 
+	case KEY_PLUS:
+		// Go back;
+		CameraSystem::getInstance()->setCameraHeight(-0.5);
+		break;
+
+	case KEY_ADD:
+		// Go back;
+		CameraSystem::getInstance()->setCameraHeight(-0.5);
+		break;
+
+	case KEY_MINUS:
+		// Go back;
+		CameraSystem::getInstance()->setCameraHeight(0.5);
+		break;
+
+	case KEY_SUBTRACT:
+		// Go back;
+		CameraSystem::getInstance()->setCameraHeight(0.5);
+		break;
+
 
 	default:
 		break;
@@ -2740,7 +2765,7 @@ void App::updateEditMode()
 			//if (cursorIsInEditArea())
 			//	guienv->setFocus(guienv->getRootGUIElement());
 #ifdef DEBUG
-			printf("In viewdrag mode\n");
+			//printf("In viewdrag mode\n");
 #endif
 		}
 
@@ -2801,7 +2826,7 @@ void App::updateEditMode()
 						old_state = app_state;
 						setAppState(APP_EDIT_VIEWDRAG);
 #ifdef DEBUG
-						printf("Set camera settings...\n");
+						//printf("Set camera settings...\n");
 #endif
 					}
 				}
@@ -2810,7 +2835,7 @@ void App::updateEditMode()
 			if ((app_state == APP_EDIT_VIEWDRAG) && !(isKeyPressed(KEY_SPACE)))
 			{
 				setAppState(old_state);
-				guienv->setFocus(guienv->getRootGUIElement()); // reset the focus when we release the spacebar
+				//guienv->setFocus(guienv->getRootGUIElement()); // reset the focus when we release the spacebar
 				return;
 			}
 			// --- End of code for drag of view

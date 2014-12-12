@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <IrrRPG_Builder_DynamicObjects version="1.0">
 <!-- Frog -->
-	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="36" materialType="solid"
+	<dynamic_object name="frog" mesh="npc/frog.b3d" type="npc" script="ai_frogs.lua" scale="1" materialType="solid"
 					description="A frog" author="Andres Jesse Porfirio" licence="Creative Commons" category="Animal"
 					thumbnail="npc/info_frog.jpg">
 		<animation name="idle" start="0" end="0" speed="1"/>
@@ -36,14 +36,14 @@
 		<animation name="despawn" start="1" end="1" speed="10.0"/>
 	</dynamic_object>
 <!-- Peasant -->
-	<dynamic_object name="peasant" mesh="npc/peasant.b3d" type="npc" script="generic_follower.lua" scale="60" materialType="solid"
+	<dynamic_object name="peasant" mesh="npc/peasant.b3d" type="npc" script="generic_follower.lua" scale="1" materialType="solid"
 					description="A peasant" author="Andres Jesse Porfirio" licence="Creative Commons" category="Human"
 					thumbnail="npc/info_peasant.jpg" >
 		<animation name="idle" start="0" end="0" speed="1.0"/>
 		<animation name="walk" start="1" end="25" speed="24.0" movespeed="40.0"/>
 	</dynamic_object>
 <!-- Wizard -->
-	<dynamic_object name="wizard" mesh="npc/mago.b3d" type="npc" script="ai_goblin.lua" scale="60" materialType="solid"
+	<dynamic_object name="wizard" mesh="npc/mago.b3d" type="npc" script="ai_goblin.lua" scale="1" materialType="solid"
 					description="A evil wizard" author="Andres Jesse Porfirio" licence="Creative Commons" category="Human" 
 					thumbnail="npc/info_wizard.jpg">
 		<animation name="idle" start="0" end="0" loop="false" speed="1.0"/>
@@ -62,7 +62,7 @@
 		thumbnail="npc/info_horse.jpg"  category="need animation" />	
 		</dynamic_object>
 <!-- Firedragon -->
-		<dynamic_object name="Firedragon" mesh="npc/Firedragon/Firedragon.b3d" type="npc" script="generic_enemy.lua" scale="12" materialType="solid"
+		<dynamic_object name="Firedragon" mesh="npc/Firedragon/Firedragon.b3d" type="npc" script="generic_enemy.lua" scale="1" materialType="solid"
 					description="A strong Dragon" author="Alexander Diehl" licence="Creative Commons" category="Monster - medium"
 					thumbnail="npc/Firedragon/info_firedragon.jpg">
 		<animation name="idle" start="1" end="70" speed="10"/>

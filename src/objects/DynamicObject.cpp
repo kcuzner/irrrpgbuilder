@@ -135,6 +135,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
+	objectType=OBJECT_TYPE_NONE;
 }
 
 DynamicObject::DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -303,13 +304,14 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
 
-		if (objectType != OBJECT_TYPE_EDITOR)
+		if (objectType != OBJECT_TYPE_EDITOR || objectType != OBJECT_TYPE_WALKABLE)
 		{
 			// Editor objects don't have the fake shadow.
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
 			
+			f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 			fakeShadow->setScale(vector3df(meshSize*0.45f,meshSize*0.45f,meshSize*0.45f));
 			fakeShadow->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 			fakeShadow->setMaterialFlag(EMF_BLEND_OPERATION,true);
@@ -319,9 +321,8 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
 			//if(hasAnimation()) this->setFrameLoop(0,0);
-		}
+		} 
 
-		//printf ("Scaling for node: %s, is meshSize %f, meshScale: %f, final scale: %f\n",this->getName().c_str(),meshSize,meshScale,meshSize*meshScale);
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
@@ -879,6 +880,14 @@ void DynamicObject::setType(stringc name)
 void DynamicObject::setType(TYPE type)
 {
 	objectType=type;
+	if (!node || !fakeShadow)
+		return;
+
+	//Walkables and editor type objects don't need to have a fake shadow (round circle at bottom of the object)
+	if (objectType == OBJECT_TYPE_EDITOR || objectType == OBJECT_TYPE_WALKABLE)
+	{
+		fakeShadow->remove();
+	}
 }
 
 DynamicObject::TYPE DynamicObject::getType()
