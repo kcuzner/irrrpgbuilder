@@ -1,42 +1,33 @@
-# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 12.08.2013 22:17:44
+# Wavefront MTL file
+# Creator: Ultimate Unwrap3D Pro v3.50.05
+# URL: http://www.unwrap3d.com
+# Time: Thu Dec 11 23:39:58 2014
+# num_materials: 3
 
-newmtl 08___Default
-	Ns 10.0000
-	Ni 1.5000
-	d 0.0000
-	Tr 1.0000
-	Tf 0.0000 0.0000 0.0000 
-	illum 2
-	Ka 0.0000 0.0000 0.0000
-	Kd 0.0000 0.0000 0.0000
-	Ks 0.0000 0.0000 0.0000
-	Ke 0.0000 0.0000 0.0000
+newmtl _8___Default
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+d 0.000000
+illum 2
+Ns 0.000000
 
 newmtl CryptCorridor
-	Ns 10.0000
-	Ni 1.5000
-	d 1.0000
-	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
-	illum 2
-	Ka 0.5882 0.5882 0.5882
-	Kd 0.5882 0.5882 0.5882
-	Ks 0.0000 0.0000 0.0000
-	Ke 0.0000 0.0000 0.0000
-	map_Ka CryptDeadEnd.png
-	map_Kd CryptDeadEnd.png
+Ka 0.588200 0.588200 0.588200
+Kd 0.588200 0.588200 0.588200
+Ks 1.000000 1.000000 1.000000
+d 1.000000
+illum 2
+Ns 0.000000
+map_Kd CryptDeadEnd.png
 
-newmtl 07___Default
-	Ns 10.0000
-	Ni 1.5000
-	d 1.0000
-	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
-	illum 2
-	Ka 0.5882 0.5882 0.5882
-	Kd 0.5882 0.5882 0.5882
-	Ks 0.0000 0.0000 0.0000
-	Ke 0.0000 0.0000 0.0000
-	map_Ka Coffin.png
-	map_Kd Coffin.png
+newmtl _7___Default
+Ka 0.588200 0.588200 0.588200
+Kd 0.588200 0.588200 0.588200
+Ks 1.000000 1.000000 1.000000
+d 1.000000
+illum 2
+Ns 0.000000
+map_Kd Coffin.png
+
+# num_materials: 3

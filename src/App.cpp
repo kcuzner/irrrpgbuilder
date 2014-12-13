@@ -3731,6 +3731,8 @@ void App::initialize()
 	//light->setLightType(ELT_POINT);
 	light->setRadius(45000);
 	light->getLightData().SpecularColor=SColorf(0.4f,0.4f,0.5f,1.0f); //Some characters have too much specular on them. Limit the specular of the sun a little.
+	//light->getLightData().DiffuseColor=SColor(1.0f,0,0,1.0f); 
+
 	
 	//light->setRadius(45000);
 	light->setRotation(vector3df(70.0f,30.0f,0.0f));

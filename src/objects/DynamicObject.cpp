@@ -591,6 +591,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 		result=-result;
 
 	//This is for detecting "jumps" to avoid player jumps on buildings or modeled geometry
+	//NOTE: (12/13/14) Reduced the height of the ray, and the calculation of the mesh height is incorrect
+	// Will need to be removed or changed 
+	/*
 	if (result>(getNode()->getAbsoluteTransformation().getScale().Y*0.25f))
 	{
 		collided=true; //This mean that the distance it too high for the character to move there
@@ -600,6 +603,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 #endif
 
 	}
+	*/
 
 	if (cliff > 40)
 	{
@@ -612,7 +616,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	// The player and NPC should not get into the ocean
 	f32 terrainsize = TerrainManager::getInstance()->getScale()/1536;
-	if (height<(-80.0f*terrainsize))
+	if (height<(-90.0f*terrainsize))
 		collided=true;
 
 	// The "cliff" is the number of unit of difference from one point to another
