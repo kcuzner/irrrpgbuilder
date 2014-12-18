@@ -152,9 +152,6 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 			core::dimension2d<f32>(1,1));
 	}
 
-	baseMesh->setHardwareMappingHint(EHM_STATIC);
-
-
 	// Create the custom mesh node
 	node = smgr->addMeshSceneNode(baseMesh,parent,100);
 
@@ -176,14 +173,20 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	node->setScale(vector3df(scale/nodescale,scale/nodescale,scale/nodescale));
 
 	// Work for the water mesh.
-	SMesh* newMesh = NULL;
-
-	newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
-	newMesh->setHardwareMappingHint(EHM_STATIC);
+	//SMesh* newMesh = NULL;
+	//newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
+	//newMesh->setHardwareMappingHint(EHM_STATIC);
+		
+	
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
-	ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
+	//ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
+	ocean=smgr->addMeshSceneNode(baseMesh,node,0);
+	//NEW (12/18/14) Found out that I can use the same reference for the water mesh, and generate 2 objects from the same mesh reference.
+	
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	assignWaterShader(ocean);
+
+	baseMesh->setHardwareMappingHint(EHM_STATIC);
 
 }
 
