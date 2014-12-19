@@ -41,6 +41,7 @@ class TerrainTile
 		void createTerrain(ISceneNode* parent, vector3df pos, stringc name, bool param=true);
 		void createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model);
 
+		void resetVegetationHeight();
         void paintVegetation(vector3df clickPos, bool erase);
 
         void transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength, bool norecalc=false);
@@ -60,7 +61,7 @@ class TerrainTile
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
 
-        f32 getHeightAt(vector3df pos);
+        f32 getHeightAt(vector3df pos, f32 rayheight=80.0f);
 		f32 getVerticeHeight(vector3df pos);
 		IMesh* getMesh();
 

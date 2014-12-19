@@ -49,6 +49,7 @@ class DynamicObjectsManager
 		DynamicObject* getTarget();
 
 		scene::ISceneNode* findActiveObject(void);
+		void resetObjectsHeight(DynamicObject::TYPE objtype);
 
 		vector<stringw> getObjectsList(GUIManager::LIST_TYPE type, core::stringw collection, core::stringw category, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);
 		vector<stringw> getObjectsListCategories(GUIManager::LIST_TYPE type,stringw collection, DynamicObject::SPECIAL special = DynamicObject::SPECIAL_NONE);

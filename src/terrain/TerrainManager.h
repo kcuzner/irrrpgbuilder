@@ -21,10 +21,12 @@ class TerrainManager
  
         std::string getHashCode(vector3df pos);
 
-        f32 getHeightAt(vector3df pos);
+        f32 getHeightAt(vector3df pos, f32 rayheight = 80.0f);
 		f32 getVerticeHeight(vector3df pos);
 
+		void resetVegetationHeight();
 		void paintVegetation(App::MousePick mousePick, bool erase);
+
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);

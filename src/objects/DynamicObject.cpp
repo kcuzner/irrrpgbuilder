@@ -679,7 +679,6 @@ bool DynamicObject::isWalking()
 	else
 		return true;
 }
-
 f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 {
 	smgr = App::getInstance()->getDevice()->getSceneManager();

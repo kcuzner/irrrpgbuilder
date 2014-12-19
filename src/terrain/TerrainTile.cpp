@@ -33,6 +33,7 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	srand(App::getInstance()->getDevice()->getTimer()->getRealTime());
 }
 
+// Create a new tile. From 0.3+ Tiles will be parametric and will not use the reference mesh.
 void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name, bool param)
 {
 	stringc tilename = TerrainManager::getInstance()->getTileMeshName();
@@ -218,6 +219,23 @@ Vegetation* TerrainTile::getVegetationAt(vector3df pos)
     	if(temp->getPosition().getDistanceFrom(pos) < vegetationRange ) return temp;
     }
     return 0;
+}
+
+//Reposition the vegetation (trees) to touch the ground
+void TerrainTile::resetVegetationHeight()
+{
+	for (int i=0 ; i<(int)vegetationVector.size() ; i++)
+    {
+    	Vegetation* temp = (Vegetation*)vegetationVector[i];
+		f32 newpos = this->getHeightAt(temp->getPosition(),4000.0f);
+		if (newpos<-200.0f) //Remove the tree if it's too low (underwater)
+		{
+			temp->getNode()->remove();
+			vegetationVector.erase(vegetationVector.begin()+i);
+		}
+		else
+		temp->setPosition(vector3df(temp->getPosition().X,newpos-3.0f,temp->getPosition().Z)); //little offset of 3 units.
+    }
 }
 
 stringc TerrainTile::getName()
@@ -907,11 +925,11 @@ void TerrainTile::transformMeshToValue(vector3df clickPos, f32 radius, f32 radiu
 
 //Get the elevation from a ray test on the tile.
 //For this to work, the collision mesh must be up to date
-f32 TerrainTile::getHeightAt(vector3df pos)
+f32 TerrainTile::getHeightAt(vector3df pos, f32 rayheight)
 {
 	// Check from the top of the character
-	// old value is 4000.0f
-	irr::f32 maxRayHeight = 80.0f;
+	// old value is 4000.0f, new default is 80.0f
+	irr::f32 maxRayHeight = rayheight;
 	scene::ISceneCollisionManager* collMan = smgr->getSceneCollisionManager();
 	core::line3d<f32> ray;
 

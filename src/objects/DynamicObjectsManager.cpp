@@ -2065,3 +2065,39 @@ int DynamicObjectsManager::getEnemyCount()
 	}
 	return finalcount;
 }
+
+//Reposition on the ground the current object types
+void DynamicObjectsManager::resetObjectsHeight(DynamicObject::TYPE objtype)
+{
+
+	//Hide all objects from the ray 
+	for(int i=0;i<(int)objects.size();i++)
+	{
+		if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
+			objects[i]->getNode()->setID(0x0010); 
+	}
+
+    for(int i=0;i<(int)objects.size();i++)
+	{
+		if (objects[i])
+		{
+			if (objects[i]->getType()==objtype)
+			{
+				vector3df pos = objects[i]->getPosition();
+				pos.Y =  objects[i]->rayTest(vector3df(pos.X,4096.0f,pos.Z),vector3df(pos.X,-1000.0f,pos.Z));
+				//pos.Y = TerrainManager::getInstance()->getHeightAt(pos,4000);
+				if (pos.Y!=-1000.0f)
+					objects[i]->setPosition(pos);
+
+			}
+		}
+	}
+
+	//Put back original values 
+	for(int i=0;i<(int)objects.size();i++)
+	{
+		if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_PLAYER)
+			objects[i]->getNode()->setID(100); 
+	}
+
+}

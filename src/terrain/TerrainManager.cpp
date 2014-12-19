@@ -751,14 +751,25 @@ void TerrainManager::recalculate()
 
 }
 
-f32 TerrainManager::getHeightAt(vector3df pos)
+void TerrainManager::resetVegetationHeight()
+{
+	needrecalc=false;
+    std::map<std::string, TerrainTile*>::iterator it;
+    for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
+    {
+		((TerrainTile*)((*it).second))->resetVegetationHeight();
+    }
+
+}
+
+f32 TerrainManager::getHeightAt(vector3df pos, f32 rayheight)
 {
     vector3df hashCode = pos/this->getScale();
 
     TerrainTile* segment = this->getSegment(hashCode);
 
     if(segment)
-        return segment->getHeightAt(pos);
+        return segment->getHeightAt(pos, rayheight);
     else
         return -1000;
 }

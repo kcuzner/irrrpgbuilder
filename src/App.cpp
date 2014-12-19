@@ -1689,6 +1689,21 @@ void App::eventKeyPressed(s32 key)
 			raytester->enable(false);
 		break;
 
+	case KEY_F1: //REset the height of object (vegetation or dynamic objects)
+		if (app_state==this->APP_EDIT_TERRAIN_PAINT_VEGETATION)
+			TerrainManager::getInstance()->resetVegetationHeight();
+		if (app_state==this->APP_EDIT_DYNAMIC_OBJECTS_MODE)
+		{
+			if (currentObject==LIST_PROPS)
+			{
+				DynamicObjectsManager::getInstance()->resetObjectsHeight(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE);
+				DynamicObjectsManager::getInstance()->resetObjectsHeight(DynamicObject::OBJECT_TYPE_INTERACTIVE);
+			}
+			if (currentObject==LIST_OBJ)
+				DynamicObjectsManager::getInstance()->resetObjectsHeight(DynamicObject::OBJECT_TYPE_NPC);
+		}
+		break;
+
 
 	case KEY_RETURN:
 		if (app_state == APP_WAIT_DIALOG)
@@ -3191,6 +3206,8 @@ void App::cleanWorkspace()
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	CameraSystem::getInstance()->editCamMaya->setFarValue(90000.0f);
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
+
+	smgr->getMeshCache()->clear(); //Clear the mesh cache
 
 	scriptGlobal="";
 }
