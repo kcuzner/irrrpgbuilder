@@ -859,6 +859,21 @@ void TerrainManager::setVisible(bool visible)
 
 }
 
+void TerrainManager::setOceanVisible(bool visible)
+{
+	std::map<std::string, TerrainTile*>::iterator it = terrainMap.begin();
+
+    for(;it != terrainMap.end();++it)
+    {
+        TerrainTile* t = it->second;
+		t->getOcean()->setVisible(visible);
+    }
+
+}
+
+
+
+
 void TerrainManager::clean()
 {
     std::map<std::string, TerrainTile*>::iterator it = terrainMap.begin();
@@ -1202,6 +1217,26 @@ void TerrainManager::update()
 		}
 	}
 #endif
+}
+//Not working properly need to be reworked
+void TerrainManager::removeTileVegetation()
+{
+	if (this->tileTagged)
+		tileTagged->clean();
+	printf("Tring to remove the tile vegetation");
+}
+
+//!Will remove all the vegetation from the map
+void TerrainManager::removeAllVegetation()
+{
+	 std::map<std::string, TerrainTile*>::iterator it = terrainMap.begin();
+
+    for(;it != terrainMap.end();++it)
+    {
+        TerrainTile* t = it->second;
+
+        t->clean();
+    }
 }
 
 // Rotate a custom tile left

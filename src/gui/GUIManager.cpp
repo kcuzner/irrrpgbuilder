@@ -1362,7 +1362,7 @@ void GUIManager::createTerrainToolbar()
 
     guiTerrainBrushRadius = guienv->addScrollBar(true,myRect(10,mainToolbarPos.Y+110,200,20),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_RADIUS );
     guiTerrainBrushRadius->setMin(0);
-    guiTerrainBrushRadius->setMax(800);
+    guiTerrainBrushRadius->setMax(1024);
     guiTerrainBrushRadius->setPos(100);
 	guiTerrainBrushRadius->setSmallStep(1);
 	guiTerrainBrushRadius->setLargeStep(5);
@@ -1375,7 +1375,7 @@ void GUIManager::createTerrainToolbar()
 	guiTerrainBrushRadius2->setLargeStep(5);
 
 	guiTerrainBrushPlateau = guienv->addScrollBar(true,core::rect<s32>(10,mainToolbarPos.Y+230,210,mainToolbarPos.Y+250),guiTerrainToolbar,SC_ID_TERRAIN_BRUSH_PLATEAU);
-	guiTerrainBrushPlateau->setMin(-120);
+	guiTerrainBrushPlateau->setMin(-256);
 	guiTerrainBrushPlateau->setMax(768);
 	guiTerrainBrushPlateau->setPos(-10);
 	guiTerrainBrushPlateau->setSmallStep(1);

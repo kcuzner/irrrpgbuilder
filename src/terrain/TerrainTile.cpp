@@ -185,7 +185,7 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	//NEW (12/18/14) Found out that I can use the same reference for the water mesh, and generate 2 objects from the same mesh reference.
 	
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
-	assignWaterShader(ocean);
+	assignWaterShader(ocean);	
 
 	baseMesh->setHardwareMappingHint(EHM_STATIC);
 
@@ -197,7 +197,11 @@ TerrainTile::~TerrainTile()
 	for (int i=0 ; i<(int)vegetationVector.size() ; i++)
     {
     	Vegetation* temp = (Vegetation*)vegetationVector[i];
-		delete temp;
+		if (temp->getNode())
+			temp->getNode()->remove();
+
+		//if (temp)
+		//	delete temp;
     }
     vegetationVector.clear();
 
@@ -246,6 +250,11 @@ stringc TerrainTile::getName()
 ISceneNode* TerrainTile::getNode()
 {
     return node;
+}
+
+ISceneNode* TerrainTile::getOcean()
+{
+	return ocean;
 }
 
 f32 TerrainTile::getNodeScale()
@@ -1087,5 +1096,9 @@ void TerrainTile::assignWaterShader(irr::scene::ISceneNode *node)
 
 void TerrainTile::clean()
 {
+	for(int i=0;i<(int)vegetationVector.size();i++)
+    {
+		vegetationVector[i]->getNode()->remove();
+    }
 	vegetationVector.clear();
 }

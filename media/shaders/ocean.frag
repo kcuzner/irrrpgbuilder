@@ -20,7 +20,7 @@ void main()
 	//vec4 tex2    = texture2D( oceanFoam, vec2(texCoord.x*5.0 + waterTime*0.3, -texCoord.y*5.0)); 
 	
 	//tex1.a = (-posY/scale)-(0.1)*3.0; // Old formula for blending was not that good.
-	tex1.a = ((-posY-45.0)/(scale/4.0)); // This control the transparency and the blend with the water foam
+	tex1.a = ((-posY-45.0)/(scale/1.8)); // This control the transparency 
 	tex1.a = min(tex1.a,1.0); // Don`t allow to go more than 1.0 as value
 	
  	vec4 finalColor = tex1 * AmbientLight;

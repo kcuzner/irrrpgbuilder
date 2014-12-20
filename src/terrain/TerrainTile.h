@@ -51,6 +51,7 @@ class TerrainTile
 
         stringc getName();
         ISceneNode* getNode();
+		ISceneNode* getOcean();
 		f32 getNodeScale();
 
         ITriangleSelector* getTriangleSelector();

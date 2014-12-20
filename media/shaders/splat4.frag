@@ -56,6 +56,10 @@ void main()
 	if(position.y>(plateau-1.5) && position.y<(plateau+1.5) && editingTerrain==1) 
 		tex10=vec4(0.0,0.5,0.0,0.5);
 		
+	//float trans = (position.y+50.0/70.0);
+	if(position.y<-50.0) //Current elevation of the ocean on a 4096 unit sized tile (1024 unit base mesh scaled x 4)
+		tex10=mix(tex10, vec4(0.0,0.15,0.2,0.8), (((position.y*-1.0)-50.0)/140.0));
+		
 	// Directional light no attenuation (Sun)
 	vec3 norm = normalize(normal);
 	vec3 sunVector = normalize(vec3(2500.0,50000.0,2500.0) - worldCoord.xyz);

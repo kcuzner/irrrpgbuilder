@@ -48,6 +48,7 @@ class TerrainManager
 		void setTerrainTexture(u32 layer, stringc name);
 
 		void setVisible(bool visible);
+		void setOceanVisible(bool visible);
         void clean();
 
         void showDebugData(bool show);
@@ -66,6 +67,9 @@ class TerrainManager
 		void createEmptySegmentMatrix(u32 x, u32 y);
 		void removeSegment(vector3df pos, bool custom = false);
 		void deleteTaggedSegment();
+
+		void removeTileVegetation(); //Not working properly need to be reworked
+		void removeAllVegetation();
 
 		void rotateLeft(core::vector3df pos);
 		void rotateRight(core::vector3df pos);
