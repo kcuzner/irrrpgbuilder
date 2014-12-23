@@ -887,7 +887,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(GUIManager::LIST_TYPE type
 			{
 				if (objTemplate[i]->type!=stringw(""))
 				{
-					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE)
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_WALKABLE)
 						listObjs.push_back( objTemplate[i]->getName() );
 				}
 			}
@@ -897,7 +897,7 @@ vector<stringw> DynamicObjectsManager::getObjectsList(GUIManager::LIST_TYPE type
 			{
 				if (objTemplate[i]->type!=stringw(""))
 				{
-					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE)
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE  || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_WALKABLE)
 						listObjs.push_back( objTemplate[i]->getName() );
 				}
 			}
@@ -1026,8 +1026,8 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(GUIManager::LIST
 		}
 		if (type==GUIManager::LIST_PROP)
 		{
-			if ((objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE)
-				&& objTemplate[i]->type==collection || all)
+			if ((objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE ||
+				objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_WALKABLE)	&& objTemplate[i]->type==collection || all)
 			{
 				for (int a=0 ; a<(int)listObjs.size(); a++)
 				{
@@ -1037,7 +1037,8 @@ vector<stringw> DynamicObjectsManager::getObjectsListCategories(GUIManager::LIST
 					}
 				}
 				if (!found && objTemplate[i]->category!="" && objTemplate[i]->special==special)
-					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE)
+					if (objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_INTERACTIVE || objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_NON_INTERACTIVE || 
+						objTemplate[i]->getType()==DynamicObject::OBJECT_TYPE_WALKABLE)
 						listObjs.push_back( objTemplate[i]->category );
 				found=false;
 			}

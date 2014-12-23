@@ -34,7 +34,7 @@
 					thumbnail="buildings/decors/info_windmill.jpg"
 					/>
 	<dynamic_object name="Mine camp" 			mesh="buildings/decors/MineCamp.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
-					author="Unknown" category="Props"
+					author="Unknown" category="Houses"
 					thumbnail="buildings/decors/info_minecamp.jpg" />
 	<dynamic_object name="Forge" 			mesh="buildings/Forge/Forge.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Houses"
@@ -46,7 +46,7 @@
 					/>
 					
 	<dynamic_object name="Bridge_1" 			mesh="buildings/bridges/bridge.obj" 				type="walkable"	scale="1.0" 	materialType="solid"
-					author="Unknown" category="Misc"
+					author="Unknown" category="Walkable"
 					thumbnail="buildings/bridges/info_bridge.jpg" />
 					
 	<dynamic_object name="Cart" 			mesh="buildings/props/cart.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
@@ -100,7 +100,7 @@
 					/>
 					
 	<dynamic_object name="Statue1" 			mesh="buildings/props/Statue1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
-					author="Unknown" category="Cemetary"
+					author="Unknown" category="Props"
 					thumbnail="buildings/props/info_statue.jpg"
 					/>
 					

@@ -26,7 +26,7 @@
 					thumbnail="">
 					</dynamic_object>
 	<dynamic_object name="Floor 1" 			mesh="buildings/floors/irb_floor1.obj"  type="walkable"		script="" scale="1.0" 	materialType="solid"
-					author="Christian Clavet" category="Floors"
+					author="Christian Clavet" category="Walkable"
 					thumbnail="">
 					</dynamic_object>
 </IrrRPG_Builder_DynamicObjects>

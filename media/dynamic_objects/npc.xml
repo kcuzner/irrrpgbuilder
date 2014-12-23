@@ -56,10 +56,10 @@
 		thumbnail="npc/info_elffemale.jpg" category="need animation"/>
 <!-- Wolf -->
 	<dynamic_object name="Wolf" mesh="npc/wolf/wolf.obj" type="non-interactive" scale="1" materialType="solid" 
-		thumbnail="npc/info_wolf.jpg"  category="need animation" />
+		thumbnail="npc/info_wolf.jpg"  category="Animal" />
 <!-- Horse -->
 	<dynamic_object name="Horse1" mesh="npc/Horse/Horse1.obj" type="non-interactive" scale="1" materialType="solid"  
-		thumbnail="npc/info_horse.jpg"  category="need animation" />	
+		thumbnail="npc/info_horse.jpg"  category="Animal" />	
 		</dynamic_object>
 <!-- Firedragon -->
 		<dynamic_object name="Firedragon" mesh="npc/Firedragon/Firedragon.b3d" type="npc" script="generic_enemy.lua" scale="1" materialType="solid"

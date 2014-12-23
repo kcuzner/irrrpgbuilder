@@ -538,14 +538,14 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	// Samples position where the ground is
 	f32 height = rayTest(vector3df(pos.X,pos.Y+80,pos.Z),vector3df(pos.X,pos.Y-80,pos.Z));
-	//f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+2000,posfront.Z),vector3df(posfront.X,posfront.Y-2000,posfront.Z));
-	f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+80,posfront1.Z),vector3df(posfront1.X,posfront1.Y-80,posfront1.Z));
-	//f32 height4 = rayTest(vector3df(posback.X,posback.Y+2000,posback.Z),vector3df(posback.X,posback.Y-2000,posback.Z));
-	//f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+2000,posback1.Z),vector3df(posback1.X,posback1.Y-2000,posback1.Z));
+	f32 height2 = rayTest(vector3df(posfront.X,posfront.Y+80,posfront.Z),vector3df(posfront.X,posfront.Y-80,posfront.Z));
+	//f32 height3 = rayTest(vector3df(posfront1.X,posfront1.Y+80,posfront1.Z),vector3df(posfront1.X,posfront1.Y-80,posfront1.Z));
+	f32 height4 = rayTest(vector3df(posback.X,posback.Y+80,posback.Z),vector3df(posback.X,posback.Y-80,posback.Z));
+	//f32 height5 = rayTest(vector3df(posback1.X,posback1.Y+80,posback1.Z),vector3df(posback1.X,posback1.Y-80,posback1.Z));
 
 	// Sample in the front
 	f32 frontcol = rayTest(vector3df(pos.X,pos.Y+36,pos.Z),vector3df(posfront.X,posfront.Y+36,posfront.Z));
-	if (frontcol>-1000)
+	if (frontcol>-1000.0f)
 	{
 		if (objectType==OBJECT_TYPE_PLAYER)
 			printf("Collision detected in the front!\n");
@@ -561,7 +561,15 @@ void DynamicObject::walkTo(vector3df targetPos)
 		height = TerrainManager::getInstance()->getHeightAt(pos);
 	}
 
-	f32 cliff =  height3 - height;
+	//Sometimes the ray could miss (not the terrain, but object tiles), if that happen, it will take the object reference point
+	if (height=-1000.0f && height2>-1000.0f)
+		height=height2;
+
+	//Sometimes the ray could miss (not the terrain, but object tiles), if that happen, it will take the object reference point
+	if (height2==-1000.0f && height>-1000.0f)
+		height2 = height;
+
+	f32 cliff =  height2 - height;
 	if (cliff<0)
 		cliff = -cliff;
 
@@ -569,15 +577,15 @@ void DynamicObject::walkTo(vector3df targetPos)
 	{
 		// Do a smaller ray test to check
 		f32 oldheight = height;
-		f32 oldheight2 = height3;
+		f32 oldheight2 = height2;
 
 		// Need to recheck 2 points for the "cliff"
 		height = rayTest(vector3df(pos.X,pos.Y+100,pos.Z),vector3df(pos.X,pos.Y-2000,pos.Z));
-		height3 = rayTest(vector3df(posfront1.X,posfront1.Y+100,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
+		height2 = rayTest(vector3df(posfront1.X,posfront1.Y+100,posfront1.Z),vector3df(posfront1.X,posfront1.Y-2000,posfront1.Z));
 		if (height==-1000)
 			height=oldheight;
 		if (height>-1000)
-			cliff =  height3 - height;
+			cliff =  height2 - height;
 
 	}
 
@@ -586,7 +594,7 @@ void DynamicObject::walkTo(vector3df targetPos)
 
 	//Check the old position and the new position on the Y axis. Must not be too high
 	vector3df oldposition = this->getPosition();
-	f32 result = (oldposition.Y-height);
+	f32 result = (oldposition.Y-((height + height2 + height4) / 3.0f));
 	if (result<0)
 		result=-result;
 
@@ -625,7 +633,14 @@ void DynamicObject::walkTo(vector3df targetPos)
 	//if (height>-80 && (cliff < 60) && !collided)
 	if (!collided)
 	{
+		// Determine the best position to place the player height. 
 		pos.Y = height;
+
+		if (height2>height4)  //Upward cliff
+			pos.Y = height2;
+
+		if (height2<height4)  //Downward cliff
+			pos.Y = height4;
 		// Get the average of the heights to give a smoother result.
 		// pos.Y=((height+height2+height3+height4+height5)/5)+2;
 		this->setPosition(pos);
@@ -706,7 +721,7 @@ f32 DynamicObject::rayTest(vector3df pos, vector3df pos1)
 	}
 	else
 		// if not return 0
-		return -1000;
+		return -1000.0f;
 }
 
 void DynamicObject::setWalkTarget(vector3df newTarget)

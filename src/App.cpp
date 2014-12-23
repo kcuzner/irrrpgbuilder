@@ -338,6 +338,16 @@ void App::setAppState(APP_STATE newAppState)
 
 		if (old_app_state != APP_EDIT_VIEWDRAG)
 		{
+
+			if (old_app_state != APP_EDIT_DYNAMIC_OBJECTS_MODE)
+			{
+				//Reset to the last button states (based on the "currentObject" value)
+				//Only valid if the old APP State was not dynamic object mode and viewdrag
+				GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT,currentObject!=LIST_SEGMENT);
+				GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,currentObject!=LIST_OBJ);
+				GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,currentObject!=LIST_PROPS);
+				GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,currentObject!=LIST_LOOT);
+			}
 			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_DYNAMIC_OBJECT_CHOOSER,true);
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 			//If the up/down mode was last used then reset if
@@ -806,9 +816,9 @@ void App::eventGuiButton(s32 id)
 		//Center the view on the selected object
 	case GUIManager::BT_ID_DYNAMIC_OBJECT_BT_CENTER:
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
-		if (selectedNode)
+		if (lastMousePick.pickedNode)
 		{
-			core::vector3df pos = selectedNode->getPosition();
+			core::vector3df pos = lastMousePick.pickedNode->getPosition();
 			core::vector3df offset = CameraSystem::getInstance()->getNode()->getPosition();
 			core::vector3df calc = pos + (pos - offset);
 
@@ -819,7 +829,7 @@ void App::eventGuiButton(s32 id)
 			guienv->addMessageBox(L"No object selected",(L"You need to select the object to center the view on it."),true);
 
 		break;
-
+	//Center the view on the selected object, from a button on tool panel
 	case GUIManager::BT_ID_DYNAMIC_VIEW_BT_CENTER:
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,false);
 
@@ -1934,6 +1944,7 @@ void App::eventMousePressed(s32 mouse)
 				if (mousePick.pickedNode != NULL && (toolstate==TOOL_DO_ADD || toolstate==TOOL_DO_SEL)) // Add mode right button functionnality
 				{
 					nodeName = mousePick.pickedNode->getName();
+					lastMousePick = mousePick;
 
 					//if you click on a Dynamic Object then open his properties
 					if( stringc( nodeName.subString(0,14)) == "dynamic_object" || nodeName.subString(0,16) == "dynamic_walkable" )
