@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <IrrRPG_Builder_Vegetation version="1.0">
-    <vegetation trunk_mesh="trees/tree1_t.b3d" leafs_mesh="trees/tree1_l.b3d"/>
-    <vegetation trunk_mesh="trees/tree2_t.b3d" leafs_mesh="trees/tree2_l.b3d"/>
-    <vegetation trunk_mesh="trees/tree4_t.b3d" leafs_mesh="trees/tree4_l.b3d"/>
-    <vegetation trunk_mesh="" leafs_mesh="trees/bush1.b3d"/>
-	<vegetation trunk_mesh="" leafs_mesh="trees/tree1.b3d"/>
+    <vegetation trunk_mesh="trees/tree1_t.b3d" leafs_mesh="trees/tree1_l.b3d" thumb="vege0.jpg" name="Tree 1"/>
+    <vegetation trunk_mesh="trees/tree2_t.b3d" leafs_mesh="trees/tree2_l.b3d" thumb="vege1.jpg" name="Tree 2"/>
+    <vegetation trunk_mesh="trees/tree4_t.b3d" leafs_mesh="trees/tree4_l.b3d" thumb="vege2.jpg" name="Tree 4"/>
+    <vegetation trunk_mesh="" leafs_mesh="trees/bush1.b3d" thumb="vege3.jpg" name="Bush 1"/>
+	<vegetation trunk_mesh="" leafs_mesh="trees/tree1.b3d" thumb="vege4.jpg" name="Pine tree"/>
 </IrrRPG_Builder_Vegetation> 

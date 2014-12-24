@@ -30,7 +30,7 @@ App::App()
 {
 
 	filename="";
-	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (nov 2014)";
+	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (dec 2014)";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -1138,6 +1138,9 @@ std::vector<stringw> App::getAbout()
 //Checkbox events
 void App::eventGuiCheckbox(s32 id)
 {
+	int index = 0;
+	vector<bool> enabled;
+	IGUICheckBox* vegecheckbox = ((IGUICheckBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::VEGE_CHECKBOX,true));
 	switch (id)
 	{
 		case GUIManager::CB_ID_POS_X:
@@ -1167,6 +1170,15 @@ void App::eventGuiCheckbox(s32 id)
 		case GUIManager::CB_ID_SCA_Z:
 			break;
 
+		case GUIManager::VEGE_CHECKBOX:
+			printf("checkbox was triggered");
+			index = ((IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::VEGE_LISTBOX,true))->getSelected();
+			enabled=(TerrainManager::getInstance()->getVegetationEnabled());
+			enabled[index]=vegecheckbox->isChecked();
+			TerrainManager::getInstance()->setVegetationEnabled(enabled);
+
+			break;
+
 		default:
 		break;
 	}
@@ -1184,6 +1196,13 @@ void App::eventGuiCombobox(s32 id)
 
 	std::vector<stringw> list;
 	list.clear();
+
+	//Required by the vegetation panel listbox
+	IGUIElement* box = guienv->getRootGUIElement()->getElementFromId(GUIManager::VEGE_LISTBOX,true);
+	vector<stringw> names = TerrainManager::getInstance()->getVegetationNames();
+	vector<stringc> thumb = TerrainManager::getInstance()->getVegetationThumb();
+	int total = TerrainManager::getInstance()->getVegetationTypes();
+	stringc thumbnail = "../media/vegetation/";
 
 	switch (id)
 	{
@@ -1423,6 +1442,27 @@ void App::eventGuiCombobox(s32 id)
 		}
 		else
 			((IGUIStaticText*)guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_ID_LOOT_DESCRIPTION,true))->setText(L"");
+		break;
+
+	case GUIManager::VEGE_LISTBOX:
+		if (box)
+		{
+			int index = ((IGUIListBox*)box)->getSelected();
+			if (index>-1 && index<total+1)
+			{
+				IGUIImage* image = ((IGUIImage*)guienv->getRootGUIElement()->getElementFromId(GUIManager::VEGE_IMAGE,true));
+				if (image)
+				{
+					thumbnail.append(thumb[index]);
+					image->setImage(smgr->getVideoDriver()->getTexture(thumbnail.c_str()));
+				}
+
+				gui::IGUICheckBox* check = ((IGUICheckBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::VEGE_CHECKBOX,true));
+				check->setChecked((TerrainManager::getInstance()->getVegetationEnabled())[index]);
+			}
+
+		} else
+		{ printf("Listbox cannot be retrieved!\n");}
 		break;
 
 
@@ -2724,6 +2764,7 @@ void App::run()
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
+
 
 #else
 	//EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)

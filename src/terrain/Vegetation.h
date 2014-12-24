@@ -41,10 +41,33 @@ public:
         return trunks.size();
     }
 
+	vector<stringw> getNames()
+	{
+		return name;
+	}
+
+	vector<stringc> getThumb()
+	{
+		return thumb;
+	}
+
+	vector<bool> getEnabled()
+	{
+		return enabled;
+	}
+
+	void setEnabled(vector<bool> enable)
+	{
+		enabled=enable;
+	}
+
 private:
     //the index of the vector is the type of the tree.
     vector<stringc> trunks;
     vector<stringc> leafs;
+	vector<stringw> name;
+	vector<stringc> thumb;
+	vector<bool> enabled;
 
     VegetationSeed()
     {
@@ -64,6 +87,9 @@ private:
         {
             trunks.push_back(stringc(vXML->ToElement()->Attribute("trunk_mesh")));
             leafs.push_back(stringc(vXML->ToElement()->Attribute("leafs_mesh")));
+			name.push_back(stringw(vXML->ToElement()->Attribute("name")));
+			thumb.push_back(stringc(vXML->ToElement()->Attribute("thumb")));
+			enabled.push_back(true);
             vXML = root->IterateChildren( "vegetation", vXML );
         }
     }
@@ -81,6 +107,10 @@ class Vegetation
         void setRotation(vector3df rot);
         void setScale(vector3df scale);
 		inline ISceneNode* getNode() {return trunk;}
+		inline vector<stringw> getNames() {return VegetationSeed::getInstance()->getNames();}
+		inline vector<stringc> getThumb() {return VegetationSeed::getInstance()->getThumb();}
+		inline vector<bool> getEnabled() {return VegetationSeed::getInstance()->getEnabled();}
+		inline int getTotalModels() {return VegetationSeed::getInstance()->getTotalOfTypes();}
 
 
         void showDebugData(bool show);
@@ -95,6 +125,7 @@ class Vegetation
 
 		int vegeType;
         f32 size;
+		vector<bool> enabled;
 };
 
 #endif // VEGETATION_H

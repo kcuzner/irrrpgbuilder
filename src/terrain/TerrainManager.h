@@ -3,6 +3,7 @@
 
 #include <map>
 #include "TerrainTile.h"
+#include "Vegetation.h"
 #include "../App.h"
 
 class TerrainManager
@@ -75,6 +76,11 @@ class TerrainManager
 		void rotateRight(core::vector3df pos);
 
 		inline bool isParametric(){return parametric;}
+		inline vector<stringw> getVegetationNames() {return VegetationSeed::getInstance()->getNames();}
+		inline vector<stringc> getVegetationThumb() {return VegetationSeed::getInstance()->getThumb();}
+		inline int getVegetationTypes() {return VegetationSeed::getInstance()->getTotalOfTypes();}
+		inline vector<bool> getVegetationEnabled() {return VegetationSeed::getInstance()->getEnabled();}
+		inline void setVegetationEnabled(vector<bool> enable) { VegetationSeed::getInstance()->setEnabled(enable);}
 
 		typedef std::map<std::string, TerrainTile*> TerrainMap;
 		typedef std::pair<std::string, TerrainTile*> TerrainMapPair;

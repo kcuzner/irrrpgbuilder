@@ -2,6 +2,7 @@
 
 #include "../LANGManager.h"
 #include "../objects/DynamicObjectsManager.h"
+#include "../terrain/TerrainManager.h"
 #include "../events/EventReceiver.h"
 #include "../sound/SoundManager.h"
 #include "../objects/Player.h"
@@ -16,6 +17,14 @@ using namespace io;
 using namespace gui;
 
 using namespace irrklang;
+
+//This is the comparison function needed by STD:SORT() so it sort on the lowercase version of the strings
+bool compareString(const core::stringw &a, const core::stringw &b)
+{
+	core::stringw a1=a;
+	core::stringw b1=b;
+	return (a1.make_lower() < b1.make_lower());
+}
 
 GUIManager::GUIManager()
 {
@@ -81,6 +90,8 @@ GUIManager::GUIManager()
 
 	textevent.clear();
 	texteventcolor.clear();
+
+	vegelistbox=NULL;
 
 	// Bigger Windows titlebar width
 	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
@@ -454,6 +465,9 @@ IGUIListBox* GUIManager::getListBox(GUI_ID id)
 		case CO_ID_ACTIVE_SCENE_LIST:
 			return guiSceneObjectList;
 			break;
+
+		case VEGE_LISTBOX:
+			return vegelistbox;
 
         default:
             break;
@@ -1250,7 +1264,7 @@ void GUIManager::createVegetationToolbar()
 		220,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
 		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
-		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str(),0,GCW_VEGE_TOOLBAR);
+		false,stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str(),0,GCW_VEGE_TOOLBAR);
 
 
     guiVegetationToolbar->getCloseButton()->setVisible(false);
@@ -1262,7 +1276,27 @@ void GUIManager::createVegetationToolbar()
 
 	u32 x=10;
 	u32 y=40;
-	IGUIButton* button = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
+	
+	guienv->addImage(driver->getTexture("../media/vegetation/vege0.jpg"),vector2d<s32>(x,y),true,guiVegetationToolbar,VEGE_IMAGE);
+	guienv->addCheckBox(true,core::rect<s32>(x+70,y,x+90,y+20),guiVegetationToolbar, VEGE_CHECKBOX);
+	guienv->addStaticText(L"Enabled?",myRect(x+90,y+5,x+170,y+20),false,true, guiVegetationToolbar);
+	y+=70;
+	IGUIListBox* vegelistbox=guienv->addListBox(myRect(x,y,x+190,y+120),guiVegetationToolbar,VEGE_LISTBOX, true);
+
+	//Populate the vegetation toolbar with the names of the vegetation items
+	
+	vector<stringw> names = TerrainManager::getInstance()->getVegetationNames();
+	if (vegelistbox)
+	{
+		for(int i = 0; i<(int)names.size(); i++)
+		{
+			vegelistbox->addItem(names[i].c_str());
+		}
+	} 
+
+	vegelistbox->setSelected(0); //Select the first tree in the list.
+
+	/*IGUIButton* button = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
                                      BT_VEGE_BASE,L"",
                                      stringw(LANGManager::getInstance()->getText("bt_camera_rts")).c_str());
 	button->setIsPushButton(true);
@@ -1295,7 +1329,7 @@ void GUIManager::createVegetationToolbar()
 	button3->setIsPushButton(true);
 	button3->setPressed(true);
 	button3->setImage(driver->getTexture("../media/vegetation/vege3.jpg"));
-	button3->setPressedImage(driver->getTexture("../media/vegetation/vege3dn.jpg"));
+	button3->setPressedImage(driver->getTexture("../media/vegetation/vege3dn.jpg"));*/
 
 	y+=74;
 }
@@ -2641,7 +2675,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_NPC, selected );
-		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
@@ -2652,7 +2686,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC,selected,"");
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2695,7 +2729,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_SEGMENT, selected );
-		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
 		
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
@@ -2706,7 +2740,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selected,"", DynamicObject::SPECIAL_SEGMENT);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2725,7 +2759,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_PROP, selected );
-		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2735,7 +2769,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selected,"");
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2755,7 +2789,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_LOOT, selected );
-		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
@@ -2766,7 +2800,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selected,"",DynamicObject::SPECIAL_LOOT);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2798,7 +2832,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC, selectedcat,text);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
@@ -2825,7 +2859,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selectedcat,text);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2851,7 +2885,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selectedcat,text);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2877,7 +2911,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selectedcat,text,DynamicObject::SPECIAL_SEGMENT);
-		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2920,7 +2954,7 @@ void GUIManager::UpdateCollections(LIST_TYPE type)
 	guiDynamicObjects_Category->clear();
 
 	std::vector<stringw> listCollection = DynamicObjectsManager::getInstance()->getObjectsCollections(type);
-	std::sort(listCollection.begin(), listCollection.end());
+	std::sort(listCollection.begin(), listCollection.end(), compareString);
 
 	// Populate a list of collection that contain only dynamic objects. (Default to all)
 	for (int i=0 ; i< (int)listCollection.size() ; i++)
@@ -2943,7 +2977,7 @@ void GUIManager::buildSceneObjectList(DynamicObject::TYPE objtype)
 			listbox->clear();
 		}
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneListAlias(objtype);
-		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
 
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{

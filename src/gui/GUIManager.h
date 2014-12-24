@@ -142,7 +142,9 @@ class GUIManager
 		WIN_GAMEPLAY,
 		WIN_LOADER,
 
-		BT_VEGE_BASE //There are other ID that will accumulate after this do NOT put other id after this one
+		VEGE_CHECKBOX,
+		VEGE_LISTBOX,
+		VEGE_IMAGE
 	};
 
 	//here are all windows of the editor (except mainWindow - toolbar)
@@ -302,10 +304,13 @@ class GUIManager
 
 	    virtual ~GUIManager();
     private:
+		
 		IrrlichtDevice *device;
         IGUIEnvironment* guienv;
 		IVideoDriver* driver;
 		dimension2d<u32> screensize;
+
+		
 
         int mouseX;
         int mouseY;
@@ -472,6 +477,8 @@ class GUIManager
         CGUIEditBoxIRB* guiDynamicObjects_Script;
         IGUIEditBox* guiDynamicObjects_Script_Console;
         IGUIButton* guiDynamicObjects_Script_Close;
+
+		IGUIListBox* vegelistbox;
 
 
 		// Information bar

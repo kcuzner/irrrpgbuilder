@@ -631,6 +631,17 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 
 void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 {
+
+	//Do a prior check to see if there is a least one tree active in the list of active objects
+	vector<bool> enabled=VegetationSeed::getInstance()->getEnabled();
+	vector<int> newlist;
+	for(int i = 0; i<(int)enabled.size(); i++)
+	{
+		if (enabled[i]==true)
+			newlist.push_back(i); //New list will contain the list of the enabled items
+	}
+	if (newlist.size()==0) return;
+
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();

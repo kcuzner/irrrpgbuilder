@@ -6,10 +6,14 @@
 #include <vector>
 
 //For access to folders function of the os
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#ifndef WIN32
+	#include <sys/types.h>
+	#include <sys/stat.h>
+#endif
 // Same for windows
-#include <direct.h>
+#ifdef WIN32
+	#include <direct.h>
+#endif
 //#include <stdlib.h>
 //#include <stdio.h>
 
@@ -516,7 +520,12 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	if (terrainMap.size()>0)
 	{
 		int status;
+#ifdef WIN32  //For windows, create a folder
 		status = _mkdir(filename.c_str());
+#endif
+#ifndef WIN32 //For Linux, create a folder
+		status = mkdir(filename.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
 	}
 	filename="";
     //Save all segments to XML

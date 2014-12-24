@@ -13,9 +13,32 @@ using namespace std;
 
 Vegetation::Vegetation(int type)
 {
-    ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
+	ISceneManager* smgr = App::getInstance()->getDevice()->getSceneManager();
 
-    if(type == -1) type=rand()%VegetationSeed::getInstance()->getTotalOfTypes();//randomize tree type when receive -1
+	//Here will need to create a new list of the enabled that will content the index of the "true", and the random will pick one of the number in the list.
+	enabled=VegetationSeed::getInstance()->getEnabled();
+	vector<int> newlist;
+	for(int i = 0; i<(int)enabled.size(); i++)
+	{
+		if (enabled[i]==true)
+			newlist.push_back(i); //New list will contain the list of the enabled items
+	}
+	int randomveg=1;
+
+	//In case of the user that would disable all the tree and attemp to paint!
+	//Should be prevented before attemting to create a vegetation object.
+	//This is only a failsafe
+	if (newlist.size()>0)
+	{	
+		randomveg = rand()%newlist.size();
+		if (type == -1) type=newlist[randomveg];
+	} else
+		type = randomveg;
+	
+	
+
+	//Old method. All the vegetation was enabled.
+    //if(type == -1) type=rand()%VegetationSeed::getInstance()->getTotalOfTypes();//randomize tree type when receive -1
 
 	// will store the type of the tree
 	vegeType=type;
