@@ -15,7 +15,7 @@ void main()
 	float scale = 148.48;
 	vec2 texCoord = vec2(gl_TexCoord[0]);
 	
-	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*float(terrainScale/50.0) + waterTime,texCoord.y*float(terrainScale/50.0)));
+	vec4 tex0    = texture2D( oceanNormalMap, vec2(texCoord.x*float(terrainScale/50) + waterTime,texCoord.y*float(terrainScale/50)));
 	vec4 tex1    = texture2D( oceanReflection, texCoord.xy*2.0 + tex0.r*0.5 );
 	//vec4 tex2    = texture2D( oceanFoam, vec2(texCoord.x*5.0 + waterTime*0.3, -texCoord.y*5.0)); 
 	

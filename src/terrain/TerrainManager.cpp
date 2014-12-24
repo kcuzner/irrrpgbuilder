@@ -46,7 +46,7 @@ TerrainManager::TerrainManager()
 TerrainManager::~TerrainManager()
 {
 	clean();
-	
+
     //dtor
 }
 
@@ -76,13 +76,13 @@ void TerrainManager::createEmptySegment(vector3df pos)
 
 
     ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addCubeSceneNode(1.0f,0,100);
-	
+
 	// in the work, for some reason this is slow when the texture is applied
 	//scene::IAnimatedMesh * mesh = App::getInstance()->getDevice()->getSceneManager()->addHillPlaneMesh("",dimension2d<f32>(1024,1024),dimension2d<u32>(1,1),&tempnode->getMaterial(0));
 	//App::getInstance()->getDevice()->getVideoDriver()->getMeshManipulator()->makePlanarTextureMapping(mesh,1);
 	//ISceneNode* newEmptySegment = App::getInstance()->getDevice()->getSceneManager()->addMeshSceneNode(mesh);
 	//tempnode->remove();
-	
+
 	//newEmptySegment->setMaterialFlag(EMF_BACK_FACE_CULLING,false);
 	//newEmptySegment->setMaterialFlag(EMF_WIREFRAME,true);
 	newEmptySegment->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
@@ -92,14 +92,14 @@ void TerrainManager::createEmptySegment(vector3df pos)
     ITriangleSelector* sel = App::getInstance()->getDevice()->getSceneManager()->createTriangleSelectorFromBoundingBox(newEmptySegment);
     newEmptySegment->setTriangleSelector(sel);
 
-	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true); 
+	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true);
     newEmptySegment->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/editor/terrain_empty_segment.png"));
     newEmptySegment->setMaterialType(EMT_TRANSPARENT_ALPHA_CHANNEL);
 	newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScale(empty_texture_scale*3.0f,empty_texture_scale*3.0f);
 	//newEmptySegment->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(50,50);
     newEmptySegment->setName(getHashCode(pos).c_str());
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
-	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true); 
+	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true);
 
 
    // #ifdef DEBUG
@@ -321,7 +321,7 @@ ISceneNode * TerrainManager::createCustomSegment(vector3df pos, core::stringc mo
 											pos,
 											getHashCode(pos).c_str(),true);
 
-		
+
 		newTile->customname = model;
 		newTile->createCustom(0,pos,getHashCode(pos).c_str(),model);
 
@@ -487,7 +487,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
 
 	core::stringc oldpath = (core::stringc)App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory();
-	printf("here is the default path:%s\n",oldpath);
+	//printf("here is the default path:%s\n",oldpath);
     TiXmlElement* terrainXML = new TiXmlElement("terrain");
 	terrainXML->SetAttribute("texture0",terraintexture0.c_str());
 	terrainXML->SetAttribute("texture1",terraintexture1.c_str());
@@ -497,9 +497,9 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
 	if (parametric)
 	{   //New force a new type of object to be parametric. So we can see the difference with old projects
-		terrainXML->SetAttribute("Type","Parametric"); 
+		terrainXML->SetAttribute("Type","Parametric");
 	}
-	terrainXML->SetAttribute("Type","Parametric"); 
+	terrainXML->SetAttribute("Type","Parametric");
 	terrainXML->SetDoubleAttribute("Scale",(float)scale);
 
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
@@ -510,7 +510,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	filename = filename.subString(0,(filename.size()-4));
 	filename = App::getInstance()->getDevice()->getFileSystem()->getFileBasename(App::getInstance()->filename,false);
 	printf("This is the current folder: %s\n",filename.c_str());
-	
+
 
 	//REference code (Should be tested on Linux
 	//int status;
@@ -553,7 +553,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		filename="";
     }
     parentElement->LinkEndChild(terrainXML);
-	
+
 	//Save tiles separately
 	// Always save the tiles as object from now on.
 	{
@@ -591,10 +591,10 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 
 			if (mesh)
 				mw->writeMesh(file,  mesh);
-	
+
 			if (file)
 				file->drop();
-			
+
 			if (mw)
 				mw->drop();
 
@@ -658,7 +658,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 		else
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam); //Create a segment
 
-		
+
         TerrainTile* tempTile = getSegment( vector3df( x/scale ,0, z/scale ) );
 
 
@@ -719,7 +719,7 @@ void TerrainManager::transformSegments(App::MousePick mousePick, f32 radius, f32
 				pos.Y = pos.Y/tilemeshsize;
 				pos.Z = pos.Z/tilemeshsize;
                 TerrainTile* tempTile = getSegment(pos);
-                if(tempTile) 
+                if(tempTile)
 					tempTile->transformMesh(mousePick.pickedPos,radius,radius2,strength,norecalc);
             }
         }
@@ -1090,7 +1090,7 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 		buffer.push_back(pos); //put the positions in the buffer
 		deg.push_back(i);
 	}
-	
+
 	int step1=5;
 
 	f32 radius1=radius; ///4;
@@ -1136,7 +1136,7 @@ void TerrainManager::drawBrushCircleSmooth(vector3df position, f32 radius, int s
 						driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,255,255));
 					}
 					else
-					{ //Red 
+					{ //Red
 						driver->draw3DTriangle(triangle3df(vertice1,vertice3,vertice2),video::SColor(128,255,64,64));
 						driver->draw3DTriangle(triangle3df(vertice2,vertice3,vertice4),video::SColor(128,255,64,64));
 					}

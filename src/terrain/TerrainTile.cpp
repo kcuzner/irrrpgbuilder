@@ -177,15 +177,15 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	//SMesh* newMesh = NULL;
 	//newMesh = smgr->getMeshManipulator()->createMeshCopy(baseMesh);
 	//newMesh->setHardwareMappingHint(EHM_STATIC);
-		
-	
+
+
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
 	//ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
 	ocean=smgr->addMeshSceneNode(baseMesh,node,0);
 	//NEW (12/18/14) Found out that I can use the same reference for the water mesh, and generate 2 objects from the same mesh reference.
-	
+
 	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
-	assignWaterShader(ocean);	
+	assignWaterShader(ocean);
 
 	baseMesh->setHardwareMappingHint(EHM_STATIC);
 
@@ -338,7 +338,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 	core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
 	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file,
 				App::getInstance()->path);
-	
+
 
 	segmentXML->SetAttribute("mesh",path2.c_str());
 
@@ -1068,10 +1068,10 @@ void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
 		node->setMaterialTexture(3,layer4);
 #else
 		// On Linux
-		node->setMaterialTexture(0,layer1);
-		node->setMaterialTexture(1,layer2);
-		node->setMaterialTexture(2,layer3);
-		node->setMaterialTexture(3,layer4);
+		node->setMaterialTexture(0,layer0);
+		node->setMaterialTexture(1,layer1);
+		node->setMaterialTexture(2,layer2);
+		node->setMaterialTexture(3,layer3);
 #endif
 	}
 

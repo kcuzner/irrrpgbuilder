@@ -10607,7 +10607,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1413656135 source:/home/christian/Public/IRB/src/App.cpp
+1419457845 source:/home/christian/Public/IRB/src/App.cpp
 	"App.h"
 	"raytests.h"
 	"camera/CameraSystem.h"
@@ -10621,7 +10621,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1415297701 /home/christian/Public/IRB/src/App.h
+1419445343 /home/christian/Public/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -11844,7 +11844,7 @@
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1415297700 /home/christian/Public/IRB/src/gui/GUIManager.h
+1419457845 /home/christian/Public/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	"../App.h"
 	<vector>
@@ -11902,12 +11902,13 @@
 	<irrlicht.h>
 	"../App.h"
 
-1413656135 /home/christian/Public/IRB/src/terrain/TerrainManager.h
+1419457845 /home/christian/Public/IRB/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
+	"Vegetation.h"
 	"../App.h"
 
-1413656135 /home/christian/Public/IRB/src/terrain/TerrainTile.h
+1419445343 /home/christian/Public/IRB/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -11920,7 +11921,7 @@
 	<irrlicht.h>
 	"../objects/DynamicObject.h"
 
-1413656135 /home/christian/Public/IRB/src/terrain/Vegetation.h
+1419457845 /home/christian/Public/IRB/src/terrain/Vegetation.h
 	<irrlicht.h>
 	<vector>
 	"../App.h"
@@ -11933,7 +11934,7 @@
 1413656135 /home/christian/Public/IRB/src/fx/postprocess/PostProcessManager.h
 	<irrlicht.h>
 
-1415297700 /home/christian/Public/IRB/src/objects/DynamicObjectsManager.h
+1419445343 /home/christian/Public/IRB/src/objects/DynamicObjectsManager.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
@@ -11958,7 +11959,7 @@
 	"ISceneManager.h"
 	"../App.h"
 
-1413656135 source:/home/christian/Public/IRB/src/events/EventReceiver.cpp
+1415297701 source:/home/christian/Public/IRB/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
@@ -11990,7 +11991,7 @@
 1413656135 source:/home/christian/Public/IRB/src/fx/postprocess/ShaderPostProcess.cpp
 	"ShaderPostProcess.h"
 
-1413660211 source:/home/christian/Public/IRB/src/fx/ShaderCallBack.cpp
+1419462156 source:/home/christian/Public/IRB/src/fx/ShaderCallBack.cpp
 	"ShaderCallBack.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
@@ -12015,7 +12016,7 @@
 1413656135 source:/home/christian/Public/IRB/src/gui/CGUIExtWindow.cpp
 	"CGUIExtWindow.h"
 
-1413656135 source:/home/christian/Public/IRB/src/gui/CGUIFileSelector.cpp
+1419445343 source:/home/christian/Public/IRB/src/gui/CGUIFileSelector.cpp
 	"CGUIFileSelector.h"
 	"../LANGManager.h"
 
@@ -12033,14 +12034,16 @@
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1413656135 source:/home/christian/Public/IRB/src/gui/GUIManager.cpp
+1419457845 source:/home/christian/Public/IRB/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
+	"../terrain/TerrainManager.h"
 	"../events/EventReceiver.h"
 	"../sound/SoundManager.h"
 	"../objects/Player.h"
 	"../camera/CameraSystem.h"
+	<algorithm>
 
 1413656135 source:/home/christian/Public/IRB/src/gui/NodePreview.cpp
 	"NodePreview.h"
@@ -12075,7 +12078,7 @@
 	"../LuaGlobalCaller.h"
 	"Player.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/DynamicObject.cpp
+1419445343 source:/home/christian/Public/IRB/src/objects/DynamicObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"combat.h"
@@ -12084,7 +12087,7 @@
 	"../camera/CameraSystem.h"
 	"DynamicObject.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/DynamicObjectsManager.cpp
+1419445343 source:/home/christian/Public/IRB/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"DynamicObject.h"
 	"../camera/CameraSystem.h"
@@ -12103,7 +12106,7 @@
 	<irrlicht.h>
 	"../LuaGlobalCaller.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/Player.cpp
+1419445343 source:/home/christian/Public/IRB/src/objects/Player.cpp
 	"Player.h"
 	"../App.h"
 	"../tinyXML/tinyxml.h"
@@ -12121,20 +12124,23 @@
 1413656135 source:/home/christian/Public/IRB/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1413656135 source:/home/christian/Public/IRB/src/terrain/TerrainManager.cpp
+1419457916 source:/home/christian/Public/IRB/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
 	"../events/EventReceiver.h"
 	"../gui/GUIManager.h"
 	<sstream>
 	<vector>
+	<sys/types.h>
+	<sys/stat.h>
+	<direct.h>
 
-1413682962 source:/home/christian/Public/IRB/src/terrain/TerrainTile.cpp
+1419462156 source:/home/christian/Public/IRB/src/terrain/TerrainTile.cpp
 	"TerrainTile.h"
 	"../App.h"
 	"TerrainManager.h"
 	"../gui/GUIManager.h"
 
-1413656135 source:/home/christian/Public/IRB/src/terrain/Vegetation.cpp
+1419457845 source:/home/christian/Public/IRB/src/terrain/Vegetation.cpp
 	"Vegetation.h"
 
 1413656135 source:/home/christian/Public/IRB/src/tinyXML/tinystr.cpp
