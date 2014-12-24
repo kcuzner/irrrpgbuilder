@@ -6,6 +6,7 @@
 #include "../sound/SoundManager.h"
 #include "../objects/Player.h"
 #include "../camera/CameraSystem.h"
+#include <algorithm>    // std::sort
 
 using namespace irr;
 using namespace core;
@@ -2640,6 +2641,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_NPC, selected );
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
 
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
@@ -2650,6 +2652,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC,selected,"");
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2692,6 +2695,8 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_SEGMENT, selected );
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+		
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2701,6 +2706,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selected,"", DynamicObject::SPECIAL_SEGMENT);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2719,6 +2725,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_PROP, selected );
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2728,6 +2735,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selected,"");
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2747,6 +2755,8 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		guiDynamicObjects_OBJCategory->clear();
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(LIST_LOOT, selected );
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			guiDynamicObjects_OBJCategory->addItem(listDynamicObjsCat[i].c_str());
@@ -2756,6 +2766,7 @@ void GUIManager::UpdateGUIChooser(LIST_TYPE type)
 		// Then the list of objects
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selected,"",DynamicObject::SPECIAL_LOOT);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2787,6 +2798,8 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_NPC, selectedcat,text);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
+
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2812,6 +2825,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_PROP, selectedcat,text);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2837,6 +2851,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_LOOT, selectedcat,text);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2862,6 +2877,7 @@ void GUIManager::updateCurrentCategory(LIST_TYPE type)
 
 		guiDynamicObjects_OBJChooser->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(LIST_SEGMENT, selectedcat,text,DynamicObject::SPECIAL_SEGMENT);
+		std::sort(listDynamicObjs.begin(), listDynamicObjs.end());
 
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
@@ -2903,10 +2919,13 @@ void GUIManager::UpdateCollections(LIST_TYPE type)
 {
 	guiDynamicObjects_Category->clear();
 
+	std::vector<stringw> listCollection = DynamicObjectsManager::getInstance()->getObjectsCollections(type);
+	std::sort(listCollection.begin(), listCollection.end());
+
 	// Populate a list of collection that contain only dynamic objects. (Default to all)
-	for (int i=0 ; i< (int)DynamicObjectsManager::getInstance()->getObjectsCollections(type).size() ; i++)
+	for (int i=0 ; i< (int)listCollection.size() ; i++)
 	{
-		core::stringw result = DynamicObjectsManager::getInstance()->getObjectsCollections(type)[i].c_str();
+		core::stringw result = listCollection[i].c_str();
 		if (result!=L"") //Collection with no name filtering
 			guiDynamicObjects_Category->addItem(result.c_str());
 	}
@@ -2924,6 +2943,8 @@ void GUIManager::buildSceneObjectList(DynamicObject::TYPE objtype)
 			listbox->clear();
 		}
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsSceneListAlias(objtype);
+		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end());
+
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			listbox->addItem(listDynamicObjsCat[i].c_str());
@@ -4147,6 +4168,7 @@ void GUIManager::updateItemsList()
     guiPlayerItems->clear();
     //vector<stringc> items = Player::getInstance()->getObject()->getItems();
 	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
+	std::sort(lootitems.begin(), lootitems.end());
 
     //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
 	for(int i = 0; i<(int)lootitems.size(); i++)
