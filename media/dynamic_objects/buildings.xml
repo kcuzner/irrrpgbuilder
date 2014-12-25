@@ -60,21 +60,21 @@
 	<dynamic_object name="Rockwall1" 			mesh="buildings/props/RockWall1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
 					author="Unknown" category="Props"
 					/>
-	<dynamic_object name="Tomb 1" 			mesh="buildings/props/Tomb1.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+	<dynamic_object name="Tomb 1" 			mesh="buildings/props/Tomb1.obj" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Cemetary"
 					thumbnail="buildings/props/info_tomb1.jpg"
 					/>
-	<dynamic_object name="Tomb 2" 			mesh="buildings/props/Tomb2.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+	<dynamic_object name="Tomb 2" 			mesh="buildings/props/Tomb2.obj" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Cemetary"
 					thumbnail="buildings/props/info_tomb2.jpg"
 					/>
 					
-	<dynamic_object name="Tomb 3" 			mesh="buildings/props/Tomb3.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+	<dynamic_object name="Tomb 3" 			mesh="buildings/props/Tomb3.obj" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Cemetary"
 					thumbnail="buildings/props/info_tomb3.jpg"
 					/>
 					
-	<dynamic_object name="Bench" 			mesh="buildings/props/Bench.obj" 				type="non-interactive"	scale="1.0" 	materialType="solid"
+	<dynamic_object name="Bench" 			mesh="buildings/props/Bench.obj" 				type="non-interactive"	scale="0.5" 	materialType="solid"
 					author="Unknown" category="Props"
 					thumbnail="buildings/props/info_bench.jpg"
 					/>
