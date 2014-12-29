@@ -10,6 +10,6 @@ uniform float Speed;
 
 void main()
 {
-	vec4 normalCol = 2*(texture2D(texture1, gl_TexCoord[0].xy+ElapsedTime*Speed)-0.5);
+	vec4 normalCol = 2.0*(texture2D(texture1, gl_TexCoord[0].xy+ElapsedTime*Speed)-0.5);
 	gl_FragColor = texture2D(texture0, gl_TexCoord[0].xy+normalCol.xy*EffectStrength);
 }

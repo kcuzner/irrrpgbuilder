@@ -19,5 +19,5 @@ void main ()
     scratch = 2.0f*(scratch - ScratchIntensity)/IS;
     scratch = 1.0-abs(1.0-scratch);
     scratch = max(0.0, scratch);
-    gl_FragColor = texCol+vec4(scratch.xxx, 0.0);
+    gl_FragColor = texCol+vec4(vec3(scratch).xxx, 0.0);
 }

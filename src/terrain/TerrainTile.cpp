@@ -1019,13 +1019,13 @@ void TerrainTile::showDebugData(bool show)
 
 void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
 {
-	stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
+	//stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
 	stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 	stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
 	stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
 	stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
 
-	static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
+	//static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
 	static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture1.c_str());
 	static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
     static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
@@ -1044,7 +1044,7 @@ void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
         ShaderCallBack::getInstance(), video::EMT_SOLID);
 
 		//Assign Textures
-		node->setMaterialTexture(0,layer0);
+		//node->setMaterialTexture(0,layer0);
 		node->setMaterialTexture(1,layer1);
 		node->setMaterialTexture(2,layer2);
 		node->setMaterialTexture(3,layer3);
@@ -1068,10 +1068,12 @@ void TerrainTile::assignTerrainShader(irr::scene::ISceneNode *node)
 		node->setMaterialTexture(3,layer4);
 #else
 		// On Linux
-		node->setMaterialTexture(0,layer0);
-		node->setMaterialTexture(1,layer1);
-		node->setMaterialTexture(2,layer2);
-		node->setMaterialTexture(3,layer3);
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(0,layer1);
+		node->setMaterialTexture(1,layer2);
+		node->setMaterialTexture(2,layer3);
+		node->setMaterialTexture(3,layer4);
+		node->setMaterialTexture(4,layer4);
 #endif
 	}
 

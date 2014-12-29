@@ -259,13 +259,13 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 			printf("Material is the terrain shader\n");
 #endif
 			//Get the texture names from the terrain manager
-			stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
+			//stringc texture0 = TerrainManager::getInstance()->getTerrainTexture(0);
 			stringc texture1 = TerrainManager::getInstance()->getTerrainTexture(1);
 			stringc texture2 = TerrainManager::getInstance()->getTerrainTexture(2);
 			stringc texture3 = TerrainManager::getInstance()->getTerrainTexture(3);
 			stringc texture4 = TerrainManager::getInstance()->getTerrainTexture(4);
 
-			static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
+			//static ITexture* layer0 = smgr->getVideoDriver()->getTexture(texture0.c_str());
 			static ITexture* layer1 = smgr->getVideoDriver()->getTexture(texture1.c_str());
 			static ITexture* layer2 = smgr->getVideoDriver()->getTexture(texture2.c_str());
 			static ITexture* layer3 = smgr->getVideoDriver()->getTexture(texture3.c_str());
@@ -284,7 +284,7 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 				this, video::EMT_SOLID);
 
 				//Assign Textures
-				node->setMaterialTexture(0,layer0);
+				//node->setMaterialTexture(0,layer0);
 				node->setMaterialTexture(1,layer1);
 				node->setMaterialTexture(2,layer2);
 				node->setMaterialTexture(3,layer3);
@@ -308,10 +308,12 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 				node->setMaterialTexture(3,layer4);
 #else
 				// On Linux
-				node->setMaterialTexture(0,layer0);
-				node->setMaterialTexture(1,layer1);
-				node->setMaterialTexture(2,layer2);
-				node->setMaterialTexture(3,layer3);
+				node->setMaterialTexture(0,layer1);
+				node->setMaterialTexture(0,layer1);
+                node->setMaterialTexture(1,layer2);
+                node->setMaterialTexture(2,layer3);
+                node->setMaterialTexture(3,layer4);
+                node->setMaterialTexture(4,layer4);
 #endif
 			}
 

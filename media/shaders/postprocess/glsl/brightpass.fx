@@ -30,7 +30,7 @@ void main()
     // 5. Use the magnitude of the colour
     //float lumValue = length(texCol.rgb);	
 	
-	if(lumValue < min(lumCol.r*EffectStrength*2, 0.95f))
+	if(lumValue < min(float(lumCol.r)*EffectStrength*2.0, 0.95f))
 	{
 		texCol.rgb = vec3(0.0f);
 	}

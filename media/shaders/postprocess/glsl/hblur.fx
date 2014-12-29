@@ -21,7 +21,7 @@ void main()
 	// blur in x (horizontal)
 	// take the samples with the distance blurSize between them
 	for (int i=0; i<9; i++)
-		finalCol += texture2D(texture0, vec2(gl_TexCoord[0].x+(i-4)*blurSize, gl_TexCoord[0].y))*weight[i];
+		finalCol += texture2D(texture0, vec2(float(gl_TexCoord[0].x)+(float(i)-4.0)*blurSize, float(gl_TexCoord[0].y)))*weight[i];
 
 	gl_FragColor = finalCol;
 } 
@@ -44,7 +44,7 @@ void main7x7()
 	// blur in x (horizontal)
 	// take the samples with the distance blurSize between them
 	for (int i=0; i<7; i++)
-		finalCol += texture2D(texture0, vec2(gl_TexCoord[0].x+(i-3)*blurSize, gl_TexCoord[0].y))*weight[i];
+		finalCol += texture2D(texture0, vec2(float(gl_TexCoord[0].x)+(float(i)-3.0)*blurSize, float(gl_TexCoord[0].y)))*weight[i];
 
 	gl_FragColor = finalCol;
 } 

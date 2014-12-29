@@ -220,7 +220,7 @@ void App::setAppState(APP_STATE newAppState)
 			ShaderCallBack::getInstance()->setFlagEditingTerrain(false);
 			button->setEnabled(true);
 			button->setPressed(false);
-			
+
 			GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 		}
 	}
@@ -363,8 +363,8 @@ void App::setAppState(APP_STATE newAppState)
 			GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,currentObject!=LIST_OBJ);
 
 		}
-		
-		
+
+
 	}
 	else
 	{
@@ -494,7 +494,7 @@ void App::setAppState(APP_STATE newAppState)
 	}
 
 
-
+#ifdef EDITOR
 	if (app_state == APP_EDIT_VIEWDRAG)
 	{
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_drag").c_str());
@@ -502,6 +502,8 @@ void App::setAppState(APP_STATE newAppState)
 	{
 		GUIManager::getInstance()->setStatusText(LANGManager::getInstance()->getText("info_dynamic_objects_mode").c_str());
 	}
+#endif // EDITOR
+
 }
 
 void App::eventGuiButton(s32 id)
@@ -530,7 +532,7 @@ void App::eventGuiButton(s32 id)
 	{
 
 	case GUIManager::BT_ID_NEW_PROJECT:
-		
+
 		lastScannedPick.pickedNode=NULL;
 		if (selectedNode)
 		{
@@ -540,14 +542,14 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 		this->createNewProject();
-		
+
 		// Put back the player object in the list of the dynamic objects
 		DynamicObjectsManager::getInstance()->setPlayer();
 
 		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
-		
+
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
@@ -600,7 +602,7 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,false);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-		
+
 		break;
 
 	case GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT:
@@ -617,7 +619,7 @@ void App::eventGuiButton(s32 id)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_PROPS,true);
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
-		
+
 		break;
 
 	case GUIManager::BT_ID_TERRAIN_PAINT_VEGETATION:
@@ -1082,7 +1084,7 @@ void App::eventGuiButton(s32 id)
 		if (button2)
 			button2->setPressed(false);
 		if (button3)
-			button3->setPressed(false);	
+			button3->setPressed(false);
 
 		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RTS);
 		break;
@@ -1096,7 +1098,7 @@ void App::eventGuiButton(s32 id)
 		if (button2)
 			button2->setPressed(true);
 		if (button3)
-			button3->setPressed(false);	
+			button3->setPressed(false);
 
 		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
 		break;
@@ -1110,7 +1112,7 @@ void App::eventGuiButton(s32 id)
 		if (button2)
 			button2->setPressed(false);
 		if (button3)
-			button3->setPressed(true);	
+			button3->setPressed(true);
 
 		CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_FPS);
 		break;
@@ -1322,14 +1324,14 @@ void App::eventGuiCombobox(s32 id)
 		break;
 
 	case GUIManager::CB_SCREENCOMBO:
-		
+
 		toolactivated=true;
 		guienv->setFocus(guienv->getRootGUIElement());
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SCREENCOMBO,true));
 		if (selectedbox)
 		{
-			
-			
+
+
 			//toolactivated=true; //Tell the system that the button has been activated
 			vector3df initpos = CameraSystem::getInstance()->editCamMaya->getAbsolutePosition();
 			vector3df inittar = CameraSystem::getInstance()->editCamMaya->getTarget();
@@ -1398,7 +1400,7 @@ void App::eventGuiCombobox(s32 id)
 		selectedbox = ((IGUIComboBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::CB_SNAPCOMBO,true));
 		if (selectedbox)
 		{
-			
+
 			//toolactivated=true; // Tell the system that the tool as been activated
 			currentsnapping=(f32)selectedbox->getItemData(selectedbox->getSelected());
 			if (currentsnapping==0) // if 0 is selected, the snapping is back to default
@@ -1757,13 +1759,13 @@ void App::eventKeyPressed(s32 key)
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT) //&& !isKeyPressed(key)
 			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));
-		
+
 		 //Hide the ocean
 		TerrainManager::getInstance()->setOceanVisible(false);
 		break;
 
 	case KEY_F6: //Show the ocean
-		
+
 		TerrainManager::getInstance()->setOceanVisible(true);
 		break;
 
@@ -1875,14 +1877,14 @@ void App::eventMousePressed(s32 mouse)
 		break;
 
 	case EMIE_LMOUSE_PRESSED_DOWN://Left button (default)
-	
+
 		//Check if the combo box are in focus and prevent the mouse click to add anything
 		//The GUI that send the problem is the LISTBOX when it is clicked. It send an event.
 		elem = device->getGUIEnvironment()->getFocus();
 		if (elem)
 		{
 			id = elem->getID();
-		
+
 
 			if (elem->getParent()->getID()==GUIManager::CB_SCREENCOMBO)
 				item1=true;
@@ -1891,10 +1893,10 @@ void App::eventMousePressed(s32 mouse)
 				item2=true;
 		}
 
-		
+
 		if( cursorIsInEditArea() && !item1 && !item2)
 		{
-			
+
 			if(app_state == APP_EDIT_TERRAIN_SEGMENTS)
 			{
 				TerrainManager::getInstance()->createSegment(this->getMousePosition3D().pickedPos / TerrainManager::getInstance()->getScale());
@@ -2449,7 +2451,7 @@ bool App::loadConfig()
 			TerrainManager::getInstance()->setTerrainTexture(3,layer3);
 			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
 			TerrainManager::getInstance()->setScale(scale);
-			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping); 
+			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping);
 
 		}
 		TiXmlElement* waterXML = root->FirstChildElement( "ocean" );
@@ -3813,9 +3815,9 @@ void App::initialize()
 	//light->setLightType(ELT_POINT);
 	light->setRadius(45000);
 	light->getLightData().SpecularColor=SColorf(0.4f,0.4f,0.5f,1.0f); //Some characters have too much specular on them. Limit the specular of the sun a little.
-	//light->getLightData().DiffuseColor=SColor(1.0f,0,0,1.0f); 
+	//light->getLightData().DiffuseColor=SColor(1.0f,0,0,1.0f);
 
-	
+
 	//light->setRadius(45000);
 	light->setRotation(vector3df(70.0f,30.0f,0.0f));
 

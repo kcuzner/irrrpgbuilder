@@ -12,6 +12,6 @@ void main()
 	// digital ITU R 601: Y = 0.2990 R + 0.5870 G + 0.1140 B
     float gray = dot(texColor, vec3(0.2990, 0.5870, 0.1140));
 	//lerp(texColor, gray.xxx, Desaturation);
-    vec3 result = mix(texColor, gray.xxx, Desaturation);
+    vec3 result = mix(texColor, vec3(gray).xxx, Desaturation);
     gl_FragColor = vec4(result,1.0);
 }

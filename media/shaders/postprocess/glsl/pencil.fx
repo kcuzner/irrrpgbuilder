@@ -47,7 +47,7 @@ void main ()
 	float pen2 = dot(col2, col1);
 	
 	vec4 finalCol=vec4(pen2, pen2, pen2, pen1);
-	finalCol = (1-finalCol)*(1-finalCol.a);
+	finalCol = (vec4(1.0,1.0,1.0,1.0)-finalCol)*(vec4(1.0,1.0,1.0,1.0)-vec4(finalCol.a));
 	finalCol = saturate((finalCol -0.5)*2.0*texCol)*vec4(1.0, 0.9, 0.8, 1.0);
 	gl_FragColor = finalCol;
 }
