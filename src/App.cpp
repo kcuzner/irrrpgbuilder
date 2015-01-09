@@ -30,7 +30,7 @@ App::App()
 {
 
 	filename="";
-	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (dec 2014)";
+	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (jan 2015)";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;

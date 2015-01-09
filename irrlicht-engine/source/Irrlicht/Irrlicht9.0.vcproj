@@ -686,15 +686,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\IProfiler.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\include\ILogger.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\IOSOperator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\IProfiler.h"
 				>
 			</File>
 			<File
@@ -707,10 +707,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\irrlicht.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\leakHunter.h"
 				>
 			</File>
 			<File
@@ -727,6 +723,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\Keycodes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\leakHunter.h"
 				>
 			</File>
 			<File
@@ -948,6 +948,14 @@
 			<Filter
 				Name="scene"
 				>
+				<File
+					RelativePath=".\CB3DMeshWriter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CB3DMeshWriter.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\include\CDynamicMeshBuffer.h"
 					>
@@ -1221,6 +1229,10 @@
 				Name="gui"
 				>
 				<File
+					RelativePath="..\..\include\EFocusFlags.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\include\EGUIAlignment.h"
 					>
 				</File>
@@ -1230,10 +1242,6 @@
 				</File>
 				<File
 					RelativePath="..\..\include\EMessageBoxFlags.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\include\EFocusFlags.h"
 					>
 				</File>
 				<File
@@ -2721,7 +2729,19 @@
 					>
 				</File>
 				<File
+					RelativePath="CProfiler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="CProfiler.h"
+					>
+				</File>
+				<File
 					RelativePath="CTimer.h"
+					>
+				</File>
+				<File
+					RelativePath="EProfileIDs.h"
 					>
 				</File>
 				<File
@@ -2735,24 +2755,13 @@
 				<File
 					RelativePath="os.cpp"
 					>
-				<File
-					RelativePath="utf8.cpp"
-					>
-				</File>
-				<File
-					RelativePath="CProfiler.cpp"
-					>
-				</File>
-				<File
-					RelativePath="CProfiler.h"
-					>
-				</File>
-				<File
-					RelativePath="EProfileIDs.h"
-					>
 				</File>
 				<File
 					RelativePath="os.h"
+					>
+				</File>
+				<File
+					RelativePath="utf8.cpp"
 					>
 				</File>
 				<Filter

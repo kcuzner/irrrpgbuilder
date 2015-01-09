@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="8,00"
 	Name="Irrlicht"
 	ProjectGUID="{E08E042A-6C45-411B-92BE-3CC31331019F}"
 	RootNamespace="Irrlicht"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -87,8 +86,6 @@
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="..\obj\IrrDebug\Irrlicht.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32-visualstudio\Irrlicht.lib"
 			/>
 			<Tool
@@ -108,6 +105,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -186,8 +186,6 @@
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="..\obj\IrrRelease\Irrlicht.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32-visualstudio\Irrlicht.lib"
 			/>
 			<Tool
@@ -207,6 +205,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -293,8 +294,6 @@
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="..\obj\IrrRelease\Irrlicht.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32-visualstudio\Irrlicht.lib"
 			/>
 			<Tool
@@ -314,6 +313,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -585,15 +587,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\..\..\include\IProfiler.h"
+				>
+			</File>
+			<File
 				RelativePath=".\..\..\include\ILogger.h"
 				>
 			</File>
 			<File
 				RelativePath=".\..\..\include\IOSOperator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\..\..\include\IProfiler.h"
 				>
 			</File>
 			<File
@@ -609,6 +611,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\..\..\include\leakHunter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\..\..\include\IrrlichtDevice.h"
 				>
 			</File>
@@ -618,10 +624,6 @@
 			</File>
 			<File
 				RelativePath=".\..\..\include\Keycodes.h"
-				>
-			</File>
-			<File
-				RelativePath=".\..\..\include\leakHunter.h"
 				>
 			</File>
 			<File
@@ -952,13 +954,14 @@
 					>
 				</File>
 				<File
-					RelativePath=".\..\..\include\ISceneLoader.h"
-					>
-				</File>
-				<File
 					RelativePath=".\..\..\include\ISceneManager.h"
 					>
 				</File>
+				<File
+					RelativePath=".\..\..\include\ISceneLoader.h"
+					>
+				</File>
+
 				<File
 					RelativePath=".\..\..\include\ISceneNode.h"
 					>
@@ -1112,10 +1115,6 @@
 				Name="gui"
 				>
 				<File
-					RelativePath="..\..\include\EFocusFlags.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\include\EGUIAlignment.h"
 					>
 				</File>
@@ -1127,6 +1126,10 @@
 					RelativePath="..\..\include\EMessageBoxFlags.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\include\EFocusFlags.h"
+					>
+				</File>		
 				<File
 					RelativePath=".\..\..\include\ICursorControl.h"
 					>
@@ -2172,6 +2175,12 @@
 					>
 				</File>
 				<File
+					RelativePath="CSMFMeshFileLoader.cpp">
+				</File>
+				<File
+					RelativePath="CSMFMeshFileLoader.h">
+				</File>
+				<File
 					RelativePath=".\CAnimatedMeshHalfLife.cpp"
 					>
 				</File>
@@ -2341,14 +2350,6 @@
 				</File>
 				<File
 					RelativePath=".\CSkinnedMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="CSMFMeshFileLoader.cpp"
-					>
-				</File>
-				<File
-					RelativePath="CSMFMeshFileLoader.h"
 					>
 				</File>
 				<File
@@ -2760,14 +2761,6 @@
 				Name="writers"
 				>
 				<File
-					RelativePath=".\CB3DMeshWriter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\CB3DMeshWriter.h"
-					>
-				</File>
-				<File
 					RelativePath="CColladaMeshWriter.cpp"
 					>
 				</File>
@@ -2805,10 +2798,6 @@
 				</File>
 				<File
 					RelativePath="CSTLMeshWriter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SB3DStructs.h"
 					>
 				</File>
 			</Filter>
@@ -3017,6 +3006,22 @@
 				>
 			</File>
 			<File
+				RelativePath="CTimer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Irrlicht.cpp"
+				>
+			</File>
+			<File
+				RelativePath="os.cpp"
+				>
+			</File>
+			<File
+				RelativePath="utf8.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CProfiler.cpp"
 				>
 			</File>
@@ -3025,15 +3030,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CTimer.h"
-				>
-			</File>
-			<File
 				RelativePath="EProfileIDs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Irrlicht.cpp"
 				>
 			</File>
 			<File
@@ -3041,15 +3038,7 @@
 				>
 			</File>
 			<File
-				RelativePath="os.cpp"
-				>
-			</File>
-			<File
 				RelativePath="os.h"
-				>
-			</File>
-			<File
-				RelativePath="utf8.cpp"
 				>
 			</File>
 			<Filter

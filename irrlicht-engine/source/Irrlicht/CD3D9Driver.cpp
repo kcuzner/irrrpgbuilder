@@ -800,8 +800,8 @@ void CD3D9Driver::setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag,
 
 
 //! sets a render target
-bool CD3D9Driver::setRenderTarget(video::ITexture* texture,
-		bool clearBackBuffer, bool clearZBuffer, SColor color)
+bool CD3D9Driver::setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
+	bool clearZBuffer, SColor color, video::ITexture* depthStencil)
 {
 	// check for right driver type
 
@@ -899,10 +899,10 @@ bool CD3D9Driver::setRenderTarget(video::ITexture* texture,
 
 //! Sets multiple render targets
 bool CD3D9Driver::setRenderTarget(const core::array<video::IRenderTarget>& targets,
-				bool clearBackBuffer, bool clearZBuffer, SColor color)
+	bool clearBackBuffer, bool clearZBuffer, SColor color, video::ITexture* depthStencil)
 {
 	if (targets.size()==0)
-		return setRenderTarget(0, clearBackBuffer, clearZBuffer, color);
+		return setRenderTarget(0, clearBackBuffer, clearZBuffer, color, depthStencil);
 
 	u32 maxMultipleRTTs = core::min_(MaxMRTs, targets.size());
 
@@ -3314,12 +3314,15 @@ IImage* CD3D9Driver::createScreenShot(video::ECOLOR_FORMAT format, video::E_REND
 	if (target != video::ERT_FRAME_BUFFER)
 		return 0;
 
+	if (format==video::ECF_UNKNOWN)
+		format=getColorFormat();
+
+	if (IImage::isRenderTargetOnlyFormat(format) || IImage::isCompressedFormat(format) || IImage::isDepthFormat(format))
+		return 0;
+
 	// query the screen dimensions of the current adapter
 	D3DDISPLAYMODE displayMode;
 	pID3DDevice->GetDisplayMode(0, &displayMode);
-
-	if (format==video::ECF_UNKNOWN)
-		format=video::ECF_A8R8G8B8;
 
 	// create the image surface to store the front buffer image [always A8R8G8B8]
 	HRESULT hr;

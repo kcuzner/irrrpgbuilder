@@ -18,6 +18,8 @@
 #include "IGUISpriteBank.h"
 #include <winuser.h>
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
+#include <mmsystem.h>
+#include <regstr.h>
 #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
@@ -55,31 +57,45 @@ namespace irr
 
 namespace irr
 {
-struct SJoystickWin32Control
-{
-	CIrrDeviceWin32* Device;
+    struct SJoystickWin32Control
+    {
+        CIrrDeviceWin32* Device;
 
-#if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
-	IDirectInput8* DirectInputDevice;
-#endif
-#if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
-	struct JoystickInfo
-	{
-		u32 Index;
-#ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-		core::stringc Name;
-		GUID guid;
-		LPDIRECTINPUTDEVICE8 lpdijoy;
-		DIDEVCAPS devcaps;
-		u8 axisValid[8];
-#else
-		JOYCAPS Caps;
-#endif
-	};
-	core::array<JoystickInfo> ActiveJoysticks;
-#endif
+    #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
+        IDirectInput8* DirectInputDevice;
+    #endif
+    #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
+        struct JoystickInfo
+        {
+            u32 Index;
+    #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
+            core::stringc Name;
+            GUID guid;
+            LPDIRECTINPUTDEVICE8 lpdijoy;
+            DIDEVCAPS devcaps;
+            u8 axisValid[8];
+    #else
+            JOYCAPS Caps;
+    #endif
+        };
+        core::array<JoystickInfo> ActiveJoysticks;
+    #endif
 
-	SJoystickWin32Control(CIrrDeviceWin32* dev) : Device(dev)
+        SJoystickWin32Control(CIrrDeviceWin32* dev);
+        ~SJoystickWin32Control();
+
+    #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
+        static BOOL CALLBACK EnumJoysticks(LPCDIDEVICEINSTANCE lpddi, LPVOID cp);
+        void directInputAddJoystick(LPCDIDEVICEINSTANCE lpddi);
+    #endif
+
+        void pollJoysticks();
+        bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo);
+        irr::core::stringc findJoystickName(int index, const JOYCAPS &caps) const;
+    };
+
+
+	SJoystickWin32Control::SJoystickWin32Control(CIrrDeviceWin32* dev) : Device(dev)
 	{
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
 		DirectInputDevice=0;
@@ -90,7 +106,8 @@ struct SJoystickWin32Control
 		}
 #endif
 	}
-	~SJoystickWin32Control()
+
+	SJoystickWin32Control::~SJoystickWin32Control()
 	{
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
 		for(u32 joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
@@ -109,13 +126,13 @@ struct SJoystickWin32Control
 	}
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
-	static BOOL CALLBACK EnumJoysticks(LPCDIDEVICEINSTANCE lpddi, LPVOID cp)
+	BOOL CALLBACK SJoystickWin32Control::EnumJoysticks(LPCDIDEVICEINSTANCE lpddi, LPVOID cp)
 	{
 		SJoystickWin32Control* p=(SJoystickWin32Control*)cp;
 		p->directInputAddJoystick(lpddi);
 		return DIENUM_CONTINUE;
 	}
-	void directInputAddJoystick(LPCDIDEVICEINSTANCE lpddi)
+	void SJoystickWin32Control::directInputAddJoystick(LPCDIDEVICEINSTANCE lpddi)
 	{
 		//Get the GUID of the joystuck
 		const GUID guid = lpddi->guidInstance;
@@ -187,7 +204,7 @@ struct SJoystickWin32Control
 	}
 #endif
 
-void pollJoysticks()
+void SJoystickWin32Control::pollJoysticks()
 {
 #if defined _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
@@ -359,7 +376,65 @@ void pollJoysticks()
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 }
 
-bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
+/** This function is ported from SDL and released under zlib-license:
+  * Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org> */
+irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYCAPS &caps) const
+{
+    // As a default use the name given in the joystick structure.
+    // It is always the same name, independent of joystick.
+    irr::core::stringc result(caps.szPname);
+
+    core::stringc key = core::stringc(REGSTR_PATH_JOYCONFIG)+ "\\" + caps.szRegKey + "\\" + REGSTR_KEY_JOYCURR;
+    HKEY hTopKey = HKEY_LOCAL_MACHINE;
+    HKEY hKey;
+    long regresult = RegOpenKeyExA(hTopKey, key.c_str(), 0, KEY_READ, &hKey);
+    if (regresult != ERROR_SUCCESS)
+    {
+        hTopKey = HKEY_CURRENT_USER;
+        regresult = RegOpenKeyExA(hTopKey, key.c_str(), 0, KEY_READ, &hKey);
+    }
+    if (regresult != ERROR_SUCCESS)
+        return result;
+
+    /* find the registry key name for the joystick's properties */
+    char regname[256];
+    DWORD regsize = sizeof(regname);
+    core::stringc regvalue = core::stringc("Joystick")+core::stringc(index+1) + REGSTR_VAL_JOYOEMNAME;
+    regresult = RegQueryValueExA(hKey, regvalue.c_str(), 0, 0, (LPBYTE)regname, &regsize);
+    RegCloseKey(hKey);
+    if (regresult != ERROR_SUCCESS)
+        return result;
+
+    /* open that registry key */
+    core::stringc regkey = core::stringc(REGSTR_PATH_JOYOEM) + "\\" + regname;
+    regresult = RegOpenKeyExA(hTopKey, regkey.c_str(), 0, KEY_READ, &hKey);
+    if (regresult != ERROR_SUCCESS)
+        return result;
+
+    /* find the size for the OEM name text */
+    regsize = sizeof(regvalue);
+    regresult = RegQueryValueExA(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
+                                 NULL, &regsize);
+    if (regresult == ERROR_SUCCESS)
+    {
+        char *name;
+        /* allocate enough memory for the OEM name text ... */
+        name = new char[regsize];
+        if (name)
+        {
+            /* ... and read it from the registry */
+            regresult = RegQueryValueExA(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
+                                         (LPBYTE)name, &regsize );
+            result = name;
+        }
+        delete[] name;
+    }
+    RegCloseKey(hKey);
+
+    return result;
+}
+
+bool SJoystickWin32Control::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 {
 #if defined _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
@@ -411,7 +486,7 @@ bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 			returnInfo.Joystick = (u8)joystick;
 			returnInfo.Axes = activeJoystick.Caps.wNumAxes;
 			returnInfo.Buttons = activeJoystick.Caps.wNumButtons;
-			returnInfo.Name = activeJoystick.Caps.szPname;
+			returnInfo.Name = findJoystickName(joystick, activeJoystick.Caps);
 			returnInfo.PovHat = ((activeJoystick.Caps.wCaps & JOYCAPS_HASPOV) == JOYCAPS_HASPOV)
 								? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
 
@@ -434,7 +509,6 @@ bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
 	return false;
 #endif // _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
 }
-};
 } // end namespace irr
 
 // Get the codepage from the locale language id

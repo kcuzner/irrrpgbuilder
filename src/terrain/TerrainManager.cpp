@@ -584,12 +584,15 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			filename=path;
 
 			IMeshWriter* mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
+			if (!mw)
+				printf("Failed to create the mesh writer!\n");
+
 			IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
 			IMesh* mesh = (((*it).second))->getMesh();
 
 			printf("This is the B3D filename: %s\n",filename.c_str());
 
-			if (mesh)
+			if (mesh && mw && file)
 				mw->writeMesh(file,  mesh);
 
 			if (file)
