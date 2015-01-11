@@ -34,46 +34,44 @@ void ShaderCallBack::setFlagEditingTerrain(bool edit)
 void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
 	layer=0;
-	services->setPixelShaderConstant("terrainLayer0",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer0"),(int*)&layer,1);
 	layer=1;
-	services->setPixelShaderConstant("terrainLayer1",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer1"),(int*)&layer,1);
 	layer=2;
-	services->setPixelShaderConstant("terrainLayer2",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer2"),(int*)&layer,1);
 	layer=3;
-	services->setPixelShaderConstant("terrainLayer3",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer3"),(int*)&layer,1);
 	layer=4;
-	services->setPixelShaderConstant("terrainLayer4",(int*)&layer,1);
-    services->setPixelShaderConstant("editingTerrain",(int*)&editingTerrain,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer4"),(int*)&layer,1);
+    services->setPixelShaderConstant(services->getPixelShaderConstantID("editingTerrain"),(int*)&editingTerrain,1);
 
 #ifdef EDITOR
 	float plateau = (float)GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_PLATEAU);
-	services->setPixelShaderConstant("plateau",(float*)&plateau,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("plateau"),(irr::f32*)&plateau,1);
 #endif
 
     layer=10;
 	float terrainscale = TerrainManager::getInstance()->getScale()/1024;
 	int ter=(int)(10.0f*terrainscale);
-    services->setPixelShaderConstant("terrainTextureScale",(int*)&ter,1);
+    services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainTextureScale"),(int*)&ter,1);
 	//services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
 	// Retrieve the scale of the terrain
 
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
 
-	services->setPixelShaderConstant("terrainScale",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainScale"),(int*)&layer,1);
 
     //layer=100;
     //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);
 
     layer=0;
-    services->setPixelShaderConstant("oceanNormalMap", (int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanNormalMap"), (int*)&layer,1);
     layer=1;
-    services->setPixelShaderConstant("oceanReflection",(int*)&layer,1);
-
-	layer=2;
-    services->setPixelShaderConstant("oceanFoam",(int*)&layer,1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanReflection"),(int*)&layer,1);
+   
 
     SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
-    services->setVertexShaderConstant("AmbientLight",reinterpret_cast<f32*>(&color), 4);
+    services->setVertexShaderConstant(services->getVertexShaderConstantID("AmbientLight"),reinterpret_cast<f32*>(&color), 4);
 
 //services->setPixelShaderConstant("ambientGlobal",(float*)&SColorf(1,1,1,1),4);
 
@@ -89,8 +87,8 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     worldViewProj *= device->getVideoDriver()->getTransform(video::ETS_VIEW);
     worldViewProj *= device->getVideoDriver()->getTransform(video::ETS_WORLD);
 
-    services->setVertexShaderConstant("mWorldViewProj", worldViewProj.pointer(), 16);
-    services->setVertexShaderConstant("mWorldViewProj2", worldViewProj.pointer(), 16);
+    services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj"), worldViewProj.pointer(), 16);
+    services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj2"), worldViewProj.pointer(), 16);
 
 /*
     layer=4;
@@ -137,7 +135,7 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     f32 time=device->getTimer()->getTime()/10000.0f;
 	time=time/3.0f;
-    services->setVertexShaderConstant("waterTime",&time,1);
+    services->setVertexShaderConstant(services->getVertexShaderConstantID("waterTime"),&time,1);
 }
 
 void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::DynamicObject_material> mat)

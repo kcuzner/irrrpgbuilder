@@ -187,6 +187,9 @@ class App
 		//Get the active scene filter object
 		inline DynamicObject::TYPE getSceneFilter() {return current_listfilter;}
 
+		//Query if XEffect is enabled;
+		inline bool isXEffectsEnabled(){return xeffectenabler;}
+
 		// used for the logger
 		std::vector<core::stringw> textevent;
 		std::vector<core::stringw> console_event;
@@ -304,6 +307,7 @@ class App
 		OBJECT_LIST currentObject;
 
 		f32 currentsnapping;
+		bool xeffectenabler;
 
 };
 

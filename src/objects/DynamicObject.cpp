@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "../terrain/TerrainManager.h"
 #include "../camera/CameraSystem.h"
+#include "../fx/EffectsManager.h"
 
 #include "DynamicObject.h"
 
@@ -136,6 +137,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 	objectType=OBJECT_TYPE_NONE;
+
 }
 
 DynamicObject::DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicObject_Animation> animations)
@@ -202,9 +204,15 @@ DynamicObject::~DynamicObject()
 		Healthbar->remove();
 	Healthbar=NULL;
 
+	/*if (fakeShadow)
+		fakeShadow->remove();*/
+
 	if (node)
 		node->remove();
+
+	
 	node=NULL;
+	//fakeShadow=NULL;
 
 }
 
@@ -281,8 +289,8 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 		if (node)
 		{
 			// Select the triangle selector for more precision
-			this->selector = smgr->createTriangleSelector((IMesh*)Tmesh,node);
-			//this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
+			//this->selector = smgr->createTriangleSelector((IMesh*)Tmesh,node);
+			this->selector = smgr->createOctreeTriangleSelector((IMesh*)mesh, node);
 			//this->selector = smgr->createTriangleSelectorFromBoundingBox(node);
 			this->node->setTriangleSelector(selector);
 		}
@@ -304,11 +312,13 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 		f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
 	    f32 meshScale = this->getNode()->getScale().Y;
 
+		fakeShadow=smgr->addEmptySceneNode(node);
 		if (objectType != OBJECT_TYPE_EDITOR || objectType != OBJECT_TYPE_WALKABLE)
 		{
 			// Editor objects don't have the fake shadow.
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
 			//Fake Shadow
+			fakeShadow->remove();
 			fakeShadow = smgr->addMeshSceneNode(smgr->getMesh("../media/dynamic_objects/shadow.obj"),node);
 			
 			f32 meshSize = this->getNode()->getBoundingBox().getExtent().Y;
@@ -318,7 +328,9 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 			fakeShadow->setPosition(vector3df(0,0.03f + (rand()%5)*0.01f ,0));
 
 			fakeShadow->setMaterialFlag(EMF_FOG_ENABLE,true);
-
+			if (App::getInstance()->isXEffectsEnabled())
+				fakeShadow->setVisible(false);
+			
 			// This set the frameloop to the static pose, we could use a flag if the user decided this
 			//if(hasAnimation()) this->setFrameLoop(0,0);
 		} 
@@ -326,7 +338,9 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 		script = "";
 		this->setEnabled(true);
 		node->setMaterialFlag(EMF_FOG_ENABLE,true);
-		node->setMaterialFlag(EMF_LIGHTING, true);
+		//node->setMaterialFlag(EMF_LIGHTING, true);
+		
+
 		node->setMaterialFlag(EMF_ANTI_ALIASING,true);
 
 		objLabel = smgr->addTextSceneNode(GUIManager::getInstance()->getFont(GUIManager::FONT_ARIAL),L"",SColor(255,255,255,0),node,vector3df(0,meshSize*meshScale*1.1f,0));

@@ -180,13 +180,19 @@ void Player::setHighLight(bool highlight)
 {
     if(!highlight)
     {
-		this->playerObject->getShadow()->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/dynamic_objects/treeFakeShadow.png"));
-        this->playerObject->getShadow()->setMaterialFlag(EMF_LIGHTING,true);
+		if (playerObject->getShadow())
+		{
+			this->playerObject->getShadow()->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/dynamic_objects/treeFakeShadow.png"));
+			this->playerObject->getShadow()->setMaterialFlag(EMF_LIGHTING,true);
+		}
     }
     else
     {
-        this->playerObject->getShadow()->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/player/highlight.png"));
-        this->playerObject->getShadow()->setMaterialFlag(EMF_LIGHTING,false);
+		if (playerObject->getShadow())
+		{
+			this->playerObject->getShadow()->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture("../media/player/highlight.png"));
+			this->playerObject->getShadow()->setMaterialFlag(EMF_LIGHTING,false);
+		}
     }
 }
 

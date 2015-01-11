@@ -1,6 +1,7 @@
 #include "TerrainManager.h"
 #include "../events/EventReceiver.h"
 #include "../gui/GUIManager.h"
+#include "../fx/EffectsMAnager.h"
 
 #include <sstream>
 #include <vector>
@@ -100,6 +101,7 @@ void TerrainManager::createEmptySegment(vector3df pos)
     newEmptySegment->setName(getHashCode(pos).c_str());
     terrainEmptySegmentsMap.insert(TerrainEmptySegmentsMapPair(getHashCode(pos).c_str(),newEmptySegment));
 	App::getInstance()->getDevice()->getVideoDriver()->setTextureCreationFlag(ETCF_CREATE_MIP_MAPS,true);
+	//EffectsManager::getInstance()->addShadowToNode(newEmptySegment);
 
 
    // #ifdef DEBUG

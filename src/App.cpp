@@ -73,6 +73,7 @@ App::App()
 
 	currentsnapping=64.0f; //set the current snapping distance;
 	path = "";
+	xeffectenabler=false;
 
 }
 
@@ -2418,6 +2419,12 @@ bool App::loadConfig()
 			if (silouetteresult=="true")
 				silouette=true;
 
+			stringc xeffect = resXML->ToElement()->Attribute("xeffects");
+			if (xeffect=="true")
+			{
+				xeffectenabler=true;
+			}   
+
 			if (resizable && fullScreen)
 			{
 				IrrlichtDevice * tempdevice = createDevice(EDT_NULL,dimension2d<u32>(640,480), 16, false, false, false, 0);
@@ -2653,10 +2660,17 @@ void App::update()
 	if (screensize != driver->getScreenSize())
 		this->setScreenSize(driver->getScreenSize());
 
+	//This could be put outside in the app state changes.
 	if (app_state<APP_STATE_CONTROL)
-		background=SColor(0,160,160,160); // Background color in editor
+	{
+		background=SColor(0,160,160,160);// Background color in editor
+		EffectsManager::getInstance()->setClearColor(SColor(0,160,160,160));
+	}
 	else
+	{
+		EffectsManager::getInstance()->setClearColor(ingamebackground);
 		background=ingamebackground; // Background color ingame
+	}
 
 
 	driver->beginScene(true, true, background);
@@ -2695,7 +2709,12 @@ void App::update()
 
 	// Prepare the post FX before rendering all
 	EffectsManager::getInstance()->preparePostFX(false);
-	smgr->drawAll();
+	
+	//Will redraw the scene normally unless we use XEffect.
+	if (EffectsManager::getInstance()->isXEffectsEnabled())
+		EffectsManager::getInstance()->update();
+	else
+		smgr->drawAll();
 
 	if (raytester)
 		raytester->update();
@@ -2725,10 +2744,13 @@ void App::update()
 	}
 
 	// Tries to do an post FX
-	EffectsManager::getInstance()->update();
+	if (app_state > APP_STATE_CONTROL)
+		EffectsManager::getInstance()->update();
 
 	guienv->drawAll();
-	draw2DImages();
+
+	if (app_state < APP_STATE_CONTROL)
+		draw2DImages();
 
 	driver->endScene();
 }
@@ -2749,6 +2771,19 @@ void App::run()
 	EffectsManager::getInstance()->initPostProcess();
 	EffectsManager::getInstance()->skydomeVisible(false); //Force the skydome to appear when the application is initialised; (Default state)
 
+	//Add the player to the shadow nodes of XEffects
+	if (EffectsManager::getInstance()->isXEffectsEnabled())
+	{
+		Player::getInstance()->getNode()->setMaterialFlag(EMF_LIGHTING, false);
+		EffectsManager::getInstance()->addShadowToNode(Player::getInstance()->getNode());
+		ISceneNode* shadow=Player::getInstance()->getObject()->getShadow();
+		if (!shadow)
+			printf("Failed to retrieve the fake shadow node!");
+		else
+			shadow->setVisible(false);
+			//->setVisible(false);
+	}
+
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
 	//this->setAppState(APP_EDIT_LOOK); // old default state
@@ -2766,8 +2801,6 @@ void App::run()
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0.0f,0.0f,0.0f));
 	CameraSystem::getInstance()->editCamMaya->setFarValue(50000.0f);
 		//CameraSystem::getInstance()->setPosition(vector3df(oldcampos));
-
-
 #else
 	//EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
 	//this->setAppState(APP_EDIT_WAIT_GUI);
@@ -3811,6 +3844,13 @@ void App::initialize()
 
 	//Create a sun light
 	scene::ILightSceneNode * light=smgr->addLightSceneNode(0,vector3df(2500,25000,-50));
+
+	if (xeffectenabler)
+		EffectsManager::getInstance()->enableXEffects(true);
+
+	//Set the light as shadow casting light with the light manager.
+	EffectsManager::getInstance()->addShadowLight(vector3df(5.0f,185.0f,0.0f), vector3df(0,0,0), SColor(255,255,255,255));
+
 	light->setLightType(ELT_DIRECTIONAL);
 	//light->setLightType(ELT_POINT);
 	light->setRadius(45000);

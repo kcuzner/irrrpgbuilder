@@ -1,6 +1,7 @@
 #include "EffectsManager.h"
 #include <iostream>
 #include "postprocess/PostProcessManager.h"
+#include "XEffects/XEffects.h"
 
 #include "../App.h"
 #include "../camera/CameraSystem.h"
@@ -18,26 +19,40 @@ EffectsManager::EffectsManager()
 	// Init the post process manager (27 oct 2012, temporary disabled to improve loading speed, because of compiling shaders)
 	// Will activate it later using the "initPostProcess()" command
 	//initPostProcess();
-
+	xeffects=false;
     //get main app scenemanager pointer
     ISceneManager* smgr=App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
-    //this is the main particle system, it is used to rain and snow effects
+
+	//Initialize the effect handler for XEffect.
+	effect = new EffectHandler(App::getInstance()->getDevice(), driver->getScreenSize(), true, true, true);
+	// Set a global ambient color. A very dark gray.
+	effect->setAmbientColor(SColor(0,140,200,255));
+	// Set the background clear color to black.
+	effect->setClearColour(SColor(0x0));
+
+	//TEsting the postFX from the XEffect system
+	//effect->addPostProcessingEffectFromFile(core::stringc("../media/shaders/xeffects/BrightPass.glsl"));
+	//effect->addPostProcessingEffectFromFile(core::stringc("../media/shaders/xeffects/BlurHP.glsl"));
+	//effect->addPostProcessingEffectFromFile(core::stringc("../media/shaders/xeffects/BlurVP.glsl"));
+	//effect->addPostProcessingEffectFromFile(core::stringc("../media/shaders/xeffects/BloomP.glsl"));
+    
+	//this is the main particle system, it is used to rain and snow effects
     mainParticleSystem = smgr->addParticleSystemSceneNode(false,//use default emitter
                                                           CameraSystem::getInstance()->getNode(),
                                                           -1,
                                                           vector3df(0,0,250));
 
-    f32 emitterSize = 500;
+    f32 emitterSize = 1024;
     emitter = mainParticleSystem->createBoxEmitter(
-                                         aabbox3df(vector3df(-emitterSize,-1,-emitterSize),vector3df(emitterSize,1,emitterSize)),
-                                         vector3df(0,-1,0.5),
-                                         5,
-                                         10,
+                                         aabbox3df(vector3df(0,0,0),vector3df(0,0,0)),
+                                         vector3df(0.0f,-1.5f,0.5f),
+                                         6500,
+                                         9999,
                                          SColor(255,0,0,0),
                                          SColor(255,255,255,255),
-                                         5000,
-                                         10000);
+										 12000,
+										 24000);
 
 
     mainParticleSystem->setEmitter(emitter);
@@ -74,6 +89,9 @@ EffectsManager::~EffectsManager()
 	if (postProcessManager)
 		delete postProcessManager;
 
+	if (effect)
+		delete effect;
+
     emitter->drop();
 }
 
@@ -106,8 +124,8 @@ void EffectsManager::setWeather(int maxParticles, float particlesSpeed, stringc 
         mainParticleSystem->setVisible(true);
 
     emitter->setMaxParticlesPerSecond(maxParticles);
-    emitter->setMinParticlesPerSecond(maxParticles);
-    emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.5f));
+    emitter->setMinParticlesPerSecond(u32(maxParticles/1.5f));
+    emitter->setDirection(vector3df(0,-particlesSpeed,particlesSpeed*0.25f));
 
     if(textureFile!="")
         mainParticleSystem->setMaterialTexture(0,App::getInstance()->getDevice()->getVideoDriver()->getTexture(textureFile));
@@ -261,12 +279,33 @@ void EffectsManager::update()
 		//postProcessManager->render(EPPE_ADAPTIVE_BLOOM);
 		postProcessManager->render(postEffect);
 		postProcessManager->update();
+		
+		// bring back the gui after the RTT is done
+		video::SMaterial mat;
+		App::getInstance()->getDevice()->getVideoDriver()->setMaterial(mat);
 	}
 
+	//Update the position of the particle emitter for RAIN&SNOW FX
+	vector3df pos1=CameraSystem::getInstance()->getPosition();
+	vector3df pos=Player::getInstance()->getNode()->getPosition();
+	pos.Y=pos1.Y;
+	aabbox3df box=aabbox3df(vector3df(-1024+pos.X,0,-1024+pos.Z),vector3df(1024+pos.X,80,1024+pos.Z));
+	emitter->setBox(box);
+
+
+	//driver->draw3DBox(box);
+	printf("particles fx is update and position is: %f,%f,%f\n",pos.X,pos.Y,pos.Z);
+	printf("Here is the box: %f,%f,%f and %f,%f,%f\n",
+		emitter->getBox().MinEdge.X,
+		emitter->getBox().MinEdge.Y,
+		emitter->getBox().MinEdge.Z,
+		emitter->getBox().MaxEdge.X,
+		emitter->getBox().MaxEdge.Y,
+		emitter->getBox().MaxEdge.Z);
+
+	if (xeffects)
+		effect->update();
 	
-	// bring back the gui after the RTT is done
-	video::SMaterial mat;
-	App::getInstance()->getDevice()->getVideoDriver()->setMaterial(mat);
 }
 
 void EffectsManager::preparePostFX(bool depth)

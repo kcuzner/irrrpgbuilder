@@ -8,7 +8,7 @@ function setRain(intensity)
   setFogRange(0,2000 - intensity*100)
   setFogColor(100,100,100)
 
-  setWeatherPr(intensity*15, speed*10, "../media/rain.png")
+  setWeatherPr(intensity*250, speed*10, "../media/rain.png")
   
 end
 
@@ -21,5 +21,6 @@ function setSnow(intensity)
   setFogRange(0,2000 - intensity*100)
   setFogColor(255,255,255)
 
-  setWeatherPr(intensity*10, speed*0.5, "../media/snow.png")
+	setWeatherPr(intensity*2400, speed*0.5, "../media/snow.png")
+  	--setWeatherPr(intensity*200, speed*0.5, "../media/rain.png")
 end

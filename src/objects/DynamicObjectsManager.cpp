@@ -2,6 +2,7 @@
 #include "DynamicObject.h"
 #include "../camera/CameraSystem.h"
 #include "../fx/ShaderCallBack.h"
+#include "../fx/EffectsManager.h"
 
 using namespace irr;
 using namespace core;
@@ -625,6 +626,14 @@ DynamicObject* DynamicObjectsManager::createCustomObjectAt(vector3df pos, core::
 	// This is the reference name of the template this object is made of.
 	newObj->setTemplateObjectName(L"CUSTOM");
 
+	//Add this object in the shadow list of XEffects
+	if (EffectsManager::getInstance()->isXEffectsEnabled())
+	{
+		newObj->getNode()->setMaterialFlag(EMF_LIGHTING, false);
+		EffectsManager::getInstance()->addShadowToNode(newObj->getNode());
+		newObj->getShadow()->setVisible(false);
+	}
+
 	objects.push_back(newObj);
     return newObj;
 }
@@ -719,8 +728,19 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 		newObj->setAnimation("idle");
 		newObj->setWalkTarget(pos);
 	}
-	// Add to the dynamic object list.
+
+	//Add this object in the shadow list of XEffects
+	if (EffectsManager::getInstance()->isXEffectsEnabled())
+	{
+		newObj->getNode()->setMaterialFlag(EMF_LIGHTING, false);
+		EffectsManager::getInstance()->addShadowToNode(newObj->getNode());
+		//if (newObj->getShadow())
+			//newObj->getShadow()->setVisible(false);
+	}
+
 	objects.push_back(newObj);
+	// Add to the dynamic object list.
+	
     return newObj;
 }
 
@@ -749,6 +769,9 @@ void DynamicObjectsManager::removeObject(stringc uniqueName)
 #ifdef DEBUG
 			printf("Deleting %s\n",uniqueName.c_str());
 #endif
+			if (EffectsManager::getInstance()->isXEffectsEnabled())
+				EffectsManager::getInstance()->removeShadowFromNode(objects[i]->getNode());
+
             delete ((DynamicObject*)objects[i]);
 
             objects.erase(objects.begin() + i);
@@ -1745,7 +1768,8 @@ void DynamicObjectsManager::displayShadow(bool visible)
 		{
 			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
 			{
-				((DynamicObject*)objects[i])->getShadow()->setVisible(visible);
+				//if (((DynamicObject*)objects[i])->getShadow())
+					((DynamicObject*)objects[i])->getShadow()->setVisible(visible);
 			}
 		}
     }
@@ -1975,6 +1999,9 @@ void DynamicObjectsManager::clean(bool full)
 				d->clearEnemy();
 				if (!d->isTemplate())
 				{
+					if (EffectsManager::getInstance()->isXEffectsEnabled())
+						EffectsManager::getInstance()->removeShadowFromNode(d->getNode());
+					
 					delete d;
           			d=NULL;
 				}

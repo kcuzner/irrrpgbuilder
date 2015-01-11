@@ -712,6 +712,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="XEffect"
+					>
+					<File
+						RelativePath=".\src\fx\XEffects\CScreenQuad.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\CShaderPre.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\CShaderPre.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\EffectCB.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\EffectHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\EffectHandler.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\EffectShaders.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\fx\XEffects\XEffects.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="cameras"

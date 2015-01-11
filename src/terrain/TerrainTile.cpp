@@ -2,6 +2,7 @@
 #include "../App.h"
 #include "TerrainManager.h"
 #include "../gui/GUIManager.h"
+#include "../fx/EffectsManager.h"
 
 using namespace irr;
 using namespace core;
@@ -76,6 +77,14 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	//node->setMaterialFlag(EMF_WIREFRAME,true);
 	// node->setMaterialFlag(EMF_BLEND_OPERATION,true);
 	// Create the terrain mesh node
+
+	//Add shadow to this in the XEffect
+	if (EffectsManager::getInstance()->isXEffectsEnabled())
+	{
+		node->setMaterialFlag(EMF_LIGHTING,false);
+		EffectsManager::getInstance()->addShadowToNode(node);
+	}
+
 	nodescale = node->getBoundingBox().getExtent().X;
 	TerrainManager::getInstance()->setTileMeshSize(nodescale);
 	node->setName(name);
@@ -85,6 +94,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);
+	
 	assignTerrainShader(node);
 
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
