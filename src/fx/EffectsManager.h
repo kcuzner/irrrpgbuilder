@@ -35,10 +35,7 @@ class EffectsManager
 		//Add commands from XEffect available here
 		inline void addShadowToNode(ISceneNode* node) {effect->addShadowToNode(node);}
 		inline void addShadowLight(vector3df position, vector3df target, SColor color) {
-			effect->addShadowLight(SShadowLight(512, vector3df(0, 250, 0), vector3df(0, 0, 0), SColor(255, 255, 255, 255), 20.0f, 300.0f, 89.0f * DEGTORAD));
-			effect->addShadowLight(SShadowLight(512, vector3df(250, 250, 0), vector3df(250, 0, 0), SColor(255, 255, 255, 255), 20.0f, 300.0f, 89.0f * DEGTORAD));
-			effect->addShadowLight(SShadowLight(512, vector3df(250, 250, 250), vector3df(250, 0, 250), SColor(255, 255, 255, 255), 20.0f, 300.0f, 89.0f * DEGTORAD));
-			effect->addShadowLight(SShadowLight(512, vector3df(0, 250, 250), vector3df(0, 0, 250), SColor(255, 255, 255, 255), 20.0f, 300.0f, 89.0f * DEGTORAD));}
+			effect->addShadowLight(SShadowLight(4096, vector3df(35, 480, -50), vector3df(0, 0, 0), SColor(255, 255, 255, 255), 20.0f, 5000.0f, 220000.0f * DEGTORAD, true));}
 		
 		inline void removeShadowFromNode(ISceneNode* node) {effect->removeShadowFromNode(node);}
 	

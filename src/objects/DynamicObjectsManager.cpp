@@ -1766,9 +1766,9 @@ void DynamicObjectsManager::displayShadow(bool visible)
 		// Should help with performance and allow for more NPC/Interactive objects.
 		if (objects[i])
 		{
-			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR)
+			if (objects[i]->getType()!=DynamicObject::OBJECT_TYPE_EDITOR && objects[i]->getType()!=DynamicObject::OBJECT_TYPE_WALKABLE)
 			{
-				//if (((DynamicObject*)objects[i])->getShadow())
+				if (((DynamicObject*)objects[i])->getShadow())
 					((DynamicObject*)objects[i])->getShadow()->setVisible(visible);
 			}
 		}

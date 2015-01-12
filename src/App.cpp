@@ -444,6 +444,9 @@ void App::setAppState(APP_STATE newAppState)
 	if(app_state == APP_GAMEPLAY_NORMAL)
 	{
 
+		if (this->isXEffectsEnabled())
+			DynamicObjectsManager::getInstance()->displayShadow(false);
+		
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,false);
@@ -470,6 +473,7 @@ void App::setAppState(APP_STATE newAppState)
 	}
 	else if(app_state < APP_STATE_CONTROL && app_state!=APP_EDIT_VIEWDRAG)
 	{
+		DynamicObjectsManager::getInstance()->displayShadow(true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,true);
@@ -2518,6 +2522,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 		deviceConfig.Fullscreen = fullScreen;
 		deviceConfig.Vsync = vsync;
 		deviceConfig.WindowSize = screensize;
+		deviceConfig.ZBufferBits = 32;
 
 		device = createDeviceEx(deviceConfig);
 		this->device->setResizable(resizable);
@@ -2711,7 +2716,7 @@ void App::update()
 	EffectsManager::getInstance()->preparePostFX(false);
 	
 	//Will redraw the scene normally unless we use XEffect.
-	if (EffectsManager::getInstance()->isXEffectsEnabled())
+	if (EffectsManager::getInstance()->isXEffectsEnabled() && (app_state > APP_STATE_CONTROL))
 		EffectsManager::getInstance()->update();
 	else
 		smgr->drawAll();
@@ -2757,7 +2762,7 @@ void App::update()
 
 void App::quickUpdate()
 {
-	driver->beginScene(true, true, SColor(0,200,200,200));
+	driver->beginScene(true, true, SColor(0,160,160,160));
 	smgr->drawAll();
 
 	guienv->drawAll();

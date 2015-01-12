@@ -25,9 +25,10 @@ EffectsManager::EffectsManager()
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 
 	//Initialize the effect handler for XEffect.
-	effect = new EffectHandler(App::getInstance()->getDevice(), driver->getScreenSize(), true, true, true);
+	//effect = new EffectHandler(App::getInstance()->getDevice(), driver->getScreenSize(), true, true, true);
+	effect = new EffectHandler(App::getInstance()->getDevice(), dimension2du(1980,1080), true, true, true);
 	// Set a global ambient color. A very dark gray.
-	effect->setAmbientColor(SColor(0,140,200,255));
+	effect->setAmbientColor(SColor(0,64,64,96));
 	// Set the background clear color to black.
 	effect->setClearColour(SColor(0x0));
 
@@ -293,7 +294,7 @@ void EffectsManager::update()
 	emitter->setBox(box);
 
 
-	//driver->draw3DBox(box);
+	/*
 	printf("particles fx is update and position is: %f,%f,%f\n",pos.X,pos.Y,pos.Z);
 	printf("Here is the box: %f,%f,%f and %f,%f,%f\n",
 		emitter->getBox().MinEdge.X,
@@ -301,10 +302,17 @@ void EffectsManager::update()
 		emitter->getBox().MinEdge.Z,
 		emitter->getBox().MaxEdge.X,
 		emitter->getBox().MaxEdge.Y,
-		emitter->getBox().MaxEdge.Z);
+		emitter->getBox().MaxEdge.Z); */
 
 	if (xeffects)
+	{
+		//Reposition the directional light and try to cover the view frustum of the camera
+		//vector3df campos = CameraSystem::getInstance()->getPosition();
+		vector3df campos = Player::getInstance()->getNode()->getPosition();
+		effect->getShadowLight(0).setPosition(vector3df(campos.X+5.0f,4096.0f,campos.Z-5.0f));
+		effect->getShadowLight(0).setTarget(vector3df(campos.X,-256.0f,campos.Z));
 		effect->update();
+	}
 	
 }
 

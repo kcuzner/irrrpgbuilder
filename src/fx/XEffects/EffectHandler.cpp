@@ -240,7 +240,7 @@ void EffectHandler::update(irr::video::ITexture* outputTarget)
 		return;
 	
 
-	printf("XEffect update called, here is the count of node to render: %d, lights to render %d\n",(int)ShadowNodeArray.size(),LightList.size() ); 
+	//printf("XEffect update called, here is the count of node to render: %d, lights to render %d\n",(int)ShadowNodeArray.size(),LightList.size() ); 
 	if(!ShadowNodeArray.empty() && !LightList.empty())
 	{
 		driver->setRenderTarget(ScreenQuad.rt[0], true, true, AmbientColour);
@@ -386,11 +386,15 @@ void EffectHandler::update(irr::video::ITexture* outputTarget)
 				}
 			}
 
-			ShadowNodeArray[i].node->OnAnimate(device->getTimer()->getTime());
-			ShadowNodeArray[i].node->render();
+			//Do not render culled and non visible nodes
+			if (ShadowNodeArray[i].node->isVisible() || !smgr->isCulled(ShadowNodeArray[i].node))
+			{
+				ShadowNodeArray[i].node->OnAnimate(device->getTimer()->getTime());
+				ShadowNodeArray[i].node->render();
 
-			for(u32 m = 0;m < CurrentMaterialCount;++m)
-				ShadowNodeArray[i].node->getMaterial(m).MaterialType = (E_MATERIAL_TYPE)BufferMaterialList[m];
+				for(u32 m = 0;m < CurrentMaterialCount;++m)
+					ShadowNodeArray[i].node->getMaterial(m).MaterialType = (E_MATERIAL_TYPE)BufferMaterialList[m];
+			}
 		}
 	}
 	else
