@@ -21,4 +21,7 @@
 	<dynamic_object name="Sword" mesh="loot/sword.obj" type="loot" scale="1" materialType="solid" category="weapons"
 					description="Test weapon" thumbnail="loot/health_potion_image.jpg" script = "sworddemoattach.lua" 					
 					/>
+	<dynamic_object name="Gun" mesh="loot/gun.obj" type="loot" scale="1" materialType="solid" category="weapons"
+					description="Test weapon" thumbnail="loot/health_potion_image.jpg" script = "gunattach.lua" 					
+					/>
 </IrrRPG_Builder_DynamicObjects>

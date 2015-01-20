@@ -1774,6 +1774,10 @@ void DynamicObject::doScript()
     lua_register(ls,"getPosition",getPosition);
     lua_register(ls,"setRotation",setRotation);
     lua_register(ls,"getRotation",getRotation);
+
+	lua_register(ls,"getParentRotation", getParentRotation);
+	lua_register(ls,"getParentPosition", getParentPosition);
+
     lua_register(ls,"lookAt",lookAt);
     lua_register(ls,"lookToObject",lookToObject);
 
@@ -1806,7 +1810,7 @@ void DynamicObject::doScript()
 	//Dialog Functions
     lua_register(ls,"showDialogMessage",showDialogMessage);
 	lua_register(ls,"showDialogQuestion",showDialogQuestion);
-
+	
     lua_register(ls,"setEnabled",setEnabled);
 
 	lua_register(ls,"hasReached",hasReached);
@@ -2406,6 +2410,65 @@ int DynamicObject::getRotation(lua_State* ls)
         lua_pushnumber(ls,rot.Y);
         lua_pushnumber(ls,rot.Z);
     }
+
+    return 3;
+}
+
+int DynamicObject::getParentRotation(lua_State* LS)
+{
+    lua_getglobal(LS, "objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* pObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+    ISceneNode* pParent = NULL;
+	pParent=pObj->getNode()->getParent();
+
+    if (!pParent)
+    {
+        vector3df objRot = irr::core::vector3df(0.0f, 0.0f, 0.0f);
+        lua_pushnumber(LS, objRot.X);
+        lua_pushnumber(LS, objRot.Y);
+        lua_pushnumber(LS, objRot.Z);
+    }
+    else
+    {
+        vector3df objRot = pParent->getRotation();
+        lua_pushnumber(LS, objRot.X);
+        lua_pushnumber(LS, objRot.Y);
+        lua_pushnumber(LS, objRot.Z);
+    }
+
+    return 3;
+}
+
+int DynamicObject::getParentPosition(lua_State* LS)
+{
+    lua_getglobal(LS, "objName");
+	stringc objName = lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObject* pObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+    ISceneNode* pParent = NULL;
+	pParent = pObj->getNode()->getParent();
+
+    if (!pParent)
+    {
+        vector3df objPos = irr::core::vector3df(0.0f, 0.0f, 0.0f);
+        lua_pushnumber(LS, objPos.X);
+        lua_pushnumber(LS, objPos.Y);
+        lua_pushnumber(LS, objPos.Z);
+    }
+    else
+    {
+		vector3df objPos = pParent->getAbsolutePosition();
+        lua_pushnumber(LS, objPos.X);
+        lua_pushnumber(LS, objPos.Y);
+        lua_pushnumber(LS, objPos.Z);
+    }
+
 
     return 3;
 }

@@ -308,6 +308,13 @@ void LuaGlobalCaller::registerBasicFunctions(lua_State *LS)
 
 	lua_register(LS,"spawn",spawn);
 
+	//Gui functions
+	lua_register(LS, "printToConsole", printToConsole);
+
+
+	//Search functions
+	lua_register(LS, "findInSphere", findInSphere);
+
     //do basic functions
     luaL_dofile(LS,"../media/scripts/basicFunctions.lua");
 
@@ -2127,3 +2134,88 @@ int LuaGlobalCaller::spawn(lua_State *LS)
     return 1;
 }
 
+int LuaGlobalCaller::printToConsole(lua_State* LS) //Code from Devjitjit
+{
+    stringc textToAdd="";
+    textToAdd = (core::stringc)lua_tostring(LS, -1);
+    lua_pop(LS, 1);
+
+    GUIManager::getInstance()->setConsoleText(textToAdd);
+
+    return 0;
+}
+
+int LuaGlobalCaller::findInSphere(lua_State* LS) //Code from Devjitjit
+{
+    float radius = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+    float z = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+    float y = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+    float x = (float)lua_tonumber(LS, -1);
+    lua_pop(LS, 1);
+
+    core::vector3df pos = vector3df(0,0,0);
+    pos = vector3df(x, y, z);
+
+    stringc objectTypeName = (core::stringc)lua_tostring(LS, -1);
+	lua_pop(LS, 1);
+
+    DynamicObjectsManager* pObjectManager = DynamicObjectsManager::getInstance();
+    std::vector<DynamicObject*> objects;
+
+    if (objectTypeName == "player")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_PLAYER);
+    }
+    else if (objectTypeName == "npc")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_NPC);
+    }
+    else if (objectTypeName == "loot")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_LOOT);
+    }
+    else if (objectTypeName == "interactive")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_INTERACTIVE);
+    }
+    else if (objectTypeName == "non_interactive")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_NON_INTERACTIVE);
+    }
+    else if (objectTypeName == "all")
+    {
+        objects = pObjectManager->getObjectsOfType(DynamicObject::OBJECT_TYPE_ALL);
+    }
+
+    std::vector<DynamicObject*> objectsInSphere;
+	for (irr::u32 iii = 0; iii < objects.size(); ++iii)
+    {
+        DynamicObject* pObject = objects[iii];
+        f32 fDistance = pObject->getPosition().getDistanceFrom(pos);
+
+
+        if (fDistance <= radius)
+        {
+            objectsInSphere.push_back(pObject);
+
+        }
+
+    }
+
+    lua_createtable(LS, 0, objectsInSphere.size());
+    int top = lua_gettop(LS);
+	for (irr::u32 iii = 0; iii < objectsInSphere.size(); ++iii)
+    {
+        lua_pushnumber(LS, iii+1);
+		lua_pushstring(LS, objectsInSphere[iii]->getName().c_str());
+        lua_settable(LS, top);
+    }
+
+    return 1;
+}

@@ -2129,3 +2129,23 @@ void DynamicObjectsManager::resetObjectsHeight(DynamicObject::TYPE objtype)
 	}
 
 }
+
+std::vector<DynamicObject*> DynamicObjectsManager::getObjectsOfType(DynamicObject::TYPE objectType)
+{
+    std::vector<DynamicObject*> objs;
+
+    if (objectType == DynamicObject::OBJECT_TYPE_ALL)
+    {
+        return objects;
+    }
+
+    for (int iii = 0; iii < (int)objects.size(); ++iii)
+    {
+        if (objects[iii]->getType() == objectType)
+        {
+            objs.push_back(objects[iii]);
+        }
+    }
+
+    return objs;
+}

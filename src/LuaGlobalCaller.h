@@ -151,6 +151,12 @@ class LuaGlobalCaller
 		// Parameters are Name, X,Y,Z, Rotation (Y)
 		static int spawn(lua_State *LS); // Spawn a template somewhere
 
+		//Gui functions
+		static int printToConsole(lua_State* LS); //printToConsole("Some text")
+
+		//Search function 
+		static int findInSphere(lua_State* LS); //findInSphere(radius,x,y,z,"type"), return a table
+
 
     protected:
     private:

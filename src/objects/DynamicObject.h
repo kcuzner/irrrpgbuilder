@@ -303,6 +303,10 @@ class DynamicObject
         static int getPosition(lua_State *ls);//x,y,z = getPosition()
         static int setRotation(lua_State *ls);//setRotation(x,y,z)
         static int getRotation(lua_State *ls);//x,y,z = getPosition()
+
+		static int getParentRotation(lua_State* LS); //Get the rotation of the parent node
+		static int getParentPosition(lua_State* LS); //Get the position of the parent node
+
         static int turn(lua_State *ls);//turn(degrees)
         static int move(lua_State *ls);//move(x,y,z)
 		static int walkToLUA(lua_State *ls); // walkToLua("objectName")
@@ -336,6 +340,8 @@ class DynamicObject
 		static int addLootLUA(lua_State *ls); // Create an object from a template and add it to the object loot.
 
 		static int destroyAfterUse(lua_State *LS); //Set the flag on the object if it must be removed after use (potions)
+
+
 		
         stringc name;
 

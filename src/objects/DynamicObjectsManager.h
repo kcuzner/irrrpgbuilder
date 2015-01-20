@@ -98,7 +98,8 @@ class DynamicObjectsManager
         void clean(bool full);
 		int getEnemyCount();
 
-		vector<DynamicObject*> getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type);
+		vector<DynamicObject*> getObjectNearPosition(vector3df pos, f32 radius, DynamicObject::TYPE type); //get all object around position and range
+		vector<DynamicObject*> getObjectsOfType(DynamicObject::TYPE objectType); //Code from Devjitjit, return list of objects from specific types
 
 		// Data object for the current template
 		 TemplateObject* activeObject;

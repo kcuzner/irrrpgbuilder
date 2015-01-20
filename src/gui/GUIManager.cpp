@@ -2406,6 +2406,7 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("hideBlackScreen",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("showDialogMessage",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("showDialogQuestion",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("printToConsole",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("saveGame",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("loadGame",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("showObjectLabel",SColor(255,128,0,255),true);
@@ -2416,6 +2417,10 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("getPosition",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("setRotation",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getRotation",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("getParentRotation",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("getParentPosition",SColor(255,128,0,255),true);
+
 	guiDynamicObjects_Script->addKeyword("turn",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("move",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("walkTo",SColor(255,128,0,255),true);
@@ -2453,6 +2458,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("onAnswer",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("getLanguage",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onCollision",SColor(255,128,0,255),true);
+
+	guiDynamicObjects_Script->addKeyword("findInSphere",SColor(255,128,0,255),true);
 
 
 
