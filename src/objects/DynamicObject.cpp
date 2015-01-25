@@ -1816,6 +1816,7 @@ void DynamicObject::doScript()
 	lua_register(ls,"hasReached",hasReached);
 
 	lua_register(ls,"destroyAfterUse",destroyAfterUse);
+	lua_register(ls,"isKeypressed",isKeypressed);
 
     //register basic functions
     LuaGlobalCaller::getInstance()->registerBasicFunctions(ls);
@@ -3069,6 +3070,13 @@ void DynamicObject::notifyWear()
     lua_pop( ls, -1 );
 }
 
+void DynamicObject::notifyOnKeypressed()
+{
+	lua_getglobal(ls,"onKeypressed");
+    if(lua_isfunction(ls, -1)) lua_pcall(ls,0,0,0);
+    lua_pop( ls, -1 );
+}
+
 
 stringc DynamicObject::getObjectType()
 {
@@ -3253,4 +3261,27 @@ int DynamicObject::setEnemy(lua_State *ls)
 	}
 
 	return 0;
+}
+
+int DynamicObject::isKeypressed(lua_State *ls)
+{
+	bool result=false;
+
+	stringc keytocheck = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
+
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
+
+	irr::EKEY_CODE code=App::getInstance()->getKeycode(keytocheck);
+	if (code<irr::KEY_KEY_CODES_COUNT)
+	{
+		result=App::getInstance()->isKeyPressed((int)code);
+	} else
+		printf("The keycode was NOT matched! is a key!\n");
+
+
+	lua_pushboolean(ls, result);
+	return 1;
 }

@@ -342,6 +342,8 @@ class GUIManager
 
         IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
+		IGUIFont* guiFontCourier11;
+		IGUIFont* guiFontCourier10;
         IGUIFont* guiFontLarge28;//arial 28
         IGUIFont* guiFontDialog;
 		IGUIFont* guiFont6;

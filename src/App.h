@@ -178,8 +178,6 @@ class App
 		
 		void clearConsole();
 
-		//temporary made public to determine if the config is fullscreen
-		bool fullScreen;
 
 		//For the background color ingame
 		inline void setIngameBackgroundColor(const video::SColor color){ingamebackground=color;}
@@ -190,16 +188,28 @@ class App
 		//Query if XEffect is enabled;
 		inline bool isXEffectsEnabled(){return xeffectenabler;}
 
-		// used for the logger
-		std::vector<core::stringw> textevent;
-		std::vector<core::stringw> console_event;
-		std::vector<video::SColor> console_event_color;
-
 		// This check in the GUI manager to get the radius of the Brush in the GUI;
 		irr::f32 getBrushRadius(int number = 0);
 
 		// Snapping function
 		core::vector3df calculateSnap(vector3df input, f32 snapvalue);
+
+		//Timing functions
+		inline u32 getTimer(){return timer;} //Return the current timer
+		inline u32 getDelta(){return delta;} //Get the delta for each frame (delay in ms)
+
+		// Utility function to get a keycode from a string
+		irr::EKEY_CODE getKeycode(core::stringc text);
+
+		// GLOBAL VARIABLES
+
+		//temporary made public to determine if the config is fullscreen
+		bool fullScreen;
+
+		// used for the logger
+		std::vector<core::stringw> textevent;
+		std::vector<core::stringw> console_event;
+		std::vector<video::SColor> console_event_color;
 
 		scene::ISceneNode* selectedNode;
 		scene::ISceneNode* scriptNode;
@@ -207,7 +217,6 @@ class App
 
 		//Multiple selections (not yet implemented, only data is here but not used yet)
 		std::vector<DynamicObject*> selectedSet;
-		inline u32 getTimer(){return timer;}
 
 		core::stringc filename;
 		core::stringc path; //Default application path.
@@ -245,6 +254,7 @@ class App
 		u32 timer3;
 		u32 timer4;
 		u32 timer_lua; //Used when a script ask for a level change
+		u32 delta; //Contain the delta (difference with the previous frame)
 		bool levelchange; //used to check if a new level change is needed (Loading a new project or level)
 		core::stringc levelfilename;
 		

@@ -1,6 +1,7 @@
 #include "LuaGlobalCaller.h"
 
 #include "gui/GUIManager.h"
+#include "events/EventReceiver.h"
 #include "LANGManager.h"
 #include <time.h>
 #include "objects/DynamicObjectsManager.h"
@@ -2219,3 +2220,4 @@ int LuaGlobalCaller::findInSphere(lua_State* LS) //Code from Devjitjit
 
     return 1;
 }
+

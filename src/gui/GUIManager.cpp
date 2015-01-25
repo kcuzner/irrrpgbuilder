@@ -2295,7 +2295,7 @@ void GUIManager::createCodeEditorGUI()
     guiDynamicObjects_Script->setTextAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
 	guiDynamicObjects_Script->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     //guienv->getSkin()->setColor( gui::EGDC_WINDOW, video::SColor(255, 255, 255, 255) );
-    guiDynamicObjects_Script->setOverrideFont(guiFontCourier12);
+    guiDynamicObjects_Script->setOverrideFont(guiFontCourier10);
 
 	//Old code now changed to setElementText()
 	//guiDynamicObjects_Script->setLineCountButtonText(LANGManager::getInstance()->getText("bt_script_editor_linecount").c_str());
@@ -2453,6 +2453,8 @@ void GUIManager::createCodeEditorGUI()
 	guiDynamicObjects_Script->addKeyword("onUpdate",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onUse",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onWear",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("onKeypressed",SColor(255,128,0,255),true);
+	guiDynamicObjects_Script->addKeyword("isKeypressed",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("step",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onClicked",SColor(255,128,0,255),true);
 	guiDynamicObjects_Script->addKeyword("onAnswer",SColor(255,128,0,255),true);
@@ -3932,6 +3934,8 @@ void GUIManager::hideBlackScreen()
 void GUIManager::loadFonts()
 {
 	guiFontCourier12 = guienv->getFont("../media/fonts/courier12.xml");
+	guiFontCourier11 = guienv->getFont("../media/fonts/courier11.xml");
+	guiFontCourier10 = guienv->getFont("../media/fonts/dejavu12.xml");
 	guiFontLarge28 = guienv->getFont("../media/fonts/large28.xml");
     guiFontDialog = guienv->getFont("../media/fonts/dialog.xml");
 	guiFont6 = guienv->getFont("../media/fonts/Arial6.xml");

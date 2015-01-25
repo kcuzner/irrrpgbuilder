@@ -9,6 +9,7 @@
 #include "fx/EffectsManager.h"
 #include "LANGManager.h"
 #include "objects/DynamicObjectsManager.h"
+#include "objects/projectile.h" //Projectile class manager
 
 
 #include "sound/SoundManager.h"
@@ -50,6 +51,7 @@ App::App()
 	timer3=0;
 	timer4=0;
 	timer_lua=0;
+	delta=0;
 
 	ingamebackground=SColor(0,0,0,0); // Default ingame color is black
 	moveupdown = false; // Mouse item move up/down in dynamic object ADD mode
@@ -74,7 +76,6 @@ App::App()
 	currentsnapping=64.0f; //set the current snapping distance;
 	path = "";
 	xeffectenabler=false;
-
 }
 
 App::~App()
@@ -1643,6 +1644,7 @@ void App::eventKeyPressed(s32 key)
 	if (app_state == APP_GAMEPLAY_NORMAL)
 	{
 		CameraSystem::getInstance()->eventsKeyboard(key); //forward the event when playing
+		Player::getInstance()->getObject()->notifyOnKeypressed();
 		return;
 	}
 
@@ -3268,6 +3270,7 @@ void App::updateGameplay()
 {
 
 	timer = device->getTimer()->getRealTime();
+	delta = timer-timer3; //Get the difference between each frame in MS
 
 	//Levelchange as been asked
 	//This is used when we use the lua command to load another project
@@ -3281,6 +3284,10 @@ void App::updateGameplay()
 		levelchange=false;
 	}
 
+
+
+	// Refresh the projectile manager
+	Projectile::getInstance()->update();
 
 	// Refresh the NPC loop
 	// Update all the NPC on the map (including the player)
@@ -3886,6 +3893,8 @@ void App::initialize()
 	core::stringc vendor = driver->getVendorInfo();
 	printf ("Here is the vendor information: %s\n",vendor.c_str());
 	this->currentProjectName = "irb_temp_project";
+
+	Projectile::getInstance(); //Instanciate the projectile class
 }
 
 void App::shutdown()
@@ -3951,4 +3960,113 @@ core::vector3df App::calculateSnap(vector3df input, f32 snapvalue)
 
 	core::vector3df result = core::vector3df(X1,Y1,Z1);
 	return result;
+}
+
+irr::EKEY_CODE App::getKeycode(core::stringc text)
+{
+	//Check the string for each keyboard key (Could be simplified if we used values instead but would be less readable)
+	//This could also me made in a utility function. (return a keycode from a string)
+	text.make_lower();
+
+	irr::EKEY_CODE key=irr::KEY_KEY_CODES_COUNT; //Keycount used as default;
+
+	if (text=="a")
+		key=KEY_KEY_A;
+	if (text=="b")
+		key=KEY_KEY_B;
+	if (text=="c")
+		key=KEY_KEY_C;
+	if (text=="d")
+		key=KEY_KEY_D;
+	if (text=="e")
+		key=KEY_KEY_E;
+	if (text=="f")
+		key=KEY_KEY_F;
+	if (text=="g")
+		key=KEY_KEY_G;
+	if (text=="h")
+		key=KEY_KEY_H;
+	if (text=="i")
+		key=KEY_KEY_I;
+	if (text=="j")
+		key=KEY_KEY_J;
+	if (text=="k")
+		key=KEY_KEY_K;
+	if (text=="l")
+		key=KEY_KEY_L;
+	if (text=="m")
+		key=KEY_KEY_M;
+	if (text=="n")
+		key=KEY_KEY_N;
+	if (text=="o")
+		key=KEY_KEY_O;
+	if (text=="p")
+		key=KEY_KEY_P;
+	if (text=="q")
+		key=KEY_KEY_Q;
+	if (text=="r")
+		key=KEY_KEY_R;
+	if (text=="s")
+		key=KEY_KEY_S;
+	if (text=="t")
+		key=KEY_KEY_T;
+	if (text=="u")
+		key=KEY_KEY_U;
+	if (text=="v")
+		key=KEY_KEY_V;
+	if (text=="w")
+		key=KEY_KEY_W;
+	if (text=="x")
+		key=KEY_KEY_X;
+	if (text=="y")
+		key=KEY_KEY_Y;
+	if (text=="z")
+		key=KEY_KEY_Z;
+	if (text=="1")
+		key=KEY_KEY_1;
+	if (text=="2")
+		key=KEY_KEY_2;
+	if (text=="3")
+		key=KEY_KEY_3;
+	if (text=="4")
+		key=KEY_KEY_4;
+	if (text=="5")
+		key=KEY_KEY_5;
+	if (text=="6")
+		key=KEY_KEY_6;
+	if (text=="7")
+		key=KEY_KEY_7;
+	if (text=="8")
+		key=KEY_KEY_8;
+	if (text=="9")
+		key=KEY_KEY_9;
+	if (text=="0")
+		key=KEY_KEY_0;
+	if (text=="f1")
+		key=KEY_F1;
+	if (text=="f2")
+		key=KEY_F2;
+	if (text=="f3")
+		key=KEY_F3;
+	if (text=="f4")
+		key=KEY_F4;
+	if (text=="f5")
+		key=KEY_F5;
+	if (text=="f6")
+		key=KEY_F6;
+	if (text=="f7")
+		key=KEY_F7;
+	if (text=="f8")
+		key=KEY_F8;
+	if (text=="f9")
+		key=KEY_F9;
+	if (text=="f10")
+		key=KEY_F10;
+	if (text=="f11")
+		key=KEY_F11;
+	if (text=="f12")
+		key=KEY_F12;
+
+
+	return key;
 }
