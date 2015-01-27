@@ -9,6 +9,8 @@
 #include <fstream>
 
 #include "gui/CGUIFileSelector.h"
+#include "raytests.h"
+#include "objects/DynamicObject.h"
 
 using namespace irr;
 using namespace core;
@@ -19,14 +21,10 @@ using namespace gui;
 
 static const float APP_VERSION = 1.0;
 
-//#define APP_DEBUG
+//#include "LuaGlobalCaller.h"
+//#include "tinyXML/tinyxml.h"
+//#include "XML_Manager.h"
 
-#include "LuaGlobalCaller.h"
-#include "tinyXML/tinyxml.h"
-#include "XML_Manager.h"
-
-#include "raytests.h"
-#include "objects/DynamicObject.h"
 
 //Current Application State
 

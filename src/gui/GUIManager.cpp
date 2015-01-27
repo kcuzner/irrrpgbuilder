@@ -1,22 +1,10 @@
 #include "GUIManager.h"
 
-#include "../LANGManager.h"
-#include "../objects/DynamicObjectsManager.h"
-#include "../terrain/TerrainManager.h"
-#include "../events/EventReceiver.h"
-#include "../sound/SoundManager.h"
-#include "../objects/Player.h"
-#include "../camera/CameraSystem.h"
+#include "../LANGManager.h" //Need to access the strings for GUI (Can be translated in multiple languages)
+#include "../objects/DynamicObjectsManager.h" //Access to objects managing functions
+#include "../terrain/TerrainManager.h" //Access to the terrain informations
+#include "../sound/SoundManager.h" //Access to sounds with GUI
 #include <algorithm>    // std::sort
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-using namespace irrklang;
 
 //This is the comparison function needed by STD:SORT() so it sort on the lowercase version of the strings
 bool compareString(const core::stringw &a, const core::stringw &b)
@@ -181,7 +169,7 @@ void GUIManager::drawPlayerStats()
 //	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
 	// Text display
 	// Update the GUI display
-	DynamicObject* playerObject = Player::getInstance()->getObject();
+	DynamicObject* playerObject = DynamicObjectsManager::getInstance()->getPlayer();
 
 	stringc playerLife=playerLifeText;
 	playerLife += playerObject->getProperties().life;
@@ -195,13 +183,13 @@ void GUIManager::drawPlayerStats()
 	//+(stringc)properties.experience;
 	setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
 
-	s32 hp = Player::getInstance()->getObject()->getProperties().life;
-	s32 max = Player::getInstance()->getObject()->getProperties().maxlife;
+	s32 hp = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().life;
+	s32 max = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().maxlife;
 	lifegauge->setCurrentValue(hp);
 	lifegauge->setMaxValue(max);
 
-	s32 mana = Player::getInstance()->getObject()->getProperties().mana;
-	s32 maxmana = Player::getInstance()->getObject()->getProperties().maxmana;
+	s32 mana = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().mana;
+	s32 maxmana = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().maxmana;
 	managauge->setCurrentValue(mana);
 	managauge->setMaxValue(maxmana);
 }
@@ -482,19 +470,21 @@ core::stringw GUIManager::getEditCameraString(ISceneNode* node)
 {
 	// A bug that crash if I a "node" is "there" but pointer invalid. Will have to investigate more on this.
 	core::stringw sct =L"";
+	ICameraSceneNode* activecamera = App::getInstance()->getDevice()->getSceneManager()->getActiveCamera();
 
 	// Display this when working with segments or when there no node selected.
 	if (!node || App::getInstance()->getAppState()==App::APP_EDIT_TERRAIN_EMPTY_SEGMENTS)
 	{
 		sct += LANGManager::getInstance()->getText("status_campos");
-		core::vector3df pos = CameraSystem::getInstance()->getNode()->getPosition();
+		
+		core::vector3df pos =activecamera->getPosition();
 		sct+=(core::stringw)pos.X;
 		sct+=L",";
 		sct+=(core::stringw)pos.Y;
 		sct+=L",";
 		sct+=(core::stringw)pos.Z;
 		sct+=LANGManager::getInstance()->getText("status_target");
-		pos = CameraSystem::getInstance()->getNode()->getTarget();
+		pos = activecamera->getTarget();
 		sct+=(core::stringw)pos.X;
 		sct+=L",";
 		sct+=(core::stringw)pos.Y;
@@ -3854,7 +3844,7 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 	        guiBtViewItems->setVisible(visible);
 			// Update the gold items
 			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
-			playerMoney += Player::getInstance()->getObject()->getMoney();
+			playerMoney += DynamicObjectsManager::getInstance()->getPlayer()->getMoney();
 			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
 		}
         break;
@@ -4074,7 +4064,7 @@ void GUIManager::showDialogMessage(stringw text, std::string sound)
     dialogSound = NULL;
 
 	//Pause the player during the dialog opening
-	Player::getInstance()->getObject()->setAnimation("idle");
+	DynamicObjectsManager::getInstance()->getPlayer()->setAnimation("idle");
 
 	if (sound.size()>0)
     //if((sound.c_str() != "") | (sound.c_str() != NULL))
@@ -4090,7 +4080,7 @@ bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 {
 
 	//Pause the player during the dialog opening
-	Player::getInstance()->getObject()->setAnimation("idle");
+	DynamicObjectsManager::getInstance()->getPlayer()->setAnimation("idle");
 
 	//stringw text2 = (stringw)text.c_str();
 	txt_dialog->setText(text.c_str());
@@ -4114,13 +4104,15 @@ bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 	return true;
 }
 
+//Need to be reworked: BAD. Render loop is done here!
 stringc GUIManager::showInputQuestion(stringw text)
 {
     std::string newtxt = "";
 
     bool mouseExit = false;
 
-    while(!EventReceiver::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
+	
+    while(!App::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
     {
 		u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
         App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
@@ -4158,7 +4150,7 @@ stringc GUIManager::showInputQuestion(stringw text)
 
         //check mouse click on OK button
         position2di mousePos = App::getInstance()->getDevice()->getCursorControl()->getPosition();
-        if(mousePos.getDistanceFrom(buttonYesPosition+position2di(16,16)) < 16 && EventReceiver::getInstance()->isMousePressed(0)) mouseExit = true;
+		if(mousePos.getDistanceFrom(buttonYesPosition+position2di(16,16)) < 16 && App::getInstance()->isMousePressed(0)) mouseExit = true;
 
 
         //verify pressed chars and add it to the string
@@ -4168,7 +4160,7 @@ stringc GUIManager::showInputQuestion(stringw text)
             //process all keycodes [0-9] and [A-Z]
             for(int i=0x30;i<0x5B;i++)
             {
-                if(EventReceiver::getInstance()->isKeyPressed(i))
+				if(App::getInstance()->isKeyPressed(i))
                 {
                     newtxt += i;
                     timer = timercheck;
@@ -4176,7 +4168,7 @@ stringc GUIManager::showInputQuestion(stringw text)
             }
 
             //process delete and backspace (same behavior for both of them -> remove the last char)
-            if(EventReceiver::getInstance()->isKeyPressed(KEY_BACK) || EventReceiver::getInstance()->isKeyPressed(KEY_DELETE))
+            if(App::getInstance()->isKeyPressed(KEY_BACK) || App::getInstance()->isKeyPressed(KEY_DELETE))
             {
                 newtxt = newtxt.substr(0,newtxt.size()-1);
 				timer = timercheck;
@@ -4185,8 +4177,8 @@ stringc GUIManager::showInputQuestion(stringw text)
         App::getInstance()->getDevice()->getVideoDriver()->endScene();
     }
 
-    EventReceiver::getInstance()->flushKeys();
-    EventReceiver::getInstance()->flushMouse();
+    //EventReceiver::getInstance()->flushKeys();
+    //EventReceiver::getInstance()->flushMouse();
     this->flush();
 
     return stringc(newtxt.c_str());
@@ -4199,7 +4191,7 @@ stringc GUIManager::getActivePlayerItem()
 
 DynamicObject* GUIManager::getActiveLootItem()
 {
-	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
+	vector<DynamicObject*> lootitems = DynamicObjectsManager::getInstance()->getPlayer()->getLootItems();
 
 	s32 item=guiPlayerItems->getSelected();
 	if (item>-1 && lootitems.size()>0)
@@ -4211,8 +4203,8 @@ DynamicObject* GUIManager::getActiveLootItem()
 void GUIManager::updateItemsList()
 {
     guiPlayerItems->clear();
-    //vector<stringc> items = Player::getInstance()->getObject()->getItems();
-	vector<DynamicObject*> lootitems = Player::getInstance()->getObject()->getLootItems();
+    //vector<stringc> items = DynamicObjectsManager::getInstance()->getPlayer()->getItems();
+	vector<DynamicObject*> lootitems = DynamicObjectsManager::getInstance()->getPlayer()->getLootItems();
 	std::sort(lootitems.begin(), lootitems.end());
 
     //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );

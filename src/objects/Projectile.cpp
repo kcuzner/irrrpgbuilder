@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "../App.h" //  to be able to communicate with this class
 #include "dynamicObject.h" // to be able to communicate with this class
 
 using namespace irr;
@@ -71,7 +72,7 @@ void Projectile::update()
 		this->updateMovement(node, vel);
 
 		//Test if the distance of the projectile reach the endpoint then disable the projectile
-		if (projectiles[i].node->getAbsolutePosition().getDistanceFrom(projectiles[i].endposition)<1)
+		if (projectiles[i].node->getAbsolutePosition().getDistanceFrom(projectiles[i].endposition)<1.0f)
 		{
 			projectiles[i].alive=false;
 		}
@@ -82,12 +83,16 @@ void Projectile::update()
 			if (projectiles[i].node)
 				projectiles[i].node->remove();
 			projectiles.erase(projectiles.begin()+i);
+			//Would need to return something to the dynamic object class to tell where the projectile stopped 
+			//So it could define the position to had a FX 
+			//Also need to check if it touched a node
+			//And report for the damage
 		}
 	}
 }
 
 //! Will create a new projectile for the manager
-void Projectile::createProjectile(Projectile::itemdata item)
+void Projectile::createProjectile(projectileitem item)
 {
 	//Do a check to see if the projectile data is created correctly
 	if (item.node && item.alive && item.velocity>0.0f)
@@ -102,7 +107,7 @@ void Projectile::createProjectile(Projectile::itemdata item)
 }
 
 //! Helper function. Reset the projectile data. Should be used prior to define a new projectile
-Projectile::itemdata Projectile::reset(Projectile::itemdata data)
+projectileitem Projectile::reset(projectileitem data)
 {
 	data.alive = true;
 	data.id = 0;
@@ -116,7 +121,7 @@ Projectile::itemdata Projectile::reset(Projectile::itemdata data)
 }
 
 //! Helper function, will add a projectile representation to the projectile data
-Projectile::itemdata Projectile::setProjectileRepresentation(Projectile::itemdata data, irr::core::stringc filename, bool usemesh, irr::f32 size)
+projectileitem Projectile::setProjectileRepresentation(projectileitem data, irr::core::stringc filename, bool usemesh, irr::f32 size)
 {
 	IAnimatedMesh* mesh=NULL;
 	IBillboardSceneNode* bill=NULL;
@@ -155,7 +160,7 @@ Projectile::itemdata Projectile::setProjectileRepresentation(Projectile::itemdat
 }
 
 // Set the trajectory of the projectile into the data
-Projectile::itemdata Projectile::setProjectileTrajectory(Projectile::itemdata data, irr::core::vector3df startpos, irr::core::vector3df angle, irr::f32 range, f32 velocity)
+projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::core::vector3df startpos, irr::core::vector3df angle, irr::f32 range, f32 velocity)
 {
 	data.position = startpos;
 	data.rotation = angle;
@@ -180,7 +185,7 @@ Projectile::itemdata Projectile::setProjectileTrajectory(Projectile::itemdata da
 // Set the trajectory of the projectile into the data
 // The user know the endposition but a collision test is done to be sure it reach
 // If something get between the target it will stop the projectile
-Projectile::itemdata Projectile::setProjectileTrajectory(Projectile::itemdata data, irr::core::vector3df startpos, irr::core::vector3df endpos, f32 velocity)
+projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::core::vector3df startpos, irr::core::vector3df endpos, f32 velocity)
 {
 	data.endposition = endpos;
 	data.velocity = velocity;

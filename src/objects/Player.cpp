@@ -1,19 +1,8 @@
 #include "Player.h"
 
 #include "../App.h"
-#include "../tinyXML/tinyxml.h"
 #include "DynamicObjectsManager.h"
 #include "../camera/CameraSystem.h"
-
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-using namespace std;
 
 Player::Player()
 {

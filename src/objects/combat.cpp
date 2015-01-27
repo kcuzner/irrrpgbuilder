@@ -1,17 +1,8 @@
 #include "combat.h"
 
-#include "../App.h"
-#include "DynamicObject.h"
-#include "DynamicObjectsManager.h"
-#include "../LuaGlobalCaller.h"
-#include "Player.h"
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
+#include "../App.h" //Need the timer
+#include "DynamicObject.h" //Manipulate dymanic objects directly
+#include "DynamicObjectsManager.h" //Need to query the dynamic object manager
 
 
 Combat::Combat()
@@ -130,11 +121,12 @@ int Combat::attack(DynamicObject* attacker, DynamicObject* defender)
 	//defender->setLife(life);
 		
 	// Position the target to the defender (Apply only on the player
-	if (attacker->getName()==Player::getInstance()->getObject()->getName())
+	
+	if (attacker->getName()==DynamicObjectsManager::getInstance()->getPlayer()->getName())
 		DynamicObjectsManager::getInstance()->getTarget()->setPosition(defender->getPosition()+vector3df(0,0.1f,0));
 
 	// Will calculate the level only if the player IS the attacker. NPC should not gain a level by defeating others
-	if (attacker->getName()==Player::getInstance()->getObject()->getName() &&
+	if (attacker->getName()==DynamicObjectsManager::getInstance()->getPlayer()->getName() &&
 		life==0)
 	{
 		// get the experience of the defender

@@ -1,17 +1,8 @@
 #include "CameraSystem.h"
-#include "../terrain/TerrainManager.h"
+#include "../terrain/TerrainManager.h" //Get information from the terrain (test terrain to have camera collide with it)
+#include "../gui/GUIManager.h" //Required to send informations to the GUI
 
 #include "../sound/SoundManager.h"
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-
-
 
 CameraSystem::CameraSystem()
 {
@@ -596,7 +587,19 @@ void CameraSystem::updatePointClickCam()
 		pos.rotateXYBy(cameraAngle.Y, camrefpos);
 		pos.rotateXZBy(-cameraAngle.X, camrefpos);
 
-	
+		f32 ground = TerrainManager::getInstance()->getHeightAt(pos);
+		if (ground==-1000.0f)
+			ground = TerrainManager::getInstance()->getHeightAt(pos,256.0f); //Ground not found increase the ray size
+		if (ground==-1000.0f)
+			ground = TerrainManager::getInstance()->getHeightAt(pos,512.0f); //Ground not found increase the ray size
+		if (ground==-1000.0f)
+			ground = TerrainManager::getInstance()->getHeightAt(pos,1024.0f);//Ground not found increase the ray size
+
+		if (pos.Y<ground+5.0f)
+			pos.Y=ground+5.0f;
+
+		printf("Elevation is now: %f, distance is: %f\n",ground,pos.Y-ground);
+
 		// Set the position and angle of the cam
 		currentCam->setPosition(pos);
 		currentCam->setTarget(camrefpos);
@@ -886,8 +889,15 @@ void CameraSystem::updateRPGCamera()
 
 	// Tries to move the camera so it doesnt go inside the terrain
 	f32 ground = TerrainManager::getInstance()->getHeightAt(pos);
-	if (pos.Y+10.0f<ground)
-		pos.Y=ground;
+	if (ground==-1000.0f)
+		ground = TerrainManager::getInstance()->getHeightAt(pos,256.0f); //Ground not found increase the ray size
+	if (ground==-1000.0f)
+		ground = TerrainManager::getInstance()->getHeightAt(pos,512.0f); //Ground not found increase the ray size
+	if (ground==-1000.0f)
+		ground = TerrainManager::getInstance()->getHeightAt(pos,1024.0f);//Ground not found increase the ray size
+
+	if (pos.Y<ground+5.0f)
+		pos.Y=ground+5.0f;
 
 	// Set the position and angle of the cam
 	currentCam->setPosition(pos);

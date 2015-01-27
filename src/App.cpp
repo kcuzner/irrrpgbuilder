@@ -1,28 +1,22 @@
 #include "App.h"
-#include "raytests.h"
+#include "raytests.h" //To test rays
 
-#include "camera/CameraSystem.h"
-#include "events/EventReceiver.h"
-#include "gui/GUIManager.h"
-#include "gui/CGUIFileSelector.h"
-#include "terrain/TerrainManager.h"
-#include "fx/EffectsManager.h"
-#include "LANGManager.h"
-#include "objects/DynamicObjectsManager.h"
+#include "camera/CameraSystem.h" // Camera manager
+#include "events/EventReceiver.h" // Event manager
+#include "gui/GUIManager.h" // GUI Manager
+#include "gui/CGUIFileSelector.h" // GUI custom file selector
+#include "terrain/TerrainManager.h" //Terrain Manager
+#include "fx/EffectsManager.h" // Fx Manager
+#include "LANGManager.h" // Languages string manager
+#include "objects/DynamicObjectsManager.h" //Dynamic Object manager class
 #include "objects/projectile.h" //Projectile class manager
+#include "LuaGlobalcaller.h" //Lua Global caller functions (basic functions, objects state before/after play)
+#include "objects/combat.h" //For updating the combat manager (damage calculation and DOT updates)
 
 
 #include "sound/SoundManager.h"
 #include "objects/Player.h"
 
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-using namespace std;
 
 const float DEG2RAD = 3.14159f/180;
 

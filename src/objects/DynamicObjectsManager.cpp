@@ -1,15 +1,8 @@
 #include "DynamicObjectsManager.h"
-#include "DynamicObject.h"
+#include "../LANGManager.h"
 #include "../camera/CameraSystem.h"
 #include "../fx/ShaderCallBack.h"
 #include "../fx/EffectsManager.h"
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
 
 DynamicObjectsManager::DynamicObjectsManager()
 {

@@ -3,11 +3,8 @@
 
 #include <irrlicht.h>
 #include <vector>
-#include "../LuaGlobalCaller.h"
-#include "../LANGManager.h"
 #include "DynamicObject.h"
-#include "combat.h"
-#include "../sound/SoundManager.h"
+
 
 using namespace irr;
 using namespace core;

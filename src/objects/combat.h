@@ -8,7 +8,7 @@
 #include <vector>
 #include <irrlicht.h>
 
-#include "../gui/GUIManager.h"
+//#include "../gui/GUIManager.h"
 #include "DynamicObject.h"
 
 using namespace irr;
@@ -18,13 +18,9 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-extern "C" {
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-}
 
-
+//This class is mostly used for calculating the damage points when the player is in combat
+//Will cause damage on both the attacker and the defender objects.
 class Combat
 {
     public:
@@ -48,6 +44,7 @@ class Combat
 		DynamicObject* tempObject;
 		lua_State *L;
 
+		//Dot is not fully implemented yet. (Damage over time -> poison)
 		vector<DynamicObject*> dotvictim;
 		vector<int> dotduration;
 		vector<int> dotdamage;

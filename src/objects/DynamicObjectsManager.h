@@ -3,12 +3,12 @@
 
 #include <vector>
 #include <irrlicht.h>
-#include "../App.h"
+#include "../App.h" //Application class is almost needed everywhere
+#include "../gui/GUIManager.h" //Need the gui manager to create list of objects and object templates
+#include "DynamicObject.h" //Needed since it work on theses objects
+#include "TemplateObject.h" //Needed since it take the information from the template to create a dynamic object
 
-#include "DynamicObject.h"
-#include "TemplateObject.h"
-
-#include "Player.h"
+//#include "Player.h"
 
 #include "../tinyXML/tinyxml.h"
 

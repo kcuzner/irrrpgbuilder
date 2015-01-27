@@ -1,17 +1,14 @@
 #include "EffectsManager.h"
 #include <iostream>
-#include "postprocess/PostProcessManager.h"
-#include "XEffects/XEffects.h"
 
 #include "../App.h"
 #include "../camera/CameraSystem.h"
+#include "../gui/GUIManager.h" //Required to send back stuff to the console (Will need to rework this to use APP instead)
 
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
+//Plugged in componnent. There will be more
+#include "postprocess/PostProcessManager.h"
+#include "XEffects/XEffects.h"
+
 
 EffectsManager::EffectsManager()
 {

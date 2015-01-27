@@ -6,21 +6,15 @@
 #include "../App.h"
 #include "DynamicObjectsManager.h"
 #include "combat.h"
-//#include "../LuaGlobalCaller.h"
+#include "../LuaGlobalCaller.h" //-- required to load the basic lua functions available
+#include "../LANGManager.h"
 #include "Player.h"
 #include "../terrain/TerrainManager.h"
 #include "../camera/CameraSystem.h"
 #include "../fx/EffectsManager.h"
 
 #include "DynamicObject.h"
-
-using namespace irr;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
+#include "Projectile.h"
 
 DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFile, vector<DynamicObject_Animation> animations, bool directpath)
 {
@@ -137,6 +131,10 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 	smgr = App::getInstance()->getDevice()->getSceneManager();
 	driver = App::getInstance()->getDevice()->getVideoDriver();
 	objectType=OBJECT_TYPE_NONE;
+
+	//init the projectile data
+	Projectile::getInstance()->reset(this->obj_projectile);
+
 
 }
 
@@ -1818,7 +1816,7 @@ void DynamicObject::doScript()
 	lua_register(ls,"destroyAfterUse",destroyAfterUse);
 	lua_register(ls,"isKeypressed",isKeypressed);
 
-    //register basic functions
+    //register basic functions --> Require the LUA Global caller on this one.
     LuaGlobalCaller::getInstance()->registerBasicFunctions(ls);
 
     //associate the "objName" keyword to the dynamic object name

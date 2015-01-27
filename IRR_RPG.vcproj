@@ -829,6 +829,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\objects\projectileItem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\objects\properties.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\objects\TemplateObject.cpp"
 					>
 				</File>

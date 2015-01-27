@@ -2,14 +2,20 @@
 #define GUIMANAGER_H
 
 #include <irrlicht.h>
-#include "../App.h"
 #include <vector>
+#include "../App.h"
 
+//Should create a preview of the object (disabled for now, need a full rework)
 #include "NodePreview.h"
+
+//Custom edit box used for the script editor
 #include "CGUIEditBoxIRB.h"
+
+//Used to create the GAUGE balls GUI in the GAME gui
 #include "CGUIGfxStatus.h"
-#include "GUIConfigWindow.h"
-#include "../sound/SoundManager.h"
+
+#include "GUIConfigWindow.h" //Configuration screen interface. (Will need to be reworked for better event handling)
+//#include "../sound/SoundManager.h"
 
 // Stretching window class
 #include "CGUIExtWindow.h"

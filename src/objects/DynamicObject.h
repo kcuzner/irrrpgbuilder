@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <irrlicht.h>
+#include "properties.h"
+#include "projectileItem.h"
 #include "HealthSceneNode.h"
 #include "../sound/SoundManager.h"
 
@@ -20,8 +22,8 @@ extern "C" { // Access to the LUA library
 #include <lauxlib.h>
 }
 
-class DynamicObject
-{
+//Note, also inherit from cproperty, but this in already used in projectile items (they both share properties)
+class DynamicObject : public projectileitem{
     public:
 
 		typedef struct data_anim{
@@ -59,32 +61,6 @@ class DynamicObject
 			stringc texture3;
 
 		}DynamicObject_material;
-
-	typedef struct data_properties{
-			u32 life;
-			u32 mana;
-			u32 maxlife;
-			u32 maxmana;
-			u32 regenlife;
-			u32 regenmana;
-			u32 money;
-			u32 level;
-			u32 experience;
-			u32 mindamage;
-			u32 maxdamage;
-			u32 armor;
-			u32 magic_armor;
-			u32 hurt_resist;
-			u32 dotduration;
-			f32 hit_prob;
-			f32 dodge_prop;
-			u32 attackdelay;
-			u32 mindefense;
-			u32 maxdefense;
-			u32 weight;
-			u32 maxweight;
-			u32 currentweight;
-		}cproperty;
 
 		enum TYPE
 		{
@@ -289,7 +265,8 @@ class DynamicObject
         DynamicObject(stringc name, IAnimatedMesh* mesh, vector<DynamicObject_Animation> animations = vector<DynamicObject_Animation>());
 
     private:
-        void setupObj(stringc name, IAnimatedMesh* mesh);
+
+		void setupObj(stringc name, IAnimatedMesh* mesh);
 
 		void updateRotation(); // Update the rotation of the object based on refreshes
 		void updateWalk(); // Update the walk movement based on refrehes
@@ -444,6 +421,7 @@ class DynamicObject
 
 
 		lua_State *ls;
+		projectileitem obj_projectile;
 
 };
 
