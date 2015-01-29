@@ -3732,7 +3732,10 @@ void App::saveProjectToXML(stringc filename)
 
 bool App::loadProjectFromXML(stringc filename)
 {
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
+	
+	//GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
+	IGUIWindow* window=(IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER);
+	window->setVisible(true);
 	printf ("Trying to load this map: %s \n",filename.c_str());
 	TiXmlDocument doc(filename.c_str());
 	if (!doc.LoadFile()) return false;

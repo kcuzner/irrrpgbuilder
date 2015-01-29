@@ -897,29 +897,53 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Editor"
+				>
+				<File
+					RelativePath=".\src\Editor\AppEditor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Editor\AppEditor.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Editor\GUIEditor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Editor\GUIEditor.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Game"
+				>
+				<File
+					RelativePath=".\src\Game\AppGame.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Game\AppGame.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Game\CUIGame.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\Game\GUIGame.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Ressources"
 			>
 			<File
-				RelativePath=".\src\RessourceNoWx.rc"
+				RelativePath=".\src\RessourceIcon.rc"
 				>
-				<FileConfiguration
-					Name="wx_Full_Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="wx_Full_Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

@@ -598,7 +598,7 @@ void CameraSystem::updatePointClickCam()
 		if (pos.Y<ground+5.0f)
 			pos.Y=ground+5.0f;
 
-		printf("Elevation is now: %f, distance is: %f\n",ground,pos.Y-ground);
+		//printf("Elevation is now: %f, distance is: %f\n",ground,pos.Y-ground);
 
 		// Set the position and angle of the cam
 		currentCam->setPosition(pos);

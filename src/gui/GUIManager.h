@@ -11,14 +11,14 @@
 //Custom edit box used for the script editor
 #include "CGUIEditBoxIRB.h"
 
-//Used to create the GAUGE balls GUI in the GAME gui
-#include "CGUIGfxStatus.h"
-
 #include "GUIConfigWindow.h" //Configuration screen interface. (Will need to be reworked for better event handling)
-//#include "../sound/SoundManager.h"
 
 // Stretching window class
 #include "CGUIExtWindow.h"
+
+// Split functions of the GUI manager for INGAME or EDITOR only stuff
+#include "../Editor/GUIEditor.h"
+#include "../Game/GUIGame.h"
 
 using namespace irr;
 using namespace core;
@@ -96,7 +96,10 @@ class GUIManager
 		BT_ID_DIALOG_NO,
 		IMG_BAR,
 		IMG_LOOT,
+		IMG_LIFEGAUGE,
+		IMG_MANAGAUGE,
 		CONSOLE,
+		ST_ID_CUTSCENE_TEXT,
 
 		TXT_ID_SELOBJECT,
 		TXT_ID_SELOBJECT_TYPE,
@@ -150,13 +153,14 @@ class GUIManager
 
 		VEGE_CHECKBOX,
 		VEGE_LISTBOX,
-		VEGE_IMAGE
+		VEGE_IMAGE,
+		ID_FADER
 	};
 
 	//here are all windows of the editor (except mainWindow - toolbar)
-	enum GUI_CUSTOM_WINDOW
+	enum GUI_CUSTOM_WINDOW //Need to start as a hight number as the GUI id should not conflict with the other items
 	{
-		GCW_DYNAMIC_OBJECT_CHOOSER = 1,
+		GCW_DYNAMIC_OBJECT_CHOOSER = 10500,
 		GCW_DYNAMIC_PLAYER_EDIT,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
@@ -203,20 +207,31 @@ class GUIManager
 
         static GUIManager* getInstance();
 
+		inline IGUIEnvironment* getGuiEnv() { return guienv;}
+		inline IVideoDriver* getDriver() { return driver;}
+		inline NodePreview* getNodePreview() { return guiDynamicObjects_NodePreview;}
 
-        void setupGameplayGUI();
-		void UpdateCollections(LIST_TYPE type = LIST_NPC);
+		void setupGameplayGUI();
+
+		void showDialogMessage(stringw text, std::string sound);
+		bool showDialogQuestion(stringw text, std::string sound );
+		core::stringc showInputQuestion(stringw text);
+
+     	void UpdateCollections(LIST_TYPE type = LIST_NPC);
 		void UpdateGUIChooser(LIST_TYPE type = LIST_NPC);
 		void updateCurrentCategory(LIST_TYPE type = LIST_NPC);
 		void buildSceneObjectList(DynamicObject::TYPE objtype = DynamicObject::OBJECT_TYPE_NONE);
 
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
+		void showCutsceneText(bool visible);
+		void setCutsceneText(core::stringw text);
 
     	void drawPlayerStats();
 		bool isGuiPresent(vector2d<s32> mousepos);
 		bool isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos);
 		void createConsole();
+		IGUIElement* getGUIElement(u32 id);
 
 		void update();
 
@@ -255,8 +270,7 @@ class GUIManager
 
         stringc getEditBoxText(GUI_ID id);
 
-        void setStaticTextText(GUI_ID id, stringc text);
-		void setConsoleText (stringw text, video::SColor color = video::SColor(255,0,0,0));
+ 		void setConsoleText (stringw text, video::SColor color = video::SColor(255,0,0,0));
 		void clearConsole();
 		void setConsoleLogger(vector<core::stringw> &text);
 
@@ -274,11 +288,7 @@ class GUIManager
         void hideBlackScreen();
 
 		void stopDialogSound();
-        //Shows a simple Text Dialog message. Hit RETURN to close-it
-        void showDialogMessage(stringw text, std::string sound = "" );
-
-        //Shows a question message, use LEFT and RIGHT arrows to choose YES or NO and hit RETURN
-        bool showDialogQuestion(stringw text, std::string sound = "");
+        
 
         //returns the active item on Player Items Window
         stringc getActivePlayerItem();
@@ -286,8 +296,6 @@ class GUIManager
 		//Return the id of the selected item in the inventory
 		DynamicObject* getActiveLootItem();
 
-        //Shows a input message, input the text and hit RETURN
-        stringc showInputQuestion(stringw text);
 
         //Update the list of items (player inventory)
 		void updateItemsList();
@@ -297,16 +305,29 @@ class GUIManager
 
 		core::stringw getEditCameraString(scene::ISceneNode *node);
 		inline void updateEditCameraString(scene::ISceneNode * node) {if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}}
+		rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
-		inline void setCutsceneText(core::stringw text) { guiCutsceneText->setText(text.c_str());}
-		inline void showCutsceneText(bool visible) { guiCutsceneText->setVisible(visible);}
         void flush();
+		void loadFonts();
 
         void showConfigWindow();
 
 		inline void setStatusText(core::stringw text) {if (guiStatusText) {guiStatusText->setText(text.c_str());}}
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
+
+		  IGUIFont* guiFontC12;//arial 10
+        IGUIFont* guiFontCourier12;
+		IGUIFont* guiFontCourier11;
+		IGUIFont* guiFontCourier10;
+        IGUIFont* guiFontLarge28;//arial 28
+        IGUIFont* guiFontDialog;
+		IGUIFont* guiFont6;
+		IGUIFont* guiFont8;
+		IGUIFont* guiFont9;
+		IGUIFont* guiFont10;
+		IGUIFont* guiFont12;
+		IGUIFont* guiFont14;
 
 	    virtual ~GUIManager();
     private:
@@ -321,23 +342,20 @@ class GUIManager
         int mouseX;
         int mouseY;
 
-		u32 timer;
-		u32 timer2;
 		u32 timer3; //Timer for the Context menu disabling
+
+		
 
 		// Used to store text events in a buffer while the GUI is not displayed
 		std::vector<core::stringw> textevent;
 		std::vector<video::SColor> texteventcolor;
 
-		// used for sounds in dialogs;
-		ISound* dialogSound;
-
-
+		
         position2di mainToolbarPos;
 		IGUITabControl * mainTabCtrl;
 		IGUITabControl * mainToolCtrl;
 		IGUITabControl * prjTabCtrl;
-		IGUITabControl * gameTabCtrl;
+		
 
 		IGUITab * tabProject;
 		IGUITab * tabPlayTool;
@@ -346,18 +364,7 @@ class GUIManager
 		IGUITab * tabTools;
 		IGUITab * tabConfig;
 
-        IGUIFont* guiFontC12;//arial 10
-        IGUIFont* guiFontCourier12;
-		IGUIFont* guiFontCourier11;
-		IGUIFont* guiFontCourier10;
-        IGUIFont* guiFontLarge28;//arial 28
-        IGUIFont* guiFontDialog;
-		IGUIFont* guiFont6;
-		IGUIFont* guiFont8;
-		IGUIFont* guiFont9;
-		IGUIFont* guiFont10;
-		IGUIFont* guiFont12;
-		IGUIFont* guiFont14;
+      
 
         ///Main Functions
 		IGUIImage*  guiBackImage;
@@ -382,7 +389,7 @@ class GUIManager
 		IGUIWindow* guiStatus;
 		IGUIStaticText* guiStatusText;
 		IGUIStaticText* guiStatusCameraText;
-		IGUIStaticText* guiCutsceneText;
+		
 
 		IGUIListBox* console;
 		IGUIListBox* consolelog;
@@ -532,39 +539,15 @@ class GUIManager
         ///Player
         IGUIButton* guiPlayerEditScript;
 
-		// Gameplay bar
-		IGUIImage* gameplay_bar_image;
-		CGUIGfxStatus * lifegauge;
-		CGUIGfxStatus * managauge;
+		
 
+      
 
-        ///GAMEPLAY
-		stringc playerLifeText;
+        
 
-        IGUIInOutFader* fader;
-        IGUIStaticText* guiPlayerLife;
-        IGUIStaticText* guiPlayerLife_Shadow;
-        IGUIStaticText* guiPlayerMoney;
+        
 
-		ITexture* guiDialogImgYes;
-        ITexture* guiDialogImgYes_s;
-        ITexture* guiDialogImgNo;
-        ITexture* guiDialogImgNo_s;
-
-        IGUIButton* guiBtViewItems;
-        IGUIWindow* guiWindowItems;
-
-        IGUIListBox* guiPlayerItems;
-		IGUIImage*  guiPlayerLootImage;
-
-        IGUIButton* guiBtUseItem;
-        IGUIButton* guiBtDropItem;
-        IGUIButton* guiBtCloseItemsWindow;
-
-		IGUIWindow* guidialog;
-		IGUIStaticText* txt_dialog;
-		IGUIButton* guiBtDialogYes;
-		IGUIButton* guiBtDialogCancel;
+		
 
 		IGUIButton* guiBtGamePlay;
 		IGUIButton* guiBtGameConfig;
@@ -595,15 +578,17 @@ class GUIManager
 
 
         GUIManager();
-        rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
+        
 		s32 displayheight;
 		s32 displaywidth;
 
 		int currentObjType;
 
-        void loadFonts();
+       
 
         void loadScriptTemplates();
+
+	
 
 
 

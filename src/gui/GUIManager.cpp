@@ -35,7 +35,7 @@ GUIManager::GUIManager()
 
 	guiDynamicObjects_NodePreview=NULL;
 	guiTerrainToolbar=NULL;
-	guiWindowItems=NULL;
+	
 	consolewin=NULL;
 	guiLoaderDescription = NULL;
 	info_none=NULL;
@@ -55,8 +55,7 @@ GUIManager::GUIManager()
 	// Load the required font
 	guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
 
-	timer = App::getInstance()->getDevice()->getTimer()->getRealTime();
-	timer2 = timer;
+	
 
 	for (s32 i=0; i<irr::gui::EGDC_COUNT ; ++i)
     {
@@ -72,7 +71,7 @@ GUIManager::GUIManager()
 	guiStatus=NULL;
 	guiBackImage=NULL;
 	guiBackImage2=NULL;
-	dialogSound=NULL;
+	
 	guiLoaderWindow=NULL;
 
 
@@ -101,24 +100,14 @@ GUIManager::GUIManager()
 	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,140,178,226));
 	//guienv->getSkin()->setColor(EGDC_3D_FACE,video::SColor(200,204,227,248));
 	//guienv->getSkin()->setColor(EGDC_WINDOW,video::SColor(255,220,220,220));
+
 }
 
 // Clear all GUI when the class is deleted
 GUIManager::~GUIManager()
 {
 
-	if (managauge)
-	{
-		managauge->remove();
-		managauge=NULL;
-	}
 
-
-	if (lifegauge)
-	{
-		lifegauge->remove();
-		lifegauge=NULL;
-	}
 
 	if (guiDynamicObjects_NodePreview)
 	{
@@ -162,36 +151,6 @@ GUIManager::~GUIManager()
 	}
 
     //dtor
-}
-
-void GUIManager::drawPlayerStats()
-{
-//	IVideoDriver * driver = App::getInstance()->getDevice()->getVideoDriver();
-	// Text display
-	// Update the GUI display
-	DynamicObject* playerObject = DynamicObjectsManager::getInstance()->getPlayer();
-
-	stringc playerLife=playerLifeText;
-	playerLife += playerObject->getProperties().life;
-	playerLife += "/";
-	playerLife += playerObject->getProperties().maxlife;
-	playerLife += " Experience:";
-	stringc playerxp = (stringc)playerObject->getProperties().experience;
-	playerLife += playerxp;
-	playerLife += " Level:";
-	playerLife += playerObject->getProperties().level;
-	//+(stringc)properties.experience;
-	setStaticTextText(ST_ID_PLAYER_LIFE,playerLife);
-
-	s32 hp = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().life;
-	s32 max = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().maxlife;
-	lifegauge->setCurrentValue(hp);
-	lifegauge->setMaxValue(max);
-
-	s32 mana = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().mana;
-	s32 maxmana = DynamicObjectsManager::getInstance()->getPlayer()->getProperties().maxmana;
-	managauge->setCurrentValue(mana);
-	managauge->setMaxValue(maxmana);
 }
 
 IGUIFont* GUIManager::getFont(FONT_NAME fontName)
@@ -247,6 +206,11 @@ void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
 				video::SColor(255,255,255,255), true);
             break;
     }
+}
+
+void GUIManager::drawPlayerStats()
+{
+	GUIGame::getInstance()->drawPlayerStats();
 }
 
 bool GUIManager::getCheckboxState(GUI_ID id)
@@ -2554,10 +2518,11 @@ void GUIManager::getInfoAboutModel(LIST_TYPE type)
 }
 
 // will tell the caller if he's clicked inside a IRB window
+// This need to be reworked completely. We can do it much simpler!
 bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 {
 
-	if (guidialog->isVisible() && guidialog->isPointInside(mousepos))
+	/*if (guidialog->isVisible() && guidialog->isPointInside(mousepos))
 	    return true;
 
 	// This one is special, the gameplay bar has a Health that takes 100% height while the buttons take half
@@ -2568,10 +2533,10 @@ bool GUIManager::isGuiPresent(vector2d<s32> mousepos)
 		if (mousepos.Y>startpos)
 			return true;
 	}
+*/
 
-
-	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
-		return true;
+//	if (guiWindowItems->isVisible() && guiWindowItems->isPointInside(mousepos))
+//		return true;
 
 	if (consolewin->isVisible() && consolewin->isPointInside(mousepos))
 		return true;
@@ -3079,334 +3044,14 @@ void GUIManager::update()
 
 }
 
-// Set up the gameplay interface GUI
-void GUIManager::setupGameplayGUI()
-{
-
-	createConsole();
-
-    fader=guienv->addInOutFader();
-	fader->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
-    fader->setVisible(false);
-
-	// NEW Create display size since IRRlicht return wrong values
-	// Check the current screen size
-	displayheight=screensize.Height;
-	displaywidth=screensize.Width;
-
-	// Create a cutscene text
-	guiCutsceneText = guienv->addStaticText(L"This is a standard cutscene text",core::rect<s32>(100,displayheight/2+(displayheight/4),displaywidth-10,displayheight-100),false,true,0,-1,false);
-	guiCutsceneText->setOverrideFont(guiFontLarge28);
-	guiCutsceneText->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	guiCutsceneText->setVisible(false);
-
-	// This is called only in the PLAYER application
-	#ifndef EDITOR
-	// ----------------------------------------
-    guienv->getSkin()->setFont(guiFontC12);
-	//guienv->getSkin()->setFont(guiFontCourier12);
-	// Load textures
-	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
-
-	//LOADER WINDOW
-	guiLoaderWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...",0,WIN_LOADER);
-	guiLoaderWindow->setDrawTitlebar(false);
-	guiLoaderWindow->getCloseButton()->setVisible(false);
-
-	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
-    guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
-
-	//Define 2 buttons to place in the loader windows (player only)
-	guiBtGamePlay = guienv->addButton(core::rect<s32>(400,360,580,380),guiLoaderWindow, BT_PLAYER_START, L"PLAY GAME NOW!");
-	guiBtGamePlay->setVisible(false);
-
-	guiBtGamePlay = guienv->addButton(core::rect<s32>(20,360,200,380),guiLoaderWindow, BT_PLAYER_CONFIG, L"EDIT CONFIGURATION");
-	guiBtGamePlay->setVisible(false);
-
-	App::getInstance()->quickUpdate();
-
-	loadFonts();
-	guiLoaderDescription->setText(L"Loading interface graphics...");
-	//printf("The GUI should display from here...\n");
-	// quick update
-	App::getInstance()->quickUpdate();
-
-	// Buttons
-	ITexture* imgCloseProgram = driver->getTexture("../media/art/bt_close_program.png");
-	ITexture* imgAbout = driver->getTexture("../media/art/bt_about.png");
-	ITexture* imgAbout1 = driver->getTexture("../media/art/bt_about_ghost.png");
-	ITexture* imgHelp = driver->getTexture("../media/art/bt_help.png");
-	ITexture* imgHelp1 = driver->getTexture("../media/art/bt_help_ghost.png");
-	ITexture* imgConfig = driver->getTexture("../media/art/bt_config.png");
-	ITexture* imgConfig1 = driver->getTexture("../media/art/bt_config_ghost.png");
-
-	guiMainToolWindow = guienv->addWindow(myRect(driver->getScreenSize().Width-170,0,170,46),false,0,0,WIN_GAMEPLAY);
-	guiMainToolWindow->setDraggable(false);
-	guiMainToolWindow->setDrawTitlebar(false);
-	guiMainToolWindow->getCloseButton()->setVisible(false);
-	guiMainToolWindow->setVisible(false);
-
-
-	//Play Game
-	int x = 0;
-	mainToolbarPos.Y=5;
-    guiPlayGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_PLAY_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_play_game")).c_str());
-
-    guiPlayGame->setImage(driver->getTexture("../media/art/bt_play_game.png"));
-
-
-    //Stop Game
-    guiStopGame= guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_STOP_GAME,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_stop_game")).c_str());
-
-    guiStopGame->setImage(driver->getTexture("../media/art/bt_stop_game.png"));
-    guiStopGame->setVisible(false);
-
-
-
-    //ABOUT BUTTON
-	x += 42;
-    guiAbout = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_ABOUT,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_about")).c_str() );
-
-    guiAbout->setImage(imgAbout);
-	guiAbout->setPressedImage(imgAbout1);
-
-	// Help Button
-	x += 42;
-    guiHelpButton = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_HELP,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_help")).c_str() );
-
-    guiHelpButton->setImage(imgHelp);
-    guiHelpButton->setPressedImage(imgHelp1);
-
-	// Close program
-	x += 42;
-	guiCloseProgram = guienv->addButton(myRect(10+x,mainToolbarPos.Y,32,32),
-                                     guiMainToolWindow,
-                                     BT_ID_CLOSE_PROGRAM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
-
-    guiCloseProgram->setImage(imgCloseProgram);
-
-	//ABOUT WINDOW
-    guiAboutWindow = guienv->addWindow(myRect(driver->getScreenSize().Width/2 - 300,driver->getScreenSize().Height/2 - 200,600,400),false);
-    guiAboutWindow->setDraggable(false);
-    guiAboutWindow->setDrawTitlebar(false);
-    guiAboutWindow->getCloseButton()->setVisible(false);
-    guiAboutWindow->setVisible(false);
-
-    guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
-
-    guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
-
-    guiAboutClose->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
-
-	guiAboutText = guienv ->addListBox(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-250,160,500,200),guiAboutWindow);
-
-	// Ask the LANGManager to fill the box with the proper Language of the about text.
-	LANGManager::getInstance()->setAboutText(guiAboutText);
-
-	// Create the Configuration window (Need to be updated)
-	configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
-
-	// ---------------------------------------
-	#endif
-
-	// --- Active game menu during play
-	ITexture* gameplay_bar = driver->getTexture("../media/art/gameplay_bar.png");
-	ITexture* circle = driver->getTexture("../media/art/circle.png");
-	ITexture* circleMana = driver->getTexture("../media/art/circlemana.png");
-	ITexture* topCircle = driver->getTexture("../media/art/circle_top.png");
-
-	// The bottom image of the interface
-	if (gameplay_bar)
-	{
-		gameplay_bar_image = guienv->addImage(gameplay_bar,vector2d<s32>((displaywidth/2)-(gameplay_bar->getSize().Width/2),displayheight-gameplay_bar->getSize().Height),true);
-		gameplay_bar_image->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-
-		// The life gauge
-		lifegauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
-		lifegauge->setImage(circle);
-		lifegauge->ViewHalfLeft();
-
-		// The mana gauge
-		managauge = new gui::CGUIGfxStatus(guienv, gameplay_bar_image,myRect((gameplay_bar->getSize().Width/2)-60,gameplay_bar->getSize().Height-128,128,128),-1);
-		managauge->setImage(circleMana);
-		managauge->ViewHalfRight();
-
-		// The image over the circle
-		IGUIImage* circle_overlay =
-			guienv->addImage(topCircle,vector2d<s32>((gameplay_bar->getSize().Width/2)-64,gameplay_bar->getSize().Height-128),true,gameplay_bar_image);
-		gameplay_bar_image->setVisible(false);
-	}
-
-
-
-
-
-    ///DIALOG
-    guiDialogImgYes = driver->getTexture("../media/art/img_yes.png");
-    guiDialogImgYes_s = driver->getTexture("../media/art/img_yes_s.png");
-    guiDialogImgNo = driver->getTexture("../media/art/img_no.png");
-    guiDialogImgNo_s = driver->getTexture("../media/art/img_no_s.png");
-
-
-    //view items
-	if (gameplay_bar_image)
-	{
-		core::stringw text=LANGManager::getInstance()->getText("bt_view_items");
-		guiBtViewItems = guienv->addButton(myRect(465,85,48,48),
-		//displaywidth/2 + 80,displayheight - 57,48,48),
-                                     gameplay_bar_image,
-                                     BT_ID_VIEW_ITEMS,L"",
-									 text.c_str());
-
-		guiBtViewItems->setImage(driver->getTexture("../media/art/bt_view_items.png"));
-		guiBtViewItems->setVisible(false);
-	}
-
-    //Items window
-
-    guiWindowItems = guienv->addWindow(myRect(100,100,displaywidth-200,displayheight-150),false,L"",0,GCW_GAMEPLAY_ITEMS);
-    guiWindowItems->getCloseButton()->setVisible(false);
-    guiWindowItems->setDrawTitlebar(false);
-    guiWindowItems->setDraggable(false);
-	guiWindowItems->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER,EGUIA_CENTER);
-    gameTabCtrl = guienv->addTabControl(core::rect<s32>(10,30,displaywidth-240,displayheight-200),guiWindowItems,false,true,-1);
-	IGUITab * tab1 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_stats_title").c_str());
-	IGUITab * tab2 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_inventory_title").c_str());
-	IGUITab * tab3 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_skills_title").c_str());
-	IGUITab * tab4 = gameTabCtrl->addTab(LANGManager::getInstance()->getText("game_quests_title").c_str());
-
-
-	guiPlayerNodePreview = new NodePreview(guienv,tab1,rect<s32>(440,40,740,370),-1);
-	guiPlayerNodePreview->drawBackground(false);
-
-	//DynamicObjectsManager::getInstance()->setActiveObject("player_template");
-
-	//guiPlayerNodePreview->setNode(DynamicObjectsManager::getInstance()->getActiveObject()->getNode());
-	//guiPlayerNodePreview->setNode(Player::getInstance()->getNodeRef());
-	//DynamicObjectsManager::getInstance()->setActiveObject("Archer");
-	//printf("This is the node name: %s\n",DynamicObjectsManager::getInstance()->getActiveObject()->getName());
-	guiPlayerNodePreview->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_UPPERLEFT);
-
-    guiPlayerItems = guienv->addListBox(myRect(10,30,200,displayheight-340),tab2,LB_ID_PLAYER_ITEMS,true);
-
-	ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
-
-	if (info_none)
-		guiPlayerLootImage = guienv->addImage(info_none,vector2d<s32>(220,30),true,tab2,IMG_LOOT);
-
-	guienv->addStaticText(L"",core::rect<s32>(220,250,520,410),true,true,tab2,TXT_ID_LOOT_DESCRIPTION,true);
-
-	//guienv->addImage(info_none,vector2d<s32>(5,5),true,tab2);
-	core::stringc filename = "../media/dynamic_objects/";
-
-    guiBtUseItem = guienv->addButton(myRect(10,displayheight-300,32,32),
-                                         tab2,
-                                         BT_ID_USE_ITEM,
-                                         L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_use_item")).c_str());
-    guiBtUseItem->setImage(driver->getTexture("../media/art/bt_yes_32.png"));
-
-    guiBtDropItem = guienv->addButton(myRect(52,displayheight-300,32,32),
-                                         tab2,
-                                         BT_ID_DROP_ITEM,
-                                         L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_drop_item")).c_str());
-    guiBtDropItem->setImage(driver->getTexture("../media/art/bt_no_32.png"));
-
-
-    guiBtCloseItemsWindow = guienv->addButton(myRect(displaywidth-210-32,displayheight-160 - 32,32,32),
-                                         guiWindowItems,
-                                         BT_ID_CLOSE_ITEMS_WINDOW,
-                                         L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_close_items_window")).c_str());
-    guiBtCloseItemsWindow->setImage(driver->getTexture("../media/art/bt_arrow_32.png"));
-	guiWindowItems->setVisible(false);
-
-
-
-	// TExt GUI for player stats
-
-    guiPlayerMoney = guienv->addStaticText(L"GOLD:129",myRect(15,displayheight-300,300,32),false,false,tab1);
-    guiPlayerMoney->setOverrideFont(guiFontLarge28);
-    guiPlayerMoney->setOverrideColor(SColor(255,255,255,255));
-
-	playerLifeText = LANGManager::getInstance()->getText("txt_player_life");
-
-	guiPlayerLife_Shadow=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(14,5,600,30),false,false,tab1,-1,false);
-    guiPlayerLife_Shadow->setOverrideColor(SColor(255,30,30,30));
-    guiPlayerLife_Shadow->setOverrideFont(guiFontLarge28);
-
-    guiPlayerLife=guienv->addStaticText(stringw(playerLifeText).c_str(),myRect(15,6,600,30),false,false,tab1,-1,false);
-    guiPlayerLife->setOverrideColor(SColor(255,255,255,100));
-    guiPlayerLife->setOverrideFont(guiFontLarge28);
-
-	this->setElementVisible(ST_ID_PLAYER_LIFE, false);
-
-
-	////// --------------------------------
-	///    Define the Dialogs used in the game
-	//////
-
-	guidialog = guienv->addWindow(myRect(10,displayheight-200,displaywidth-20,190),true,L"",0,GCW_DIALOG);
-	guidialog->getCloseButton()->setVisible(false);
-	guidialog->setDrawTitlebar(false);
-	guidialog->setDraggable(false);
-	guidialog->setDrawBackground(false);
-	guidialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-
-	// Panel background is done with pictures
-	IGUIImage* img1 = guienv->addImage(driver->getTexture("../media/art/panel_left.png"),vector2d<s32>(0,0),true,guidialog);
-	IGUIImage* img2 = guienv->addImage(driver->getTexture("../media/art/panel_middle.png"),vector2d<s32>(51,0),true,guidialog);
-	IGUIImage* img3 = guienv->addImage(driver->getTexture("../media/art/panel_right.png"),vector2d<s32>(581,0),true,guidialog);
-	img2->setScaleImage(true);
-	img2->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	img3->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-
-	// Text display of the panel
-	rect<s32> textRect = rect<s32>(30,25,600,170);
-	txt_dialog = guienv->addStaticText(L"Hello! This is a simple test to see how the text is flowing inside the box. There is a test, test, and test of text we need to make to be sure the flowing is ok",textRect,false,false,guidialog,TXT_ID_DIALOG,false);
-	txt_dialog->setOverrideFont(guiFontDialog);
-	txt_dialog->setOverrideColor(SColor(255,255,255,255));
-	txt_dialog->setWordWrap(true);
-	txt_dialog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-
-	guiBtDialogYes = guienv->addButton(myRect(640,30,52,52),
-                                         guidialog,
-                                         BT_ID_DIALOG_YES,
-                                         L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_dialog_yes")).c_str());
-    guiBtDialogYes->setImage(guiDialogImgYes);
-	guiBtDialogYes->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	guiBtDialogCancel = guienv->addButton(myRect(640,110,52,52),
-                                         guidialog,
-                                         BT_ID_DIALOG_CANCEL,
-                                         L"",
-                                         stringw(LANGManager::getInstance()->getText("bt_dialog_no")).c_str());
-    guiBtDialogCancel->setImage(guiDialogImgNo);
-	guiBtDialogCancel->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
-	guidialog->setVisible(false);
-
-}
-
 //! Hides/Display a IRB window/Pane
 // Could be simplified
 void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 {
 	bool retracted = false; //default status for panes
 	core::dimension2d<u32> screen = App::getInstance()->getDevice()->getVideoDriver()->getScreenSize();
+	IGUIElement* windowitems=NULL;
+	IGUIWindow* guidialog=NULL;
     switch(window)
     {
 #ifdef EDITOR
@@ -3503,8 +3148,10 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 #endif
         case GCW_GAMEPLAY_ITEMS:
             this->updateItemsList();
-			if (guiWindowItems)
-				guiWindowItems->setVisible(visible);
+			windowitems = getGUIElement(GCW_GAMEPLAY_ITEMS);
+			if (windowitems)
+				windowitems->setVisible(visible);
+			
             break;
         case GCW_ABOUT:
 			if (visible)
@@ -3517,7 +3164,9 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             guiVegetationToolbar->setVisible(visible);
             break;
 		case GCW_DIALOG:
-			this->guidialog->setVisible(visible);
+			guidialog=(IGUIWindow*)this->getGUIElement(GCW_DIALOG);
+			if (guidialog)
+				guidialog->setVisible(visible);
 			break;
 
         default:
@@ -3660,6 +3309,7 @@ void GUIManager::contractPanel(GUIManager::GUI_ID id)
 // Ex: IGUIButton* button=(IGUIButton*)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_ID_TERRAIN_TRANSFORM,true);
 void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 {
+	IGUIButton* button=NULL;
 	///TODO: fazer metodo getElement by ID!!!
    switch(id)
     {
@@ -3787,13 +3437,21 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 			break;
 #endif
         case BT_ID_ABOUT:
-            guiAbout->setEnabled(enable);
-			guiAbout->setPressed(!enable);
+			button=(IGUIButton*)getGUIElement(BT_ID_ABOUT);
+			if (button)
+			{
+				button->setEnabled(enable);
+				button->setPressed(!enable);
+			}
             break;
 
         case BT_ID_HELP:
-            guiHelpButton->setEnabled(enable);
-            guiHelpButton->setPressed(!enable);
+			button=(IGUIButton*)getGUIElement(BT_ID_HELP);
+            if (button)
+			{
+				button->setEnabled(enable);
+				button->setPressed(!enable);
+			}
             break;
 
         default:
@@ -3805,14 +3463,23 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 // Set visibility of specific IRB gui (script editor, etc.)
 void GUIManager::setElementVisible(GUI_ID id, bool visible)
 {
+	IGUIElement* playerlife=NULL;
+	IGUIElement* barimage=NULL;
+	IGUIElement* btviewitem=NULL;
+	IGUIButton* guiPlayGame=NULL;
+	IGUIButton* guiStopGame=NULL;
     switch(id)
     {
         case BT_ID_PLAY_GAME:
-            guiPlayGame->setVisible(visible);
+			guiPlayGame=(IGUIButton*)getGUIElement(BT_ID_PLAY_GAME);
+			if (guiPlayGame)
+				guiPlayGame->setVisible(visible);
             break;
 
         case BT_ID_STOP_GAME:
-            guiStopGame->setVisible(visible);
+			guiStopGame=(IGUIButton*)getGUIElement(BT_ID_STOP_GAME);
+			if (guiStopGame)
+				guiStopGame->setVisible(visible);
 #ifdef EDITOR
 			guiMainWindow->setVisible(!visible);
 			guiStatus->setVisible(!visible);
@@ -3820,15 +3487,23 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
             break;
 
         case ST_ID_PLAYER_LIFE:
-            guiPlayerLife->setVisible(visible);
-            guiPlayerLife_Shadow->setVisible(visible);
+			playerlife=getGUIElement(ST_ID_PLAYER_LIFE);
+			if(playerlife)
+				playerlife->setVisible(visible);
+
+            //guiPlayerLife->setVisible(visible);
+            //guiPlayerLife_Shadow->setVisible(visible);
             break;
 
         case BT_ID_PLAYER_EDIT_SCRIPT:
             break;
 
 		case IMG_BAR:
-			gameplay_bar_image->setVisible(visible);
+			barimage = getGUIElement(IMG_BAR);
+			if (barimage)
+				barimage->setVisible(visible);
+			
+			//gameplay_bar_image->setVisible(visible);
 			break;
 
 		case CONSOLE:
@@ -3840,12 +3515,16 @@ void GUIManager::setElementVisible(GUI_ID id, bool visible)
 
 		case BT_ID_VIEW_ITEMS:
 		{
-
-	        guiBtViewItems->setVisible(visible);
+			btviewitem = getGUIElement(BT_ID_VIEW_ITEMS);
+			if (btviewitem)
+				btviewitem->setVisible(visible);
+	      //  guiBtViewItems->setVisible(visible);
 			// Update the gold items
 			stringc playerMoney = LANGManager::getInstance()->getText("txt_player_money");
 			playerMoney += DynamicObjectsManager::getInstance()->getPlayer()->getMoney();
-			this->setStaticTextText(ST_ID_PLAYER_MONEY,playerMoney);
+			IGUIStaticText* text = (IGUIStaticText*)getGUIElement(ST_ID_PLAYER_MONEY);
+			if (text)
+				text->setText(((core::stringw)playerMoney).c_str());
 		}
         break;
 
@@ -3886,39 +3565,12 @@ void GUIManager::showMessage(GUI_MSG_TYPE msgType, stringc msg)
 
 void GUIManager::showBlackScreen(stringc text)
 {
-    fader->setVisible(true);
-    fader->fadeOut(1000);
-
-    while(!fader->isReady() && App::getInstance()->getDevice()->run())
-    {
-        App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
-        App::getInstance()->getDevice()->getSceneManager()->drawAll();
-
-        guienv->drawAll();
-
-        guiFontLarge28->draw(stringw(text),myRect(0,0,
-                                             App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width,
-                                             App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height ),
-                     SColor(255,255,255,255),true,true);
-
-
-        App::getInstance()->getDevice()->getVideoDriver()->endScene();
-    }
+	GUIGame::getInstance()->showBlackScreen(text);
 }
 
 void GUIManager::hideBlackScreen()
 {
-    fader->fadeIn(1000);
-
-    while(!fader->isReady() && App::getInstance()->getDevice()->run())
-    {
-        App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
-        App::getInstance()->getDevice()->getSceneManager()->drawAll();
-        guienv->drawAll();
-        App::getInstance()->getDevice()->getVideoDriver()->endScene();
-    }
-
-    fader->setVisible(false);
+	GUIGame::getInstance()->hideBlackScreen();
 }
 
 void GUIManager::loadFonts()
@@ -3948,26 +3600,6 @@ void GUIManager::loadFonts()
 		guiFont8->setKerningWidth(-1);
 	    guiFont8->setKerningHeight(-6);
 	}
-}
-
-void GUIManager::setStaticTextText(GUI_ID id, stringc text)
-{
-    switch(id)
-    {
-        case ST_ID_PLAYER_LIFE:
-			if (guiWindowItems->isVisible())
-			{
-				guiPlayerLife->setText(stringw(text).c_str());
-				guiPlayerLife_Shadow->setText(stringw(text).c_str());
-			}
-            break;
-        case ST_ID_PLAYER_MONEY:
-            guiPlayerMoney->setText(stringw(text).c_str());
-            break;
-
-        default:
-            break;
-    }
 }
 
 void GUIManager::setConsoleText(stringw text, video::SColor color)
@@ -4042,184 +3674,40 @@ void GUIManager::setConsoleLogger(vector<core::stringw> &text)
 //stop sound when player cancel the dialog
 void GUIManager::stopDialogSound()
 {
-    if(dialogSound)
-    {
-        dialogSound->stop();
-    }
+	GUIGame::getInstance()->stopDialogSound();
 
 }
 
 void GUIManager::showDialogMessage(stringw text, std::string sound)
 {
 
-	//stringw text2 = (stringw)text.c_str();
-	txt_dialog->setText(text.c_str());
-	if(guiBtDialogCancel->isVisible())
-		guiBtDialogCancel->setVisible(false);
-
-	setWindowVisible(GCW_DIALOG,true);
-	App::getInstance()->setAppState(App::APP_WAIT_DIALOG);
-
-	//Play dialog sound (yes you can record voices!)
-    dialogSound = NULL;
-
-	//Pause the player during the dialog opening
-	DynamicObjectsManager::getInstance()->getPlayer()->setAnimation("idle");
-
-	if (sound.size()>0)
-    //if((sound.c_str() != "") | (sound.c_str() != NULL))
-    {
-        stringc soundName = "../media/sound/";
-        soundName += sound.c_str();
-        dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
-    }
-
+	GUIGame::getInstance()->showDialogMessage(text,sound);
 }
 
 bool GUIManager::showDialogQuestion(stringw text, std::string sound )
 {
-
-	//Pause the player during the dialog opening
-	DynamicObjectsManager::getInstance()->getPlayer()->setAnimation("idle");
-
-	//stringw text2 = (stringw)text.c_str();
-	txt_dialog->setText(text.c_str());
-	if(!guiBtDialogCancel->isVisible())
-		guiBtDialogCancel->setVisible(true);
-
-	setWindowVisible(GCW_DIALOG,true);
-	App::getInstance()->setAppState(App::APP_WAIT_DIALOG);
-
-	//Play dialog sound (yes you can record voices!)
-    dialogSound = NULL;
-
-	if (sound.size()>0)
-    //if((sound.c_str() != "") | (sound.c_str() != NULL))
-    {
-        stringc soundName = "../media/sound/";
-        soundName += sound.c_str();
-        dialogSound = SoundManager::getInstance()->playSound2D(soundName.c_str());
-    }
-
-	return true;
+	return GUIGame::getInstance()->showDialogQuestion(text, sound); 
 }
 
 //Need to be reworked: BAD. Render loop is done here!
 stringc GUIManager::showInputQuestion(stringw text)
 {
-    std::string newtxt = "";
-
-    bool mouseExit = false;
-
-	
-    while(!App::getInstance()->isKeyPressed(KEY_RETURN) && mouseExit==false && App::getInstance()->getDevice()->run())
-    {
-		u32 timercheck = App::getInstance()->getDevice()->getTimer()->getRealTime();
-        App::getInstance()->getDevice()->getVideoDriver()->beginScene(true, true, SColor(0,200,200,200));
-        App::getInstance()->getDevice()->getSceneManager()->drawAll();
-        //guienv->drawAll();
-
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DRectangle(SColor(150,0,0,0), rect<s32>(10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 200,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                                                                                        App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10));
-
-        rect<s32> textRect = rect<s32>(10,  App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 180,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 10,
-                                            App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 10);
-
-        stringw realTxt = stringw(text.c_str());
-        realTxt += stringw(newtxt.c_str());
-		// Flashing cursor, flash at 1/4 second interval (based on realtime)
-	    if((timercheck-timer2>250))
-		{
-			realTxt += L'_';
-			if (timercheck-timer2>500)
-				timer2=timercheck;
-		}
-
-        guiFontDialog->draw(realTxt.c_str(),textRect,SColor(255,255,255,255),false,false,&textRect);
-
-
-        //draw YES GREEN button
-        position2di buttonYesPosition = position2di(App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Width - 58,
-                    App::getInstance()->getDevice()->getVideoDriver()->getScreenSize().Height - 58);
-
-        App::getInstance()->getDevice()->getVideoDriver()->draw2DImage(guiDialogImgYes,buttonYesPosition,
-                                                                   rect<s32>(0,0,48,48),0,SColor(255,255,255,255),true);
-
-        //check mouse click on OK button
-        position2di mousePos = App::getInstance()->getDevice()->getCursorControl()->getPosition();
-		if(mousePos.getDistanceFrom(buttonYesPosition+position2di(16,16)) < 16 && App::getInstance()->isMousePressed(0)) mouseExit = true;
-
-
-        //verify pressed chars and add it to the string
-
-        if(timercheck-timer > 160)
-        {
-            //process all keycodes [0-9] and [A-Z]
-            for(int i=0x30;i<0x5B;i++)
-            {
-				if(App::getInstance()->isKeyPressed(i))
-                {
-                    newtxt += i;
-                    timer = timercheck;
-                }
-            }
-
-            //process delete and backspace (same behavior for both of them -> remove the last char)
-            if(App::getInstance()->isKeyPressed(KEY_BACK) || App::getInstance()->isKeyPressed(KEY_DELETE))
-            {
-                newtxt = newtxt.substr(0,newtxt.size()-1);
-				timer = timercheck;
-            }
-        }
-        App::getInstance()->getDevice()->getVideoDriver()->endScene();
-    }
-
-    //EventReceiver::getInstance()->flushKeys();
-    //EventReceiver::getInstance()->flushMouse();
-    this->flush();
-
-    return stringc(newtxt.c_str());
+	return GUIGame::getInstance()->showInputQuestion(text);
 }
 
 stringc GUIManager::getActivePlayerItem()
 {
-    return stringc(guiPlayerItems->getListItem(guiPlayerItems->getSelected()));
+	return GUIGame::getInstance()->getActivePlayerItem();
 }
 
 DynamicObject* GUIManager::getActiveLootItem()
 {
-	vector<DynamicObject*> lootitems = DynamicObjectsManager::getInstance()->getPlayer()->getLootItems();
-
-	s32 item=guiPlayerItems->getSelected();
-	if (item>-1 && lootitems.size()>0)
-		return lootitems[item];
-	else
-		return NULL;
+	return GUIGame::getInstance()->getActiveLootItem();
 }
 
 void GUIManager::updateItemsList()
 {
-    guiPlayerItems->clear();
-    //vector<stringc> items = DynamicObjectsManager::getInstance()->getPlayer()->getItems();
-	vector<DynamicObject*> lootitems = DynamicObjectsManager::getInstance()->getPlayer()->getLootItems();
-	std::sort(lootitems.begin(), lootitems.end());
-
-    //for(int i = 0; i<(int)items.size(); i++) guiPlayerItems->addItem( stringw(items[i]).c_str() );
-	for(int i = 0; i<(int)lootitems.size(); i++)
-	{
-		//internalname is the Alias name of the object. If undefined it use the internal name
-		guiPlayerItems->addItem(stringw(lootitems[i]->internalname).c_str());
-	}
-
-	if (guiPlayerItems->getSelected()<0)
-	{
-		ITexture* info_none = driver->getTexture("../media/editor/info_none.jpg");
-		guiPlayerLootImage->setImage(info_none);
-		((IGUIStaticText*)guienv->getRootGUIElement()->getElementFromId(TXT_ID_LOOT_DESCRIPTION,true))->setText(L"");
-	}
+	GUIGame::getInstance()->updateItemsList();
 }
 
 void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
@@ -4258,7 +3746,7 @@ void GUIManager::flush()
     guiMainNewProject->setPressed(false);
     guiDynamicObjects_LoadScriptTemplateBT->setPressed(false);
 #endif
-    guiBtViewItems->setPressed(false);
+    //guiBtViewItems->setPressed(false);
 }
 
 // Display the configuration Window GUI
@@ -4266,6 +3754,35 @@ void GUIManager::showConfigWindow()
 {
 	App::APP_STATE old_State = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(App::APP_EDIT_WAIT_GUI);
-    configWindow->showWindow();
+	if (configWindow)
+		configWindow->showWindow();
+
     App::getInstance()->setAppState(old_State);
+}
+
+void GUIManager::showCutsceneText(bool visible)
+{
+	GUIGame::getInstance()->showCutsceneText(visible);
+}
+
+void GUIManager::setCutsceneText(core::stringw text)
+{
+	GUIGame::getInstance()->setCutsceneText(text);
+}
+
+void GUIManager::setupGameplayGUI()
+{
+#ifndef EDITOR
+	// Create the Configuration window (Need to be updated)
+    configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+#endif
+	GUIGame::getInstance()->setupGameplayGUI();
+}
+
+IGUIElement* GUIManager::getGUIElement(u32 id)
+{
+	IGUIElement* elem = guienv->getRootGUIElement()->getElementFromId(id, true);
+	if (!elem)
+		printf("failed to get this id: %d\n",(int)id); 
+	return guienv->getRootGUIElement()->getElementFromId(id, true);
 }
