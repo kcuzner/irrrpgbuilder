@@ -636,7 +636,7 @@ DynamicObject* DynamicObjectsManager::createActiveObjectAt(vector3df pos)
 {
 
 	//Load animation data when the mesh is instanced on the ground
-	for (int a=0; a<activeObject->animations.size(); a++)
+	for (u32 a=0; a<activeObject->animations.size(); a++)
 	{
 		if (activeObject->animations[a].meshname!="")
 		{

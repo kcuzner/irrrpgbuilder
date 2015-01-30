@@ -98,13 +98,28 @@ class GUIManager
 		IMG_LOOT,
 		IMG_LIFEGAUGE,
 		IMG_MANAGAUGE,
+		IMG_THUMBNAIL,
 		CONSOLE,
 		ST_ID_CUTSCENE_TEXT,
+		LB_ID_LOGGER_MESSAGE,
+		LB_ID_LOGGER_CONSOLE,
 
+		TXT_ID_STATUS_CAMERA,
+		TXT_ID_STATUS_TEXT,
 		TXT_ID_SELOBJECT,
 		TXT_ID_SELOBJECT_TYPE,
 		TXT_ID_CUR_TEMPLATE,
 		TXT_ID_OBJ_SCRIPT,
+		TXT_ID_LOADER,
+		TXT_ID_TERRAIN_BRUSH_STRENGTH,
+		TXT_ID_TERRAIN_RADIUS,
+		TXT_ID_TERRAIN_RADIUS1,
+		TXT_ID_TERRAIN_PLATEAU,
+		TXT_ID_MDL_NAME,
+		TXT_ID_MDL_DESC,
+		TXT_ID_MDL_AUTH,
+		TXT_ID_MDL_LIC,
+
 
 		CO_ID_DYNAMIC_OBJECT_OBJLIST_CATEGORY,
 		CO_ID_CUSTOM_TILES_OBJLIST_CATEGORY,
@@ -154,13 +169,18 @@ class GUIManager
 		VEGE_CHECKBOX,
 		VEGE_LISTBOX,
 		VEGE_IMAGE,
-		ID_FADER
+		ID_FADER,
+		ID_TABCONTROL_MAIN
 	};
 
 	//here are all windows of the editor (except mainWindow - toolbar)
 	enum GUI_CUSTOM_WINDOW //Need to start as a hight number as the GUI id should not conflict with the other items
 	{
 		GCW_DYNAMIC_OBJECT_CHOOSER = 10500,
+		GCW_DYNAMIC_OBJECT_CHOOSER_INNER,
+		GCW_DYNAMIC_OBJECT_CHOOSER_INNER1,
+		GCW_DYNAMIC_OBJECT_CHOOSER_INNER2,
+		GCW_DYNAMIC_OBJECT_CHOOSER_INNER3,
 		GCW_DYNAMIC_PLAYER_EDIT,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
@@ -174,7 +194,9 @@ class GUIManager
 		GCW_CONSOLE,
 		GCW_DYNAMIC_OBJECT_INFO,  // this is a pane not a window
 		GCW_CUSTOM_SEGMENT_CHOOSER,
-		GCW_VIEW_MENU
+		GCW_VIEW_MENU,
+		GCW_TOP_WINDOW,
+		GCW_STATUSBAR
 	};
 
 	enum GUI_HELP_IMAGE
@@ -209,7 +231,6 @@ class GUIManager
 
 		inline IGUIEnvironment* getGuiEnv() { return guienv;}
 		inline IVideoDriver* getDriver() { return driver;}
-		inline NodePreview* getNodePreview() { return guiDynamicObjects_NodePreview;}
 
 		void setupGameplayGUI();
 
@@ -222,13 +243,16 @@ class GUIManager
 		void updateCurrentCategory(LIST_TYPE type = LIST_NPC);
 		void buildSceneObjectList(DynamicObject::TYPE objtype = DynamicObject::OBJECT_TYPE_NONE);
 
+		core::stringw getEditCameraString(ISceneNode* node);
+		void updateEditCameraString(scene::ISceneNode * node); 
+
 		void setTextLoader(stringw text);
 		IGUIFont* getFont(FONT_NAME fontName);
 		void showCutsceneText(bool visible);
 		void setCutsceneText(core::stringw text);
 
     	void drawPlayerStats();
-		bool isGuiPresent(vector2d<s32> mousepos);
+		
 		bool isGuiChildPresent(gui::IGUIElement* elem, vector2d<s32> mousepos);
 		void createConsole();
 		IGUIElement* getGUIElement(u32 id);
@@ -237,21 +261,6 @@ class GUIManager
 
 #ifdef EDITOR
 		void setupEditorGUI();
-		void createProjectTab();
-		void createPlayTab();
-		void createEnvironmentTab();
-		void createObjectTab();
-		void createMainToolbar();
-		void createMainTabs();
-
-		void createDisplayOptionsGUI();
-		void createAboutWindowGUI();
-		void createVegetationToolbar();
-		void createTerrainToolbar();
-		void createDynamicObjectChooserGUI();
-		void createCustomSegmentChooserGUI();
-		void createContextMenuGUI();
-		void createCodeEditorGUI();
 		void setEditBoxText(GUI_ID id, stringw text);
 		void expandPanel(GUI_CUSTOM_WINDOW id);
 		void contractPanel(GUI_ID id);
@@ -263,7 +272,6 @@ class GUIManager
         stringc getComboBoxItem(GUI_ID id);
 		IGUIListBox* getListBox(GUI_ID id);
 
-		bool getVisibleStatus(s32 ID);
 		void getInfoAboutModel(LIST_TYPE type = LIST_NPC);
 
 		void updateGuiPositions(dimension2d<u32> screensize);
@@ -303,8 +311,6 @@ class GUIManager
 		// Update the infos of the node when the user move the mouse (call coming from APP class)
 		void updateNodeInfos(ISceneNode * node);
 
-		core::stringw getEditCameraString(scene::ISceneNode *node);
-		inline void updateEditCameraString(scene::ISceneNode * node) {if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}}
 		rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
         void flush();
@@ -312,11 +318,11 @@ class GUIManager
 
         void showConfigWindow();
 
-		inline void setStatusText(core::stringw text) {if (guiStatusText) {guiStatusText->setText(text.c_str());}}
+		inline void setStatusText(core::stringw text) {IGUIStaticText* guiStatusText=(IGUIStaticText*)getGUIElement(TXT_ID_STATUS_TEXT); if (guiStatusText) {guiStatusText->setText(text.c_str());}}
 		// Accessing the loader window directly
 		IGUIWindow* guiLoaderWindow;
 
-		  IGUIFont* guiFontC12;//arial 10
+		IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
 		IGUIFont* guiFontCourier11;
 		IGUIFont* guiFontCourier10;
@@ -329,268 +335,30 @@ class GUIManager
 		IGUIFont* guiFont12;
 		IGUIFont* guiFont14;
 
-	    virtual ~GUIManager();
+	    
     private:
+		 GUIManager();
+		 ~GUIManager();
 		
 		IrrlichtDevice *device;
         IGUIEnvironment* guienv;
 		IVideoDriver* driver;
 		dimension2d<u32> screensize;
 
-		
-
         int mouseX;
         int mouseY;
 
 		u32 timer3; //Timer for the Context menu disabling
 
-		
-
 		// Used to store text events in a buffer while the GUI is not displayed
 		std::vector<core::stringw> textevent;
 		std::vector<video::SColor> texteventcolor;
 
-		
-        position2di mainToolbarPos;
-		IGUITabControl * mainTabCtrl;
-		IGUITabControl * mainToolCtrl;
-		IGUITabControl * prjTabCtrl;
-		
-
-		IGUITab * tabProject;
-		IGUITab * tabPlayTool;
-		IGUITab * tabEnv;
-		IGUITab * tabObject;
-		IGUITab * tabTools;
-		IGUITab * tabConfig;
-
-      
-
-        ///Main Functions
-		IGUIImage*  guiBackImage;
-		IGUIImage*  guiBackImage2;
-        IGUIButton* guiMainNewProject;
-        IGUIButton* guiMainSaveProject;
-        IGUIButton* guiMainLoadProject;
-        IGUIButton* guiPlayGame;
-        IGUIButton* guiStopGame;
-        IGUIButton* guiEditCharacter;
-        IGUIButton* guiEditScriptGlobal;
-
-        IGUIButton* guiAbout;
-        IGUIWindow* guiAboutWindow;
-        IGUIButton* guiAboutClose;
-        IGUIButton* guiCloseProgram;
-		IGUIListBox* guiAboutText;
-
-        IGUIButton* guiHelpButton;
-        IGUIButton* guiConfigButton;
-        GUIConfigWindow* configWindow;
-		IGUIWindow* guiStatus;
-		IGUIStaticText* guiStatusText;
-		IGUIStaticText* guiStatusCameraText;
-		
-
-		IGUIListBox* console;
-		IGUIListBox* consolelog;
-		CGUIExtWindow* consolewin;//IGUIWindow * consolewin;
-
-		// Loader window
-		IGUIStaticText* guiLoaderDescription;
-
-        ///Main window (like a toolbar on the top...)
-        IGUIWindow* guiMainWindow;
-		IGUIWindow* guiMainToolWindow;
-
-        ///TerrainEditor
-        IGUIButton* guiTerrainTransform;
-		IGUIButton* guiTerrainAddCustomSegment;
-        IGUIButton* guiTerrainAddSegment;
-		IGUIButton* guiTerrainAddEmptySegment;
-        ITexture* helpTerrainTransform;
-        ITexture* helpTerrainSegments;
-
-
-        ///Terrain Toolbar
-        IGUIWindow* guiTerrainToolbar;
-        IGUIScrollBar* guiTerrainBrushStrength;
-        IGUIStaticText* guiTerrainBrushStrengthLabel;
-		IGUIScrollBar* guiTerrainBrushPlateau;
-		IGUIStaticText* guiTerrainBrushPlateauValue;
-		IGUIScrollBar* guiTerrainBrushRadius;
-		IGUIScrollBar* guiTerrainBrushRadius2;
-        IGUIStaticText* guiTerrainBrushRadiusLabel;
-		IGUIStaticText* guiTerrainBrushStrengthValue;
-        IGUIStaticText* guiTerrainBrushRadiusValue;
-		IGUIStaticText* guiTerrainBrushRadiusValue2;
-
-		CGUIExtWindow* guiCustomSegmentWindowChooser;
-
-        IGUIButton* guiTerrainPaintVegetation;
-        ITexture* helpVegetationPaint;
-
-        ///Vegetation Toolbar
-        IGUIWindow* guiVegetationToolbar;
-        IGUIScrollBar* guiVegetationBrushStrength;
-        IGUIStaticText* guiVegetationBrushStrengthLabel;
-
-        ///Dynamic Objects
-        IGUIButton* guiDynamicObjectsMode;
-		IGUIButton* guiDynamicObjectsProps;
-		IGUIButton* guiDynamicObjectsLoot;
-
-        //IGUIWindow* guiDynamicObjectsWindowChooser;
-		CGUIExtWindow* guiDynamicObjectsWindowChooser;
-		CGUIExtWindow* guiDynamicPlayerWindowChooser;
-		gui::IGUIWindow* InnerChooser; // For the inner part of the chooser (add)
-		gui::IGUIWindow* InnerChooser1; // For the inner part of the chooser (select)
-		gui::IGUIWindow* InnerChooser2; // For the inner part of the chooser (move/rotate/scale)
-		gui::IGUIWindow* InnerChooser3; // For the inner part of the chooser (select->Object lists)
-
-
-		IGUIWindow* guiDynamicObjectsWindowInfo;
-        CGUIExtWindow* guiDynamicObjectsWindowEditAction; //IGUIWindow* guiDynamicObjectsWindowEditAction;
-
-		IGUIComboBox * screencombo; //Screen settings combo box
-		IGUIComboBox * snappingcombo; //snapping distance combo box
-
-		IGUIToolBar * guiDynamicObjectEditModesPanel;
-		IGUIButton* guiDOAddMode;
-		IGUIButton* guiDOSelMode;
-		IGUIButton* guiDOMovMode;
-		IGUIButton* guiDORotMode;
-		IGUIButton* guiDOScaMode;
-
-        IGUIListBox* guiDynamicObjects_OBJChooser;
-		IGUIListBox* guiDynamicObjects_OBJCategory;
-		IGUIComboBox* guiDynamicObjects_Category;
-        NodePreview* guiDynamicObjects_NodePreview;
-		NodePreview* guiPlayerNodePreview;
-		IGUIButton* guiDynamicObjectsInfo;
-
-		// For the Custom tiles selection
-		IGUIListBox* guiCustom_Segment_OBJChooser;
-		IGUIListBox* guiCustom_Segment_OBJCategory;
-		IGUIListBox* guiSceneObjectList;
-		IGUIComboBox* guiCustom_Segment_Category;
-		IGUIButton* guiSegmentRotateLeft;
-		IGUIButton* guiSegmentRotateRight;
-
-        IGUIComboBox* guiDynamicObjects_LoadScriptTemplateCB;
-        IGUIButton* guiDynamicObjects_LoadScriptTemplateBT;
-
-        IGUIWindow* guiDynamicObjects_Context_Menu_Window;
-		IGUIWindow* guiDynamicObjects_Context_Menu_Window1;
-        IGUIButton* guiDynamicObjects_Context_btEditScript;
-        IGUIButton* guiDynamicObjects_Context_btMoveRotate;
-        IGUIButton* guiDynamicObjects_Context_btRemove;
-        IGUIButton* guiDynamicObjects_Context_btCancel;
-		IGUIButton* guiDynamicObjects_Context_btSpawn;
-		IGUIButton* guiDynamicObjects_Context_btReplace;
-		IGUIButton* guiDynamicObjects_Context_btReplace2;
-
-        CGUIEditBoxIRB* guiDynamicObjects_Script;
-        IGUIEditBox* guiDynamicObjects_Script_Console;
-        IGUIButton* guiDynamicObjects_Script_Close;
-
-		IGUIListBox* vegelistbox;
-
-
-		// Information bar
-		IGUIStaticText * mdl_name;
-		IGUIStaticText * mdl_desc;
-		IGUIStaticText * mdl_auth;
-		IGUIStaticText * mdl_lic;
-
-		// Information bar custom tiles
-		IGUIStaticText * mdl_name1;
-		IGUIStaticText * mdl_desc1;
-		IGUIStaticText * mdl_auth1;
-		IGUIStaticText * mdl_lic1;
-
-		//Move, Rotate, Scale text input + lock
-		IGUISpinBox * pos_x_text;
-		IGUISpinBox * pos_y_text;
-		IGUISpinBox * pos_z_text;
-		IGUICheckBox * pos_x_lock;
-		IGUICheckBox * pos_y_lock;
-		IGUICheckBox * pos_z_lock;
-
-		IGUISpinBox * rot_x_text;
-		IGUISpinBox * rot_y_text;
-		IGUISpinBox * rot_z_text;
-		IGUICheckBox * rot_x_lock;
-		IGUICheckBox * rot_y_lock;
-		IGUICheckBox * rot_z_lock;
-
-		IGUISpinBox * sca_x_text;
-		IGUISpinBox * sca_y_text;
-		IGUISpinBox * sca_z_text;
-		IGUICheckBox * sca_x_lock;
-		IGUICheckBox * sca_y_lock;
-		IGUICheckBox * sca_z_lock;
-
-		// Items list
-		IGUIComboBox* guiDynamicObjects_listfilter;
-
-        ///IrrRPG Builder LOGO
-        ITexture* logo1;
-
-        ///Player
-        IGUIButton* guiPlayerEditScript;
-
-		
-
-      
-
-        
-
-        
-
-		
-
-		IGUIButton* guiBtGamePlay;
-		IGUIButton* guiBtGameConfig;
-
-		// Textures
-		ITexture* backtexture;
-		ITexture* imgNewProject;
-		ITexture* imgNewProject1;
-		ITexture* imgLoadProject;
-		ITexture* imgLoadProject1;
-		ITexture* imgSaveProject;
-		ITexture* imgSaveProject1;
-		ITexture* imgCloseProgram;
-		ITexture* imgAbout;
-		ITexture* imgAbout1;
-		ITexture* imgHelp;
-		ITexture* imgHelp1;
-		ITexture* imgConfig;
-		ITexture* imgConfig1;
-
-		// Default textures for the info panel
-		ITexture* info_none; // no texture in the template
-		ITexture* info_current; // current assigned texture
-		gui::IGUIImage * thumbnail; // GUI item that will have the content
-
-		ITexture* info_current1; // current assigned texture inside the Custom Segments
-		gui::IGUIImage * thumbnail1; // GUI item that will have the content inside Custom Segments
-
-
-        GUIManager();
-        
-		s32 displayheight;
-		s32 displaywidth;
-
-		int currentObjType;
+		GUIConfigWindow* configWindow;
 
        
-
-        void loadScriptTemplates();
-
-	
-
-
+		s32 displayheight;
+		s32 displaywidth;
 
 
 };

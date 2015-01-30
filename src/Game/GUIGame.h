@@ -58,6 +58,8 @@ private:
 
 	u32 timer;
 	u32 timer2;
+
+	GUIConfigWindow* configWindow;
 		
 
 

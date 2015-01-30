@@ -750,7 +750,7 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="cameras"
+				Name="camera"
 				>
 				<File
 					RelativePath=".\src\camera\CameraSystem.cpp"

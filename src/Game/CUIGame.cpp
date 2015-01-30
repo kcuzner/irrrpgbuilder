@@ -22,6 +22,9 @@ GUIGame::~GUIGame()
 	if (nodepreview)
 		delete nodepreview;
 
+	if (configWindow)
+		delete configWindow;
+
 }
 
 GUIGame* GUIGame::getInstance()
@@ -71,7 +74,10 @@ void GUIGame::setupGameplayGUI()
 	guiLoaderWindow->getCloseButton()->setVisible(false);
 
 	guienv->addImage(imgLogo,vector2d<s32>(5,5),true,guiLoaderWindow);
-    IGUIStaticText* guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",GUIManager::getInstance()->myRect(10,350,580,40),true,true,guiLoaderWindow,-1,false);
+    IGUIStaticText* guiLoaderDescription = guienv->addStaticText(L"Loading fonts...",
+		GUIManager::getInstance()->myRect(10,350,580,40),
+		true,true,guiLoaderWindow,
+		GUIManager::TXT_ID_LOADER,false);
 
 	//Define 2 buttons to place in the loader windows (player only)
 	IGUIButton* guiBtGamePlay = guienv->addButton(core::rect<s32>(400,360,580,380),guiLoaderWindow, GUIManager::BT_PLAYER_START, L"PLAY GAME NOW!");
@@ -174,7 +180,7 @@ void GUIGame::setupGameplayGUI()
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 
 	// Create the Configuration window (Need to be updated)
-	GUIConfigWindow* configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+	configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
 
 	// ---------------------------------------
 	#endif

@@ -133,6 +133,15 @@ bool App::cursorIsInEditArea()
 	if (GUIManager::getInstance()->isGuiChildPresent(device->getGUIEnvironment()->getRootGUIElement(),device->getCursorControl()->getPosition()))
 		condition = false;
 
+	//Exception for the gameplay bar image. We should be able to select in the empty area
+	IGUIImage* gameplay_bar_image = (IGUIImage*)GUIManager::getInstance()->getGUIElement(GUIManager::IMG_BAR);
+	if (gameplay_bar_image->isVisible() && gameplay_bar_image->isPointInside(device->getCursorControl()->getPosition()))
+	{
+		s32 startpos = (gameplay_bar_image->getAbsolutePosition().UpperLeftCorner.Y) + (gameplay_bar_image->getAbsolutePosition().getHeight()/2);
+		if (device->getCursorControl()->getPosition().Y<startpos)
+			condition = true;
+	}
+
 
 	if(device->getCursorControl()->getPosition().Y < 92 && app_state != APP_GAMEPLAY_NORMAL)  condition = false;
 
@@ -572,8 +581,6 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_TERRAIN_ADD_CUSTOM_SEGMENT:
-		//DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_CUSTOM_SEGMENT_OBJ_CHOOSER));
-		//this->setAppState(APP_EDIT_TERRAIN_CUSTOM_SEGMENTS);
 		GUIManager::getInstance()->UpdateCollections(GUIManager::LIST_SEGMENT);
 		currentObject=LIST_SEGMENT;
 		GUIManager::getInstance()->UpdateGUIChooser(GUIManager::LIST_SEGMENT);
@@ -2794,7 +2801,8 @@ void App::run()
 	// Update the info panel with the current "active object"
 	GUIManager::getInstance()->getInfoAboutModel();
 	// Loading is complete
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+	GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
+	//GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
@@ -3844,6 +3852,12 @@ void App::initialize()
 	// Initialize the GUI class first
 	GUIManager::getInstance();
 
+
+#ifdef EDITOR
+	GUIManager::getInstance()->setupEditorGUI();
+#endif
+
+
 	// Set the ambient light
 	//smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
 	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,1.0f));
@@ -3876,7 +3890,6 @@ void App::initialize()
 #ifdef EDITOR
 	// Initialize the camera (2) is maya type camera for editing
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
-	GUIManager::getInstance()->setupEditorGUI();
 //TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 	TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
 	quickUpdate();

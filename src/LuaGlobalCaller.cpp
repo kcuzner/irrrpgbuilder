@@ -711,7 +711,7 @@ int LuaGlobalCaller::checkObjectItem(lua_State *LS)
 
 		std::vector<DynamicObject*> list = tempObj->getLootItems();
 		//printf("Checking if the item is the same. Checking %i items.\n",list.size());
-		for (int a=0; a<list.size(); a++)
+		for (u32 a=0; a<list.size(); a++)
 		{
 			if (list[a]->getTemplateObjectName()==itemname)
 				result=true;
@@ -757,7 +757,7 @@ int LuaGlobalCaller::destroyObjectItem(lua_State *LS)
 	if (tempObj)
 	{
 		std::vector<DynamicObject*> list = tempObj->getLootItems();
-		for (int a=0; a<list.size(); a++)
+		for (u32 a=0; a<list.size(); a++)
 		{
 			if (list[a]->getTemplateObjectName()==itemname)
 			{
@@ -912,7 +912,7 @@ int LuaGlobalCaller::attachObject(lua_State *LS)
 		vector<DynamicObject::DynamicObject_attachment> attachments=tempObj->getAttachments(); 
 		int value = attachments.size();
 
-		for (int a=0; a<attachments.size(); a++)
+		for (u32 a=0; a<attachments.size(); a++)
 		{
 
 			if (attachments[a].name==(core::stringw)attachName)
