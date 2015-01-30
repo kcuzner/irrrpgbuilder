@@ -180,7 +180,12 @@ void GUIGame::setupGameplayGUI()
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 
 	// Create the Configuration window (Need to be updated)
+#ifndef EDITOR
 	configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+	configWindow->setID(GUIManager::GCW_CONFIG_WINDOW);
+	// Give back to the GUI Manager since it's needed for both applications
+	GUIManager::getInstance()->setConfigWindow(configWindow);
+#endif
 
 	// ---------------------------------------
 	#endif

@@ -104,7 +104,8 @@ void GUIManager::setupGameplayGUI()
 {
 #ifndef EDITOR
 	// Create the Configuration window (Need to be updated)
-    configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+    //configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+	//configWindow->setID(GCW_CONFIG_WINDOW)
 #endif
 	GUIGame::getInstance()->setupGameplayGUI();
 }
@@ -1003,7 +1004,6 @@ void GUIManager::showConfigWindow()
 {
 	App::APP_STATE old_State = App::getInstance()->getAppState();
 	App::getInstance()->setAppState(App::APP_EDIT_WAIT_GUI);
-	GUIConfigWindow* configWindow=GUIEditor::getInstance()->getConfigWindow();
 	if (configWindow)
 		configWindow->showWindow();
 

@@ -159,11 +159,17 @@ void GUIConfigWindow::showWindow()
 
         device->run();
 
-        device->getVideoDriver()->beginScene(true,true,SColor(0,200,200,200));
+        device->getVideoDriver()->beginScene(true,true,SColor(0,160,160,160));
 
         device->getSceneManager()->drawAll();
-        cfgWindow->draw();
 		
+#ifndef EDITOR
+			device->getGUIEnvironment()->getRootGUIElement()->bringToFront(cfgWindow);
+			device->getGUIEnvironment()->drawAll();
+#else
+ 
+			cfgWindow->draw();
+#endif		
 
         device->getVideoDriver()->endScene();
     }

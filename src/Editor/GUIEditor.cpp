@@ -191,9 +191,13 @@ void GUIEditor::setupEditorGUI()
 		logo1 = imgLogo;
 	else
 		logo1 = driver->getTexture("../media/art/logo1.png");
-
+#ifdef EDITOR
 	// Create the Configuration window (Need to be updated)
     configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
+	configWindow->setID(GUIManager::GCW_CONFIG_WINDOW);
+	// Give back to the GUI Manager since it's needed for both applications
+	GUIManager::getInstance()->setConfigWindow(configWindow);
+#endif
 	
 	// Update and refresh the display
 	App::getInstance()->quickUpdate();

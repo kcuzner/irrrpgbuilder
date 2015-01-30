@@ -13,13 +13,14 @@ using namespace gui;
 
 using namespace std;
 
-class GUIConfigWindow
-{
+class GUIConfigWindow {
     public:
         GUIConfigWindow(IrrlichtDevice* device);
         virtual ~GUIConfigWindow();
 
         void showWindow();
+		inline void setID(u32 id) {cfgWindow->setID(id);}
+		inline u32 getID() {return cfgWindow->getID();}
 
     protected:
     private:

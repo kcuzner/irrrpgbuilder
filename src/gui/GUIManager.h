@@ -196,7 +196,8 @@ class GUIManager
 		GCW_CUSTOM_SEGMENT_CHOOSER,
 		GCW_VIEW_MENU,
 		GCW_TOP_WINDOW,
-		GCW_STATUSBAR
+		GCW_STATUSBAR,
+		GCW_CONFIG_WINDOW
 	};
 
 	enum GUI_HELP_IMAGE
@@ -334,6 +335,9 @@ class GUIManager
 		IGUIFont* guiFont10;
 		IGUIFont* guiFont12;
 		IGUIFont* guiFont14;
+
+		//Set the config window pointer (rework later)
+		inline void setConfigWindow(GUIConfigWindow* config) {configWindow=config;}
 
 	    
     private:
