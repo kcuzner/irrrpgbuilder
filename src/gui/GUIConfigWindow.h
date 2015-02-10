@@ -25,6 +25,12 @@ class GUIConfigWindow {
     protected:
     private:
         IrrlichtDevice* device;
+
+		IGUITab* tabSystem;
+		IGUITab* tabScenary;
+		IGUITab* tabExperimental;
+		IGUITab* tabPlayerApp;
+
         IGUIButton* btOK;
         IGUIButton* btCancel;
 
@@ -39,10 +45,17 @@ class GUIConfigWindow {
 		IGUICheckBox* cbAntialias;
 		IGUICheckBox* cbSilouette;
 
+		IGUICheckBox* cbXEffect;
+
         IGUIComboBox* languageList;
+		IGUIComboBox* models;	
+
+		IGUIEditBox* ebDefaultProject;
+		IGUIEditBox* ebLogoImage;
         vector<stringc> languageListVector;
 
         IGUIEditBox* ebTerrainMesh;
+		IGUIEditBox* ebTerrainDensity;
         IGUIEditBox* ebTerrainScale;
         IGUIEditBox* ebTerrainL0;
         IGUIEditBox* ebTerrainL1;
@@ -63,6 +76,7 @@ class GUIConfigWindow {
         rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
 		core::stringc mapname;
+		f32 terraindensity;
 };
 
 #endif // GUICONFIGWINDOW_H

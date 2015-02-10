@@ -25,7 +25,6 @@ GUIManager::GUIManager()
 	guiFont10 = NULL;
 	guiFont12 = NULL;
 	guiFont14 = NULL;
-	guiLoaderWindow=NULL;
 	// Load the required font
 	guiFontC12 = guienv->getFont("../media/fonts/char12.xml");
 
@@ -297,7 +296,7 @@ void GUIManager::createConsole()
 void GUIManager::update()
 {
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
-	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+	if (isGUIVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 	{
 
 		IGUIWindow* guiDynamicObjects_Context_Menu_Window=(IGUIWindow*)getGUIElement(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU);
@@ -314,7 +313,7 @@ void GUIManager::update()
 
 	}
 	// If the CONTEXT MENU WINDOW is visible and the cursor get outside of it, then close it after a delay
-	if (isWindowVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1))
+	if (isGUIVisible(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1))
 	{
 		IGUIWindow* guiDynamicObjects_Context_Menu_Window1=(IGUIWindow*)getGUIElement(GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1);
 		if (!guiDynamicObjects_Context_Menu_Window1->isPointInside(device->getCursorControl()->getPosition()))
@@ -461,10 +460,10 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 			
             break;
         case GCW_ABOUT:
+			guiAboutWindow = (IGUIWindow*)getGUIElement(GCW_ABOUT);
 			if (visible)
 				guienv->setFocus(guiAboutWindow);
 			guiAboutWindow->setVisible(visible);
-
 
             break;
         case GCW_TERRAIN_PAINT_VEGETATION:
@@ -483,9 +482,9 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
 }
 
 //! Check the visibility status of a IRB window
-bool GUIManager::isWindowVisible(GUI_CUSTOM_WINDOW window)
+bool GUIManager::isGUIVisible(u32 id)
 {
-	IGUIElement * elem = guienv->getRootGUIElement()->getElementFromId(window, true);
+	IGUIElement * elem = guienv->getRootGUIElement()->getElementFromId(id, true);
 	if (elem)
 	{
 		return elem->isVisible();
@@ -678,7 +677,7 @@ void GUIManager::setElementEnabled(GUI_ID id, bool enable)
 }
 
 // Set visibility of specific IRB gui (script editor, etc.)
-void GUIManager::setElementVisible(GUI_ID id, bool visible)
+void GUIManager::setElementVisible(u32 id, bool visible)
 {
 	IGUIElement* playerlife=NULL;
 	IGUIElement* barimage=NULL;
@@ -946,6 +945,7 @@ void GUIManager::updateItemsList()
 	GUIGame::getInstance()->updateItemsList();
 }
 
+//Editor only function, core should be moved to the GUIEditor class
 void GUIManager::updateNodeInfos(irr::scene::ISceneNode *node)
 {
 	vector3df pos = vector3df(0,0,0);
@@ -1025,7 +1025,16 @@ void GUIManager::setCutsceneText(core::stringw text)
 IGUIElement* GUIManager::getGUIElement(u32 id)
 {
 	IGUIElement* elem = guienv->getRootGUIElement()->getElementFromId(id, true);
+	stringc errortext = "Error: failed to get this GUI id:";
+	errortext.append(stringc(id));
+#ifdef EDITOR
 	if (!elem)
-		printf("failed to get this id: %d\n",(int)id); 
+	{
+		this->setConsoleText(stringw(errortext),SColor(255,240,64,64));
+#ifdef DEBUG
+		printf("%s\n",errortext.c_str());
+#endif
+	}
+#endif
 	return guienv->getRootGUIElement()->getElementFromId(id, true);
 }

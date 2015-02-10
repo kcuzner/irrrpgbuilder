@@ -191,6 +191,7 @@ void GUIEditor::setupEditorGUI()
 		logo1 = imgLogo;
 	else
 		logo1 = driver->getTexture("../media/art/logo1.png");
+
 #ifdef EDITOR
 	// Create the Configuration window (Need to be updated)
     configWindow = new GUIConfigWindow(App::getInstance()->getDevice());
@@ -762,6 +763,7 @@ void GUIEditor::createAboutWindowGUI()
 
     //guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getAbsoluteClippingRect().getWidth()/2-100,10),true,guiAboutWindow);
 	IGUIImage * logo = guienv->addImage(driver->getTexture("../media/art/logo1.png"),position2di(guiAboutWindow->getClientRect().getWidth()/2-100,10),true,guiAboutWindow);
+
 	logo->setAlignment(EGUIA_CENTER,EGUIA_CENTER,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
     //guiAboutClose = guienv->addButton(myRect(guiAboutWindow->getAbsoluteClippingRect().getWidth() - 37,guiAboutWindow->getAbsoluteClippingRect().getHeight() - 37,32,32),guiAboutWindow,BT_ID_ABOUT_WINDOW_CLOSE);
 	IGUIButton* guiAboutClose = guienv->addButton(GUIManager::getInstance()->myRect(guiAboutWindow->getClientRect().getWidth() - 37,guiAboutWindow->getClientRect().getHeight() - 37,32,32),guiAboutWindow,GUIManager::BT_ID_ABOUT_WINDOW_CLOSE);

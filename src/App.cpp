@@ -23,9 +23,11 @@ const float DEG2RAD = 3.14159f/180;
 
 App::App()
 {
-
+	gamestarted=false;
+	tileformat="B3D"; //Default format for tiles.
+	logoimage="../media/art/gametitle.jpg";
 	filename="";
-	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (jan 2015)";
+	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (feb 2015)";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -2003,7 +2005,7 @@ void App::eventMousePressed(s32 mouse)
 
 						// Toggle the context menu (main)
 						GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-							!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+							!GUIManager::getInstance()->isGUIVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 					} else
 					{
 						// Toggle the context menu (alternate)
@@ -2239,14 +2241,14 @@ void App::addItemToScene()
 #endif
 			// Toggle the context menu
 			GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
-				!GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
+				!GUIManager::getInstance()->isGUIVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU));
 
 			toolactivated=true;
 		}
 		else//create a new copy of active dynamic object at the clicked position
 		{
 			// If the context menu is still open close it since we want to create a object
-			if (GUIManager::getInstance()->isWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
+			if (GUIManager::getInstance()->isGUIVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU))
 				GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
 
 			DynamicObject* tmpDObj = DynamicObjectsManager::getInstance()->createActiveObjectAt(mousePick.pickedPos);
@@ -2378,7 +2380,7 @@ bool App::loadConfig()
 	TiXmlDocument doc("config.xml");
 #else
 	// File to load if it's the player build
-	TiXmlDocument doc("gameconfig.xml");
+	TiXmlDocument doc("config.xml");
 #endif
 
 	if (!doc.LoadFile()) return false; ///TODO: create the config default file if does not exist
@@ -2430,7 +2432,7 @@ bool App::loadConfig()
 			if (xeffect=="true")
 			{
 				xeffectenabler=true;
-			}   
+			}
 
 			if (resizable && fullScreen)
 			{
@@ -2451,6 +2453,13 @@ bool App::loadConfig()
 		TiXmlElement* groundXML = root->FirstChildElement( "terrain" );
 		if ( groundXML )
 		{
+			stringc result=groundXML->ToElement()->Attribute("density");
+			u32 den = atoi(result.c_str());
+			if (den>9 && den<251)
+				terraindensity=den;
+			else
+				terraindensity=100;
+
 			stringc meshname = groundXML->ToElement()->Attribute("mesh");
 			TerrainManager::getInstance()->setTileMeshName(meshname);
 			stringc layer0 = groundXML->ToElement()->Attribute("layer0");
@@ -2458,6 +2467,7 @@ bool App::loadConfig()
 			stringc layer2 = groundXML->ToElement()->Attribute("layer2");
 			stringc layer3 = groundXML->ToElement()->Attribute("layer3");
 			stringc layer4 = groundXML->ToElement()->Attribute("layer4");
+			stringc model = groundXML->ToElement()->Attribute("model");
 			f32 scale = (f32)atof(groundXML->ToElement()->Attribute("scale"));
 			TerrainManager::getInstance()->setTerrainTexture(0,layer0);
 			TerrainManager::getInstance()->setTerrainTexture(1,layer1);
@@ -2466,6 +2476,8 @@ bool App::loadConfig()
 			TerrainManager::getInstance()->setTerrainTexture(4,layer4);
 			TerrainManager::getInstance()->setScale(scale);
 			TerrainManager::getInstance()->setEmptyTileGridScale(currentsnapping);
+			if (model.size()>0)
+				tileformat=model;
 
 		}
 		TiXmlElement* waterXML = root->FirstChildElement( "ocean" );
@@ -2477,7 +2489,7 @@ bool App::loadConfig()
 			///TODO: we are just loading ocean seetings, we need to set it!
 		}
 		// Player app. Load the default map from "gameconfig.xml"
-#ifndef EDITOR
+
 		TiXmlElement* mapXML = root->FirstChildElement( "map" );
 		if ( mapXML )
 		{
@@ -2486,8 +2498,14 @@ bool App::loadConfig()
 			printf("The map name is: %s\n",mapname.c_str());
 #endif
 			///TODO: we are just loading ocean seetings, we need to set it!
+
+			stringc gamelogo = mapXML->ToElement()->Attribute("logo");
+			if (gamelogo.size()>0)
+			{
+				logoimage=gamelogo;
+			}
 		}
-#endif
+
 	}
 	else
 	{
@@ -2569,14 +2587,18 @@ IrrlichtDevice* App::getDevice()
 void App::playGame()
 {
 
+	if (app_state<APP_STATE_CONTROL)
+	{
 #ifndef EDITOR
 	bool visible=false;
 	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->isVisible();
-	guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->setVisible(!visible);
+	if (visible)
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->setVisible(false);
+	
+	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->isVisible();
+	if (visible)
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(false);
 #endif
-
-	if (app_state<APP_STATE_CONTROL)
-	{
 		EffectsManager::getInstance()->updateSkydome();
 		TerrainManager::getInstance()->setEmptyTileVisible(false);
 		//oldcampos = Player::getInstance()->getObject()->getPosition();
@@ -2587,8 +2609,8 @@ void App::playGame()
 		//DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 		// setback the fog as before (will need to check with LUA)
-		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,10000);
-		smgr->getActiveCamera()->setFarValue(25000.0f);
+		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,5000);
+		smgr->getActiveCamera()->setFarValue(5000.0f);
 
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
@@ -2671,8 +2693,14 @@ void App::update()
 	//This could be put outside in the app state changes.
 	if (app_state<APP_STATE_CONTROL)
 	{
+#ifdef EDITOR
 		background=SColor(0,160,160,160);// Background color in editor
 		EffectsManager::getInstance()->setClearColor(SColor(0,160,160,160));
+#else
+		//Player application back color when loading the game (Default is black)
+		background=SColor(0,0,0,0);// Background color in editor
+		EffectsManager::getInstance()->setClearColor(SColor(0,0,0,0));
+#endif
 	}
 	else
 	{
@@ -2691,7 +2719,6 @@ void App::update()
 			device->yield();
 
 #ifdef EDITOR
-
 		updateEditMode();//editMode
 #endif
 	}
@@ -2717,13 +2744,24 @@ void App::update()
 
 	// Prepare the post FX before rendering all
 	EffectsManager::getInstance()->preparePostFX(false);
-	
+
+#ifdef EDITOR
 	//Will redraw the scene normally unless we use XEffect.
 	if (EffectsManager::getInstance()->isXEffectsEnabled() && (app_state > APP_STATE_CONTROL))
 		EffectsManager::getInstance()->update();
 	else
 		smgr->drawAll();
+#else
+	if (app_state>APP_STATE_CONTROL)
+	{
+		//Will redraw the scene normally unless we use XEffect.
+	if (EffectsManager::getInstance()->isXEffectsEnabled() && (app_state > APP_STATE_CONTROL))
+		EffectsManager::getInstance()->update();
+	else
+		smgr->drawAll();
 
+	}
+#endif
 	if (raytester)
 		raytester->update();
 
@@ -2765,8 +2803,12 @@ void App::update()
 
 void App::quickUpdate()
 {
+#ifdef EDITOR
 	driver->beginScene(true, true, SColor(0,160,160,160));
 	smgr->drawAll();
+#else
+	driver->beginScene(true, true, SColor(0,0,0,0));
+#endif
 
 	guienv->drawAll();
 	driver->endScene();
@@ -2802,7 +2844,6 @@ void App::run()
 	GUIManager::getInstance()->getInfoAboutModel();
 	// Loading is complete
 	GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
-	//GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
 
 	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
@@ -3286,8 +3327,6 @@ void App::updateGameplay()
 		levelchange=false;
 	}
 
-
-
 	// Refresh the projectile manager
 	Projectile::getInstance()->update();
 
@@ -3380,6 +3419,7 @@ void App::createNewProject()
 
 void App::loadProject(DIALOG_FUNCTION function)
 {
+
 	old_state = getAppState();
 
 	setAppState(APP_EDIT_WAIT_GUI);
@@ -3693,7 +3733,7 @@ void App::saveProjectToXML(stringc filename)
 {
 
 	this->filename=filename;
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
+	GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(true);
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
 
@@ -3725,7 +3765,7 @@ void App::saveProjectToXML(stringc filename)
 	if (result) printf("Saved %s OK!\n",filename.c_str());
 #endif
 
-	GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+	GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 
@@ -3741,7 +3781,6 @@ void App::saveProjectToXML(stringc filename)
 bool App::loadProjectFromXML(stringc filename)
 {
 	
-	//GUIManager::getInstance()->guiLoaderWindow->setVisible(true);
 	IGUIWindow* window=(IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER);
 	window->setVisible(true);
 	printf ("Trying to load this map: %s \n",filename.c_str());
@@ -3811,7 +3850,7 @@ bool App::loadProjectFromXML(stringc filename)
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_PLAYER_CONFIG,true)->setVisible(true);
 #endif
 #ifdef EDITOR
-		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+		GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
 #endif
 
 	}
@@ -3821,7 +3860,7 @@ bool App::loadProjectFromXML(stringc filename)
 		cout << "DEBUG : XML : THIS FILE IS NOT A IRRRPG BUILDER PROJECT!" << endl;
 #endif
 #ifdef EDITOR
-		GUIManager::getInstance()->guiLoaderWindow->setVisible(false);
+		GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
 #endif
 		return false;
 	}

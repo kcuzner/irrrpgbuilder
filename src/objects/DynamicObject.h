@@ -4,7 +4,7 @@
 #include <vector>
 #include <irrlicht.h>
 #include "properties.h"
-#include "projectileItem.h"
+#include "projectileItem.h" //projectile data
 #include "HealthSceneNode.h"
 #include "../sound/SoundManager.h"
 
@@ -255,6 +255,9 @@ class DynamicObject : public projectileitem{
 		bool isDestroyedAfterUse; //Tell if we remove the loot from the bag and "kill" it after use
 		bool isGenerated; //Will tell if the object has been spawned directly ingame and not in the editor. 
 
+		// projectile data
+		projectileitem obj_projectile;
+
 
     protected:
 
@@ -320,6 +323,7 @@ class DynamicObject : public projectileitem{
 		static int destroyAfterUse(lua_State *ls); //Set the flag on the object if it must be removed after use (potions)
 				
 		static int isKeypressed(lua_State *ls); //Query what key was pressed
+		static int shoot(lua_State *ls); //Shoot the currently defined projectile
 
 
 		
@@ -421,7 +425,7 @@ class DynamicObject : public projectileitem{
 
 
 		lua_State *ls;
-		projectileitem obj_projectile;
+	
 
 };
 

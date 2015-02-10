@@ -24,11 +24,17 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
     IGUITabControl* tabCtrl = guienv->addTabControl(rect<s32>(10,30,cfgWindow->getClientRect().LowerRightCorner.X - 10,cfgWindow->getClientRect().LowerRightCorner.Y - 45),cfgWindow,true,true);
 
-    IGUITab* tabSystem = tabCtrl->addTab(stringw(LANGManager::getInstance()->getText("txt_cfg_window_tab_system")).c_str());
-    IGUITab* tabScenary = tabCtrl->addTab(stringw(LANGManager::getInstance()->getText("txt_cfg_window_tab_scenary")).c_str());
+    tabSystem = tabCtrl->addTab(stringw(LANGManager::getInstance()->getText("txt_cfg_window_tab_system")).c_str());
+#ifdef EDITOR
+    tabScenary = tabCtrl->addTab(stringw(LANGManager::getInstance()->getText("txt_cfg_window_tab_scenary")).c_str());
+	tabExperimental = tabCtrl->addTab(stringw("Experimental features").c_str());
+	tabPlayerApp = tabCtrl->addTab(stringw("Player application specific").c_str());
+#else
+	tabScenary = NULL;
+	tabPlayerApp = NULL;
+#endif
 
-
-    //==========System seetings
+    //==========System settings
 
     int YPos = 10;
 
@@ -59,6 +65,7 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
     YPos += 15;
 
     languageList = guienv->addComboBox(myRect(10,YPos,450,25),tabSystem,-1);
+	YPos += 35;
 
     this->populateLanguageList();
 
@@ -75,24 +82,34 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
                                  stringw(LANGManager::getInstance()->getText("bt_cfg_window_cancel")).c_str());
 
     //==========Scenary seetings
-
-    YPos = 10;
+#ifdef EDITOR
+	YPos = 10;
 
     //Terrain mesh and Scale
-    guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_terrain_mesh")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
+	guienv->addStaticText(stringw("Terrain tile mesh default save format:").c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
+    //guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_terrain_mesh")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_terrain_scale")).c_str(),myRect(370,YPos,100,25),false,false,tabScenary);
+	guienv->addStaticText(stringw("Terrain density").c_str(),myRect(270,YPos,90,25),false,false,tabScenary);
     YPos += 15;
-    ebTerrainMesh = guienv->addEditBox(L"",myRect(10,YPos,350,25),true, tabScenary,-1);
+    ebTerrainMesh = guienv->addEditBox(L"",myRect(0,0,0,0),true, tabScenary,-1); //Hidden for now.
     ebTerrainScale = guienv->addEditBox(L"",myRect(370,YPos,90,25),true, tabScenary,-1);
-    YPos += 25;
+	ebTerrainDensity = guienv->addEditBox(L"100",myRect(270,YPos,90,25),true, tabScenary,-1);
 
+	
+  
+	// Terrain tiles mesh format
+	//YPos += 25;
+	models = guienv->addComboBox(myRect(10,YPos,250,25), tabScenary, -1);
+	models->addItem(stringw(" B3D (Blitz 3D) format").c_str(),0);
+	models->addItem(stringw(" OBJ (Wavefront) format").c_str(),1);
+	models->addItem(stringw(" DAE (Collada) format").c_str(),2);
 
+	YPos += 35;
     //Terrain layers
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_terrain_layers")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
 
+    //ebTerrainL0 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
     YPos += 15;
-    ebTerrainL0 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
-    YPos += 25;
     ebTerrainL1 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
     YPos += 25;
     ebTerrainL2 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
@@ -100,31 +117,95 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
     ebTerrainL3 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
     YPos += 25;
 	ebTerrainL4 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
-	YPos += 25;
+	
 
     //Ocean Mesh
-    guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_ocean_mesh")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
-    YPos += 15;
-    ebOceanMesh = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
-    YPos += 25;
+//	YPos += 35;
+//    guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_ocean_mesh")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
+//    YPos += 15;
+//    ebOceanMesh = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
+   
 
     //Ocean normalMap
+	 YPos += 35;
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_ocean_normalmap")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
     YPos += 15;
     ebOceanNormalMap= guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
-    YPos += 25;
+  
 
     //Ocean Reflection
+	  YPos += 35;
     guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_cfg_window_ocean_reflection")).c_str(),myRect(10,YPos,250,25),false,false,tabScenary);
     YPos += 15;
     ebOceanReflection= guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabScenary,-1);
     YPos += 25;
+
+	// Experimental features
+	 YPos = 10;
+	cbXEffect = guienv->addCheckBox(false,myRect(10,YPos,400,25),tabExperimental,-1,stringw("XEffect soft shadowing system addon").c_str());
+
+
+	// Player application specific
+	 YPos = 10;
+	guienv->addStaticText(stringw("Default project for the player application").c_str(),myRect(10,YPos,350,25),false,false,tabPlayerApp);
+	YPos += 15;
+
+	ebDefaultProject = guienv->addEditBox(L"../projects/",myRect(10,YPos,450,25),true, tabPlayerApp,-1);
+
+	YPos += 35;
+	guienv->addStaticText(stringw("Image for the Game Logo").c_str(),myRect(10,YPos,350,25),false,false,tabPlayerApp);
+	YPos += 15;
+
+	ebLogoImage = guienv->addEditBox(L"../media/",myRect(10,YPos,450,25),true, tabPlayerApp,-1);
+
+
+#else
+	//In the PLayer application the terrain settings are not available so hidden
+	//The gui need to be created since we put data in them that goes in the config file.
+	YPos = 610;
+    ebTerrainMesh = guienv->addEditBox(L"",myRect(0,0,0,0),true, tabSystem,-1); //Hidden for now.
+    ebTerrainScale = guienv->addEditBox(L"",myRect(370,YPos,90,25),true, tabSystem,-1);
+  	models = guienv->addComboBox(myRect(10,YPos,250,25), tabSystem, -1);
+	models->addItem(stringw(" B3D (Blitz 3D) format").c_str(),0);
+	models->addItem(stringw(" OBJ (Wavefront) format").c_str(),1);
+	models->addItem(stringw(" DAE (Collada) format").c_str(),2);
+    YPos += 15;
+    ebTerrainL1 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+    YPos += 25;
+    ebTerrainL2 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+    YPos += 25;
+    ebTerrainL3 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+    YPos += 25;
+	ebTerrainL4 = guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+	YPos += 15;
+	ebTerrainDensity = guienv->addEditBox(L"100",myRect(270,YPos,90,25),true, tabSystem,-1);
+
+    //Ocean normalMap
+	 YPos += 15;
+    ebOceanNormalMap= guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+  
+
+    //Ocean Reflection
+	
+    ebOceanReflection= guienv->addEditBox(L"",myRect(10,YPos,450,25),true, tabSystem,-1);
+    YPos += 25;
+
+	// Experimental features
+	cbXEffect = guienv->addCheckBox(false,myRect(10,YPos,400,25),tabSystem,-1,stringw("XEffect soft shadowing system addon").c_str());
+
+	// Player application specific
+	ebDefaultProject = guienv->addEditBox(L"../projects/",myRect(10,YPos,450,25),true, tabSystem,-1);
+	YPos += 15;
+	ebLogoImage = guienv->addEditBox(L"../media/",myRect(10,YPos,450,25),true, tabSystem,-1);
+
+#endif
 
     this->populateResolutionList();
 
     this->loadActualSeetings();
 
     cfgWindow->setVisible(false);
+
 }
 
 GUIConfigWindow::~GUIConfigWindow()
@@ -249,12 +330,9 @@ void GUIConfigWindow::populateResolutionList()
 // Loading is also done in APP that set the application
 void GUIConfigWindow::loadActualSeetings()
 {
-#ifdef EDITOR
+
     TiXmlDocument doc("config.xml");
 
-#else
-	TiXmlDocument doc("gameconfig.xml");
-#endif
 	if (!doc.LoadFile()) return;
 
 	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Config" );
@@ -308,6 +386,14 @@ void GUIConfigWindow::loadActualSeetings()
             {
                 if(vModes[i].X == sw && vModes[i].Y == sh) resolutionList->setSelected(i);
             }
+
+			result = screenXML->ToElement()->Attribute("xeffects");
+			if (result.size()>0)
+			{
+				bool svxeffects = (screenXML->ToElement()->Attribute("xeffects") == std::string("true") ? true : false);
+				cbXEffect->setChecked(svxeffects);
+			}
+
 	
         }
 
@@ -319,12 +405,35 @@ void GUIConfigWindow::loadActualSeetings()
                 if(languageListVector[i] == stringc(languageXML->ToElement()->Attribute("type"))) languageList->setSelected(i);
         }
 
+
         TiXmlNode* terrainXML = root->FirstChildElement( "terrain" );
 
         if(terrainXML)
         {
+			stringc result=terrainXML->ToElement()->Attribute("model");
+			
+			if (result=="B3D")
+			{
+				models->setSelected(0);
+			}
+
+			if (result=="OBJ")
+			{
+				models->setSelected(1);
+			}
+
+			if (result=="DAE")
+			{
+				models->setSelected(2);
+			}
+			
+			result=terrainXML->ToElement()->Attribute("density");
+			u32 den = atoi(result.c_str());
+			if (result.size()>0 && den>9 && den<251)
+				ebTerrainDensity->setText(stringw(result).c_str());
+
             ebTerrainMesh->setText(stringw(terrainXML->ToElement()->Attribute("mesh")).c_str());
-            ebTerrainL0->setText(stringw(terrainXML->ToElement()->Attribute("layer0")).c_str());
+            //ebTerrainL0->setText(stringw(terrainXML->ToElement()->Attribute("layer0")).c_str());
             ebTerrainL1->setText(stringw(terrainXML->ToElement()->Attribute("layer1")).c_str());
             ebTerrainL2->setText(stringw(terrainXML->ToElement()->Attribute("layer2")).c_str());
             ebTerrainL3->setText(stringw(terrainXML->ToElement()->Attribute("layer3")).c_str());
@@ -336,20 +445,23 @@ void GUIConfigWindow::loadActualSeetings()
 
         if(oceanXML)
         {
-            ebOceanMesh->setText(stringw(oceanXML->ToElement()->Attribute("mesh")).c_str());
+            //ebOceanMesh->setText(stringw(oceanXML->ToElement()->Attribute("mesh")).c_str());
             ebOceanNormalMap->setText(stringw(oceanXML->ToElement()->Attribute("normalmap")).c_str());
             ebOceanReflection->setText(stringw(oceanXML->ToElement()->Attribute("reflection")).c_str());
         }
-#ifndef EDITOR
-		TiXmlElement* mapXML = root->FirstChildElement( "map" );
-		if ( mapXML )
-		{
-			mapname = mapXML->ToElement()->Attribute("name");
-			printf("The map name is: %s\n",mapname.c_str());
-			///TODO: we are just loading ocean seetings, we need to set it!
-		}
-#endif
-    }
+	}
+
+
+	//Default MapName
+	TiXmlElement* mapXML = root->FirstChildElement( "map" );
+	if ( mapXML )
+	{
+		mapname = mapXML->ToElement()->Attribute("name");
+		if (mapname.size()>0)
+			ebDefaultProject->setText(stringw(mapname).c_str());
+	}
+
+	ebLogoImage->setText(stringw(App::getInstance()->logoimage).c_str()); //Get the loaded valued from the APP list
 }
 
 void GUIConfigWindow::saveNewSeetings()
@@ -370,7 +482,8 @@ void GUIConfigWindow::saveNewSeetings()
 	screenXML->SetAttribute("vsync", cbVSync->isChecked()?"true":"false" );
 	screenXML->SetAttribute("antialias", cbAntialias->isChecked()?"true":"false" );
 	screenXML->SetAttribute("silouette", cbSilouette->isChecked()?"true":"false" );
-
+	screenXML->SetAttribute("xeffects", cbXEffect->isChecked()?"true":"false" );
+	
     irb_cfg->LinkEndChild(screenXML);
 
     TiXmlElement* languageXML = new TiXmlElement("language");
@@ -379,8 +492,24 @@ void GUIConfigWindow::saveNewSeetings()
     irb_cfg->LinkEndChild(languageXML);
 
     TiXmlElement* terrainXML = new TiXmlElement("terrain");
-    terrainXML->SetAttribute("mesh",stringc(ebTerrainMesh->getText()).c_str());
-    terrainXML->SetAttribute("layer0",stringc(ebTerrainL0->getText()).c_str());
+    //terrainXML->SetAttribute("mesh",stringc(ebTerrainMesh->getText()).c_str());
+	stringc modelstext = "";
+	u32 modelselect=models->getSelected();
+	if (modelselect==0)
+		modelstext="B3D";
+	if (modelselect==1)
+		modelstext="OBJ";
+	if (modelselect==2)
+		modelstext="DAE";
+
+	terrainXML->SetAttribute("model",modelstext.c_str());
+	stringc result=ebTerrainDensity->getText();
+	u32 den = atoi(result.c_str());
+	if (den>9 && den<251)
+		terrainXML->SetAttribute("density",result.c_str());
+	else
+		terrainXML->SetAttribute("density","100"); //Default value
+    //terrainXML->SetAttribute("layer0",stringc(ebTerrainL0->getText()).c_str());
     terrainXML->SetAttribute("layer1",stringc(ebTerrainL1->getText()).c_str());
     terrainXML->SetAttribute("layer2",stringc(ebTerrainL2->getText()).c_str());
     terrainXML->SetAttribute("layer3",stringc(ebTerrainL3->getText()).c_str());
@@ -390,16 +519,18 @@ void GUIConfigWindow::saveNewSeetings()
     irb_cfg->LinkEndChild(terrainXML);
 
     TiXmlElement* oceanXML = new TiXmlElement("ocean");
-    oceanXML->SetAttribute("mesh",stringc(ebOceanMesh->getText()).c_str() );
+    //oceanXML->SetAttribute("mesh",stringc(ebOceanMesh->getText()).c_str() );
     oceanXML->SetAttribute("normalmap",stringc(ebOceanNormalMap->getText()).c_str() );
     oceanXML->SetAttribute("reflection",stringc(ebOceanReflection->getText()).c_str() );
 	irb_cfg->LinkEndChild(oceanXML);
 
-#ifndef EDITOR
+
+	result = stringc(ebDefaultProject->getText());
 	TiXmlElement* mapXML = new TiXmlElement("map");
-	mapXML->SetAttribute("name",mapname.c_str());
+	mapXML->SetAttribute("name",result.c_str());
+	mapXML->SetAttribute("logo", core::stringc(ebLogoImage->getText()).c_str() );
 	irb_cfg->LinkEndChild(mapXML);
-#endif
+
 
     
 
@@ -407,7 +538,7 @@ void GUIConfigWindow::saveNewSeetings()
 #ifdef EDITOR
     doc.SaveFile("config.xml");
 #else
-	doc.SaveFile("gameconfig.xml");
+	doc.SaveFile("config.xml");
 #endif
 }
 

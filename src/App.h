@@ -218,6 +218,10 @@ class App
 
 		core::stringc filename;
 		core::stringc path; //Default application path.
+
+		core::stringc tileformat; // Get the default save tile format from the configuration
+		core::stringc logoimage; //Get the logo/Title information from the configuration
+		u32 terraindensity; //Get the terrain density information from the configuration
 		
     private:
 
@@ -290,10 +294,9 @@ class App
 		stringc lastFilename;
 
 // Used to load the startup map when the game start (only the player app)
-#ifndef EDITOR
+
 		stringc mapname;
-#endif
-      
+     
 		MousePick lastScannedPick;
 
 		CGUIFileSelector * selector;
@@ -316,6 +319,8 @@ class App
 
 		f32 currentsnapping;
 		bool xeffectenabler;
+		bool gamestarted; //To know if the application has been started. (player app)
+		
 
 };
 

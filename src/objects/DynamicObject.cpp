@@ -134,6 +134,7 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 
 	//init the projectile data
 	Projectile::getInstance()->reset(this->obj_projectile);
+	Projectile::getInstance()->setProjectileRepresentation(this->obj_projectile,"../media/particlewhite.bmp",false,20);
 
 
 }
@@ -1815,6 +1816,7 @@ void DynamicObject::doScript()
 
 	lua_register(ls,"destroyAfterUse",destroyAfterUse);
 	lua_register(ls,"isKeypressed",isKeypressed);
+	lua_register(ls,"shoot",shoot);
 
     //register basic functions --> Require the LUA Global caller on this one.
     LuaGlobalCaller::getInstance()->registerBasicFunctions(ls);
@@ -3277,9 +3279,29 @@ int DynamicObject::isKeypressed(lua_State *ls)
 	{
 		result=App::getInstance()->isKeyPressed((int)code);
 	} else
-		printf("The keycode was NOT matched! is a key!\n");
+		printf("The keycode was NOT matched! %s, %d is a key?\n",keytocheck.c_str(),(int)code);
 
 
 	lua_pushboolean(ls, result);
+	return 1;
+}
+
+int DynamicObject::shoot(lua_State *ls)
+{
+
+	lua_getglobal(ls,"objName");
+	stringc objName = lua_tostring(ls, -1);
+	lua_pop(ls, 1);
+
+	DynamicObject* tempObj = DynamicObjectsManager::getInstance()->getObjectByName(objName);
+
+	if (tempObj)
+	{
+		vector3df position = tempObj->getNode()->getPosition();
+		position.Y+=40.0; //half of the height of th player
+		Projectile::getInstance()->setProjectileTrajectory(tempObj->obj_projectile,position,tempObj->getNode()->getRotation(),2000.0f,200.0f);
+		Projectile::getInstance()->createProjectile(tempObj->obj_projectile);
+	}
+
 	return 1;
 }

@@ -283,6 +283,11 @@ void CameraSystem::eventsKeyboard(s32 key)
 	else if (key==KEY_ESCAPE) // Stop the game
 	{
 		App::getInstance()->stopGame();
+#ifndef EDITOR
+		IGUIEnvironment* guienv=App::getInstance()->getDevice()->getGUIEnvironment();
+		bool visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->isVisible();
+		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(!visible);
+#endif
 	}
 	else if (key==keyinventory) //Open the inventory
 	{

@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <IrrRPG_Builder_Config version="1.0">
-    <screen screen_width="1280" screen_height="720" fullscreen="false" resizeable="true" vsync="false" antialias="true" silouette="true" xeffects="false" />
+    <screen screen_width="1280" screen_height="768" fullscreen="false" resizeable="true" vsync="false" antialias="true" silouette="true" xeffects="false" />
     <language type="en-us" />
-    <terrain mesh="../media/land.obj" layer0="../media/L0.jpg" layer1="../media/L1.jpg" layer2="../media/L2.jpg" layer3="../media/L3.jpg" layer4="../media/L4.jpg" scale="4096" />
-    <ocean mesh="../media/land.obj" normalmap="../media/waveNM.png" reflection="../media/sky.jpg" />
+    <terrain model="B3D" density="100" layer1="../media/L1.jpg" layer2="../media/L2.jpg" layer3="../media/L3.jpg" layer4="../media/L4.jpg" scale="4096" />
+    <ocean normalmap="../media/waveNM.png" reflection="../media/sky.jpg" />
+    <map name="../projects/TUTORIAL1.XML" logo="../media/art/gametitle.jpg" />
 </IrrRPG_Builder_Config>

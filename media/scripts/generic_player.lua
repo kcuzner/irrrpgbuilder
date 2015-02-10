@@ -6,6 +6,24 @@
 tx_continue = ""
 tx_lose = ""
 
+function shootMagic()
+    mana = getProperty("mana")
+    manacost = 15
+    
+    if (mana>manacost) then
+        shoot()
+        playSound2D("zap.wav",false)
+        setProperty("mana",mana-manacost)
+    end
+end
+
+-- Shoot a projectile when the E key is pressed
+function onKeypressed()
+    if (isKeypressed("q")) then
+        shootMagic()
+    end
+end
+
 function die()
   showBlackScreen(tx_lose)
   sleep(0.5)
@@ -42,13 +60,19 @@ function regen()
   regentoggle=false
 end
 
+function regenMana()
+    mana = getProperty("mana")
+    mana = mana + 1
+    setProperty("mana",mana)
+end
+
 function onAnswer()
 -- This happen when the question get answered
 -- There is not a stop game lua command atm, so answering no will ask the question again
   if (getAnswer() == true) then   
-    hideBlackScreen()
-    setPlayerLife(100)
-	setAnimation("prespawn")	
+      hideBlackScreen()
+      setPlayerLife(100)
+	     setAnimation("prespawn")
   end
   dietoggle=false
 end
@@ -56,8 +80,10 @@ end
 function onLoad()
   setSkydomeVisible(true) --Display or not the skydome
   setPlayerLife(100)
-  regentoggle=false
-  dietoggle=false
+  setProperty("mana",100)
+  setProperty("maxmana",100)
+  regentoggle=false -- regen for life
+  dietoggle=false -- die toggle
   setStrings()
 end
 
@@ -66,11 +92,14 @@ function onUpdate()
       programAction(5,regen)
       regentoggle=true
   end
+  
+  if (getProperty("mana") < getProperty("maxmana")) then
+     regenMana()
+  end
+  
   if ( getPlayerLife() == 0 and dietoggle==false) then
     playSound("you_lose.mp3",false)
     programAction(3,die)
     dietoggle=true
   end
 end
-
-

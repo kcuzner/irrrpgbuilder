@@ -53,9 +53,11 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 
 		//Tries to create a mesh that is 1024 in size (mesh size), scaled then by IRB.
 		//"tilesegment" is used to determine the density of the mesh, smaller=less dense
-		vector2df tiles = vector2df(100,100);
+		
 		f32 size = TerrainManager::getInstance()->getScale();
-		u32 tilesegment = (u32)(0.024414f*size);
+		f32 calc = App::getInstance()->terraindensity/size;
+		u32 tilesegment = (u32)(calc*size);
+		//u32 tilesegment = (u32)(0.024414f*size); Old fixed density
 		baseMesh = smgr->addHillPlaneMesh( "myHill",
 		    core::dimension2d<f32>(f32(1024/tilesegment),f32(1024/tilesegment)),
 			core::dimension2d<u32>(tilesegment,tilesegment), 0, 0,
@@ -153,7 +155,6 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 		GUIManager::getInstance()->setConsoleText(L"ERROR! Failed to load custom tile",video::SColor(255,255,0,0));
 		//Tries to create a mesh that is 1024 in size (mesh size), scaled then by IRB.
 		//"tilesegment" is used to determine the density of the mesh, smaller=less dense
-		vector2df tiles = vector2df(100,100);
 		f32 size = TerrainManager::getInstance()->getScale();
 		u32 tilesegment = (u32)(0.024414f*size);
 		baseMesh = smgr->addHillPlaneMesh( "myHill",

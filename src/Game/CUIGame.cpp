@@ -66,7 +66,8 @@ void GUIGame::setupGameplayGUI()
 	guienv->getSkin()->setFont(GUIManager::getInstance()->guiFontC12);
 	//guienv->getSkin()->setFont(guiFontCourier12);
 	// Load textures
-	ITexture* imgLogo = driver->getTexture("../media/art/title.jpg");
+	ITexture* imgLogo = driver->getTexture(App::getInstance()->logoimage.c_str());
+	printf("Here is the logo: %s\n",App::getInstance()->logoimage.c_str());
 
 	//LOADER WINDOW
 	IGUIWindow* guiLoaderWindow = guienv->addWindow(GUIManager::getInstance()->myRect(driver->getScreenSize().Width/2-300, driver->getScreenSize().Height/2-200,600,400),false,L"Loading...",0,GUIManager::WIN_LOADER);

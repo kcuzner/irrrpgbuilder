@@ -53,7 +53,7 @@ void Projectile::updateMovement(ISceneNode* node, f32 velocity)
 	//The objective is to have the same distance travelled, non dependant on the rendering performance
 	f32 deltaoffset = (velocity*(f32)App::getInstance()->getDelta())/1000; //(based on seconds (1000 for 1000ms)
 
-	vector3df pos=node->getAbsolutePosition();
+	vector3df pos=node->getPosition();
     pos.Z -= cos((node->getRotation().Y)*PI/180)*deltaoffset;
 	pos.X -= sin((node->getRotation().Y)*PI/180)*deltaoffset;
 
@@ -69,6 +69,10 @@ void Projectile::update()
 		//Get the projectile informations and update the trajectory
 		ISceneNode* node = projectiles[i].node;
 		f32 vel = projectiles[i].velocity;
+
+		if (projectiles[i].node->getPosition()==vector3df(0,0,0))
+			printf("Bugged coords for the projectile, it should take the position of the object and it has none!!!\n");
+
 		this->updateMovement(node, vel);
 
 		//Test if the distance of the projectile reach the endpoint then disable the projectile
@@ -94,6 +98,27 @@ void Projectile::update()
 //! Will create a new projectile for the manager
 void Projectile::createProjectile(projectileitem item)
 {
+	//item=data1; //check if we can keep data in
+	item.alive = true;
+	
+	//Item cloning is required
+	if (!item.node)
+		return;
+
+	ISceneNode* clone = item.node->clone();
+	item.node = clone;
+	item.node->setName("projectile");
+	item.node->setPosition(item.position);
+
+	//printf("Here is the data for this projectile: pos=%f,%f,%f\n",item.position.X,item.position.Y,item.position.Z);
+	//printf("Here is the data for this projectile: endpos=%f,%f,%f\n",item.endposition.X,item.endposition.Y,item.endposition.Z);
+
+	if (!item.node)
+	{
+		printf("A projectile failed to be created, node is not created!\n");
+		return;
+	}
+
 	//Do a check to see if the projectile data is created correctly
 	if (item.node && item.alive && item.velocity>0.0f)
 	{
@@ -103,11 +128,24 @@ void Projectile::createProjectile(projectileitem item)
 		item.node->setPosition(item.position);
 		item.node->setRotation(item.rotation);
 		projectiles.push_back(item);
+
+
+		//printf("A projectile has been created!\n");
+	} else
+	{
+		printf("A projectile failed to be created, ");
+		if (!item.node)
+			printf("no node was created!\n");
+		if (!item.alive)
+			printf("The created projectile is already dead!\n");
+		if (item.velocity==0.0f)
+			printf("no velocity!\n");
 	}
+
 }
 
 //! Helper function. Reset the projectile data. Should be used prior to define a new projectile
-projectileitem Projectile::reset(projectileitem data)
+void Projectile::reset(projectileitem& data)
 {
 	data.alive = true;
 	data.id = 0;
@@ -116,12 +154,10 @@ projectileitem Projectile::reset(projectileitem data)
 	data.rotation = vector3df(0.0f,0.0f,0.0f);
 	data.endposition = vector3df(0.0f,0.0f,0.0f);
 	data.velocity = 0.0f;
-
-	return data;
 }
 
 //! Helper function, will add a projectile representation to the projectile data
-projectileitem Projectile::setProjectileRepresentation(projectileitem data, irr::core::stringc filename, bool usemesh, irr::f32 size)
+void Projectile::setProjectileRepresentation(projectileitem& data, irr::core::stringc filename, bool usemesh, irr::f32 size)
 {
 	IAnimatedMesh* mesh=NULL;
 	IBillboardSceneNode* bill=NULL;
@@ -153,14 +189,16 @@ projectileitem Projectile::setProjectileRepresentation(projectileitem data, irr:
 
 		if (bill)
 			data.node = (ISceneNode*)bill;
-		
+		else
+			data.node = NULL;
+	
 
 	}
-	return data; //Return the updated data for the projectile
+	
 }
 
 // Set the trajectory of the projectile into the data
-projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::core::vector3df startpos, irr::core::vector3df angle, irr::f32 range, f32 velocity)
+void Projectile::setProjectileTrajectory(projectileitem& data, irr::core::vector3df startpos, irr::core::vector3df angle, irr::f32 range, f32 velocity)
 {
 	data.position = startpos;
 	data.rotation = angle;
@@ -176,16 +214,18 @@ projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::cor
 	// Do a raytest to check if the ray find anything. If it does then the endpoint will stop when it touch.
 	vector3df testpos = rayTest(data.position,data.endposition);
 	if (this->collisionnode && testpos!=vector3df(-1000.0f,-1000.0f,-1000.0f))
+	{
+		printf("The projectile collided with %s! end position is: %f,%f,%f\n",stringc(collisionnode->getName()).c_str(),testpos.X,testpos.Y,testpos.Z);
+		printf("Old end Position is: %f,%f,%f\n",data.endposition.X,data.endposition.Y,data.endposition.Z);
 		data.endposition = testpos;
+	}
 
-
-	return data;
 }
 
 // Set the trajectory of the projectile into the data
 // The user know the endposition but a collision test is done to be sure it reach
 // If something get between the target it will stop the projectile
-projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::core::vector3df startpos, irr::core::vector3df endpos, f32 velocity)
+void Projectile::setProjectileTrajectory(projectileitem& data, irr::core::vector3df startpos, irr::core::vector3df endpos, f32 velocity)
 {
 	data.endposition = endpos;
 	data.velocity = velocity;
@@ -195,8 +235,6 @@ projectileitem Projectile::setProjectileTrajectory(projectileitem data, irr::cor
 	if (this->collisionnode && testpos!=vector3df(-1000.0f,-1000.0f,-1000.0f))
 		data.endposition = testpos;
 
-
-	return data;
 }
 
 vector3df Projectile::rayTest(vector3df pos, vector3df pos1)
@@ -206,6 +244,7 @@ vector3df Projectile::rayTest(vector3df pos, vector3df pos1)
 	core::line3d<f32> ray;
     ray.start = pos;
 	ray.end = pos1;
+	this->collisionnode = NULL;
 
 	// Tracks the current intersection point with the level or a mesh
 	core::vector3df intersection;

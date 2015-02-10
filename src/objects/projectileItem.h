@@ -23,7 +23,9 @@ class projectileitem : public cproperty{
 		vector3df rotation; // Start angle of the projectile
 		vector3df endposition; //End position of the projectile
 		f32 velocity;
-		cproperty properties; //data properties assigned to the projectiles
+
+		projectileitem()
+		{};
 
 
 };

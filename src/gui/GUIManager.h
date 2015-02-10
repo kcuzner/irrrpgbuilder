@@ -284,10 +284,10 @@ class GUIManager
 		void setConsoleLogger(vector<core::stringw> &text);
 
         void setElementEnabled(GUI_ID id, bool enable);
-        void setElementVisible(GUI_ID id, bool visible);
+        void setElementVisible(u32 id, bool visible);
 
         void setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible);
-		bool isWindowVisible(GUI_CUSTOM_WINDOW window);
+		bool isGUIVisible(u32 id);
 
         void updateDynamicObjectPreview();
 
@@ -321,8 +321,6 @@ class GUIManager
 
 		inline void setStatusText(core::stringw text) {IGUIStaticText* guiStatusText=(IGUIStaticText*)getGUIElement(TXT_ID_STATUS_TEXT); if (guiStatusText) {guiStatusText->setText(text.c_str());}}
 		// Accessing the loader window directly
-		IGUIWindow* guiLoaderWindow;
-
 		IGUIFont* guiFontC12;//arial 10
         IGUIFont* guiFontCourier12;
 		IGUIFont* guiFontCourier11;

@@ -502,6 +502,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		terrainXML->SetAttribute("Type","Parametric");
 	}
 	terrainXML->SetAttribute("Type","Parametric");
+	terrainXML->SetAttribute("Density",App::getInstance()->terraindensity);
 	terrainXML->SetDoubleAttribute("Scale",(float)scale);
 
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
@@ -543,7 +544,13 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 		pathxml.append(filexml);
 		pathxml.append("/tile");
 		pathxml.append((*it).second->getName());
-		pathxml.append(".b3d");
+		if (App::getInstance()->tileformat=="B3D")
+			pathxml.append(".b3d");
+		if (App::getInstance()->tileformat=="OBJ")
+			pathxml.append(".obj");
+		if (App::getInstance()->tileformat=="DAE")
+			pathxml.append(".dae");
+		
 		filename=pathxml;
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
@@ -566,7 +573,16 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			filename=filename.subString(0,(filename.size()-4));
 			filename.append("/tile");
 			filename.append((*it).second->getName());
-			filename.append(".b3d");
+			
+			if (App::getInstance()->tileformat=="B3D")
+				filename.append(".b3d");
+
+			if (App::getInstance()->tileformat=="OBJ")
+				filename.append(".obj");
+
+			if (App::getInstance()->tileformat=="DAE")
+				filename.append(".dae");
+
 
 			core::stringc file1=filename;
 			core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file1);
@@ -582,17 +598,35 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			//filename=path2;
 			path.append("/tile");
 			path.append((*it).second->getName());
-			path.append(".b3d");
-			filename=path;
+			IMeshWriter* mw = NULL;
+			if (App::getInstance()->tileformat=="B3D")
+			{
+				path.append(".b3d");
+				filename=path;
 
-			IMeshWriter* mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
+				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
+			} else if (App::getInstance()->tileformat=="OBJ")
+			{
+				path.append(".obj");
+				filename=path;
+
+				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_OBJ);
+			}
+
+			if (App::getInstance()->tileformat=="DAE")
+			{
+				path.append(".dae");
+				filename=path;
+
+				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_COLLADA);
+			}
 			if (!mw)
 				printf("Failed to create the mesh writer!\n");
 
 			IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
 			IMesh* mesh = (((*it).second))->getMesh();
 
-			printf("This is the B3D filename: %s\n",filename.c_str());
+			printf("This is the filename: %s\n",filename.c_str());
 
 			if (mesh && mw && file)
 				mw->writeMesh(file,  mesh);
@@ -637,6 +671,20 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 		isparam=false;
 		parametric=false;
 		scale=1024; //Force to 1024 unit as old default, as it was not saved before 0.3
+	}
+
+	//Set the variable density for the terrain meshes
+	stringc density = parentElement->ToElement()->Attribute("Density");
+	if (density.size()>0)
+	{
+		u32 value=atoi(density.c_str());
+		if (value>9 && value<251)
+		{
+			App::getInstance()->terraindensity=value;
+		}
+		else
+			App::getInstance()->terraindensity=100; //Value not coherent or not found
+
 	}
 	stringc tscale = parentElement->ToElement()->Attribute("Scale");
 	if (tscale.size()>0)
