@@ -6,7 +6,7 @@
 		<Option platforms="Unix;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="App/;App/;App/tinyxml/;App/fx/;App/camera/;App/events/;App/gui/;App/objects/;App/sound/;App/terrain/;" />
+		<Option virtualFolders="App/;App/;App/tinyxml/;App/fx/;App/camera/;App/events/;App/gui/;App/objects/;App/sound/;App/terrain/;App/fx/Xeffect/;App/Editor/;App/Game/;" />
 		<Build>
 			<Target title="Player Debug">
 				<Option platforms="Unix;" />
@@ -114,6 +114,30 @@
 		<Unit filename="src/App.h">
 			<Option virtualFolder="App/" />
 		</Unit>
+		<Unit filename="src/Editor/AppEditor.cpp">
+			<Option virtualFolder="App/Editor/" />
+		</Unit>
+		<Unit filename="src/Editor/AppEditor.h">
+			<Option virtualFolder="App/Editor/" />
+		</Unit>
+		<Unit filename="src/Editor/GUIEditor.cpp">
+			<Option virtualFolder="App/Editor/" />
+		</Unit>
+		<Unit filename="src/Editor/GUIEditor.h">
+			<Option virtualFolder="App/Editor/" />
+		</Unit>
+		<Unit filename="src/Game/AppGame.cpp">
+			<Option virtualFolder="App/Game/" />
+		</Unit>
+		<Unit filename="src/Game/AppGame.h">
+			<Option virtualFolder="App/Game/" />
+		</Unit>
+		<Unit filename="src/Game/CUIGame.cpp">
+			<Option virtualFolder="App/Game/" />
+		</Unit>
+		<Unit filename="src/Game/GUIGame.h">
+			<Option virtualFolder="App/Game/" />
+		</Unit>
 		<Unit filename="src/LANGManager.cpp">
 			<Option virtualFolder="App/" />
 		</Unit>
@@ -161,6 +185,30 @@
 		</Unit>
 		<Unit filename="src/fx/ShaderCallBack.h">
 			<Option virtualFolder="App/fx/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/CScreenQuad.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/CShaderPre.cpp">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/CShaderPre.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/EffectCB.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/EffectHandler.cpp">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/EffectHandler.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/EffectShaders.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
+		</Unit>
+		<Unit filename="src/fx/XEffects/XEffects.h">
+			<Option virtualFolder="App/fx/Xeffect/" />
 		</Unit>
 		<Unit filename="src/fx/postprocess/IPostProcess.h">
 			<Option virtualFolder="App/fx/" />
@@ -258,6 +306,12 @@
 		<Unit filename="src/objects/Player.h">
 			<Option virtualFolder="App/objects/" />
 		</Unit>
+		<Unit filename="src/objects/Projectile.cpp">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/Projectile.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
 		<Unit filename="src/objects/TemplateObject.cpp">
 			<Option virtualFolder="App/objects/" />
 		</Unit>
@@ -268,6 +322,9 @@
 			<Option virtualFolder="App/objects/" />
 		</Unit>
 		<Unit filename="src/objects/combat.h">
+			<Option virtualFolder="App/objects/" />
+		</Unit>
+		<Unit filename="src/objects/projectileItem.h">
 			<Option virtualFolder="App/objects/" />
 		</Unit>
 		<Unit filename="src/raytests.cpp">

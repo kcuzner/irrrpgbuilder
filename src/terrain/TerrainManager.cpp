@@ -1,7 +1,7 @@
 #include "TerrainManager.h"
 #include "../events/EventReceiver.h"
 #include "../gui/GUIManager.h"
-#include "../fx/EffectsMAnager.h"
+#include "../fx/EffectsManager.h"
 
 #include <sstream>
 #include <vector>
@@ -550,7 +550,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			pathxml.append(".obj");
 		if (App::getInstance()->tileformat=="DAE")
 			pathxml.append(".dae");
-		
+
 		filename=pathxml;
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
@@ -573,7 +573,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 			filename=filename.subString(0,(filename.size()-4));
 			filename.append("/tile");
 			filename.append((*it).second->getName());
-			
+
 			if (App::getInstance()->tileformat=="B3D")
 				filename.append(".b3d");
 

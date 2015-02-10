@@ -9,8 +9,8 @@
 #include "fx/EffectsManager.h" // Fx Manager
 #include "LANGManager.h" // Languages string manager
 #include "objects/DynamicObjectsManager.h" //Dynamic Object manager class
-#include "objects/projectile.h" //Projectile class manager
-#include "LuaGlobalcaller.h" //Lua Global caller functions (basic functions, objects state before/after play)
+#include "objects/Projectile.h" //Projectile class manager
+#include "LuaGlobalCaller.h" //Lua Global caller functions (basic functions, objects state before/after play)
 #include "objects/combat.h" //For updating the combat manager (damage calculation and DOT updates)
 
 
@@ -452,7 +452,7 @@ void App::setAppState(APP_STATE newAppState)
 
 		if (this->isXEffectsEnabled())
 			DynamicObjectsManager::getInstance()->displayShadow(false);
-		
+
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,false);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,true);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_ADD_SEGMENT,false);
@@ -2543,10 +2543,12 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 		deviceConfig.Fullscreen = fullScreen;
 		deviceConfig.Vsync = vsync;
 		deviceConfig.WindowSize = screensize;
-		deviceConfig.ZBufferBits = 32;
+		deviceConfig.ZBufferBits = 16;
 
 		device = createDeviceEx(deviceConfig);
+
 		this->device->setResizable(resizable);
+
 		device->setWindowCaption(appname.c_str());
 	} else
 		device = IRRdevice;
@@ -2594,7 +2596,7 @@ void App::playGame()
 	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->isVisible();
 	if (visible)
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_LOADER,true)->setVisible(false);
-	
+
 	visible=guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->isVisible();
 	if (visible)
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(false);
@@ -3780,7 +3782,7 @@ void App::saveProjectToXML(stringc filename)
 
 bool App::loadProjectFromXML(stringc filename)
 {
-	
+
 	IGUIWindow* window=(IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER);
 	window->setVisible(true);
 	printf ("Trying to load this map: %s \n",filename.c_str());

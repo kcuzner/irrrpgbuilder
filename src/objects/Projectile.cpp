@@ -1,6 +1,6 @@
 #include "Projectile.h"
 #include "../App.h" //  to be able to communicate with this class
-#include "dynamicObject.h" // to be able to communicate with this class
+#include "DynamicObject.h" // to be able to communicate with this class
 
 using namespace irr;
 using namespace core;
@@ -43,7 +43,7 @@ Projectile* Projectile::getInstance()
 //Update the movement of the projectile based on delta time
 void Projectile::updateMovement(ISceneNode* node, f32 velocity)
 {
-	if (!node) 
+	if (!node)
 		return;
 
 	//The "DELTA" is the difference in MS between the last and current frame render.
@@ -82,13 +82,13 @@ void Projectile::update()
 		}
 
 		//If the projectile lifetime is completed, then remove the object and the projectile data.
-		if (!projectiles[i].alive) 
+		if (!projectiles[i].alive)
 		{
 			if (projectiles[i].node)
 				projectiles[i].node->remove();
 			projectiles.erase(projectiles.begin()+i);
-			//Would need to return something to the dynamic object class to tell where the projectile stopped 
-			//So it could define the position to had a FX 
+			//Would need to return something to the dynamic object class to tell where the projectile stopped
+			//So it could define the position to had a FX
 			//Also need to check if it touched a node
 			//And report for the damage
 		}
@@ -100,7 +100,7 @@ void Projectile::createProjectile(projectileitem item)
 {
 	//item=data1; //check if we can keep data in
 	item.alive = true;
-	
+
 	//Item cloning is required
 	if (!item.node)
 		return;
@@ -162,7 +162,7 @@ void Projectile::setProjectileRepresentation(projectileitem& data, irr::core::st
 	IAnimatedMesh* mesh=NULL;
 	IBillboardSceneNode* bill=NULL;
 	ISceneNode* node=NULL;
-	
+
 	if (usemesh)
 	{
 		mesh = smgr->getMesh(filename.c_str());
@@ -191,10 +191,10 @@ void Projectile::setProjectileRepresentation(projectileitem& data, irr::core::st
 			data.node = (ISceneNode*)bill;
 		else
 			data.node = NULL;
-	
+
 
 	}
-	
+
 }
 
 // Set the trajectory of the projectile into the data
@@ -250,8 +250,8 @@ vector3df Projectile::rayTest(vector3df pos, vector3df pos1)
 	core::vector3df intersection;
     // Used to show with triangle has been hit. Required but not used in IRB
     core::triangle3df hitTriangle;
-	
-	
+
+
 	scene::ISceneNode * selectedSceneNode =
     collman->getSceneNodeAndCollisionPointFromRay(
 		ray,
