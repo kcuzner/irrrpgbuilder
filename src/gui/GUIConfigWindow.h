@@ -67,6 +67,8 @@ class GUIConfigWindow {
         IGUIEditBox* ebOceanNormalMap;
         IGUIEditBox* ebOceanReflection;
 
+		IGUIComboBox* camera;
+
         void populateLanguageList();
         void populateResolutionList();
 

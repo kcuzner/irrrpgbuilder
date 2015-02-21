@@ -27,7 +27,7 @@ App::App()
 	tileformat="B3D"; //Default format for tiles.
 	logoimage="../media/art/gametitle.jpg";
 	filename="";
-	appname=L"IrrRPG Builder - Alpha SVN release 0.3 (feb 2015)";
+	appname=L"IrrRPG Builder - Alpha release 0.31";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -2407,6 +2407,27 @@ bool App::loadConfig()
 		{
 			screensize.Width = atoi(resXML->ToElement()->Attribute("screen_width"));
 			screensize.Height = atoi(resXML->ToElement()->Attribute("screen_height"));
+			stringc result = resXML->ToElement()->Attribute("camera");
+			if (result.size()>0)
+			{
+				if (result == std::string("rts").c_str())
+				{
+					defaultview=VIEW_RTS;
+				}
+				if (result == std::string("rpg").c_str())
+				{
+					defaultview=VIEW_RPG;
+				}
+				if (result == std::string("fps").c_str())
+				{
+					defaultview=VIEW_FPS;
+				}
+			} else 
+				defaultview=VIEW_RTS;
+
+
+
+
 			stringc full = resXML->ToElement()->Attribute("fullscreen");
 			if (full=="true")
 			{
@@ -3946,6 +3967,17 @@ void App::initialize()
 	this->currentProjectName = "irb_temp_project";
 
 	Projectile::getInstance(); //Instanciate the projectile class
+
+	//Set the default view for player controls in gameplay
+	//Must be done AFTER the camera system is initialized.
+	if (defaultview==VIEW_RTS)
+		this->setRTSView();
+	if (defaultview==VIEW_RPG)
+		this->setRPGView();
+	if (defaultview==VIEW_FPS)
+		this->setFPSView();
+
+
 }
 
 void App::shutdown()
@@ -3996,6 +4028,52 @@ irr::f32 App::getBrushRadius(int number)
 		radius = GUIManager::getInstance()->getScrollBarValue(GUIManager::SC_ID_TERRAIN_BRUSH_RADIUS2);
 #endif
 	return radius;
+}
+
+void App::setRTSView()
+{
+
+	IGUIButton* button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+	IGUIButton* button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+	IGUIButton* button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+	if (button1)
+		button1->setPressed(true);
+	if (button2)
+		button2->setPressed(false);
+	if (button3)
+		button3->setPressed(false);
+
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RTS);
+}
+
+void App::setRPGView()
+{
+	IGUIButton* button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+	IGUIButton* button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+	IGUIButton* button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+	if (button1)
+		button1->setPressed(false);
+	if (button2)
+		button2->setPressed(true);
+	if (button3)
+		button3->setPressed(false);
+
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_RPG);
+}
+
+void App::setFPSView()
+{
+	IGUIButton* button1 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RTS,true));
+	IGUIButton* button2 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_RPG,true));
+	IGUIButton* button3 = ((IGUIButton *)guienv->getRootGUIElement()->getElementFromId(GUIManager::BT_CAMERA_FPS,true));
+	if (button1)
+		button1->setPressed(false);
+	if (button2)
+		button2->setPressed(false);
+	if (button3)
+		button3->setPressed(true);
+
+	CameraSystem::getInstance()->setViewType(CameraSystem::VIEW_FPS);
 }
 
 // Snapping function

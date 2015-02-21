@@ -101,6 +101,17 @@ class App
 			LIST_LOOT,
 		};
 
+		// For the view types
+		enum VIEW_TYPE
+		{
+			VIEW_RTS = 1,
+			VIEW_RTS_FIXED = 2,
+			VIEW_RPG = 3,
+			VIEW_FPS = 4,
+			VIEW_HYBRID_FPS = 5,
+			VIEW_COUNT = 6
+		};
+
 		#ifdef EDITOR
 
 		void eventGuiCheckbox(s32 id);
@@ -188,6 +199,11 @@ class App
 
 		// This check in the GUI manager to get the radius of the Brush in the GUI;
 		irr::f32 getBrushRadius(int number = 0);
+
+		// Set the view in view modes via the camera system
+		void setRTSView();
+		void setRPGView();
+		void setFPSView();
 
 		// Snapping function
 		core::vector3df calculateSnap(vector3df input, f32 snapvalue);
@@ -320,6 +336,8 @@ class App
 		f32 currentsnapping;
 		bool xeffectenabler;
 		bool gamestarted; //To know if the application has been started. (player app)
+
+		VIEW_TYPE defaultview;
 		
 
 };

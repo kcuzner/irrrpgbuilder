@@ -43,7 +43,22 @@ GUIConfigWindow::GUIConfigWindow(IrrlichtDevice* device)
 
     YPos += 15;
 
+	
     resolutionList = guienv->addComboBox(myRect(10,YPos,450,25),tabSystem,-1);
+	YPos += 35;
+
+
+	 //Game Camera
+	guienv->addStaticText(stringw("Default game camera setup").c_str(),myRect(10,YPos,tabSystem->getAbsoluteClippingRect().getWidth()-20,25),false,false,tabSystem);
+
+	 YPos += 15;
+	camera = guienv->addComboBox(myRect(10,YPos,450,25),tabSystem,-1);
+	camera->addItem(L"Third person RTS style camera");
+	camera->addItem(L"Third person RPG style camera");
+	camera->addItem(L"First person FPS style camera");
+
+
+
 
     YPos += 35;
 
@@ -347,6 +362,26 @@ void GUIConfigWindow::loadActualSeetings()
 			int sw = atoi(screenXML->ToElement()->Attribute("screen_width"));
 			int sh = atoi(screenXML->ToElement()->Attribute("screen_height"));
 			
+			result = screenXML->ToElement()->Attribute("camera");
+			if (result.size()>0)
+			{
+				if (result == std::string("rts").c_str())
+				{
+					App::getInstance()->setRTSView();
+					camera->setSelected(0);
+				}
+				if (result == std::string("rpg").c_str())
+				{
+					App::getInstance()->setRPGView();
+					camera->setSelected(1);
+				}
+				if (result == std::string("fps").c_str())
+				{
+					App::getInstance()->setFPSView();
+					camera->setSelected(2);
+				}
+			}
+
 			result = screenXML->ToElement()->Attribute("fullscreen");
 			if (result.size()>0)
 			{
@@ -477,6 +512,16 @@ void GUIConfigWindow::saveNewSeetings()
     TiXmlElement* screenXML = new TiXmlElement("screen");
     screenXML->SetAttribute("screen_width",vModes[resolutionList->getSelected()].X);
     screenXML->SetAttribute("screen_height",vModes[resolutionList->getSelected()].Y);
+	if (camera)
+	{
+		if (camera->getSelected()==0)
+			screenXML->SetAttribute("camera","rts");
+		if (camera->getSelected()==1)
+			screenXML->SetAttribute("camera","rpg");
+		if (camera->getSelected()==2)
+			screenXML->SetAttribute("camera","fps");
+
+	}
     screenXML->SetAttribute("fullscreen", cbFullscreen->isChecked()?"true":"false" );
     screenXML->SetAttribute("resizeable", cbResizeable->isChecked()?"true":"false" );
 	screenXML->SetAttribute("vsync", cbVSync->isChecked()?"true":"false" );
