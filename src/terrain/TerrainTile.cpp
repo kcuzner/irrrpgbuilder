@@ -53,7 +53,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 
 		//Tries to create a mesh that is 1024 in size (mesh size), scaled then by IRB.
 		//"tilesegment" is used to determine the density of the mesh, smaller=less dense
-		
+
 		f32 size = TerrainManager::getInstance()->getScale();
 		f32 calc = App::getInstance()->terraindensity/size;
 		u32 tilesegment = (u32)(calc*size);
@@ -96,7 +96,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	node->setPosition(pos*scale);
     selector = smgr->createTriangleSelector(newMesh,node);
     node->setTriangleSelector(selector);
-	
+
 	assignTerrainShader(node);
 
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
@@ -484,7 +484,7 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 		while( vertex != NULL )
 		{
 			if (!custom)
-			{
+            {
 				id = atoi(vertex->ToElement()->Attribute("id"));
 				y = (f32)atof(vertex->ToElement()->Attribute("y"));
 				this->transformMeshByVertex(id,y,false,true);
