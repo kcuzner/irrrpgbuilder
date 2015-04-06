@@ -27,7 +27,7 @@ Name "${APPNAME}"
 Icon "${ICONPATH}"
 
 # this is the name of the installer to be created
-outFile "IRRRPGBUILDER_setup.exe"
+outFile "IRR_RPG_BUILDER_setup.exe"
  
 # some libs for additional functions
 !include LogicLib.nsh
@@ -140,6 +140,10 @@ section "Source files"
 	
 	setOutPath $INSTDIR\src"
 	file /r src src\*.*	
+	
+	AccessControl::GrantOnFile "$INSTDIR\" "(BU)" "FullAccess"
+	AccessControl::GrantOnFile "$INSTDIR\irrlicht-engine" "(BU)" "FullAccess"
+	AccessControl::GrantOnFile "$INSTDIR\src" "(BU)" "FullAccess"
 	
 	setOutPath $INSTDIR"	
 sectionEnd
