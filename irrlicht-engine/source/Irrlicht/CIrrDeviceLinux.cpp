@@ -674,8 +674,8 @@ bool CIrrDeviceLinux::createWindow()
 
 	if (!CreationParams.WindowId)
 	{
-		int x = 0;
-		int y = 0;
+		int x = 30;
+		int y = 30;
 
 		if (!CreationParams.Fullscreen)
 		{

@@ -375,6 +375,10 @@
 		<Unit filename="src/tinyXML/tinyxmlparser.cpp">
 			<Option virtualFolder="App/tinyxml/" />
 		</Unit>
+		<Unit filename="src/xdg-user-dir-lookup.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="App/" />
+		</Unit>
 		<Extensions>
 			<code_completion>
 				<search_path add="../irrlicht-engine/source/Irrlicht" />

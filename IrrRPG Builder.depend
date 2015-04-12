@@ -10607,7 +10607,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1424559772 source:/home/christian/Public/IRB/src/App.cpp
+1428850519 source:/home/christian/Public/IRB/src/App.cpp
 	"App.h"
 	"raytests.h"
 	"camera/CameraSystem.h"
@@ -10624,7 +10624,7 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1424559772 /home/christian/Public/IRB/src/App.h
+1428812596 /home/christian/Public/IRB/src/App.h
 	<irrlicht.h>
 	<vector>
 	<iostream>
@@ -10633,7 +10633,7 @@
 	"raytests.h"
 	"objects/DynamicObject.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrlicht.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrlicht.h
 	"IrrCompileConfig.h"
 	"aabbox3d.h"
 	"CDynamicMeshBuffer.h"
@@ -10795,17 +10795,17 @@
 	"vector3d.h"
 	"SIrrCreationParameters.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IrrCompileConfig.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IrrCompileConfig.h
 	<stdio.h>
 	<xtl.h>
 	<tchar.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/aabbox3d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/aabbox3d.h
 	"irrMath.h"
 	"plane3d.h"
 	"line3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrMath.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrMath.h
 	"IrrCompileConfig.h"
 	"irrTypes.h"
 	<math.h>
@@ -10813,7 +10813,7 @@
 	<stdlib.h>
 	<limits.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrTypes.h
 	"IrrCompileConfig.h"
 	<wchar.h>
 	<crtdbg.h>
@@ -10821,28 +10821,28 @@
 	<stdlib.h>
 	<crtdbg.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/plane3d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/plane3d.h
 	"irrMath.h"
 	"vector3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/vector3d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/vector3d.h
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/line3d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/line3d.h
 	"irrTypes.h"
 	"vector3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/CDynamicMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/CDynamicMeshBuffer.h
 	"IDynamicMeshBuffer.h"
 	"CVertexBuffer.h"
 	"CIndexBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IDynamicMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IDynamicMeshBuffer.h
 	"IMeshBuffer.h"
 	"IVertexBuffer.h"
 	"IIndexBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshBuffer.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"aabbox3d.h"
@@ -10851,29 +10851,29 @@
 	"EHardwareBufferFlags.h"
 	"EPrimitiveTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IReferenceCounted.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IReferenceCounted.h
 	"irrTypes.h"
 	"leakHunter.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/leakHunter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/leakHunter.h
 	"IrrCompileConfig.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrArray.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrArray.h
 	"irrTypes.h"
 	"heapsort.h"
 	"irrAllocator.h"
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/heapsort.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/heapsort.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrAllocator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrAllocator.h
 	"irrTypes.h"
 	<new>
 	<memory.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMaterial.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMaterial.h
 	"SColor.h"
 	"matrix4.h"
 	"irrArray.h"
@@ -10882,11 +10882,11 @@
 	"EMaterialFlags.h"
 	"SMaterialLayer.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/SColor.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SColor.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/matrix4.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/matrix4.h
 	"irrMath.h"
 	"vector3d.h"
 	"vector2d.h"
@@ -10895,23 +10895,23 @@
 	"rect.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/vector2d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/vector2d.h
 	"irrMath.h"
 	"dimension2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/dimension2d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/dimension2d.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/rect.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/rect.h
 	"irrTypes.h"
 	"dimension2d.h"
 	"position2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/position2d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/position2d.h
 	"vector2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrString.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrString.h
 	"irrTypes.h"
 	"irrAllocator.h"
 	"irrMath.h"
@@ -10919,130 +10919,130 @@
 	<string.h>
 	<stdlib.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EMaterialTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EMaterialTypes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EMaterialFlags.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EMaterialFlags.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMaterialLayer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMaterialLayer.h
 	"matrix4.h"
 	"irrAllocator.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/S3DVertex.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/S3DVertex.h
 	"vector3d.h"
 	"vector2d.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SVertexIndex.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SVertexIndex.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EHardwareBufferFlags.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EHardwareBufferFlags.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EPrimitiveTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EPrimitiveTypes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IVertexBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IVertexBuffer.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"S3DVertex.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IIndexBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IIndexBuffer.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"SVertexIndex.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/CVertexBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/CVertexBuffer.h
 	"IVertexBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/CIndexBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/CIndexBuffer.h
 	"IIndexBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/CMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/CMeshBuffer.h
 	"irrArray.h"
 	"IMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/coreutil.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/coreutil.h
 	"irrString.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/path.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/path.h
 	"irrString.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IProfiler.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IProfiler.h
 	"IrrCompileConfig.h"
 	"irrString.h"
 	"irrArray.h"
 	"ITimer.h"
 	<limits.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ITimer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ITimer.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ECullingTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ECullingTypes.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EDebugSceneTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EDebugSceneTypes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EDriverFeatures.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EDriverFeatures.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EDriverTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EDriverTypes.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EGUIAlignment.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EGUIAlignment.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EGUIElementTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EGUIElementTypes.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EMeshWriterEnums.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EMeshWriterEnums.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EMessageBoxFlags.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EMessageBoxFlags.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ESceneNodeAnimatorTypes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ESceneNodeTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ESceneNodeTypes.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ETerrainElements.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ETerrainElements.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/fast_atof.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/fast_atof.h
 	"irrMath.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMesh.h
 	"aabbox3d.h"
 	"IMesh.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMesh.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"EHardwareBufferFlags.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshMD2.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshMD2.h
 	"IAnimatedMesh.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshMD3.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshMD3.h
 	"IAnimatedMesh.h"
 	"IQ3Shader.h"
 	"quaternion.h"
 	"irrpack.h"
 	"irrunpack.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IQ3Shader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IQ3Shader.h
 	"irrArray.h"
 	"fast_atof.h"
 	"IFileSystem.h"
 	"IVideoDriver.h"
 	"coreutil.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IFileSystem.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IFileSystem.h
 	"IReferenceCounted.h"
 	"IXMLReader.h"
 	"IFileArchive.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IXMLReader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IXMLReader.h
 	"IReferenceCounted.h"
 	"irrXML.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/irrXML.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrXML.h
 	<stdio.h>
 	"IrrCompileConfig.h"
 	<irrXML.h>
@@ -11051,19 +11051,19 @@
 	<irrXML.h>
 	<irrXML.h>
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IFileArchive.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IFileArchive.h
 	"IReadFile.h"
 	"IFileList.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IReadFile.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IReadFile.h
 	"IReferenceCounted.h"
 	"coreutil.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IFileList.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IFileList.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IVideoDriver.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IVideoDriver.h
 	"rect.h"
 	"SColor.h"
 	"ITexture.h"
@@ -11079,7 +11079,7 @@
 	"EDriverFeatures.h"
 	"SExposedVideoData.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/ITexture.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ITexture.h
 	"IReferenceCounted.h"
 	"IImage.h"
 	"dimension2d.h"
@@ -11087,37 +11087,37 @@
 	"path.h"
 	"matrix4.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IImage.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IImage.h
 	"IReferenceCounted.h"
 	"position2d.h"
 	"rect.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/triangle3d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/triangle3d.h
 	"vector3d.h"
 	"line3d.h"
 	"plane3d.h"
 	"aabbox3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SExposedVideoData.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SExposedVideoData.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/quaternion.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/quaternion.h
 	"irrTypes.h"
 	"irrMath.h"
 	"matrix4.h"
 	"vector3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrpack.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrpack.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrunpack.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrunpack.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAnimatedMeshSceneNode.h
 	"ISceneNode.h"
 	"IBoneSceneNode.h"
 	"IAnimatedMeshMD2.h"
 	"IAnimatedMeshMD3.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNode.h
 	"IAttributeExchangingObject.h"
 	"ESceneNodeTypes.h"
 	"ECullingTypes.h"
@@ -11131,10 +11131,10 @@
 	"irrList.h"
 	"IAttributes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAttributeExchangingObject.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAttributeExchangingObject.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimator.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"ESceneNodeAnimatorTypes.h"
@@ -11142,7 +11142,7 @@
 	"IAttributes.h"
 	"IEventReceiver.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IAttributes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IAttributes.h
 	"IReferenceCounted.h"
 	"SColor.h"
 	"vector3d.h"
@@ -11165,73 +11165,73 @@
 	"EAttributes.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/line2d.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/line2d.h
 	"irrTypes.h"
 	"vector2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EAttributes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EAttributes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IEventReceiver.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IEventReceiver.h
 	"ILogger.h"
 	"Keycodes.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ILogger.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ILogger.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/Keycodes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/Keycodes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ITriangleSelector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ITriangleSelector.h
 	"IReferenceCounted.h"
 	"triangle3d.h"
 	"aabbox3d.h"
 	"matrix4.h"
 	"line3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrList.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrList.h
 	"irrTypes.h"
 	"irrAllocator.h"
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IBoneSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IBoneSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IBillboardSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IBillboardSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IBillboardTextSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IBillboardTextSceneNode.h
 	"IBillboardSceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ICameraSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ICameraSceneNode.h
 	"ISceneNode.h"
 	"IEventReceiver.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ICursorControl.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ICursorControl.h
 	"IReferenceCounted.h"
 	"position2d.h"
 	"rect.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IDummyTransformationSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IDummyTransformationSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGeometryCreator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGeometryCreator.h
 	"IReferenceCounted.h"
 	"IMesh.h"
 	"IImage.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGPUProgrammingServices.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGPUProgrammingServices.h
 	"EShaderTypes.h"
 	"EMaterialTypes.h"
 	"EPrimitiveTypes.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EShaderTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EShaderTypes.h
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIButton.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIButton.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIElement.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIElement.h
 	"IAttributeExchangingObject.h"
 	"irrList.h"
 	"rect.h"
@@ -11241,27 +11241,27 @@
 	"EGUIAlignment.h"
 	"IAttributes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUICheckBox.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUICheckBox.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIColorSelectDialog.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIColorSelectDialog.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIComboBox.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIComboBox.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIContextMenu.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIContextMenu.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIEditBox.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIEditBox.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIElementFactory.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIElementFactory.h
 	"IReferenceCounted.h"
 	"EGUIElementTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIEnvironment.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIEnvironment.h
 	"IReferenceCounted.h"
 	"IGUISkin.h"
 	"rect.h"
@@ -11271,126 +11271,126 @@
 	"IXMLReader.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUISkin.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUISkin.h
 	"IAttributeExchangingObject.h"
 	"EGUIAlignment.h"
 	"SColor.h"
 	"rect.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EFocusFlags.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EFocusFlags.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFileOpenDialog.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFileOpenDialog.h
 	"IGUIElement.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFont.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFont.h
 	"IReferenceCounted.h"
 	"SColor.h"
 	"rect.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFontBitmap.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIFontBitmap.h
 	"IGUIFont.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIImage.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIImage.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIInOutFader.h
-	"IGUIElement.h"
-	"SColor.h"
-
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIListBox.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIInOutFader.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIMeshViewer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIListBox.h
+	"IGUIElement.h"
+	"SColor.h"
+
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIMeshViewer.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIScrollBar.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIScrollBar.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUISpinBox.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUISpinBox.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUISpriteBank.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUISpriteBank.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"SColor.h"
 	"rect.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIStaticText.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIStaticText.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUITabControl.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUITabControl.h
 	"IGUIElement.h"
 	"SColor.h"
 	"IGUISkin.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IGUITable.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUITable.h
 	"IGUIElement.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIToolbar.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIToolbar.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIWindow.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIWindow.h
 	"IGUIElement.h"
 	"EMessageBoxFlags.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUITreeView.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUITreeView.h
 	"IGUIElement.h"
 	"IGUIImageList.h"
 	"irrTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IGUIImageList.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIImageList.h
 	"IGUIElement.h"
 	"rect.h"
 	"irrTypes.h"
 
-1423535936 /home/christian/Public/IRB/irrlicht-engine/include/IGUIProfiler.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IGUIProfiler.h
 	"IGUIElement.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IImageLoader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IImageLoader.h
 	"IReferenceCounted.h"
 	"IImage.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IImageWriter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IImageWriter.h
 	"IReferenceCounted.h"
 	"irrString.h"
 	"coreutil.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ILightSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ILightSceneNode.h
 	"ISceneNode.h"
 	"SLight.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SLight.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SLight.h
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMaterialRenderer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMaterialRenderer.h
 	"IReferenceCounted.h"
 	"SMaterial.h"
 	"S3DVertex.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMaterialRendererServices.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMaterialRendererServices.h
 	"SMaterial.h"
 	"S3DVertex.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshCache.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshCache.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshLoader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshLoader.h
 	"IReferenceCounted.h"
 	"path.h"
 	"IMeshTextureLoader.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshTextureLoader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshTextureLoader.h
 	"path.h"
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshManipulator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshManipulator.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"aabbox3d.h"
@@ -11399,31 +11399,31 @@
 	"IMeshBuffer.h"
 	"SVertexManipulator.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SVertexManipulator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SVertexManipulator.h
 	"S3DVertex.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMeshWriter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMeshWriter.h
 	"IReferenceCounted.h"
 	"EMeshWriterEnums.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IColladaMeshWriter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IColladaMeshWriter.h
 	"IMeshWriter.h"
 	"ISceneNode.h"
 	"IAnimatedMesh.h"
 	"SMaterial.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IMetaTriangleSelector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IMetaTriangleSelector.h
 	"ITriangleSelector.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IOSOperator.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IOSOperator.h
 	"IReferenceCounted.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleSystemSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleSystemSceneNode.h
 	"ISceneNode.h"
 	"IParticleAnimatedMeshSceneNodeEmitter.h"
 	"IParticleBoxEmitter.h"
@@ -11437,60 +11437,60 @@
 	"IParticleRotationAffector.h"
 	"dimension2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAnimatedMeshSceneNodeEmitter.h
 	"IParticleEmitter.h"
 	"IAnimatedMeshSceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleEmitter.h
 	"IAttributeExchangingObject.h"
 	"SParticle.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SParticle.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SParticle.h
 	"vector3d.h"
 	"dimension2d.h"
 	"SColor.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleBoxEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleBoxEmitter.h
 	"IParticleEmitter.h"
 	"aabbox3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleCylinderEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleCylinderEmitter.h
 	"IParticleEmitter.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleMeshEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleMeshEmitter.h
 	"IParticleEmitter.h"
 	"IMesh.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleRingEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleRingEmitter.h
 	"IParticleEmitter.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleSphereEmitter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleSphereEmitter.h
 	"IParticleEmitter.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAttractionAffector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAttractionAffector.h
 	"IParticleAffector.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAffector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleAffector.h
 	"IAttributeExchangingObject.h"
 	"SParticle.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleFadeOutAffector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleFadeOutAffector.h
 	"IParticleAffector.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleGravityAffector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleGravityAffector.h
 	"IParticleAffector.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IParticleRotationAffector.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IParticleRotationAffector.h
 	"IParticleAffector.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IQ3LevelMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IQ3LevelMesh.h
 	"IAnimatedMesh.h"
 	"IQ3Shader.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IRandomizer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IRandomizer.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IrrlichtDevice.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IrrlichtDevice.h
 	"IReferenceCounted.h"
 	"dimension2d.h"
 	"IVideoDriver.h"
@@ -11502,28 +11502,28 @@
 	"ITimer.h"
 	"IOSOperator.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/EDeviceTypes.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/EDeviceTypes.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IVideoModeList.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IVideoModeList.h
 	"IReferenceCounted.h"
 	"dimension2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/irrMap.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/irrMap.h
 	"irrTypes.h"
 	"irrMath.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneCollisionManager.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneCollisionManager.h
 	"IReferenceCounted.h"
 	"vector3d.h"
 	"triangle3d.h"
 	"position2d.h"
 	"line3d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneLoader.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneLoader.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneManager.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneManager.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"irrString.h"
@@ -11539,107 +11539,107 @@
 	"IGeometryCreator.h"
 	"ISkinnedMesh.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SceneParameters.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SceneParameters.h
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISkinnedMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISkinnedMesh.h
 	"irrArray.h"
 	"IBoneSceneNode.h"
 	"IAnimatedMesh.h"
 	"SSkinMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SSkinMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SSkinMeshBuffer.h
 	"IMeshBuffer.h"
 	"S3DVertex.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCameraFPS.h
 	"ISceneNodeAnimator.h"
 	"IEventReceiver.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCameraMaya.h
 	"ISceneNodeAnimator.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorCollisionResponse.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeAnimatorFactory.h
 	"IReferenceCounted.h"
 	"ESceneNodeAnimatorTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeFactory.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneNodeFactory.h
 	"IReferenceCounted.h"
 	"ESceneNodeTypes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ISceneUserDataSerializer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ISceneUserDataSerializer.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IShaderConstantSetCallBack.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IShaderConstantSetCallBack.h
 	"IReferenceCounted.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IShadowVolumeSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IShadowVolumeSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ITerrainSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ITerrainSceneNode.h
 	"ETerrainElements.h"
 	"ISceneNode.h"
 	"IDynamicMeshBuffer.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ITextSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ITextSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IVolumeLightSceneNode.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IVolumeLightSceneNode.h
 	"ISceneNode.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IWriteFile.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IWriteFile.h
 	"IReferenceCounted.h"
 	"path.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/IXMLWriter.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/IXMLWriter.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 	"irrString.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/ILightManager.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/ILightManager.h
 	"IReferenceCounted.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SAnimatedMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SAnimatedMesh.h
 	"IAnimatedMesh.h"
 	"IMesh.h"
 	"aabbox3d.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SIrrCreationParameters.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SIrrCreationParameters.h
 	"EDriverTypes.h"
 	"EDeviceTypes.h"
 	"dimension2d.h"
 	"ILogger.h"
 	"position2d.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SKeyMap.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SKeyMap.h
 	"Keycodes.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMesh.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMesh.h
 	"IMesh.h"
 	"IMeshBuffer.h"
 	"aabbox3d.h"
 	"irrArray.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBuffer.h
 	"CMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBufferLightMap.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBufferLightMap.h
 	"CMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBufferTangents.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SMeshBufferTangents.h
 	"CMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SSharedMeshBuffer.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SSharedMeshBuffer.h
 	"irrArray.h"
 	"IMeshBuffer.h"
 
-1413656126 /home/christian/Public/IRB/irrlicht-engine/include/SViewFrustum.h
+1428812581 /home/christian/Public/IRB/irrlicht-engine/include/SViewFrustum.h
 	"plane3d.h"
 	"vector3d.h"
 	"line3d.h"
@@ -11647,13 +11647,13 @@
 	"matrix4.h"
 	"IVideoDriver.h"
 
-1413656135 /home/christian/Public/IRB/src/gui/CGUIFileSelector.h
+1428867069 /home/christian/Public/IRB/src/gui/CGUIFileSelector.h
 	<windows.h>
 	<Shlobj.h>
 	<iostream>
 	<irrlicht.h>
 
-1423535912 /home/christian/Public/IRB/src/LuaGlobalCaller.h
+1428812596 /home/christian/Public/IRB/src/LuaGlobalCaller.h
 	<irrlicht.h>
 	<iostream>
 	<map>
@@ -11661,12 +11661,12 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1413656135 /home/christian/Public/IRB/src/lua/lua.h
+1428812593 /home/christian/Public/IRB/src/lua/lua.h
 	<stdarg.h>
 	<stddef.h>
 	"luaconf.h"
 
-1413656135 /home/christian/Public/IRB/src/lua/luaconf.h
+1428812593 /home/christian/Public/IRB/src/lua/luaconf.h
 	<limits.h>
 	<stddef.h>
 	<unistd.h>
@@ -11679,15 +11679,15 @@
 	<math.h>
 	<unistd.h>
 
-1413656135 /home/christian/Public/IRB/src/lua/lualib.h
+1428812593 /home/christian/Public/IRB/src/lua/lualib.h
 	"lua.h"
 
-1413656135 /home/christian/Public/IRB/src/lua/lauxlib.h
+1428812593 /home/christian/Public/IRB/src/lua/lauxlib.h
 	<stddef.h>
 	<stdio.h>
 	"lua.h"
 
-1413656135 /home/christian/Public/IRB/src/tinyXML/tinyxml.h
+1428812596 /home/christian/Public/IRB/src/tinyXML/tinyxml.h
 	<irrlicht.h>
 	<ctype.h>
 	<stdio.h>
@@ -11700,18 +11700,18 @@
 	<sstream>
 	"tinystr.h"
 
-1413656135 /home/christian/Public/IRB/src/tinyXML/tinystr.h
+1428812596 /home/christian/Public/IRB/src/tinyXML/tinystr.h
 	<assert.h>
 	<string.h>
 
-1413656135 /home/christian/Public/IRB/src/XML_Manager.h
+1428812593 /home/christian/Public/IRB/src/XML_Manager.h
 	"App.h"
 
-1413656135 /home/christian/Public/IRB/src/raytests.h
+1428812595 /home/christian/Public/IRB/src/raytests.h
 	<irrlicht.h>
 	<vector>
 
-1423535912 /home/christian/Public/IRB/src/objects/DynamicObject.h
+1428812595 /home/christian/Public/IRB/src/objects/DynamicObject.h
 	<vector>
 	<irrlicht.h>
 	"properties.h"
@@ -11722,15 +11722,15 @@
 	<lualib.h>
 	<lauxlib.h>
 
-1413656135 /home/christian/Public/IRB/src/objects/HealthSceneNode.h
+1428812595 /home/christian/Public/IRB/src/objects/HealthSceneNode.h
 	"ISceneNode.h"
 	"ISceneCollisionManager.h"
 
-1413656135 /home/christian/Public/IRB/src/sound/SoundManager.h
+1428812594 /home/christian/Public/IRB/src/sound/SoundManager.h
 	<irrKlang.h>
 	<iostream>
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/irrKlang.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/irrKlang.h
 	"ik_irrKlangTypes.h"
 	"ik_vec3d.h"
 	"ik_IRefCounted.h"
@@ -11752,29 +11752,29 @@
 	"ik_IAudioRecorder.h"
 	"ik_ISoundMixedOutputReceiver.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_irrKlangTypes.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_irrKlangTypes.h
 	<wchar.h>
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_vec3d.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_vec3d.h
 	<math.h>
 	"ik_irrKlangTypes.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IRefCounted.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IRefCounted.h
 	"ik_irrKlangTypes.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IVirtualRefCounted.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IVirtualRefCounted.h
 	"ik_irrKlangTypes.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ESoundOutputDrivers.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ESoundOutputDrivers.h
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ESoundEngineOptions.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ESoundEngineOptions.h
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_EStreamModes.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_EStreamModes.h
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_SAudioStreamFormat.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_SAudioStreamFormat.h
 	"ik_IRefCounted.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundEngine.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundEngine.h
 	"ik_IRefCounted.h"
 	"ik_vec3d.h"
 	"ik_ISoundSource.h"
@@ -11783,66 +11783,66 @@
 	"ik_IFileFactory.h"
 	"ik_ISoundMixedOutputReceiver.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundSource.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundSource.h
 	"ik_IVirtualRefCounted.h"
 	"ik_vec3d.h"
 	"ik_EStreamModes.h"
 	"ik_SAudioStreamFormat.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISound.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISound.h
 	"ik_IVirtualRefCounted.h"
 	"ik_ISoundEffectControl.h"
 	"ik_vec3d.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundEffectControl.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundEffectControl.h
 	"ik_IVirtualRefCounted.h"
 	"ik_vec3d.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IFileFactory.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IFileFactory.h
 	"ik_IRefCounted.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundMixedOutputReceiver.h
-	"ik_IRefCounted.h"
-	"ik_SAudioStreamFormat.h"
-
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IAudioStream.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundMixedOutputReceiver.h
 	"ik_IRefCounted.h"
 	"ik_SAudioStreamFormat.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IAudioStreamLoader.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IAudioStream.h
+	"ik_IRefCounted.h"
+	"ik_SAudioStreamFormat.h"
+
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IAudioStreamLoader.h
 	"ik_IRefCounted.h"
 	"ik_IFileReader.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IFileReader.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IFileReader.h
 	"ik_IRefCounted.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundStopEventReceiver.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundStopEventReceiver.h
 	"ik_IRefCounted.h"
 	"ik_SAudioStreamFormat.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_ISoundDeviceList.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_ISoundDeviceList.h
 	"ik_IRefCounted.h"
 
-1413656163 /home/christian/Public/IRB/irrKlang/include/ik_IAudioRecorder.h
+1428812636 /home/christian/Public/IRB/irrKlang/include/ik_IAudioRecorder.h
 	"ik_IRefCounted.h"
 	"ik_ISoundSource.h"
 
-1413656135 /home/christian/Public/IRB/src/camera/CameraSystem.h
+1428812594 /home/christian/Public/IRB/src/camera/CameraSystem.h
 	"../App.h"
 	"../objects/Player.h"
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	<irrlicht.h>
 
-1423535912 /home/christian/Public/IRB/src/objects/Player.h
+1428812595 /home/christian/Public/IRB/src/objects/Player.h
 	<irrlicht.h>
 	<vector>
 	"DynamicObject.h"
 
-1413656135 /home/christian/Public/IRB/src/LANGManager.h
+1428812595 /home/christian/Public/IRB/src/LANGManager.h
 	"gui/GUIManager.h"
 	"tinyXML/tinyxml.h"
 
-1423535912 /home/christian/Public/IRB/src/gui/GUIManager.h
+1428812594 /home/christian/Public/IRB/src/gui/GUIManager.h
 	<irrlicht.h>
 	<vector>
 	"../App.h"
@@ -11853,11 +11853,11 @@
 	"../Editor/GUIEditor.h"
 	"../Game/GUIGame.h"
 
-1413656135 /home/christian/Public/IRB/src/gui/NodePreview.h
+1428812594 /home/christian/Public/IRB/src/gui/NodePreview.h
 	<irrlicht.h>
 	"IGUIElement.h"
 
-1413656135 /home/christian/Public/IRB/src/gui/CGUIEditBoxIRB.h
+1428812594 /home/christian/Public/IRB/src/gui/CGUIEditBoxIRB.h
 	"IrrCompileConfig.h"
 	"IrrlichtDevice.h"
 	"IGUIEditBox.h"
@@ -11868,41 +11868,41 @@
 	"IGUIButton.h"
 	"IGUIContextMenu.h"
 
-1413656135 /home/christian/Public/IRB/src/gui/CGUIGfxStatus.h
+1428812594 /home/christian/Public/IRB/src/gui/CGUIGfxStatus.h
 	"IrrlichtDevice.h"
 	"IGUIElement.h"
 
-1424559772 /home/christian/Public/IRB/src/gui/GUIConfigWindow.h
+1428812594 /home/christian/Public/IRB/src/gui/GUIConfigWindow.h
 	<irrlicht.h>
 	<vector>
 
-1413656135 /home/christian/Public/IRB/src/gui/CGUIExtWindow.h
+1428812594 /home/christian/Public/IRB/src/gui/CGUIExtWindow.h
 	<irrlicht.h>
 
-1423535912 /home/christian/Public/IRB/src/objects/combat.h
+1428812595 /home/christian/Public/IRB/src/objects/combat.h
 	<vector>
 	<irrlicht.h>
 	"DynamicObject.h"
 
-1413656135 /home/christian/Public/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
+1428812594 /home/christian/Public/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.h
 	<vector>
 	"ISceneNodeAnimatorCameraMaya.h"
 	"ICameraSceneNode.h"
 	"vector2d.h"
 	"Keycodes.h"
 
-1413656135 /home/christian/Public/IRB/src/events/EventReceiver.h
+1428812595 /home/christian/Public/IRB/src/events/EventReceiver.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
 
-1419457845 /home/christian/Public/IRB/src/terrain/TerrainManager.h
+1428812595 /home/christian/Public/IRB/src/terrain/TerrainManager.h
 	<map>
 	"TerrainTile.h"
 	"Vegetation.h"
 	"../App.h"
 
-1419445343 /home/christian/Public/IRB/src/terrain/TerrainTile.h
+1428812595 /home/christian/Public/IRB/src/terrain/TerrainTile.h
 	<irrlicht.h>
 	<iostream>
 	<vector>
@@ -11910,26 +11910,26 @@
 	"Vegetation.h"
 	"../tinyXML/tinyxml.h"
 
-1413656135 /home/christian/Public/IRB/src/fx/ShaderCallBack.h
+1428812596 /home/christian/Public/IRB/src/fx/ShaderCallBack.h
 	<vector>
 	<irrlicht.h>
 	"../objects/DynamicObject.h"
 
-1419457845 /home/christian/Public/IRB/src/terrain/Vegetation.h
+1428812595 /home/christian/Public/IRB/src/terrain/Vegetation.h
 	<irrlicht.h>
 	<vector>
 	"../App.h"
 	"../tinyXML/tinyxml.h"
 
-1424559772 /home/christian/Public/IRB/src/fx/EffectsManager.h
+1428812596 /home/christian/Public/IRB/src/fx/EffectsManager.h
 	<irrlicht.h>
 	"XEffects/XEffects.h"
 	"postprocess/PostProcessManager.h"
 
-1413656135 /home/christian/Public/IRB/src/fx/postprocess/PostProcessManager.h
+1428812596 /home/christian/Public/IRB/src/fx/postprocess/PostProcessManager.h
 	<irrlicht.h>
 
-1423535912 /home/christian/Public/IRB/src/objects/DynamicObjectsManager.h
+1428812595 /home/christian/Public/IRB/src/objects/DynamicObjectsManager.h
 	<vector>
 	<irrlicht.h>
 	"../App.h"
@@ -11938,17 +11938,17 @@
 	"TemplateObject.h"
 	"../tinyXML/tinyxml.h"
 
-1413656135 /home/christian/Public/IRB/src/objects/TemplateObject.h
+1428812595 /home/christian/Public/IRB/src/objects/TemplateObject.h
 	<irrlicht.h>
 
-1424559772 source:/home/christian/Public/IRB/src/camera/CameraSystem.cpp
+1428812594 source:/home/christian/Public/IRB/src/camera/CameraSystem.cpp
 	"CameraSystem.h"
 	"../terrain/TerrainManager.h"
 	"../gui/GUIManager.h"
 	"../sound/SoundManager.h"
 	"../App.h"
 
-1413656135 source:/home/christian/Public/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
+1428812594 source:/home/christian/Public/IRB/src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp
 	"CSceneNodeAnimatorCameraMayaIRB.h"
 	"ICursorControl.h"
 	"ICameraSceneNode.h"
@@ -11956,11 +11956,11 @@
 	"ISceneManager.h"
 	"../App.h"
 
-1415297701 source:/home/christian/Public/IRB/src/events/EventReceiver.cpp
+1428812595 source:/home/christian/Public/IRB/src/events/EventReceiver.cpp
 	"EventReceiver.h"
 	"../gui/GUIManager.h"
 
-1423535912 source:/home/christian/Public/IRB/src/fx/EffectsManager.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/EffectsManager.cpp
 	"EffectsManager.h"
 	<iostream>
 	"../App.h"
@@ -11969,35 +11969,35 @@
 	"postprocess/PostProcessManager.h"
 	"XEffects/XEffects.h"
 
-1413656135 source:/home/christian/Public/IRB/src/fx/postprocess/PostProcessManager.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/postprocess/PostProcessManager.cpp
 	"PostProcessManager.h"
 	"IPostProcess.h"
 	"ShaderPostProcess.h"
 
-1413656135 /home/christian/Public/IRB/src/fx/postprocess/IPostProcess.h
+1428812596 /home/christian/Public/IRB/src/fx/postprocess/IPostProcess.h
 	<irrlicht.h>
 
-1413656135 /home/christian/Public/IRB/src/fx/postprocess/ShaderPostProcess.h
+1428812596 /home/christian/Public/IRB/src/fx/postprocess/ShaderPostProcess.h
 	"IPostProcess.h"
 	"ShaderMaterial.h"
 
-1413656135 /home/christian/Public/IRB/src/fx/postprocess/ShaderMaterial.h
+1428812596 /home/christian/Public/IRB/src/fx/postprocess/ShaderMaterial.h
 	<irrlicht.h>
 
-1413656135 source:/home/christian/Public/IRB/src/fx/postprocess/ShaderMaterial.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/postprocess/ShaderMaterial.cpp
 	"ShaderMaterial.h"
 
-1413656135 source:/home/christian/Public/IRB/src/fx/postprocess/ShaderPostProcess.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/postprocess/ShaderPostProcess.cpp
 	"ShaderPostProcess.h"
 
-1423535911 source:/home/christian/Public/IRB/src/fx/ShaderCallBack.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/ShaderCallBack.cpp
 	"ShaderCallBack.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
 	"../gui/GUIManager.h"
 	"../App.h"
 
-1413656135 source:/home/christian/Public/IRB/src/gui/CGUIEditBoxIRB.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/CGUIEditBoxIRB.cpp
 	"CGUIEditBoxIRB.h"
 	"IGUIScrollBar.h"
 	"IGUISkin.h"
@@ -12012,14 +12012,14 @@
 	<sstream>
 	<algorithm>
 
-1413656135 source:/home/christian/Public/IRB/src/gui/CGUIExtWindow.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/CGUIExtWindow.cpp
 	"CGUIExtWindow.h"
 
-1419445343 source:/home/christian/Public/IRB/src/gui/CGUIFileSelector.cpp
+1428867107 source:/home/christian/Public/IRB/src/gui/CGUIFileSelector.cpp
 	"CGUIFileSelector.h"
 	"../LANGManager.h"
 
-1413656135 source:/home/christian/Public/IRB/src/gui/CGUIGfxStatus.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/CGUIGfxStatus.cpp
 	"CGUIGfxStatus.h"
 	"IGUIElement.h"
 	"IGUISkin.h"
@@ -12028,12 +12028,12 @@
 	"IVideoDriver.h"
 	"rect.h"
 
-1424559772 source:/home/christian/Public/IRB/src/gui/GUIConfigWindow.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/GUIConfigWindow.cpp
 	"GUIConfigWindow.h"
 	"../LANGManager.h"
 	"../tinyXML/tinyxml.h"
 
-1423535912 source:/home/christian/Public/IRB/src/gui/GUIManager.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/GUIManager.cpp
 	"GUIManager.h"
 	"../LANGManager.h"
 	"../objects/DynamicObjectsManager.h"
@@ -12041,16 +12041,16 @@
 	"../sound/SoundManager.h"
 	<algorithm>
 
-1413656135 source:/home/christian/Public/IRB/src/gui/NodePreview.cpp
+1428812594 source:/home/christian/Public/IRB/src/gui/NodePreview.cpp
 	"NodePreview.h"
 	"../terrain/TerrainManager.h"
 	"../objects/Player.h"
 
-1413656135 source:/home/christian/Public/IRB/src/LANGManager.cpp
+1428812595 source:/home/christian/Public/IRB/src/LANGManager.cpp
 	"LANGManager.h"
 	"XML_Manager.h"
 
-1423535912 source:/home/christian/Public/IRB/src/LuaGlobalCaller.cpp
+1428812596 source:/home/christian/Public/IRB/src/LuaGlobalCaller.cpp
 	"LuaGlobalCaller.h"
 	"gui/GUIManager.h"
 	"events/EventReceiver.h"
@@ -12062,18 +12062,18 @@
 	"sound/SoundManager.h"
 	"objects/Player.h"
 
-1413656135 source:/home/christian/Public/IRB/src/main.cpp
+1428812596 source:/home/christian/Public/IRB/src/main.cpp
 	"App.h"
 	<iostream>
 	<fstream>
 
-1423535912 source:/home/christian/Public/IRB/src/objects/combat.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/combat.cpp
 	"combat.h"
 	"../App.h"
 	"DynamicObject.h"
 	"DynamicObjectsManager.h"
 
-1423535912 source:/home/christian/Public/IRB/src/objects/DynamicObject.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/DynamicObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"combat.h"
@@ -12086,44 +12086,44 @@
 	"DynamicObject.h"
 	"Projectile.h"
 
-1423535912 source:/home/christian/Public/IRB/src/objects/DynamicObjectsManager.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/DynamicObjectsManager.cpp
 	"DynamicObjectsManager.h"
 	"../LANGManager.h"
 	"../camera/CameraSystem.h"
 	"../fx/ShaderCallBack.h"
 	"../fx/EffectsManager.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/HealthSceneNode.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/HealthSceneNode.cpp
 	"irrlicht.h"
 	"HealthSceneNode.h"
 	"ISceneManager.h"
 	"IVideoDriver.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/Item.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/Item.cpp
 	"Item.h"
 
-1413656135 /home/christian/Public/IRB/src/objects/Item.h
+1428812595 /home/christian/Public/IRB/src/objects/Item.h
 	<irrlicht.h>
 	"../LuaGlobalCaller.h"
 
-1423535912 source:/home/christian/Public/IRB/src/objects/Player.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/Player.cpp
 	"Player.h"
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"../camera/CameraSystem.h"
 
-1413656135 source:/home/christian/Public/IRB/src/objects/TemplateObject.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/TemplateObject.cpp
 	"../App.h"
 	"DynamicObjectsManager.h"
 	"TemplateObject.h"
 
-1413656135 source:/home/christian/Public/IRB/src/raytests.cpp
+1428812595 source:/home/christian/Public/IRB/src/raytests.cpp
 	"raytests.h"
 
-1413656135 source:/home/christian/Public/IRB/src/sound/SoundManager.cpp
+1428812594 source:/home/christian/Public/IRB/src/sound/SoundManager.cpp
 	"SoundManager.h"
 
-1423536736 source:/home/christian/Public/IRB/src/terrain/TerrainManager.cpp
+1428812595 source:/home/christian/Public/IRB/src/terrain/TerrainManager.cpp
 	"TerrainManager.h"
 	"../events/EventReceiver.h"
 	"../gui/GUIManager.h"
@@ -12134,96 +12134,96 @@
 	<sys/stat.h>
 	<direct.h>
 
-1424566482 source:/home/christian/Public/IRB/src/terrain/TerrainTile.cpp
+1428812595 source:/home/christian/Public/IRB/src/terrain/TerrainTile.cpp
 	"TerrainTile.h"
 	"../App.h"
 	"TerrainManager.h"
 	"../gui/GUIManager.h"
 	"../fx/EffectsManager.h"
 
-1419457845 source:/home/christian/Public/IRB/src/terrain/Vegetation.cpp
+1428812595 source:/home/christian/Public/IRB/src/terrain/Vegetation.cpp
 	"Vegetation.h"
 
-1413656135 source:/home/christian/Public/IRB/src/tinyXML/tinystr.cpp
+1428812596 source:/home/christian/Public/IRB/src/tinyXML/tinystr.cpp
 	"tinystr.h"
 
-1413656135 source:/home/christian/Public/IRB/src/tinyXML/tinyxml.cpp
+1428812596 source:/home/christian/Public/IRB/src/tinyXML/tinyxml.cpp
 	<ctype.h>
 	<sstream>
 	<iostream>
 	"tinyxml.h"
 
-1413656135 source:/home/christian/Public/IRB/src/tinyXML/tinyxmlerror.cpp
+1428812596 source:/home/christian/Public/IRB/src/tinyXML/tinyxmlerror.cpp
 	"tinyxml.h"
 
-1413656135 source:/home/christian/Public/IRB/src/tinyXML/tinyxmlparser.cpp
+1428812596 source:/home/christian/Public/IRB/src/tinyXML/tinyxmlparser.cpp
 	<ctype.h>
 	<stddef.h>
 	"tinyxml.h"
 	<windows.h>
 
-1413656135 source:/home/christian/Public/IRB/src/XML_Manager.cpp
+1428812596 source:/home/christian/Public/IRB/src/XML_Manager.cpp
 	"XML_Manager.h"
 	"LANGManager.h"
 
-1423535912 /home/christian/Public/IRB/src/objects/properties.h
+1428812595 /home/christian/Public/IRB/src/objects/properties.h
 	<irrlicht.h>
 
-1423535912 /home/christian/Public/IRB/src/objects/projectileItem.h
+1428812595 /home/christian/Public/IRB/src/objects/projectileItem.h
 	<irrlicht.h>
 	<vector>
 	"properties.h"
 
-1423535912 /home/christian/Public/IRB/src/Editor/GUIEditor.h
+1428812594 /home/christian/Public/IRB/src/Editor/GUIEditor.h
 	"../gui/GUIManager.h"
 	"../objects/DynamicObject.h"
 	"../LANGManager.h"
 	<vector>
 
-1423535912 /home/christian/Public/IRB/src/Game/GUIGame.h
+1428812596 /home/christian/Public/IRB/src/Game/GUIGame.h
 	"../gui/GUIManager.h"
 	"../gui/CGUIGfxStatus.h"
 	"../LANGManager.h"
 	"../sound/SoundManager.h"
 	<vector>
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/XEffects.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/XEffects.h
 	"CShaderPre.h"
 	"CScreenQuad.h"
 	"EffectHandler.h"
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/CShaderPre.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/CShaderPre.h
 	<irrlicht.h>
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/CScreenQuad.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/CScreenQuad.h
 	<irrlicht.h>
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/EffectHandler.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/EffectHandler.h
 	<irrlicht.h>
 	"CShaderPre.h"
 	"CScreenQuad.h"
 
-1423535912 /home/christian/Public/IRB/src/objects/Projectile.h
+1428812595 /home/christian/Public/IRB/src/objects/Projectile.h
 	<irrlicht.h>
 	<vector>
 	"projectileItem.h"
 
-1423536624 source:/home/christian/Public/IRB/src/Editor/AppEditor.cpp
+1428812594 source:/home/christian/Public/IRB/src/Editor/AppEditor.cpp
 
-1423535912 source:/home/christian/Public/IRB/src/Editor/GUIEditor.cpp
+1428812594 source:/home/christian/Public/IRB/src/Editor/GUIEditor.cpp
 	"GUIEditor.h"
 	"../objects/DynamicObjectsManager.h"
 	"../terrain/TerrainManager.h"
 	"../camera/CameraSystem.h"
 	<algorithm>
 
-1423535911 source:/home/christian/Public/IRB/src/fx/XEffects/CShaderPre.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/XEffects/CShaderPre.cpp
 	"CShaderPre.h"
 	<iostream>
 	<string>
 	<fstream>
 
-1423535911 source:/home/christian/Public/IRB/src/fx/XEffects/EffectHandler.cpp
+1428812596 source:/home/christian/Public/IRB/src/fx/XEffects/EffectHandler.cpp
 	"EffectHandler.h"
 	"EffectCB.h"
 	"EffectShaders.h"
@@ -12231,25 +12231,378 @@
 	<iostream>
 	<fstream>
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/EffectCB.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/EffectCB.h
 	"EffectHandler.h"
 
-1423535911 /home/christian/Public/IRB/src/fx/XEffects/EffectShaders.h
+1428812596 /home/christian/Public/IRB/src/fx/XEffects/EffectShaders.h
 
-1423535912 source:/home/christian/Public/IRB/src/Game/AppGame.cpp
+1428812596 source:/home/christian/Public/IRB/src/Game/AppGame.cpp
 	"AppGame.h"
 
-1423536644 /home/christian/Public/IRB/src/Game/AppGame.h
+1428812596 /home/christian/Public/IRB/src/Game/AppGame.h
 
-1423535912 source:/home/christian/Public/IRB/src/Game/CUIGame.cpp
+1428812596 source:/home/christian/Public/IRB/src/Game/CUIGame.cpp
 	"GUIGame.h"
 	"../App.h"
 	"../gui/CGUIGfxStatus.h"
 	"../objects/DynamicObjectsManager.h"
 	<algorithm>
 
-1423536700 source:/home/christian/Public/IRB/src/objects/Projectile.cpp
+1428812595 source:/home/christian/Public/IRB/src/objects/Projectile.cpp
 	"Projectile.h"
 	"../App.h"
 	"DynamicObject.h"
+
+1411667772 /usr/include/glib-2.0/glib.h
+	<glib/galloca.h>
+	<glib/garray.h>
+	<glib/gasyncqueue.h>
+	<glib/gatomic.h>
+	<glib/gbacktrace.h>
+	<glib/gbase64.h>
+	<glib/gbitlock.h>
+	<glib/gbookmarkfile.h>
+	<glib/gbytes.h>
+	<glib/gcharset.h>
+	<glib/gchecksum.h>
+	<glib/gconvert.h>
+	<glib/gdataset.h>
+	<glib/gdate.h>
+	<glib/gdatetime.h>
+	<glib/gdir.h>
+	<glib/genviron.h>
+	<glib/gerror.h>
+	<glib/gfileutils.h>
+	<glib/ggettext.h>
+	<glib/ghash.h>
+	<glib/ghmac.h>
+	<glib/ghook.h>
+	<glib/ghostutils.h>
+	<glib/giochannel.h>
+	<glib/gkeyfile.h>
+	<glib/glist.h>
+	<glib/gmacros.h>
+	<glib/gmain.h>
+	<glib/gmappedfile.h>
+	<glib/gmarkup.h>
+	<glib/gmem.h>
+	<glib/gmessages.h>
+	<glib/gnode.h>
+	<glib/goption.h>
+	<glib/gpattern.h>
+	<glib/gpoll.h>
+	<glib/gprimes.h>
+	<glib/gqsort.h>
+	<glib/gquark.h>
+	<glib/gqueue.h>
+	<glib/grand.h>
+	<glib/gregex.h>
+	<glib/gscanner.h>
+	<glib/gsequence.h>
+	<glib/gshell.h>
+	<glib/gslice.h>
+	<glib/gslist.h>
+	<glib/gspawn.h>
+	<glib/gstrfuncs.h>
+	<glib/gstring.h>
+	<glib/gstringchunk.h>
+	<glib/gtestutils.h>
+	<glib/gthread.h>
+	<glib/gthreadpool.h>
+	<glib/gtimer.h>
+	<glib/gtimezone.h>
+	<glib/gtrashstack.h>
+	<glib/gtree.h>
+	<glib/gtypes.h>
+	<glib/gunicode.h>
+	<glib/gurifuncs.h>
+	<glib/gutils.h>
+	<glib/gvarianttype.h>
+	<glib/gvariant.h>
+	<glib/gversion.h>
+	<glib/gversionmacros.h>
+	<glib/gwin32.h>
+	<glib/deprecated/gallocator.h>
+	<glib/deprecated/gcache.h>
+	<glib/deprecated/gcompletion.h>
+	<glib/deprecated/gmain.h>
+	<glib/deprecated/grel.h>
+	<glib/deprecated/gthread.h>
+
+1411667772 /usr/include/glib-2.0/glib/galloca.h
+	<glib/gtypes.h>
+	<alloca.h>
+	<alloca.h>
+	<malloc.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtypes.h
+	<glibconfig.h>
+	<glib/gmacros.h>
+	<glib/gversionmacros.h>
+	<time.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmacros.h
+	<stddef.h>
+
+1411667773 /usr/include/glib-2.0/glib/gversionmacros.h
+
+1411667772 /usr/include/glib-2.0/glib/garray.h
+	<glib/gtypes.h>
+
+1411667772 /usr/include/glib-2.0/glib/gasyncqueue.h
+	<glib/gthread.h>
+
+1411667773 /usr/include/glib-2.0/glib/gthread.h
+	<glib/gatomic.h>
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gatomic.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gerror.h
+	<stdarg.h>
+	<glib/gquark.h>
+
+1411667773 /usr/include/glib-2.0/glib/gquark.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gbacktrace.h
+	<glib/gtypes.h>
+	<signal.h>
+
+1411667773 /usr/include/glib-2.0/glib/gbase64.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gbitlock.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gbookmarkfile.h
+	<glib/gerror.h>
+	<time.h>
+
+1411667773 /usr/include/glib-2.0/glib/gbytes.h
+	<glib/gtypes.h>
+	<glib/garray.h>
+
+1411667773 /usr/include/glib-2.0/glib/gcharset.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gchecksum.h
+	<glib/gtypes.h>
+	<glib/gbytes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gconvert.h
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gdataset.h
+	<glib/gquark.h>
+
+1411667773 /usr/include/glib-2.0/glib/gdate.h
+	<time.h>
+	<glib/gtypes.h>
+	<glib/gquark.h>
+
+1411667773 /usr/include/glib-2.0/glib/gdatetime.h
+	<glib/gtimezone.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtimezone.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gdir.h
+	<glib/gerror.h>
+	<dirent.h>
+
+1411667773 /usr/include/glib-2.0/glib/genviron.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gfileutils.h
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/ggettext.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/ghash.h
+	<glib/gtypes.h>
+	<glib/glist.h>
+
+1411667773 /usr/include/glib-2.0/glib/glist.h
+	<glib/gmem.h>
+	<glib/gnode.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmem.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gnode.h
+	<glib/gmem.h>
+
+1411667773 /usr/include/glib-2.0/glib/ghmac.h
+	<glib/gtypes.h>
+	"gchecksum.h"
+
+1411667773 /usr/include/glib-2.0/glib/ghook.h
+	<glib/gmem.h>
+
+1411667773 /usr/include/glib-2.0/glib/ghostutils.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/giochannel.h
+	<glib/gconvert.h>
+	<glib/gmain.h>
+	<glib/gstring.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmain.h
+	<glib/gpoll.h>
+	<glib/gslist.h>
+	<glib/gthread.h>
+
+1411667773 /usr/include/glib-2.0/glib/gpoll.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gslist.h
+	<glib/gmem.h>
+	<glib/gnode.h>
+
+1411667773 /usr/include/glib-2.0/glib/gstring.h
+	<glib/gtypes.h>
+	<glib/gunicode.h>
+	<glib/gbytes.h>
+	<glib/gutils.h>
+
+1411667773 /usr/include/glib-2.0/glib/gunicode.h
+	<glib/gerror.h>
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gutils.h
+	<glib/gtypes.h>
+	<stdarg.h>
+
+1411667773 /usr/include/glib-2.0/glib/gkeyfile.h
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmappedfile.h
+	<glib/gbytes.h>
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmarkup.h
+	<stdarg.h>
+	<glib/gerror.h>
+	<glib/gslist.h>
+
+1411667773 /usr/include/glib-2.0/glib/gmessages.h
+	<stdarg.h>
+	<glib/gtypes.h>
+	<glib/gmacros.h>
+
+1411667773 /usr/include/glib-2.0/glib/goption.h
+	<glib/gerror.h>
+	<glib/gquark.h>
+
+1411667773 /usr/include/glib-2.0/glib/gpattern.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gprimes.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gqsort.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gqueue.h
+	<glib/glist.h>
+
+1411667773 /usr/include/glib-2.0/glib/grand.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gregex.h
+	<glib/gerror.h>
+	<glib/gstring.h>
+
+1411667773 /usr/include/glib-2.0/glib/gscanner.h
+	<glib/gdataset.h>
+	<glib/ghash.h>
+
+1411667773 /usr/include/glib-2.0/glib/gsequence.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gshell.h
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gslice.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gspawn.h
+	<glib/gerror.h>
+
+1411667773 /usr/include/glib-2.0/glib/gstrfuncs.h
+	<stdarg.h>
+	<glib/gmacros.h>
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gstringchunk.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtestutils.h
+	<glib/gmessages.h>
+	<glib/gstring.h>
+	<glib/gerror.h>
+	<glib/gslist.h>
+
+1411667773 /usr/include/glib-2.0/glib/gthreadpool.h
+	<glib/gthread.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtimer.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtrashstack.h
+	<glib/gutils.h>
+
+1411667773 /usr/include/glib-2.0/glib/gtree.h
+	<glib/gnode.h>
+
+1411667773 /usr/include/glib-2.0/glib/gurifuncs.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gvarianttype.h
+	<glib/gmessages.h>
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gvariant.h
+	<glib/gvarianttype.h>
+	<glib/gstring.h>
+	<glib/gbytes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gversion.h
+	<glib/gtypes.h>
+
+1411667773 /usr/include/glib-2.0/glib/gwin32.h
+	<glib/gtypes.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/gallocator.h
+	<glib/gtypes.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/gcache.h
+	<glib/glist.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/gcompletion.h
+	<glib/glist.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/gmain.h
+	<glib/gmain.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/grel.h
+	<glib/gtypes.h>
+
+1411667772 /usr/include/glib-2.0/glib/deprecated/gthread.h
+	<glib/gthread.h>
+	<sys/types.h>
+	<pthread.h>
+
+1411667772 /usr/lib/x86_64-linux-gnu/glib-2.0/include/glibconfig.h
+	<glib/gmacros.h>
+	<limits.h>
+	<float.h>
+
+1372261126 source:/home/christian/Public/IRB/src/xdg-user-dir-lookup.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
 
