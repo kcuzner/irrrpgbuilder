@@ -20,14 +20,9 @@
 					<Add option="-g" />
 					<Add option="-lX11 -ldl -lXext" />
 				</Compiler>
-				<ResourceCompiler>
-					<Add directory="lib" />
-				</ResourceCompiler>
 				<Linker>
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
-					<Add directory="lib" />
-					<Add directory="../IRR RPG BUILDER" />
 				</Linker>
 			</Target>
 			<Target title="Player Release">
@@ -43,7 +38,6 @@
 				<Linker>
 					<Add directory="irrlicht-engine/lib/Linux" />
 					<Add directory="irrKlang/lib/Linux" />
-					<Add directory="lib" />
 				</Linker>
 			</Target>
 			<Target title="Standard Debug">
@@ -58,14 +52,6 @@
 					<Add option="-g" />
 					<Add option="-DEDITOR" />
 				</Compiler>
-				<ResourceCompiler>
-					<Add directory="lib" />
-				</ResourceCompiler>
-				<Linker>
-					<Add directory="irrlicht-engine/lib/Linux" />
-					<Add directory="irrKlang/lib/Linux" />
-					<Add directory="../IRR RPG BUILDER" />
-				</Linker>
 			</Target>
 			<Target title="Standard Release">
 				<Option platforms="Unix;" />
@@ -78,22 +64,12 @@
 					<Add option="-w" />
 					<Add option="-DEDITOR" />
 				</Compiler>
-				<ResourceCompiler>
-					<Add directory="lib" />
-				</ResourceCompiler>
-				<Linker>
-					<Add directory="irrlicht-engine/lib/Linux" />
-					<Add directory="irrKlang/lib/Linux" />
-					<Add directory="lib" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add directory="irrlicht-engine/include" />
-			<Add directory="src/lua" />
-			<Add directory="irrlicht-engine/source/Irrlicht" />
 			<Add directory="irrKlang/include" />
-			<Add directory="bin" />
+			<Add directory="src/lua" />
 		</Compiler>
 		<Linker>
 			<Add library="pthread" />
@@ -102,12 +78,10 @@
 			<Add library="GL" />
 			<Add library="X11" />
 			<Add library="src/lua/lib/liblualib.a" />
+			<Add library="dl" />
 			<Add library="./libIrrKlang.so" />
 			<Add library="./ikpFlac.so" />
 			<Add library="./ikpMP3.so" />
-			<Add directory="/usr/lib" />
-			<Add directory="/usr/lib/x86_64-linux-gnu" />
-			<Add directory="bin" />
 		</Linker>
 		<Unit filename="src/App.cpp">
 			<Option virtualFolder="App/" />
@@ -399,7 +373,7 @@
 			</DoxyBlocks>
 			<AutoVersioning>
 				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
-				<Settings autoincrement="1" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Settings autoincrement="1" date_declarations="1" use_define="0" update_manifest="5" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
 				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
 				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix="" />
 			</AutoVersioning>
