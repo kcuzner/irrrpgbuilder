@@ -96,6 +96,7 @@
 			<Add directory="bin" />
 		</Compiler>
 		<Linker>
+			<Add library="pthread" />
 			<Add library="irrlicht-engine/lib/Linux/libIrrlicht.a" />
 			<Add library="Xxf86vm" />
 			<Add library="GL" />
