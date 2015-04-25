@@ -2422,7 +2422,7 @@ bool App::loadConfig()
 				{
 					defaultview=VIEW_FPS;
 				}
-			} else 
+			} else
 				defaultview=VIEW_RTS;
 
 
@@ -3607,7 +3607,17 @@ void App::loadProjectFile(bool value)
 		// Here if it's the load file selector
 		if (selector)
 		{
-			core::stringc file=(core::stringc)selector->getFileName();
+
+
+            //return stringw(out);
+#ifndef WIN32
+            char out[255]; //Convert the text in UTF8
+            core::wcharToUtf8(selector->getFileName(),out,255);
+            core::stringc file=(core::stringc)out;
+#else
+            core::stringc file=(core::stringc)selector->getFileName();
+#endif // WIN32
+
 
 
 			// This is a file loader
@@ -3643,7 +3653,15 @@ void App::loadProjectFile(bool value)
 		// Here is the save file selector
 		else if (saveselector)
 		{
-			core::stringc file = (core::stringc)saveselector->getFileName();
+
+
+			#ifndef WIN32
+            char out[255]; //Convert the text in UTF8
+            core::wcharToUtf8(saveselector->getFileName(),out,255);
+            core::stringc file=(core::stringc)out;
+#else
+            core::stringc file = (core::stringc)saveselector->getFileName();
+#endif // WIN32
 
 			// For windows put as backslash.
 #ifdef WIN32

@@ -57,6 +57,8 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 		f32 size = TerrainManager::getInstance()->getScale();
 		f32 calc = App::getInstance()->terraindensity/size;
 		u32 tilesegment = (u32)(calc*size);
+		if (tilesegment < 10)
+            tilesegment = 10;
 		//u32 tilesegment = (u32)(0.024414f*size); Old fixed density
 		baseMesh = smgr->addHillPlaneMesh( "myHill",
 		    core::dimension2d<f32>(f32(1024/tilesegment),f32(1024/tilesegment)),

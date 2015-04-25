@@ -1,5 +1,6 @@
 #include "CGUIFileSelector.h"
 #include "../LANGManager.h"
+#include "../xdg-user-dir-lookup.c"
 
 
 const s32 FOD_WIDTH = 640;
@@ -205,6 +206,8 @@ const wchar_t* CGUIFileSelector::getFileName() const
 //! called if an event happened.
 bool CGUIFileSelector::OnEvent(const SEvent& event)
 {
+    wchar_t out[255];
+    stringc in = "";
 	if (isEnabled() && isVisible())
 	{
 		switch(event.EventType)
@@ -219,7 +222,9 @@ bool CGUIFileSelector::OnEvent(const SEvent& event)
 
 					FileSystem->changeWorkingDirectoryTo(core::stringc(FileNameText->getText()).c_str());
 					fillListBox();
-					PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+
+                    PathNameText->setText(core::stringw(FileSystem->getWorkingDirectory()).c_str());
+
 					//printf ("Enter key being pressed\n");
 					if (IsDirectoryChoosable || matchesFileFilter(FileNameText->getText()))
 					{
@@ -769,6 +774,11 @@ void CGUIFileSelector::fillListBox()
 	if (PathNameText)
 	{
 		s = FileSystem->getWorkingDirectory();
+
+		core::stringw test2=translateDOS(s);
+		//printf("Filename is: %s\n",((stringc)test2).c_str());
+		s = test2;
+
 		PathNameText->setText(s.c_str());
 	}
 }
@@ -865,7 +875,7 @@ u32 CGUIFileSelector::addIcon(video::ITexture* texture)
 }
 
 // This will add items in the favorites folders lists (or places)
-void CGUIFileSelector::addPlacePaths(wchar_t* name, wchar_t* path, video::ITexture* texture)
+void CGUIFileSelector::addPlacePaths(wchar_t* name, core::stringc path, video::ITexture* texture)
 {
 
 	if (texture)
@@ -1005,8 +1015,31 @@ void CGUIFileSelector::populateLinuxFAV()
 	// Get current user home folder(places)
 	// Can't get the other subfolders as they are translated for each language.
 	//addPlacePaths(L"User Home folder",L"~/",driver->getTexture("../media/art/places_folder.png"));
+	char* str= xdg_user_dir_lookup ("DESKTOP");
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_desktop").c_str(),str,driver->getTexture("../media/art/places_desktop.png"));
 
+
+	str= xdg_user_dir_lookup ("DOCUMENTS");
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_documents").c_str(),str,driver->getTexture("../media/art/places_documents.png"));
+
+    str= xdg_user_dir_lookup ("MUSIC");
+    addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_music").c_str(),str,driver->getTexture("../media/art/places_folder.png"));
+
+    str= xdg_user_dir_lookup ("PICTURES");
+    addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pictures").c_str(),str,driver->getTexture("../media/art/places_pictures.png"));
+
+    str= xdg_user_dir_lookup ("VIDEOS");
+    addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_videos").c_str(),str,driver->getTexture("../media/art/places_folder.png"));
+
+    str= xdg_user_dir_lookup ("PUBLICSHARE");
+    addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_pubdocuments").c_str(),str,driver->getTexture("../media/art/places_folder.png"));
+
+    str= xdg_user_dir_lookup ("DOWNLOAD");
+    addPlacePaths(L"Downloads",str,driver->getTexture("../media/art/places_folder.png"));
+    /*
+    //addPlacePaths(str.c_str().c_str(),str.c_str().c_str(),driver->getTexture("../media/art/places_folder.png"));
 	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_home").c_str(),L"/home",driver->getTexture("../media/art/places_folder.png"));
+
 
 	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_media").c_str(),L"/media",driver->getTexture("../media/art/places_folder.png"));
 
@@ -1014,7 +1047,7 @@ void CGUIFileSelector::populateLinuxFAV()
 
 	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_dev").c_str(),L"/dev",driver->getTexture("../media/art/places_folder.png"));
 
-	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_mnt").c_str(),L"/mnt",driver->getTexture("../media/art/places_folder.png"));
+	addPlacePaths((wchar_t *)LANGManager::getInstance()->getText("file_text_mnt").c_str(),L"/mnt",driver->getTexture("../media/art/places_folder.png"));*/
 
 
 }

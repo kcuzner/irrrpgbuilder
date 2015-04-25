@@ -14,16 +14,16 @@ using namespace gui;
 
 /** Class for opening/saving files. */
 class CGUIFileSelector : public IGUIFileOpenDialog {
-      
+
    public:
-        /** Enum to specify the usage of the instance of the class */   
+        /** Enum to specify the usage of the instance of the class */
         enum E_FILESELECTOR_TYPE {
           EFST_OPEN_DIALOG, //<! For opening files
           EFST_SAVE_DIALOG, //<! For saving files
           EFST_NUM_TYPES    //<! Not used, just specifies how many possible types there are
         };
-                  
-        /** 
+
+        /**
       \brief Constructor
       \param title - The title of the dialog
       \pararm environment - The GUI environment to be used
@@ -37,7 +37,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         \brief Destructor
         */
       virtual ~CGUIFileSelector();
-      
+
       /**
         \brief Returns the filename of the selected file. Returns NULL, if no file was selected.
         \return a const wchar_t*
@@ -57,22 +57,22 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
       \brief Render function
       */
       virtual void draw();
-      
+
       /**
       \brief Returns the current file filter selected or "All Files" if no filter is applied
       \return a stringw
       */
       inline core::stringw getFileFilter() const {
-               if (FilterComboBox->getSelected() >= (s32)FileFilters.size()) return core::stringw("All Files"); 
+               if (FilterComboBox->getSelected() >= (s32)FileFilters.size()) return core::stringw("All Files");
                else return FileFilters[FilterComboBox->getSelected()].FileExtension;
         }
-        
+
         /**
         \brief Returns the type of the dialog
         \return a E_FILESELECTOR_TYPE
         */
         inline E_FILESELECTOR_TYPE getDialogType() { return DialogType; }
-        
+
         /**
         \brief Add a file filter
         \param name - The description of the file type
@@ -82,8 +82,8 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         void addFileFilter(wchar_t* name, wchar_t* ext, video::ITexture* texture);
 
 		// To add to the list of prefered paths
-		void addPlacePaths(wchar_t* name, wchar_t* path, video::ITexture* texture);
-        
+		void addPlacePaths(wchar_t* name, core::stringc path, video::ITexture* texture);
+
         /**
         \brief Set an icon to use to display unknown files
         \param texture - the 16x16 icon to use
@@ -102,7 +102,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
           else DirectoryIconIdx = -1;
           fillListBox();
         }
-        
+
         /**
         \brief Sets whether directories can be chosen as the 'file' to open
         \param choosable - Whether the directory can be chosen
@@ -112,7 +112,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
 		//! Returns the directory of the selected file. Returns NULL, if no directory was selected.
 	  virtual const io::path& getDirectoryName();
 
-	  // Device 
+	  // Device
 	  inline void setDevice(irr::IrrlichtDevice * device) { this->device=device;}
 
 	  inline bool isSaver() { if (DialogType==EFST_SAVE_DIALOG) return true; else return false;}
@@ -141,12 +141,12 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         \return a bool
         */
         bool matchesFileFilter(core::stringw s, core::stringw f);
-        
+
 		/**
 		\Check if the selected file exist in the filelist
 		*/
       bool checkExistingFile();
-		
+
 		/**
         \brief Fills the listbox with files.
         */
@@ -161,13 +161,13 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
         \brief Sends the event that the file choose process has been canceld
         */
       void sendCancelEvent();
-      
+
       u32 addIcon(video::ITexture* texture);
 
 	  void populatePCDrives();
 
-	 
-            
+
+
       /** Struct to describe file filters to use when displaying files in directories */
         struct SFileFilter {
           /*
@@ -189,7 +189,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
             FileIconIdx = other.FileIconIdx;
           }
           core::stringw FilterName;
-          core::stringw FileExtension;     
+          core::stringw FileExtension;
           video::ITexture* FileIcon;
           u32 FileIconIdx;
         };
@@ -216,8 +216,8 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
       E_FILESELECTOR_TYPE DialogType;
       core::stringc prev_working_dir;
 	  core::stringc default_project_dir;
-	  core::stringw fullpathname; 
-      
+	  core::stringw fullpathname;
+
 	  core::array<core::stringw> placespaths;
       static s32 numFileSelectors;
 
@@ -227,7 +227,7 @@ class CGUIFileSelector : public IGUIFileOpenDialog {
 		  core::stringw translateDOS(core::stringw input);
 		  bool stretchbottom, stretchtop, stretchright, stretchleft;
 		  irr::IrrlichtDevice * device;
-         
+
 };
 
 #endif /* INC_CGUIFILESELECTOR_H */

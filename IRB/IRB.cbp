@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="IRB" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../bin/IrrRPG_Builder_Linux_standard_debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DEDITOR" />
+					<Add option="-DLINUX" />
+					<Add option="-D_IRR_STATIC_LIB_" />
+				</Compiler>
+				<Linker>
+					<Add library="Xxf86vm" />
+					<Add library="GL" />
+					<Add library="X11" />
+					<Add library="pthread" />
+					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="dl" />
+					<Add library="../bin/libIrrKlang.so" />
+					<Add library="../bin/ikpFlac.so" />
+					<Add library="../bin/ikpMP3.so" />
+					<Add directory="../irrlicht-engine/lib/Linux" />
+					<Add directory="../irrKlang/lib/Linux" />
+					<Add directory="../src/lua/lib" />
+					<Add directory="../bin" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../bin/IrrRPG_Builder_Linux_standard_release" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DEDITOR" />
+					<Add option="-DLINUX_IRR_STATIC_LIB_" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="Xxf86vm" />
+					<Add library="GL" />
+					<Add library="X11" />
+					<Add library="pthread" />
+					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="dl" />
+					<Add library="../bin/libIrrKlang.so" />
+					<Add library="../bin/ikpFlac.so" />
+					<Add library="../bin/ikpMP3.so" />
+					<Add directory="../irrlicht-engine/lib/Linux" />
+					<Add directory="../irrKlang/lib/Linux" />
+					<Add directory="../src/lua/lib" />
+					<Add directory="../bin" />
+				</Linker>
+			</Target>
+			<Target title="Debug - Player">
+				<Option output="../bin/IrrRPG_Builder_Linux_player_debug" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-DLINUX" />
+					<Add option="-D_IRR_STATIC_LIB_" />
+				</Compiler>
+				<Linker>
+					<Add library="Xxf86vm" />
+					<Add library="GL" />
+					<Add library="X11" />
+					<Add library="pthread" />
+					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="dl" />
+					<Add library="../bin/libIrrKlang.so" />
+					<Add library="../bin/ikpFlac.so" />
+					<Add library="../bin/ikpMP3.so" />
+					<Add directory="../irrlicht-engine/lib/Linux" />
+					<Add directory="../irrKlang/lib/Linux" />
+					<Add directory="../src/lua/lib" />
+					<Add directory="../bin" />
+				</Linker>
+			</Target>
+			<Target title="Release - Player">
+				<Option output="../bin/IrrRPG_Builder_Linux_player_release" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DLINUX_IRR_STATIC_LIB_" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="Xxf86vm" />
+					<Add library="GL" />
+					<Add library="X11" />
+					<Add library="pthread" />
+					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="dl" />
+					<Add library="../bin/libIrrKlang.so" />
+					<Add library="../bin/ikpFlac.so" />
+					<Add library="../bin/ikpMP3.so" />
+					<Add directory="../irrlicht-engine/lib/Linux" />
+					<Add directory="../irrKlang/lib/Linux" />
+					<Add directory="../src/lua/lib" />
+					<Add directory="../bin" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../irrlicht-engine/include" />
+			<Add directory="../irrKlang/include" />
+			<Add directory="../src/lua" />
+			<Add directory="../src/tinyXML" />
+		</Compiler>
+		<Linker>
+			<Add library="Irrlicht" />
+		</Linker>
+		<Unit filename="../src/App.cpp" />
+		<Unit filename="../src/App.h" />
+		<Unit filename="../src/Editor/AppEditor.cpp" />
+		<Unit filename="../src/Editor/AppEditor.h" />
+		<Unit filename="../src/Editor/GUIEditor.cpp" />
+		<Unit filename="../src/Editor/GUIEditor.h" />
+		<Unit filename="../src/Game/AppGame.cpp" />
+		<Unit filename="../src/Game/AppGame.h" />
+		<Unit filename="../src/Game/CUIGame.cpp" />
+		<Unit filename="../src/Game/GUIGame.h" />
+		<Unit filename="../src/LANGManager.cpp" />
+		<Unit filename="../src/LANGManager.h" />
+		<Unit filename="../src/LuaGlobalCaller.cpp" />
+		<Unit filename="../src/LuaGlobalCaller.h" />
+		<Unit filename="../src/XML_Manager.cpp" />
+		<Unit filename="../src/XML_Manager.h" />
+		<Unit filename="../src/camera/CSceneNodeAnimatorCameraMayaIRB.cpp" />
+		<Unit filename="../src/camera/CSceneNodeAnimatorCameraMayaIRB.h" />
+		<Unit filename="../src/camera/CameraSystem.cpp" />
+		<Unit filename="../src/camera/CameraSystem.h" />
+		<Unit filename="../src/events/EventReceiver.cpp" />
+		<Unit filename="../src/events/EventReceiver.h" />
+		<Unit filename="../src/fx/EffectsManager.cpp" />
+		<Unit filename="../src/fx/EffectsManager.h" />
+		<Unit filename="../src/fx/ShaderCallBack.cpp" />
+		<Unit filename="../src/fx/ShaderCallBack.h" />
+		<Unit filename="../src/fx/XEffects/CScreenQuad.h" />
+		<Unit filename="../src/fx/XEffects/CShaderPre.cpp" />
+		<Unit filename="../src/fx/XEffects/CShaderPre.h" />
+		<Unit filename="../src/fx/XEffects/EffectCB.h" />
+		<Unit filename="../src/fx/XEffects/EffectHandler.cpp" />
+		<Unit filename="../src/fx/XEffects/EffectHandler.h" />
+		<Unit filename="../src/fx/XEffects/EffectShaders.h" />
+		<Unit filename="../src/fx/XEffects/XEffects.h" />
+		<Unit filename="../src/fx/postprocess/IPostProcess.h" />
+		<Unit filename="../src/fx/postprocess/PostProcessManager.cpp" />
+		<Unit filename="../src/fx/postprocess/PostProcessManager.h" />
+		<Unit filename="../src/fx/postprocess/ShaderMaterial.cpp" />
+		<Unit filename="../src/fx/postprocess/ShaderMaterial.h" />
+		<Unit filename="../src/fx/postprocess/ShaderPostProcess.cpp" />
+		<Unit filename="../src/fx/postprocess/ShaderPostProcess.h" />
+		<Unit filename="../src/gui/CGUIEditBoxIRB.cpp" />
+		<Unit filename="../src/gui/CGUIEditBoxIRB.h" />
+		<Unit filename="../src/gui/CGUIExtWindow.cpp" />
+		<Unit filename="../src/gui/CGUIExtWindow.h" />
+		<Unit filename="../src/gui/CGUIFileSelector.cpp" />
+		<Unit filename="../src/gui/CGUIFileSelector.h" />
+		<Unit filename="../src/gui/CGUIGfxStatus.cpp" />
+		<Unit filename="../src/gui/CGUIGfxStatus.h" />
+		<Unit filename="../src/gui/GUIConfigWindow.cpp" />
+		<Unit filename="../src/gui/GUIConfigWindow.h" />
+		<Unit filename="../src/gui/GUIManager.cpp" />
+		<Unit filename="../src/gui/GUIManager.h" />
+		<Unit filename="../src/gui/NodePreview.cpp" />
+		<Unit filename="../src/gui/NodePreview.h" />
+		<Unit filename="../src/main.cpp" />
+		<Unit filename="../src/objects/DynamicObject.cpp" />
+		<Unit filename="../src/objects/DynamicObject.h" />
+		<Unit filename="../src/objects/DynamicObjectsManager.cpp" />
+		<Unit filename="../src/objects/DynamicObjectsManager.h" />
+		<Unit filename="../src/objects/HealthSceneNode.cpp" />
+		<Unit filename="../src/objects/HealthSceneNode.h" />
+		<Unit filename="../src/objects/Item.cpp" />
+		<Unit filename="../src/objects/Item.h" />
+		<Unit filename="../src/objects/Player.cpp" />
+		<Unit filename="../src/objects/Player.h" />
+		<Unit filename="../src/objects/Projectile.cpp" />
+		<Unit filename="../src/objects/Projectile.h" />
+		<Unit filename="../src/objects/TemplateObject.cpp" />
+		<Unit filename="../src/objects/TemplateObject.h" />
+		<Unit filename="../src/objects/combat.cpp" />
+		<Unit filename="../src/objects/combat.h" />
+		<Unit filename="../src/objects/projectileItem.h" />
+		<Unit filename="../src/objects/properties.h" />
+		<Unit filename="../src/raytests.cpp" />
+		<Unit filename="../src/raytests.h" />
+		<Unit filename="../src/sound/SoundManager.cpp" />
+		<Unit filename="../src/sound/SoundManager.h" />
+		<Unit filename="../src/terrain/TerrainManager.cpp" />
+		<Unit filename="../src/terrain/TerrainManager.h" />
+		<Unit filename="../src/terrain/TerrainTile.cpp" />
+		<Unit filename="../src/terrain/TerrainTile.h" />
+		<Unit filename="../src/terrain/Vegetation.cpp" />
+		<Unit filename="../src/terrain/Vegetation.h" />
+		<Unit filename="../src/tinyXML/tinystr.cpp" />
+		<Unit filename="../src/tinyXML/tinystr.h" />
+		<Unit filename="../src/tinyXML/tinyxml.cpp" />
+		<Unit filename="../src/tinyXML/tinyxml.h" />
+		<Unit filename="../src/tinyXML/tinyxmlerror.cpp" />
+		<Unit filename="../src/tinyXML/tinyxmlparser.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
