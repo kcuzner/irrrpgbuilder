@@ -15,6 +15,7 @@
 #include "CMeshManipulator.h"
 #include "CColorConverter.h"
 #include "IAttributeExchangingObject.h"
+#include "IRenderTarget.h"
 
 
 namespace irr
@@ -82,9 +83,9 @@ IImageWriter* createImageWriterPPM();
 
 //! constructor
 CNullDriver::CNullDriver(io::IFileSystem* io, const core::dimension2d<u32>& screenSize)
-: FileSystem(io), MeshManipulator(0), ViewPort(0,0,0,0), ScreenSize(screenSize),
-	PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
-	OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false)
+	: SharedRenderTarget(0), CurrentRenderTarget(0), CurrentRenderTargetSize(0, 0), FileSystem(io), MeshManipulator(0),
+	ViewPort(0, 0, 0, 0), ScreenSize(screenSize), PrimitivesDrawn(0), MinVertexCountForVBO(500),
+	TextureCreationFlags(0), OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false)
 {
 	#ifdef _DEBUG
 	setDebugName("CNullDriver");
@@ -211,6 +212,9 @@ CNullDriver::~CNullDriver()
 
 	if (MeshManipulator)
 		MeshManipulator->drop();
+
+	removeAllRenderTargets();
+
 	deleteAllTextures();
 
 	u32 i;
@@ -289,10 +293,19 @@ void CNullDriver::deleteAllTextures()
 	// last set material member. Could be optimized to reduce state changes.
 	setMaterial(SMaterial());
 
+	// reset render targets.
+
+	for (u32 i=0; i<RenderTargets.size(); ++i)
+		RenderTargets[i]->setTexture(0, 0);
+
+	// remove textures.
+
 	for (u32 i=0; i<Textures.size(); ++i)
 		Textures[i].Surface->drop();
 
 	Textures.clear();
+
+	SharedDepthTextures.clear();
 }
 
 
@@ -613,32 +626,50 @@ ITexture* CNullDriver::createDeviceDependentTexture(IImage* surface, const io::p
 }
 
 
-//! sets a render target
-bool CNullDriver::setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
-					bool clearZBuffer, SColor color, video::ITexture* depthStencil)
+//! set a render target
+bool CNullDriver::setRenderTarget(IRenderTarget* target, const core::array<u32>& activeTextureID, bool clearBackBuffer,
+	bool clearDepthBuffer, bool clearStencilBuffer, SColor clearColor)
 {
 	return false;
 }
 
-
-//! Sets multiple render targets
-bool CNullDriver::setRenderTarget(const core::array<video::IRenderTarget>& texture,
-				bool clearBackBuffer, bool clearZBuffer, SColor color, video::ITexture* depthStencil)
+bool CNullDriver::setRenderTarget(video::ITexture* texture, bool clearBackBuffer, bool clearZBuffer, SColor color)
 {
-	return false;
-}
+	if (texture)
+	{
+		// create render target if require.
+		if (!SharedRenderTarget)
+			SharedRenderTarget = addRenderTarget();
 
+		ITexture* depthTexture = 0;
 
-//! set or reset special render targets
-bool CNullDriver::setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
-			bool clearZBuffer, SColor color)
-{
-	if (ERT_FRAME_BUFFER==target)
-		return setRenderTarget(0,clearTarget, clearZBuffer, color, 0);
+		// try to find available depth texture with require size.
+		for (u32 i = 0; i < SharedDepthTextures.size(); ++i)
+		{
+			if (SharedDepthTextures[i]->getSize() == texture->getSize())
+			{
+				depthTexture = SharedDepthTextures[i];
+
+				break;
+			}
+		}
+
+		// create depth texture if require.
+		if (!depthTexture)
+		{
+			depthTexture = addRenderTargetTexture(texture->getSize(), "IRR_DEPTH_STENCIL", video::ECF_D24S8);
+			SharedDepthTextures.push_back(depthTexture);
+		}
+
+		SharedRenderTarget->setTexture(texture, depthTexture);
+
+		return IVideoDriver::setRenderTarget(SharedRenderTarget, 0, clearBackBuffer, clearZBuffer, clearZBuffer, color);
+	}
 	else
-		return false;
+	{
+		return IVideoDriver::setRenderTarget(NULL, 0, clearBackBuffer, clearZBuffer, false, color);
+	}
 }
-
 
 //! sets a viewport
 void CNullDriver::setViewPort(const core::rect<s32>& area)
@@ -876,6 +907,13 @@ ECOLOR_FORMAT CNullDriver::getColorFormat() const
 const core::dimension2d<u32>& CNullDriver::getScreenSize() const
 {
 	return ScreenSize;
+}
+
+
+//! get current render target
+IRenderTarget* CNullDriver::getCurrentRenderTarget() const
+{
+	return CurrentRenderTarget;
 }
 
 
@@ -1760,6 +1798,44 @@ u32 CNullDriver::getOcclusionQueryResult(scene::ISceneNode* node) const
 }
 
 
+//! Create render target.
+IRenderTarget* CNullDriver::addRenderTarget()
+{
+	return 0;
+}
+
+
+//! Remove render target.
+void CNullDriver::removeRenderTarget(IRenderTarget* renderTarget)
+{
+	if (!renderTarget)
+		return;
+
+	for (u32 i = 0; i < RenderTargets.size(); ++i)
+	{
+		if (RenderTargets[i] == renderTarget)
+		{
+			RenderTargets[i]->drop();
+			RenderTargets.erase(i);
+
+			return;
+		}
+	}
+}
+
+
+//! Remove all render targets.
+void CNullDriver::removeAllRenderTargets()
+{
+	for (u32 i = 0; i < RenderTargets.size(); ++i)
+		RenderTargets[i]->drop();
+
+	RenderTargets.clear();
+
+	SharedRenderTarget = 0;
+}
+
+
 //! Only used by the internal engine. Used to notify the driver that
 //! the window was resized.
 void CNullDriver::OnResize(const core::dimension2d<u32>& size)
@@ -2328,6 +2404,12 @@ ITexture* CNullDriver::addRenderTargetTexture(const core::dimension2d<u32>& size
 		const io::path&name, const ECOLOR_FORMAT format)
 {
 	return 0;
+}
+
+
+//! Clear the color, depth and/or stencil buffers.
+void CNullDriver::clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color)
+{
 }
 
 

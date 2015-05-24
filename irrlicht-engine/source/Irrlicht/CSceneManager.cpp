@@ -130,12 +130,12 @@
 #include "COBJMeshWriter.h"
 #endif
 
-#ifdef _IRR_COMPILE_WITH_B3D_WRITER_
-#include "CB3DMeshWriter.h"
-#endif
-
 #ifdef _IRR_COMPILE_WITH_PLY_WRITER_
 #include "CPLYMeshWriter.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_B3D_WRITER_
+#include "CB3DMeshWriter.h"
 #endif
 
 #include "CCubeSceneNode.h"
@@ -1187,7 +1187,6 @@ bool CSceneManager::isCulled(const ISceneNode* node) const
 	const ICameraSceneNode* cam = getActiveCamera();
 	if (!cam)
 	{
-		_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 		return false;
 	}
 	bool result = false;
@@ -1255,7 +1254,6 @@ bool CSceneManager::isCulled(const ISceneNode* node) const
 		}
 	}
 
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return result;
 }
 
@@ -2031,7 +2029,6 @@ bool CSceneManager::postEventFromUser(const SEvent& event)
 	if (cam)
 		ret = cam->OnEvent(event);
 
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return ret;
 }
 
@@ -2170,7 +2167,6 @@ bool CSceneManager::saveScene(const io::path& filename, ISceneUserDataSerializer
 	else
 		os::Printer::log("Unable to open file", filename, ELL_ERROR);
 
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return ret;
 }
 
@@ -2553,14 +2549,13 @@ IMeshWriter* CSceneManager::createMeshWriter(EMESH_WRITER_TYPE type)
 #else
 		return 0;
 #endif
-
+	
 	case EMWT_B3D:
 #ifdef _IRR_COMPILE_WITH_B3D_WRITER_
 		return new CB3DMeshWriter(FileSystem);
 #else
 		return 0;
-#endif
-
+#endif	
 	}
 
 	return 0;

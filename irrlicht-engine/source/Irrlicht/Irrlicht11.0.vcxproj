@@ -842,14 +842,15 @@
     <ClInclude Include="..\..\include\EMaterialFlags.h" />
     <ClInclude Include="..\..\include\IAnimatedMeshMD3.h" />
     <ClInclude Include="..\..\include\IEventReceiver.h" />
-	<ClInclude Include="..\..\include\IProfiler.h" />
+    <ClInclude Include="..\..\include\IProfiler.h" />
     <ClInclude Include="..\..\include\ILogger.h" />
     <ClInclude Include="..\..\include\IOSOperator.h" />
     <ClInclude Include="..\..\include\IRandomizer.h" />
     <ClInclude Include="..\..\include\IReferenceCounted.h" />
+    <ClInclude Include="..\..\include\IRenderTarget.h" />
     <ClInclude Include="..\..\include\IrrCompileConfig.h" />
     <ClInclude Include="..\..\include\irrlicht.h" />
-	<ClInclude Include="..\..\include\leakHunter.h" />
+    <ClInclude Include="..\..\include\leakHunter.h" />
     <ClInclude Include="..\..\include\IrrlichtDevice.h" />
     <ClInclude Include="..\..\include\irrTypes.h" />
     <ClInclude Include="..\..\include\ITimer.h" />
@@ -927,7 +928,7 @@
     <ClInclude Include="..\..\include\IMeshLoader.h" />
     <ClInclude Include="..\..\include\IMeshManipulator.h" />
     <ClInclude Include="..\..\include\IMeshSceneNode.h" />
-	<ClInclude Include="..\..\include\IMeshTextureLoader.h" />
+    <ClInclude Include="..\..\include\IMeshTextureLoader.h" />
     <ClInclude Include="..\..\include\IMeshWriter.h" />
     <ClInclude Include="..\..\include\IMetaTriangleSelector.h" />
     <ClInclude Include="..\..\include\IParticleAffector.h" />
@@ -973,7 +974,7 @@
     <ClInclude Include="..\..\include\EGUIAlignment.h" />
     <ClInclude Include="..\..\include\EGUIElementTypes.h" />
     <ClInclude Include="..\..\include\EMessageBoxFlags.h" />
-	<ClInclude Include="..\..\include\EFocusFlags.h" />
+    <ClInclude Include="..\..\include\EFocusFlags.h" />
     <ClInclude Include="..\..\include\ICursorControl.h" />
     <ClInclude Include="..\..\include\IGUIButton.h" />
     <ClInclude Include="..\..\include\IGUICheckbox.h" />
@@ -990,7 +991,7 @@
     <ClInclude Include="..\..\include\IGUIInOutFader.h" />
     <ClInclude Include="..\..\include\IGUIListBox.h" />
     <ClInclude Include="..\..\include\IGUIMeshViewer.h" />
-	<ClInclude Include="..\..\include\IGUIProfiler.h" />
+    <ClInclude Include="..\..\include\IGUIProfiler.h" />
     <ClInclude Include="..\..\include\IGUIScrollBar.h" />
     <ClInclude Include="..\..\include\IGUISkin.h" />
     <ClInclude Include="..\..\include\IGUISpinBox.h" />
@@ -1000,14 +1001,14 @@
     <ClInclude Include="..\..\include\IGUIToolbar.h" />
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
-    <ClInclude Include="CCgMaterialRenderer.h" />
-    <ClInclude Include="CD3D9CgMaterialRenderer.h" />
+	<ClInclude Include="CB3DMeshWriter.h" />
+    <ClInclude Include="CD3D9RenderTarget.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
     <ClInclude Include="CDefaultSceneNodeFactory.h" />
     <ClInclude Include="CGeometryCreator.h" />
     <ClInclude Include="CMeshCache.h" />
     <ClInclude Include="CMeshManipulator.h" />
-    <ClInclude Include="COpenGLCgMaterialRenderer.h" />
+    <ClInclude Include="COpenGLRenderTarget.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="CSMFMeshFileLoader.h" />
@@ -1025,7 +1026,7 @@
     <ClInclude Include="CLWOMeshFileLoader.h" />
     <ClInclude Include="CMD2MeshFileLoader.h" />
     <ClInclude Include="CMD3MeshFileLoader.h" />
-	<ClInclude Include="CMeshTextureLoader.h" />
+    <ClInclude Include="CMeshTextureLoader.h" />
     <ClInclude Include="CMS3DMeshFileLoader.h" />
     <ClInclude Include="CMY3DHelper.h" />
     <ClInclude Include="CMY3DMeshFileLoader.h" />
@@ -1109,13 +1110,8 @@
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
     <ClInclude Include="COpenGLTexture.h" />
     <ClInclude Include="glext.h" />
+	<ClInclude Include="SB3DStructs.h" />
     <ClInclude Include="wglext.h" />
-    <ClInclude Include="CD3D8Driver.h" />
-    <ClInclude Include="CD3D8MaterialRenderer.h" />
-    <ClInclude Include="CD3D8NormalMapRenderer.h" />
-    <ClInclude Include="CD3D8ParallaxMapRenderer.h" />
-    <ClInclude Include="CD3D8ShaderMaterialRenderer.h" />
-    <ClInclude Include="CD3D8Texture.h" />
     <ClInclude Include="CColorConverter.h" />
     <ClInclude Include="CFPSCounter.h" />
     <ClInclude Include="CImage.h" />
@@ -1158,8 +1154,8 @@
     <ClInclude Include="COSOperator.h" />
     <ClInclude Include="CTimer.h" />
     <ClInclude Include="os.h" />
-	<ClInclude Include="CProfiler.h" />
-	<ClInclude Include="EProfileIDs.h" />
+    <ClInclude Include="CProfiler.h" />
+    <ClInclude Include="EProfileIDs.h" />
     <ClInclude Include="lzma\LzmaDec.h" />
     <ClInclude Include="lzma\Types.h" />
     <ClInclude Include="zlib\crc32.h" />
@@ -1199,7 +1195,6 @@
     <ClInclude Include="CIrrDeviceSDL.h" />
     <ClInclude Include="CIrrDeviceStub.h" />
     <ClInclude Include="CIrrDeviceWin32.h" />
-    <ClInclude Include="CIrrDeviceWinCE.h" />
     <ClInclude Include="CAttributeImpl.h" />
     <ClInclude Include="CAttributes.h" />
     <ClInclude Include="CFileList.h" />
@@ -1238,7 +1233,7 @@
     <ClInclude Include="CGUIMessageBox.h" />
     <ClInclude Include="CGUIModalScreen.h" />
     <ClInclude Include="CGUIProfiler.h" />
-	<ClInclude Include="CGUIScrollBar.h" />
+    <ClInclude Include="CGUIScrollBar.h" />
     <ClInclude Include="CGUISkin.h" />
     <ClInclude Include="CGUISpinBox.h" />
     <ClInclude Include="CGUISpriteBank.h" />
@@ -1254,14 +1249,14 @@
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CCgMaterialRenderer.cpp" />
-    <ClCompile Include="CD3D9CgMaterialRenderer.cpp" />
+	<ClCompile Include="CB3DMeshWriter.cpp" />
+    <ClCompile Include="CD3D9RenderTarget.cpp" />
     <ClCompile Include="CDefaultSceneNodeAnimatorFactory.cpp" />
     <ClCompile Include="CDefaultSceneNodeFactory.cpp" />
     <ClCompile Include="CGeometryCreator.cpp" />
     <ClCompile Include="CMeshCache.cpp" />
     <ClCompile Include="CMeshManipulator.cpp" />
-    <ClCompile Include="COpenGLCgMaterialRenderer.cpp" />
+    <ClCompile Include="COpenGLRenderTarget.cpp" />
     <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="C3DSMeshFileLoader.cpp" />
     <ClCompile Include="CSMFMeshFileLoader.cpp" />
@@ -1278,7 +1273,7 @@
     <ClCompile Include="CLWOMeshFileLoader.cpp" />
     <ClCompile Include="CMD2MeshFileLoader.cpp" />
     <ClCompile Include="CMD3MeshFileLoader.cpp" />
-	<ClCompile Include="CMeshTextureLoader.cpp" />
+    <ClCompile Include="CMeshTextureLoader.cpp" />
     <ClCompile Include="CMS3DMeshFileLoader.cpp" />
     <ClCompile Include="CMY3DMeshFileLoader.cpp" />
     <ClCompile Include="COBJMeshFileLoader.cpp" />
@@ -1363,11 +1358,6 @@
     <ClCompile Include="COpenGLShaderMaterialRenderer.cpp" />
     <ClCompile Include="COpenGLSLMaterialRenderer.cpp" />
     <ClCompile Include="COpenGLTexture.cpp" />
-    <ClCompile Include="CD3D8Driver.cpp" />
-    <ClCompile Include="CD3D8NormalMapRenderer.cpp" />
-    <ClCompile Include="CD3D8ParallaxMapRenderer.cpp" />
-    <ClCompile Include="CD3D8ShaderMaterialRenderer.cpp" />
-    <ClCompile Include="CD3D8Texture.cpp" />
     <ClCompile Include="CColorConverter.cpp" />
     <ClCompile Include="CFPSCounter.cpp" />
     <ClCompile Include="CImage.cpp" />
@@ -1425,8 +1415,8 @@
     <ClCompile Include="Irrlicht.cpp" />
     <ClCompile Include="os.cpp" />
     <ClCompile Include="utf8.cpp" />
-	<ClCompile Include="CProfiler.cpp" />
-	<ClCompile Include="leakHunter.cpp" />
+    <ClCompile Include="CProfiler.cpp" />
+    <ClCompile Include="leakHunter.cpp" />
     <ClCompile Include="lzma\LzmaDec.c" />
     <ClCompile Include="zlib\adler32.c" />
     <ClCompile Include="zlib\compress.c" />
@@ -1521,7 +1511,6 @@
     <ClCompile Include="CIrrDeviceSDL.cpp" />
     <ClCompile Include="CIrrDeviceStub.cpp" />
     <ClCompile Include="CIrrDeviceWin32.cpp" />
-    <ClCompile Include="CIrrDeviceWinCE.cpp" />
     <ClCompile Include="CAttributes.cpp" />
     <ClCompile Include="CFileList.cpp" />
     <ClCompile Include="CFileSystem.cpp" />
@@ -1557,7 +1546,7 @@
     <ClCompile Include="CGUIMessageBox.cpp" />
     <ClCompile Include="CGUIModalScreen.cpp" />
     <ClCompile Include="CGUIProfiler.cpp" />
-	<ClCompile Include="CGUIScrollBar.cpp" />
+    <ClCompile Include="CGUIScrollBar.cpp" />
     <ClCompile Include="CGUISkin.cpp" />
     <ClCompile Include="CGUISpinBox.cpp" />
     <ClCompile Include="CGUISpriteBank.cpp" />

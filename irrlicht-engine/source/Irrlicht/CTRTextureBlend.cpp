@@ -212,7 +212,7 @@ void CTRTextureBlend::setParam ( u32 index, f32 value)
 	if ( showname && ( lsrcFact != srcFact || ldstFact != dstFact ) )
 	{
 		char buf[128];
-		snprintf ( buf, 128, "missing shader: %s %s",n[srcFact], n[dstFact] );
+		snprintf_irr ( buf, 128, "missing shader: %s %s",n[srcFact], n[dstFact] );
 		os::Printer::log( buf, ELL_INFORMATION );
 
 		lsrcFact = srcFact;
@@ -336,8 +336,8 @@ void CTRTextureBlend::fragment_dst_color_src_alpha ()
 
 		getSample_texture ( a0,r0,g0,b0,
 							&IT[0],
-							tofix ( line.t[0][0].x,iw),
-							tofix ( line.t[0][0].y,iw)
+							tofix(line.t[0][0].x, iw),
+							tofix(line.t[0][0].y, iw)
 						);
 
 		color_to_fix ( r1, g1, b1, dst[i] );

@@ -686,15 +686,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\IProfiler.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\ILogger.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\IOSOperator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\IProfiler.h"
 				>
 			</File>
 			<File
@@ -707,6 +707,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\irrlicht.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\leakHunter.h"
 				>
 			</File>
 			<File
@@ -723,10 +727,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\Keycodes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\leakHunter.h"
 				>
 			</File>
 			<File
@@ -770,6 +770,10 @@
 				</File>
 				<File
 					RelativePath="..\..\include\IMaterialRendererServices.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\IRenderTarget.h"
 					>
 				</File>
 				<File
@@ -948,14 +952,6 @@
 			<Filter
 				Name="scene"
 				>
-				<File
-					RelativePath=".\CB3DMeshWriter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\CB3DMeshWriter.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\include\CDynamicMeshBuffer.h"
 					>
@@ -1229,10 +1225,6 @@
 				Name="gui"
 				>
 				<File
-					RelativePath="..\..\include\EFocusFlags.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\include\EGUIAlignment.h"
 					>
 				</File>
@@ -1242,6 +1234,10 @@
 				</File>
 				<File
 					RelativePath="..\..\include\EMessageBoxFlags.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\EFocusFlags.h"
 					>
 				</File>
 				<File
@@ -2083,19 +2079,19 @@
 						RelativePath="CSTLMeshWriter.h"
 						>
 					</File>
+					<File
+						RelativePath="CB3DMeshWriter.cpp"
+						>
+					</File>
+					<File
+						RelativePath="CB3DMeshWriter.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="video"
 				>
-				<File
-					RelativePath="CCgMaterialRenderer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="CCgMaterialRenderer.h"
-					>
-				</File>
 				<File
 					RelativePath="CVideoModeList.cpp"
 					>
@@ -2192,14 +2188,6 @@
 					Name="OpenGL"
 					>
 					<File
-						RelativePath=".\COpenGLCgMaterialRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\COpenGLCgMaterialRenderer.h"
-						>
-					</File>
-					<File
 						RelativePath="COpenGLDriver.cpp"
 						>
 					</File>
@@ -2236,6 +2224,14 @@
 						>
 					</File>
 					<File
+						RelativePath="COpenGLRenderTarget.cpp"
+						>
+					</File>
+					<File
+						RelativePath="COpenGLRenderTarget.h"
+						>
+					</File>
+					<File
 						RelativePath="COpenGLShaderMaterialRenderer.cpp"
 						>
 					</File>
@@ -2265,54 +2261,6 @@
 					</File>
 					<File
 						RelativePath=".\wglext.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Direct3D8"
-					>
-					<File
-						RelativePath="CD3D8Driver.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8Driver.h"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8MaterialRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8NormalMapRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8NormalMapRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8ParallaxMapRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8ParallaxMapRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8ShaderMaterialRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8ShaderMaterialRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8Texture.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D8Texture.h"
 						>
 					</File>
 				</Filter>
@@ -2508,14 +2456,6 @@
 					Name="Direct3D9"
 					>
 					<File
-						RelativePath="CD3D9CgMaterialRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="CD3D9CgMaterialRenderer.h"
-						>
-					</File>
-					<File
 						RelativePath="CD3D9Driver.cpp"
 						>
 					</File>
@@ -2549,6 +2489,14 @@
 					</File>
 					<File
 						RelativePath="CD3D9ParallaxMapRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath="CD3D9RenderTarget.cpp"
+						>
+					</File>
+					<File
+						RelativePath="CD3D9RenderTarget.h"
 						>
 					</File>
 					<File
@@ -2729,19 +2677,7 @@
 					>
 				</File>
 				<File
-					RelativePath="CProfiler.cpp"
-					>
-				</File>
-				<File
-					RelativePath="CProfiler.h"
-					>
-				</File>
-				<File
 					RelativePath="CTimer.h"
-					>
-				</File>
-				<File
-					RelativePath="EProfileIDs.h"
 					>
 				</File>
 				<File
@@ -2757,11 +2693,23 @@
 					>
 				</File>
 				<File
-					RelativePath="os.h"
+					RelativePath="utf8.cpp"
 					>
 				</File>
 				<File
-					RelativePath="utf8.cpp"
+					RelativePath="CProfiler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="CProfiler.h"
+					>
+				</File>
+				<File
+					RelativePath="EProfileIDs.h"
+					>
+				</File>
+				<File
+					RelativePath="os.h"
 					>
 				</File>
 				<Filter
@@ -3321,14 +3269,6 @@
 					</File>
 					<File
 						RelativePath="CIrrDeviceWin32.h"
-						>
-					</File>
-					<File
-						RelativePath=".\CIrrDeviceWinCE.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\CIrrDeviceWinCE.h"
 						>
 					</File>
 				</Filter>

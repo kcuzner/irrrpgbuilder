@@ -239,7 +239,6 @@ void CGUIEditBoxIRB::updateAbsolutePosition()
 //! Checks if word wrap is enabled
 bool CGUIEditBoxIRB::isWordWrapEnabled() const
 {
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return WordWrap;
 }
 
@@ -258,7 +257,7 @@ void CGUIEditBoxIRB::setMultiLine(bool enable)
 //! Checks if multi line editing is enabled
 bool CGUIEditBoxIRB::isMultiLineEnabled() const
 {
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
+
 	return MultiLine;
 }
 
@@ -278,7 +277,6 @@ void CGUIEditBoxIRB::setPasswordBox(bool passwordBox, wchar_t passwordChar)
 
 bool CGUIEditBoxIRB::isPasswordBox() const
 {
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return PasswordBox;
 }
 
@@ -1483,7 +1481,6 @@ void CGUIEditBoxIRB::setAutoScroll(bool enable)
 //! \return true if automatic scrolling is enabled, false if not
 bool CGUIEditBoxIRB::isAutoScrollEnabled() const
 {
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return AutoScroll;
 }
 

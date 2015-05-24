@@ -111,9 +111,11 @@ void CPostProcessManager::render(E_POSTPROCESS_EFFECT effect)
 
 void CPostProcessManager::update()
 {
+	//Broken since the last update of Irrlicht. Perhaps will have to think to use another thing...
 	// render the scene into the framebuffer after postprocessing
 	RenderToScreen->getMaterial().setTexture(0, RenderTargetMap["auxOut"]);
-	Device->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER, true, true);
+	//Device->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER, true, true);
+	//Device->getVideoDriver()->setRenderTarget(RenderTargetMap["auxOut"], true, true);
 	RenderToScreen->render();
 }
 

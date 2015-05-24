@@ -100,17 +100,14 @@ namespace video
 		//! creates a Texture
 		virtual ITexture* addTexture(const core::dimension2d<u32>& size, const io::path& name, ECOLOR_FORMAT format = ECF_A8R8G8B8) _IRR_OVERRIDE_;
 
-		//! sets a render target
-		virtual bool setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
-						bool clearZBuffer, SColor color, video::ITexture* depthStencil) _IRR_OVERRIDE_;
+		//! set a render target
+		virtual bool setRenderTarget(IRenderTarget* target, const core::array<u32>& activeTextureID, bool clearBackBuffer,
+			bool clearDepthBuffer, bool clearStencilBuffer, SColor clearColor) _IRR_OVERRIDE_;
 
-		//! Sets multiple render targets
-		virtual bool setRenderTarget(const core::array<video::IRenderTarget>& texture,
-					bool clearBackBuffer, bool clearZBuffer, SColor color, video::ITexture* depthStencil) _IRR_OVERRIDE_;
-
-		//! set or reset special render targets
-		virtual bool setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
-					bool clearZBuffer, SColor color) _IRR_OVERRIDE_;
+		//! set a render target
+		virtual bool setRenderTarget(video::ITexture* texture,
+			bool clearBackBuffer = true, bool clearZBuffer = true,
+			SColor color = video::SColor(0, 0, 0, 0)) _IRR_OVERRIDE_;
 
 		//! sets a viewport
 		virtual void setViewPort(const core::rect<s32>& area) _IRR_OVERRIDE_;
@@ -241,6 +238,9 @@ namespace video
 
 		//! get screen size
 		virtual const core::dimension2d<u32>& getScreenSize() const _IRR_OVERRIDE_;
+
+		//! get current render target
+		IRenderTarget* getCurrentRenderTarget() const;
 
 		//! get render target size
 		virtual const core::dimension2d<u32>& getCurrentRenderTargetSize() const _IRR_OVERRIDE_;
@@ -471,6 +471,15 @@ namespace video
 		actual value of pixels. */
 		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const _IRR_OVERRIDE_;
 
+		//! Create render target.
+		virtual IRenderTarget* addRenderTarget() _IRR_OVERRIDE_;
+
+		//! Remove render target.
+		virtual void removeRenderTarget(IRenderTarget* renderTarget) _IRR_OVERRIDE_;
+
+		//! Remove all render targets.
+		virtual void removeAllRenderTargets() _IRR_OVERRIDE_;
+
 		//! Only used by the engine internally.
 		/** Used to notify the driver that the window was resized. */
 		virtual void OnResize(const core::dimension2d<u32>& size) _IRR_OVERRIDE_;
@@ -583,6 +592,9 @@ namespace video
 
 		//! Returns a pointer to the mesh manipulator.
 		virtual scene::IMeshManipulator* getMeshManipulator() _IRR_OVERRIDE_;
+
+		//! Clear the color, depth and/or stencil buffers.
+		virtual void clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color) _IRR_OVERRIDE_;
 
 		//! Clears the ZBuffer.
 		virtual void clearZBuffer() _IRR_OVERRIDE_;
@@ -713,6 +725,26 @@ namespace video
 			return (f32) getAverage ( p[(y * pitch) + x] );
 		}
 
+		inline bool getWriteZBuffer(const SMaterial&material) const
+		{
+			if (material.ZWriteEnable)
+			{
+				if (!AllowZWriteOnTransparent)
+				{
+					switch (material.ZWriteFineControl)
+					{
+					case EZI_ONLY_NON_TRANSPARENT:
+						return !material.isTransparent();
+					case EZI_ZBUFFER_FLAG:
+						return true;
+					}
+				}
+				else
+					return true;
+			}
+			return false;
+		}
+
 		struct SSurface
 		{
 			video::ITexture* Surface;
@@ -795,6 +827,15 @@ namespace video
 			u32 Run;
 		};
 		core::array<SOccQuery> OcclusionQueries;
+
+		core::array<IRenderTarget*> RenderTargets;
+
+		// Shared objects used with simplified IVideoDriver::setRenderTarget method with ITexture* param.
+		IRenderTarget* SharedRenderTarget;
+		core::array<ITexture*> SharedDepthTextures;
+
+		IRenderTarget* CurrentRenderTarget;
+		core::dimension2d<u32> CurrentRenderTargetSize;
 
 		core::array<video::IImageLoader*> SurfaceLoader;
 		core::array<video::IImageWriter*> SurfaceWriter;

@@ -24,10 +24,6 @@ namespace irr
 // also includes the OpenGL stuff
 #include "COpenGLExtensionHandler.h"
 
-#ifdef _IRR_COMPILE_WITH_CG_
-#include "Cg/cg.h"
-#endif
-
 namespace irr
 {
 
@@ -137,6 +133,9 @@ namespace video
 		The value is a safe approximation, i.e. can be larger then the
 		actual value of pixels. */
 		virtual u32 getOcclusionQueryResult(scene::ISceneNode* node) const _IRR_OVERRIDE_;
+
+		//! Create render target.
+		virtual IRenderTarget* addRenderTarget() _IRR_OVERRIDE_;
 
 		//! draws a vertex primitive list
 		virtual void drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
@@ -360,17 +359,12 @@ namespace video
 		virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
 				const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN) _IRR_OVERRIDE_;
 
-		//! sets a render target
-		virtual bool setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
-						bool clearZBuffer, SColor color, video::ITexture* depthStencil) _IRR_OVERRIDE_;
+		//! set a render target
+		virtual bool setRenderTarget(IRenderTarget* target, const core::array<u32>& activeTextureID, bool clearBackBuffer,
+			bool clearDepthBuffer, bool clearStencilBuffer, SColor clearColor) _IRR_OVERRIDE_;
 
-		//! Sets multiple render targets
-		virtual bool setRenderTarget(const core::array<video::IRenderTarget>& texture,
-					bool clearBackBuffer, bool clearZBuffer, SColor color, video::ITexture* depthStencil) _IRR_OVERRIDE_;
-
-		//! set or reset special render targets
-		virtual bool setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
-					bool clearZBuffer, SColor color) _IRR_OVERRIDE_;
+		//! Clear the color, depth and/or stencil buffers.
+		virtual void clearBuffers(bool backBuffer, bool depthBuffer, bool stencilBuffer, SColor color) _IRR_OVERRIDE_;
 
 		//! Clears the ZBuffer.
 		virtual void clearZBuffer() _IRR_OVERRIDE_;
@@ -431,15 +425,7 @@ namespace video
 		//! Get bridge calls.
 		COpenGLCallBridge* getBridgeCalls() const;
 
-		//! Get Cg context
-		#ifdef _IRR_COMPILE_WITH_CG_
-		const CGcontext& getCgContext();
-		#endif
-
 	private:
-
-		//! clears the zbuffer and color buffer
-		void clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color);
 
 		bool updateVertexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
 		bool updateIndexHardwareBuffer(SHWBufferLink_opengl *HWBuffer);
@@ -503,8 +489,6 @@ namespace video
 		u8 AntiAlias;
 
 		SMaterial Material, LastMaterial;
-		COpenGLTexture* RenderTargetTexture;
-		core::array<video::IRenderTarget> MRTargets;
 
 		class STextureStageCache
 		{
@@ -571,7 +555,6 @@ namespace video
 		};
 		STextureStageCache CurrentTexture;
 
-		core::array<ITexture*> DepthTextures;
 		struct SUserClipPlane
 		{
 			SUserClipPlane() : Enabled(false) {}
@@ -579,8 +562,6 @@ namespace video
 			bool Enabled;
 		};
 		core::array<SUserClipPlane> UserClipPlanes;
-
-		core::dimension2d<u32> CurrentRendertargetSize;
 
 		core::stringc VendorName;
 
@@ -590,9 +571,6 @@ namespace video
 		ECOLOR_FORMAT ColorFormat;
 
 		E_OPENGL_FIXED_PIPELINE_STATE FixedPipelineState;
-
-		//! Render target type for render operations
-		E_RENDER_TARGET CurrentTarget;
 
 		SIrrlichtCreationParameters Params;
 
@@ -630,9 +608,6 @@ namespace video
 		#endif
 		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
 			CIrrDeviceSDL *SDLDevice;
-		#endif
-		#ifdef _IRR_COMPILE_WITH_CG_
-		CGcontext CgContext;
 		#endif
 
 		E_DEVICE_TYPE DeviceType;
@@ -695,6 +670,12 @@ namespace video
 
 		void setDepthTest(bool enable);
 
+		// FBO calls.
+
+		void getFBO(GLuint& id) const;
+
+		void setFBO(GLuint id);
+
 		// Matrix calls.
 
 		void setMatrixMode(GLenum mode);
@@ -742,6 +723,8 @@ namespace video
 		GLenum DepthFunc;
 		bool DepthMask;
 		bool DepthTest;
+
+		GLuint FrameBufferID;
 
 		GLenum MatrixMode;
 

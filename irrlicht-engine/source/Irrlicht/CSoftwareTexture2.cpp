@@ -8,6 +8,7 @@
 #include "SoftwareDriver2_compile_config.h"
 #include "SoftwareDriver2_helper.h"
 #include "CSoftwareTexture2.h"
+#include "CSoftwareDriver2.h"
 #include "os.h"
 
 namespace irr
@@ -30,8 +31,6 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
 
 	DriverType = EDT_BURNINGSVIDEO;
 	ColorFormat = BURNINGSHADER_COLOR_FORMAT;
-	HasMipMaps = (Flags & GEN_MIPMAP) != 0;
-	HasAlpha = (Flags & HAS_ALPHA) != 0;
 	IsRenderTarget = (Flags & IS_RENDERTARGET) != 0;
 
 	memset32 ( MipMap, 0, sizeof ( MipMap ) );
@@ -56,8 +55,8 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
 
 		core::dimension2d<u32> optSize(
 				OriginalSize.getOptimalSize(0 != (Flags & NP2_SIZE),
-				false, false,
-				( Flags & NP2_SIZE ) ? SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE : 0)
+				false, true,
+				SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE)
 			);
 
 		if (OriginalSize == optSize)
@@ -71,7 +70,7 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
 		{
 			char buf[256];
 			core::stringw showName ( name );
-			snprintf ( buf, 256, "Burningvideo: Warning Texture %ls reformat %dx%d -> %dx%d,%d",
+			snprintf_irr ( buf, 256, "Burningvideo: Warning Texture %ls reformat %dx%d -> %dx%d,%d",
 							showName.c_str(),
 							OriginalSize.Width, OriginalSize.Height, optSize.Width, optSize.Height,
 							BURNINGSHADER_COLOR_FORMAT
@@ -90,6 +89,9 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
 
 		OrigImageDataSizeInPixels = (f32) 0.3f * MipMap[0]->getImageDataSizeInPixels();
 	}
+
+	HasMipMaps = (Flags & GEN_MIPMAP) != 0;
+	HasAlpha = (Flags & HAS_ALPHA) != 0;
 
 	regenerateMipMapLevels(mipmapData);
 }
@@ -168,6 +170,54 @@ void CSoftwareTexture2::regenerateMipMapLevels(void* mipmapData)
 			MipMap[0]->copyToScalingBoxFilter( MipMap[i], 0, false );
 		}
 	}
+}
+
+
+/* Software Render Target 2 */
+
+CSoftwareRenderTarget2::CSoftwareRenderTarget2(CBurningVideoDriver* driver) : Driver(driver)
+{
+	DriverType = EDT_BURNINGSVIDEO;
+
+	Texture.set_used(1);
+	Texture[0] = 0;
+}
+
+CSoftwareRenderTarget2::~CSoftwareRenderTarget2()
+{
+	if (Texture[0])
+		Texture[0]->drop();
+}
+
+void CSoftwareRenderTarget2::setTexture(const core::array<ITexture*>& texture, ITexture* depthStencil)
+{
+	if (Texture != texture)
+	{
+		if (Texture[0])
+			Texture[0]->drop();
+
+		bool textureDetected = false;
+
+		for (u32 i = 0; i < texture.size(); ++i)
+		{
+			if (texture[i] && texture[i]->getDriverType() == EDT_BURNINGSVIDEO)
+			{
+				Texture[0] = texture[i];
+				Texture[0]->grab();
+				textureDetected = true;
+
+				break;
+			}
+		}
+
+		if (!textureDetected)
+			Texture[0] = 0;
+	}
+}
+
+ITexture* CSoftwareRenderTarget2::getTexture() const
+{
+	return Texture[0];
 }
 
 

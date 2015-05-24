@@ -38,11 +38,6 @@ namespace irr
 {
 	namespace video
 	{
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
-		IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters& params,
-			io::IFileSystem* io, HWND window);
-		#endif
-
 		#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
 		IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters& params,
 			io::IFileSystem* io, HWND window);
@@ -380,6 +375,8 @@ void SJoystickWin32Control::pollJoysticks()
   * Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org> */
 irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYCAPS &caps) const
 {
+#if defined _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+
     // As a default use the name given in the joystick structure.
     // It is always the same name, independent of joystick.
     irr::core::stringc result(caps.szPname);
@@ -413,7 +410,7 @@ irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYC
 
     /* find the size for the OEM name text */
     regsize = sizeof(regvalue);
-    regresult = RegQueryValueExA(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
+    regresult = RegQueryValueEx(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
                                  NULL, &regsize);
     if (regresult == ERROR_SUCCESS)
     {
@@ -423,7 +420,7 @@ irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYC
         if (name)
         {
             /* ... and read it from the registry */
-            regresult = RegQueryValueExA(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
+            regresult = RegQueryValueEx(hKey, REGSTR_VAL_JOYOEMNAME, 0, 0,
                                          (LPBYTE)name, &regsize );
             result = name;
         }
@@ -432,6 +429,8 @@ irr::core::stringc SJoystickWin32Control::findJoystickName(int index, const JOYC
     RegCloseKey(hKey);
 
     return result;
+#endif
+	return "";
 }
 
 bool SJoystickWin32Control::activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
@@ -872,7 +871,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Using ToUnicode instead would be shorter, but would to my knowledge not run on 95 and 98.
 			WORD keyChars[2];
 			UINT scanCode = HIWORD(lParam);
-			int conversionResult = ToAsciiEx(wParam,scanCode,allKeys,keyChars,0,KEYBOARD_INPUT_HKL);
+			int conversionResult = ToAsciiEx(static_cast<UINT>(wParam),scanCode,allKeys,keyChars,0,KEYBOARD_INPUT_HKL);
 			if (conversionResult == 1)
 			{
 				WORD unicodeChar;
@@ -1162,19 +1161,8 @@ void CIrrDeviceWin32::createDriver()
 {
 	switch(CreationParams.DriverType)
 	{
-	case video::EDT_DIRECT3D8:
-		#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
-
-		VideoDriver = video::createDirectX8Driver(CreationParams, FileSystem, HWnd);
-
-		if (!VideoDriver)
-		{
-			os::Printer::log("Could not create DIRECT3D8 Driver.", ELL_ERROR);
-		}
-		#else
-		os::Printer::log("DIRECT3D8 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-		#endif // _IRR_COMPILE_WITH_DIRECT3D_8_
-
+	case video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS:
+		os::Printer::log("DIRECT3D8 Driver is no longer supported in Irrlicht. Try another one.", ELL_ERROR);
 		break;
 
 	case video::EDT_DIRECT3D9:
@@ -1256,7 +1244,6 @@ bool CIrrDeviceWin32::run()
 	if(!Close && JoyControl)
 		JoyControl->pollJoysticks();
 
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return !Close;
 }
 
@@ -1392,7 +1379,6 @@ void CIrrDeviceWin32::closeDevice()
 //! returns if window is active. if not, nothing needs to be drawn
 bool CIrrDeviceWin32::isWindowActive() const
 {
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return (GetActiveWindow() == HWnd);
 }
 
@@ -1401,7 +1387,6 @@ bool CIrrDeviceWin32::isWindowActive() const
 bool CIrrDeviceWin32::isWindowFocused() const
 {
 	bool ret = (GetFocus() == HWnd);
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return ret;
 }
 
@@ -1414,7 +1399,6 @@ bool CIrrDeviceWin32::isWindowMinimized() const
 	bool ret=false;
 	if (GetWindowPlacement(HWnd,&plc))
 		ret=(plc.showCmd & SW_SHOWMINIMIZED)!=0;
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return ret;
 }
 
@@ -1480,7 +1464,6 @@ bool CIrrDeviceWin32::switchToFullScreen(bool reset)
 		os::Printer::log("An unknown error occured while changing to fullscreen.", ELL_ERROR);
 		break;
 	}
-	_IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
 	return ret;
 }
 
@@ -1751,8 +1734,8 @@ void CIrrDeviceWin32::setWindowSize(const irr::core::dimension2d<u32>& size)
 		return;
 
 	// get size of the window for the give size of the client area
-	LONG_PTR style = GetWindowLongPtr(HWnd, GWL_STYLE);
-	LONG_PTR exStyle = GetWindowLongPtr(HWnd, GWL_EXSTYLE);
+	DWORD style = static_cast<DWORD>(GetWindowLongPtr(HWnd, GWL_STYLE));
+	DWORD exStyle = static_cast<DWORD>(GetWindowLongPtr(HWnd, GWL_EXSTYLE));
 	RECT clientSize;
 	clientSize.top = 0;
 	clientSize.left = 0;
@@ -1788,7 +1771,7 @@ void CIrrDeviceWin32::setResizable(bool resize)
 	clientSize.right = getVideoDriver()->getScreenSize().Width;
 	clientSize.bottom = getVideoDriver()->getScreenSize().Height;
 
-	AdjustWindowRect(&clientSize, style, FALSE);
+	AdjustWindowRect(&clientSize, static_cast<DWORD>(style), FALSE);
 
 	const s32 realWidth = clientSize.right - clientSize.left;
 	const s32 realHeight = clientSize.bottom - clientSize.top;

@@ -12,32 +12,18 @@
 
 #include <d3dx9tex.h>
 
-#ifndef _IRR_COMPILE_WITH_DIRECT3D_8_
-// The D3DXFilterTexture function seems to get linked wrong when
-// compiling with both D3D8 and 9, causing it not to work in the D3D9 device.
-// So mipmapgeneration is replaced with my own bad generation in d3d 8 when
-// compiling with both D3D 8 and 9.
-// #define _IRR_USE_D3DXFilterTexture_
-#endif // _IRR_COMPILE_WITH_DIRECT3D_8_
-
-#ifdef _IRR_USE_D3DXFilterTexture_
-#pragma comment(lib, "d3dx9.lib")
-#endif
-
 namespace irr
 {
 namespace video
 {
 
 //! rendertarget constructor
-CD3D9Texture::CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& size,
-						   const io::path& name, const ECOLOR_FORMAT format)
-: ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
-	HardwareMipMaps(false), IsCompressed(false)
+CD3D9Texture::CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& size, const io::path& name, const ECOLOR_FORMAT format)
+	: ITexture(name), Texture(0), RTTSurface(0), Driver(driver), HardwareMipMaps(false), IsCompressed(false)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CD3D9Texture");
-	#endif
+#endif
 
 	Device=driver->getExposedVideoData().D3D9.D3DDev9;
 	if (Device)
@@ -53,14 +39,12 @@ CD3D9Texture::CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& si
 
 
 //! constructor
-CD3D9Texture::CD3D9Texture(IImage* image, CD3D9Driver* driver,
-			   u32 flags, const io::path& name, void* mipmapData)
-: ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
-	HardwareMipMaps(false), IsCompressed(false)
+CD3D9Texture::CD3D9Texture(IImage* image, CD3D9Driver* driver, u32 flags, const io::path& name, void* mipmapData)
+	: ITexture(name), Texture(0), RTTSurface(0), Driver(driver), HardwareMipMaps(false), IsCompressed(false)
 {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	setDebugName("CD3D9Texture");
-	#endif
+#endif
 
 	DriverType = EDT_DIRECT3D9;
 	HasMipMaps = Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
@@ -117,15 +101,6 @@ CD3D9Texture::~CD3D9Texture()
 	if (RTTSurface)
 		RTTSurface->Release();
 
-	// if this texture was the last one using the depth buffer
-	// we can release the surface. We only use the value of the pointer
-	// hence it is safe to use the dropped pointer...
-	if (DepthSurface)
-	{
-		if (DepthSurface->drop())
-			Driver->removeDepthSurface(DepthSurface);
-	}
-
 	if (Device)
 		Device->Release();
 }
@@ -177,17 +152,9 @@ void CD3D9Texture::createRenderTarget(const ECOLOR_FORMAT format)
 	}
 
 	// create texture
-	HRESULT hr;
+	DWORD usage = (IImage::isDepthFormat(ColorFormat)) ? D3DUSAGE_DEPTHSTENCIL : D3DUSAGE_RENDERTARGET;
 
-	hr = Device->CreateTexture(
-		Size.Width,
-		Size.Height,
-		1, // mip map level count, we don't want mipmaps here
-		D3DUSAGE_RENDERTARGET,
-		d3dformat,
-		D3DPOOL_DEFAULT,
-		&Texture,
-		NULL);
+	HRESULT hr = Device->CreateTexture(Size.Width, Size.Height, 1, usage, d3dformat, D3DPOOL_DEFAULT, &Texture, NULL);
 
 	if (FAILED(hr))
 	{
@@ -568,7 +535,7 @@ void CD3D9Texture::unlock()
 
 
 //! returns the DIRECT3D9 Texture
-IDirect3DBaseTexture9* CD3D9Texture::getDX9Texture() const
+IDirect3DTexture9* CD3D9Texture::getDX9Texture() const
 {
 	return Texture;
 }
@@ -732,33 +699,8 @@ void CD3D9Texture::regenerateMipMapLevels(void* mipmapData)
 	}
 	else if (HasMipMaps)
 	{
-		// create mip maps.
-#ifdef _IRR_USE_D3DXFilterTexture_
-		// The D3DXFilterTexture function seems to get linked wrong when
-		// compiling with both D3D8 and 9, causing it not to work in the D3D9 device.
-		// So mipmapgeneration is replaced with my own bad generation
-		HRESULT hr  = D3DXFilterTexture(Texture, NULL, D3DX_DEFAULT, D3DX_DEFAULT);
-		if (FAILED(hr))
-#endif
 		createMipMaps();
 	}
-}
-
-
-//! Returns pointer to the render target surface
-IDirect3DSurface9* CD3D9Texture::getRenderTargetSurface()
-{
-	if (!IsRenderTarget)
-		return 0;
-
-	IDirect3DSurface9 *pRTTSurface = 0;
-	if (Texture)
-		Texture->GetSurfaceLevel(0, &pRTTSurface);
-
-	if (pRTTSurface)
-		pRTTSurface->Release();
-
-	return pRTTSurface;
 }
 
 

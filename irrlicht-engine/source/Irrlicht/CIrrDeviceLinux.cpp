@@ -228,7 +228,7 @@ int IrrPrintXError(Display *display, XErrorEvent *event)
 	char msg[256];
 	char msg2[256];
 
-	snprintf(msg, 256, "%d", event->request_code);
+	snprintf_irr(msg, 256, "%d", event->request_code);
 	XGetErrorDatabaseText(display, "XRequest", msg, "unknown", msg2, 256);
 	XGetErrorText(display, event->error_code, msg, 256);
 	os::Printer::log("X Error", msg, ELL_WARNING);
@@ -674,8 +674,8 @@ bool CIrrDeviceLinux::createWindow()
 
 	if (!CreationParams.WindowId)
 	{
-		int x = 30;
-		int y = 30;
+		int x = 0;
+		int y = 0;
 
 		if (!CreationParams.Fullscreen)
 		{
@@ -860,7 +860,7 @@ void CIrrDeviceLinux::createDriver()
 		#endif
 		break;
 
-	case video::EDT_DIRECT3D8:
+	case video::DEPRECATED_EDT_DIRECT3D8_NO_LONGER_EXISTS:
 	case video::EDT_DIRECT3D9:
 		os::Printer::log("This driver is not available in Linux. Try OpenGL or Software renderer.",
 			ELL_ERROR);
@@ -1475,7 +1475,6 @@ void CIrrDeviceLinux::setResizable(bool resize)
 	if (CreationParams.DriverType == video::EDT_NULL || CreationParams.Fullscreen )
 		return;
 
-	XUnmapWindow(XDisplay, XWindow);
 	if ( !resize )
 	{
 		// Must be heap memory because data size depends on X Server
@@ -1490,7 +1489,6 @@ void CIrrDeviceLinux::setResizable(bool resize)
 	{
 		XSetWMNormalHints(XDisplay, XWindow, StdHints);
 	}
-	XMapWindow(XDisplay, XWindow);
 	XFlush(XDisplay);
 #endif // #ifdef _IRR_COMPILE_WITH_X11_
 }
