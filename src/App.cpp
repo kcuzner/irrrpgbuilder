@@ -1501,12 +1501,13 @@ void App::eventGuiEditBox(s32 id)
 		newscale=selectedNode->getScale();
 	}
 
+	/*
 	switch (id)
 	{
 
 	default:
 		break;
-	}
+	}*/
 
 }
 

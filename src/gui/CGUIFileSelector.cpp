@@ -206,7 +206,7 @@ const wchar_t* CGUIFileSelector::getFileName() const
 //! called if an event happened.
 bool CGUIFileSelector::OnEvent(const SEvent& event)
 {
-    wchar_t out[255];
+    //wchar_t out[255];
     stringc in = "";
 	if (isEnabled() && isVisible())
 	{
@@ -1065,18 +1065,18 @@ void CGUIFileSelector::setStartingPath(core::stringw path)
 }
 
 // !translateDOS, will try to convert accents from the received string and send them back, as they seem corrupted
-// from the way it was received. (Testing to be done Linux Side)
+// from the way it was received. 
 core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 {
 
 #ifndef WIN32
-	//Ubutu should store the filenames in UTF8, Windows in UTF16
+	//Ubutu should store the filenames in UTF8 (At least as a default)
 	wchar_t out[255];
 	stringc in = stringc(input);
 	core::utf8ToWchar(in.c_str(),out,255);
 	return stringw(out);
-#endif
 
+#else
 	core::stringw result=L"";
 
 	for (u32 a=0; a <= input.size(); a++)
@@ -1089,51 +1089,53 @@ core::stringw CGUIFileSelector::translateDOS(core::stringw input)
 		if (code>0)
 			result.append(test);
 		//if (code<0)
-			//printf("============================\nThe code is: %d\n==============================\n",code);
+		//	printf("============================\nThe code is: %d\n==============================\n",code);
 		// if the result give < 0 then it look like an accented letter, then convert
 
 		if (code==-56)
-			result.append(stringw("È"));
+			result.append(L"È");
 
 		if (code==-55)
-			result.append(stringw("É"));
+			result.append(L"É");
 
 		if (code==-53)
-			result.append(stringw("Ë"));
+			result.append(L"Ë");
 
 		if (code==-24)
-			result.append(stringw("è"));
+			result.append(L"è"); 
 
 		if (code==-23)
-			result.append(stringw("é"));
+			result.append(L"é"); 
 
 		if (code==-21)
-			result.append(stringw("ë"));
+			result.append(L"ë");
 
 		if (code==-64)
-			result.append(stringw("À"));
+			result.append(L"À");
 
 		if (code==-32)
-			result.append(stringw("à"));
+			result.append(L"à");
 
 		if (code==-57)
-			result.append(stringw("Ç"));
+			result.append(L"Ç");
 
 		if (code==-25)
-			result.append(stringw("ç"));
+			result.append(L"ç");
 
 		if (code==-42)
-			result.append(stringw("Ö"));
+			result.append(L"Ö");
 
 		if (code==-10)
-			result.append(stringw("ö"));
+			result.append(L"ö");
 
 		if (code==-39)
-			result.append(stringw("Ù"));
+			result.append(L"Ù");
 
 		if (code==-7)
-			result.append(stringw("ù"));
+			result.append(L"ù");
 
 	}
 	return result;
+
+#endif
 }

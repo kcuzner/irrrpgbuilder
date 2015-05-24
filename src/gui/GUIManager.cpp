@@ -398,13 +398,13 @@ void GUIManager::setWindowVisible(GUI_CUSTOM_WINDOW window, bool visible)
             mouseX = App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100;
             mouseY = App::getInstance()->getDevice()->getCursorControl()->getPosition().Y-20;
 
-			if (visible && screen.Height-200<mouseY+20) // Reposition the menu if it will be cropped by the screen clipping
+			if (visible && int(screen.Height-u32(200))<mouseY+20) // Reposition the menu if it will be cropped by the screen clipping
 				mouseY-=160;
 
 			if (visible && mouseX<50) // Reposition the menu if it will be cropped by the screen clipping
 				mouseX+=100;
 
-			if (visible && (screen.Height-200<App::getInstance()->getDevice()->getCursorControl()->getPosition().Y || (App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100)<50))
+			if ((visible && int(screen.Height-u32(200))<App::getInstance()->getDevice()->getCursorControl()->getPosition().Y || (App::getInstance()->getDevice()->getCursorControl()->getPosition().X-100)<50))
 			{
 				device->getCursorControl()->setPosition(mouseX+100,mouseY+20);
 			}
@@ -817,6 +817,7 @@ void GUIManager::loadFonts()
 	guiFont8 = guienv->getFont("../media/fonts/Arial8.xml");
 	guiFont9 = guienv->getFont("../media/fonts/Trebuchet10.xml");
 	guiFont10 = guienv->getFont("../media/fonts/Arial10.xml");
+	//guiFont10 = guienv->getFont("../media/fonts/Trebuchet10.xml");
 	guiFont12 = guienv->getFont("../media/fonts/Arial12.xml");
 	guiFont14 = guienv->getFont("../media/fonts/Arial14.xml");
 

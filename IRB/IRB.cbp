@@ -6,7 +6,8 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Unix-Debug">
+				<Option platforms="Unix;" />
 				<Option output="../bin/IrrRPG_Builder_Linux_standard_debug" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -23,18 +24,19 @@
 					<Add library="GL" />
 					<Add library="X11" />
 					<Add library="pthread" />
-					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="..\src\lua\lib\liblualib.a" />
 					<Add library="dl" />
-					<Add library="../bin/libIrrKlang.so" />
-					<Add library="../bin/ikpFlac.so" />
-					<Add library="../bin/ikpMP3.so" />
+					<Add library="..\bin\libIrrKlang.so" />
+					<Add library="..\bin\ikpFlac.so" />
+					<Add library="..\bin\ikpMP3.so" />
 					<Add directory="../irrlicht-engine/lib/Linux" />
 					<Add directory="../irrKlang/lib/Linux" />
 					<Add directory="../src/lua/lib" />
 					<Add directory="../bin" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Unix-Release">
+				<Option platforms="Unix;" />
 				<Option output="../bin/IrrRPG_Builder_Linux_standard_release" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
@@ -51,18 +53,19 @@
 					<Add library="GL" />
 					<Add library="X11" />
 					<Add library="pthread" />
-					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="..\src\lua\lib\liblualib.a" />
 					<Add library="dl" />
-					<Add library="../bin/libIrrKlang.so" />
-					<Add library="../bin/ikpFlac.so" />
-					<Add library="../bin/ikpMP3.so" />
+					<Add library="..\bin\libIrrKlang.so" />
+					<Add library="..\bin\ikpFlac.so" />
+					<Add library="..\bin\ikpMP3.so" />
 					<Add directory="../irrlicht-engine/lib/Linux" />
 					<Add directory="../irrKlang/lib/Linux" />
 					<Add directory="../src/lua/lib" />
 					<Add directory="../bin" />
 				</Linker>
 			</Target>
-			<Target title="Debug - Player">
+			<Target title="Unix-Debug - Player">
+				<Option platforms="Unix;" />
 				<Option output="../bin/IrrRPG_Builder_Linux_player_debug" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -78,18 +81,18 @@
 					<Add library="GL" />
 					<Add library="X11" />
 					<Add library="pthread" />
-					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="..\src\lua\lib\liblualib.a" />
 					<Add library="dl" />
-					<Add library="../bin/libIrrKlang.so" />
-					<Add library="../bin/ikpFlac.so" />
-					<Add library="../bin/ikpMP3.so" />
+					<Add library="..\bin\libIrrKlang.so" />
+					<Add library="..\bin\ikpFlac.so" />
+					<Add library="..\bin\ikpMP3.so" />
 					<Add directory="../irrlicht-engine/lib/Linux" />
 					<Add directory="../irrKlang/lib/Linux" />
 					<Add directory="../src/lua/lib" />
 					<Add directory="../bin" />
 				</Linker>
 			</Target>
-			<Target title="Release - Player">
+			<Target title="Unix-Release - Player">
 				<Option output="../bin/IrrRPG_Builder_Linux_player_release" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
@@ -105,11 +108,11 @@
 					<Add library="GL" />
 					<Add library="X11" />
 					<Add library="pthread" />
-					<Add library="../src/lua/lib/liblualib.a" />
+					<Add library="..\src\lua\lib\liblualib.a" />
 					<Add library="dl" />
-					<Add library="../bin/libIrrKlang.so" />
-					<Add library="../bin/ikpFlac.so" />
-					<Add library="../bin/ikpMP3.so" />
+					<Add library="..\bin\libIrrKlang.so" />
+					<Add library="..\bin\ikpFlac.so" />
+					<Add library="..\bin\ikpMP3.so" />
 					<Add directory="../irrlicht-engine/lib/Linux" />
 					<Add directory="../irrKlang/lib/Linux" />
 					<Add directory="../src/lua/lib" />

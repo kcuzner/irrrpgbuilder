@@ -690,7 +690,7 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 	if (tscale.size()>0)
 	{
 		if (atof(tscale.c_str())!=scale) //Change the scale only if it's not set the same as the default
-			setScale(atof(tscale.c_str()));
+			setScale(irr::f32(atof(tscale.c_str())));
 	}
 
 

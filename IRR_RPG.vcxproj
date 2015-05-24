@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Full_Debug|Win32">
+      <Configuration>Full_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Full_Release|Win32">
+      <Configuration>Full_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Player_Debug|Win32">
+      <Configuration>Player_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Player_Release|Win32">
+      <Configuration>Player_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9E24ABE0-9B3D-4051-BA95-F0727A6165FF}</ProjectGuid>
+    <RootNamespace>IRR_RPG</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx_Full_Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Full_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Player_Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Player_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Full_Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='wx_Full_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Full_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Player_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Player_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Full_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Full_Release|Win32'">
+    <OutDir>bin(msvc)\</OutDir>
+    <IntDir>.\obj\MSVC_Release\</IntDir>
+    <LinkIncremental />
+    <TargetName>IrrRPG_Builder_win32</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Player_Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>.\obj\MSVC_PlayerDebug\</IntDir>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Player_Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>.\obj\MSVC_PlayerRelease\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Full_Debug|Win32'">
+    <OutDir>bin(msvc)\</OutDir>
+    <IntDir>.\obj\MSVC_Debug\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>IrrRPG_Builder_win32_debug</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Full_Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>src\tinyXML;src\lua;irrKlang\include;irrlicht-engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;EDITOR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ErrorReporting>None</ErrorReporting>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>irrlicht.lib;lua5.1.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>bin(msvc)\IrrRPG_Builder_win32.exe</OutputFile>
+      <AdditionalLibraryDirectories>src\lua;irrlicht-engine\lib\Win32-visualstudio;C:\Users\Public\Projets\IRR_RPG_Builder\irrKlang\lib\Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding />
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Player_Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>src\tinyXML;src\lua;irrKlang\include;irrlicht-engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalOptions>/NODEFAULTLIB:libcmt.lib  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>irrlicht.lib;lualibd.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>bin(msvc)\IrrRPG_Builder_player_win32_debug.exe</OutputFile>
+      <AdditionalLibraryDirectories>src\lua;irrlicht-engine\lib\Win32-visualstudio;irrKlang\lib\Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Player_Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>src\tinyXML;src\lua;irrKlang\include;irrlicht-engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalOptions>
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>irrlicht.lib;lua5.1.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>bin(msvc)\IrrRPG_Builder_player_win32.exe</OutputFile>
+      <AdditionalLibraryDirectories>src\lua;irrlicht-engine\lib\Win32-visualstudio;irrKlang\lib\Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Full_Debug|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>src\tinyXML;src\lua;irrKlang\include;irrlicht-engine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;DEBUG;_CONSOLE;EDITOR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalOptions>/NODEFAULTLIB:libcmt.lib 
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>irrKlang.lib;irrlicht.lib;lualibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>bin(msvc)\IrrRPG_Builder_win32_debug.exe</OutputFile>
+      <AdditionalLibraryDirectories>irrKlang\lib\Win32-visualStudio;irrlicht-engine\lib\Win32-visualstudio;src\lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding />
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\camera\CameraSystem.cpp" />
+    <ClCompile Include="src\camera\CSceneNodeAnimatorCameraMayaIRB.cpp" />
+    <ClCompile Include="src\Editor\AppEditor.cpp" />
+    <ClCompile Include="src\Editor\GUIEditor.cpp" />
+    <ClCompile Include="src\events\EventReceiver.cpp" />
+    <ClCompile Include="src\fx\EffectsManager.cpp" />
+    <ClCompile Include="src\fx\postprocess\PostProcessManager.cpp" />
+    <ClCompile Include="src\fx\postprocess\ShaderMaterial.cpp" />
+    <ClCompile Include="src\fx\postprocess\ShaderPostProcess.cpp" />
+    <ClCompile Include="src\fx\ShaderCallBack.cpp" />
+    <ClCompile Include="src\fx\XEffects\CShaderPre.cpp" />
+    <ClCompile Include="src\fx\XEffects\EffectHandler.cpp" />
+    <ClCompile Include="src\Game\AppGame.cpp" />
+    <ClCompile Include="src\Game\CUIGame.cpp" />
+    <ClCompile Include="src\gui\CGUIEditBoxIRB.cpp" />
+    <ClCompile Include="src\gui\CGUIExtWindow.cpp" />
+    <ClCompile Include="src\gui\CGUIFileSelector.cpp" />
+    <ClCompile Include="src\gui\CGUIGfxStatus.cpp" />
+    <ClCompile Include="src\gui\GUIConfigWindow.cpp" />
+    <ClCompile Include="src\gui\GUIManager.cpp" />
+    <ClCompile Include="src\gui\NodePreview.cpp" />
+    <ClCompile Include="src\LANGManager.cpp" />
+    <ClCompile Include="src\LuaGlobalCaller.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects\combat.cpp" />
+    <ClCompile Include="src\objects\DynamicObject.cpp" />
+    <ClCompile Include="src\objects\DynamicObjectsManager.cpp" />
+    <ClCompile Include="src\objects\HealthSceneNode.cpp" />
+    <ClCompile Include="src\objects\Item.cpp" />
+    <ClCompile Include="src\objects\Player.cpp" />
+    <ClCompile Include="src\objects\Projectile.cpp" />
+    <ClCompile Include="src\objects\TemplateObject.cpp" />
+    <ClCompile Include="src\raytests.cpp" />
+    <ClCompile Include="src\sound\SoundManager.cpp" />
+    <ClCompile Include="src\terrain\TerrainManager.cpp" />
+    <ClCompile Include="src\terrain\TerrainTile.cpp" />
+    <ClCompile Include="src\terrain\Vegetation.cpp" />
+    <ClCompile Include="src\tinyXML\tinystr.cpp" />
+    <ClCompile Include="src\tinyXML\tinyxml.cpp" />
+    <ClCompile Include="src\tinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="src\tinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="src\XML_Manager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\camera\CameraSystem.h" />
+    <ClInclude Include="src\camera\CSceneNodeAnimatorCameraMayaIRB.h" />
+    <ClInclude Include="src\Editor\AppEditor.h" />
+    <ClInclude Include="src\Editor\GUIEditor.h" />
+    <ClInclude Include="src\events\EventReceiver.h" />
+    <ClInclude Include="src\fx\EffectsManager.h" />
+    <ClInclude Include="src\fx\postprocess\IPostProcess.h" />
+    <ClInclude Include="src\fx\postprocess\PostProcessManager.h" />
+    <ClInclude Include="src\fx\postprocess\ShaderMaterial.h" />
+    <ClInclude Include="src\fx\postprocess\ShaderPostProcess.h" />
+    <ClInclude Include="src\fx\ShaderCallBack.h" />
+    <ClInclude Include="src\fx\XEffects\CScreenQuad.h" />
+    <ClInclude Include="src\fx\XEffects\CShaderPre.h" />
+    <ClInclude Include="src\fx\XEffects\EffectCB.h" />
+    <ClInclude Include="src\fx\XEffects\EffectHandler.h" />
+    <ClInclude Include="src\fx\XEffects\EffectShaders.h" />
+    <ClInclude Include="src\fx\XEffects\XEffects.h" />
+    <ClInclude Include="src\Game\AppGame.h" />
+    <ClInclude Include="src\Game\GUIGame.h" />
+    <ClInclude Include="src\gui\CGUIEditBoxIRB.h" />
+    <ClInclude Include="src\gui\CGUIExtWindow.h" />
+    <ClInclude Include="src\gui\CGUIFileSelector.h" />
+    <ClInclude Include="src\gui\CGUIGfxStatus.h" />
+    <ClInclude Include="src\gui\GUIConfigWindow.h" />
+    <ClInclude Include="src\gui\GUIManager.h" />
+    <ClInclude Include="src\gui\NodePreview.h" />
+    <ClInclude Include="src\LANGManager.h" />
+    <ClInclude Include="src\LuaGlobalCaller.h" />
+    <ClInclude Include="src\objects\combat.h" />
+    <ClInclude Include="src\objects\DynamicObject.h" />
+    <ClInclude Include="src\objects\DynamicObjectsManager.h" />
+    <ClInclude Include="src\objects\HealthSceneNode.h" />
+    <ClInclude Include="src\objects\Item.h" />
+    <ClInclude Include="src\objects\Player.h" />
+    <ClInclude Include="src\objects\Projectile.h" />
+    <ClInclude Include="src\objects\projectileItem.h" />
+    <ClInclude Include="src\objects\properties.h" />
+    <ClInclude Include="src\objects\TemplateObject.h" />
+    <ClInclude Include="src\raytests.h" />
+    <ClInclude Include="src\sound\SoundManager.h" />
+    <ClInclude Include="src\terrain\TerrainManager.h" />
+    <ClInclude Include="src\terrain\TerrainTile.h" />
+    <ClInclude Include="src\terrain\Vegetation.h" />
+    <ClInclude Include="src\tinyXML\tinystr.h" />
+    <ClInclude Include="src\tinyXML\tinyxml.h" />
+    <ClInclude Include="src\XML_Manager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\RessourceIcon.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
