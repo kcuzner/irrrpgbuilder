@@ -312,7 +312,7 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 	    f32 meshScale = this->getNode()->getScale().Y;
 
 		fakeShadow=smgr->addEmptySceneNode(node);
-		if (objectType != OBJECT_TYPE_EDITOR || objectType != OBJECT_TYPE_WALKABLE)
+		if ((objectType != OBJECT_TYPE_EDITOR) || (objectType != OBJECT_TYPE_WALKABLE))
 		{
 			// Editor objects don't have the fake shadow.
 			//node->setDebugDataVisible(EDS_BBOX | EDS_SKELETON);
@@ -1932,7 +1932,7 @@ void DynamicObject::update()
 		//
 		// Check and update the walking of the object
 		//if ((currentAnimation==OBJECT_ANIMATION_WALK || currentAnimation==OBJECT_ANIMATION_RUN) && !culled)
-		if ((currentAnimation==OBJECT_ANIMATION_WALK || OBJECT_ANIMATION_RUN) && !culled)
+		if (((currentAnimation==OBJECT_ANIMATION_WALK) || OBJECT_ANIMATION_RUN) && !culled)
 		{ // timerLUA=17
 		
 			updateWalk();
@@ -2177,7 +2177,7 @@ void DynamicObject::updateWalk()
 		// This will try to reposition the NPC to get to a better position because its too near of it.
 		} else if ((this->getPosition().getDistanceFrom(walkTarget) < objectsize*0.75f) &&  (this->getPosition().getDistanceFrom(walkTarget) > 1 ) && (this->getLife()!=0))
 		{
-			if (objectType==OBJECT_TYPE_NPC && objectType==OBJECT_TYPE_PLAYER)
+			if ((objectType==OBJECT_TYPE_NPC) && (objectType==OBJECT_TYPE_PLAYER))
 			{
 #ifdef DEBUG
 				printf("Reposition character named: %s \n",getName().c_str());

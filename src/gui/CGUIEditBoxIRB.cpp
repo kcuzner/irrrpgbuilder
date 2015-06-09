@@ -111,7 +111,9 @@ CGUIEditBoxIRB::CGUIEditBoxIRB(const wchar_t* text, bool border, bool lines,
 	}
 //irr::core::rect<s32> myRect(s32 x, s32 y, s32 w, s32 h);
 
-	SelectionTextColor=skin->getColor(EGDC_HIGH_LIGHT_TEXT);
+	if (skin)
+		SelectionTextColor=skin->getColor(EGDC_HIGH_LIGHT_TEXT);
+	
 	ScrollbarH = Environment->addScrollBar(true,this->myRect(2,FrameRect.getHeight()-20,FrameRect.getWidth()-18,20),this,-1);
 	Scrollbar = Environment->addScrollBar(false,this->myRect(FrameRect.getWidth()-15,2,20,FrameRect.getHeight()-22),this,-1);
 	LineToggle = Environment->addButton(this->myRect(FrameRect.getWidth()-15,FrameRect.getHeight()-20,20,20),this,-1,L"#",menustring[BT_LINECOUNT].c_str());
@@ -331,7 +333,7 @@ bool CGUIEditBoxIRB::isLineCountDisplayed()
 }
 void CGUIEditBoxIRB::setElementText(u32 index, core::stringw text)
 {
-	if (index<GUI_COUNT+1)
+	if (index<GUI_COUNT+1 && index>0)
 		menustring[index]=text.c_str();
 
 	// If the Element is the tooltip of the toggle of linecount, set it at the same time.

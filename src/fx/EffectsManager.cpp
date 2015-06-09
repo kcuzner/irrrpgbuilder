@@ -134,7 +134,7 @@ void EffectsManager::setTimeOfDay(int newTime)
 {
     newTime = newTime%24;
 
-    int r,g,b;
+    int r=0,g=0,b=0;
 
     switch(newTime)
     {

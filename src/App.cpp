@@ -2664,6 +2664,7 @@ void App::stopGame()
 {
 	if (app_state>APP_STATE_CONTROL)
 	{
+		EffectsManager::getInstance()->SetPostFX("none"); //Revert post fx to none.
 		EffectsManager::getInstance()->turnOffSkydome();
 		DynamicObjectsManager::getInstance()->objectsToIdle();
 		LuaGlobalCaller::getInstance()->restoreGlobalParams();
@@ -2814,8 +2815,10 @@ void App::update()
 	}
 
 	// Tries to do an post FX
-	if (app_state > APP_STATE_CONTROL)
+	//if (app_state > APP_STATE_CONTROL)
 		EffectsManager::getInstance()->update();
+
+		
 
 	guienv->drawAll();
 
