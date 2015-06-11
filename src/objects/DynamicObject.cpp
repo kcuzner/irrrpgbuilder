@@ -574,6 +574,9 @@ void DynamicObject::walkTo(vector3df targetPos)
 		height = TerrainManager::getInstance()->getHeightAt(pos);
 	}
 
+	if (height == -1000.0f && height2==-1000.0f) //Test failed again: Stop the movement
+		collided = true;
+
 	//Sometimes the ray could miss (not the terrain, but object tiles), if that happen, it will take the object reference point
 	if (height=-1000.0f && height2>-1000.0f)
 		height=height2;

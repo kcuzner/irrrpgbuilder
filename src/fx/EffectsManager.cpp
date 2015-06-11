@@ -332,6 +332,7 @@ void EffectsManager::DOFclearObjects()
 
 void EffectsManager::SetPostFX(stringc fxname)
 {
+	fxname.make_lower();
 	if (fxname=="invert")
 	{
 		postEffect = EPPE_INVERT;
@@ -344,6 +345,13 @@ void EffectsManager::SetPostFX(stringc fxname)
 		postProcessMode = 1;
 		return;
 	} else
+	if (fxname == "grayscale")
+	{
+		postEffect = EPPE_GRAY_SCALE;
+		postProcessMode = 1;
+		return;
+	}
+	else
 	if (fxname=="simple_bloom")
 	{
 		postEffect = EPPE_SIMPLE_BLOOM;
