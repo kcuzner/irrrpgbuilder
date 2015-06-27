@@ -12,6 +12,7 @@
 #include "objects/Projectile.h" //Projectile class manager
 #include "LuaGlobalCaller.h" //Lua Global caller functions (basic functions, objects state before/after play)
 #include "objects/combat.h" //For updating the combat manager (damage calculation and DOT updates)
+#include "Editor/AppEditor.h" //Functions for APP mostly used in editor mode.
 
 
 #include "sound/SoundManager.h"
@@ -72,6 +73,8 @@ App::App()
 	currentsnapping=64.0f; //set the current snapping distance;
 	path = "";
 	xeffectenabler=false;
+	//Init file functions
+	editorfunc = new AppEditor();
 }
 
 App::~App()
@@ -80,6 +83,9 @@ App::~App()
 
 	// Remove the raytester class from memory
 	delete raytester;
+	if (editorfunc)
+		delete editorfunc;
+
 	SoundManager::getInstance()->stopEngine();
 	device->drop();
 	// exit(0);
@@ -533,6 +539,9 @@ void App::eventGuiButton(s32 id)
 	IGUIButton* button2 = NULL;
 	IGUIButton* button3 = NULL;
 
+	// Containing the project window
+	IGUIWindow* prj = NULL;
+
 	MousePick the=getMousePosition3D(); //Will store the last mousepick when the gui button was pressed
 
 	IGUIListBox* box = NULL; // Combo box pointer
@@ -564,6 +573,13 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
+		prj = (IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_NEWPROJECT, true);
+		if (prj)
+		{
+			guienv->setFocus(NULL);
+			prj->remove();
+		}
+
 		this->loadProject();
 		this->setAppState(APP_EDIT_LOOK);
 		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
@@ -914,6 +930,13 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_CLOSE_PROGRAM:
+		prj = (IGUIWindow*)(guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_NEWPROJECT,true));
+		if (prj)
+		{
+			guienv->setFocus(NULL);
+			prj->remove();
+		}
+
 		this->shutdown();
 		break;
 
@@ -1891,8 +1914,9 @@ void App::eventMousePressed(s32 mouse)
 
 		//Check if the combo box are in focus and prevent the mouse click to add anything
 		//The GUI that send the problem is the LISTBOX when it is clicked. It send an event.
-		elem = device->getGUIEnvironment()->getFocus();
-		if (elem)
+		//elem = device->getGUIEnvironment()->getFocus();
+		elem = NULL;
+		if (elem && app_state != APP_EDIT_PRJ)
 		{
 			id = elem->getID();
 
@@ -2378,7 +2402,28 @@ bool App::loadConfig()
 
 #ifdef EDITOR
 	// File to load if it's the editor
-	TiXmlDocument doc("config.xml");
+	core::stringc path=editorfunc->getAppDataPath().c_str();
+	path.append("/config.xml");
+	
+	bool result;
+	core::stringc pathfinal="";
+	
+	result = editorfunc->checkPath(path.c_str());
+	printf(">>> Get the configuration at this place: %s\n", path.c_str());
+	if (result)
+	{
+		printf(">>>Configuration file found at the proper path!!!\n");
+		pathfinal = path;
+	}
+	else
+	{
+		printf(">>>Failed to get the configuration!!!\n");
+		editorfunc->copyConfiguration(); //Copy the config from the application path (distribution) to the appdata path.
+		pathfinal = "config.xml";
+	}
+	
+	TiXmlDocument doc(pathfinal.c_str());
+	
 #else
 	// File to load if it's the player build
 	TiXmlDocument doc("config.xml");
@@ -2394,13 +2439,13 @@ bool App::loadConfig()
 
 	if ( root )
 	{
-		if( atof(root->Attribute("version"))!=APP_VERSION )
+		if (atof(root->Attribute("version")) * 100 != APP_VERSION )
 		{
 #ifdef DEBUG
 			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
 #endif
 
-			return false;
+			//return false;
 		}
 
 		TiXmlElement* resXML = root->FirstChildElement( "screen" );
@@ -2590,6 +2635,7 @@ void App::setupDevice(IrrlichtDevice* IRRdevice)
 	LANGManager::getInstance()->setDefaultLanguage(language);
 
 	path = device->getFileSystem()->getWorkingDirectory();
+	projectpath = "../projects";
 	quickUpdate();
 
 
@@ -2864,7 +2910,8 @@ void App::run()
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
 	//this->setAppState(APP_EDIT_LOOK); // old default state
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	//this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	app_state = APP_EDIT_PRJ;
 	GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
 
 	// Update the info panel with the current "active object"
@@ -2936,6 +2983,8 @@ void App::run()
 				str += fps;
 			}
 
+			str += " Project:";
+			str += projectname;
 			//GUIManager::getInstance()->setStatusText(str.c_str());
 			device->setWindowCaption(str.c_str());
 			lastFPS = fps;
@@ -3394,43 +3443,31 @@ void App::cleanWorkspace()
 
 void App::createNewProject()
 {
-
+	
 	// Initialize the camera (2) is maya type camera for editing
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 
 	APP_STATE old_state = getAppState();
-	setAppState(APP_EDIT_WAIT_GUI);
+	app_state=APP_EDIT_PRJ;
 
-	//stringc name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
-	//GUIManager::getInstance()->flush();
+	GUIManager::getInstance()->createNewProjectGUI();
 
-	stringc name = "newproject"; //This will hide the question
-
-	/*
-	while(name == stringc(""))
-	{
-		name = GUIManager::getInstance()->showInputQuestion(stringc(LANGManager::getInstance()->getText("msg_new_project_name")).c_str());
-		GUIManager::getInstance()->flush();
-	}*/
+	/*stringc name = "newproject"; //This will hide the question
 
 	name += ".XML";
 
 	stringc filename = "../projects/";
-	filename += name;
+	filename += name;*/
 
 	this->cleanWorkspace();
 
 	CameraSystem::getInstance();
 
-	//TerrainManager::getInstance()->createEmptySegment(vector3df(0,0,0));
 	TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
-
-	//smgr->setAmbientLight(SColorf(0.5,0.5,0.5,0.5));
-	//driver->setFog(SColor(255,255,255,255),EFT_FOG_LINEAR,0,12000);
 
 	Player::getInstance();
 
-	this->currentProjectName = name;
+	//this->currentProjectName = name;
 
 	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0,1000,-1000));
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0,0,0));
@@ -3438,8 +3475,6 @@ void App::createNewProject()
 
 	Player::getInstance()->getNode()->setPosition(vector3df(0.0f,0.0f,0.0f));
 	Player::getInstance()->getNode()->setRotation(vector3df(0.0f,0.0f,0.0f));
-
-	//this->saveProject();
 
 	setAppState(old_state);
 }
@@ -3632,6 +3667,8 @@ void App::loadProjectFile(bool value)
 
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
+
+				projectname = file;
 
 				//Recreate the empty tile matrix so the user can expand his loaded map.
 				TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
@@ -3840,13 +3877,13 @@ bool App::loadProjectFromXML(stringc filename)
 
 	if ( root )
 	{
-		if( atof(root->Attribute("version"))!=APP_VERSION )
+		if( atof(root->Attribute("version"))*100!=float(APP_VERSION) )
 		{
 #ifdef DEBUG
 			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
 #endif
 
-			return false;
+			//return false;
 		}
 
 		TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
@@ -3941,7 +3978,6 @@ void App::initialize()
 	GUIManager::getInstance()->setupEditorGUI();
 #endif
 
-
 	// Set the ambient light
 	//smgr->setAmbientLight(SColorf(0.80f,0.85f,1.0f,1.0f));
 	  smgr->setAmbientLight(SColorf(0.5f,0.60f,0.75f,1.0f));
@@ -3998,6 +4034,15 @@ void App::initialize()
 		this->setRPGView();
 	if (defaultview==VIEW_FPS)
 		this->setFPSView();
+
+	//projectname = L"New IRB Project"; //Empty name for the project.
+	
+	projectpath = editorfunc->getUserDocumentsPath() + L"/IRB Projects/";
+	bool result = device->getFileSystem()->existFile(projectpath.c_str());
+	if (result)
+		projectname = L"Found!";
+	createNewProject();
+	
 
 
 }

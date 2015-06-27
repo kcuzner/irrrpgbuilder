@@ -507,7 +507,7 @@ void GUIConfigWindow::saveNewSeetings()
     doc.LinkEndChild(decl);
 
     TiXmlElement* irb_cfg = new TiXmlElement( "IrrRPG_Builder_Config" );
-	irb_cfg->SetAttribute("version","1.0");
+	irb_cfg->SetAttribute("version","0.3");
 
     TiXmlElement* screenXML = new TiXmlElement("screen");
     screenXML->SetAttribute("screen_width",vModes[resolutionList->getSelected()].X);
@@ -576,12 +576,12 @@ void GUIConfigWindow::saveNewSeetings()
 	mapXML->SetAttribute("logo", core::stringc(ebLogoImage->getText()).c_str() );
 	irb_cfg->LinkEndChild(mapXML);
 
-
-    
-
     doc.LinkEndChild(irb_cfg);
+
+	core::stringc path = App::getInstance()->getAppDataPath().c_str();
+	path.append("/config.xml");
 #ifdef EDITOR
-    doc.SaveFile("config.xml");
+    doc.SaveFile(path.c_str());
 #else
 	doc.SaveFile("config.xml");
 #endif

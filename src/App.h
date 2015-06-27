@@ -11,6 +11,7 @@
 #include "gui/CGUIFileSelector.h"
 #include "raytests.h"
 #include "objects/DynamicObject.h"
+#include "Editor/AppEditor.h" // editor stuff for the app including files functions for projects.
 
 using namespace irr;
 using namespace core;
@@ -19,7 +20,7 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-static const float APP_VERSION = 1.0;
+static const int APP_VERSION = 30;
 
 //#include "LuaGlobalCaller.h"
 //#include "tinyXML/tinyxml.h"
@@ -48,6 +49,7 @@ class App
 			APP_EDIT_TERRAIN_CUSTOM_SEGMENTS = 5,
 
 			APP_EDIT_TERRAIN_PAINT_VEGETATION = 6,
+			APP_EDIT_PRJ,
 
 			APP_EDIT_DYNAMIC_OBJECTS_MODE = 20,
 			APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE = 21,
@@ -215,6 +217,11 @@ class App
 		// Utility function to get a keycode from a string
 		irr::EKEY_CODE getKeycode(core::stringc text);
 
+		//Get the paths
+		inline stringw getAppDataPath() { return editorfunc->getAppDataPath(); }
+		inline stringw getAppPath() { return editorfunc->getApplicationPath(); }
+		inline stringw getProjectPath() { return editorfunc->getProjectsPath(); }
+
 		// GLOBAL VARIABLES
 
 		//temporary made public to determine if the config is fullscreen
@@ -234,6 +241,8 @@ class App
 
 		core::stringc filename;
 		core::stringc path; //Default application path.
+		core::stringc projectpath; //Default projets folder
+		core::stringw projectname; //current project name
 
 		core::stringc tileformat; // Get the default save tile format from the configuration
 		core::stringc logoimage; //Get the logo/Title information from the configuration
@@ -338,6 +347,8 @@ class App
 		bool gamestarted; //To know if the application has been started. (player app)
 
 		VIEW_TYPE defaultview;
+
+		AppEditor* editorfunc; //Editor function pointer.
 		
 
 };

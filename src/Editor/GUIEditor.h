@@ -11,6 +11,7 @@ public:
 	static GUIEditor* getInstance();
 
 	void setupEditorGUI();
+	void createNewProjectGUI();
 	void createDisplayOptionsGUI();
 	void createMainToolbar();
 	void createMainTabs();

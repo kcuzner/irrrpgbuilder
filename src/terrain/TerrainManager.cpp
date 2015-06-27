@@ -522,7 +522,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 	//Create only a folder if there are terrain tiles in the map
 	if (terrainMap.size()>0)
 	{
-		int status;
+		int status=0;
 #ifdef WIN32  //For windows, create a folder
 		status = _mkdir(filename.c_str());
 #endif

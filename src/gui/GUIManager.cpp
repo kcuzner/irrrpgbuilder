@@ -97,6 +97,11 @@ void GUIManager::setupEditorGUI()
 {
 	GUIEditor::getInstance()->setupEditorGUI();
 }
+
+void GUIManager::createNewProjectGUI()
+{
+	GUIEditor::getInstance()->createNewProjectGUI();
+}
 #endif
 
 void GUIManager::setupGameplayGUI()

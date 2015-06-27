@@ -207,6 +207,60 @@ void GUIEditor::setupEditorGUI()
 
 }
 
+
+void GUIEditor::createNewProjectGUI()
+{
+	//Create a new windows to create projects
+	core::dimension2d<u32> center = screensize / 2;
+	IGUIWindow* newproj = guienv->addWindow(rect<s32>(center.Width - 400, center.Height - 200, center.Width + 400, center.Height + 200), true, L"Create a new project", 0, GUIManager::GCW_NEWPROJECT);
+	newproj->getCloseButton()->setVisible(false);
+	newproj->setMinSize(core::dimension2du(140, 70));
+
+	u32 posx = 40; u32 posy = 40;
+	IGUIStaticText * projectNameText = guienv->addStaticText(L"Project name",
+		core::rect<s32>(posx, posy, 250, 76), false, true, newproj, -1);
+	projectNameText->setOverrideColor(video::SColor(255, 20, 20, 20));
+	projectNameText->setOverrideFont(GUIManager::getInstance()->guiFont10);
+
+	posy += 20;
+	guienv->addEditBox(App::getInstance()->projectname.c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
+
+	posy += 30;
+	IGUIStaticText * projectPathText = guienv->addStaticText(L"Project path",
+		core::rect<s32>(posx, posy, 250, posy+12), false, true, newproj, -1);
+	projectPathText->setOverrideColor(video::SColor(255, 20, 20, 20));
+	projectPathText->setOverrideFont(GUIManager::getInstance()->guiFont10);
+	posy += 20;
+	//App::getInstance()->path + App::getInstance()->projectpath;
+	
+	core::stringw projpath = (core::stringw)device->getFileSystem()->getAbsolutePath(App::getInstance()->projectpath.c_str());
+	guienv->addEditBox(projpath.c_str(), rect<s32>(posx, posy, 700, posy + 20), true, newproj, -1);
+
+	posy += 50;
+	IGUIStaticText * firstMapText = guienv->addStaticText(L"First map name",
+		core::rect<s32>(posx, posy, 250, posy + 12), false, true, newproj, -1);
+	firstMapText->setOverrideColor(video::SColor(255, 20, 20, 20));
+	firstMapText->setOverrideFont(GUIManager::getInstance()->guiFont10);
+	posy += 20;
+	guienv->addEditBox(L"", rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
+
+	posy += 30;
+	IGUIStaticText * mapDescriptionText = guienv->addStaticText(L"Description",
+		core::rect<s32>(posx, posy, 250, posy + 12), false, true, newproj, -1);
+	mapDescriptionText->setOverrideColor(video::SColor(255, 20, 20, 20));
+	mapDescriptionText->setOverrideFont(GUIManager::getInstance()->guiFont10);
+	posy += 20;
+	guienv->addEditBox(L"", rect<s32>(posx, posy, 500, posy + 80), true, newproj, -1);
+
+
+	//Buttons
+	IGUIButton* loadproj = guienv->addButton(rect<s32>(40, 400 - 60, 260, 400 - 30), newproj, GUIManager::BT_ID_LOAD_PROJECT, L"Load existing project");
+	IGUIButton* createproj = guienv->addButton(rect<s32>(260+30, 400 - 60, 260+250, 400 - 30), newproj, -1, L"Create a new project");
+	IGUIButton* quit = guienv->addButton(rect<s32>(510 + 30, 400 - 60, 510 + 250, 400 - 30), newproj, GUIManager::BT_ID_CLOSE_PROGRAM, L"Quit");
+
+
+}
+
 void GUIEditor::createDisplayOptionsGUI()
 {
 

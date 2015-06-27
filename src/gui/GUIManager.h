@@ -192,6 +192,7 @@ class GUIManager
 		GCW_TERRAIN_PAINT_VEGETATION,
 		GCW_DIALOG,
 		GCW_CONSOLE,
+		GCW_NEWPROJECT,
 		GCW_DYNAMIC_OBJECT_INFO,  // this is a pane not a window
 		GCW_CUSTOM_SEGMENT_CHOOSER,
 		GCW_VIEW_MENU,
@@ -262,6 +263,7 @@ class GUIManager
 
 #ifdef EDITOR
 		void setupEditorGUI();
+		void createNewProjectGUI();
 		void setEditBoxText(GUI_ID id, stringw text);
 		void expandPanel(GUI_CUSTOM_WINDOW id);
 		void contractPanel(GUI_ID id);
