@@ -78,7 +78,7 @@ AppEditor::~AppEditor()
 {
 }
 
-
+//Check if the path exist. Can be used to check also for files.
 bool AppEditor::checkPath(stringc path)
 {
 	IrrlichtDevice * tempdevice = createDevice(EDT_NULL, dimension2d<u32>(640, 480), 16, false, false, false, 0);
@@ -88,8 +88,8 @@ bool AppEditor::checkPath(stringc path)
 	tempdevice->drop();
 	return result;
 }
-// Load the actual settings to display into the GUI
-// Loading is also done in APP that set the application
+// Load the reference configuration XML 
+// And write the information back in the proper path
 void AppEditor::copyConfiguration()
 {
 
@@ -195,9 +195,7 @@ void AppEditor::copyConfiguration()
 	}
 	
 
-	//core::stringc ebLogoImage->setText(stringw(App::getInstance()->logoimage).c_str()); //Get the loaded valued from the APP list
-	
-	// Save back the data in the other path
+	// >>>>>>> Save back the data in the other path
 	//TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
 
@@ -247,16 +245,9 @@ void AppEditor::copyConfiguration()
 	mapXML->SetAttribute("logo", logo.c_str());
 	irb_cfg->LinkEndChild(mapXML);
 
-
-
-
 	doc.LinkEndChild(irb_cfg);
 
 	core::stringc path = pathappdata.append(L"/config.xml").c_str();
-#ifdef EDITOR
 	doc.SaveFile(path.c_str());
-#else
-	doc.SaveFile(path.c_str());
-#endif
 
 }

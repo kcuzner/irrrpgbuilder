@@ -222,8 +222,14 @@ void GUIEditor::createNewProjectGUI()
 	projectNameText->setOverrideColor(video::SColor(255, 20, 20, 20));
 	projectNameText->setOverrideFont(GUIManager::getInstance()->guiFont10);
 
+	//New list for current project in the folder
+	guienv->addStaticText(L"", core::rect<s32>(posx + 500, posy, posx + 740, posy + 290), true, false, newproj, -1, true);
+	guienv->addStaticText(L"Current projects", core::rect<s32>(posx + 510, posy+10, posx + 700, posy + 30), false, false, newproj, -1);
+	projectlist = guienv->addListBox(core::rect<s32>(posx + 510, posy+30, posx + 730, posy + 240), newproj, -1, true);
+	IGUIButton* loadproj = guienv->addButton(rect<s32>(posx+510, posy+250, posx+ 730, posy+280), newproj, GUIManager::BT_ID_LOAD_PROJECT, L"Load existing project");
+
 	posy += 20;
-	guienv->addEditBox(App::getInstance()->projectname.c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
+	guienv->addEditBox(App::getInstance()->getCurrentProjectName().c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, GUIManager::TXT_ID_PROJECT_NAME);
 
 	posy += 30;
 	IGUIStaticText * projectPathText = guienv->addStaticText(L"Project path",
@@ -232,17 +238,18 @@ void GUIEditor::createNewProjectGUI()
 	projectPathText->setOverrideFont(GUIManager::getInstance()->guiFont10);
 	posy += 20;
 	//App::getInstance()->path + App::getInstance()->projectpath;
-	
 	core::stringw projpath = (core::stringw)device->getFileSystem()->getAbsolutePath(App::getInstance()->projectpath.c_str());
-	guienv->addEditBox(projpath.c_str(), rect<s32>(posx, posy, 700, posy + 20), true, newproj, -1);
+	guienv->addStaticText(projpath.c_str(), rect<s32>(posx, posy, 500, posy + 20), true, false, newproj, -1, true);
+	//guienv->addEditBox(projpath.c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
 
 	posy += 50;
+	
 	IGUIStaticText * firstMapText = guienv->addStaticText(L"First map name",
 		core::rect<s32>(posx, posy, 250, posy + 12), false, true, newproj, -1);
 	firstMapText->setOverrideColor(video::SColor(255, 20, 20, 20));
 	firstMapText->setOverrideFont(GUIManager::getInstance()->guiFont10);
 	posy += 20;
-	guienv->addEditBox(L"", rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
+	guienv->addEditBox(App::getInstance()->getCurrentMapName().c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, GUIManager::TXT_ID_FIRST_MAP_NAME);
 
 	posy += 30;
 	IGUIStaticText * mapDescriptionText = guienv->addStaticText(L"Description",
@@ -250,13 +257,18 @@ void GUIEditor::createNewProjectGUI()
 	mapDescriptionText->setOverrideColor(video::SColor(255, 20, 20, 20));
 	mapDescriptionText->setOverrideFont(GUIManager::getInstance()->guiFont10);
 	posy += 20;
-	guienv->addEditBox(L"", rect<s32>(posx, posy, 500, posy + 80), true, newproj, -1);
-
+	guienv->addEditBox(App::getInstance()->getCurrentMapDesc().c_str(), rect<s32>(posx, posy, 500, posy + 80), true, newproj, GUIManager::TXT_ID_FIRST_MAP_DESC);
 
 	//Buttons
-	IGUIButton* loadproj = guienv->addButton(rect<s32>(40, 400 - 60, 260, 400 - 30), newproj, GUIManager::BT_ID_LOAD_PROJECT, L"Load existing project");
-	IGUIButton* createproj = guienv->addButton(rect<s32>(260+30, 400 - 60, 260+250, 400 - 30), newproj, -1, L"Create a new project");
-	IGUIButton* quit = guienv->addButton(rect<s32>(510 + 30, 400 - 60, 510 + 250, 400 - 30), newproj, GUIManager::BT_ID_CLOSE_PROGRAM, L"Quit");
+	IGUIButton* quit = NULL;
+	IGUIButton* cancel = NULL;
+	
+	IGUIButton* createproj = guienv->addButton(rect<s32>(30, 400 - 60, 250, 400 - 30), newproj, GUIManager::BT_ID_CREATE_PROJECT, L"Create a new project");
+	quit = guienv->addButton(rect<s32>(260 + 30, 400 - 60, 260 + 250, 400 - 30), newproj, GUIManager::BT_ID_CLOSE_PROGRAM, L"Quit");
+
+	buildProjectList();
+	if (projectlist->getItemCount()==0)
+		guienv->addStaticText(L"No projects", core::rect<s32>(posx + 515, 40 + 30, posx + 695, 40 + 60), false, false, newproj, -1);
 
 
 }
@@ -2674,6 +2686,30 @@ void GUIEditor::buildSceneObjectList(DynamicObject::TYPE objtype)
 		listbox->setSelected(0);
 	}
 	
+}
+
+void GUIEditor::buildProjectList()
+{
+	core::stringw test2 = L"";
+	core::stringw projpath = (core::stringw)device->getFileSystem()->getAbsolutePath(App::getInstance()->projectpath.c_str());
+	device->getFileSystem()->changeWorkingDirectoryTo(core::stringc(projpath).c_str());
+	io::IFileList * list = App::getInstance()->getDevice()->getFileSystem()->createFileList();
+	list->sort();
+	for (u32 i = 0; i < list->getFileCount(); ++i)
+	{
+		
+		test2 = list->getFileName(i);
+		
+		// We just want a list of directories and those matching the file filter
+		if (list->isDirectory(i))
+		{
+			if (test2 != L"." && test2 != L"..")
+				projectlist->addItem(test2.c_str());
+		}
+	}
+	App::getInstance()->getDevice()->getFileSystem()->changeWorkingDirectoryTo(App::getInstance()->getAppPath().c_str());
+	if (projectlist->getItemCount()>0)
+		projectlist->setSelected(projectlist->getListItem(0));
 }
 
 // Load a script template list for the script editor GUI

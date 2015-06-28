@@ -1039,8 +1039,9 @@ IGUIElement* GUIManager::getGUIElement(u32 id)
 		this->setConsoleText(stringw(errortext),SColor(255,240,64,64));
 #ifdef DEBUG
 		printf("%s\n",errortext.c_str());
+		return NULL;
 #endif
 	}
 #endif
-	return guienv->getRootGUIElement()->getElementFromId(id, true);
+	return elem;
 }

@@ -40,6 +40,7 @@ public:
 	void updateCurrentCategory(u32 type);
 	void UpdateCollections(u32 type);
 	void buildSceneObjectList(DynamicObject::TYPE objtype);
+	void buildProjectList();
 
 	void getInfoAboutModel(u32 type);
 
@@ -89,6 +90,8 @@ private:
 	ITexture* helpVegetationPaint;
 
 	GUIConfigWindow* configWindow;
+
+	IGUIListBox* projectlist;
 
 	position2di mainToolbarPos;
 

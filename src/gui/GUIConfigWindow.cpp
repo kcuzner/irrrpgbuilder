@@ -345,8 +345,16 @@ void GUIConfigWindow::populateResolutionList()
 // Loading is also done in APP that set the application
 void GUIConfigWindow::loadActualSeetings()
 {
+	core::stringc path = App::getInstance()->getAppDataPath().c_str();
+	path.append("/config.xml");
+	bool result = device->getFileSystem()->existFile(path.c_str());
+	stringc configfile = "";
+	if (result)
+		configfile = path;
+	else
+		configfile = "config.xml";
 
-    TiXmlDocument doc("config.xml");
+    TiXmlDocument doc(configfile.c_str());
 
 	if (!doc.LoadFile()) return;
 

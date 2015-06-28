@@ -74,6 +74,9 @@ App::App()
 	path = "";
 	xeffectenabler=false;
 	//Init file functions
+	currentProjectName = "";
+	currentMapName = "";
+	currentMapDescription = "";
 	editorfunc = new AppEditor();
 }
 
@@ -530,6 +533,7 @@ void App::eventGuiButton(s32 id)
 	DynamicObject* selectedObject=NULL;
 #endif
 
+	bool result = false;
 	oldcampos = vector3df(0,0,0);
 	vector3df oldrotation = vector3df(0,0,0);
 	core::stringw oldscript = L"";
@@ -551,25 +555,29 @@ void App::eventGuiButton(s32 id)
 	switch (id)
 	{
 
-	case GUIManager::BT_ID_NEW_PROJECT:
-
-		lastScannedPick.pickedNode=NULL;
-		if (selectedNode)
+	case GUIManager::BT_ID_CREATE_PROJECT:
+		result=createProjectData();
+		if (result)
 		{
-			selectedNode->setDebugDataVisible(0);
-			selectedNode=NULL;
+			prj = (IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_NEWPROJECT, true);
+			if (prj)
+			{
+				guienv->setFocus(NULL);
+				prj->remove();
+				this->createNewProject();
+			}
 		}
-		GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,false);
+		else
+		{
+			device->getGUIEnvironment()->addMessageBox(L"", stringw(L"You must enter the name for the project AND the first map!").c_str(), true);
+		}
 
-		this->createNewProject();
+		break;
 
-		// Put back the player object in the list of the dynamic objects
-		DynamicObjectsManager::getInstance()->setPlayer();
 
-		this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
-		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
-
+	case GUIManager::BT_ID_NEW_PROJECT:
+		app_state = APP_EDIT_PRJ;
+		GUIManager::getInstance()->createNewProjectGUI();
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
@@ -2983,8 +2991,10 @@ void App::run()
 				str += fps;
 			}
 
-			str += " Project:";
-			str += projectname;
+			str += " PROJECT: ";
+			str += currentProjectName;
+			str += " MAP: ";
+			str += currentMapName;
 			//GUIManager::getInstance()->setStatusText(str.c_str());
 			device->setWindowCaption(str.c_str());
 			lastFPS = fps;
@@ -3441,24 +3451,54 @@ void App::cleanWorkspace()
 	scriptGlobal="";
 }
 
+bool App::createProjectData()
+{
+	IGUIEditBox * box1 = NULL;
+	IGUIEditBox * box2 = NULL;
+	IGUIEditBox * box3 = NULL;
+	
+	IGUIElement* elem = GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_PROJECT_NAME);
+	if (elem)
+		box1 = (IGUIEditBox*)elem;
+	elem = GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_FIRST_MAP_NAME);
+	if (elem)
+		box2 = (IGUIEditBox*)elem;
+	elem = GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_FIRST_MAP_DESC);
+	if (elem)
+		box3 = (IGUIEditBox*)elem;
+
+	core::stringw line1 = core::stringw(box1->getText());
+	core::stringw line2 = core::stringw(box2->getText());
+	core::stringw line3 = core::stringw(box3->getText());
+
+	currentProjectName = line1;
+	currentMapName = line2;
+	currentMapDescription = line3;
+
+	//Check if the user has entered all the proper informations.
+	printf("     >>> Calling project data!!\n   || %s\n|| %s\n|| %s\n", stringc(box1->getText()).c_str(), stringc(box2->getText()).c_str(), stringc(box3->getText()).c_str());
+	if (line1.size() > 0 && line2.size() > 0)
+		return true;
+	else
+		return false;
+}
+
 void App::createNewProject()
 {
 	
+	lastScannedPick.pickedNode = NULL;
+	if (selectedNode)
+	{
+		selectedNode->setDebugDataVisible(0);
+		selectedNode = NULL;
+	}
+	GUIManager::getInstance()->setWindowVisible(GUIManager::GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU, false);
+
 	// Initialize the camera (2) is maya type camera for editing
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 
 	APP_STATE old_state = getAppState();
-	app_state=APP_EDIT_PRJ;
-
-	GUIManager::getInstance()->createNewProjectGUI();
-
-	/*stringc name = "newproject"; //This will hide the question
-
-	name += ".XML";
-
-	stringc filename = "../projects/";
-	filename += name;*/
-
+		
 	this->cleanWorkspace();
 
 	CameraSystem::getInstance();
@@ -3467,8 +3507,6 @@ void App::createNewProject()
 
 	Player::getInstance();
 
-	//this->currentProjectName = name;
-
 	CameraSystem::getInstance()->editCamMaya->setPosition(vector3df(0,1000,-1000));
 	CameraSystem::getInstance()->editCamMaya->setTarget(vector3df(0,0,0));
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
@@ -3476,7 +3514,12 @@ void App::createNewProject()
 	Player::getInstance()->getNode()->setPosition(vector3df(0.0f,0.0f,0.0f));
 	Player::getInstance()->getNode()->setRotation(vector3df(0.0f,0.0f,0.0f));
 
-	setAppState(old_state);
+	// Put back the player object in the list of the dynamic objects
+	DynamicObjectsManager::getInstance()->setPlayer();
+
+	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE, false);
+
 }
 
 void App::loadProject(DIALOG_FUNCTION function)
@@ -3668,7 +3711,7 @@ void App::loadProjectFile(bool value)
 				selector->setVisible(false);
 				this->loadProjectFromXML(file);
 
-				projectname = file;
+				//currentProjectName = file;
 
 				//Recreate the empty tile matrix so the user can expand his loaded map.
 				TerrainManager::getInstance()->createEmptySegmentMatrix(50,50);
@@ -4022,7 +4065,7 @@ void App::initialize()
 	driver->setMinHardwareBufferVertexCount(0);
 	core::stringc vendor = driver->getVendorInfo();
 	printf ("Here is the vendor information: %s\n",vendor.c_str());
-	this->currentProjectName = "irb_temp_project";
+	this->currentProjectName = "";
 
 	Projectile::getInstance(); //Instanciate the projectile class
 
@@ -4037,14 +4080,11 @@ void App::initialize()
 
 	//projectname = L"New IRB Project"; //Empty name for the project.
 	
-	projectpath = editorfunc->getUserDocumentsPath() + L"/IRB Projects/";
+	projectpath = editorfunc->getUserDocumentsPath()+"/";
 	bool result = device->getFileSystem()->existFile(projectpath.c_str());
-	if (result)
-		projectname = L"Found!";
-	createNewProject();
 	
-
-
+	app_state = APP_EDIT_PRJ;
+	GUIManager::getInstance()->createNewProjectGUI();
 }
 
 void App::shutdown()

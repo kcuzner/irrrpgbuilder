@@ -162,8 +162,10 @@ class App
 		void setupDevice(IrrlichtDevice* IRRdevice);
 	    void updateGameplay();
         void cleanWorkspace();
-
+		
 		void createNewProject();
+		bool createProjectData();
+
         void loadProject(DIALOG_FUNCTION function = DF_PROJECT);
         void loadProject(stringc filename);
 		void loadProjectFile(bool value);
@@ -222,6 +224,10 @@ class App
 		inline stringw getAppPath() { return editorfunc->getApplicationPath(); }
 		inline stringw getProjectPath() { return editorfunc->getProjectsPath(); }
 
+		inline stringw getCurrentProjectName(){ return currentProjectName; }
+		inline stringw getCurrentMapName(){ return currentMapName; }
+		inline stringw getCurrentMapDesc(){ return currentMapDescription; }
+
 		// GLOBAL VARIABLES
 
 		//temporary made public to determine if the config is fullscreen
@@ -242,7 +248,6 @@ class App
 		core::stringc filename;
 		core::stringc path; //Default application path.
 		core::stringc projectpath; //Default projets folder
-		core::stringw projectname; //current project name
 
 		core::stringc tileformat; // Get the default save tile format from the configuration
 		core::stringc logoimage; //Get the logo/Title information from the configuration
@@ -312,7 +317,9 @@ class App
 
         stringc scriptGlobal;
 
-        stringc currentProjectName;
+        stringw currentProjectName;
+		stringw currentMapName;
+		stringw currentMapDescription;
 
 		stringc lastPickedNodeName;
 
