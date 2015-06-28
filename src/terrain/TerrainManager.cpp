@@ -483,163 +483,122 @@ std::string TerrainManager::getHashCode(vector3df pos)
     return s;
 }
 
+//! Save all the tiles meshes as files
+void TerrainManager::saveTerrainTiles()
+{
+	core::stringc pathfile = core::stringc(App::getInstance()->getProjectPath()) + "/";
+	pathfile += core::stringc(App::getInstance()->getProjectName());
+	pathfile += core::stringc(App::getInstance()->getCurrentMapName());
+	
+	//Change the working path to the folder were is the current map
+	App::getInstance()->getDevice()->getFileSystem()->changeWorkingDirectoryTo(pathfile.c_str());
+
+	//Create only a folder if there are terrain tiles in the map
+	if (terrainMap.size()>0 && !App::getInstance()->getDevice()->getFileSystem()->existFile("terrain"))
+	{
+		int status = 0;
+#ifdef WIN32  //For windows, create a folder
+		status = _mkdir("terrain");
+#endif
+#ifndef WIN32 //For Linux, create a folder
+		status = mkdir("terrain", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
+	}
+
+	std::map<std::string, TerrainTile*>::iterator it;
+	IMeshWriter* mw = NULL;
+
+	for (it = terrainMap.begin(); it != terrainMap.end(); it++)
+	{
+		filename = "terrain/tile";
+		filename.append((*it).second->getName());
+
+		if (App::getInstance()->tileformat == "B3D")
+		{
+			filename.append(".b3d");
+			mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
+		}
+
+		if (App::getInstance()->tileformat == "OBJ")
+		{
+			filename.append(".obj");
+			mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_OBJ);
+		}
+
+		if (App::getInstance()->tileformat == "DAE")
+		{
+			filename.append(".dae");
+			mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_COLLADA);
+		}
+
+		if (!mw)
+			printf("Failed to create the mesh writer!\n");
+
+		IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
+		IMesh* mesh = (((*it).second))->getMesh();
+
+		printf("This is the filename: %s\n", filename.c_str());
+
+		if (mesh && mw && file)
+			mw->writeMesh(file, mesh);
+
+		if (file)
+			file->drop();
+
+		if (mw)
+			mw->drop();
+
+		filename = "";
+	}
+
+	//Get back the working path to the application path
+	App::getInstance()->getDevice()->getFileSystem()->changeWorkingDirectoryTo(core::stringc(App::getInstance()->getAppPath()).c_str());
+
+}
+
 void TerrainManager::saveToXML(TiXmlElement* parentElement)
 {
     //write header and number of segments
-
-
-	core::stringc oldpath = (core::stringc)App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory();
-	//printf("here is the default path:%s\n",oldpath);
+	
     TiXmlElement* terrainXML = new TiXmlElement("terrain");
 	terrainXML->SetAttribute("texture0",terraintexture0.c_str());
 	terrainXML->SetAttribute("texture1",terraintexture1.c_str());
 	terrainXML->SetAttribute("texture2",terraintexture2.c_str());
 	terrainXML->SetAttribute("texture3",terraintexture3.c_str());
 	terrainXML->SetAttribute("texture4",terraintexture4.c_str());
-
-	if (parametric)
-	{   //New force a new type of object to be parametric. So we can see the difference with old projects
-		terrainXML->SetAttribute("Type","Parametric");
-	}
 	terrainXML->SetAttribute("Type","Parametric");
 	terrainXML->SetAttribute("Density",App::getInstance()->terraindensity);
 	terrainXML->SetDoubleAttribute("Scale",(float)scale);
-
     terrainXML->SetAttribute("segments",(int)terrainMap.size());
+	
+	
 
-    std::map<std::string, TerrainTile*>::iterator it;
-
-	filename = App::getInstance()->filename;
-	filename = filename.subString(0,(filename.size()-4));
-	filename = App::getInstance()->getDevice()->getFileSystem()->getFileBasename(App::getInstance()->filename,false);
-	printf("This is the current folder: %s\n",filename.c_str());
-
-
-	//REference code (Should be tested on Linux
-	//int status;
-	//status = mkdir(filename.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-
-	//Create only a folder if there are terrain tiles in the map
-	if (terrainMap.size()>0)
-	{
-		int status=0;
-#ifdef WIN32  //For windows, create a folder
-		status = _mkdir(filename.c_str());
-#endif
-#ifndef WIN32 //For Linux, create a folder
-		status = mkdir(filename.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-#endif
-	}
-	filename="";
-    //Save all segments to XML
+ std::map<std::string, TerrainTile*>::iterator it;
+//Save all segments to XML
     for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
     {
 #ifdef EDITOR //Update the display only in editor
 		App::getInstance()->quickUpdate();
 #endif
-		filename = App::getInstance()->filename;
-		core::stringc pathxml=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(filename);
-		core::stringc filexml=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileBasename(filename,false);
-		pathxml.append("/");
-		pathxml.append(filexml);
-		pathxml.append("/tile");
-		pathxml.append((*it).second->getName());
-		if (App::getInstance()->tileformat=="B3D")
-			pathxml.append(".b3d");
-		if (App::getInstance()->tileformat=="OBJ")
-			pathxml.append(".obj");
-		if (App::getInstance()->tileformat=="DAE")
-			pathxml.append(".dae");
+		filename = App::getInstance()->getProjectName().c_str();
+		filename.append("/");
+		filename.append(App::getInstance()->getCurrentMapName().c_str());
+		filename.append("/terrain/tile");
+		filename.append((*it).second->getName());
 
-		filename=pathxml;
+		if (App::getInstance()->tileformat=="B3D")
+			filename.append(".b3d");
+		if (App::getInstance()->tileformat=="OBJ")
+			filename.append(".obj");
+		if (App::getInstance()->tileformat=="DAE")
+			filename.append(".dae");
+		
         ((TerrainTile*)((*it).second))->saveToXML(terrainXML);
 
-		core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(filename);
-		core::stringc path_2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(filename,
-				App::getInstance()->path);
-		//printf("This is the Full XML filename: %s\n",filename.c_str());
-		//printf("This is the relative XML filename: %s\n",path_2.c_str());
-		filename="";
+		//filename="";
     }
-    parentElement->LinkEndChild(terrainXML);
-
-	//Save tiles separately
-	// Always save the tiles as object from now on.
-	{
-		std::map<std::string, TerrainTile*>::iterator it;
-		for ( it=terrainMap.begin() ; it != terrainMap.end(); it++ )
-		{
-			filename = App::getInstance()->filename;
-			filename=filename.subString(0,(filename.size()-4));
-			filename.append("/tile");
-			filename.append((*it).second->getName());
-
-			if (App::getInstance()->tileformat=="B3D")
-				filename.append(".b3d");
-
-			if (App::getInstance()->tileformat=="OBJ")
-				filename.append(".obj");
-
-			if (App::getInstance()->tileformat=="DAE")
-				filename.append(".dae");
-
-
-			core::stringc file1=filename;
-			core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file1);
-			core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(path,
-				App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
-
-			core::stringc filename=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file1,
-					App::getInstance()->getDevice()->getFileSystem()->getWorkingDirectory());
-
-			path2.append("/");
-			path2.append(filename);
-
-			//filename=path2;
-			path.append("/tile");
-			path.append((*it).second->getName());
-			IMeshWriter* mw = NULL;
-			if (App::getInstance()->tileformat=="B3D")
-			{
-				path.append(".b3d");
-				filename=path;
-
-				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_B3D);
-			} else if (App::getInstance()->tileformat=="OBJ")
-			{
-				path.append(".obj");
-				filename=path;
-
-				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_OBJ);
-			}
-
-			if (App::getInstance()->tileformat=="DAE")
-			{
-				path.append(".dae");
-				filename=path;
-
-				mw = App::getInstance()->getDevice()->getSceneManager()->createMeshWriter(EMWT_COLLADA);
-			}
-			if (!mw)
-				printf("Failed to create the mesh writer!\n");
-
-			IWriteFile* file = App::getInstance()->getDevice()->getFileSystem()->createAndWriteFile(filename.c_str());
-			IMesh* mesh = (((*it).second))->getMesh();
-
-			printf("This is the filename: %s\n",filename.c_str());
-
-			if (mesh && mw && file)
-				mw->writeMesh(file,  mesh);
-
-			if (file)
-				file->drop();
-
-			if (mw)
-				mw->drop();
-
-			filename="";
-		}
-	}
+    parentElement->LinkEndChild(terrainXML); 
+	
 }
 
 bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
@@ -706,8 +665,11 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 		core::stringc mesh=tSegment->ToElement()->Attribute("mesh");
 
-		if (mesh.size()>0)
-			createCustomSegment(vector3df( x/scale ,0, z/scale ), mesh); //Create a terrain tile from a mesh
+		if (mesh.size() > 0)
+		{
+			core::stringc npath = core::stringc(App::getInstance()->getProjectPath()) + "/" + mesh;
+			createCustomSegment(vector3df(x / scale, 0, z / scale), npath); //Create a terrain tile from a mesh
+		}
 		else
 			createSegment(vector3df( x/scale ,0, z/scale ),false,true,isparam); //Create a segment
 

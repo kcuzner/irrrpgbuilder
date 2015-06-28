@@ -225,7 +225,7 @@ void GUIEditor::createNewProjectGUI()
 	//New list for current project in the folder
 	guienv->addStaticText(L"", core::rect<s32>(posx + 500, posy, posx + 740, posy + 290), true, false, newproj, -1, true);
 	guienv->addStaticText(L"Current projects", core::rect<s32>(posx + 510, posy+10, posx + 700, posy + 30), false, false, newproj, -1);
-	projectlist = guienv->addListBox(core::rect<s32>(posx + 510, posy+30, posx + 730, posy + 240), newproj, -1, true);
+	projectlist = guienv->addListBox(core::rect<s32>(posx + 510, posy+30, posx + 730, posy + 240), newproj, GUIManager::LISTBOX_PROJECTS, true);
 	IGUIButton* loadproj = guienv->addButton(rect<s32>(posx+510, posy+250, posx+ 730, posy+280), newproj, GUIManager::BT_ID_LOAD_PROJECT, L"Load existing project");
 
 	posy += 20;
@@ -2703,7 +2703,7 @@ void GUIEditor::buildProjectList()
 		// We just want a list of directories and those matching the file filter
 		if (list->isDirectory(i))
 		{
-			if (test2 != L"." && test2 != L"..")
+			if (test2 != L"." && test2 != L".." && App::getInstance()->getDevice()->getFileSystem()->existFile(core::stringc(test2).append("/project.xml").c_str()))
 				projectlist->addItem(test2.c_str());
 		}
 	}

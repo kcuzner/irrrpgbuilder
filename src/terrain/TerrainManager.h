@@ -28,9 +28,10 @@ class TerrainManager
 		void resetVegetationHeight();
 		void paintVegetation(App::MousePick mousePick, bool erase);
 
-
+		void saveTerrainTiles();
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
+		
 
 		void transformSegments(App::MousePick mousePick, f32 radius,f32 radius2, f32 strength,  bool norecalc=false);
 		void transformSegmentsToValue(App::MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc=false);

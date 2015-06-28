@@ -348,12 +348,7 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 
 	core::stringc file=TerrainManager::getInstance()->filename;
 
-	core::stringc path=(stringc)App::getInstance()->getDevice()->getFileSystem()->getFileDir(file);
-	core::stringc path2=(stringc)App::getInstance()->getDevice()->getFileSystem()->getRelativeFilename(file,
-				App::getInstance()->path);
-
-
-	segmentXML->SetAttribute("mesh",path2.c_str());
+	segmentXML->SetAttribute("mesh",file.c_str());
 
 	//Saving the vegetation information with the tile
 	if (vegetationVector.size()>0)
@@ -377,86 +372,6 @@ void TerrainTile::saveToXML(TiXmlElement* parentElement)
 		}
 
 	}
-	/*
-
-	if (custom)
-	{
-		segmentXML->SetAttribute("custom",customname.c_str());
-		if (node->getRotation().Y!=0)
-			segmentXML->SetDoubleAttribute("custom_R", node->getRotation().Y);
-
-		if (vegetationVector.size()>0)
-		{
-
-			for (int i=0 ; i<(int)vegetationVector.size() ; i++)
-			{
-				TiXmlElement* vertexXML = new TiXmlElement("vertex");
-				Vegetation * tree = (Vegetation*)vegetationVector[i];
-
-				if (tree!=NULL)
-				{
-					vector3df treepos=tree->getPosition();
-					vertexXML->SetAttribute("v",tree->getType());
-					vertexXML->SetDoubleAttribute("tx",tree->getPosition().X);
-					vertexXML->SetDoubleAttribute("ty",tree->getPosition().Y);
-					vertexXML->SetDoubleAttribute("tz",tree->getPosition().Z);
-					vertexXML->SetDoubleAttribute("tr",tree->getNode()->getRotation().Y);
-					vertexXML->SetDoubleAttribute("ts",tree->getNode()->getScale().X);
-				}
-				segmentXML->LinkEndChild(vertexXML);
-			}
-
-		}
-	}
-
-
-	if (!custom)
-	{
-		//write all vertex
-		IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
-		S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
-		u16* mb_indices  = meshBuffer->getIndices();
-
-		for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
-		{
-			vector3df realPos = mb_vertices[j].Pos*(scale/nodescale) + node->getPosition();
-			//if(realPos.Y != 0.0f ) //We should save everything!!!
-			{
-				TiXmlElement* vertexXML = new TiXmlElement("vertex");
-
-				vertexXML->SetAttribute("id",j);
-				//vertexXML->SetAttribute("y",stringc(realPos.Y).c_str());
-				vertexXML->SetAttribute("y",stringc(mb_vertices[j].Pos.Y).c_str());
-
-				Vegetation * tree = 0;
-				for (int i=0 ; i<(int)vegetationVector.size() ; i++)
-				{
-    				Vegetation * temp = (Vegetation*)vegetationVector[i];
-    				if(temp->getPosition().getDistanceFrom(realPos) < (vegetationRange/10) )
-					{
-						tree = temp;
-						break;
-					}
-					else
-						tree = 0;
-				}
-
-				if (tree!=0)
-				{
-					vector3df treepos=tree->getPosition();
-					vertexXML->SetAttribute("v",tree->getType());
-					vertexXML->SetDoubleAttribute("tx",tree->getPosition().X);
-					vertexXML->SetDoubleAttribute("ty",tree->getPosition().Y);
-					vertexXML->SetDoubleAttribute("tz",tree->getPosition().Z);
-					vertexXML->SetDoubleAttribute("tr",tree->getNode()->getRotation().Y);
-					vertexXML->SetDoubleAttribute("ts",tree->getNode()->getScale().X);
-				}
-				// vertexXML->SetAttribute("y",stringc((realPos.Y/(scale/nodescale))).c_str());
-				segmentXML->LinkEndChild(vertexXML);
-			}
-		} //End meshbuffer save
-	} // End custom condition
-	*/
 
 	parentElement->LinkEndChild(segmentXML);
 }

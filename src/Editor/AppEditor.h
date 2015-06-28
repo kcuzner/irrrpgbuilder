@@ -38,7 +38,9 @@ public:
 
 	bool checkPath(stringc path);
 
-	void AppEditor::copyConfiguration();
+	bool createFolder(stringw foldername);
+
+	void copyConfiguration();
 
 private:
 	//private stuff

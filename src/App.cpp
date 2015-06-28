@@ -549,6 +549,8 @@ void App::eventGuiButton(s32 id)
 	MousePick the=getMousePosition3D(); //Will store the last mousepick when the gui button was pressed
 
 	IGUIListBox* box = NULL; // Combo box pointer
+	core::stringw listitem = L""; //Store listitems
+	IGUIElement* elem = NULL; //Store a generic element;
 
 	DynamicObject* loot=GUIManager::getInstance()->getActiveLootItem(); //Get the currently selected loot object
 
@@ -581,21 +583,34 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
+		//this->loadProject();
+		//this->setAppState(APP_EDIT_LOOK);
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::LISTBOX_PROJECTS);
+		if (elem)
+		{
+			box = (IGUIListBox*)elem;
+			listitem = box->getListItem(box->getSelected());
+			if (listitem.size() > 0)
+			{
+				currentProjectName = listitem;
+				loadProjectFromXML();
+			}
+		}
+
+		//Remove the window project if this is found. It require the listbox in that window.
 		prj = (IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_NEWPROJECT, true);
 		if (prj)
 		{
 			guienv->setFocus(NULL);
 			prj->remove();
 		}
-
-		this->loadProject();
-		this->setAppState(APP_EDIT_LOOK);
-		//GUIManager::getInstance()->buildSceneObjectList(current_listfilter);
+		
 		break;
 
 	case GUIManager::BT_ID_SAVE_PROJECT:
-		this->saveProjectDialog();
-		this->setAppState(APP_EDIT_LOOK);
+		//this->saveProjectDialog();
+		//this->setAppState(APP_EDIT_LOOK);
+		saveProjectToXML();
 		break;
 #ifdef EDITOR
 	case GUIManager::BT_ID_TERRAIN_ADD_SEGMENT:
@@ -2936,7 +2951,7 @@ void App::run()
 #else
 	//EffectsManager::getInstance()->skydomeVisible(true); //Force the skydome to appear when the application is initialised; (Default state)
 	//this->setAppState(APP_EDIT_WAIT_GUI);
-	this->loadProjectFromXML(mapname);
+	this->loadMapFromXML(mapname);
 	//oldcampos = Player::getInstance()->getObject()->getPosition();
 	//CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 	//this->setAppState(APP_GAMEPLAY_NORMAL);
@@ -3408,7 +3423,7 @@ void App::updateGameplay()
 		Player::getInstance()->setTaggedTarget(NULL);
 		stopGame();
 		cleanWorkspace();
-		this->loadProjectFromXML(levelfilename);
+		this->loadMapFromXML(levelfilename);
 		playGame();
 		levelchange=false;
 	}
@@ -3545,7 +3560,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 	{
 	stringc filename = "../projects/";
 	filename += currentProjectName;
-	saveProjectToXML(filename);
+	saveMapToXML(filename);
 	GUIManager::getInstance()->showDialogQuestion(LANGManager::getInstance()->getText("msg_saved_ok").c_str());
 	GUIManager::getInstance()->flush();
 	}
@@ -3563,7 +3578,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 	currentProjectName += ".XML";
 
 	setAppState(APP_EDIT_WAIT_GUI);
-	if(this->loadProjectFromXML(filename))
+	if(this->loadMapFromXML(filename))
 	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_ok"));
 	else
 	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_loaded_error"));
@@ -3630,7 +3645,7 @@ void App::loadProject(DIALOG_FUNCTION function)
 void App::loadProject(stringc filename)
 {
 this->cleanWorkspace();
-if(!this->loadProjectFromXML("../projects/myProjectTiny.xml")) this->createNewProject("temp_project");
+if(!this->loadMapFromXML("../projects/myProjectTiny.xml")) this->createNewProject("temp_project");
 }
 */
 
@@ -3709,7 +3724,7 @@ void App::loadProjectFile(bool value)
 				cleanWorkspace();
 
 				selector->setVisible(false);
-				this->loadProjectFromXML(file);
+				this->loadMapFromXML(file);
 
 				//currentProjectName = file;
 
@@ -3724,7 +3739,7 @@ void App::loadProjectFile(bool value)
 			{
 				selector->setVisible(false);
 				//printf("Saving project now!\n");
-				this->saveProjectToXML(file);
+				this->saveMapToXML(file);
 			}
 			guienv->setFocus(guienv->getRootGUIElement());
 			//Destroy the selector
@@ -3753,7 +3768,7 @@ void App::loadProjectFile(bool value)
 #endif
 			saveselector->setVisible(false);
 
-			this->saveProjectToXML(file);
+			this->saveMapToXML(file);
 
 			guienv->setFocus(guienv->getRootGUIElement());
 			saveselector->remove();
@@ -3812,7 +3827,7 @@ void App::saveProjectDialog()
 
 	stringc filename = "../projects/";
 	filename += currentProjectName;
-	this->saveProjectToXML(filename);
+	this->saveMapToXML(filename);
 	GUIManager::getInstance()->showDialogMessage(LANGManager::getInstance()->getText("msg_saved_ok"));
 	GUIManager::getInstance()->flush();*/
 
@@ -3854,7 +3869,132 @@ stringc App::getProjectName()
 	return this->currentProjectName;
 }
 
-void App::saveProjectToXML(stringc filename)
+//This will save the project file to XML
+//Then will then initialize the save of the current level
+bool App::saveProjectToXML()
+{
+	core::stringc path = core::stringc(editorfunc->getProjectsPath());
+	path += "/";
+	path += core::stringc(currentProjectName);
+
+	if (!device->getFileSystem()->existFile(path.c_str()))
+		editorfunc->createFolder(path);
+
+	printf("Project folder is now created: %s\n", path.c_str());
+	core::stringc filename = core::stringc(currentProjectName);
+	core::stringc mapname = core::stringc(currentMapName + L".map");
+
+	//filename.replace("/", "\\");
+	
+
+	device->getFileSystem()->changeWorkingDirectoryTo(path.c_str());
+
+	// XML saving of the data in the project
+	TiXmlDocument doc1;
+	TiXmlDeclaration* decl1 = new TiXmlDeclaration("1.0", "ISO-8859-1", "");
+	TiXmlElement* irb_project = new TiXmlElement("IrrRPG_Builder_Project");
+	irb_project->SetAttribute("version", "0.3");
+	
+	TiXmlElement* proj = new TiXmlElement("project");
+	proj->SetAttribute("name", filename.c_str());
+	irb_project->LinkEndChild(proj);
+
+	TiXmlElement* map = new TiXmlElement("map");
+	map->SetAttribute("name", mapname.c_str());
+	map->SetAttribute("desc", core::stringc(currentMapDescription).c_str());
+	irb_project->LinkEndChild(map);
+
+	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
+	quickUpdate();
+
+	TiXmlElement* globalScript = new TiXmlElement("global_script");
+	globalScript->SetAttribute("script", scriptGlobal.c_str());
+	irb_project->LinkEndChild(globalScript);
+	
+	// Closing the XML file
+	doc1.LinkEndChild(decl1);
+	doc1.LinkEndChild(irb_project);
+	bool result = doc1.SaveFile("project.xml");
+
+	//Save the XML data of the current map
+	path = path.append("/").append(core::stringc(currentMapName.c_str()));
+	if (!device->getFileSystem()->existFile(path.c_str()))
+	{
+		editorfunc->createFolder(path);
+		printf("No map folder present! Creating this folder: %s\n", path.c_str());
+	}
+
+	device->getFileSystem()->changeWorkingDirectoryTo(path.c_str());
+	saveMapToXML(mapname.c_str());
+
+	//Set back the path to the original (application path)
+	device->getFileSystem()->changeWorkingDirectoryTo(core::stringc(editorfunc->getApplicationPath()).c_str());
+
+	return true;
+
+}
+
+//!This will load the project from XML
+//!Then will load the default map 
+bool App::loadProjectFromXML()
+{
+	createNewProject();
+	core::stringc pathproj = core::stringc(editorfunc->getProjectsPath()) + "/";
+	pathproj += core::stringc(currentProjectName) + "/project.xml";
+	//device->getFileSystem()->changeWorkingDirectoryTo(pathproj.c_str());
+	TiXmlDocument doc(pathproj.c_str());
+	if (!doc.LoadFile()) return false;
+
+	TiXmlElement* root = doc.FirstChildElement("IrrRPG_Builder_Project");
+
+	if (root)
+	{
+		if (atof(root->Attribute("version")) * 100 != float(APP_VERSION))
+		{
+#ifdef DEBUG
+			cout << "DEBUG : XML : INCORRECT VERSION!" << endl;
+#endif
+
+			//return false;
+		}
+
+		//Global scripts should be there. Not in the map xml file
+		TiXmlElement* globalScriptXML = root->FirstChildElement("global_script");
+		if (globalScriptXML)
+		{
+			scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
+		}
+
+		TiXmlElement* projectname = root->FirstChildElement("project");
+		if (projectname)
+		{
+			currentProjectName = core::stringw(projectname->ToElement()->Attribute("name"));
+		}
+		TiXmlElement* mapdata = root->FirstChildElement("map");
+		if (mapdata)
+		{
+
+			pathproj = core::stringc(editorfunc->getProjectsPath()) + "/";
+			pathproj += core::stringc(currentProjectName);
+
+			currentMapName = core::stringw(mapdata->ToElement()->Attribute("name"));
+			currentMapName.remove(L".map");
+
+			core::stringc mapname = pathproj + "/" + currentMapName + "/" + currentMapName + ".map";
+ 			currentMapDescription = core::stringw(mapdata->ToElement()->Attribute("desc"));
+			loadMapFromXML(mapname);
+		}
+
+	}
+	//Switch back to the base path once it's loaded
+	device->getFileSystem()->changeWorkingDirectoryTo(core::stringc(editorfunc->getApplicationPath()).c_str());
+	TerrainManager::getInstance()->createEmptySegmentMatrix(50, 50);
+	return true;
+}
+
+//!This will save the current map information into a XML file
+//!
+void App::saveMapToXML(stringc filename)
 {
 
 	this->filename=filename;
@@ -3862,33 +4002,28 @@ void App::saveProjectToXML(stringc filename)
 	TiXmlDocument doc;
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "ISO-8859-1", "" );
 
-	TiXmlElement* irb_project = new TiXmlElement( "IrrRPG_Builder_Project" );
-	irb_project->SetAttribute("version","1.0");
+	TiXmlElement* irb_map = new TiXmlElement( "IrrRPG_Builder_MAP" );
+	irb_map->SetAttribute("version","0.3");
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the terrain");
 	quickUpdate();
-	TerrainManager::getInstance()->saveToXML(irb_project);
+	TerrainManager::getInstance()->saveToXML(irb_map);
 
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the active dynamic objects");
 	quickUpdate();
-	DynamicObjectsManager::getInstance()->saveToXML(irb_project);
+	DynamicObjectsManager::getInstance()->saveToXML(irb_map);
 
-	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
-	quickUpdate();
-
-	TiXmlElement* globalScript = new TiXmlElement("global_script");
-	globalScript->SetAttribute("script",scriptGlobal.c_str());
-	irb_project->LinkEndChild(globalScript);
-
-	// Closing the XML file
+		// Closing the XML file
 	doc.LinkEndChild( decl );
-	doc.LinkEndChild( irb_project );
+	doc.LinkEndChild( irb_map );
 
 	bool result = doc.SaveFile( filename.c_str() );
 #ifdef DEBUG
 	if (result) printf("Saved %s OK!\n",filename.c_str());
 #endif
+	//New: Will save the terrain tiles meshes separately. Caused some problems when doing this and saving the XML at the same time.
+	TerrainManager::getInstance()->saveTerrainTiles();
 
 	GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER)->setVisible(false);
 
@@ -3903,7 +4038,8 @@ void App::saveProjectToXML(stringc filename)
 #endif
 }
 
-bool App::loadProjectFromXML(stringc filename)
+//!This will load the current map information from a XML file
+bool App::loadMapFromXML(stringc filename)
 {
 
 	IGUIWindow* window=(IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER);
@@ -3916,7 +4052,7 @@ bool App::loadProjectFromXML(stringc filename)
 	cout << "DEBUG : XML : LOADING PROJECT : " << filename.c_str() << endl;
 #endif
 
-	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_Project" );
+	TiXmlElement* root = doc.FirstChildElement( "IrrRPG_Builder_MAP" );
 
 	if ( root )
 	{
@@ -3927,16 +4063,6 @@ bool App::loadProjectFromXML(stringc filename)
 #endif
 
 			//return false;
-		}
-
-		TiXmlElement* globalScriptXML = root->FirstChildElement( "global_script" );
-		if ( globalScriptXML )
-		{
-			GUIManager::getInstance()->setTextLoader(L"Loading the scripts");
-#ifdef EDITOR  //only update in the editor
-			quickUpdate();
-#endif
-			scriptGlobal = globalScriptXML->ToElement()->Attribute("script");
 		}
 
 		TiXmlElement* terrain = root->FirstChildElement( "terrain" );

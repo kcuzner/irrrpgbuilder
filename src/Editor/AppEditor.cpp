@@ -18,7 +18,7 @@ AppEditor::AppEditor()
 	
 	
 
-	core:stringw docpath=L"";
+	core::stringw docpath=L"";
 #ifdef WIN32
 	// Get the desktop shortcut (places)
 	// String buffer for holding the path.
@@ -76,6 +76,14 @@ AppEditor::AppEditor()
 //Destructor
 AppEditor::~AppEditor()
 {
+}
+
+bool AppEditor::createFolder(core::stringw foldername)
+{
+	bool result = false;
+	core::stringc string = core::stringc(foldername);
+	int dirwrite = _mkdir(string.c_str());
+	return result;
 }
 
 //Check if the path exist. Can be used to check also for files.

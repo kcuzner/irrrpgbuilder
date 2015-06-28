@@ -182,8 +182,11 @@ class App
         void setAppState(APP_STATE newAppState);
         APP_STATE getAppState();
 
-		void saveProjectToXML(stringc filename);
-        bool loadProjectFromXML(stringc filename);
+		bool saveProjectToXML();
+		bool loadProjectFromXML();
+		
+		void saveMapToXML(stringc filename);
+        bool loadMapFromXML(stringc filename);
 		bool loadConfig();
 
 		std::vector<stringw> getConsoleText();

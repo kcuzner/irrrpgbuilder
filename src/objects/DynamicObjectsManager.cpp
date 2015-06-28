@@ -1966,7 +1966,7 @@ void DynamicObjectsManager::setPlayer()
 {
 	// Will add the player object to the list if the list is "live"
 	//if (objects.size()>0)
-		objects.push_back(playerObject);
+		//objects.push_back(playerObject);
 }
 
 
