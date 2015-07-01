@@ -92,6 +92,21 @@ class GUIManager
 		BT_ID_NEW_MAP,
 		BT_ID_SAVE_MAP,
 		LISTBOX_PROJECTS,
+		BT_ID_MAP_ADMIN,
+
+		BT_MA_CREATE_MAP,
+		BT_MA_OPEN_MAP,
+		BT_MA_RENAME_MAP,
+		BT_MA_UPDATE_DESC,
+		BT_MA_CLEAR_MAP,
+		BT_MA_DELETE_MAP,
+		TXT_MA_DESC,
+		LISTBOX_MA_MAPS,
+
+		TB_MAPREQUEST_MAP,
+		TB_MAPREQUEST_DESC,
+		BT_MAPREQUEST_CREATE,
+		BT_MAPREQUEST_CANCEL,
 
 		BT_ID_HELP,
 		BT_ID_CONFIG,
@@ -197,6 +212,7 @@ class GUIManager
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU,
 		GCW_ID_DYNAMIC_OBJECT_CONTEXT_MENU1,
 		GCW_DYNAMIC_OBJECTS_EDIT_SCRIPT,
+		GCW_MAP_TOOLBAR,
 		GCW_TERRAIN_TOOLBAR,
 		GCW_VEGE_TOOLBAR,
 		GCW_GAMEPLAY_ITEMS,
@@ -210,6 +226,7 @@ class GUIManager
 		GCW_VIEW_MENU,
 		GCW_TOP_WINDOW,
 		GCW_STATUSBAR,
+		GCW_REQUEST_MAP_INFO,
 		GCW_CONFIG_WINDOW
 	};
 
@@ -275,11 +292,13 @@ class GUIManager
 
 #ifdef EDITOR
 		void setupEditorGUI();
+		void createMapAdminToolbar();
 		void createNewProjectGUI();
 		void setEditBoxText(GUI_ID id, stringw text);
 		void expandPanel(GUI_CUSTOM_WINDOW id);
 		void contractPanel(GUI_ID id);
 #endif
+		void createNewMapRequest();
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
 		void setCheckboxState(GUI_ID id, bool value);

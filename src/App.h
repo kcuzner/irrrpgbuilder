@@ -39,6 +39,12 @@ class App
 			ISceneNode* pickedNode;
 		}MousePick;
 
+		typedef struct
+		{
+			core::stringw mapname;
+			core::stringw mapdescription;
+		}mapinfo;
+
 
 		enum APP_STATE
 		{
@@ -50,6 +56,7 @@ class App
 
 			APP_EDIT_TERRAIN_PAINT_VEGETATION = 6,
 			APP_EDIT_PRJ,
+			APP_MAP_ADMIN,
 
 			APP_EDIT_DYNAMIC_OBJECTS_MODE = 20,
 			APP_EDIT_DYNAMIC_OBJECTS_MOVE_ROTATE = 21,
@@ -163,7 +170,7 @@ class App
 	    void updateGameplay();
         void cleanWorkspace();
 		
-		void createNewProject();
+		void createNewMap();
 		bool createProjectData();
 
         void loadProject(DIALOG_FUNCTION function = DF_PROJECT);
@@ -230,6 +237,7 @@ class App
 		inline stringw getCurrentProjectName(){ return currentProjectName; }
 		inline stringw getCurrentMapName(){ return currentMapName; }
 		inline stringw getCurrentMapDesc(){ return currentMapDescription; }
+		inline u32 getCurrentMapNo(){ return currentMapNo; }
 
 		// GLOBAL VARIABLES
 
@@ -255,6 +263,8 @@ class App
 		core::stringc tileformat; // Get the default save tile format from the configuration
 		core::stringc logoimage; //Get the logo/Title information from the configuration
 		u32 terraindensity; //Get the terrain density information from the configuration
+
+		std::vector<mapinfo> mapinfos;
 		
     private:
 
@@ -323,6 +333,7 @@ class App
         stringw currentProjectName;
 		stringw currentMapName;
 		stringw currentMapDescription;
+		u32 currentMapNo;
 
 		stringc lastPickedNodeName;
 
@@ -331,7 +342,7 @@ class App
 // Used to load the startup map when the game start (only the player app)
 
 		stringc mapname;
-     
+
 		MousePick lastScannedPick;
 
 		CGUIFileSelector * selector;
@@ -355,6 +366,8 @@ class App
 		f32 currentsnapping;
 		bool xeffectenabler;
 		bool gamestarted; //To know if the application has been started. (player app)
+
+		bool askedClearMap;
 
 		VIEW_TYPE defaultview;
 

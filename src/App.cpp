@@ -28,7 +28,7 @@ App::App()
 	tileformat="B3D"; //Default format for tiles.
 	logoimage="../media/art/gametitle.jpg";
 	filename="";
-	appname=L"IrrRPG Builder - Alpha release 0.31";
+	appname=L"IrrRPG Builder - Alpha release 0.31 SVN - JULY 2015";
 	// Initialize some values
 	selector=NULL;
 	app_state=APP_EDIT_LOOK;
@@ -77,7 +77,9 @@ App::App()
 	currentProjectName = "";
 	currentMapName = "";
 	currentMapDescription = "";
+	currentMapNo = 0;
 	editorfunc = new AppEditor();
+	askedClearMap = false;
 }
 
 App::~App()
@@ -469,7 +471,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_TERRAIN_TRANSFORM,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,false);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,false);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,false);
@@ -526,6 +528,8 @@ void App::setAppState(APP_STATE newAppState)
 
 }
 
+
+// Check for buttons pressed
 void App::eventGuiButton(s32 id)
 {
 	DynamicObject* object=NULL;
@@ -551,6 +555,14 @@ void App::eventGuiButton(s32 id)
 	IGUIListBox* box = NULL; // Combo box pointer
 	core::stringw listitem = L""; //Store listitems
 	IGUIElement* elem = NULL; //Store a generic element;
+	IGUIStaticText* text = NULL;
+
+	IGUIEditBox* editbox = NULL;
+	mapinfo map;
+
+	stringc textc = "";
+	stringw textw = L"";
+	u32 value = 0;
 
 	DynamicObject* loot=GUIManager::getInstance()->getActiveLootItem(); //Get the currently selected loot object
 
@@ -566,7 +578,7 @@ void App::eventGuiButton(s32 id)
 			{
 				guienv->setFocus(NULL);
 				prj->remove();
-				this->createNewProject();
+				this->createNewMap();
 			}
 		}
 		else
@@ -583,8 +595,12 @@ void App::eventGuiButton(s32 id)
 		break;
 
 	case GUIManager::BT_ID_LOAD_PROJECT:
-		//this->loadProject();
-		//this->setAppState(APP_EDIT_LOOK);
+		//This button is now used in the CREATE PROJECT WINDOW.
+		this->setAppState(APP_EDIT_LOOK);
+		prj = (IGUIWindow*)guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_NEWPROJECT, true);
+		if (prj)
+			prj->setVisible(false); // Hide the new project window while work is being done
+
 		elem = GUIManager::getInstance()->getGUIElement(GUIManager::LISTBOX_PROJECTS);
 		if (elem)
 		{
@@ -609,10 +625,89 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_ID_SAVE_PROJECT:
 		//this->saveProjectDialog();
-		//this->setAppState(APP_EDIT_LOOK);
+		this->setAppState(APP_EDIT_LOOK);
 		saveProjectToXML();
 		break;
 #ifdef EDITOR
+
+
+	case GUIManager::BT_ID_MAP_ADMIN:
+		GUIManager::getInstance()->createMapAdminToolbar();
+		break;
+
+	case GUIManager::BT_MA_OPEN_MAP:
+		elem = guienv->getRootGUIElement()->getElementFromId(GUIManager::GCW_MAP_TOOLBAR, true);
+		if (elem)
+		{
+			box = (IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::LISTBOX_MA_MAPS, true);
+			this->currentMapName = mapinfos[box->getSelected()].mapname;
+			this->currentMapDescription = mapinfos[box->getSelected()].mapdescription;
+			textc = core::stringc(editorfunc->getProjectsPath()) + "/";
+			textc += core::stringc(currentProjectName);
+			textc += "/";
+			textc += stringc(currentMapName.c_str());
+			textc += "/";
+			textc += stringc(currentMapName.c_str());
+			textc += ".map";
+			currentMapNo = box->getSelected();
+			elem->remove();
+			createNewMap(); //Clear everything 
+			loadMapFromXML(textc);
+
+			
+		}
+
+	case GUIManager::BT_MA_UPDATE_DESC:
+		elem = guienv->getRootGUIElement()->getElementFromId(GUIManager::TXT_MA_DESC, true);
+		if (elem)
+		{
+
+			value = GUIManager::getInstance()->getListBox(GUIManager::LISTBOX_MA_MAPS)->getSelected();
+			text = (IGUIStaticText*)elem;
+
+			mapinfos[value].mapdescription = (core::stringw)text->getText();
+			device->getGUIEnvironment()->addMessageBox(L"", stringw(L"Description updated!").c_str(), true);
+		}
+		break;
+
+	case GUIManager::BT_MA_CLEAR_MAP:
+		guienv->addMessageBox(L"WARNING!", L"This will reset all the content of this map, do you still want to proceed?", true, EMBF_NO | EMBF_YES);
+		askedClearMap = true;
+		break;
+
+	case GUIManager::BT_MA_CREATE_MAP:
+		GUIManager::getInstance()->createNewMapRequest();
+		break;
+
+	case GUIManager::BT_MAPREQUEST_CREATE:
+		editbox = (IGUIEditBox*)GUIManager::getInstance()->getGUIElement(GUIManager::TB_MAPREQUEST_MAP);
+		if (editbox)
+			map.mapname = editbox->getText();
+		editbox = (IGUIEditBox*)GUIManager::getInstance()->getGUIElement(GUIManager::TB_MAPREQUEST_DESC);
+		if (editbox)
+			map.mapdescription = editbox->getText();
+
+		if (map.mapname.size() > 0)
+		{
+			mapinfos.push_back(map);
+			currentMapNo++;
+			currentMapName = map.mapname;
+			currentMapDescription = map.mapdescription;
+			elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+			if (elem)
+				elem->remove();
+			elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_REQUEST_MAP_INFO);
+			if (elem)
+				elem->remove();
+
+			createNewMap();
+		}
+		
+
+
+		break;
+
+
 	case GUIManager::BT_ID_TERRAIN_ADD_SEGMENT:
 		this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
 		break;
@@ -1251,6 +1346,8 @@ void App::eventGuiCombobox(s32 id)
 	IGUIListBox* selected=NULL; //Used to get the item in a listbox
 	IGUIComboBox* selectedbox = NULL;
 
+	IGUIStaticText* text = NULL;
+
 	std::vector<stringw> list;
 	list.clear();
 
@@ -1264,6 +1361,14 @@ void App::eventGuiCombobox(s32 id)
 	switch (id)
 	{
 
+	case GUIManager::LISTBOX_MA_MAPS:
+		index = GUIManager::getInstance()->getListBox(GUIManager::LISTBOX_MA_MAPS)->getSelected();
+		text = (IGUIStaticText*)GUIManager::getInstance()->getGUIElement(GUIManager::TXT_MA_DESC);
+		if (text)
+			text->setText(mapinfos[index].mapdescription.c_str());
+
+
+		break;
 	// Selection in the list from the dynamic object selection
 	case GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER:
 		DynamicObjectsManager::getInstance()->setActiveObject(GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
@@ -2183,6 +2288,17 @@ void App::eventMessagebox(gui::EGUI_EVENT_TYPE type)
 	// Delete the "tagged" terrain segment
 	if (type==EGET_MESSAGEBOX_YES && app_state==APP_EDIT_TERRAIN_SEGMENTS)
 		TerrainManager::getInstance()->deleteTaggedSegment();
+
+	//When the user confirm that he want to clear the current map
+	if (type == EGET_MESSAGEBOX_YES && askedClearMap)
+	{
+		askedClearMap = false;
+		createNewMap();
+	}
+
+
+
+
 }
 
 // This will display the "packsack" wiith the inventory of the player during gameplay
@@ -3451,7 +3567,7 @@ void App::updateGameplay()
 void App::cleanWorkspace()
 {
 	TerrainManager::getInstance()->clean();
-
+	
 	DynamicObjectsManager::getInstance()->clean(false);
 
 	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
@@ -3462,8 +3578,6 @@ void App::cleanWorkspace()
 	driver->setFog(SColor(0,255,255,255),EFT_FOG_LINEAR,300,999100);
 
 	smgr->getMeshCache()->clear(); //Clear the mesh cache
-
-	scriptGlobal="";
 }
 
 bool App::createProjectData()
@@ -3471,6 +3585,9 @@ bool App::createProjectData()
 	IGUIEditBox * box1 = NULL;
 	IGUIEditBox * box2 = NULL;
 	IGUIEditBox * box3 = NULL;
+
+	mapinfos.clear(); //Clear the infos about the maps
+	scriptGlobal = ""; //Clear the global script and data
 	
 	IGUIElement* elem = GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_PROJECT_NAME);
 	if (elem)
@@ -3489,6 +3606,13 @@ bool App::createProjectData()
 	currentProjectName = line1;
 	currentMapName = line2;
 	currentMapDescription = line3;
+	currentMapNo = 0;
+
+	//Add this to the first map definition
+	mapinfo map;
+	map.mapname = currentMapName;
+	map.mapdescription = currentMapDescription;
+	mapinfos.push_back(map);
 
 	//Check if the user has entered all the proper informations.
 	printf("     >>> Calling project data!!\n   || %s\n|| %s\n|| %s\n", stringc(box1->getText()).c_str(), stringc(box2->getText()).c_str(), stringc(box3->getText()).c_str());
@@ -3498,7 +3622,8 @@ bool App::createProjectData()
 		return false;
 }
 
-void App::createNewProject()
+//This should be invoked when the content of the current map is being cleared and started as a new map
+void App::createNewMap()
 {
 	
 	lastScannedPick.pickedNode = NULL;
@@ -3532,8 +3657,8 @@ void App::createNewProject()
 	// Put back the player object in the list of the dynamic objects
 	DynamicObjectsManager::getInstance()->setPlayer();
 
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
-	GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE, false);
+	//this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE);
+	//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_MODE, false);
 
 }
 
@@ -3797,7 +3922,7 @@ void App::loadProjectFile(bool value)
 
 	// Set back the camera after loading the map (could be perhaps improved later, to select the proper camera after loading (ingame loading))
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE); // Put back in "default edit state"
+	this->setAppState(APP_EDIT_LOOK); // Put back in "default edit state"
 	//setAppState(old_state);
 }
 
@@ -3899,10 +4024,14 @@ bool App::saveProjectToXML()
 	proj->SetAttribute("name", filename.c_str());
 	irb_project->LinkEndChild(proj);
 
-	TiXmlElement* map = new TiXmlElement("map");
-	map->SetAttribute("name", mapname.c_str());
-	map->SetAttribute("desc", core::stringc(currentMapDescription).c_str());
-	irb_project->LinkEndChild(map);
+	
+	for (u32 a = 0; a < mapinfos.size(); a++)
+	{
+		TiXmlElement* map = new TiXmlElement("map");
+		map->SetAttribute("name", core::stringc(mapinfos[a].mapname).c_str());
+		map->SetAttribute("desc", core::stringc(mapinfos[a].mapdescription).c_str());
+		irb_project->LinkEndChild(map);
+	}
 
 	GUIManager::getInstance()->setTextLoader(L"Saving the global scripts");
 	quickUpdate();
@@ -3938,7 +4067,8 @@ bool App::saveProjectToXML()
 //!Then will load the default map 
 bool App::loadProjectFromXML()
 {
-	createNewProject();
+	createNewMap(); //Clear map data
+	mapinfos.clear(); //Clear previously infos about maps.
 	core::stringc pathproj = core::stringc(editorfunc->getProjectsPath()) + "/";
 	pathproj += core::stringc(currentProjectName) + "/project.xml";
 	//device->getFileSystem()->changeWorkingDirectoryTo(pathproj.c_str());
@@ -3970,25 +4100,34 @@ bool App::loadProjectFromXML()
 		{
 			currentProjectName = core::stringw(projectname->ToElement()->Attribute("name"));
 		}
-		TiXmlElement* mapdata = root->FirstChildElement("map");
-		if (mapdata)
+		TiXmlNode*  mapdata = root->FirstChildElement("map");
+		int counter = 0;
+		while (mapdata!=NULL)
 		{
-
-			pathproj = core::stringc(editorfunc->getProjectsPath()) + "/";
-			pathproj += core::stringc(currentProjectName);
-
-			currentMapName = core::stringw(mapdata->ToElement()->Attribute("name"));
-			currentMapName.remove(L".map");
-
-			core::stringc mapname = pathproj + "/" + currentMapName + "/" + currentMapName + ".map";
+		
+			currentMapName = core::stringw(mapdata->ToElement()->Attribute("name"));				
  			currentMapDescription = core::stringw(mapdata->ToElement()->Attribute("desc"));
-			loadMapFromXML(mapname);
+
+			mapinfo map;
+			map.mapname = currentMapName;
+			map.mapdescription = currentMapDescription;
+			mapinfos.push_back(map);
+			printf("Counting elements of data: %d : name = %s\n", counter,core::stringc(map.mapname.c_str()).c_str());
+			counter++;
+
+			mapdata = root->IterateChildren("map", mapdata);
 		}
+		currentMapName = mapinfos[0].mapname;
+		currentMapDescription = mapinfos[0].mapdescription;
+		currentMapNo = 0;
+		pathproj = core::stringc(editorfunc->getProjectsPath()) + "/";
+		pathproj += core::stringc(currentProjectName);
+		core::stringc mapname = pathproj + "/" + currentMapName + "/" + currentMapName + ".map";
+		loadMapFromXML(mapname);
 
 	}
 	//Switch back to the base path once it's loaded
 	device->getFileSystem()->changeWorkingDirectoryTo(core::stringc(editorfunc->getApplicationPath()).c_str());
-	TerrainManager::getInstance()->createEmptySegmentMatrix(50, 50);
 	return true;
 }
 
@@ -4041,7 +4180,6 @@ void App::saveMapToXML(stringc filename)
 //!This will load the current map information from a XML file
 bool App::loadMapFromXML(stringc filename)
 {
-
 	IGUIWindow* window=(IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_LOADER);
 	window->setVisible(true);
 	printf ("Trying to load this map: %s \n",filename.c_str());
@@ -4127,9 +4265,9 @@ bool App::loadMapFromXML(stringc filename)
 		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_loaded_ok")))).c_str()
 		,true);
 
-	this->setAppState(APP_EDIT_DYNAMIC_OBJECTS_MODE); // Put back in default state
+	this->setAppState(APP_EDIT_LOOK); // Put back in default state
 #endif
-
+	TerrainManager::getInstance()->createEmptySegmentMatrix(50, 50);
 	return true;
 }
 

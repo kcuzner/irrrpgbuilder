@@ -580,9 +580,7 @@ void TerrainManager::saveToXML(TiXmlElement* parentElement)
 #ifdef EDITOR //Update the display only in editor
 		App::getInstance()->quickUpdate();
 #endif
-		filename = App::getInstance()->getProjectName().c_str();
-		filename.append("/");
-		filename.append(App::getInstance()->getCurrentMapName().c_str());
+		filename = App::getInstance()->getCurrentMapName().c_str();
 		filename.append("/terrain/tile");
 		filename.append((*it).second->getName());
 
@@ -667,7 +665,9 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 		if (mesh.size() > 0)
 		{
-			core::stringc npath = core::stringc(App::getInstance()->getProjectPath()) + "/" + mesh;
+			core::stringc npath = core::stringc(App::getInstance()->getProjectPath()) + "/";
+			npath.append(core::stringc(App::getInstance()->getCurrentProjectName()).c_str());
+			npath.append("/").append(mesh);
 			createCustomSegment(vector3df(x / scale, 0, z / scale), npath); //Create a terrain tile from a mesh
 		}
 		else

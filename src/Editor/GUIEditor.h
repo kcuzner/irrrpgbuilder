@@ -21,7 +21,7 @@ public:
 	void createObjectTab();
 
 	void createAboutWindowGUI();
-
+	void createMapAdminToolbar();
 	void createTerrainToolbar();
 	void createVegetationToolbar();
 	void createDynamicObjectChooserGUI();
@@ -81,6 +81,8 @@ private:
 	ITexture* imgHelp1;
 	ITexture* imgConfig;
 	ITexture* imgConfig1;
+	ITexture* imgMapAdmin;
+	ITexture* imgMapAdmin1;
 
 	///IrrRPG Builder LOGO
     ITexture* logo1;

@@ -41,6 +41,8 @@ GUIManager::GUIManager()
 	// Bigger Windows titlebar width
 	guienv->getSkin()->setSize(EGDS_WINDOW_BUTTON_WIDTH,26);
 	guienv->getSkin()->setColor(EGDC_ACTIVE_BORDER ,video::SColor(200,36,36,36));
+	displayheight = App::getInstance()->getScreenSize().Height;
+	displaywidth = App::getInstance()->getScreenSize().Width;
 
 	//New attemps as skinning into a darker theme
 	//guienv->getSkin()->setColor(EGDC_3D_SHADOW,video::SColor(200,36,36,36));
@@ -114,10 +116,55 @@ void GUIManager::setupGameplayGUI()
 	GUIGame::getInstance()->setupGameplayGUI();
 }
 
+void GUIManager::createMapAdminToolbar()
+{
+	//Temporary to design the toolbar. Will be enabled when the user press the map admin button
+	GUIEditor::getInstance()->createMapAdminToolbar();
+}
 
 rect<s32> GUIManager::myRect(s32 x, s32 y, s32 w, s32 h)
 {
     return rect<s32>(x,y,x+w,y+h);
+}
+
+void GUIManager::createNewMapRequest()
+{
+	//Get the handle of the main tool windows (aligned with the gameplay tool)
+	IGUIWindow* guiMainToolWindow = (IGUIWindow*)getGUIElement(GUIManager::WIN_GAMEPLAY);
+
+	//Hide the map toolbar because we asked to create a map. If we change our mind, the we can show it back.
+	//If the map will be created it will need to removed.
+	//Theses will be in the buttons events in the APP class.
+	IGUIElement * elem = getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+	if (elem)
+		elem->setVisible(false);
+		
+	s32 winwidth = 400, winheight = 280;
+	if (!getGUIElement(GUIManager::GCW_REQUEST_MAP_INFO))
+	{
+		IGUIWindow* guiRequest = guienv->addWindow(
+			GUIManager::getInstance()->myRect(displaywidth / 2 - winwidth / 2,
+			guiMainToolWindow->getClientRect().getHeight() + 55,
+			winwidth,
+			winheight),
+			false, L"Please enter the information for the new map:", 0,
+			GCW_REQUEST_MAP_INFO);
+
+		u32 px = 10, py = 40;
+		guienv->addStaticText(L"Name of the new level:",core::rect<s32>(px,py,px+250,py+20),false,false,guiRequest);
+		py += 20;
+		IGUIEditBox* box1 = guienv->addEditBox(L"",core::rect<s32>(px,py,px+300,py+30),true,guiRequest,TB_MAPREQUEST_MAP);
+		py += 40;
+		guienv->addStaticText(L"Description of the new level:", core::rect<s32>(px, py, px + 250, py + 20), false, false, guiRequest);
+		py += 20;
+		IGUIEditBox* box2 = guienv->addEditBox(L"", core::rect<s32>(px, py, px + 300, py + 100), true, guiRequest, TB_MAPREQUEST_DESC);
+		box2->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+		px = 400-130, py = 240;
+		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_MAPREQUEST_CREATE, L"Create level", L"Create Level");
+		px -= 130;
+		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_MAPREQUEST_CANCEL, L"Cancel", L"Cancel");
+
+	}
 }
 
 void GUIManager::drawHelpImage(GUI_HELP_IMAGE img)
@@ -277,6 +324,7 @@ void GUIManager::createConsole()
 	gui::IGUITabControl* control = guienv->addTabControl(myRect(10,30,780,360),consolewin,true,true);
 	gui::IGUITab* tab=control->addTab(LANGManager::getInstance()->getText("tab_console_message").c_str());
 	gui::IGUITab* tab2=control->addTab(LANGManager::getInstance()->getText("tab_console_log").c_str());
+	gui::IGUITab* helptab = control->addTab(L"Keyboard Shortcuts information");
 	tab->setBackgroundColor(video::SColor(255,220,220,220));
 	tab->setDrawBackground(true);
 
@@ -293,6 +341,41 @@ void GUIManager::createConsole()
 	consolelog->setAutoScrollEnabled(false);
 	consolelog->setItemHeight(20);
 	consolelog->setAlignment(EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT);
+
+	IGUIStaticText* helpbox = guienv->addStaticText(L"", myRect(10, 15, 370, 290), true, true, helptab, -1, true);
+	IGUIStaticText* helpbox1 = guienv->addStaticText(L"", myRect(390, 15, 370, 290), true, true, helptab, -1, true);
+	stringw textinfo = L"Camera keyboard shortcuts:\n";
+	textinfo.append(L"     SPACE ->  activate camera PAN mode\n");
+	textinfo.append(L"     C     ->  re-center the camera to the mouse pointer\n");
+	textinfo.append(L"     +     ->  zoom in\n");
+	textinfo.append(L"     -     ->  zoom out\n");
+	textinfo.append(L"Arrow keys ->  Pan the view\n\n");
+	textinfo.append(L"Vegetation editing keyboard shortcuts:\n");
+	textinfo.append(L"     F1    ->  Replant vegetation\n");
+	textinfo.append(L"     F2    ->  Remove all vegetation from map\n\n");
+	textinfo.append(L"Terrain editing keyboard shortcuts:\n");
+	textinfo.append(L"     F5    ->  hide water\n");
+	textinfo.append(L"     F6    ->  show water\n");
+	textinfo.append(L"    CTRL   ->  Level mode\n\n");
+	textinfo.append(L"Visual debugging keyboard shortcuts:\n");
+	textinfo.append(L"     F8    ->  Disable raycast tester\n");
+	textinfo.append(L"     F9    ->  Enable raycast tester\n");
+	textinfo.append(L"     F10   ->  Clear raycast tester lines\n\n");
+
+	stringw textinfo1 = L"Object editing keyboard shortcuts:\n";
+	textinfo1.append(L"     Q    ->  Quick add mode\n");
+	textinfo1.append(L"     W    ->  Select mode\n");
+	textinfo1.append(L"     E    ->  Move mode\n");
+	textinfo1.append(L"     R    ->  Rotate mode\n");
+	textinfo1.append(L"     T    ->  Scale mode\n");
+	textinfo1.append(L"While moving objects:\n");
+	textinfo1.append(L"     CTRL ->  Activate snapping to grid\n");
+
+	
+	
+	helpbox->setText(textinfo.c_str());
+	helpbox1->setText(textinfo1.c_str());
+	//helpbox->setOverrideFont(guiFont12);
 
 	consolewin->setVisible(false);
 }

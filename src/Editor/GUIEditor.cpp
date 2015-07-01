@@ -120,6 +120,9 @@ void GUIEditor::setupEditorGUI()
 	imgNewProject = driver->getTexture("../media/art/bt_new_project.png");
 	imgNewProject1 = driver->getTexture("../media/art/bt_new_project_ghost.png");
 
+	imgMapAdmin = driver->getTexture("../media/art/Map_dn.jpg");
+	imgMapAdmin1 = driver->getTexture("../media/art/Map_up.jpg");
+
 	App::getInstance()->quickUpdate();
 
 	imgLoadProject = driver->getTexture("../media/art/bt_load_project.png");
@@ -425,9 +428,9 @@ void GUIEditor::createProjectTab()
 	// Close program
 	x += 12;
 	IGUIButton* guiCloseProgram = guienv->addButton(GUIManager::getInstance()->myRect(x,mainToolbarPos.Y,32,32),
-                                     tabProject,
-									 GUIManager::BT_ID_CLOSE_PROGRAM,L"",
-                                     stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
+		tabProject,
+		GUIManager::BT_ID_CLOSE_PROGRAM,L"",
+        stringw(LANGManager::getInstance()->getText("bt_close_program")).c_str() );
 
     guiCloseProgram->setImage(imgCloseProgram);
 
@@ -455,7 +458,7 @@ void GUIEditor::createProjectTab()
 	newPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	newPText->setOverrideFont(GUIManager::getInstance()->guiFont9);
 
-
+	/*
     //Load Project
 	x+=60;
 	IGUIButton* guiMainLoadProject = guienv->addButton(GUIManager::getInstance()->myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
@@ -471,7 +474,7 @@ void GUIEditor::createProjectTab()
 	//loadPText->setOverrideColor(video::SColor(255,65,66,174));
 	loadPText->setOverrideColor(video::SColor(255,64,64,64));
 	loadPText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
-	loadPText->setOverrideFont(GUIManager::getInstance()->guiFont9);
+	loadPText->setOverrideFont(GUIManager::getInstance()->guiFont9); */
 
 
 	//Save Project
@@ -490,6 +493,23 @@ void GUIEditor::createProjectTab()
 	savePText->setOverrideColor(video::SColor(255,64,64,64));
 	savePText->setTextAlignment(EGUIA_CENTER,EGUIA_UPPERLEFT);
 	savePText->setOverrideFont(GUIManager::getInstance()->guiFont9);
+
+	//Map icon
+	x += 60;
+	IGUIButton* guiMainMapAdmin = guienv->addButton(GUIManager::getInstance()->myRect(mainToolbarPos.X + x, mainToolbarPos.Y, 32, 32),
+		tabProject,
+		GUIManager::BT_ID_MAP_ADMIN, L"",
+		L"Map admin");
+
+	guiMainMapAdmin->setImage(imgMapAdmin);
+	guiMainMapAdmin->setPressedImage(imgMapAdmin1);
+
+	IGUIStaticText * loadPText = guienv->addStaticText(stringw("Map Admin").c_str(),
+		core::rect<s32>(x - 10, 36, x + 45, 65), false, true, tabProject, -1);
+	//loadPText->setOverrideColor(video::SColor(255,65,66,174));
+	loadPText->setOverrideColor(video::SColor(255, 64, 64, 64));
+	loadPText->setTextAlignment(EGUIA_CENTER, EGUIA_UPPERLEFT);
+	loadPText->setOverrideFont(GUIManager::getInstance()->guiFont9); 
 
 }
 
@@ -795,6 +815,10 @@ void GUIEditor::createObjectTab()
 	//Use the onUpdate() callback to start monitoring.
 	//Then I could put back the button again to access it directly. An in essence would be a "editor" type object.
 
+	//UPDATE: 06/30/2015
+	//Global will stay in IRB as they are essential to savegames.
+	//But not sure why we would need a "global script" system. As the global variables can be defined from any LUA script.
+
     //Edit Items Script
 	IGUIButton* guiEditScriptGlobal = guienv->addButton(GUIManager::getInstance()->myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabObject,
@@ -844,6 +868,56 @@ void GUIEditor::createAboutWindowGUI()
 	LANGManager::getInstance()->setAboutText(guiAboutText);
 }
 
+void GUIEditor::createMapAdminToolbar()
+{
+
+	//Get the handle of the main tool windows (aligned with the gameplay tool)
+	IGUIWindow* guiMainToolWindow = (IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_GAMEPLAY);
+
+	s32 winwidth = 640, winheight = 480;
+	IGUIWindow* guiMapAdminToolbar = guienv->addWindow(
+		GUIManager::getInstance()->myRect(displaywidth/2 - winwidth/2,
+		guiMainToolWindow->getClientRect().getHeight() + 55,
+		winwidth,
+		winheight),
+		false, L"MAP Administration", 0,
+		GUIManager::GCW_MAP_TOOLBAR);
+
+	guiMapAdminToolbar->setNotClipped(true);
+	guiMapAdminToolbar->setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
+	IGUIListBox* box = guienv->addListBox(core::rect<s32>(10, 60, 300, 300), guiMapAdminToolbar, GUIManager::LISTBOX_MA_MAPS, true);
+
+	for (u32 a = 0; a < App::getInstance()->mapinfos.size(); a++)
+	{
+		box->addItem(App::getInstance()->mapinfos[a].mapname.c_str());
+	}
+	
+	box->setSelected(box->getListItem(App::getInstance()->getCurrentMapNo()));
+	IGUIEditBox* box1 = guienv->addEditBox(L"",core::rect<s32>(10, 350, 300, 450), true, guiMapAdminToolbar, GUIManager::TXT_MA_DESC);
+	box1->setMultiLine(true);
+	box1->setAutoScroll(true);
+	box1->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	box1->setText(App::getInstance()->getCurrentMapDesc().c_str());
+
+	s32 bx = 310, by = 60, wx = 160, wy = 30; 
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_CREATE_MAP, L"Create a new map", L"Create a new map");
+	by += 40;
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_OPEN_MAP, L"Open selected map", L"Open selected map");
+	by += 40;
+	IGUIButton* b2  = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_RENAME_MAP, L"Rename selected map", L"Rename selected map");
+	by += 40;
+	IGUIButton* b3 = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_DELETE_MAP, L"Delete selected map", L"Delete selected map");
+	by = 350;
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_UPDATE_DESC, L"Update description", L"Update description");
+	by += 40;
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_CLEAR_MAP, L"Clear current map", L"Clear current map");
+	b2->setEnabled(false);
+	b3->setEnabled(false);
+	
+
+
+}
+
 void GUIEditor::createTerrainToolbar()
 {
 	//Get the handle of the main tool windows (aligned with the gameplay tool)
@@ -854,10 +928,10 @@ void GUIEditor::createTerrainToolbar()
 		//myRect(driver->getScreenSize().Width - 170,
 		GUIManager::getInstance()->myRect(displaywidth - 220,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight()+3,
+		guiMainToolWindow->getClientRect().getHeight()+25,
 		220,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
-		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-50),
 		false,stringw(LANGManager::getInstance()->getText("bt_terrain_brush")).c_str(),0,
 		GUIManager::GCW_TERRAIN_TOOLBAR);
 
@@ -990,10 +1064,10 @@ void GUIEditor::createVegetationToolbar()
 		//myRect(driver->getScreenSize().Width - 170,
 		GUIManager::getInstance()->myRect(displaywidth - 220,
 		//guiMainToolWindow->getAbsoluteClippingRect().getHeight(),
-		guiMainToolWindow->getClientRect().getHeight()+3,
+		guiMainToolWindow->getClientRect().getHeight()+25,
 		220,
 		//driver->getScreenSize().Height-guiMainToolWindow->getAbsoluteClippingRect().getHeight()),
-		displayheight-guiMainToolWindow->getClientRect().getHeight()-28),
+		displayheight-guiMainToolWindow->getClientRect().getHeight()-50),
 		false,stringw(LANGManager::getInstance()->getText("bt_paint_vegetation")).c_str(),0, GUIManager::GCW_VEGE_TOOLBAR);
 
 
@@ -1073,9 +1147,9 @@ void GUIEditor::createDynamicObjectChooserGUI()
 
 	// --- Dynamic Objects Chooser (to choose and place dynamic objects on the scenery)
 	rect<s32> windowRect = GUIManager::getInstance()->myRect(displaywidth - 220,
-	guiMainToolWindow->getClientRect().getHeight()+3,
+	guiMainToolWindow->getClientRect().getHeight()+25,
 	220,
-	displayheight-guiMainToolWindow->getClientRect().getHeight()-28);
+	displayheight-guiMainToolWindow->getClientRect().getHeight()-50);
 
 
 	CGUIExtWindow* guiDynamicPlayerWindowChooser = new CGUIExtWindow(stringw(LANGManager::getInstance()->getText("txt_player_info")).c_str(),
