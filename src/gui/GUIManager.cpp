@@ -151,18 +151,62 @@ void GUIManager::createNewMapRequest()
 			GCW_REQUEST_MAP_INFO);
 
 		u32 px = 10, py = 40;
-		guienv->addStaticText(L"Name of the new level:",core::rect<s32>(px,py,px+250,py+20),false,false,guiRequest);
+		guienv->addStaticText(L"Name of the new map:",core::rect<s32>(px,py,px+250,py+20),false,false,guiRequest);
 		py += 20;
 		IGUIEditBox* box1 = guienv->addEditBox(L"",core::rect<s32>(px,py,px+300,py+30),true,guiRequest,TB_MAPREQUEST_MAP);
 		py += 40;
-		guienv->addStaticText(L"Description of the new level:", core::rect<s32>(px, py, px + 250, py + 20), false, false, guiRequest);
+		guienv->addStaticText(L"Description of the new map:", core::rect<s32>(px, py, px + 250, py + 20), false, false, guiRequest);
 		py += 20;
 		IGUIEditBox* box2 = guienv->addEditBox(L"", core::rect<s32>(px, py, px + 300, py + 100), true, guiRequest, TB_MAPREQUEST_DESC);
 		box2->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+		box2->setAutoScroll(true);
+		box2->setMultiLine(true);
+		box2->setWordWrap(true);
 		px = 400-130, py = 240;
-		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_MAPREQUEST_CREATE, L"Create level", L"Create Level");
+		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_MAPREQUEST_CREATE, L"Create map", L"Create map");
 		px -= 130;
 		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_MAPREQUEST_CANCEL, L"Cancel", L"Cancel");
+
+	}
+}
+
+void GUIManager::createRenameRequest(stringw filename)
+{
+	//Get the handle of the main tool windows (aligned with the gameplay tool)
+	IGUIWindow* guiMainToolWindow = (IGUIWindow*)getGUIElement(GUIManager::WIN_GAMEPLAY);
+
+	//Hide the map toolbar because we asked to create a map. If we change our mind, the we can show it back.
+	//If the map will be created it will need to removed.
+	//Theses will be in the buttons events in the APP class.
+	IGUIElement * elem = getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+	if (elem)
+		elem->setVisible(false);
+
+	s32 winwidth = 400, winheight = 240;
+	if (!getGUIElement(GUIManager::GCW_REQUEST_RENAME))
+	{
+		IGUIWindow* guiRequest = guienv->addWindow(
+			GUIManager::getInstance()->myRect(displaywidth / 2 - winwidth / 2,
+			guiMainToolWindow->getClientRect().getHeight() + 55,
+			winwidth,
+			winheight),
+			false, L"Please enter the information for the map:", 0,
+			GCW_REQUEST_RENAME);
+
+		u32 px = 10, py = 40;
+		guienv->addStaticText(L"Name of the old map:", core::rect<s32>(px, py, px + 250, py + 20), false, false, guiRequest);
+		py += 20;
+		guienv->addStaticText(filename.c_str(), core::rect<s32>(px, py, px + 300, py + 20), false, false, guiRequest);
+		py += 40;
+		guienv->addStaticText(L"Name of the new map:", core::rect<s32>(px, py, px + 250, py + 20), false, false, guiRequest);
+		py += 20;
+		IGUIEditBox* box2 = guienv->addEditBox(filename.c_str(), core::rect<s32>(px, py, px + 300, py + 30), true, guiRequest, TB_MR_RENAME_NAME);
+		box2->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+		px = 400 - 130, py = 200;
+		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_REQUEST_MAPRENAME, L"Rename map", L"Rename map");
+		px -= 130;
+		guienv->addButton(core::rect<s32>(px, py, px + 120, py + 30), guiRequest, BT_REQUEST_MAPRENAME_CANCEL, L"Cancel", L"Cancel");
+		guienv->setFocus(box2);
 
 	}
 }

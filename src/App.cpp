@@ -15,6 +15,9 @@
 #include "Editor/AppEditor.h" //Functions for APP mostly used in editor mode.
 
 
+//To support the experimental filesystem features
+#include <filesystem>
+
 #include "sound/SoundManager.h"
 #include "objects/Player.h"
 
@@ -632,7 +635,9 @@ void App::eventGuiButton(s32 id)
 
 
 	case GUIManager::BT_ID_MAP_ADMIN:
-		GUIManager::getInstance()->createMapAdminToolbar();
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+		if (!elem)
+			GUIManager::getInstance()->createMapAdminToolbar();
 		break;
 
 	case GUIManager::BT_MA_OPEN_MAP:
@@ -666,7 +671,8 @@ void App::eventGuiButton(s32 id)
 			text = (IGUIStaticText*)elem;
 
 			mapinfos[value].mapdescription = (core::stringw)text->getText();
-			device->getGUIEnvironment()->addMessageBox(L"", stringw(L"Description updated!").c_str(), true);
+			currentMapDescription = (core::stringw)text->getText();
+			device->getGUIEnvironment()->addMessageBox(L"Information:", stringw(L"Description updated!").c_str(), true);
 		}
 		break;
 
@@ -677,6 +683,11 @@ void App::eventGuiButton(s32 id)
 
 	case GUIManager::BT_MA_CREATE_MAP:
 		GUIManager::getInstance()->createNewMapRequest();
+		break;
+
+	case GUIManager::BT_MA_RENAME_MAP:
+		box = (IGUIListBox*)guienv->getRootGUIElement()->getElementFromId(GUIManager::LISTBOX_MA_MAPS, true);
+		GUIManager::getInstance()->createRenameRequest(mapinfos[box->getSelected()].mapname);
 		break;
 
 	case GUIManager::BT_MAPREQUEST_CREATE:
@@ -707,6 +718,40 @@ void App::eventGuiButton(s32 id)
 
 		break;
 
+	case GUIManager::BT_MAPREQUEST_CANCEL:
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+		if (elem)
+			elem->setVisible(true);
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_REQUEST_MAP_INFO);
+		if (elem)
+			elem->remove();
+		break;
+
+	//Action to do when the user press the Cancel button on the rename map request
+	case GUIManager::BT_REQUEST_MAPRENAME_CANCEL:
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+		if (elem)
+			elem->setVisible(true);
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_REQUEST_RENAME);
+		if (elem)
+			elem->remove();
+		break;
+
+	//Action to do when the user press the RENAME button on the rename map request
+	case GUIManager::BT_REQUEST_MAPRENAME:
+		editbox = (IGUIEditBox*)GUIManager::getInstance()->getGUIElement(GUIManager::TB_MR_RENAME_NAME);
+		this->renameMap(currentMapName, editbox->getText(), true);
+		this->renameMap(currentMapName, editbox->getText(), false);
+		currentMapName = editbox->getText();
+		mapinfos[currentMapNo].mapname = currentMapName;
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_MAP_TOOLBAR);
+		if (elem)
+			elem->remove();
+		elem = GUIManager::getInstance()->getGUIElement(GUIManager::GCW_REQUEST_RENAME);
+		if (elem)
+			elem->remove();
+		saveProjectToXML();
+		break;
 
 	case GUIManager::BT_ID_TERRAIN_ADD_SEGMENT:
 		this->setAppState(APP_EDIT_TERRAIN_SEGMENTS);
@@ -1874,6 +1919,11 @@ void App::eventKeyPressed(s32 key)
 		{
 			if (the.pickedNode && !isKeyPressed(key))
 			{
+				//Check if there is a element on focus and won't do it if it focused.
+				IGUIElement* elem=guienv->getFocus();
+				if (elem && elem->getTypeName() != "window")
+					break;
+
 				core::vector3df pos = the.pickedPos;
 				core::vector3df offset = CameraSystem::getInstance()->getNode()->getPosition();
 				core::vector3df calc = pos + (pos - offset);
@@ -1884,7 +1934,7 @@ void App::eventKeyPressed(s32 key)
 				device->getCursorControl()->setPosition(vector2df(0.5f,0.5f));
 			}
 		}
-
+		break;
 	case KEY_F10: // Clear the test rays
 		if (raytester)
 			raytester->clearAll();
@@ -2478,6 +2528,64 @@ void App::selectItem()
 
 }
 
+core::stringw App::renameMap(core::stringw source,core::stringw dest, bool file)
+{
+	if (file)
+	{
+		//Return the full path of the map
+		core::stringw text = L"";
+		text = editorfunc->getProjectsPath() + "/";
+		text += currentProjectName;
+		text += "/";
+		text += source;
+		text += "/";
+		text += source;
+		text += ".map";
+
+		core::stringw text2 = L"";
+		text2 = editorfunc->getProjectsPath() + "/";
+		text2 += currentProjectName;
+		text2 += "/";
+		text2 += source;
+		text2 += "/";
+		text2 += dest;
+		text2 += ".map";
+
+		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text).c_str());
+		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text2).c_str());
+		rename(core::stringc(text).c_str(), core::stringc(text2).c_str());
+		return text;
+	}
+	else
+	{
+		//Return the full path of the map
+		core::stringw text = L"";
+		text = editorfunc->getProjectsPath() + "/";
+		text += currentProjectName;
+		text += "/";
+		text += source;
+		
+
+		core::stringw text2 = L"";
+		text2 = editorfunc->getProjectsPath() + "/";
+		text2 += currentProjectName;
+		text2 += "/";
+		text2 += dest;
+		
+
+		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text).c_str());
+		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text2).c_str());
+		rename(core::stringc(text).c_str(), core::stringc(text2).c_str());
+		return text;
+
+	}
+}
+
+core::stringw deleteMap(core::stringw mapname)
+{
+	std::tr2::sys::remove_all("allo");
+	
+}
 
 //! Display a "debug" box over a selected node
 void App::setPreviewSelection()
@@ -4016,7 +4124,7 @@ bool App::saveProjectToXML()
 
 	// XML saving of the data in the project
 	TiXmlDocument doc1;
-	TiXmlDeclaration* decl1 = new TiXmlDeclaration("1.0", "ISO-8859-1", "");
+	TiXmlDeclaration* decl1 = new TiXmlDeclaration("1.0", "utf-8", "");
 	TiXmlElement* irb_project = new TiXmlElement("IrrRPG_Builder_Project");
 	irb_project->SetAttribute("version", "0.3");
 	
@@ -4028,8 +4136,13 @@ bool App::saveProjectToXML()
 	for (u32 a = 0; a < mapinfos.size(); a++)
 	{
 		TiXmlElement* map = new TiXmlElement("map");
-		map->SetAttribute("name", core::stringc(mapinfos[a].mapname).c_str());
-		map->SetAttribute("desc", core::stringc(mapinfos[a].mapdescription).c_str());
+		
+		char out[4096];
+		wcharToUtf8(mapinfos[a].mapname.c_str(), out, 4096);
+		map->SetAttribute("name", stringc(out).c_str());
+		
+		wcharToUtf8(mapinfos[a].mapdescription.c_str(), out, 4096);
+		map->SetAttribute("desc", stringc(out).c_str());
 		irb_project->LinkEndChild(map);
 	}
 
@@ -4101,20 +4214,23 @@ bool App::loadProjectFromXML()
 			currentProjectName = core::stringw(projectname->ToElement()->Attribute("name"));
 		}
 		TiXmlNode*  mapdata = root->FirstChildElement("map");
-		int counter = 0;
 		while (mapdata!=NULL)
 		{
-		
-			currentMapName = core::stringw(mapdata->ToElement()->Attribute("name"));				
- 			currentMapDescription = core::stringw(mapdata->ToElement()->Attribute("desc"));
+			//Convert the project from UTF8 (Saved in that format);
+			core::stringc name = stringc(mapdata->ToElement()->Attribute("name"));
+			core::stringc desc = stringc(mapdata->ToElement()->Attribute("desc"));
+			wchar_t out[4096];
+			utf8ToWchar(name.c_str(), out, 4096);
+			
+			currentMapName = core::stringw(out);
+			
+			utf8ToWchar(desc.c_str(), out, 4096);
+ 			currentMapDescription = core::stringw(out);
 
 			mapinfo map;
 			map.mapname = currentMapName;
 			map.mapdescription = currentMapDescription;
 			mapinfos.push_back(map);
-			printf("Counting elements of data: %d : name = %s\n", counter,core::stringc(map.mapname.c_str()).c_str());
-			counter++;
-
 			mapdata = root->IterateChildren("map", mapdata);
 		}
 		currentMapName = mapinfos[0].mapname;
@@ -4158,9 +4274,7 @@ void App::saveMapToXML(stringc filename)
 	doc.LinkEndChild( irb_map );
 
 	bool result = doc.SaveFile( filename.c_str() );
-#ifdef DEBUG
-	if (result) printf("Saved %s OK!\n",filename.c_str());
-#endif
+
 	//New: Will save the terrain tiles meshes separately. Caused some problems when doing this and saving the XML at the same time.
 	TerrainManager::getInstance()->saveTerrainTiles();
 
@@ -4168,9 +4282,14 @@ void App::saveMapToXML(stringc filename)
 
 	CameraSystem::getInstance()->setCameraHeight(0); // Refresh the camera
 
-	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_save_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
+	filename.remove(".map");
+	if (result)
+		guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_save_report").c_str(), core::stringw(LANGManager::getInstance()->getText("text_file_scene")
 		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_saved_ok").c_str()))).c_str()
-		,true);
+		, true);
+	else
+		guienv->addMessageBox(L"Warning!",L"Warning, errors occured during saving of the map file!");
+
 
 #ifdef DEBUG
 	cout << "DEBUG : XML : PROJECT SAVED : " << filename.c_str() << endl;
@@ -4261,6 +4380,7 @@ bool App::loadMapFromXML(stringc filename)
 	///TODO:CLEAR PROJECT IF NOT RETURN TRUE ON LOAD PROJECT FROM XML
 
 #ifdef EDITOR
+	filename=device->getFileSystem()->getFileBasename(filename.c_str(), false);
 	guienv->addMessageBox(LANGManager::getInstance()->getText("text_file_load_report").c_str(),core::stringw(LANGManager::getInstance()->getText("text_file_scene")
 		.append(core::stringw(filename.c_str()).append(LANGManager::getInstance()->getText("msg_loaded_ok")))).c_str()
 		,true);

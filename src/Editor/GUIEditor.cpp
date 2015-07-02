@@ -893,26 +893,42 @@ void GUIEditor::createMapAdminToolbar()
 	}
 	
 	box->setSelected(box->getListItem(App::getInstance()->getCurrentMapNo()));
-	IGUIEditBox* box1 = guienv->addEditBox(L"",core::rect<s32>(10, 350, 300, 450), true, guiMapAdminToolbar, GUIManager::TXT_MA_DESC);
-	box1->setMultiLine(true);
-	box1->setAutoScroll(true);
-	box1->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
-	box1->setText(App::getInstance()->getCurrentMapDesc().c_str());
+	
 
 	s32 bx = 310, by = 60, wx = 160, wy = 30; 
 	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_CREATE_MAP, L"Create a new map", L"Create a new map");
 	by += 40;
 	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_OPEN_MAP, L"Open selected map", L"Open selected map");
 	by += 40;
-	IGUIButton* b2  = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_RENAME_MAP, L"Rename selected map", L"Rename selected map");
-	by += 40;
 	IGUIButton* b3 = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_DELETE_MAP, L"Delete selected map", L"Delete selected map");
-	by = 350;
-	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_UPDATE_DESC, L"Update description", L"Update description");
+	
+	// Other part -- The current active map
+	bx = 10, by = 310;
+
+	IGUIStaticText* text=guienv->addStaticText(L"", core::rect<s32>(bx, by, winwidth - 10, winheight - 10), true, false, guiMapAdminToolbar, -1, true);
+	text->setBackgroundColor(SColor(255, 200, 200, 200));
+	
+	core::stringw title = core::stringw(L"CURRENT MAP: ").append(App::getInstance()->getCurrentMapName()).make_upper();
+	bx = 10, by = 10;
+	IGUIStaticText* text2=guienv->addStaticText(title.c_str(), core::rect<s32>(bx, by, winwidth - 30, 30), false, false, text, -1, false);
+	text2->setTextAlignment(EGUIA_CENTER, EGUIA_CENTER);
+	//text2->setOverrideFont(GUIManager::getInstance()->getFont(GUIManager::FONT_LARGE));
+
+	by = 30, bx = 320;
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), text, GUIManager::BT_MA_UPDATE_DESC, L"Update description", L"Update description");
 	by += 40;
-	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_CLEAR_MAP, L"Clear current map", L"Clear current map");
-	b2->setEnabled(false);
+	IGUIButton* b2 = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), text, GUIManager::BT_MA_RENAME_MAP, L"Rename current map", L"Rename current map");
+	by += 40;
+	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), text, GUIManager::BT_MA_CLEAR_MAP, L"Clear current map", L"Clear current map");
 	b3->setEnabled(false);
+
+
+	IGUIEditBox* box1 = guienv->addEditBox(L"", core::rect<s32>(10, 30, 300, 150), true, text, GUIManager::TXT_MA_DESC);
+	box1->setMultiLine(true);
+	box1->setAutoScroll(true);
+	box1->setWordWrap(true);
+	box1->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
+	box1->setText(App::getInstance()->getCurrentMapDesc().c_str());
 	
 
 

@@ -281,6 +281,9 @@ class App
 		void setPreviewSelection();
 		void addItemToScene();
 		void selectItem();
+		//To use for getting a full path on a map
+		core::stringw renameMap(core::stringw source, core::stringw dest, bool file);
+		core::stringw deleteMap(core::stringw mapname);
 
 		vector3df oldcampos;
 		vector3df oldcamtar;

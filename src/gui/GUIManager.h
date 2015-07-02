@@ -105,8 +105,11 @@ class GUIManager
 
 		TB_MAPREQUEST_MAP,
 		TB_MAPREQUEST_DESC,
+		TB_MR_RENAME_NAME,
 		BT_MAPREQUEST_CREATE,
 		BT_MAPREQUEST_CANCEL,
+		BT_REQUEST_MAPRENAME,
+		BT_REQUEST_MAPRENAME_CANCEL,
 
 		BT_ID_HELP,
 		BT_ID_CONFIG,
@@ -227,6 +230,7 @@ class GUIManager
 		GCW_TOP_WINDOW,
 		GCW_STATUSBAR,
 		GCW_REQUEST_MAP_INFO,
+		GCW_REQUEST_RENAME,
 		GCW_CONFIG_WINDOW
 	};
 
@@ -299,6 +303,7 @@ class GUIManager
 		void contractPanel(GUI_ID id);
 #endif
 		void createNewMapRequest();
+		void createRenameRequest(stringw filename);
 		void drawHelpImage(GUI_HELP_IMAGE img);
         bool getCheckboxState(GUI_ID id);
 		void setCheckboxState(GUI_ID id, bool value);
