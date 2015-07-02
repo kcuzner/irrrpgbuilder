@@ -286,7 +286,7 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release - Fast FPU|Win32'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release - Fast FPU|Win32'">$(VC_IncludePath);$(WindowsSDK_IncludePath);$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release - Fast FPU|x64'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='SDL-Debug|Win32'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='SDL-Debug|x64'">$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
@@ -1001,7 +1001,7 @@
     <ClInclude Include="..\..\include\IGUIToolbar.h" />
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
-	<ClInclude Include="CB3DMeshWriter.h" />
+    <ClInclude Include="CB3DMeshWriter.h" />
     <ClInclude Include="CD3D9RenderTarget.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
     <ClInclude Include="CDefaultSceneNodeFactory.h" />
@@ -1110,7 +1110,7 @@
     <ClInclude Include="COpenGLSLMaterialRenderer.h" />
     <ClInclude Include="COpenGLTexture.h" />
     <ClInclude Include="glext.h" />
-	<ClInclude Include="SB3DStructs.h" />
+    <ClInclude Include="SB3DStructs.h" />
     <ClInclude Include="wglext.h" />
     <ClInclude Include="CColorConverter.h" />
     <ClInclude Include="CFPSCounter.h" />
@@ -1249,7 +1249,7 @@
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <ItemGroup>
-	<ClCompile Include="CB3DMeshWriter.cpp" />
+    <ClCompile Include="CB3DMeshWriter.cpp" />
     <ClCompile Include="CD3D9RenderTarget.cpp" />
     <ClCompile Include="CDefaultSceneNodeAnimatorFactory.cpp" />
     <ClCompile Include="CDefaultSceneNodeFactory.cpp" />

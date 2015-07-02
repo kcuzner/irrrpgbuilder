@@ -95,11 +95,11 @@ bool AppEditor::createFolder(core::stringw foldername)
 {
 	bool result = false;
 	core::stringc string = core::stringc(foldername);
-	#ifdef win32
+#ifdef WIN32
 	int dirwrite = _mkdir(string.c_str());
-	#else
+#else
 	int dirwrite = mkdir(string.c_str(),0777);
-	#endif
+#endif
 	return result;
 }
 

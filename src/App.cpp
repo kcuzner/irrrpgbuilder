@@ -2582,11 +2582,13 @@ core::stringw App::renameMap(core::stringw source,core::stringw dest, bool file)
 	}
 }
 
+//Will be used to delete a map. Not implemented yet. (july 2015)
 core::stringw deleteMap(core::stringw mapname)
 {
     #ifdef win32
 	std::tr2::sys::remove_all("allo");
 	#endif
+	return L"";
 
 }
 
