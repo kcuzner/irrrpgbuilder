@@ -16,7 +16,7 @@ GUIEditor::GUIEditor()
 
 	info_current=NULL;
 	info_current1=NULL;
-	
+
 	// Textures
 	backtexture=NULL;
 	imgNewProject=NULL;
@@ -48,7 +48,7 @@ GUIEditor::~GUIEditor()
 {
 	if (configWindow)
 		delete configWindow;
-	
+
 }
 
 GUIEditor* GUIEditor::getInstance()
@@ -154,7 +154,7 @@ void GUIEditor::setupEditorGUI()
 
 	IGUIStaticText* guiStatusCameraText = guienv->addStaticText(getEditCameraString(NULL).c_str(),
 		GUIManager::getInstance()->myRect(displaywidth-600,4,displaywidth-700,18),true,false,guiStatus, GUIManager::TXT_ID_STATUS_CAMERA);
-	
+
 	guiStatusCameraText->setAlignment(EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
 	// Update and refresh the display
@@ -202,7 +202,7 @@ void GUIEditor::setupEditorGUI()
 	// Give back to the GUI Manager since it's needed for both applications
 	GUIManager::getInstance()->setConfigWindow(configWindow);
 #endif
-	
+
 	// Update and refresh the display
 	App::getInstance()->quickUpdate();
 
@@ -246,7 +246,7 @@ void GUIEditor::createNewProjectGUI()
 	//guienv->addEditBox(projpath.c_str(), rect<s32>(posx, posy, 500, posy + 20), true, newproj, -1);
 
 	posy += 50;
-	
+
 	IGUIStaticText * firstMapText = guienv->addStaticText(L"First map name",
 		core::rect<s32>(posx, posy, 250, posy + 12), false, true, newproj, -1);
 	firstMapText->setOverrideColor(video::SColor(255, 20, 20, 20));
@@ -265,7 +265,7 @@ void GUIEditor::createNewProjectGUI()
 	//Buttons
 	IGUIButton* quit = NULL;
 	IGUIButton* cancel = NULL;
-	
+
 	IGUIButton* createproj = guienv->addButton(rect<s32>(30, 400 - 60, 250, 400 - 30), newproj, GUIManager::BT_ID_CREATE_PROJECT, L"Create a new project");
 	quit = guienv->addButton(rect<s32>(260 + 30, 400 - 60, 260 + 250, 400 - 30), newproj, GUIManager::BT_ID_CLOSE_PROGRAM, L"Quit");
 
@@ -509,7 +509,7 @@ void GUIEditor::createProjectTab()
 	//loadPText->setOverrideColor(video::SColor(255,65,66,174));
 	loadPText->setOverrideColor(video::SColor(255, 64, 64, 64));
 	loadPText->setTextAlignment(EGUIA_CENTER, EGUIA_UPPERLEFT);
-	loadPText->setOverrideFont(GUIManager::getInstance()->guiFont9); 
+	loadPText->setOverrideFont(GUIManager::getInstance()->guiFont9);
 
 }
 
@@ -587,7 +587,7 @@ void GUIEditor::createPlayTab()
 
 void GUIEditor::createEnvironmentTab()
 {
-	//Get the handle of the main tab controls 
+	//Get the handle of the main tab controls
 	IGUITabControl* mainTabCtrl = (IGUITabControl*)GUIManager::getInstance()->getGUIElement(GUIManager::ID_TABCONTROL_MAIN);
 
 	mainToolbarPos.Y=3;
@@ -625,7 +625,7 @@ void GUIEditor::createEnvironmentTab()
 
 	//Add empty Segment
 	s32 x=12;
-	
+
 	IGUIButton* guiTerrainAddEmptySegment = guienv->addButton(GUIManager::getInstance()->myRect(mainToolbarPos.X + x,mainToolbarPos.Y,32,32),
                                      tabEnv,
 									 GUIManager::BT_ID_TERRAIN_ADD_EMPTY_SEGMENT,L"",
@@ -698,7 +698,7 @@ void GUIEditor::createEnvironmentTab()
 
 void GUIEditor::createObjectTab()
 {
-	//Get the handle of the main tab controls 
+	//Get the handle of the main tab controls
 	IGUITabControl* mainTabCtrl = (IGUITabControl*)GUIManager::getInstance()->getGUIElement(GUIManager::ID_TABCONTROL_MAIN);
 
 	IGUITab* tabObject = mainTabCtrl->addTab(LANGManager::getInstance()->getText("tab_objects").c_str());
@@ -891,23 +891,23 @@ void GUIEditor::createMapAdminToolbar()
 	{
 		box->addItem(App::getInstance()->mapinfos[a].mapname.c_str());
 	}
-	
-	box->setSelected(box->getListItem(App::getInstance()->getCurrentMapNo()));
-	
 
-	s32 bx = 310, by = 60, wx = 160, wy = 30; 
+	box->setSelected(box->getListItem(App::getInstance()->getCurrentMapNo()));
+
+
+	s32 bx = 310, by = 60, wx = 160, wy = 30;
 	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_CREATE_MAP, L"Create a new map", L"Create a new map");
 	by += 40;
 	guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_OPEN_MAP, L"Open selected map", L"Open selected map");
 	by += 40;
 	IGUIButton* b3 = guienv->addButton(core::rect<s32>(bx, by, bx + wx, by + wy), guiMapAdminToolbar, GUIManager::BT_MA_DELETE_MAP, L"Delete selected map", L"Delete selected map");
-	
+
 	// Other part -- The current active map
 	bx = 10, by = 310;
 
 	IGUIStaticText* text=guienv->addStaticText(L"", core::rect<s32>(bx, by, winwidth - 10, winheight - 10), true, false, guiMapAdminToolbar, -1, true);
 	text->setBackgroundColor(SColor(255, 200, 200, 200));
-	
+
 	core::stringw title = core::stringw(L"CURRENT MAP: ").append(App::getInstance()->getCurrentMapName()).make_upper();
 	bx = 10, by = 10;
 	IGUIStaticText* text2=guienv->addStaticText(title.c_str(), core::rect<s32>(bx, by, winwidth - 30, 30), false, false, text, -1, false);
@@ -929,8 +929,6 @@ void GUIEditor::createMapAdminToolbar()
 	box1->setWordWrap(true);
 	box1->setTextAlignment(EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
 	box1->setText(App::getInstance()->getCurrentMapDesc().c_str());
-	
-
 
 }
 
@@ -938,7 +936,7 @@ void GUIEditor::createTerrainToolbar()
 {
 	//Get the handle of the main tool windows (aligned with the gameplay tool)
 	IGUIWindow* guiMainToolWindow = (IGUIWindow*)GUIManager::getInstance()->getGUIElement(GUIManager::WIN_GAMEPLAY);
-	
+
 	///TERRAIN TOOLBAR
     IGUIWindow* guiTerrainToolbar = guienv->addWindow(
 		//myRect(driver->getScreenSize().Width - 170,
@@ -966,7 +964,7 @@ void GUIEditor::createTerrainToolbar()
 	IGUIStaticText* guiTerrainBrushStrengthLabel = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_terrain_transform_brush_strength_label")).c_str(),
 		GUIManager::getInstance()->myRect(10,mainToolbarPos.Y+30,200,20),
 		false,true, guiTerrainToolbar);
-	
+
 	IGUIStaticText* guiTerrainBrushStrengthValue = guienv->addStaticText(L"100",
 		GUIManager::getInstance()->myRect(10,mainToolbarPos.Y+70,200,20),
 		false,true, guiTerrainToolbar, GUIManager::TXT_ID_TERRAIN_BRUSH_STRENGTH);
@@ -1096,7 +1094,7 @@ void GUIEditor::createVegetationToolbar()
 
 	u32 x=10;
 	u32 y=40;
-	
+
 	guienv->addImage(driver->getTexture("../media/vegetation/vege0.jpg"),vector2d<s32>(x,y),true,guiVegetationToolbar,GUIManager::VEGE_IMAGE);
 	guienv->addCheckBox(true,core::rect<s32>(x+70,y,x+90,y+20),guiVegetationToolbar, GUIManager::VEGE_CHECKBOX);
 	guienv->addStaticText(L"Enabled?",
@@ -1105,7 +1103,7 @@ void GUIEditor::createVegetationToolbar()
 	IGUIListBox* vegelistbox=guienv->addListBox(GUIManager::getInstance()->myRect(x,y,x+190,y+120),guiVegetationToolbar,GUIManager::VEGE_LISTBOX, true);
 
 	//Populate the vegetation toolbar with the names of the vegetation items
-	
+
 	vector<stringw> names = TerrainManager::getInstance()->getVegetationNames();
 	if (vegelistbox)
 	{
@@ -1113,7 +1111,7 @@ void GUIEditor::createVegetationToolbar()
 		{
 			vegelistbox->addItem(names[i].c_str());
 		}
-	} 
+	}
 
 	vegelistbox->setSelected(0); //Select the first tree in the list.
 
@@ -1124,7 +1122,7 @@ void GUIEditor::createVegetationToolbar()
 	button->setPressed(true);
 	button->setImage(driver->getTexture("../media/vegetation/vege0.jpg"));
 	button->setPressedImage(driver->getTexture("../media/vegetation/vege0dn.jpg"));
-	
+
 	y+=74;
 	IGUIButton* button1 = guienv->addButton(rect<s32>(x,y,x+64,y+64),guiVegetationToolbar,
                                      BT_VEGE_BASE+1,L"",
@@ -1235,7 +1233,7 @@ void GUIEditor::createDynamicObjectChooserGUI()
 
 	IGUIStaticText * playGText2 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_rpg")).c_str(),
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
-	
+
 	cam2->setIsPushButton(true);
 
 
@@ -1250,9 +1248,9 @@ void GUIEditor::createDynamicObjectChooserGUI()
 
 	IGUIStaticText * playGText3 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("bt_camera_fps")).c_str(),
 		core::rect<s32>(x,y+36,x+50,y+85),false,true,in,-1);
-	
+
 	cam3->setIsPushButton(true);
-	
+
 	// Tab description box text
 	x = 20;
 	IGUIStaticText * objectTabText1 = guienv->addStaticText(stringw(LANGManager::getInstance()->getText("txt_tool_des7")).c_str(),
@@ -1464,7 +1462,7 @@ void GUIEditor::createDynamicObjectChooserGUI()
 	guiDynamicObjectsInfo->setOverrideFont(GUIManager::getInstance()->guiFontC12);
 	guiDynamicObjectsInfo->setAlignment(EGUIA_UPPERLEFT,EGUIA_UPPERLEFT,EGUIA_LOWERRIGHT,EGUIA_LOWERRIGHT);
 
-	
+
 	//---------------------------------------------- Info portions - ADD MODE
 	pos_X = 200;
 	pos_Y = 5;
@@ -1524,7 +1522,7 @@ void GUIEditor::createDynamicObjectChooserGUI()
 
 	pos_Y+=15;
 	IGUIStaticText* mdl_lic = guienv->addStaticText(L"",core::rect<s32>(pos_X+5,pos_Y,pos_X+310,pos_Y+20),true,true,InnerChooser,GUIManager::TXT_ID_MDL_LIC);
-	
+
 	mdl_lic->setDrawBackground(true);
 	mdl_lic->setBackgroundColor(video::SColor(255,237,242,248));
 	mdl_lic->setOverrideFont(GUIManager::getInstance()->guiFont10);
@@ -1606,7 +1604,7 @@ void GUIEditor::createDynamicObjectChooserGUI()
 
 	pos_X-=5;
 	pos_Y+=30;
-	button = guienv->addButton(GUIManager::getInstance()->myRect(pos_X,pos_Y,190,20), 
+	button = guienv->addButton(GUIManager::getInstance()->myRect(pos_X,pos_Y,190,20),
 		InnerChooser1, GUIManager::BT_ID_DYNAMIC_OBJECT_BT_EDITSCRIPTS,
 		stringw(LANGManager::getInstance()->getText("bt_dynamic_objects_edit_script")).c_str() );
 
@@ -2358,7 +2356,7 @@ f32 GUIEditor::getScrollBarValue(u32 id)
 			{
 				stringw text = stringw(scrollbar->getPos()).c_str();
 				text=text+L"\"";
-				
+
 				displaytext = (IGUIStaticText*)GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_TERRAIN_RADIUS);
 				displaytext->setText(text.c_str());
 
@@ -2434,13 +2432,13 @@ void GUIEditor::UpdateGUIChooser(u32 type)
 		objectlist->clear();
 		std::vector<stringw> listDynamicObjs = DynamicObjectsManager::getInstance()->getObjectsList(GUIManager::LIST_NPC,selected,"");
 		std::sort(listDynamicObjs.begin(), listDynamicObjs.end(), compareString);
-		
+
 		for (int i=0 ; i<(int)listDynamicObjs.size() ; i++)
 		{
 			objectlist->addItem(listDynamicObjs[i].c_str());
 		}
 		objectlist->setSelected(0);
-		
+
 		DynamicObjectsManager::getInstance()->setActiveObject(
 			GUIManager::getInstance()->getComboBoxItem(GUIManager::CO_ID_DYNAMIC_OBJECT_OBJ_CHOOSER));
 
@@ -2480,7 +2478,7 @@ void GUIEditor::UpdateGUIChooser(u32 type)
 
 		std::vector<stringw> listDynamicObjsCat = DynamicObjectsManager::getInstance()->getObjectsListCategories(GUIManager::LIST_SEGMENT, selected );
 		std::sort(listDynamicObjsCat.begin(), listDynamicObjsCat.end(), compareString);
-		
+
 		for (int i=0 ; i<(int)listDynamicObjsCat.size() ; i++)
 		{
 			categorylist->addItem(listDynamicObjsCat[i].c_str());
@@ -2716,13 +2714,13 @@ void GUIEditor::getInfoAboutModel(u32 type)
 	// Text will return the current item basec on the Dynamic Objects manager "active" object.
 	if (mdl_name)
 		mdl_name->setText(DynamicObjectsManager::getInstance()->activeObject->getName().c_str());
-	
+
 	if (mdl_desc)
 		mdl_desc->setText(DynamicObjectsManager::getInstance()->activeObject->description.c_str());
-	
+
 	if (mdl_auth)
 		mdl_auth->setText(DynamicObjectsManager::getInstance()->activeObject->author.c_str());
-	
+
 	if (mdl_lic)
 		mdl_lic->setText(DynamicObjectsManager::getInstance()->activeObject->licence.c_str());
 
@@ -2775,7 +2773,7 @@ void GUIEditor::buildSceneObjectList(DynamicObject::TYPE objtype)
 		}
 		listbox->setSelected(0);
 	}
-	
+
 }
 
 void GUIEditor::buildProjectList()
@@ -2787,9 +2785,9 @@ void GUIEditor::buildProjectList()
 	list->sort();
 	for (u32 i = 0; i < list->getFileCount(); ++i)
 	{
-		
+
 		test2 = list->getFileName(i);
-		
+
 		// We just want a list of directories and those matching the file filter
 		if (list->isDirectory(i))
 		{
@@ -2893,6 +2891,6 @@ core::stringw GUIEditor::getEditCameraString(scene::ISceneNode *node)
 
 void GUIEditor::updateEditCameraString(scene::ISceneNode * node)
 {
-	IGUIStaticText* guiStatusCameraText=(IGUIStaticText*)GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_STATUS_CAMERA); 
+	IGUIStaticText* guiStatusCameraText=(IGUIStaticText*)GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_STATUS_CAMERA);
 	if (guiStatusCameraText){guiStatusCameraText->setText(getEditCameraString(node).c_str());}
 }

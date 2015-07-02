@@ -14,9 +14,10 @@
 #include "objects/combat.h" //For updating the combat manager (damage calculation and DOT updates)
 #include "Editor/AppEditor.h" //Functions for APP mostly used in editor mode.
 
-
+#ifdef win32
 //To support the experimental filesystem features
 #include <filesystem>
+#endif
 
 #include "sound/SoundManager.h"
 #include "objects/Player.h"
@@ -623,7 +624,7 @@ void App::eventGuiButton(s32 id)
 			guienv->setFocus(NULL);
 			prj->remove();
 		}
-		
+
 		break;
 
 	case GUIManager::BT_ID_SAVE_PROJECT:
@@ -656,10 +657,10 @@ void App::eventGuiButton(s32 id)
 			textc += ".map";
 			currentMapNo = box->getSelected();
 			elem->remove();
-			createNewMap(); //Clear everything 
+			createNewMap(); //Clear everything
 			loadMapFromXML(textc);
 
-			
+
 		}
 
 	case GUIManager::BT_MA_UPDATE_DESC:
@@ -713,7 +714,7 @@ void App::eventGuiButton(s32 id)
 
 			createNewMap();
 		}
-		
+
 
 
 		break;
@@ -2564,14 +2565,14 @@ core::stringw App::renameMap(core::stringw source,core::stringw dest, bool file)
 		text += currentProjectName;
 		text += "/";
 		text += source;
-		
+
 
 		core::stringw text2 = L"";
 		text2 = editorfunc->getProjectsPath() + "/";
 		text2 += currentProjectName;
 		text2 += "/";
 		text2 += dest;
-		
+
 
 		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text).c_str());
 		printf(">>>>> Here is the result of the query: %s\n", core::stringc(text2).c_str());
@@ -2583,8 +2584,10 @@ core::stringw App::renameMap(core::stringw source,core::stringw dest, bool file)
 
 core::stringw deleteMap(core::stringw mapname)
 {
+    #ifdef win32
 	std::tr2::sys::remove_all("allo");
-	
+	#endif
+
 }
 
 //! Display a "debug" box over a selected node
@@ -2651,10 +2654,10 @@ bool App::loadConfig()
 	// File to load if it's the editor
 	core::stringc path=editorfunc->getAppDataPath().c_str();
 	path.append("/config.xml");
-	
+
 	bool result;
 	core::stringc pathfinal="";
-	
+
 	result = editorfunc->checkPath(path.c_str());
 	printf(">>> Get the configuration at this place: %s\n", path.c_str());
 	if (result)
@@ -2668,9 +2671,9 @@ bool App::loadConfig()
 		editorfunc->copyConfiguration(); //Copy the config from the application path (distribution) to the appdata path.
 		pathfinal = "config.xml";
 	}
-	
+
 	TiXmlDocument doc(pathfinal.c_str());
-	
+
 #else
 	// File to load if it's the player build
 	TiXmlDocument doc("config.xml");
@@ -3111,7 +3114,7 @@ void App::update()
 	//if (app_state > APP_STATE_CONTROL)
 		EffectsManager::getInstance()->update();
 
-		
+
 
 	guienv->drawAll();
 
@@ -3675,7 +3678,7 @@ void App::updateGameplay()
 void App::cleanWorkspace()
 {
 	TerrainManager::getInstance()->clean();
-	
+
 	DynamicObjectsManager::getInstance()->clean(false);
 
 	CameraSystem::getInstance()->editCamMaya->setUpVector(vector3df(0,1,0));
@@ -3696,7 +3699,7 @@ bool App::createProjectData()
 
 	mapinfos.clear(); //Clear the infos about the maps
 	scriptGlobal = ""; //Clear the global script and data
-	
+
 	IGUIElement* elem = GUIManager::getInstance()->getGUIElement(GUIManager::TXT_ID_PROJECT_NAME);
 	if (elem)
 		box1 = (IGUIEditBox*)elem;
@@ -3733,7 +3736,7 @@ bool App::createProjectData()
 //This should be invoked when the content of the current map is being cleared and started as a new map
 void App::createNewMap()
 {
-	
+
 	lastScannedPick.pickedNode = NULL;
 	if (selectedNode)
 	{
@@ -3746,7 +3749,7 @@ void App::createNewMap()
 	CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_EDIT);
 
 	APP_STATE old_state = getAppState();
-		
+
 	this->cleanWorkspace();
 
 	CameraSystem::getInstance();
@@ -4118,7 +4121,7 @@ bool App::saveProjectToXML()
 	core::stringc mapname = core::stringc(currentMapName + L".map");
 
 	//filename.replace("/", "\\");
-	
+
 
 	device->getFileSystem()->changeWorkingDirectoryTo(path.c_str());
 
@@ -4127,20 +4130,20 @@ bool App::saveProjectToXML()
 	TiXmlDeclaration* decl1 = new TiXmlDeclaration("1.0", "utf-8", "");
 	TiXmlElement* irb_project = new TiXmlElement("IrrRPG_Builder_Project");
 	irb_project->SetAttribute("version", "0.3");
-	
+
 	TiXmlElement* proj = new TiXmlElement("project");
 	proj->SetAttribute("name", filename.c_str());
 	irb_project->LinkEndChild(proj);
 
-	
+
 	for (u32 a = 0; a < mapinfos.size(); a++)
 	{
 		TiXmlElement* map = new TiXmlElement("map");
-		
+
 		char out[4096];
 		wcharToUtf8(mapinfos[a].mapname.c_str(), out, 4096);
 		map->SetAttribute("name", stringc(out).c_str());
-		
+
 		wcharToUtf8(mapinfos[a].mapdescription.c_str(), out, 4096);
 		map->SetAttribute("desc", stringc(out).c_str());
 		irb_project->LinkEndChild(map);
@@ -4152,7 +4155,7 @@ bool App::saveProjectToXML()
 	TiXmlElement* globalScript = new TiXmlElement("global_script");
 	globalScript->SetAttribute("script", scriptGlobal.c_str());
 	irb_project->LinkEndChild(globalScript);
-	
+
 	// Closing the XML file
 	doc1.LinkEndChild(decl1);
 	doc1.LinkEndChild(irb_project);
@@ -4177,7 +4180,7 @@ bool App::saveProjectToXML()
 }
 
 //!This will load the project from XML
-//!Then will load the default map 
+//!Then will load the default map
 bool App::loadProjectFromXML()
 {
 	createNewMap(); //Clear map data
@@ -4221,9 +4224,9 @@ bool App::loadProjectFromXML()
 			core::stringc desc = stringc(mapdata->ToElement()->Attribute("desc"));
 			wchar_t out[4096];
 			utf8ToWchar(name.c_str(), out, 4096);
-			
+
 			currentMapName = core::stringw(out);
-			
+
 			utf8ToWchar(desc.c_str(), out, 4096);
  			currentMapDescription = core::stringw(out);
 
@@ -4463,10 +4466,10 @@ void App::initialize()
 		this->setFPSView();
 
 	//projectname = L"New IRB Project"; //Empty name for the project.
-	
+
 	projectpath = editorfunc->getUserDocumentsPath()+"/";
 	bool result = device->getFileSystem()->existFile(projectpath.c_str());
-	
+
 	app_state = APP_EDIT_PRJ;
 	GUIManager::getInstance()->createNewProjectGUI();
 }

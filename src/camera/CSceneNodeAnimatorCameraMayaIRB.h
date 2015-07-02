@@ -112,6 +112,12 @@ namespace scene
 		//! Set the distance
 		virtual void setDistance(f32 distance);
 
+		//! Set the minimal distance to the camera target for zoom
+		virtual void setTargetMinDistance(f32 minDistance);
+
+		//! Returns the minimal distance to the camera target for zoom
+		virtual f32 getTargetMinDistance() const;
+
 		//! Set the new position
 		inline void setPosition(core::vector3df pos){camera->setPosition(pos); FirstUpdate=true;}
 

@@ -15,32 +15,30 @@ AppEditor::AppEditor()
 {
 
 	IrrlichtDevice * tempdevice = createDevice(EDT_NULL, dimension2d<u32>(640, 480), 16, false, false, false, 0);
-	
-	
+
+    //get the IRB application path
+	pathapplication = (core::stringw)tempdevice->getFileSystem()->getWorkingDirectory();
 
 	core::stringw docpath=L"";
+	int dirwrite = 0;
+	bool result = false;
 #ifdef WIN32
 	// Get the desktop shortcut (places)
 	// String buffer for holding the path.
 	TCHAR strPath[MAX_PATH];
-	int dirwrite = 0;
-	bool result = false;
-
-	//get the IRB application path
-	pathapplication = (core::stringw)tempdevice->getFileSystem()->getWorkingDirectory();
 
 	// Get the IRB project folder path
 	// Get the special folder path. (My documents)
 	SHGetSpecialFolderPath(0, strPath, CSIDL_PERSONAL, FALSE);
 	docpath = (core::stringw)strPath;
-	
+
 	//Check if "mygames" exist in the user folder. If not, create the folder
 	pathprojects = docpath.append(L"/my games");
 	core::stringc pathproject1 = pathprojects.c_str();
 	result = tempdevice->getFileSystem()->existFile(pathproject1.c_str());
 	if (!result)
 		dirwrite = _mkdir(pathproject1.c_str());
-	
+
 	//Check if "IRB_Projects" exits in the "mygames" folder. If not, create the folder
 	pathprojects = docpath.append(L"/IRB_Projects");
 	pathproject1 = pathprojects.c_str();
@@ -49,10 +47,10 @@ AppEditor::AppEditor()
 		dirwrite = _mkdir(pathproject1.c_str());
 
 
-		
+
 	//Create a new folder in APPDATA with the IRB name (Editor configuration path)
 	stringc allo=getenv("APPDATA");
-	
+
 	stringc filename = allo + "/IRB";
 	result = tempdevice->getFileSystem()->existFile(filename.c_str());
 	if (!result)
@@ -64,13 +62,28 @@ AppEditor::AppEditor()
 #else
 	char* str = xdg_user_dir_lookup("DOCUMENTS");
 	docpath = (core::stringw)str;
+
+	//Check if "IRB_Projects" exits in the "mygames" folder. If not, create the folder
+	pathprojects = docpath.append(L"/IRB_Projects");
+	core::stringc pathproject1 = pathprojects.c_str();
+	pathproject1 = pathprojects.c_str();
+	result = tempdevice->getFileSystem()->existFile(pathproject1.c_str());
+	if (!result)
+		dirwrite = mkdir(pathproject1.c_str(),0777);
+
+    stringc filename = (core::stringc)str + "/.IRB";
+	result = tempdevice->getFileSystem()->existFile(filename.c_str());
+	if (!result)
+		dirwrite = mkdir(filename.c_str(),0777);
+
+	this->pathappdata = stringw(filename);
 #endif
 
 	pathuserdocuments = docpath;
 
 	tempdevice->closeDevice();
 	tempdevice->drop();
-	
+
 }
 
 //Destructor
@@ -82,7 +95,11 @@ bool AppEditor::createFolder(core::stringw foldername)
 {
 	bool result = false;
 	core::stringc string = core::stringc(foldername);
+	#ifdef win32
 	int dirwrite = _mkdir(string.c_str());
+	#else
+	int dirwrite = mkdir(string.c_str(),0777);
+	#endif
 	return result;
 }
 
@@ -91,12 +108,12 @@ bool AppEditor::checkPath(stringc path)
 {
 	IrrlichtDevice * tempdevice = createDevice(EDT_NULL, dimension2d<u32>(640, 480), 16, false, false, false, 0);
 	bool result = tempdevice->getFileSystem()->existFile(path.c_str());
-	
+
 	tempdevice->closeDevice();
 	tempdevice->drop();
 	return result;
 }
-// Load the reference configuration XML 
+// Load the reference configuration XML
 // And write the information back in the proper path
 void AppEditor::copyConfiguration()
 {
@@ -144,19 +161,19 @@ void AppEditor::copyConfiguration()
 			sh = atoi(screenXML->ToElement()->Attribute("screen_height"));
 
 			camera = screenXML->ToElement()->Attribute("camera");
-			
+
 			fullscreen = screenXML->ToElement()->Attribute("fullscreen");
-			
+
 			resizeable = screenXML->ToElement()->Attribute("resizeable");
-			
+
 			vsync = screenXML->ToElement()->Attribute("vsync");
-			
+
 			antialias = screenXML->ToElement()->Attribute("antialias");
-			
+
 			silouette = screenXML->ToElement()->Attribute("silouette");
-			
+
 			xeffect = screenXML->ToElement()->Attribute("xeffects");
-			
+
 		}
 
 		TiXmlNode* languageXML = root->FirstChildElement("language");
@@ -174,7 +191,7 @@ void AppEditor::copyConfiguration()
 			model = terrainXML->ToElement()->Attribute("model");
 
 			density = terrainXML->ToElement()->Attribute("density");
-			
+
 			mesh = terrainXML->ToElement()->Attribute("mesh");
 			//ebTerrainL0->setText(stringw(terrainXML->ToElement()->Attribute("layer0")).c_str());
 			layer1 = terrainXML->ToElement()->Attribute("layer1");
@@ -201,7 +218,7 @@ void AppEditor::copyConfiguration()
 		mapname = mapXML->ToElement()->Attribute("name");
 		logo = mapXML->ToElement()->Attribute("logo");
 	}
-	
+
 
 	// >>>>>>> Save back the data in the other path
 	//TiXmlDocument doc;

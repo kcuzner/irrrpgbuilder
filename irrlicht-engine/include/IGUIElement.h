@@ -61,7 +61,6 @@ public:
 		}
 	}
 
-
 	//! Returns parent of this element.
 	IGUIElement* getParent() const
 	{

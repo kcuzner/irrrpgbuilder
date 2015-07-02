@@ -99,8 +99,8 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 					//	printf(" pressed down!\n");
 					//else
 					//	printf(" released!\n");
-				} 
-					
+				}
+
 			}
 		break;
 
@@ -120,7 +120,7 @@ bool CSceneNodeAnimatorCameraMayaIRB::OnEvent(const SEvent& evt)
 				if (KeyMap[i].KeyCode == irr::KEY_MBUTTON && App::getInstance()->getAppState()==App::APP_EDIT_VIEWDRAG)
 				{
 					ActionKeys[KeyMap[i].Action] = evt.MouseInput.isMiddlePressed();
-				}	
+				}
 
 			}
 
@@ -246,24 +246,24 @@ void CSceneNodeAnimatorCameraMayaIRB::animateNode(ISceneNode *node, u32 timeMs)
 	if (ActionKeys[EK_STRAFE_LEFT] && !Zooming)
 	{
 		translate -=  tvectX;
-		OldTarget = translate;		
+		OldTarget = translate;
 	}
 	if (ActionKeys[EK_STRAFE_RIGHT] && !Zooming)
 	{
 		translate +=  tvectX;
-		OldTarget = translate;		
+		OldTarget = translate;
 	}
 	if (ActionKeys[EK_MOVE_FORWARD] && !Zooming)
-	{ 
+	{
 		translate += tvectX.crossProduct(core::vector3df(0,1,0));
-		OldTarget = translate;		
+		OldTarget = translate;
 	}
 	if (ActionKeys[EK_MOVE_BACKWARD] && !Zooming)
 	{
 		translate -= tvectX.crossProduct(core::vector3df(0,1,0));
-		OldTarget = translate;		
+		OldTarget = translate;
 	}
-		
+
 
 	if (ActionKeys[EK_TRANSLATE] && !Zooming)
 	{
@@ -371,6 +371,15 @@ void CSceneNodeAnimatorCameraMayaIRB::setDistance(f32 distance)
 	bypass_switch=true;
 }
 
+void CSceneNodeAnimatorCameraMayaIRB::setTargetMinDistance(f32 minDistance)
+{
+
+}
+
+f32 CSceneNodeAnimatorCameraMayaIRB::getTargetMinDistance() const
+{
+    return 0.0f;
+}
 
 //! Gets the rotation speed
 f32 CSceneNodeAnimatorCameraMayaIRB::getRotateSpeed() const
