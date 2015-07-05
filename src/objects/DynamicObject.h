@@ -162,6 +162,7 @@ class DynamicObject : public projectileitem{
 		void setProp_level(cproperty prop);
 
 		void setMaterials(vector<DynamicObject_material> mat);
+		vector<DynamicObject_material> getMaterials();
 		inline void setAttachment(vector<DynamicObject_attachment> attach) {attachments = attach;} 
 
 		void setLife(int life);

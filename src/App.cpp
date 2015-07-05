@@ -84,6 +84,7 @@ App::App()
 	currentMapNo = 0;
 	editorfunc = new AppEditor();
 	askedClearMap = false;
+
 }
 
 App::~App()
@@ -3090,6 +3091,7 @@ void App::update()
 
 	// PostFX - render the player in silouette if he's occluded
 	// Work with the current model but the code should be improved to support more models (with more than one texture)
+
 	if (silouette) //  && (app_state > APP_STATE_CONTROL))
 	{
 		driver->runAllOcclusionQueries(false);
@@ -3124,6 +3126,8 @@ void App::update()
 		draw2DImages();
 
 	driver->endScene();
+
+	
 }
 
 void App::quickUpdate()
@@ -3158,6 +3162,10 @@ void App::run()
 			shadow->setVisible(false);
 			//->setVisible(false);
 	}
+
+	//Apply the defined material to the player
+	ShaderCallBack::getInstance()->setMaterials(DynamicObjectsManager::getInstance()->getPlayer()->getNode(),
+		DynamicObjectsManager::getInstance()->getPlayer()->getMaterials());
 
 	// Set the proper state if in the EDITOR or only the player application
 #ifdef EDITOR
@@ -4429,7 +4437,7 @@ void App::initialize()
 	light->setLightType(ELT_DIRECTIONAL);
 	//light->setLightType(ELT_POINT);
 	light->setRadius(45000);
-	light->getLightData().SpecularColor=SColorf(0.4f,0.4f,0.5f,1.0f); //Some characters have too much specular on them. Limit the specular of the sun a little.
+	//light->getLightData().SpecularColor=SColorf(0.4f,0.4f,0.5f,1.0f); //Some characters have too much specular on them. Limit the specular of the sun a little.
 	//light->getLightData().DiffuseColor=SColor(1.0f,0,0,1.0f);
 
 

@@ -51,19 +51,19 @@ bool DynamicObjectsManager::loadTemplates()
 		//Put the materials and attachment inside the player object
 		playerObject->setMaterials(pObject->materials);
 		playerObject->setAttachment(pObject->attachments);
+		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING, false);
+		playerObject->getNode()->setMaterialFlag(EMF_ANTI_ALIASING, true);
+		
 
 		playerObject->setTemplate(true);
 		objects.push_back(playerObject);
-		//setup material
-		playerObject->setMaterialType(pObject->getMaterialType());
-		playerObject->getNode()->setMaterialFlag(EMF_LIGHTING,true);
-
-
+		
 		// Fix a little problem by reseting the animation state back to idle.
 		playerObject->setAnimation("walk");
 		playerObject->setAnimation("idle");
 
 		// Load the script if it was defined in the XML
+		// Script template must be written using UTF8 encoding
 		if (pObject->script.size()>1)
 		{
 			wchar_t out[1024];

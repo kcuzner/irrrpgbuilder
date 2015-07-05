@@ -375,7 +375,6 @@ class App
 		VIEW_TYPE defaultview;
 
 		AppEditor* editorfunc; //Editor function pointer.
-		
 
 };
 

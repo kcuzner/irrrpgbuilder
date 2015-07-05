@@ -33,6 +33,7 @@ void ShaderCallBack::setFlagEditingTerrain(bool edit)
 
 void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
+	// Defines for the terrain shader constants
 	layer=0;
 	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer0"),(int*)&layer,1);
 	layer=1;
@@ -54,16 +55,13 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 	float terrainscale = TerrainManager::getInstance()->getScale()/1024;
 	int ter=(int)(10.0f*terrainscale);
     services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainTextureScale"),(int*)&ter,1);
-	//services->setPixelShaderConstant("terrainTextureScale",(int*)&layer,1);
-	// Retrieve the scale of the terrain
 
+	// Retrieve the scale of the terrain
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
 
 	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainScale"),(int*)&layer,1);
 
-    //layer=100;
-    //services->setPixelShaderConstant("fogDistance",(float*)&layer,1);
-
+   // Defines for the water shader constants
     layer=0;
 	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanNormalMap"), (int*)&layer,1);
     layer=1;
@@ -73,14 +71,6 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
     services->setVertexShaderConstant(services->getVertexShaderConstantID("AmbientLight"),reinterpret_cast<f32*>(&color), 4);
 
-//services->setPixelShaderConstant("ambientGlobal",(float*)&SColorf(1,1,1,1),4);
-
-
-/*    core::matrix4 invWorld = device->getVideoDriver()->getTransform(video::ETS_WORLD);
-    invWorld.makeInverse();
-
-    services->setVertexShaderConstant("mInvWorld", invWorld.pointer(), 16);
-*/
     // set clip matrix
     core::matrix4 worldViewProj;
     worldViewProj = device->getVideoDriver()->getTransform(video::ETS_PROJECTION);
@@ -90,52 +80,24 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
     services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj"), worldViewProj.pointer(), 16);
     services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj2"), worldViewProj.pointer(), 16);
 
-/*
-    layer=4;
-    services->setPixelShaderConstant("ShadowMapSampler",(float*)&layer,1);
-
-    layer=1000;
-    services->setPixelShaderConstant("MaxD",(float*)&layer,1);
-
-    layer=10;
-    services->setPixelShaderConstant("MAPRES",(float*)&layer,1);
-*/
-	//core::vector3df pos = vector3df(0,0,0);
-	//scene::ICameraSceneNode * cam = device->getSceneManager()->getActiveCamera();
-	//if (cam)
-	//{
-		// A light that is attached to the camera is used to light the terrain.
-		//vector3df pos = CameraSystem::getInstance()->light->getAbsolutePosition();
-
-		//services->setPixelShaderConstant("mLightPos", reinterpret_cast<f32*>(&pos), 3);
-		//pos = cam->getPosition();
-		//services->setPixelShaderConstant("mCamPos", reinterpret_cast<float*>(&pos),3);
-	//}
-
-	//device->getSceneManager()->getActiveCamera()->getPosition();
-
-
-/*
-
-    // set camera position
-    pos = device->getSceneManager()->getActiveCamera()->getPosition();
-    services->setVertexShaderConstant("camPos", reinterpret_cast<f32*>(&pos), 3);
-
-
-
-
-	// set transposed world matrix
-
-    core::matrix4 world = device->getVideoDriver()->getTransform(video::ETS_WORLD);
-    world = world.getTransposed();
-
-    services->setVertexShaderConstant("mTransWorld", world.pointer(), 16);
-	 */
-
-
     f32 time=device->getTimer()->getTime()/10000.0f;
 	time=time/3.0f;
     services->setVertexShaderConstant(services->getVertexShaderConstantID("waterTime"),&time,1);
+	
+	// Defines for the IRB normal map constants
+	core::matrix4 world = device->getVideoDriver()->getTransform(video::ETS_WORLD);
+	services->setVertexShaderConstant("mWorld", world.pointer(), 16);
+
+	vector3df TheCameraPosition = device->getSceneManager()->getActiveCamera()->getPosition();
+
+	int TexAddress = 0;  int TexAddress2 = 1;  int TexAddress3 = 2;  int TexAddress4 = 3;
+	services->setPixelShaderConstant("DiffuseMap", (int*)(&TexAddress), 1);   // 
+	services->setPixelShaderConstant("NormalMap", (int*)(&TexAddress2), 1);  // 
+	services->setPixelShaderConstant("SpecularMap", (int*)(&TexAddress3), 1);  // 
+	services->setPixelShaderConstant("GlossMap", (int*)(&TexAddress4), 1);  // 
+
+	services->setPixelShaderConstant("CamPosTEST", &TheCameraPosition.X, 4);
+	services->setPixelShaderConstant("mWorld", world.pointer(), 16);
 }
 
 void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::DynamicObject_material> mat)
@@ -153,7 +115,52 @@ void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::Dynam
 #ifdef DEBUG
 		printf ("Here is the defined material type: %s\n",mat[i].shader.c_str());
 #endif
+		//New normal map shader created by VECTROTEK(Jacques Pretorius).From the Irrlicht forum
+		if (mat[i].shader == "IRB_NORMAL_MAP")
+		{
+#ifdef DEBUG
+			printf("Material is a the new normal map..\n");
+			printf("Name of mesh is: %s\n", node->getName());
+			
 
+#endif
+			ITexture * tex0 = NULL;
+			ITexture * tex1 = NULL;
+			ITexture * tex2 = NULL;
+			ITexture * tex3 = NULL;
+
+			if (mat[i].texture0.size()>0) //Diffuse slot + Alpha: Clip map 
+				tex0 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture0));
+			if (mat[i].texture1.size()>0) //Normal map + Alpha: Droplet map
+				tex1 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture1));
+			if (mat[i].texture2.size()>0) //Specular map
+				tex2 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture2));
+			if (mat[i].texture3.size()>0) //Gloss map
+				tex3 = driver->getTexture(core::stringc("../media/dynamic_objects/").append(mat[i].texture3));
+
+			static s32 irbnormalmap = 0;
+			irbnormalmap = smgr->getVideoDriver()->getGPUProgrammingServices()->addHighLevelShaderMaterialFromFiles(
+				"../media/shaders/normals.vert", "vertexMain", video::EVST_VS_2_0,
+				"../media/shaders/normals.frag", "pixelMain", video::EPST_PS_2_0,
+				this, EMT_TRANSPARENT_ALPHA_CHANNEL_REF,
+				0, // ??
+				EGSL_DEFAULT);
+
+
+			if (tex0) //Need at least the diffuse slot to be applied
+			{
+				//Assign GLSL Shader
+				node->getMaterial(i).setFlag(EMF_LIGHTING, false);
+				node->getMaterial(i).setFlag(EMF_FOG_ENABLE, true);
+				node->getMaterial(i).setTexture(0, tex0);
+				node->getMaterial(i).setTexture(1, tex1);
+				node->getMaterial(i).setTexture(2, tex2);
+				node->getMaterial(i).setTexture(3, tex3);
+				node->getMaterial(i).MaterialType = (E_MATERIAL_TYPE)irbnormalmap;
+			}
+
+
+		}
 		if (mat[i].shader == "SOLID")
 		{
 

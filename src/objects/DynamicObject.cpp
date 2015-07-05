@@ -84,7 +84,6 @@ DynamicObject::DynamicObject(irr::core::stringc name, irr::core::stringc meshFil
 		error=true;
 	}
 
-	//Try to create a version of the mesh with the tangents for the normal mapping
 	Tmesh = smgr->getMeshManipulator()->createMeshWithTangents(mesh);
 	
 	setupObj(name, mesh);
@@ -261,7 +260,7 @@ void DynamicObject::setupObj(stringc name, IAnimatedMesh* mesh)
 	if(hasAnimation() && mesh && mesh->getFrameCount()>1)
 	{
 		this->mesh->setHardwareMappingHint(EHM_DYNAMIC);
-
+		((ISkinnedMesh*)mesh)->convertMeshToTangents();
         nodeAnim = smgr->addAnimatedMeshSceneNode(mesh,0,0x0010);
 		this->node = nodeAnim;
 		if (node)
@@ -873,6 +872,11 @@ void DynamicObject::setProp_level(DynamicObject::cproperty prop)
 void DynamicObject::setMaterials(vector<DynamicObject::DynamicObject_material> mat)
 {
 	this->materials = mat;	
+}
+
+vector<DynamicObject::DynamicObject_material> DynamicObject::getMaterials()
+{
+	return materials;
 }
 
 void DynamicObject::setEnabled(bool enabled)
