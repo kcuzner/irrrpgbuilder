@@ -13,9 +13,11 @@
  varying vec3 BinormalBB;
 
  void main()
-  {UVCoordsXY        = gl_MultiTexCoord0.xy;          // Just what it says! 
-   Tangent           = normalize(gl_MultiTexCoord1);  // Acuired here and  passed on to the FRAGMENT SHADER
-   Binormal          = normalize(gl_MultiTexCoord2);
+  {
+
+   UVCoordsXY        = gl_MultiTexCoord0.xy;          // Just what it says! 
+   Tangent           = vec3(normalize(gl_MultiTexCoord1));  // Acuired here and  passed on to the FRAGMENT SHADER
+   Binormal          = vec3(normalize(gl_MultiTexCoord2));
    VNormal           = gl_Normal; // Must happen here..
    VNormal           = normalize(vec3(mWorld * vec4(VNormal.xyz, 0 )).xyz);  // ???????
 

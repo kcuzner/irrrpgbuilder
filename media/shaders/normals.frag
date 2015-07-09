@@ -13,7 +13,7 @@
  uniform int       FShaderCommand;    // An Integer that is controlled from the program used to alter the operation of this Fragment Shader (press buttons 1 to 0..)
                                       // We also could have a "VProgramCommand" for the Vertex Program..
  uniform vec4      CamPosTEST;
- uniform vec3      LightPos001;       // This would become an array when it comes to many lights..
+ //uniform vec3      LightPos001;       // This would become an array when it comes to many lights..
  uniform mat4      mWorld;            // Fed from IRRLICHT via Vetrex Shader.. ENSURES CORRECT LIGHTING after SCALE TRANSLATE and ROTATE.... 
                                       // MWORLD ensures that we have physically correct lighting on a normal map 
                                       // no mater what the SCALE, ROTATION or TRANSLATION is..
@@ -31,7 +31,7 @@
 
  // =============================================================================
  vec4 Interpolate(float Slider, vec4 ArgA, vec4 ArgB) 
-  {vec4 OutputVal = ArgB * Slider + ArgA * (1 - Slider);
+  {vec4 OutputVal = vec4(ArgB * Slider + ArgA * (1.0 - Slider));
    return OutputVal;
   }
  // =  M A I N  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
@@ -45,14 +45,14 @@
    // -- IMAGE MAPS -- (get them first) 
    vec4 DiffuseMAPPEDCol  = texture2D(DiffuseMap,UVCoordsXY.xy); // ALPHA is "Clipmap"..
    vec4 NormalMAPPEDCol    = texture2D(NormalMap,UVCoordsXY.xy); // ALPHA is "Droplet Shader Mask"..
-   vec3 SpecularMAPPEDCol  = texture2D(SpecularMap,UVCoordsXY.xy);
-   vec3 GlossMAPEDCol      = texture2D(GlossMap,UVCoordsXY.xy);
+   vec3 SpecularMAPPEDCol  = vec3(texture2D(SpecularMap,UVCoordsXY.xy));
+   vec3 GlossMAPEDCol      = vec3(texture2D(GlossMap,UVCoordsXY.xy));
 
    // - UN-RANGECOMPRESSED NORMALS - 
-   vec3 UnCompressedNormal = (NormalMAPPEDCol -0.5) * 2.0;  
+   vec3 UnCompressedNormal = vec3((NormalMAPPEDCol -0.5) * 2.0);  
 
    // - LIGHTS - 
-        LightPos001     = CamPosTEST.xyz;
+   vec3 LightPos001     = CamPosTEST.xyz;
    vec3 LightPos002 = vec3( CamPosTEST.x , 4500.0 , CamPosTEST.z); //Second light very high in the sky. (imitate sun)
    vec3 LightCol001 = vec3( 0.9 , 0.9 , 1.0 ); LightCol001.xyz *= 0.65; // Global Intensity Scale.
    vec3 LightCol002 = vec3( 0.8 , 0.8 , 1.0 ); LightCol002.xyz *= 0.99; // Global Intensity Scale.
@@ -122,7 +122,7 @@
 
 
    // - NORMALISED DIRECTIONS - (used for Diffuse and Specularity) 
-   vec3 ViewDir     = normalize(CamPosTEST - VertexGLPosition);
+   vec3 ViewDir     = normalize(CamPosTEST.xyz - VertexGLPosition.xyz);
    vec3 LightDir001 = normalize(LightPos001 - VertexGLPosition); // Fragment Position??
    vec3 LightDir002 = normalize(LightPos002 - VertexGLPosition);
    // DIFFUSE BASE FOR ALL LIGHTS..
@@ -148,8 +148,8 @@
    // What I tried here is to Standardise the Level of GREY SCALE as related to the sharpness of the highlight..
 
    // DONT REMOVE THE CLAMPS..
-   float SpecBASE001 = clamp(pow(clamp(dot(normalize((ViewDir + LightDir001)),FinalNormal),0.0,1.0),  pow(2, (GlossMAPEDCol * 10.0)) ), 0.0 , 1.0 );
-   float SpecBASE002 = clamp(pow(clamp(dot(normalize((ViewDir + LightDir002)),FinalNormal),0.0,1.0),  pow(2, (GlossMAPEDCol * 10.0)) ), 0.0 , 1.0 );
+   float SpecBASE001 = clamp(pow(clamp(dot(normalize((ViewDir + LightDir001)),FinalNormal),0.0,1.0),  pow(2.0, float(GlossMAPEDCol * 10.0)) ), 0.0 , 1.0 );
+   float SpecBASE002 = clamp(pow(clamp(dot(normalize((ViewDir + LightDir002)),FinalNormal),0.0,1.0),  pow(2.0, float(GlossMAPEDCol * 10.0)) ), 0.0 , 1.0 );
 
    vec3 SpecBasColled001 = LightCol001.xyz * SpecBASE001 ;
    vec3 SpecBasColled002 = LightCol002.xyz * SpecBASE002 ;
