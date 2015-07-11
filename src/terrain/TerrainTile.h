@@ -55,7 +55,7 @@ public:
 		f32 getNodeScale();
 
         ITriangleSelector* getTriangleSelector();
-		
+
 
         void mergeToTile(TerrainTile* tile);
 
@@ -75,7 +75,7 @@ public:
 		void assignTerrainShader(scene::ISceneNode* node);
 		void assignWaterShader(scene::ISceneNode* node);
 
-		
+
 		void recalculate(bool simple=false); //Recalculate all the mesh (collision + normals), simple is without the collision
 
 		void clean();
@@ -83,7 +83,7 @@ public:
  		// variables
 		core::stringc customname;
 		bool custom;
-	
+
     protected:
         IMeshBuffer* getMeshBuffer();
 
@@ -112,7 +112,7 @@ public:
 		u16* mb_indices;
 		IVideoDriver * driver;
 		vector<f32> undobuffer;
-		vector<vector <f32>> undohistory;
+		vector<vector <f32> > undohistory;
 };
 
 #endif // TERRAINTILE_H
