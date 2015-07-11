@@ -24,6 +24,8 @@ TerrainTile::TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos,
 	ocean=NULL;
 	node=NULL;
 	selector=NULL;
+	undobuffer.clear();
+	undohistory.clear();
 
 	needrecalc=false; //Define if the tile need to be calculated
 
@@ -123,7 +125,7 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 	recalculate();
 
 	custom = false;
-
+	storeUndo();
 }
 
 void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model)
@@ -201,7 +203,7 @@ void TerrainTile::createCustom(ISceneNode* parent, vector3df pos, stringc name, 
 	assignWaterShader(ocean);
 
 	baseMesh->setHardwareMappingHint(EHM_STATIC);
-
+	storeUndo();
 }
 
 
@@ -330,6 +332,50 @@ void TerrainTile::mergeToTile(TerrainTile* tile)
 		needrecalc = true;
 
     }
+}
+
+void TerrainTile::storeUndo()
+{
+	IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+
+	S3DVertex* mb_vertices = (S3DVertex*)meshBuffer->getVertices();
+
+	u16* mb_indices = meshBuffer->getIndices();
+	
+	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
+	{
+		undobuffer.push_back(mb_vertices[j].Pos.Y);
+	}
+	undohistory.push_back(undobuffer);
+	undobuffer.clear();
+}
+
+void TerrainTile::restoreUndo()
+{
+	if (undohistory.size()>0)
+	{
+		IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
+
+		S3DVertex* mb_vertices = (S3DVertex*)meshBuffer->getVertices();
+
+		u16* mb_indices = meshBuffer->getIndices();
+		printf("Here is the undo history size: %i\n", undohistory.size());
+		undobuffer = undohistory.back();
+		printf("Here is the undo buffer size: %i\n", undobuffer.size());
+
+		for (unsigned int j = 0; j < undohistory[undohistory.size()-1].size(); j += 1)
+		{
+			mb_vertices[j].Pos.Y = undohistory[undohistory.size() - 1][j];
+		}
+		
+		needrecalc = true;
+		recalculate();
+		undohistory.pop_back(); //Remove the last element of the vector by 1;
+		
+		undobuffer.clear(); //Clear the buffer;
+		
+	}
+	
 }
 
 void TerrainTile::saveToXML(TiXmlElement* parentElement)

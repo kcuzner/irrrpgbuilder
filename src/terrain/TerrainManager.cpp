@@ -42,6 +42,8 @@ TerrainManager::TerrainManager()
 	empty_texture_scale = 1.0f;
 	parametric=true;
 	filename="";
+	startButtonPressed = false;
+	undoPressed = false;
 }
 
 TerrainManager::~TerrainManager()
@@ -775,6 +777,26 @@ void TerrainManager::recalculate()
 
 }
 
+void TerrainManager::restoreUndo()
+{
+	std::map<std::string, TerrainTile*>::iterator it;
+	for (it = terrainMap.begin(); it != terrainMap.end(); it++)
+	{
+		((TerrainTile*)((*it).second))->restoreUndo();
+	}
+
+}
+
+void TerrainManager::storeUndo()
+{
+	std::map<std::string, TerrainTile*>::iterator it;
+	for (it = terrainMap.begin(); it != terrainMap.end(); it++)
+	{
+		((TerrainTile*)((*it).second))->storeUndo();
+	}
+
+}
+
 void TerrainManager::resetVegetationHeight()
 {
 	needrecalc=false;
@@ -1180,6 +1202,28 @@ void TerrainManager::update()
 		{
 			if(!EventReceiver::getInstance()->isMousePressed(0) && !EventReceiver::getInstance()->isMousePressed(1) && needrecalc)
 				recalculate();
+
+			// Undo buffers
+			if (EventReceiver::getInstance()->isMousePressed(0) && !startButtonPressed) //Undo buffer: check if the mouse is being pressed
+			{
+				startButtonPressed = true;
+				storeUndo();
+			}
+
+			if (!EventReceiver::getInstance()->isMousePressed(0) && startButtonPressed) //Undo buffer, mouse is released, create the undo buffer
+			{
+				startButtonPressed = false;
+			}
+
+			// Undo key management
+			if (!undoPressed && EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL) && EventReceiver::getInstance()->isKeyPressed(KEY_KEY_Z)) //key activation
+				undoPressed = true;
+
+			if (undoPressed && !EventReceiver::getInstance()->isKeyPressed(KEY_KEY_Z)) //Key released, then undo the change
+			{
+				undoPressed = false;
+				restoreUndo();
+			}
 
 			//Calculate a time offset for the strenght
 			f32 timeoffset = f32((time-timer)/1000.0f);

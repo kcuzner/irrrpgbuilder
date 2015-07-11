@@ -37,6 +37,8 @@ class TerrainManager
 		void transformSegmentsToValue(App::MousePick mousePick, f32 radius, f32 radius2, f32 strength, f32 value,  bool norecalc=false);
 
 		void recalculate();
+		void restoreUndo();
+		void storeUndo();
 
 		stringc getTileMeshName();
 		void setTileMeshName(stringc name);
@@ -124,6 +126,8 @@ class TerrainManager
 		u32 lastbrushtime; //time taken to redraw the brush the last time
 		u16 brushstep; 
 		f32 empty_texture_scale;
+		bool startButtonPressed;
+		bool undoPressed;
         
 };
 

@@ -22,18 +22,18 @@ using namespace std;
 
 class TerrainTile
 {
-    public:
+public:
 
-		typedef struct
-		{
-			s32 id;
-			f32 value;
-			bool tree;
-			int type;
-			vector3df pos;
-			vector3df rot;
-			vector3df sca;
-		}TerrainData;
+	typedef struct
+	{
+		s32 id;
+		f32 value;
+		bool tree;
+		int type;
+		vector3df pos;
+		vector3df rot;
+		vector3df sca;
+	}TerrainData;
 
         TerrainTile(ISceneManager* smgr, ISceneNode* parent, vector3df pos, stringc name, bool custom=false, bool param=true);
 		virtual ~TerrainTile();
@@ -58,6 +58,10 @@ class TerrainTile
 		
 
         void mergeToTile(TerrainTile* tile);
+
+
+		void storeUndo();
+		void restoreUndo();
 
         void saveToXML(TiXmlElement* parentElement);
         bool loadFromXML(TiXmlElement* parentElement);
@@ -107,6 +111,8 @@ class TerrainTile
 		S3DVertex* mb_vertices;
 		u16* mb_indices;
 		IVideoDriver * driver;
+		vector<f32> undobuffer;
+		vector<vector <f32>> undohistory;
 };
 
 #endif // TERRAINTILE_H
