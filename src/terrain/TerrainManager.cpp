@@ -43,6 +43,7 @@ TerrainManager::TerrainManager()
 	parametric=true;
 	filename="";
 	startButtonPressed = false;
+	startButtonPressed1 = false;
 	undoPressed = false;
 }
 
@@ -1210,9 +1211,20 @@ void TerrainManager::update()
 				storeUndo();
 			}
 
+			if (EventReceiver::getInstance()->isMousePressed(1) && !startButtonPressed1) //Undo buffer: check if the mouse is being pressed
+			{
+				startButtonPressed1 = true;
+				storeUndo();
+			}
+
 			if (!EventReceiver::getInstance()->isMousePressed(0) && startButtonPressed) //Undo buffer, mouse is released, create the undo buffer
 			{
 				startButtonPressed = false;
+			}
+
+			if (!EventReceiver::getInstance()->isMousePressed(1) && startButtonPressed1) //Undo buffer, mouse is released, create the undo buffer
+			{
+				startButtonPressed1 = false;
 			}
 
 			// Undo key management

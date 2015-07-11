@@ -127,6 +127,7 @@ class TerrainManager
 		u16 brushstep; 
 		f32 empty_texture_scale;
 		bool startButtonPressed;
+		bool startButtonPressed1;
 		bool undoPressed;
         
 };
