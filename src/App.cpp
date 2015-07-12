@@ -478,7 +478,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,false);
 		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_CHARACTER,false);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_EDIT_SCRIPT_GLOBAL,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_NEW_PROJECT,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_DYNAMIC_OBJECTS_LOOT,false);
@@ -499,7 +499,7 @@ void App::setAppState(APP_STATE newAppState)
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_PLAY_GAME,true);
 		GUIManager::getInstance()->setElementVisible(GUIManager::BT_ID_STOP_GAME,false);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_SAVE_PROJECT,true);
-		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,true);
+		//GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_LOAD_PROJECT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_ABOUT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_NEW_PROJECT,true);
 		GUIManager::getInstance()->setElementEnabled(GUIManager::BT_ID_HELP,true);
@@ -2922,18 +2922,17 @@ void App::playGame()
 	if (visible)
 		guienv->getRootGUIElement()->getElementFromId(GUIManager::WIN_GAMEPLAY,true)->setVisible(false);
 #endif
-		EffectsManager::getInstance()->updateSkydome();
+		//EffectsManager::getInstance()->updateSkydome();
 		TerrainManager::getInstance()->setEmptyTileVisible(false);
 		//oldcampos = Player::getInstance()->getObject()->getPosition();
 		oldcampos = CameraSystem::getInstance()->editCamMaya->getPosition();
 		oldcamtar = CameraSystem::getInstance()->editCamMaya->getTarget();
 		LuaGlobalCaller::getInstance()->storeGlobalParams();
 
-		//DynamicObjectsManager::getInstance()->displayShadow(true);
 		CameraSystem::getInstance()->setCamera(CameraSystem::CAMERA_GAME);
 		// setback the fog as before (will need to check with LUA)
 		driver->setFog(SColor(0,220,220,255),EFT_FOG_LINEAR,300,5000);
-		smgr->getActiveCamera()->setFarValue(5000.0f);
+		smgr->getActiveCamera()->setFarValue(7500.0f);
 
 		old_state = app_state;
 		this->setAppState(APP_GAMEPLAY_NORMAL);
@@ -3028,8 +3027,8 @@ void App::update()
 	}
 	else
 	{
-		EffectsManager::getInstance()->setClearColor(ingamebackground);
-		background=ingamebackground; // Background color ingame
+		//EffectsManager::getInstance()->setClearColor(ingamebackground);
+		//background=ingamebackground; // Background color ingame
 	}
 
 
@@ -3092,6 +3091,7 @@ void App::update()
 	// PostFX - render the player in silouette if he's occluded
 	// Work with the current model but the code should be improved to support more models (with more than one texture)
 
+	
 	if (silouette) //  && (app_state > APP_STATE_CONTROL))
 	{
 		driver->runAllOcclusionQueries(false);
@@ -3113,12 +3113,9 @@ void App::update()
 			Player::getInstance()->getNode()->setMaterialTexture(0, tex_normal);
 		}
 	}
-
+	
 	// Tries to do an post FX
-	//if (app_state > APP_STATE_CONTROL)
 		EffectsManager::getInstance()->update();
-
-
 
 	guienv->drawAll();
 
@@ -3233,7 +3230,7 @@ void App::run()
 	{
 		this->update();
 		// display frames per second in window title
-		int fps = driver->getFPS();
+		s32 fps = driver->getFPS();
 		if (lastFPS != fps)
 		{
 			core::stringw str = appname;

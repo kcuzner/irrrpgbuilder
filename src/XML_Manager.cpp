@@ -441,6 +441,8 @@ void xmldata::loadLangFile(core::stringc  filename )
 		u32 linecount = 0;
 		u32 linecount2 = 0;
 
+		wchar_t out[255];
+
         while(xml && xml->read())
         {
                 switch(xml->getNodeType())
@@ -456,7 +458,7 @@ void xmldata::loadLangFile(core::stringc  filename )
 
 								// utf8toWchar was introducted in Irrlicht 1.9
 								// This will allow IRB to save/load strings encoded in UTF8 to it's platform native WCHAR format.
-								wchar_t out[255];
+								
 								utf8ToWchar(xml->getAttributeValue("id"), out, 255);
 								CurrentLang.name = stringw(out);
 								
@@ -468,11 +470,12 @@ void xmldata::loadLangFile(core::stringc  filename )
 						}
 						if (core::stringw("about") == xml->getNodeName())
 						{
-								wchar_t out[255];
+
 								CurrentLang.name=L"txt_about";
 								utf8ToWchar(xml->getAttributeValue("str"), out, 255);
 								CurrentLang.text=stringw(out);
 								LANGManager::getInstance()->aboutext.push_back(CurrentLang);
+								
 						}
 				}
                 break;

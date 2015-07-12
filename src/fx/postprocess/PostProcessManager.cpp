@@ -115,8 +115,9 @@ void CPostProcessManager::update()
 	// render the scene into the framebuffer after postprocessing
 	RenderToScreen->getMaterial().setTexture(0, RenderTargetMap["auxOut"]);
 	//Device->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER, true, true);
-	Device->getVideoDriver()->setRenderTarget(0, true, true,0);
-	//Device->getVideoDriver()->setRenderTarget(RenderTargetMap["auxOut"], true, true);
+	Device->getVideoDriver()->setRenderTarget(0);
+	//Device->getVideoDriver()->setRenderTarget(0, true, true, video::SColor(0,0,0,255));
+	
 	RenderToScreen->render();
 }
 

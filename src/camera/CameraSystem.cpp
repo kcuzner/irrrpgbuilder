@@ -956,7 +956,7 @@ void CameraSystem::setViewType(CameraSystem::VIEW_TYPE view)
 		setPointNClickAngle(vector2df(-90,5));
 		setCameraZoom(72);
 		setGameCameraAngleLimit(vector2df(-30,70));
-		setGameCameraRange(60,150);
+		setGameCameraRange(60,250);
 		initrotation=false;
 		break;
 	}

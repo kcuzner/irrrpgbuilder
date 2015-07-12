@@ -33,6 +33,11 @@ void ShaderCallBack::setFlagEditingTerrain(bool edit)
 
 void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, s32 userData)
 {
+
+	f32 time = device->getTimer()->getTime() / 10000.0f;
+	time = time / 3.0f;
+	services->setVertexShaderConstant(services->getVertexShaderConstantID("time"), (irr::f32*)&time, 1);
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("waterTime"), &time, 1);
 	// Defines for the terrain shader constants
 	layer=0;
 	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainLayer0"),(int*)&layer,1);
@@ -60,17 +65,10 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 	layer=(int)TerrainManager::getInstance()->getTileMeshSize();
 
 	services->setPixelShaderConstant(services->getPixelShaderConstantID("terrainScale"),(int*)&layer,1);
+	services->setVertexShaderConstant(services->getVertexShaderConstantID("terrainScale"), (int*)&layer, 1);
 
-   // Defines for the water shader constants
-    layer=0;
-	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanNormalMap"), (int*)&layer,1);
-    layer=1;
-	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanReflection"),(int*)&layer,1);
-   
-
-    SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
-    services->setVertexShaderConstant(services->getVertexShaderConstantID("AmbientLight"),reinterpret_cast<f32*>(&color), 4);
-
+  
+	/*
     // set clip matrix
     core::matrix4 worldViewProj;
     worldViewProj = device->getVideoDriver()->getTransform(video::ETS_PROJECTION);
@@ -79,11 +77,8 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
     services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj"), worldViewProj.pointer(), 16);
     services->setVertexShaderConstant(services->getVertexShaderConstantID("mWorldViewProj2"), worldViewProj.pointer(), 16);
-
-    f32 time=device->getTimer()->getTime()/10000.0f;
-	time=time/3.0f;
-    services->setVertexShaderConstant(services->getVertexShaderConstantID("waterTime"),&time,1);
-	
+	*/
+  	
 	// Defines for the IRB normal map constants
 	core::matrix4 world = device->getVideoDriver()->getTransform(video::ETS_WORLD);
 	services->setVertexShaderConstant("mWorld", world.pointer(), 16);
@@ -98,6 +93,18 @@ void ShaderCallBack::OnSetConstants(video::IMaterialRendererServices* services, 
 
 	services->setPixelShaderConstant("CamPosTEST", &TheCameraPosition.X, 4);
 	services->setPixelShaderConstant("mWorld", world.pointer(), 16);
+
+
+
+	// Defines for the water shader constants
+	layer = 0;
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanNormalMap"), (int*)&layer, 1);
+	layer = 1;
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("oceanReflection"), (int*)&layer, 1);
+
+	SColorf color = App::getInstance()->getDevice()->getSceneManager()->getAmbientLight();
+	services->setPixelShaderConstant(services->getPixelShaderConstantID("AmbientLight"), reinterpret_cast<f32*>(&color), 4);
+
 }
 
 void ShaderCallBack::setMaterials(ISceneNode * node, vector<DynamicObject::DynamicObject_material> mat)

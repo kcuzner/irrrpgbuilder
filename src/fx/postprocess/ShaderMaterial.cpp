@@ -8,6 +8,11 @@ CShaderMaterial::CShaderMaterial(IrrlichtDevice* device, const core::stringw& na
 	s32 userdata = 0;
 	io::path vs_path;
 	io::path ps_path;
+	TextureName[0] = "";
+	TextureName[1] = "";
+	TextureName[2] = "";
+	TextureName[3] = "";
+	
 	
 	// log action
 	core::stringw msg = core::stringw("compiling material ") + name;

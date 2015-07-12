@@ -105,8 +105,11 @@ void TerrainTile::createTerrain(ISceneNode* parent, vector3df pos, stringc name,
 
 	// Create the water mesh, using the same reference as the terrain, applied shader will use the vertices informations to set the transparency of the water.
 	ocean=smgr->addMeshSceneNode(newMesh,node,0); // use "newMesh" as the same reference. Will use the vertices height to get the transparency for the water.
-	ocean->setMaterialFlag(EMF_BLEND_OPERATION,true);
+	//
 	assignWaterShader(ocean);
+	ocean->getMaterial(0).MaterialType = video::EMT_SOLID;
+	ocean->getMaterial(0).BlendOperation = EBO_ADD;
+	ocean->getMaterial(0).BlendFactor = pack_textureBlendFunc(EBF_SRC_ALPHA, EBF_ONE_MINUS_SRC_ALPHA);
 
 
 	meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
@@ -367,6 +370,20 @@ void TerrainTile::restoreUndo()
 		{
 			mb_vertices[j].Pos.Y = undohistory[undohistory.size() - 1][j];
 		}
+
+		meshBuffer = ((IMeshSceneNode*)ocean)->getMesh()->getMeshBuffer(0);
+
+		mb_vertices = (S3DVertex*)meshBuffer->getVertices();
+
+		mb_indices = meshBuffer->getIndices();
+
+		for (unsigned int j = 0; j < undohistory[undohistory.size() - 1].size(); j += 1)
+		{
+			mb_vertices[j].Pos.Y = undohistory[undohistory.size() - 1][j];
+		}
+		
+
+
 		
 		needrecalc = true;
 		recalculate();
