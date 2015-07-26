@@ -9,6 +9,17 @@
 class TerrainManager
 {
     public:
+		// This struct is a buffer for each tree
+		typedef struct
+		{
+			bool erase;
+			int type;
+			vector3df pos;
+			vector3df rot;
+			vector3df sca;
+			TerrainTile* tile;
+			Vegetation* treeref;
+		}VegeUndoBuffer;
 
 	    static TerrainManager* getInstance();
         virtual ~TerrainManager();
@@ -78,6 +89,8 @@ class TerrainManager
 		void rotateLeft(core::vector3df pos);
 		void rotateRight(core::vector3df pos);
 
+		void undoVegetation();
+
 		inline bool isParametric(){return parametric;}
 		inline vector<stringw> getVegetationNames() {return VegetationSeed::getInstance()->getNames();}
 		inline vector<stringc> getVegetationThumb() {return VegetationSeed::getInstance()->getThumb();}
@@ -97,6 +110,8 @@ class TerrainManager
 		
 
     private:
+		void updateUndoHistory(VegeUndoBuffer buffer);
+
         f32 scale;
 		bool parametric;
 
@@ -126,9 +141,14 @@ class TerrainManager
 		u32 lastbrushtime; //time taken to redraw the brush the last time
 		u16 brushstep; 
 		f32 empty_texture_scale;
-		bool startButtonPressed;
-		bool startButtonPressed1;
+		bool startButtonPressed; // Left button pressed. Start memorizing strokes
+		bool startButtonPressed1; // Right button pressed. Start memorizing strokes
 		bool undoPressed;
+		bool undoVegePressed;
+		bool startButtonVegePressed;
+		bool startButtonVegePressed1;
+		vector<VegeUndoBuffer> vegeUndoBuffer;
+		vector<vector <VegeUndoBuffer> > vegeUndohistory;
         
 };
 

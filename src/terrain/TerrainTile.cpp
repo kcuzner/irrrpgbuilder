@@ -620,9 +620,8 @@ bool TerrainTile::loadFromXML(TiXmlElement* parentElement)
 	return true;
 }
 
-void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
+Vegetation* TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 {
-
 	//Do a prior check to see if there is a least one tree active in the list of active objects
 	vector<bool> enabled=VegetationSeed::getInstance()->getEnabled();
 	vector<int> newlist;
@@ -631,13 +630,15 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 		if (enabled[i]==true)
 			newlist.push_back(i); //New list will contain the list of the enabled items
 	}
-	if (newlist.size()==0) return;
+	if (newlist.size()==0) return NULL;
 
     IMeshBuffer* meshBuffer = ((IMeshSceneNode*)node)->getMesh()->getMeshBuffer(0);
 
 	S3DVertex* mb_vertices = (S3DVertex*) meshBuffer->getVertices();
 
 	u16* mb_indices  = meshBuffer->getIndices();
+
+	Vegetation* returnvalue = NULL;
 
 	for (unsigned int j = 0; j < meshBuffer->getVertexCount(); j += 1)
 	{
@@ -654,21 +655,9 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
             if(realPos.getDistanceFrom(clickPos) < vegetationRange/2 && getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {
                 Vegetation* toRemove = getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z));
-
-                for (int i=0 ; i<(int)vegetationVector.size() ; i++)
-                {
-                    if(vegetationVector[i] == toRemove)
-                    {
-                        vegetationVector.erase(vegetationVector.begin() + i);
-                        delete toRemove;
-
-                        #ifdef APP_DEBUG
-                        cout << "DEBUG : TERRAIN TILE : VEGETATION REMOVED: " << realPos.X << "," << realPos.X/(scale/nodescale) << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
-                        #endif
-
-                        break;
-                    }
-                }
+				returnvalue = toRemove;
+				return returnvalue;
+				// Done outside the function (caller will do the removal)
             }
         }
         else
@@ -680,7 +669,7 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 			else
 				realPos = clickPos;
 
-            clickPos.Y = realPos.Y;
+            clickPos.Y = realPos.Y; 
             if(realPos.getDistanceFrom(clickPos) < (vegetationRange/2) && !getVegetationAt(vector3df(realPos.X,realPos.Y,realPos.Z)))
             {
                 Vegetation* v = new Vegetation();
@@ -689,13 +678,18 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 				//v->setPosition(vector3df(realPos.X + (rand()%5)*scale/100,realPos.Y,realPos.Z + (rand()%5)*scale/100));
 				v->setPosition(vector3df(realPos.X,realPos.Y,realPos.Z));
                 f32 treesize = (f32)(rand() % 50 + 25);
+				f32 treerot = (f32)(rand() % 1 + 359);
 
 				v->setScale(vector3df(treesize,treesize,treesize));
+				v->setRotation(vector3df(0,treerot,0));
 
 #ifdef DEBUG
 				printf("Attempting to place a tree with this size: %f\n",treesize);
 #endif
                 vegetationVector.push_back(v);
+				returnvalue = v;
+
+				return returnvalue;
 
                 #ifdef APP_DEBUG
                 cout << "DEBUG : TERRAIN TILE : VEGETATION CREATED: " << realPos.X << "," << realPos.Y << "," << realPos.Z << "   TOTAL:" << vegetationVector.size() << endl;
@@ -703,6 +697,9 @@ void TerrainTile::paintVegetation(vector3df clickPos, bool erase)
 	        }
 	    }
 	}
+
+	return returnvalue;
+
 }
 
 // Test the tile if it was being modified

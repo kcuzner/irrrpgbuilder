@@ -1965,11 +1965,6 @@ void App::eventKeyPressed(s32 key)
 		}
 		break;
 
-	case KEY_F2: //Remove all the vegetation on the map
-		if (app_state<=this->APP_EDIT_TERRAIN_PAINT_VEGETATION && app_state>this->APP_EDIT_LOOK)
-			TerrainManager::getInstance()->removeAllVegetation();
-		break;
-
 	case KEY_F5:
 		if(app_state == APP_EDIT_DYNAMIC_OBJECTS_SCRIPT) //&& !isKeyPressed(key)
 			LuaGlobalCaller::getInstance()->doScript(GUIManager::getInstance()->getEditBoxText(GUIManager::EB_ID_DYNAMIC_OBJECT_SCRIPT));

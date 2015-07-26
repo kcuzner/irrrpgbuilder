@@ -19,6 +19,7 @@ using namespace std;
 class VegetationSeed
 {
 public:
+	
     static VegetationSeed* getInstance()
     {
         static VegetationSeed* instance = 0;

@@ -42,9 +42,16 @@ TerrainManager::TerrainManager()
 	empty_texture_scale = 1.0f;
 	parametric=true;
 	filename="";
+	//For the terrain undo
 	startButtonPressed = false;
 	startButtonPressed1 = false;
 	undoPressed = false;
+	//For the vegetation system undo
+	undoVegePressed = false;
+	startButtonVegePressed = false;
+	startButtonVegePressed1 = false;
+	vegeUndoBuffer.clear();
+	vegeUndohistory.clear();
 }
 
 TerrainManager::~TerrainManager()
@@ -701,10 +708,44 @@ bool TerrainManager::loadFromXML(TiXmlElement* parentElement)
 
 void TerrainManager::paintVegetation(App::MousePick mousePick, bool erase)
 {
+	Vegetation* vege = NULL;
     if(mousePick.pickedNode != NULL && getSegment(mousePick.pickedNode->getName()))
     {
         TerrainTile* tempTile = getSegment(mousePick.pickedNode->getName());
-        if(tempTile) tempTile->paintVegetation(mousePick.pickedPos, erase);
+		if (tempTile)
+		{
+			vector<Vegetation*> vegetation = tempTile->getVegetationVector();
+			vege = tempTile->paintVegetation(mousePick.pickedPos, erase);
+			if (vege) //These information must be stored in the undo buffer;
+			{
+				VegeUndoBuffer buf;
+				buf.pos = vege->getNode()->getPosition();
+				buf.rot = vege->getNode()->getRotation();
+				buf.sca = vege->getNode()->getScale();
+				buf.type = vege->getType();
+				buf.tile = tempTile;
+				buf.erase = erase;
+				if (!erase)
+					buf.treeref = vege;
+				else
+					buf.treeref = NULL;
+
+				vegeUndoBuffer.push_back(buf);
+			}
+			if (erase && vege) //Asked to remove the tree, vege will return a tree if found
+			{
+				for (int i = 0; i < (int)vegetation.size(); i++)
+				{
+					if (vegetation[i] == vege)
+					{
+						vegetation.erase(vegetation.begin() + i); //Remove this tree from the list
+						delete vege; //Remove the tree
+						break;
+					}
+				}
+				tempTile->setVegetationVector(vegetation); //Put back the list of the current tile
+			}
+		}
     }
 }
 
@@ -1199,6 +1240,7 @@ void TerrainManager::update()
 	if(App::getInstance()->cursorIsInEditArea() )
 	{
 		u32 time = App::getInstance()->getDevice()->getTimer()->getRealTime();
+		//Check controls when doing terrain editing
 		if (app_state == App::APP_EDIT_TERRAIN_TRANSFORM)
 		{
 			if(!EventReceiver::getInstance()->isMousePressed(0) && !EventReceiver::getInstance()->isMousePressed(1) && needrecalc)
@@ -1281,18 +1323,68 @@ void TerrainManager::update()
 			}
 		}
 
-
+		//Check controls when in vegetation painting
 		if(app_state == App::APP_EDIT_TERRAIN_PAINT_VEGETATION)
 		{
+
+			if (EventReceiver::getInstance()->isKeyPressed(KEY_F2)) //This clear all the tree and the undos for them
+			{
+				removeAllVegetation();
+				vegeUndoBuffer.clear();
+				vegeUndoBuffer.clear();
+			}
+			
+			if (!undoVegePressed && EventReceiver::getInstance()->isKeyPressed(KEY_LCONTROL) && EventReceiver::getInstance()->isKeyPressed(KEY_KEY_Z)) //key activation
+				undoVegePressed = true;
+
+			if (undoVegePressed && !EventReceiver::getInstance()->isKeyPressed(KEY_KEY_Z)) //Key released, then undo the change
+			{
+				undoVegePressed = false;
+				undoVegetation();
+			}
+
+			// Undo buffers: record undo for trees
+			if (EventReceiver::getInstance()->isMousePressed(0) && !startButtonVegePressed) //Undo buffer: check if the mouse is being pressed
+			{
+				startButtonVegePressed = true;
+			}
+
+			if (!EventReceiver::getInstance()->isMousePressed(0) && startButtonVegePressed) //Undo buffer, mouse is released, create the undo buffer
+			{
+				startButtonVegePressed = false;
+				if (vegeUndoBuffer.size() != 0)
+				{
+					printf("Memorizing a stroke and now history has %d strokes.\n", vegeUndohistory.size() + 1);
+					vegeUndohistory.push_back(vegeUndoBuffer);
+					vegeUndoBuffer.clear();
+				}
+			}
+
+			// Undo buffers: record undo for trees
+			if (EventReceiver::getInstance()->isMousePressed(1) && !startButtonVegePressed1) //Undo buffer: check if the mouse is being pressed
+			{
+				startButtonVegePressed1 = true;
+			}
+
+			if (!EventReceiver::getInstance()->isMousePressed(1) && startButtonVegePressed1) //Undo buffer, mouse is released, create the undo buffer
+			{
+				startButtonVegePressed1 = false;
+				if (vegeUndoBuffer.size() != 0)
+				{
+					vegeUndohistory.push_back(vegeUndoBuffer);
+					vegeUndoBuffer.clear();
+				}
+			}
+
 			//Add vegetation to the terrain
 			if(EventReceiver::getInstance()->isMousePressed(0))
 			{
-				TerrainManager::getInstance()->paintVegetation(App::getInstance()->getMousePosition3D(100), false);
+				paintVegetation(App::getInstance()->getMousePosition3D(100), false);
 			}
 			//Erase vegetation from the terrain
 			if(EventReceiver::getInstance()->isMousePressed(1))
 			{
-				TerrainManager::getInstance()->paintVegetation(App::getInstance()->getMousePosition3D(100), true);
+				paintVegetation(App::getInstance()->getMousePosition3D(100), true);
 			}
 		}
 	}
@@ -1375,4 +1467,75 @@ void TerrainManager::rotateRight(vector3df pos)
 			tileTagged=NULL;
 		}
 	 }
+}
+
+void TerrainManager::undoVegetation()
+{
+	if (vegeUndohistory.size() == 0)
+		return;
+
+	vegeUndoBuffer = vegeUndohistory.back();
+		
+	printf("Undo history size is: %d\n", vegeUndohistory.size());
+	if (vegeUndoBuffer.size() > 0)
+	{
+		
+		bool erasetrigger = false;
+
+		printf("Undo buffer size is: %d\n", vegeUndoBuffer.size());
+		for (u32 a = 0; a < vegeUndoBuffer.size(); a++)
+		{
+			if (vegeUndoBuffer[a].erase) //Tree was removed, put it back
+			{
+				TerrainTile* vtile = vegeUndoBuffer[a].tile;
+				vector<Vegetation*> vv = vtile->getVegetationVector();
+				Vegetation* v = new Vegetation(vegeUndoBuffer[a].type);
+				v->setPosition(vegeUndoBuffer[a].pos);
+				v->setRotation(vegeUndoBuffer[a].rot);
+				v->setScale(vegeUndoBuffer[a].sca);
+				vegeUndoBuffer[a].treeref = v;
+				vv.push_back(v);
+				vtile->setVegetationVector(vv);
+				updateUndoHistory(vegeUndoBuffer[a]);
+				
+			}
+			else // Tree was added, remove it.
+			{
+				TerrainTile* vtile = vegeUndoBuffer[a].tile;
+				vector<Vegetation*> vv = vtile->getVegetationVector();
+				Vegetation* v = vegeUndoBuffer[a].treeref;
+				for (u32 a = 0; a < vv.size(); a++)
+				{
+					if (vv[a] == v) //found the tree reference
+					{
+						vv.erase(vv.begin() + a);
+						delete v;
+						break;
+					}
+				}
+				vtile->setVegetationVector(vv);
+			}
+
+		}
+		
+	}
+	else
+		printf("The undo buffer for the last tree stroke is empty!!\n");
+
+	vegeUndohistory.pop_back();
+	vegeUndoBuffer.clear();
+}
+
+void TerrainManager::updateUndoHistory(VegeUndoBuffer buffer)
+{
+	for (u32 a = 0; a < vegeUndohistory.size(); a++)
+	{
+		for (u32 b = 0; b < vegeUndohistory[a].size(); b++)
+		{
+			if (buffer.pos == vegeUndohistory[a][b].pos)
+			{
+				vegeUndohistory[a][b].treeref = buffer.treeref;
+			}
+		}
+	}
 }

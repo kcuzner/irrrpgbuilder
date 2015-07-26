@@ -42,7 +42,7 @@ public:
 		void createCustom(ISceneNode* parent, vector3df pos, stringc name, stringc model);
 
 		void resetVegetationHeight();
-        void paintVegetation(vector3df clickPos, bool erase);
+        Vegetation* paintVegetation(vector3df clickPos, bool erase);
 
         void transformMesh(vector3df clickPos, f32 radius, f32 radius2, f32 strength, bool norecalc=false);
 		void transformMeshByVertices(vector<TerrainData> list, bool norecalc);
@@ -79,6 +79,9 @@ public:
 		void recalculate(bool simple=false); //Recalculate all the mesh (collision + normals), simple is without the collision
 
 		void clean();
+
+		inline vector<Vegetation*> getVegetationVector() { return vegetationVector; };
+		inline void setVegetationVector(vector <Vegetation*>  vege) { vegetationVector = vege; };
 
  		// variables
 		core::stringc customname;
